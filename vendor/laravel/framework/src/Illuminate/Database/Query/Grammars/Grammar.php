@@ -46,10 +46,6 @@ class Grammar extends BaseGrammar
      */
     public function compileSelect(Builder $query)
     {
-        if ($query->unions && $query->aggregate) {
-            return $this->compileUnionAggregate($query);
-        }
-
         // If the query does not have any columns set, we'll set the columns to the
         // * character to just get all of the columns from the database. Then we
         // can build the query and concatenate all the pieces together as one.
@@ -85,7 +81,7 @@ class Grammar extends BaseGrammar
             // To compile the query, we'll spin through each component of the query and
             // see if that component exists. If it does we'll just call the compiler
             // function for the component which is responsible for making the SQL.
-            if (isset($query->$component) && ! is_null($query->$component)) {
+            if (! is_null($query->$component)) {
                 $method = 'compile'.ucfirst($component);
 
                 $sql[$component] = $this->$method($query, $query->$component);
@@ -523,7 +519,6 @@ class Grammar extends BaseGrammar
      * @param  string  $column
      * @param  string  $value
      * @return string
-     *
      * @throws \RuntimeException
      */
     protected function compileJsonContains($column, $value)
@@ -540,35 +535,6 @@ class Grammar extends BaseGrammar
     public function prepareBindingForJsonContains($binding)
     {
         return json_encode($binding);
-    }
-
-    /**
-     * Compile a "where JSON length" clause.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $where
-     * @return string
-     */
-    protected function whereJsonLength(Builder $query, $where)
-    {
-        return $this->compileJsonLength(
-            $where['column'], $where['operator'], $this->parameter($where['value'])
-        );
-    }
-
-    /**
-     * Compile a "JSON length" statement into SQL.
-     *
-     * @param  string  $column
-     * @param  string  $operator
-     * @param  string  $value
-     * @return string
-     *
-     * @throws \RuntimeException
-     */
-    protected function compileJsonLength($column, $operator, $value)
-    {
-        throw new RuntimeException('This database engine does not support JSON length operations.');
     }
 
     /**
@@ -737,21 +703,6 @@ class Grammar extends BaseGrammar
         $conjunction = $union['all'] ? ' union all ' : ' union ';
 
         return $conjunction.$union['query']->toSql();
-    }
-
-    /**
-     * Compile a union aggregate query into SQL.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @return string
-     */
-    protected function compileUnionAggregate(Builder $query)
-    {
-        $sql = $this->compileAggregate($query, $query->aggregate);
-
-        $query->aggregate = null;
-
-        return $sql.' from ('.$this->compileSelect($query).') as '.$this->wrapTable('temp_table');
     }
 
     /**
@@ -979,23 +930,6 @@ class Grammar extends BaseGrammar
     protected function wrapJsonSelector($value)
     {
         throw new RuntimeException('This database engine does not support JSON operations.');
-    }
-
-    /**
-     * Split the given JSON selector into the field and the optional path and wrap them separately.
-     *
-     * @param  string  $column
-     * @return array
-     */
-    protected function wrapJsonFieldAndPath($column)
-    {
-        $parts = explode('->', $column, 2);
-
-        $field = $this->wrap($parts[0]);
-
-        $path = count($parts) > 1 ? ', '.$this->wrapJsonPath($parts[1]) : '';
-
-        return [$field, $path];
     }
 
     /**

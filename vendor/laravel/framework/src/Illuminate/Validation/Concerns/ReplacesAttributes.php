@@ -259,11 +259,7 @@ trait ReplacesAttributes
      */
     protected function replaceGt($message, $attribute, $rule, $parameters)
     {
-        if (is_null($value = $this->getValue($parameters[0]))) {
-            return str_replace(':value', $parameters[0], $message);
-        }
-
-        return str_replace(':value', $this->getSize($attribute, $value), $message);
+        return str_replace(':value', $this->getSize($parameters[0], $this->getValue($parameters[0])), $message);
     }
 
     /**
@@ -277,11 +273,7 @@ trait ReplacesAttributes
      */
     protected function replaceLt($message, $attribute, $rule, $parameters)
     {
-        if (is_null($value = $this->getValue($parameters[0]))) {
-            return str_replace(':value', $parameters[0], $message);
-        }
-
-        return str_replace(':value', $this->getSize($attribute, $value), $message);
+        return str_replace(':value', $this->getSize($parameters[0], $this->getValue($parameters[0])), $message);
     }
 
     /**
@@ -295,11 +287,7 @@ trait ReplacesAttributes
      */
     protected function replaceGte($message, $attribute, $rule, $parameters)
     {
-        if (is_null($value = $this->getValue($parameters[0]))) {
-            return str_replace(':value', $parameters[0], $message);
-        }
-
-        return str_replace(':value', $this->getSize($attribute, $value), $message);
+        return str_replace(':value', $this->getSize($parameters[0], $this->getValue($parameters[0])), $message);
     }
 
     /**
@@ -313,11 +301,7 @@ trait ReplacesAttributes
      */
     protected function replaceLte($message, $attribute, $rule, $parameters)
     {
-        if (is_null($value = $this->getValue($parameters[0]))) {
-            return str_replace(':value', $parameters[0], $message);
-        }
-
-        return str_replace(':value', $this->getSize($attribute, $value), $message);
+        return str_replace(':value', $this->getSize($parameters[0], $this->getValue($parameters[0])), $message);
     }
 
     /**

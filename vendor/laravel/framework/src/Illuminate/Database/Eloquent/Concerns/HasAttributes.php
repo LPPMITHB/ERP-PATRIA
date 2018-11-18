@@ -478,9 +478,7 @@ trait HasAttributes
             case 'real':
             case 'float':
             case 'double':
-                return $this->fromFloat($value);
-            case 'decimal':
-                return $this->asDecimal($value, explode(':', $this->getCasts()[$key], 2)[1]);
+                return (float) $value;
             case 'string':
                 return (string) $value;
             case 'bool':
@@ -517,10 +515,6 @@ trait HasAttributes
             return 'custom_datetime';
         }
 
-        if ($this->isDecimalCast($this->getCasts()[$key])) {
-            return 'decimal';
-        }
-
         return trim(strtolower($this->getCasts()[$key]));
     }
 
@@ -534,17 +528,6 @@ trait HasAttributes
     {
         return strncmp($cast, 'date:', 5) === 0 ||
                strncmp($cast, 'datetime:', 9) === 0;
-    }
-
-    /**
-     * Determine if the cast type is a decimal cast.
-     *
-     * @param  string  $cast
-     * @return bool
-     */
-    protected function isDecimalCast($cast)
-    {
-        return strncmp($cast, 'decimal:', 8) === 0;
     }
 
     /**
@@ -630,7 +613,7 @@ trait HasAttributes
      */
     public function fillJsonAttribute($key, $value)
     {
-        [$key, $path] = explode('->', $key, 2);
+        list($key, $path) = explode('->', $key, 2);
 
         $this->attributes[$key] = $this->asJson($this->getArrayAttributeWithValue(
             $path, $key, $value
@@ -707,38 +690,6 @@ trait HasAttributes
     public function fromJson($value, $asObject = false)
     {
         return json_decode($value, ! $asObject);
-    }
-
-    /**
-     * Decode the given float.
-     *
-     * @param  mixed  $value
-     * @return mixed
-     */
-    public function fromFloat($value)
-    {
-        switch ((string) $value) {
-            case 'Infinity':
-                return INF;
-            case '-Infinity':
-                return -INF;
-            case 'NaN':
-                return NAN;
-            default:
-                return (float) $value;
-        }
-    }
-
-    /**
-     * Return a decimal as string.
-     *
-     * @param  float  $value
-     * @param  int  $decimals
-     * @return string
-     */
-    protected function asDecimal($value, $decimals)
-    {
-        return number_format($value, $decimals, '.', '');
     }
 
     /**

@@ -7,13 +7,6 @@ use Illuminate\Contracts\Support\MessageProvider;
 interface Validator extends MessageProvider
 {
     /**
-     * Run the validator's rules against its data.
-     *
-     * @return array
-     */
-    public function validate();
-
-    /**
      * Determine if the data fails the validation rules.
      *
      * @return bool

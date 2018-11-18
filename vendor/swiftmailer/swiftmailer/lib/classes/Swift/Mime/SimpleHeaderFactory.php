@@ -29,9 +29,6 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
     /** The charset of created Headers */
     private $charset;
 
-    /** Swift_AddressEncoder */
-    private $addressEncoder;
-
     /**
      * Creates a new SimpleHeaderFactory using $encoder and $paramEncoder.
      *

@@ -306,19 +306,11 @@ class Validator implements ValidatorContract
             throw new ValidationException($this);
         }
 
-        $results = [];
+        $data = collect($this->getData());
 
-        $missingValue = Str::random(10);
-
-        foreach (array_keys($this->getRules()) as $key) {
-            $value = data_get($this->getData(), $key, $missingValue);
-
-            if ($value !== $missingValue) {
-                Arr::set($results, $key, $value);
-            }
-        }
-
-        return $results;
+        return $data->only(collect($this->getRules())->keys()->map(function ($rule) {
+            return explode('.', $rule)[0];
+        })->unique())->toArray();
     }
 
     /**
@@ -332,7 +324,7 @@ class Validator implements ValidatorContract
     {
         $this->currentRule = $rule;
 
-        [$rule, $parameters] = ValidationRuleParser::parse($rule);
+        list($rule, $parameters) = ValidationRuleParser::parse($rule);
 
         if ($rule == '') {
             return;
@@ -547,13 +539,9 @@ class Validator implements ValidatorContract
         if (! $rule->passes($attribute, $value)) {
             $this->failedRules[$attribute][get_class($rule)] = [];
 
-            $messages = (array) $rule->message();
-
-            foreach ($messages as $message) {
-                $this->messages->add($attribute, $this->makeReplacements(
-                    $message, $attribute, get_class($rule), []
-                ));
-            }
+            $this->messages->add($attribute, $this->makeReplacements(
+                $rule->message(), $attribute, get_class($rule), []
+            ));
         }
     }
 
@@ -590,12 +578,8 @@ class Validator implements ValidatorContract
      * @param  array   $parameters
      * @return void
      */
-    public function addFailure($attribute, $rule, $parameters = [])
+    protected function addFailure($attribute, $rule, $parameters)
     {
-        if (! $this->messages) {
-            $this->passes();
-        }
-
         $this->messages->add($attribute, $this->makeReplacements(
             $this->getMessage($attribute, $rule), $attribute, $rule, $parameters
         ));
@@ -719,7 +703,7 @@ class Validator implements ValidatorContract
         $rules = (array) $rules;
 
         foreach ($this->rules[$attribute] as $rule) {
-            [$rule, $parameters] = ValidationRuleParser::parse($rule);
+            list($rule, $parameters) = ValidationRuleParser::parse($rule);
 
             if (in_array($rule, $rules)) {
                 return [$rule, $parameters];
@@ -1137,7 +1121,7 @@ class Validator implements ValidatorContract
      */
     protected function callClassBasedExtension($callback, $parameters)
     {
-        [$class, $method] = Str::parseCallback($callback, 'validate');
+        list($class, $method) = Str::parseCallback($callback, 'validate');
 
         return call_user_func_array([$this->container->make($class), $method], $parameters);
     }

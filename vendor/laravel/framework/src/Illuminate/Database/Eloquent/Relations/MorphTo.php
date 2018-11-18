@@ -236,6 +236,24 @@ class MorphTo extends BelongsTo
     }
 
     /**
+     * Remove all or passed registered global scopes.
+     *
+     * @param  array|null  $scopes
+     * @return $this
+     */
+    public function withoutGlobalScopes(array $scopes = null)
+    {
+        $this->getQuery()->withoutGlobalScopes($scopes);
+
+        $this->macroBuffer[] = [
+            'method' => __FUNCTION__,
+            'parameters' => [$scopes],
+        ];
+
+        return $this;
+    }
+
+    /**
      * Get the foreign key "type" name.
      *
      * @return string
@@ -280,13 +298,7 @@ class MorphTo extends BelongsTo
     public function __call($method, $parameters)
     {
         try {
-            $result = parent::__call($method, $parameters);
-
-            if (in_array($method, ['select', 'selectRaw', 'selectSub', 'addSelect', 'withoutGlobalScopes'])) {
-                $this->macroBuffer[] = compact('method', 'parameters');
-            }
-
-            return $result;
+            return parent::__call($method, $parameters);
         }
 
         // If we tried to call a method that does not exist on the parent Builder instance,

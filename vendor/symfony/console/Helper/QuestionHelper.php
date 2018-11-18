@@ -17,7 +17,6 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -47,23 +46,13 @@ class QuestionHelper extends Helper
         }
 
         if (!$input->isInteractive()) {
-            $default = $question->getDefault();
-
-            if (null !== $default && $question instanceof ChoiceQuestion) {
+            if ($question instanceof ChoiceQuestion) {
                 $choices = $question->getChoices();
 
-                if (!$question->isMultiselect()) {
-                    return isset($choices[$default]) ? $choices[$default] : $default;
-                }
-
-                $default = explode(',', $default);
-                foreach ($default as $k => $v) {
-                    $v = trim($v);
-                    $default[$k] = isset($choices[$v]) ? $choices[$v] : $v;
-                }
+                return $choices[$question->getDefault()];
             }
 
-            return $default;
+            return $question->getDefault();
         }
 
         if ($input instanceof StreamableInputInterface && $stream = $input->getStream()) {
@@ -100,7 +89,7 @@ class QuestionHelper extends Helper
     /**
      * Asks the question to the user.
      *
-     * @return bool|mixed|string|null
+     * @return bool|mixed|null|string
      *
      * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
      */
@@ -132,10 +121,6 @@ class QuestionHelper extends Helper
             }
         } else {
             $ret = trim($this->autocomplete($output, $question, $inputStream, \is_array($autocomplete) ? $autocomplete : iterator_to_array($autocomplete, false)));
-        }
-
-        if ($output instanceof ConsoleSectionOutput) {
-            $output->addContent($ret);
         }
 
         $ret = \strlen($ret) > 0 ? $ret : $question->getDefault();

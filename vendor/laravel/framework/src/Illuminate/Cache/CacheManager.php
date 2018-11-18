@@ -62,7 +62,7 @@ class CacheManager implements FactoryContract
      * Get a cache driver instance.
      *
      * @param  string|null  $driver
-     * @return \Illuminate\Contracts\Cache\Repository
+     * @return mixed
      */
     public function driver($driver = null)
     {
@@ -276,25 +276,6 @@ class CacheManager implements FactoryContract
     public function setDefaultDriver($name)
     {
         $this->app['config']['cache.default'] = $name;
-    }
-
-    /**
-     * Unset the given driver instances.
-     *
-     * @param  array|string|null  $name
-     * @return $this
-     */
-    public function forgetDriver($name = null)
-    {
-        $name = $name ?? $this->getDefaultDriver();
-
-        foreach ((array) $name as $cacheName) {
-            if (isset($this->stores[$cacheName])) {
-                unset($this->stores[$cacheName]);
-            }
-        }
-
-        return $this;
     }
 
     /**
