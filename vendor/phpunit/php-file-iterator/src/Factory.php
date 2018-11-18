@@ -78,6 +78,6 @@ class Factory
             }
         }
 
-        return \array_filter($_paths);
+        return $_paths;
     }
 }

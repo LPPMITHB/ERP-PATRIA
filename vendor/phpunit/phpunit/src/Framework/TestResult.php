@@ -180,11 +180,6 @@ class TestResult implements Countable
     protected $lastTestFailed = false;
 
     /**
-     * @var int
-     */
-    private $defaultTimeLimit = 0;
-
-    /**
      * @var bool
      */
     private $stopOnDefect = false;
@@ -421,7 +416,7 @@ class TestResult implements Countable
                 'size'   => \PHPUnit\Util\Test::getSize(
                     $class,
                     $test->getName(false)
-                ),
+                )
             ];
 
             $this->time += $time;
@@ -644,8 +639,8 @@ class TestResult implements Countable
 
         try {
             if (!$test instanceof WarningTestCase &&
+                $test->getSize() != \PHPUnit\Util\Test::UNKNOWN &&
                 $this->enforceTimeLimit &&
-                ($this->defaultTimeLimit || $test->getSize() != \PHPUnit\Util\Test::UNKNOWN) &&
                 \extension_loaded('pcntl') && \class_exists(Invoker::class)) {
                 switch ($test->getSize()) {
                     case \PHPUnit\Util\Test::SMALL:
@@ -660,11 +655,6 @@ class TestResult implements Countable
 
                     case \PHPUnit\Util\Test::LARGE:
                         $_timeout = $this->timeoutForLargeTests;
-
-                        break;
-
-                    case \PHPUnit\Util\Test::UNKNOWN:
-                        $_timeout = $this->defaultTimeLimit;
 
                         break;
                 }
@@ -1069,14 +1059,6 @@ class TestResult implements Countable
     public function wasSuccessful(): bool
     {
         return empty($this->errors) && empty($this->failures) && empty($this->warnings);
-    }
-
-    /**
-     * Sets the default timeout for tests
-     */
-    public function setDefaultTimeLimit(int $timeout): void
-    {
-        $this->defaultTimeLimit = $timeout;
     }
 
     /**

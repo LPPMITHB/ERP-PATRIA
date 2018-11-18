@@ -150,7 +150,7 @@ class FormRequest extends Request implements ValidatesWhenResolved
             return $this->container->call([$this, 'authorize']);
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -172,7 +172,11 @@ class FormRequest extends Request implements ValidatesWhenResolved
      */
     public function validated()
     {
-        return $this->getValidatorInstance()->validate();
+        $rules = $this->container->call([$this, 'rules']);
+
+        return $this->only(collect($rules)->keys()->map(function ($rule) {
+            return explode('.', $rule)[0];
+        })->unique()->toArray());
     }
 
     /**

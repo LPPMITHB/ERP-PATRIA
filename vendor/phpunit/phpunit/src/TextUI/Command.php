@@ -54,7 +54,7 @@ class Command
         'loader'                  => null,
         'useDefaultConfiguration' => true,
         'loadedExtensions'        => [],
-        'notLoadedExtensions'     => [],
+        'notLoadedExtensions'     => []
     ];
 
     /**
@@ -67,7 +67,6 @@ class Command
      */
     protected $longOptions = [
         'atleast-version='          => null,
-        'prepend='                  => null,
         'bootstrap='                => null,
         'cache-result'              => null,
         'cache-result-file='        => null,
@@ -85,7 +84,6 @@ class Command
         'disallow-test-output'      => null,
         'disallow-resource-usage'   => null,
         'disallow-todo-tests'       => null,
-        'default-time-limit='       => null,
         'enforce-time-limit'        => null,
         'exclude-group='            => null,
         'filter='                   => null,
@@ -141,8 +139,7 @@ class Command
         'testsuite='                => null,
         'verbose'                   => null,
         'version'                   => null,
-        'whitelist='                => null,
-        'dump-xdebug-filter='       => null,
+        'whitelist='                => null
     ];
 
     /**
@@ -693,11 +690,6 @@ class Command
 
                     break;
 
-                case '--default-time-limit':
-                    $this->arguments['defaultTimeLimit'] = (int) $option[1];
-
-                    break;
-
                 case '--enforce-time-limit':
                     $this->arguments['enforceTimeLimit'] = true;
 
@@ -745,11 +737,6 @@ class Command
 
                 case '--reverse-order':
                     $this->handleOrderByOption('reverse');
-
-                    break;
-
-                case '--dump-xdebug-filter':
-                    $this->arguments['xdebugFilterFile'] = $option[1];
 
                     break;
 
@@ -1093,8 +1080,6 @@ Code Coverage Options:
   --coverage-xml <dir>        Generate code coverage report in PHPUnit XML format
   --whitelist <dir>           Whitelist <dir> for code coverage analysis
   --disable-coverage-ignore   Disable annotations for ignoring code coverage
-  --no-coverage               Ignore code coverage configuration
-  --dump-xdebug-filter <file> Generate script to set Xdebug code coverage filter
 
 Logging Options:
 
@@ -1126,7 +1111,6 @@ Test Execution Options:
   --disallow-test-output      Be strict about output during tests
   --disallow-resource-usage   Be strict about resource usage during small tests
   --enforce-time-limit        Enforce time limit based on test size
-  --default-time-limit=<sec>  Timeout in seconds for tests without @small, @medium or @large
   --disallow-todo-tests       Disallow @todo-annotated tests
 
   --process-isolation         Run each test in a separate PHP process
@@ -1164,10 +1148,10 @@ Test Execution Options:
 
 Configuration Options:
 
-  --prepend <file>            A PHP script that is included as early as possible
-  --bootstrap <file>          A PHP script that is included before the tests run
+  --bootstrap <file>          A "bootstrap" PHP file that is run before the tests
   -c|--configuration <file>   Read configuration from XML file
   --no-configuration          Ignore default configuration file (phpunit.xml)
+  --no-coverage               Ignore code coverage configuration
   --no-logging                Ignore logging configuration
   --no-extensions             Do not load PHPUnit extensions
   --include-path <path(s)>    Prepend PHP's include_path with given path(s)

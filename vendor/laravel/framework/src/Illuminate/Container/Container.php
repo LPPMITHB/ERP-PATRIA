@@ -3,12 +3,10 @@
 namespace Illuminate\Container;
 
 use Closure;
-use Exception;
 use ArrayAccess;
 use LogicException;
 use ReflectionClass;
 use ReflectionParameter;
-use Illuminate\Support\Arr;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container as ContainerContract;
 
@@ -136,18 +134,12 @@ class Container implements ArrayAccess, ContainerContract
     /**
      * Define a contextual binding.
      *
-     * @param  array|string  $concrete
+     * @param  string  $concrete
      * @return \Illuminate\Contracts\Container\ContextualBindingBuilder
      */
     public function when($concrete)
     {
-        $aliases = [];
-
-        foreach (Arr::wrap($concrete) as $c) {
-            $aliases[] = $this->getAlias($c);
-        }
-
-        return new ContextualBindingBuilder($this, $aliases);
+        return new ContextualBindingBuilder($this, $this->getAlias($concrete));
     }
 
     /**
@@ -614,15 +606,11 @@ class Container implements ArrayAccess, ContainerContract
      */
     public function get($id)
     {
-        try {
+        if ($this->has($id)) {
             return $this->resolve($id);
-        } catch (Exception $e) {
-            if ($this->has($id)) {
-                throw $e;
-            }
-
-            throw new EntryNotFoundException;
         }
+
+        throw new EntryNotFoundException;
     }
 
     /**

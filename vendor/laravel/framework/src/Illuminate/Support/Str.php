@@ -412,15 +412,15 @@ class Str
      *
      * @param  string  $title
      * @param  string  $separator
-     * @param  string|null  $language
+     * @param  string  $language
      * @return string
      */
     public static function slug($title, $separator = '-', $language = 'en')
     {
-        $title = $language ? static::ascii($title, $language) : $title;
+        $title = static::ascii($title, $language);
 
         // Convert all dashes/underscores into separator
-        $flip = $separator === '-' ? '_' : '-';
+        $flip = $separator == '-' ? '_' : '-';
 
         $title = preg_replace('!['.preg_quote($flip).']+!u', $separator, $title);
 

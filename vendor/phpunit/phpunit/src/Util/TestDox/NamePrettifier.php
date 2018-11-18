@@ -85,7 +85,7 @@ final class NamePrettifier
         }
 
         if ($test->usesDataProvider() && !$annotationWithPlaceholders) {
-            $result .= $test->getDataSetAsString(false);
+            $result .= ' data set "' . $test->dataDescription() . '"';
         }
 
         return $result;
@@ -158,15 +158,11 @@ final class NamePrettifier
     {
         $reflector          = new \ReflectionMethod(\get_class($test), $test->getName(false));
         $providedData       = [];
-        $providedDataValues = \array_values($test->getProvidedData());
+        $providedDataValues = $test->getProvidedData();
         $i                  = 0;
 
         foreach ($reflector->getParameters() as $parameter) {
-            if (!\array_key_exists($i, $providedDataValues) && $parameter->isDefaultValueAvailable()) {
-                $providedDataValues[$i] = $parameter->getDefaultValue();
-            }
-
-            $value = $providedDataValues[$i++] ?? null;
+            $value = $providedDataValues[$i++];
 
             if (\is_object($value)) {
                 $reflector = new \ReflectionObject($value);

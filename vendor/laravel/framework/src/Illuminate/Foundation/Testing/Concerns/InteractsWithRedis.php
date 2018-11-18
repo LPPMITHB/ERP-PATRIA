@@ -4,7 +4,6 @@ namespace Illuminate\Foundation\Testing\Concerns;
 
 use Exception;
 use Illuminate\Redis\RedisManager;
-use Illuminate\Foundation\Application;
 
 trait InteractsWithRedis
 {
@@ -29,7 +28,6 @@ trait InteractsWithRedis
      */
     public function setUpRedis()
     {
-        $app = $this->app ?? new Application;
         $host = getenv('REDIS_HOST') ?: '127.0.0.1';
         $port = getenv('REDIS_PORT') ?: 6379;
 
@@ -40,7 +38,7 @@ trait InteractsWithRedis
         }
 
         foreach ($this->redisDriverProvider() as $driver) {
-            $this->redis[$driver[0]] = new RedisManager($app, $driver[0], [
+            $this->redis[$driver[0]] = new RedisManager($driver[0], [
                 'cluster' => false,
                 'default' => [
                     'host' => $host,

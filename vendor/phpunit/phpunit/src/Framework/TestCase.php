@@ -686,9 +686,11 @@ abstract class TestCase extends Assert implements Test, SelfDescribing
             return $result;
         }
 
-        if ($this->runInSeparateProcess()) {
-            $runEntireClass = $this->runClassInSeparateProcess && !$this->runTestInSeparateProcess;
+        $runEntireClass =  $this->runClassInSeparateProcess && !$this->runTestInSeparateProcess;
 
+        if (($this->runTestInSeparateProcess === true || $this->runClassInSeparateProcess === true) &&
+            $this->inIsolation !== true &&
+            !$this instanceof PhptTestCase) {
             $class = new ReflectionClass($this);
 
             if ($runEntireClass) {
@@ -1718,10 +1720,7 @@ abstract class TestCase extends Assert implements Test, SelfDescribing
                 }
 
                 if (!isset($passedKeys[$dependency])) {
-                    $this->status = BaseTestRunner::STATUS_SKIPPED;
-
                     $this->result->startTest($this);
-
                     $this->result->addError(
                         $this,
                         new SkippedTestError(
@@ -1732,7 +1731,6 @@ abstract class TestCase extends Assert implements Test, SelfDescribing
                         ),
                         0
                     );
-
                     $this->result->endTest($this, 0);
 
                     return false;
@@ -2111,11 +2109,5 @@ abstract class TestCase extends Assert implements Test, SelfDescribing
         }
 
         return $result;
-    }
-
-    private function runInSeparateProcess(): bool
-    {
-        return ($this->runTestInSeparateProcess === true || $this->runClassInSeparateProcess === true) &&
-               $this->inIsolation !== true && !$this instanceof PhptTestCase;
     }
 }

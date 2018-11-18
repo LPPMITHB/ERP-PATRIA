@@ -89,7 +89,7 @@ class PhpStringTokenParser
      * Parses escape sequences in strings (all string types apart from single quoted).
      *
      * @param string      $str   String without quotes
-     * @param string|null $quote Quote type
+     * @param null|string $quote Quote type
      *
      * @return string String with escape sequences parsed
      */

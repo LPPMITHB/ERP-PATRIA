@@ -31,11 +31,10 @@ class AuthenticateWithBasicAuth
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
      * @param  string|null  $guard
-     * @param  string|null  $field
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null, $field = null)
+    public function handle($request, Closure $next, $guard = null)
     {
-        return $this->auth->guard($guard)->basic($field ?: 'email') ?: $next($request);
+        return $this->auth->guard($guard)->basic() ?: $next($request);
     }
 }

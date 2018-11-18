@@ -56,13 +56,11 @@ class TaggedCache extends Repository
     /**
      * Remove all items from the cache.
      *
-     * @return bool
+     * @return void
      */
     public function flush()
     {
         $this->tags->reset();
-
-        return true;
     }
 
     /**

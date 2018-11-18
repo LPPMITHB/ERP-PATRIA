@@ -29,7 +29,7 @@ class Route implements \Serializable
     private $condition = '';
 
     /**
-     * @var CompiledRoute|null
+     * @var null|CompiledRoute
      */
     private $compiled;
 

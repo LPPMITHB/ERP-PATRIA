@@ -10,7 +10,6 @@
 namespace PHPUnit\Util;
 
 use PharIo\Version\VersionConstraintParser;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\CodeCoverageException;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\InvalidCoversTargetException;
@@ -174,7 +173,7 @@ final class Test
             foreach (\range(0, $count - 1) as $i) {
                 $requires[$matches['name'][$i]] = [
                     'version'  => $matches['version'][$i],
-                    'operator' => $matches['operator'][$i],
+                    'operator' => $matches['operator'][$i]
                 ];
             }
         }
@@ -189,7 +188,7 @@ final class Test
                     $versionConstraintParser = new VersionConstraintParser;
 
                     $requires[$matches['name'][$i] . '_constraint'] = [
-                        'constraint' => $versionConstraintParser->parse(\trim($matches['constraint'][$i])),
+                        'constraint' => $versionConstraintParser->parse(\trim($matches['constraint'][$i]))
                     ];
                 } catch (\PharIo\Version\Exception $e) {
                     throw new Warning($e->getMessage(), $e->getCode(), $e);
@@ -221,7 +220,7 @@ final class Test
 
                 $requires['extension_versions'][$matches['value'][$i]] = [
                     'version'  => $matches['version'][$i],
-                    'operator' => $matches['operator'][$i],
+                    'operator' => $matches['operator'][$i]
                 ];
             }
         }
@@ -277,7 +276,7 @@ final class Test
             }
         }
 
-        if (!empty($required['OSFAMILY']) && $required['OSFAMILY'] !== (new OperatingSystem)->getFamily()) {
+        if (!empty($required['OSFAMILY']) && $required['OSFAMILY'] !== (new OperatingSystem())->getFamily()) {
             $missing[] = \sprintf('Operating system %s is required.', $required['OSFAMILY']);
         }
 
@@ -391,7 +390,7 @@ final class Test
             }
 
             return [
-                'class' => $class, 'code' => $code, 'message' => $message, 'message_regex' => $messageRegExp,
+                'class' => $class, 'code' => $code, 'message' => $message, 'message_regex' => $messageRegExp
             ];
         }
 
@@ -509,7 +508,7 @@ final class Test
 
         return [
             'class'  => self::$annotationCache[$className],
-            'method' => $methodName !== null ? self::$annotationCache[$cacheKey] : [],
+            'method' => $methodName !== null ? self::$annotationCache[$cacheKey] : []
         ];
     }
 
@@ -527,7 +526,7 @@ final class Test
             if (\preg_match('#/\*\*?\s*@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?\*/$#m', $line, $matches)) {
                 $annotations[\strtolower($matches['name'])] = [
                     'line'  => $lineNumber,
-                    'value' => $matches['value'],
+                    'value' => $matches['value']
                 ];
             }
 
@@ -566,7 +565,7 @@ final class Test
                 $className,
                 $methodName,
                 'backupStaticAttributes'
-            ),
+            )
         ];
     }
 
@@ -707,14 +706,6 @@ final class Test
                 $class = new ReflectionClass($className);
 
                 foreach ($class->getMethods() as $method) {
-                    if ($method->getDeclaringClass()->getName() === Assert::class) {
-                        continue;
-                    }
-
-                    if ($method->getDeclaringClass()->getName() === TestCase::class) {
-                        continue;
-                    }
-
                     if (self::isBeforeClassMethod($method)) {
                         \array_unshift(
                             self::$hookMethods[$className]['beforeClass'],
@@ -907,7 +898,7 @@ final class Test
             'beforeClass' => ['setUpBeforeClass'],
             'before'      => ['setUp'],
             'after'       => ['tearDown'],
-            'afterClass'  => ['tearDownAfterClass'],
+            'afterClass'  => ['tearDownAfterClass']
         ];
     }
 

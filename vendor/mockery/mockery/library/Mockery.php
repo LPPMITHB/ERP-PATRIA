@@ -26,7 +26,6 @@ use Mockery\Generator\StringManipulationGenerator;
 use Mockery\Loader\EvalLoader;
 use Mockery\Loader\Loader;
 use Mockery\Matcher\MatcherAbstract;
-use Mockery\ClosureWrapper;
 
 class Mockery
 {
@@ -127,10 +126,6 @@ class Mockery
      */
     public static function spy(...$args)
     {
-        if (count($args) && $args[0] instanceof \Closure) {
-            $args[0] = new ClosureWrapper($args[0]);
-        }
-
         return call_user_func_array(array(self::getContainer(), 'mock'), $args)->shouldIgnoreMissing();
     }
 
