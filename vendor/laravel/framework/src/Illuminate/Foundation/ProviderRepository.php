@@ -139,7 +139,6 @@ class ProviderRepository
         // the application so we can compare it on each request to the service
         // and determine if the manifest should be recompiled or is current.
         $manifest = $this->freshManifest($providers);
-
         foreach ($providers as $provider) {
             $instance = $this->createProvider($provider);
 
