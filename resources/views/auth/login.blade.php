@@ -11,7 +11,8 @@
       </div>
   
       <form action="{{ route('login') }}" aria-label="{{ __('Login') }}" method="POST">
-        @csrf
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        {{-- @csrf --}}
         <div class="form-group has-feedback">
           <input type="text" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus  placeholder="Username">
               @if ($errors->has('username'))
