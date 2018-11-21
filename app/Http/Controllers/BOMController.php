@@ -239,7 +239,7 @@ class BOMController extends Controller
      */
     public function show($id)
     {
-        $modelBOM = Bom::where('id',$id)->with('project','bomDetails','user','branch')->first();
+        $modelBOM = Bom::where('id',$id)->with('project','bomDetails','user','branch','Work')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material')->get();
 
         return view('bom.show', compact('modelBOM','modelBOMDetail'));
@@ -372,7 +372,7 @@ class BOMController extends Controller
 
     public function getNewBomAPI($id){
 
-        return response($modelBOM = Bom::where('project_id',$id)->with('work')->get()->jsonSerialize(), Response::HTTP_OK);
+        return response($modelBOM = Bom::where('project_id',$id)->with('Work')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getBomDetailAPI($id){
