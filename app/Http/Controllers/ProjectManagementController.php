@@ -9,7 +9,7 @@ use App\Models\Project;
 use App\Models\Customer;
 use App\Models\Ship;
 use App\Models\Work;
-use App\Models\productionOrder;
+use App\Models\ProductionOrder;
 use App\Models\Activity;
 use App\Models\Structure;
 use App\Models\Category;
