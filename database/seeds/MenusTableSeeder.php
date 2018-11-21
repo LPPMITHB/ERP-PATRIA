@@ -83,7 +83,7 @@ class MenusTableSeeder extends Seeder
         $bom =  Menu::where('name','Bill Of Material')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
-            'name' => 'Create BOM',
+            'name' => 'Manage BOM',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom.indexProject',
             'is_active' => true,

@@ -86,26 +86,46 @@ class BOMController extends Controller
         ]);
     
         foreach($works as $work){
+            $bom_code = "";
             $bom = Bom::where('work_id',$work->id)->first();
-            if($work->work){
-                $wbs->push([
-                    "id" => $work->code , 
-                    "parent" => $work->work->code,
-                    "text" => $work->name. ' - '.$bom->code,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('bom.show',$work->id)],
-                ]);
+            if(count($bom)>0){
+                $bom_code = " - ".$bom->code;
+                if($work->work){
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $work->work->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom.show',$bom->id)],
+                    ]);
+                }else{
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $project->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom.show',$bom->id)],
+                    ]);
+                } 
             }else{
-                $wbs->push([
-                    "id" => $work->code , 
-                    "parent" => $project->code,
-                    "text" => $work->name. ' - '.$bom->code,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('bom.show',$work->id)],
-                ]);
-            }  
+                if($work->work){
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $work->work->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }else{
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $project->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                } 
+            }
+             
         }
-
         return view('bom.indexBom', compact('project','wbs'));
     }
 
@@ -358,5 +378,11 @@ class BOMController extends Controller
     public function getBomDetailAPI($id){
 
         return response($modelBD = BomDetail::where('id',$id)->with('material')->first()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getMaterialsAPI($ids){
+        $ids = json_decode($ids);
+
+        return response(Material::orderBy('name')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 }

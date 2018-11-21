@@ -3,11 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Bill Of Material » Select Project',
-        'subtitle' => '',
+        'title' => 'Manage Bill Of Materials » Select Project',
         'items' => [
             'Dashboard' => route('index'),
-            'Create Bill Of Material' => route('bom.indexProject'),
+            'Select Project' => '',
         ]
     ]
 )

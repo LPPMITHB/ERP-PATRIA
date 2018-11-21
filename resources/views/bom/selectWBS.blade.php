@@ -6,7 +6,7 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Manage Bill Of Materials' => route('bom.indexProject'),
+            'Select Project' => route('bom.indexProject'),
             'Select WBS' => route('bom.indexProject'),
         ]
     ]

@@ -7,7 +7,7 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Manage Bill Of Materials' => route('bom.indexProject'),
+            'Select Project' => route('bom.indexProject'),
             'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
             'View Bill Of Material' => route('bom.show', ['id' => $modelBOM->id]),
         ]
@@ -22,86 +22,100 @@
     <div class="col-sm-12">
         <div class="box ">
             <div class="box-header">
-                <div class="col-sm-10 ">
-                    <div class="col-sm-6 no-padding">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td style="width: 25%" class="p-r-100">Code</td>
-                                    <td style="width: 3%" class="p-r-5">:</td>
-                                    <td><b>{{$modelBOM->code}}</b></td>
-                                </tr>
-                                <tr>
-                                    <td valign="top">Description</td>
-                                    <td valign="top">:</td>
-                                    <td><b>{{$modelBOM->description}}</b></td>
-                                </tr>
-                                <tr>
-                                    <td valign="top">Status</td>
-                                    <td valign="top">:</td>
-                                    @if($modelBOM->work_id != "")
-                                        <td><b>{{ 'ASSIGNED' }}</b></td>
-                                    @else
-                                        <td><b>{{ 'NOT ASSIGNED' }}</b></td>
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td valign="top">Work Name</td>
-                                    <td valign="top">:</td>
-                                    @if($modelBOM->work_id != "")
-                                        <td><b>{{ $modelBOM->work->name }}</b></td>
-                                    @else
-                                        <td><b>{{ '-' }}</b></td>
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-sm-6 no-padding">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td class="p-l-40">Customer</td>
-                                    <td class="p-r-5">:</td>
-                                    <td><b>{{$modelBOM->project->customer->name}}</b></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-l-40">Project Code</td>
-                                    <td class="p-r-5">:</td>
-                                    <td><b>{{$modelBOM->project->code}}</b></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td class="p-l-40 p-r-40">Project Name</td>
-                                    <td>:</td>
-                                    <td><b>{{$modelBOM->project->name}}</b></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-l-40">Ship Name</td>
-                                    <td>:</td>
-                                    <td><b>{{$modelBOM->project->ship->name}}</b></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-l-40">Ship Type</td>
-                                    <td>:</td>
-                                    <td><b>{{$modelBOM->project->ship->type}}</b></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="col-sm-4">
+                    <table>
+                        <thead>
+                            <th colspan="2">Project Information</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-r-40">Project Code</td>
+                                <td class="p-r-5">:</td>
+                                <td><b>{{$modelBOM->project->code}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Project Name</td>
+                                <td>:</td>
+                                <td><b>{{$modelBOM->project->name}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Ship Name</td>
+                                <td>:</td>
+                                <td><b>{{$modelBOM->project->ship->name}}</b></td>
+
+                                
+                            </tr>
+                            <tr>
+                                <td>Ship Type</td>
+                                <td>:</td>
+                                <td><b>{{$modelBOM->project->ship->type}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Customer</td>
+                                <td>:</td>
+                                <td><b>{{$modelBOM->project->customer->name}}</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-sm-2 pull-right no-padding">
-                    {{-- @can('destroy-bom')
-                        <a class="btn btn-sm btn-danger pull-right m-t-5" class="m-r-30" href="#" onclick="deletebom()">DELETE</i></a>
-                    @endcan
-    
-                    <form id="delete-form-{{ $modelBOM->id }}" action="{{ route('bom.destroy', ['id' => $modelBOM->id]) }}" method="POST" style="display: none;">
-                        <input type="hidden" name="_method" value="DELETE">
-                        @csrf
-                    </form> --}}
-                
+                <div class="col-sm-4">
+                    <table>
+                        <thead>
+                            <th colspan="2">WBS Information</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Code</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$modelBOM->work->code}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$modelBOM->work->name}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$modelBOM->work->description}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Deliverable</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$modelBOM->work->deliverables}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Progress</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$modelBOM->work->progress}}%</b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-3">
+                    <table>
+                        <thead>
+                            <th colspan="2">BOM Information</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Code</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$modelBOM->code}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$modelBOM->description}}</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                       
+                </div>
+                <div class="col-sm-1">
                     @can('edit-bom')
-                        <a class="btn btn-sm btn-primary pull-right m-t-5" href="{{ route('bom.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
+                        <a class="btn btn-sm btn-primary pull-right" href="{{ route('bom.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
                     @endcan
                 </div>
             </div>

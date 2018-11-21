@@ -26,6 +26,8 @@ Route::get('/getMaterialBOM/{id}', 'BOMController@getMaterialAPI')->name('api.bo
 Route::get('/getBom/{id}', 'BOMController@getBomAPI')->name('api.bom.getBomAPI');
 Route::get('/getNewBom/{id}', 'BOMController@getNewBomAPI')->name('api.bom.getNewBomAPI');
 Route::get('/getBomDetail/{id}', 'BOMController@getBomDetailAPI')->name('api.bom.getBomDetailAPI');
+Route::get('/getMaterialsBOM/{id}', 'BOMController@getMaterialsAPI')->name('api.bom.getMaterialsAPI');
+
 
 // rab
 Route::get('/getNewCost/{id}', 'RABController@getNewCostAPI')->name('api.bom.getNewCostAPI');

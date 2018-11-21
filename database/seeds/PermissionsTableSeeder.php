@@ -65,7 +65,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //BOM
-        $manageBOM = Menu::where('name','Create BOM')->select('id')->first()->id;
+        $manageBOM = Menu::where('name','Manage BOM')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Index Bom',
             'menu_id' => $manageBOM,
@@ -75,7 +75,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Create Bom',
+            'name' => 'Manage Bom',
             'menu_id' => $manageBOM,
             'middleware' => 'create-bom',
             'created_at' => date('Y-m-d'),

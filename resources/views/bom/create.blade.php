@@ -2,12 +2,13 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Bill Of Material',
+        'title' => 'Manage Bill Of Material',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Manage Bill Of Materials' => route('bom.indexProject'),
-            'Create Bill Of Material' => route('bom.create', ['id' => $project->id]),
+            'Select Project' => route('bom.indexProject'),
+            'Select WBS' => route('bom.selectWBS',$project->id),
+            'Manage Bill Of Material' => '',
         ]
     ]
 )
@@ -121,10 +122,13 @@
                                         <td>{{ material.material_name }}</td>
                                         <td>{{ material.description }}</td>
                                         <td>{{ material.quantity }}</td>
-                                        <td class="p-l-0" align="center"><a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                            <div class="btn-group">
-                                                DELETE
-                                            </div></a>
+                                        <td class="p-l-0" align="center">
+                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                                EDIT
+                                            </a>
+                                            <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                <div class="btn-group">DELETE</div>
+                                            </a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -147,6 +151,35 @@
                         </div>
                         <div class="col-md-12">
                             <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                        </div>
+                        <div class="modal fade" id="edit_item">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Edit Material</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Material</label>
+                                                <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     @endverbatim
@@ -178,20 +211,32 @@
         newIndex : 0, 
         submittedForm :{
             project_id : "",
-            bom_code : "",
+            work_id : "",
             description : ""
         },
         input : {
             material_id : "",
             material_name : "",
+            material_code : "",
             description : "",
             quantity : "",
             quantityInt : 0
+        },
+        editInput : {
+            old_material_id : "",
+            material_id : "",
+            material_code : "",
+            material_name : "",
+            quantity : "",
+            quantityInt : 0,
         },
         materialTable : [],
         materialSettings: {
             placeholder: 'Please Select Material'
         },
+        material_id:[],
+        material_id_modal:[],
+        materials_modal :[],
     }
 
     var vm = new Vue({
@@ -212,16 +257,79 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.submittedForm.project_id == "" || this.submittedForm.bom_code == "" || this.materialTable.length < 1){
+                if(this.submittedForm.project_id == "" || this.materialTable.length < 1){
                     isOk = true;
                 }
                 return isOk;
             },
+            updateOk: function(){
+                let isOk = false;
+
+                var string_newValue = this.editInput.quantityInt+"";
+                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+
+                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
+                    isOk = true;
+                }
+
+                return isOk;
+            }
         },
         methods: {
+            getNewMaterials(jsonMaterialId){
+                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
+                    this.materials = data;
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            },
+            getNewModalMaterials(jsonMaterialId){
+                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
+                    this.materials_modal = data;
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            },
+            openEditModal(data,index){
+                this.editInput.material_id = data.material_id;
+                this.editInput.old_material_id = data.material_id;
+                this.editInput.material_code = data.material_code;
+                this.editInput.material_name = data.material_name;
+                this.editInput.quantity = data.quantity;
+                this.editInput.quantityInt = data.quantityInt;
+                this.editInput.work_id = data.work_id;
+                this.editInput.work_name = data.work_name;
+                this.editInput.index = index;
+
+                var material_id = JSON.stringify(this.material_id);
+                material_id = JSON.parse(material_id);
+                
+                this.material_id_modal = material_id;
+                this.material_id_modal.forEach(id => {
+                    if(id == data.material_id){
+                        var index = this.material_id_modal.indexOf(id);
+                        this.material_id_modal.splice(index, 1);
+                    }
+                });
+                var jsonMaterialId = JSON.stringify(this.material_id_modal);
+                this.getNewModalMaterials(jsonMaterialId);
+            },
             submitForm(){
                 this.submittedForm.materials = this.materialTable;
-                this.submittedForm.work_id = this.work.id;          
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -235,19 +343,69 @@
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
                     this.materialTable.push(data);
-                    this.newIndex = this.materialTable.length + 1;
+
+                    this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+
+                    var jsonMaterialId = JSON.stringify(this.material_id);
+                    this.getNewMaterials(jsonMaterialId);             
+
+                    this.newIndex = this.materialTable.length + 1;  
 
                     this.input.description = "";
                     this.input.material_id = "";
                     this.input.material_name = "";
                     this.input.quantity = "";
                     this.input.quantityInt = 0;
+
+
                 }
             },
             removeRow: function(index) {
                 this.materialTable.splice(index, 1);
                 this.newIndex = this.materialTable.length + 1;
-            }
+
+                this.material_id.splice(index, 1);
+
+                var jsonMaterialId = JSON.stringify(this.material_id);
+                this.getNewMaterials(jsonMaterialId);
+            },
+            update(old_material_id, new_material_id){
+                this.materialTable.forEach(material => {
+                    if(material.material_id == old_material_id){
+                        var material = this.materialTable[this.editInput.index];
+                        material.quantityInt = this.editInput.quantityInt;
+                        material.quantity = this.editInput.quantity;
+                        material.material_id = new_material_id;
+                        material.work_id = this.editInput.work_id;
+
+                        window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
+                            material.material_name = data.name;
+                            material.material_code = data.code;
+
+                            this.material_id.forEach(id => {
+                                if(id == old_material_id){
+                                    var index = this.material_id.indexOf(id);
+                                    this.material_id.splice(index, 1);
+                                }
+                            });
+                            this.material_id.push(new_material_id);
+
+                            var jsonMaterialId = JSON.stringify(this.material_id);
+                            this.getNewMaterials(jsonMaterialId);
+
+                            $('div.overlay').hide();
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
+                    }
+                });
+            },
         },
         watch: {
             'input.material_id': function(newValue){
@@ -260,6 +418,7 @@
 
                         }
                         this.input.material_name = data.name;
+                        this.input.material_code = data.code;
                     });
                 }
             },
@@ -270,6 +429,7 @@
         },
         created: function() {
             this.submittedForm.project_id = this.project.id;
+            this.submittedForm.work_id = this.work.id;          
 
             this.newIndex = this.materialTable.length + 1;
         }

@@ -43,6 +43,9 @@
             'core' : {
                 'data' : data
             }
+        }).bind("loaded.jstree", function (event, data) {
+            // you get two params - event & data - check the core docs for a detailed description
+            $(this).jstree("open_all");
         });
 
         $('div.overlay').hide();
