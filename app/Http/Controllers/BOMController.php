@@ -88,7 +88,7 @@ class BOMController extends Controller
         foreach($works as $work){
             $bom_code = "";
             $bom = Bom::where('work_id',$work->id)->first();
-            if(count($bom)>0){
+            if($bom){
                 $bom_code = " - ".$bom->code;
                 if($work->work){
                     $wbs->push([
