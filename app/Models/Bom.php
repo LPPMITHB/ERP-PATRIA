@@ -30,7 +30,7 @@ class Bom extends Model
 
     public function work()
     {
-        return $this->belongsTo('App\Models\work');
+        return $this->belongsTo('App\Models\Work');
     }
 
     public function RabDetails()

@@ -239,7 +239,7 @@ class BOMController extends Controller
      */
     public function show($id)
     {
-        $modelBOM = Bom::where('id',$id)->with('project','bomDetails','user','branch','Work')->first();
+        $modelBOM = Bom::where('id',$id)->with('project','bomDetails','user','branch')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material')->get();
 
         return view('bom.show', compact('modelBOM','modelBOMDetail'));
