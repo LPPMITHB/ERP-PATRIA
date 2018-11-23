@@ -44,9 +44,9 @@
                         @verbatim
                         <div id="project">
                             <div class="form-group">
-                                <label for="code" class="col-sm-2 control-label">Project Code</label>
+                                <label for="number" class="col-sm-2 control-label">Project Number</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="code" name="code" required autofocus v-model="project.code">
+                                    <input type="text" class="form-control" id="number" name="number" required autofocus v-model="project.number">
                                 </div>
                             </div>
 
@@ -70,7 +70,7 @@
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Owner Representative</label>
                                 <div class="col-sm-10">
-                                    <input type="text" disabled class="form-control" id="name" name="name" required v-model="ownerRep">
+                                    <input type="text" disabled class="form-control" id="name" name="name"  v-model="ownerRep">
                                 </div>
                             </div>
 
@@ -78,7 +78,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Flag</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="flag" name="flag" required>
+                                    <input type="text" class="form-control" id="flag" name="flag" >
                                 </div>
                             </div>
 
@@ -86,7 +86,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Name</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_name" name="class_name" required>
+                                    <input type="text" class="form-control" id="class_name" name="class_name" >
                                 </div>
                             </div>
 
@@ -94,7 +94,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Name</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_name" name="class_contact_person_name" required>
+                                    <input type="text" class="form-control" id="class_contact_person_name" name="class_contact_person_name" >
                                 </div>
                             </div>
 
@@ -102,7 +102,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_phone" name="class_contact_person_phone" required>
+                                    <input type="text" class="form-control" id="class_contact_person_phone" name="class_contact_person_phone" >
                                 </div>
                             </div>
 
@@ -110,7 +110,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person E-Mail</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_email" name="class_contact_person_email" required>
+                                    <input type="text" class="form-control" id="class_contact_person_email" name="class_contact_person_email" >
                                 </div>
                             </div>
 
@@ -195,7 +195,7 @@ $(document).ready(function(){
         ships : @json($ships),
         ownerRep : "",
         project : {
-            code : @json($project->code == null ? $project_code: $project->code),
+            number : "",
             name : @json($project->name == null ? "": $project->name),   
         },
         customer: "",

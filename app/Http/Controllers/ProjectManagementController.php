@@ -117,11 +117,11 @@ class ProjectManagementController extends Controller
     {
         $customers = Customer::all();
         $ships = Ship::all();
-        $project_code = self::generateProjectCode();
+        // $project_code = self::generateProjectCode();
         $project = new Project;
 
 
-        return view('project_management.create', compact('customers','ships','project_code','project'));
+        return view('project_management.create', compact('customers','ships','project'));
     }
 
     public function createWBS($id)
@@ -454,7 +454,7 @@ class ProjectManagementController extends Controller
                         "parent" => $work->work->code,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["style" => "background-color:#0b710b; font-weight:bold; color:white;"],
+                        "a_attr" =>  ["style" => "background-color:#0b710b; font-weight:bold; color:white;"], 
                     ]);
                 }elseif($today>$work->planned_deadline && $work->progress != 100){
                     $outstanding_item->push([
@@ -523,8 +523,8 @@ class ProjectManagementController extends Controller
         $links->jsonSerialize();
         $data->jsonSerialize();
 
-        $modelWO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project_management.show', compact('project','today','data','links','outstanding_item','modelWO'));
+        $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
+        return view('project_management.show', compact('project','today','data','links','outstanding_item','modelPrO'));
     }
 
     public function showActivity($id)

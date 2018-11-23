@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Show Project',
+        'title' => 'Show Project » '.$project->ship->name,
         'items' => [
             'Dashboard' => route('index'),
             'View All Projects' => route('project.index'),
@@ -235,20 +235,21 @@
     <div class="col-sm-12" style="margin-top: -5px;">
         <div class="box box-solid">
             <div class="box-header with-border"><h4><b>Actual Cost Vs. Planned Cost</b></h4></div>
-        <!-- /.box-header -->
-        <div class="box-body" style="">
-            <div class="row">
-            <div class="col-md-12">
-                <div class="chart">
-                <!-- Sales Chart Canvas -->
-                <canvas id="salesChart" width="703" height="200"></canvas>
+                <div class="box-body" style="">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="chart">
+                                <canvas id="salesChart" width="703" height="350"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart">
+                                <canvas id="salesChart2" width="703" height="350"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- /.chart-responsive -->
-            </div>
-            <!-- /.col -->
-            </div>
-            <!-- /.row -->
-        </div>
+
         <!-- ./box-body -->
         {{-- <div class="box-footer" style="">
             <div class="row">
@@ -292,13 +293,11 @@
         </div> --}}
         <!-- /.box-footer -->
         </div>
-        <!-- /.box -->
     </div>
-    <!-- /.col -->
 </div>
 
 <div class="row">
-    <div class="col-sm-12" style="margin-top: -5px;">
+    <div class="col-sm-6" style="margin-top: -5px;">
         <div class="box box-solid">
             <div class="box-header with-border"><h4><b>Outstanding Item Report</b></h4></div>
             <div class="box-body">
@@ -308,12 +307,9 @@
             </div>
         </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-12" style="margin-top: -5px;">
+    <div class="col-sm-6" style="margin-top: -5px;">
         <div class="box box-solid">
-            <div class="box-header with-border p-b-0"><h4><b>Completed WO Report</b></h4></div>
+            <div class="box-header with-border p-b-0"><h4><b>Completed Production Order Report</b></h4></div>
             <div class="box-body p-t-0">
                 <table class="table table-bordered showTable" id="wo-table">
                     <thead>
@@ -325,12 +321,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($modelWO as $WO)
+                        @foreach ($modelPrO as $PrO)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $WO->number }}</td>
-                            <td>{{ $WO->created_at }}</td>
-                            @if($WO->status == 1)
+                            <td>{{ $PrO->number }}</td>
+                            <td>{{ $PrO->created_at }}</td>
+                            @if($PrO->status == 1)
                                 <td>{{ 'UNRELEASED' }} </td>
                             @else()
                                 <td>{{ 'COMPLETED' }} </td>
@@ -343,6 +339,8 @@
         </div>
     </div>
 </div>
+
+
 
 @verbatim
 <div id="confirm_activity">
@@ -472,6 +470,8 @@
     });
 
     var salesChartCanvas = $('#salesChart').get(0).getContext('2d');
+    var salesChartCanvas2 = $('#salesChart2').get(0).getContext('2d');
+
     var salesChart       = new Chart(salesChartCanvas, {
         type: 'line',
         data: {
@@ -488,6 +488,12 @@
                 fill: true,
                 backgroundColor: "rgba(242, 38, 2, 0.7)",
                 data: [499, 2980, 5667, 23455, 25678, 32000]
+            },
+            {
+                label: "Actual Cost",
+                fill: true,
+                backgroundColor: "rgba(0, 0, 255, 0.7)",
+                data: [1000, 2980, 5667, 10455, 20678, 45000]
             }]
         },
         options: {
@@ -508,6 +514,50 @@
             } 
         }
     });
+
+        var salesChart2      = new Chart(salesChartCanvas2, {
+        type: 'line',
+        data: {
+            labels: ["January", "February", "March", "April", "May", "June"],
+            datasets: [
+            {
+                label: "Planned Cost", 
+                fill: true, 
+                backgroundColor: "rgba(247, 247, 32, 0.7)", // <-- supposed to be light blue
+                data: [567, 1232, 8987, 18722, 19882, 34000]
+            },
+            {
+                label: "Actual Cost",
+                fill: true,
+                backgroundColor: "rgba(242, 38, 2, 0.7)",
+                data: [499, 2980, 5667, 23455, 25678, 32000]
+            },
+            {
+                label: "Actual Cost",
+                fill: true,
+                backgroundColor: "rgba(0, 0, 255, 0.7)",
+                data: [1000, 2980, 5667, 10455, 20678, 45000]
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                gridLines: {
+                    display:false
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                    display:false
+                    },
+                    ticks: {
+                    beginAtZero:true
+                    }
+                }]
+            } 
+        }
+    });
+
     $(document).ready(function(){
         var outstanding_item = @json($outstanding_item);
         $('#treeview').jstree({

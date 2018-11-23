@@ -20,8 +20,63 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-30',
-            // 'actual_deadline' => '',
             'progress' => 0,
+            'user_id' => 5,
+            'branch_id' => 1,
+        ]);
+
+        DB::table('pro_project_work')->insert([
+            'code' => 'PRW0016',
+            'name' => 'PRW 001 006',
+            'description' => '',
+            'deliverables' => 'Level 2',
+            'project_id' => 1,
+            'status' => 1,
+            'planned_deadline' => '2018-9-30',
+            'progress' => 0,
+            'work_id' => 1,
+            'user_id' => 5,
+            'branch_id' => 1,
+        ]);
+
+        DB::table('pro_project_work')->insert([
+            'code' => 'PRW0017',
+            'name' => 'PRW 001 007',
+            'description' => '',
+            'deliverables' => 'Level 3',
+            'project_id' => 1,
+            'status' => 1,
+            'planned_deadline' => '2018-9-30',
+            'progress' => 0,
+            'work_id' => 2,
+            'user_id' => 5,
+            'branch_id' => 1,
+        ]);
+
+        DB::table('pro_project_work')->insert([
+            'code' => 'PRW0018',
+            'name' => 'PRW 001 008',
+            'description' => '',
+            'deliverables' => 'Level 4',
+            'project_id' => 1,
+            'status' => 1,
+            'planned_deadline' => '2018-9-30',
+            'progress' => 0,
+            'work_id' => 3,
+            'user_id' => 5,
+            'branch_id' => 1,
+        ]);
+
+        DB::table('pro_project_work')->insert([
+            'code' => 'PRW0019',
+            'name' => 'PRW 001 009',
+            'description' => '',
+            'deliverables' => 'Level 5',
+            'project_id' => 1,
+            'status' => 1,
+            'planned_deadline' => '2018-9-30',
+            'progress' => 0,
+            'work_id' => 4,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -34,7 +89,6 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-10',
-            // 'actual_deadline' => '',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
@@ -48,7 +102,6 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-11-15',
-            // 'actual_deadline' => '',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
@@ -62,7 +115,6 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-12-22',
-            // 'actual_deadline' => '',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
@@ -76,7 +128,6 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 2,
             'status' => 1,
             'planned_deadline' => '2019-5-11',
-            // 'actual_deadline' => '',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
@@ -229,7 +280,7 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_project_work')->insert([
-            'code' => 'PRW00016',
+            'code' => 'PRW00023',
             'name' => 'PRW 304 016',
             'description' => 'PRW 304 016',
             'deliverables' => 'Level 4', 
@@ -244,7 +295,7 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_project_work')->insert([
-            'code' => 'PRW00017',
+            'code' => 'PRW00024',
             'name' => 'PRW 304 017',
             'description' => 'PRW 304 017',
             'deliverables' => 'Level 4', 
@@ -259,7 +310,7 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_project_work')->insert([
-            'code' => 'PRW00018',
+            'code' => 'PRW00025',
             'name' => 'PRW 304 018',
             'description' => 'PRW 304 018',
             'deliverables' => 'Level 4', 
@@ -274,7 +325,7 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_project_work')->insert([
-            'code' => 'PRW00019',
+            'code' => 'PRW00026',
             'name' => 'PRW 305 019',
             'description' => 'PRW 305 019',
             'deliverables' => 'Level 5', 
