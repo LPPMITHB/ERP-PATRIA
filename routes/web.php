@@ -133,149 +133,149 @@ Route::name('customer.')->prefix('customer')->group(function() {
 
 //Branch Routes
 Route::name('branch.')->prefix('branch')->group(function() {
-    Route::get('/create', 'branchController@create')->name('create')->middleware('can:create-branch');
+    Route::get('/create', 'BranchController@create')->name('create')->middleware('can:create-branch');
 
-    Route::get('/', 'branchController@index')->name('index')->middleware('can:index-branch');
+    Route::get('/', 'BranchController@index')->name('index')->middleware('can:index-branch');
 
-    Route::get('/{id}', 'branchController@show')->name('show')->middleware('can:show-branch');
+    Route::get('/{id}', 'BranchController@show')->name('show')->middleware('can:show-branch');
 
-    Route::get('/{id}/edit', 'branchController@edit')->name('edit')->middleware('can:edit-branch');
+    Route::get('/{id}/edit', 'BranchController@edit')->name('edit')->middleware('can:edit-branch');
 
-    Route::patch('/{id}', 'branchController@update')->name('update')->middleware('can:edit-branch');
+    Route::patch('/{id}', 'BranchController@update')->name('update')->middleware('can:edit-branch');
 
-    Route::post('/', 'branchController@store')->name('store')->middleware('can:create-branch');
+    Route::post('/', 'BranchController@store')->name('store')->middleware('can:create-branch');
 
-    Route::delete('/{id}', 'branchController@destroy')->name('destroy')->middleware('can:destroy-branch');
+    Route::delete('/{id}', 'BranchController@destroy')->name('destroy')->middleware('can:destroy-branch');
 });
 
 //Material Routes
 Route::name('material.')->prefix('material')->group(function() {
-    Route::get('/create', 'materialController@create')->name('create')->middleware('can:create-material');
+    Route::get('/create', 'MaterialController@create')->name('create')->middleware('can:create-material');
 
-    Route::get('/', 'materialController@index')->name('index')->middleware('can:index-material');
+    Route::get('/', 'MaterialController@index')->name('index')->middleware('can:index-material');
 
-    Route::get('/{id}', 'materialController@show')->name('show')->middleware('can:show-material');
+    Route::get('/{id}', 'MaterialController@show')->name('show')->middleware('can:show-material');
 
-    Route::get('/{id}/edit', 'materialController@edit')->name('edit')->middleware('can:edit-material');
+    Route::get('/{id}/edit', 'MaterialController@edit')->name('edit')->middleware('can:edit-material');
 
-    Route::patch('/{id}', 'materialController@update')->name('update')->middleware('can:edit-material');
+    Route::patch('/{id}', 'MaterialController@update')->name('update')->middleware('can:edit-material');
 
-    Route::post('/', 'materialController@store')->name('store')->middleware('can:create-material');
+    Route::post('/', 'MaterialController@store')->name('store')->middleware('can:create-material');
 
-    Route::delete('/{id}', 'materialController@destroy')->name('destroy')->middleware('can:destroy-material');
+    Route::delete('/{id}', 'MaterialController@destroy')->name('destroy')->middleware('can:destroy-material');
 });
 
 //Resource Management Routes
 Route::name('resource.')->prefix('resource')->group(function() {
-    Route::get('/assignResource', 'resourceController@assignResource')->name('assignResource')->middleware('can:index-resource');
+    Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:index-resource');
 
-    Route::get('/create', 'resourceController@create')->name('create')->middleware('can:create-resource');
+    Route::get('/create', 'ResourceController@create')->name('create')->middleware('can:create-resource');
 
-    Route::get('/', 'resourceController@index')->name('index')->middleware('can:index-resource');
+    Route::get('/', 'ResourceController@index')->name('index')->middleware('can:index-resource');
 
-    Route::get('/{id}', 'resourceController@show')->name('show')->middleware('can:show-resource');
+    Route::get('/{id}', 'ResourceController@show')->name('show')->middleware('can:show-resource');
 
-    Route::get('/{id}/edit', 'resourceController@edit')->name('edit')->middleware('can:edit-resource');
+    Route::get('/{id}/edit', 'ResourceController@edit')->name('edit')->middleware('can:edit-resource');
 
-    Route::patch('/{id}', 'resourceController@update')->name('update')->middleware('can:edit-resource');
+    Route::patch('/{id}', 'ResourceController@update')->name('update')->middleware('can:edit-resource');
 
-    Route::post('/', 'resourceController@store')->name('store')->middleware('can:create-resource');
+    Route::post('/', 'ResourceController@store')->name('store')->middleware('can:create-resource');
 
-    Route::delete('/{id}', 'resourceController@destroy')->name('destroy')->middleware('can:destroy-resource');
+    Route::delete('/{id}', 'ResourceController@destroy')->name('destroy')->middleware('can:destroy-resource');
 
-    Route::post('/storeAssignResource', 'resourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
+    Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
 
-    Route::patch('updateAssignResource/{id}', 'resourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
+    Route::patch('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
 
-    Route::patch('/storeResourceDetail/{work_id}', 'resourceController@storeResourceDetail')->name('storeResourceDetail')->middleware('can:create-resource');
+    Route::patch('/storeResourceDetail/{work_id}', 'ResourceController@storeResourceDetail')->name('storeResourceDetail')->middleware('can:create-resource');
     
-    Route::patch('/storeResourceCategory/{work_id}', 'resourceController@storeResourceCategory')->name('storeResourceCategory')->middleware('can:create-resource');
+    Route::patch('/storeResourceCategory/{work_id}', 'ResourceController@storeResourceCategory')->name('storeResourceCategory')->middleware('can:create-resource');
 
 });
 
 //Unit Of Measurement Routes
 Route::name('unit_of_measurement.')->prefix('unit_of_measurement')->group(function() {
-    Route::get('/create', 'unitofmeasurementController@create')->name('create')->middleware('can:create-unit-of-measurement');
+    Route::get('/create', 'UnitOfMeasurementController@create')->name('create')->middleware('can:create-unit-of-measurement');
 
-    Route::get('/', 'unitofmeasurementController@index')->name('index')->middleware('can:index-unit-of-measurement');
+    Route::get('/', 'UnitOfMeasurementController@index')->name('index')->middleware('can:index-unit-of-measurement');
 
-    Route::get('/{id}', 'unitofmeasurementController@show')->name('show')->middleware('can:show-unit-of-measurement');
+    Route::get('/{id}', 'UnitOfMeasurementController@show')->name('show')->middleware('can:show-unit-of-measurement');
 
-    Route::get('/{id}/edit', 'unitofmeasurementController@edit')->name('edit')->middleware('can:edit-unit-of-measurement');
+    Route::get('/{id}/edit', 'UnitOfMeasurementController@edit')->name('edit')->middleware('can:edit-unit-of-measurement');
 
-    Route::patch('/{id}', 'unitofmeasurementController@update')->name('update')->middleware('can:edit-unit-of-measurement');
+    Route::patch('/{id}', 'UnitOfMeasurementController@update')->name('update')->middleware('can:edit-unit-of-measurement');
 
-    Route::post('/', 'unitofmeasurementController@store')->name('store')->middleware('can:create-unit-of-measurement');
+    Route::post('/', 'UnitOfMeasurementController@store')->name('store')->middleware('can:create-unit-of-measurement');
 
-    Route::delete('/{id}', 'unitofmeasurementController@destroy')->name('destroy')->middleware('can:destroy-unit-of-measurement');
+    Route::delete('/{id}', 'UnitOfMeasurementController@destroy')->name('destroy')->middleware('can:destroy-unit-of-measurement');
 });
 
 //Vendor Routes
 Route::name('vendor.')->prefix('vendor')->group(function() {
-    Route::get('/create', 'vendorController@create')->name('create')->middleware('can:create-vendor');
+    Route::get('/create', 'VendorController@create')->name('create')->middleware('can:create-vendor');
 
-    Route::get('/', 'vendorController@index')->name('index')->middleware('can:index-vendor');
+    Route::get('/', 'VendorController@index')->name('index')->middleware('can:index-vendor');
 
-    Route::get('/{id}', 'vendorController@show')->name('show')->middleware('can:show-vendor');
+    Route::get('/{id}', 'VendorController@show')->name('show')->middleware('can:show-vendor');
 
-    Route::get('/{id}/edit', 'vendorController@edit')->name('edit')->middleware('can:edit-vendor');
+    Route::get('/{id}/edit', 'VendorController@edit')->name('edit')->middleware('can:edit-vendor');
 
-    Route::patch('/{id}', 'vendorController@update')->name('update')->middleware('can:edit-vendor');
+    Route::patch('/{id}', 'VendorController@update')->name('update')->middleware('can:edit-vendor');
 
-    Route::post('/', 'vendorController@store')->name('store')->middleware('can:create-vendor');
+    Route::post('/', 'VendorController@store')->name('store')->middleware('can:create-vendor');
 
-    Route::delete('/{id}', 'vendorController@destroy')->name('destroy')->middleware('can:destroy-vendor');
+    Route::delete('/{id}', 'VendorController@destroy')->name('destroy')->middleware('can:destroy-vendor');
 });
 
 //Company Routes
 Route::name('company.')->prefix('company')->group(function() {
-    Route::get('/create', 'companyController@create')->name('create')->middleware('can:create-company');
+    Route::get('/create', 'CompanyController@create')->name('create')->middleware('can:create-company');
 
-    Route::get('/', 'companyController@index')->name('index')->middleware('can:index-company');
+    Route::get('/', 'CompanyController@index')->name('index')->middleware('can:index-company');
 
-    Route::get('/{id}', 'companyController@show')->name('show')->middleware('can:show-company');
+    Route::get('/{id}', 'CompanyController@show')->name('show')->middleware('can:show-company');
 
-    Route::get('/{id}/edit', 'companyController@edit')->name('edit')->middleware('can:edit-company');
+    Route::get('/{id}/edit', 'CompanyController@edit')->name('edit')->middleware('can:edit-company');
 
-    Route::patch('/{id}', 'companyController@update')->name('update')->middleware('can:edit-company');
+    Route::patch('/{id}', 'CompanyController@update')->name('update')->middleware('can:edit-company');
 
-    Route::post('/', 'companyController@store')->name('store')->middleware('can:create-company');
+    Route::post('/', 'CompanyController@store')->name('store')->middleware('can:create-company');
 
-    Route::delete('/{id}', 'companyController@destroy')->name('destroy')->middleware('can:destroy-company');
+    Route::delete('/{id}', 'CompanyController@destroy')->name('destroy')->middleware('can:destroy-company');
 });
 
 //Currencies Routes
 Route::name('currencies.')->prefix('currencies')->group(function() {
-    Route::get('/create', 'currenciesController@create')->name('create');
+    Route::get('/create', 'CurrenciesController@create')->name('create');
 
-    Route::get('/', 'currenciesController@index')->name('index');
+    Route::get('/', 'CurrenciesController@index')->name('index');
 
-    Route::get('/{id}', 'currenciesController@show')->name('show');
+    Route::get('/{id}', 'CurrenciesController@show')->name('show');
 
-    Route::get('/{id}/edit', 'currenciesController@edit')->name('edit');
+    Route::get('/{id}/edit', 'CurrenciesController@edit')->name('edit');
 
-    Route::patch('/{id}', 'currenciesController@update')->name('update');
+    Route::patch('/{id}', 'CurrenciesController@update')->name('update');
 
-    Route::post('/', 'currenciesController@store')->name('store');
+    Route::post('/', 'CurrenciesController@store')->name('store');
 
-    Route::delete('/{id}', 'currenciesController@destroy')->name('destroy');
+    Route::delete('/{id}', 'CurrenciesController@destroy')->name('destroy');
 });
 
 //StorageLocation Routes
 Route::name('storage_location.')->prefix('storage_location')->group(function() {
-    Route::get('/create', 'storageLocationController@create')->name('create')->middleware('can:create-storage-location');
+    Route::get('/create', 'StorageLocationController@create')->name('create')->middleware('can:create-storage-location');
 
-    Route::get('/', 'storageLocationController@index')->name('index')->middleware('can:index-storage-location');
+    Route::get('/', 'StorageLocationController@index')->name('index')->middleware('can:index-storage-location');
 
-    Route::get('/{id}', 'storageLocationController@show')->name('show')->middleware('can:show-storage-location');
+    Route::get('/{id}', 'StorageLocationController@show')->name('show')->middleware('can:show-storage-location');
 
-    Route::get('/{id}/edit', 'storageLocationController@edit')->name('edit')->middleware('can:edit-storage-location');
+    Route::get('/{id}/edit', 'StorageLocationController@edit')->name('edit')->middleware('can:edit-storage-location');
 
-    Route::patch('/{id}', 'storageLocationController@update')->name('update')->middleware('can:edit-storage-location');
+    Route::patch('/{id}', 'StorageLocationController@update')->name('update')->middleware('can:edit-storage-location');
 
-    Route::post('/', 'storageLocationController@store')->name('store')->middleware('can:create-storage-location');
+    Route::post('/', 'StorageLocationController@store')->name('store')->middleware('can:create-storage-location');
 
-    Route::delete('/{id}', 'storageLocationController@destroy')->name('destroy')->middleware('can:destroy-storage-location');
+    Route::delete('/{id}', 'StorageLocationController@destroy')->name('destroy')->middleware('can:destroy-storage-location');
 });
 
 //Warehouse Routes
