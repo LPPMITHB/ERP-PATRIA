@@ -136,6 +136,7 @@
                 $('div.overlay').remove();
             }
         });
+        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     });
 </script>
 @endpush
