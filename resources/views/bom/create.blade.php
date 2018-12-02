@@ -19,7 +19,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-body">
+            <div class="box-body no-padding p-b-10">
                 <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.store') }}">
                 @csrf
                     @verbatim
@@ -126,7 +126,7 @@
                                             <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
-                                            <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                            <a href="#" @click="removeRow(material.material_id)" class="btn btn-danger btn-xs">
                                                 <div class="btn-group">DELETE</div>
                                             </a>
                                         </td>
@@ -150,7 +150,7 @@
                             </table>
                         </div>
                         <div class="col-md-12">
-                            <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                            <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                         </div>
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
@@ -205,6 +205,7 @@
     });
 
     var data = {
+        submit: "ok",
         project : @json($project),
         materials : @json($materials),
         work : @json($work),
@@ -257,7 +258,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.submittedForm.project_id == "" || this.materialTable.length < 1){
+                if(this.materialTable.length < 1 || this.submit == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -329,6 +330,7 @@
                 this.getNewModalMaterials(jsonMaterialId);
             },
             submitForm(){
+                this.submit = "";
                 this.submittedForm.materials = this.materialTable;
 
                 let struturesElem = document.createElement('input');
@@ -356,15 +358,26 @@
                     this.input.material_name = "";
                     this.input.quantity = "";
                     this.input.quantityInt = 0;
-
-
                 }
             },
-            removeRow: function(index) {
-                this.materialTable.splice(index, 1);
-                this.newIndex = this.materialTable.length + 1;
+            removeRow: function(materialId) {
+                var index_materialId = "";
+                var index_materialTable = "";
 
-                this.material_id.splice(index, 1);
+                this.material_id.forEach(id => {
+                    if(id == materialId){
+                        index_materialId = this.material_id.indexOf(id);
+                    }
+                });
+                this.materialTable.forEach(data => {
+                    if(data.material_id == materialId){
+                        index_materialTable = this.materialTable.indexOf(data.material_id);
+                    }
+                });
+
+                this.materialTable.splice(index_materialTable, 1);
+                this.material_id.splice(index_materialId, 1);
+                this.newIndex = this.materialTable.length + 1;
 
                 var jsonMaterialId = JSON.stringify(this.material_id);
                 this.getNewMaterials(jsonMaterialId);

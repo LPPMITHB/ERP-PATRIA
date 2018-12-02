@@ -227,7 +227,7 @@ class PurchaseRequisitionController extends Controller
             return response('ok',Response::HTTP_OK);
         } catch(\Illuminate\Database\QueryException $e){
             DB::rollback();
-            return redirect()->route('bom.edit',$bom->id)->with('status', 'Can\'t Delete The Material Because It Is Still Being Used');
+            return redirect()->route('bom.edit',$bom->id)->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
         }  
     }
 

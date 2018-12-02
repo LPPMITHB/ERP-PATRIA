@@ -65,6 +65,19 @@
             $(function () {
                 @include('components.iziToast');
             });
+
+            // disabled button submit without Vue.js
+            const forms = document.querySelectorAll('form');
+            forms.forEach((form) => {
+                form.addEventListener('submit', (e) => {
+                    let formElement = e.target;
+                    let buttonProcess = formElement.querySelector('button#process');
+                    if(buttonProcess != null) {
+                    buttonProcess.disabled = true;
+                    console.log('Button has been disabled');
+                    }
+                });
+            });
         </script>
         @stack('script')
     </body>
