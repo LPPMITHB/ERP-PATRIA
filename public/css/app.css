@@ -23300,13 +23300,12 @@ textarea {
   height: 70px;
 }
 
-<<<<<<< HEAD
 .no-padding-left {
   padding-left: 0px;
-=======
+}
+
 .dataTables_scroll {
   overflow: auto;
->>>>>>> origin/master
 }
 
 /*
