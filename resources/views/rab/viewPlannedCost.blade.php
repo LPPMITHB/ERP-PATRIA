@@ -17,11 +17,11 @@
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header">
-<div class="row p-l-20">
-    <h4>
-        <b>Project Treeview</b>
-    </h4>
-</div>
+                <div class="row p-l-20">
+                    <h4>
+                        <b>Project Treeview</b>
+                    </h4>
+                </div>
                 <div id="treeview">
                     
                 </div>

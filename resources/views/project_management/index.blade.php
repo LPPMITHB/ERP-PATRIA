@@ -11,6 +11,10 @@
     ]
 )
 @endbreadcrumb
+
+<style>
+
+</style>
 @endsection
 
 @section('content')
@@ -65,16 +69,19 @@
 <script>
     $(document).ready(function(){
         $('#project-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
+            "iDisplayLength": 16,
+			"bPaginate"     : false,
+            'paging'        : true,
+            'lengthChange'  : false,
+            'searching'     : false,
+            'ordering'      : true,
+            'info'          : true,
+            'autoWidth'     : false,
+            'initComplete'  : function(){
                 $('div.overlay').remove();
             }
         });
+        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     });
 </script>
 @endpush

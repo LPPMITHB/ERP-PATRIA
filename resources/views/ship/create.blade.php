@@ -34,18 +34,6 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                {{-- @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif --}}
-
                 @if($ship->id)
                     <form class="form-horizontal" method="POST" action="{{ route('ship.update',['id'=>$ship->id]) }}">
                     <input type="hidden" name="_method" value="PATCH">
@@ -101,9 +89,9 @@
                     <!-- /.box-body -->
                     <div class="box-footer">
                         @if($ship->id)
-                            <button type="submit" class="btn btn-primary pull-right">SAVE</button>
+                            <button id="process" type="submit" class="btn btn-primary pull-right">SAVE</button>
                         @else
-                            <button type="submit" class="btn btn-primary pull-right">CREATE</button>
+                            <button id="process" type="submit" class="btn btn-primary pull-right">CREATE</button>
                         @endif
                     </div>
                     <!-- /.box-footer -->
