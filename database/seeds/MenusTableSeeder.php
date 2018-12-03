@@ -712,7 +712,6 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-database',
             'is_active' => true,
             'roles' => 'ADMIN',
-            'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

@@ -46,7 +46,7 @@
             <ul class="treeview-menu">
                 @foreach($menu->menus as $menu2)
                 @if($menu2->menus->count() > 0)
-                    <li class="treeview {{ $menu2->id == $menuInfo['parent2'] ? 'active' : '' }} " data-toggle="tooltip" title="{{ $menu2->name }}" data-container="body" data-placement="right">
+                    <li class="treeview {{ $menu2->id == $menuInfo['parent2'] ? 'active' : $menu2->id == $menuInfo['parent1'] ? 'active' : ''  }} " data-toggle="tooltip" title="{{ $menu2->name }}" data-container="body" data-placement="right">
                         <a href="#" ><i class="fa {{ $menu2->icon }}"></i>
                             @if(strlen($menu2->name) > 18)
                                 <span>{{ substr($menu2->name, 0, 18) }}...</span>
