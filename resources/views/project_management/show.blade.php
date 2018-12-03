@@ -225,7 +225,9 @@
                 <label><input type="radio" name="scale" value="day" />Day scale</label>
                 <label><input type="radio" name="scale" value="month" checked/>Month scale</label>
                 <label><input type="radio" name="scale" value="year"/>Year scale</label>
-                <div id="ganttChart" style='width:98.3%; height:490px;'></div>
+                <div class="col-sm-12 no-padding-left">
+                    <div id="ganttChart" style='width:100%; height:490px;'></div>
+                </div>
             </div>
         </div>
     </div>

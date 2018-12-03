@@ -23300,6 +23300,10 @@ textarea {
   height: 70px;
 }
 
+.no-padding-left {
+  padding-left: 0px;
+}
+
 .dataTables_scroll {
   overflow: auto;
 }
