@@ -28,9 +28,9 @@ class Material extends Model
         return $this->belongsTo('App\Branch');
     }
     
-    public function RabDetails()
+    public function RapDetails()
     {
-        return $this->hasMany('App\Models\RabDetail');
+        return $this->hasMany('App\Models\RapDetail');
     }
 
     public function Stocks()

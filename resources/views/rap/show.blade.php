@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View RAP » '.$modelRab->project->name,
+        'title' => 'View RAP » '.$modelRap->project->name,
         'items' => [
             'Dashboard' => route('index'),
-            'View RAP' => route('rab.show',$modelRab->id),
+            'View RAP' => route('rap.show',$modelRap->id),
         ]
     ]
 )
@@ -25,7 +25,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">RAP Number</span>
-                            <span class="info-box-number">{{ $modelRab->number }}</span>
+                            <span class="info-box-number">{{ $modelRap->number }}</span>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                             Project Code
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelRab->project->code }} </b>
+                            : <b> {{ $modelRap->project->code }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -43,7 +43,7 @@
                             Project Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelRab->project->name }} </b>
+                            : <b> {{ $modelRap->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -51,7 +51,7 @@
                             Customer Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelRab->project->customer->name }} </b>
+                            : <b> {{ $modelRap->project->customer->name }} </b>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                             Ship Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelRab->project->ship->name }} </b>
+                            : <b> {{ $modelRap->project->ship->name }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -69,7 +69,7 @@
                             Ship Type
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelRab->project->ship->type }} </b>
+                            : <b> {{ $modelRap->project->ship->type }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -77,37 +77,35 @@
                             Total Cost
                         </div>
                         <div class="col-md-8">
-                            : <b>Rp.{{ number_format($modelRab->total_price) }} </b>
+                            : <b>Rp.{{ number_format($modelRap->total_price) }} </b>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable" id="boms-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="20%">BOM Code</th>
-                            <th width="30%">Material Name</th>
-                            <th width="10%">Quantity</th>
-                            <th width="15%">Cost per pcs</th>
-                            <th width="20%">Sub Total Cost</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($modelRab->RabDetails as $rabDetail)
+                    <table class="table table-bordered showTable" id="boms-table">
+                        <thead>
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $rabDetail->bom->code }}</td>
-                                <td>{{ $rabDetail->material->name }}</td>
-                                <td>{{ $rabDetail->quantity }}</td>
-                                <td>Rp.{{ number_format($rabDetail->material->cost_standard_price) }}</td>
-                                <td>Rp.{{ number_format($rabDetail->price) }}</td>
+                                <th width="5%">No</th>
+                                <th width="30%">Material Name</th>
+                                <th width="10%">Quantity</th>
+                                <th width="15%">Cost per pcs</th>
+                                <th width="20%">Sub Total Cost</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> <!-- /.box-body -->
+                        </thead>
+                        <tbody>
+                            @foreach($modelRap->rapDetails as $rapDetail)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $rapDetail->material->name }}</td>
+                                    <td>{{ $rapDetail->quantity }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->material->cost_standard_price) }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>

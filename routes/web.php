@@ -434,50 +434,50 @@ Route::name('project.')->prefix('project')->group(function() {
 });
 
 //RAB Routes
-Route::name('rab.')->prefix('rab')->group(function() {
-    Route::get('/create/{id}', 'RABController@create')->name('create');
+Route::name('rap.')->prefix('rap')->group(function() {
+    Route::get('/create/{id}', 'RAPController@create')->name('create');
     
-    Route::get('/selectProject', 'RABController@selectProject')->name('selectProject')->middleware('can:index-rab');
+    Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:index-rab');
 
-    Route::get('/indexSelectProject', 'RABController@indexSelectProject')->name('indexSelectProject')->middleware('can:index-rab');
+    Route::get('/indexSelectProject', 'RAPController@indexSelectProject')->name('indexSelectProject')->middleware('can:index-rab');
 
-    Route::get('/index/{id}', 'RABController@index')->name('index')->middleware('can:index-rab');
+    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:index-rab');
     
-    Route::get('/selectProjectCost', 'RABController@selectProjectCost')->name('selectProjectCost')->middleware('can:index-rab');
+    Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:index-rab');
 
-    Route::get('/selectProjectAssignCost', 'RABController@selectProjectAssignCost')->name('selectProjectAssignCost')->middleware('can:index-rab');
+    Route::get('/selectProjectAssignCost', 'RAPController@selectProjectAssignCost')->name('selectProjectAssignCost')->middleware('can:index-rab');
 
-    Route::get('/selectProjectViewCost', 'RABController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:index-rab');
+    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:index-rab');
 
-    Route::get('/selectProjectViewRM', 'RABController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:index-rab');
+    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:index-rab');
     
-    Route::get('/selectWBS/{id}', 'RABController@selectWBS')->name('selectWBS')->middleware('can:index-rab');
+    Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:index-rab');
 
-    Route::get('/showMaterialEvaluation/{id}', 'RABController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:index-rab');
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:index-rab');
 
-    Route::get('/createCost/{id}', 'RABController@createCost')->name('createCost');
+    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost');
 
-    Route::get('/assignCost/{id}', 'RABController@assignCost')->name('assignCost');
+    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
 
-    Route::get('/viewPlannedCost/{id}', 'RABController@viewPlannedCost')->name('viewPlannedCost');
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost');
 
-    Route::post('/storeCost', 'RABController@storeCost')->name('storeCost');
+    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
-    Route::patch('/storeAssignCost', 'RABController@storeAssignCost')->name('storeAssignCost');
+    Route::patch('/storeAssignCost', 'RAPController@storeAssignCost')->name('storeAssignCost');
 
-    Route::get('/getCosts/{id}', 'RABController@getCosts')->name('getCosts')->middleware('can:show-rab');
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:show-rab');
 
-    Route::patch('updateCost/{id}', 'RABController@updateCost')->name('updateCost')->middleware('can:edit-rab');    
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:edit-rab');    
     
-    Route::get('/{id}', 'RABController@show')->name('show')->middleware('can:show-rab');
+    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rab');
     
-    Route::get('/{id}/edit', 'RABController@edit')->name('edit')->middleware('can:edit-rab');
+    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rab');
     
-    Route::patch('/{id}', 'RABController@update')->name('update')->middleware('can:edit-rab');
+    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rab');
     
-    Route::post('/', 'RABController@store')->name('store')->middleware('can:create-rab');
+    Route::post('/', 'RAPController@store')->name('store')->middleware('can:create-rab');
     
-    Route::delete('/{id}', 'RABController@destroy')->name('destroy')->middleware('can:destroy-rab');
+    Route::delete('/{id}', 'RAPController@destroy')->name('destroy')->middleware('can:destroy-rab');
     
 });
 

@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rab extends Model
+class Rap extends Model
 {
-    protected $table = 'ref_rab';
+    protected $table = 'trx_rap';
     
-    public function RabDetails()
+    public function rapDetails()
     {
-        return $this->hasMany('App\Models\RabDetail');
+        return $this->hasMany('App\Models\RapDetail');
     }
     
     public function project()

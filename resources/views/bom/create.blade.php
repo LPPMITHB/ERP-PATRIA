@@ -122,7 +122,7 @@
                                         <td>{{ material.material_name }}</td>
                                         <td>{{ material.description }}</td>
                                         <td>{{ material.quantity }}</td>
-                                        <td class="p-l-0" align="center">
+                                        <td class="p-l-5" align="center">
                                             <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
