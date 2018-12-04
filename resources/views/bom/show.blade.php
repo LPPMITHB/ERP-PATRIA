@@ -133,7 +133,6 @@
                 $('div.overlay').hide();
             }
         });
-        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     });
 
     var data = {

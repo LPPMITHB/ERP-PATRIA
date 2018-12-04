@@ -19,108 +19,91 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12">
-        <div class="box box-solid">
-            <div class="box-body">
-                <form class="form-horizontal" method="POST" action="{{ route('bom.update',['id'=>$modelBOM->id]) }}">
-                <input type="hidden" name="_method" value="PATCH">
+        <div class="box">
+            <form class="form-horizontal" method="POST" action="{{ route('bom.update',['id'=>$modelBOM->id]) }}">
+            <input type="hidden" name="_method" value="PATCH">
                 @csrf
+                <div class="box-header p-b-0">
+                    <div class="col-xs-12 col-md-4">
+                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+
+                        <div class="col-xs-4 no-padding">Project Code</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->code}}</b></div>
+                        
+                        <div class="col-xs-4 no-padding">Project Name</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->name}}</b></div>
+
+                        <div class="col-xs-4 no-padding">Ship Name</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->name}}</b></div>
+
+                        <div class="col-xs-4 no-padding">Ship Type</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->type}}</b></div>
+
+                        <div class="col-xs-4 no-padding">Customer</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->customer->name}}</b></div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-4">
+                        <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                    
+                        <div class="col-xs-4 no-padding">Code</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->code}}</b></div>
+                        
+                        <div class="col-xs-4 no-padding">Name</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->name}}</b></div>
+
+                        <div class="col-xs-4 no-padding">Description</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->description}}</b></div>
+
+                        <div class="col-xs-4 no-padding">Deliverable</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->deliverables}}</b></div>
+
+                        <div class="col-xs-4 no-padding">Progress</div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->progress}}%</b></div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-3 p-b-10">
+                        <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
+                
+                        <div class="col-md-5 col-xs-4 no-padding">Code</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->code}}</b></div>
+                        
+                        <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$rap_number}}</b></a></div>
+
+                        @if(isset($modelPR))
+                            <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                            <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$pr_number}}</b></a></div>
+                        @else
+                            <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                            <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
+                        @endif
+                    </div>
+                </div> <!-- /.box-header -->
+                <div class="box-body p-t-5">
                     @verbatim
                     <div id="bom">
-                        <div class="box-header">
-                            <div class="col-sm-4">
-                                <table>
-                                    <thead>
-                                        <th colspan="2">Project Information</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="p-r-40">Project Code</td>
-                                            <td class="p-r-5">:</td>
-                                            <td><b>{{project.code}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Project Name</td>
-                                            <td>:</td>
-                                            <td><b>{{project.name}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ship Name</td>
-                                            <td>:</td>
-                                            <td><b>{{project.ship.name}}</b></td>
-    
-                                            
-                                        </tr>
-                                        <tr>
-                                            <td>Ship Type</td>
-                                            <td>:</td>
-                                            <td><b>{{project.ship.type}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Customer</td>
-                                            <td>:</td>
-                                            <td><b>{{project.customer.name}}</b></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="col-md-3 col-xs-4 no-padding">BOM Description  <b>:</b></div>
+                            <div class="col-md-9 col-xs-8 no-padding">
+                                <textarea class="form-control" v-model="bom.description" style="width:100%"></textarea>  
                             </div>
-                            <div class="col-sm-4">
-                                <table>
-                                    <thead>
-                                        <th colspan="2">WBS Information</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Code</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{work.code}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Name</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{work.name}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Description</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{work.description}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Deliverable</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{work.deliverables}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Progress</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{work.progress}}%</b>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-sm-4">
-                                <td rowspan="2">BOM Description</td>
-                                <td rowspan="2">:</td>
-                                <td rowspan="2">
-                                    <textarea class="form-control" rows="3" v-model="bom.description" style="width:326px"></textarea>  
-                                </td>
-                            </div>
-                        </div> <!-- /.box-header -->
-                        <div class="col-md-12 p-t-20">
-                            <table class="table table-bordered">
+                        </div>
+                        <div class="col-md-12 p-t-0">
+                            <table class="table table-bordered" id="materials-table">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="28%">Material</th>
+                                        <th width="30%">Material</th>
                                         <th width="38%">Description</th>
-                                        <th width="14%">Quantity</th>
-                                        <th width="15%" ></th>
+                                        <th width="7%">Quantity</th>
+                                        <th width="10%" ></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(bomDetail, index) in materialTable">
                                         <td>{{ index + 1 }}</td>
-                                        <td>{{ bomDetail.material.name }}</td>
+                                        <td>{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
                                         <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
                                         <td v-else>{{ '-' }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
@@ -130,17 +113,22 @@
                                                     EDIT
                                                 </div>
                                             </a>
+                                            <a class="btn btn-danger btn-xs" @click="">
+                                                <div class="btn-group">
+                                                    DELETE
+                                                </div>
+                                            </a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>{{newIndex}}</td>
                                         <td  class="no-padding">
                                             <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.name }}</option>
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control" type="text" :value="input.description" disabled></td>
-                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
@@ -161,10 +149,8 @@
                                         <h4 class="modal-title">Edit Material</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <label for="material">Material</label>
-                                        <selectize id="material" v-model="modalData.material_id" :settings="materialSettings">
-                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.name }}</option>
-                                        </selectize>    
+                                        <label for="material">Material Name</label>
+                                        <input id="description" class="form-control" type="text" disabled v-model="modalData.material_name">
 
                                         <label class="p-t-10" for="description">Description</label>
                                         <input id="description" class="form-control" type="text" disabled v-model="modalData.description">
@@ -182,8 +168,8 @@
                         </div>
                     </div>
                     @endverbatim
-                </form>
-            </div>
+                </div>
+            </form>
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
@@ -195,10 +181,22 @@
 
 @push('script')
 <script>
+
     $(document).ready(function(){
         $('div.overlay').hide();
         $('.alert').addClass('animated bounce');
-        
+        $('#materials-table').DataTable({
+            'paging'      : false,
+            'lengthChange': false,
+            'searching'   : true,
+            'ordering'    : false,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
+        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     });
 
     var data = {
@@ -231,7 +229,8 @@
             quantity : "",
             quantityInt : 0,
             material_name : "",
-        }
+        },
+        material_id:[],
     }
 
     var vm = new Vue({
@@ -256,6 +255,20 @@
             },
         },
         methods: {
+            getNewMaterials(jsonMaterialId){
+                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
+                    this.materials = data;
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            },
             updateDesc(newValue){
                 var bom_id = this.bom.id;
                 var data ={
@@ -323,6 +336,15 @@
                     var url = "{{ route('bom.storeBom') }}";
 
                     window.axios.post(url,newMaterial).then((response) => {
+                        iziToast.success({
+                            title: 'Success Add Material',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        this.material_id.push(this.input.material_id);         
+                        var jsonMaterialId = JSON.stringify(this.material_id);
+                        this.getNewMaterials(jsonMaterialId);
+
                         this.input.description = "";
                         this.input.material_id = "";
                         this.input.material_name = "";
@@ -381,12 +403,13 @@
             },
             'modalData.material_id' : function(newValue){
                 if(newValue != ""){
-                    window.axios.get('/api/getMaterial/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         if(data.description == "" || data.description == null){
                             this.modalData.description = '-';
                         }else{
                             this.modalData.description = data.description;
                         }
+                        console.log(data);
                         this.modalData.material_name = data.name;
                     });
                 }
@@ -405,8 +428,11 @@
 
             var data = this.materialTable;
             data.forEach(bomDetail => {
-                bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.material_id.push(bomDetail.material_id);         
             });
+            var jsonMaterialId = JSON.stringify(this.material_id);
+            this.getNewMaterials(jsonMaterialId);
         }
     });
        

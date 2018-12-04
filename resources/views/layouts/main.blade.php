@@ -81,7 +81,7 @@
 
             function myFunction(x) {
                 if (x.matches) { // If media query matches
-                    jQuery('#wbs-table').wrap('<div class="dataTables_scroll" />');
+                    jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
                 } 
             }
 
