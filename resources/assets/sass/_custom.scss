@@ -567,3 +567,49 @@ textarea {
 .dataTables_scroll {
   overflow: auto;
 }
+
+.mobile_device_potrait {
+  margin-left: 1px;
+}
+
+.gantt_chart_mobile_notification{
+  display: none;
+}
+
+@media only screen and (max-device-width: 1024px) {
+  .mobile_device_landscape{
+    margin-left: 15px;
+    margin-top: 5px;
+  }
+  .mobile_button_view{
+    display: none;
+  }
+  .gantt_chart_mobile{
+    display: block;
+  }
+  .gantt_chart_mobile_notification{
+    display: none;
+  }
+  .tableFixed {
+    table-layout: auto !important;
+  }
+}
+
+@media only screen and (max-device-width: 500px) {
+  .mobile_device_potrait{
+    margin-top: 5px;
+  }
+  .gantt_chart_mobile{
+    display: none;
+  }
+  .gantt_chart_mobile_notification{
+    display: block;
+  }
+  .mobile_button_view{
+    display: none;
+  }
+  .tableFixed { 
+    table-layout: auto !important;
+  }
+}
+

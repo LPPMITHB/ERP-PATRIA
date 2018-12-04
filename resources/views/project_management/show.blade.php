@@ -17,27 +17,13 @@
 @section('content')
 <div class="row">
     <div class="box-tools pull-left m-l-15">
-            <a href="{{ route('project.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm">VIEW GANTT CHART</a>
-            <a href="{{ route('project.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm">ADD WBS</a>
-            <a href="{{ route('project.indexWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm">VIEW WBS</a>
-            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm">ADD ACTIVITIES</a>
-            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm">VIEW ACTIVITIES</a>
-            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'mngNet']) }}" class="btn btn-primary btn-sm">MANAGE NETWORK</a>
-            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm">PROJECT COST EVALUATION</a>
-    </div>
-    <div class="box-tools pull-right m-r-15">
-        @can('edit-project')
-            <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-sm">Edit</a>
-        @endcan
-
-        <!-- @can('destroy-project')
-            <button class="btn btn-danger btn-sm" onclick="event.preventDefault();document.getElementById('delete-form-{{ $project->id }}').submit();">Delete</button>
-        @endcan
-
-        <form id="delete-form-{{ $project->id }}" action="{{ route('project.destroy', ['id' => $project->id]) }}" method="POST" style="display: none;">
-            <input type="hidden" name="_method" value="DELETE">
-            @csrf
-        </form> -->
+        <a href="{{ route('project.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
+        <a href="{{ route('project.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
+        <a href="{{ route('project.indexWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW WBS</a>
+        <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
+        <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
+        <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'mngNet']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
+        <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
     </div>
 </div>
 <br>
@@ -45,142 +31,98 @@
     <div class="col-sm-12">
         <div class="box box-solid">
             <div class="box-body">
-                <div class="col-sm-4">
-                    <table class="tableFixed width100">
-                        <tbody>
-                            <tr>
-                                <td style="width: 35%">Project Code</td>
-                                <td style="width: 3%">:</td>
-                                <td style="width: 62%"><b>{{$project->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Project Name</td>
-                                <td>:</td>
-                                <td><b>{{$project->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship Name</td>
-                                <td>:</td>
-                                <td><b>{{$project->ship->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Customer Name</td>
-                                <td class="valignTop">:</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>{{$project->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Description</td>
-                                <td class="valignTop">:</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->description}}"><b>{{$project->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>:</td>
-                                <td><b>{{$project->status = 1 ? "Open" : "Closed" }}</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-md-4 col-xs-6 no-padding">Project Code</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->code}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Project Name</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Ship Name</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->ship->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Customer Name</div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Description</div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->description}}"><b>: {{$project->description}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Status</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status = 1 ? "Open" : "Closed" }}</b></div>
+                    </div>
                 </div>
-                <div class="col-sm-4">
-                    <table class="tableFixed width100">
-                        <tbody>
-                            <tr>
-                                <td style="width: 37%">Planned Start Date</td>
-                                <td style="width: 3%">:</td>
-                                <td style="width: 60%"><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned Duration</td>
-                                <td>:</td>
-                                <td><b>{{$project->planned_duration}} Days</b></td>
-                            </tr>
-                            <tr>
-                                <td>Actual Start Date</td>
-                                <td>:</td>
-                                <td><b>@if($project->actual_start_date != null)@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->actual_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                        @endif
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Actual End Date</td>
-                                <td>:</td>
-                                <td><b>@if($project->actual_end_date != null)@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->actual_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                        @endif
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Actual Duration</td>
-                                <td>:</td>
-                                <td><b>{{$project->actual_duration != null ? $project->actual_duration. " Days" : "" }}</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-3 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned Start Date</div>
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
+                                    $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned End Date</div>
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
+                                    $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned Duration</div>
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->planned_duration}}</b></div>
+
+                        <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Actual Start Date</div>
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
+                                    $date = DateTime::createFromFormat('Y-m-d', $project->actual_start_date);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Actual End Date</div>
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
+                                    $date = DateTime::createFromFormat('Y-m-d', $project->actual_end_date);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Actual Duration</div>
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->actual_duration}}</b></div>                        
+                    </div>
                 </div>
-                <div class="col-sm-4">
-                    <table class="tableFixed width100">
-                        <tbody>
-                            <tr>
-                                <td style="width: 37%">Owner CP</td>
-                                <td style="width: 3%">:</td>
-                                <td style="width: 60%"><b>{{$project->customer->contact_person_name}} - {{$project->customer->contact_person_phone}}</b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Flag</td>
-                                <td>:</td>
-                                <td><b>{{$project->flag}}</b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Class Name</td>
-                                <td>:</td>
-                                <td><b>{{$project->class_name}}</b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Class CP Name</td>
-                                <td>:</td>
-                                <td><b>{{$project->class_contact_person_name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Class CP Phone</td>
-                                <td>:</td>
-                                <td><b>{{$project->class_contact_person_phone}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Class CP Email</td>
-                                <td>:</td>
-                                <td><b>{{$project->class_contact_person_email}}</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-md-4 col-xs-6 no-padding">Owner CP</div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->contact_person_name}} - {{$project->customer->contact_person_phone}}"><b>: {{$project->customer->contact_person_name}} - {{$project->customer->contact_person_phone}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Flag</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->flag}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Class Name</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_name}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Class CP Name</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_name}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Class CP Phone</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_phone}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Class CP Email</div>
+                        <div class="col-md-8 col-xs-6 no-padding"></b>: {{$project->class_contact_person_email}}</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-1 col-md-12 col-xs-12">
+                    @can('edit-project')
+                        <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-sm col-xs-12">EDIT</a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -220,14 +162,17 @@
     <div class="col-sm-12" style="margin-top: -5px;">
         <div class="box box-solid">
             <div class="box-header with-border"><h4><b>Gantt Chartt</b></h4></div>
-            <div class="box-body">
+            <div class="box-body gantt_chart_mobile">
                 <label>View by :</label>
                 <label><input type="radio" name="scale" value="day" />Day scale</label>
                 <label><input type="radio" name="scale" value="month" checked/>Month scale</label>
                 <label><input type="radio" name="scale" value="year"/>Year scale</label>
-                <div class="col-sm-12 no-padding-left">
+                <div class="col-sm-12 col-xs-12 no-padding-left">
                     <div id="ganttChart" style='width:100%; height:490px;'></div>
                 </div>
+            </div>
+            <div class="box-body gantt_chart_mobile_notification">
+                <div class="col-xs-12 textCenter"><b>Please view Gantt Chart in Landscape Mode</b></div>
             </div>
         </div>
     </div>
@@ -303,7 +248,7 @@
         <div class="box box-solid">
             <div class="box-header with-border"><h4><b>Outstanding Item Report</b></h4></div>
             <div class="box-body">
-                <div id="treeview">
+                <div id="treeview" class="tdEllipsis">
                 
                 </div>
             </div>
@@ -470,6 +415,7 @@
             $('div.overlay').hide();
         }
     });
+    jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
     var salesChartCanvas = $('#salesChart').get(0).getContext('2d');
     var salesChartCanvas2 = $('#salesChart2').get(0).getContext('2d');

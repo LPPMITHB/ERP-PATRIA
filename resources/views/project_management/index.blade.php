@@ -27,7 +27,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered table-hover" id="project-table">
+                <table class="table table-bordered table-hover tableFixed" id="project-table">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
@@ -81,7 +81,8 @@
                 $('div.overlay').remove();
             }
         });
-        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+    jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+        
     });
 </script>
 @endpush
