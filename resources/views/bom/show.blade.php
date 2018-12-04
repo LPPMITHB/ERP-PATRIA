@@ -63,11 +63,22 @@
                 <div class="col-xs-12 col-md-3 p-b-10">
                     <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
             
-                    <div class="col-xs-4 no-padding">Code</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->code}}</b></div>
+                    <div class="col-md-5 col-xs-4 no-padding">Code</div>
+                    <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->code}}</b></div>
                     
-                    <div class="col-xs-4 no-padding">Description</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->description}}</b></div>
+                    <div class="col-md-5 col-xs-4 no-padding">Description</div>
+                    <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->description}}</b></div>
+
+                    <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
+                    <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$rap_number}}</b></a></div>
+
+                    @if(isset($modelPR))
+                        <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$pr_number}}</b></a></div>
+                    @else
+                        <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
+                    @endif
                 </div>
                 
                 <div class="col-md-1 col-xs-12">

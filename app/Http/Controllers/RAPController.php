@@ -8,9 +8,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use App\Models\Branch;
 use App\Models\Bom;
-use App\Models\Rab;
+use App\Models\Rap;
 use App\Models\Stock;
-use App\Models\RabDetail;
+use App\Models\RapDetail;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\Project;
@@ -20,7 +20,7 @@ use Auth;
 use App\Http\Controllers\PurchaseRequisitionController;
 use Illuminate\Support\Collection;
 
-class RABController extends Controller
+class RAPController extends Controller
 {
     protected $pr;
 
@@ -33,18 +33,18 @@ class RABController extends Controller
     public function selectProject()
     {
         $projects = Project::where('status',1)->get();
-        $menu = "create_rab";
+        $menu = "create_rap";
 
-        return view('rab.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu'));
     }
 
     // view RAB
     public function indexSelectProject()
     {
         $projects = Project::where('status',1)->get();
-        $menu = "view_rab";
+        $menu = "view_rap";
 
-        return view('rab.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu'));
     }
 
     // create cost
@@ -53,7 +53,7 @@ class RABController extends Controller
         $projects = Project::where('status',1)->get();
         $menu = "create_cost";
 
-        return view('rab.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu'));
     }
 
     // assign cost
@@ -62,7 +62,7 @@ class RABController extends Controller
         $projects = Project::where('status',1)->get();
         $menu = "assign_cost";
 
-        return view('rab.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu'));
     }
 
     // view planned cost
@@ -71,7 +71,7 @@ class RABController extends Controller
         $projects = Project::where('status',1)->get();
         $menu = "view_planned_cost";
 
-        return view('rab.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu'));
     }
 
     // view planned cost
@@ -80,7 +80,7 @@ class RABController extends Controller
         $projects = Project::where('status',1)->get();
         $menu = "view_rm";
 
-        return view('rab.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu'));
     }
 
     public function selectWBS($id)
@@ -103,7 +103,7 @@ class RABController extends Controller
                     "parent" => $work->work->code,
                     "text" => $work->name,
                     "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('rab.showMaterialEvaluation',$work->id)],
+                    "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$work->id)],
                 ]);
             }else{
                 $wbs->push([
@@ -111,12 +111,12 @@ class RABController extends Controller
                     "parent" => $project->code,
                     "text" => $work->name,
                     "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('rab.showMaterialEvaluation',$work->id)],
+                    "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$work->id)],
                 ]);
             }  
         }
 
-        return view('rab.selectWBS', compact('project','wbs'));
+        return view('rap.selectWBS', compact('project','wbs'));
     }
 
 
@@ -125,14 +125,14 @@ class RABController extends Controller
         $work = Work::findOrFail($id);
         $project = $work->project;
 
-        return view('rab.showMaterialEvaluation', compact('project','work'));
+        return view('rap.showMaterialEvaluation', compact('project','work'));
     } 
     
      public function index($id)
     {
-        $rabs = Rab::where('project_id',$id)->get();
+        $raps = Rap::where('project_id',$id)->get();
 
-        return view('rab.index', compact('rabs'));
+        return view('rap.index', compact('raps'));
     }
 
     public function create($id)
@@ -140,14 +140,14 @@ class RABController extends Controller
         $modelBOMs = BOM::where('work_id','!=','null')->where('status',1)->where('project_id',$id)->with('work')->get();
         $project = Project::findOrFail($id);
 
-        return view('rab.create', compact('modelBOMs','project'));
+        return view('rap.create', compact('modelBOMs','project'));
     }
 
     public function createCost($id)
     {
         $project = Project::findOrFail($id);       
 
-        return view('rab.createCost', compact('project'));
+        return view('rap.createCost', compact('project'));
     }
 
     public function assignCost($id)
@@ -155,7 +155,7 @@ class RABController extends Controller
         $project = Project::findOrFail($id);   
         $costs = Cost::where('project_id', $id)->with('work')->get()->jsonSerialize();    
 
-        return view('rab.assignCost', compact('project','costs'));
+        return view('rap.assignCost', compact('project','costs'));
     }
 
     public function viewPlannedCost($id)
@@ -163,11 +163,11 @@ class RABController extends Controller
         $project = Project::findOrFail($id);   
         $works = $project->works;
         $costs = Cost::where('project_id', $id)->get();  
-        $rabs = Rab::where('project_id', $id)->get();  
+        $raps = Rap::where('project_id', $id)->get();  
 
         $totalCost = 0;
-        foreach($rabs as $rab){
-            $totalCost += $rab->total_price;
+        foreach($raps as $rap){
+            $totalCost += $rap->total_price;
         }
         foreach($costs as $cost){
             $totalCost += $cost->cost;
@@ -183,11 +183,11 @@ class RABController extends Controller
         ]);
 
         foreach($works as $work){
-            // $RabCost = 0;
-            // foreach($rabs as $rab){
-            //     foreach($rab->RabDetails as $RD){
+            // $RapCost = 0;
+            // foreach($raps as $rap){
+            //     foreach($rap->RapDetails as $RD){
             //         if($RD->bom->work_id == $work->id){
-            //             $RabCost += $RD->quantity * $RD->price;
+            //             $RapCost += $RD->quantity * $RD->price;
             //         }
             //     }
             // }
@@ -198,7 +198,7 @@ class RABController extends Controller
             //     }
             // }
             $TempWorkCost = 0;
-            $workCost = self::getWorkCost($work,$TempWorkCost,$rabs,$costs);
+            $workCost = self::getWorkCost($work,$TempWorkCost,$raps,$costs);
 
             $totalCost = $workCost;
 
@@ -220,24 +220,24 @@ class RABController extends Controller
             // print_r($data);exit();
         }
 
-        foreach($rabs as $rab){
+        foreach($raps as $rap){
             $works = [];
-            foreach($rab->RabDetails as $RD){
+            foreach($rap->RapDetails as $RD){
                 array_push($works,$RD->bom->work_id);
             }
             $works = array_unique($works);
             foreach($works as $work){
-                $RabCost = 0;
-                foreach($rab->RabDetails as $RD){
+                $RapCost = 0;
+                foreach($rap->RapDetails as $RD){
                     if($RD->bom->work_id == $work){
-                        $RabCost += $RD->price;
+                        $RapCost += $RD->price;
                         $work_code = $RD->bom->work->code;
                     }
                 }
                 $data->push([
-                    "id" => 'WORK'.$work.'COST'.$RabCost.'RAB'.$rab->id , 
+                    "id" => 'WORK'.$work.'COST'.$RapCost.'RAB'.$rap->id , 
                     "parent" => $work_code,
-                    "text" => $rab->number. ' - <b>Rp.'.number_format($RabCost).'</b>' ,
+                    "text" => $rap->number. ' - <b>Rp.'.number_format($RapCost).'</b>' ,
                     "icon" => "fa fa-money"
                 ]);
             }
@@ -260,16 +260,16 @@ class RABController extends Controller
                 ]);
             }
         }
-        return view('rab.viewPlannedCost', compact('project','costs','data'));
+        return view('rap.viewPlannedCost', compact('project','costs','data'));
     }
 
-    public function getWorkCost($work,$workCost,$rabs,$costs){
+    public function getWorkCost($work,$workCost,$raps,$costs){
         if(count($work->works)>0){
-            $RabCost = 0;
-            foreach($rabs as $rab){
-                foreach($rab->RabDetails as $RD){
+            $RapCost = 0;
+            foreach($raps as $rap){
+                foreach($rap->RapDetails as $RD){
                     if($RD->bom->work_id == $work->id){
-                        $RabCost += $RD->price;
+                        $RapCost += $RD->price;
                     }
                 }
             }
@@ -280,16 +280,16 @@ class RABController extends Controller
                     $otherCost += $cost->cost;
                 }
             } 
-            $workCost += $RabCost + $otherCost;
+            $workCost += $RapCost + $otherCost;
             foreach($work->works as $work){
-                return self::getWorkCost($work,$workCost,$rabs,$costs);
+                return self::getWorkCost($work,$workCost,$raps,$costs);
             }
         }else{
-            $RabCost = 0;
-            foreach($rabs as $rab){
-                foreach($rab->RabDetails as $RD){
+            $RapCost = 0;
+            foreach($raps as $rap){
+                foreach($rap->RapDetails as $RD){
                     if($RD->bom->work_id == $work->id){
-                        $RabCost += $RD->price;
+                        $RapCost += $RD->price;
                     }
                 }
             }
@@ -300,7 +300,7 @@ class RABController extends Controller
                     $otherCost += $cost->cost;
                 }
             } 
-            $workCost += $RabCost + $otherCost;
+            $workCost += $RapCost + $otherCost;
             return $workCost;
             exit();
         }
@@ -344,14 +344,14 @@ class RABController extends Controller
                 $modelCost->work_id = $data['work_id'];
             }
             if(!$modelCost->save()){
-                return redirect()->route('rab.assignCost')->with('error','Failed to save, please try again !');
+                return redirect()->route('rap.assignCost')->with('error','Failed to save, please try again !');
             }else{
                 DB::commit();
                 return response(json_encode($modelCost),Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('rab.assignCost')->with('error', $e->getMessage());
+            return redirect()->route('rap.assignCost')->with('error', $e->getMessage());
         }
     }
 
@@ -381,48 +381,48 @@ class RABController extends Controller
     public function store(Request $request)
     {
         $datas = json_decode($request->datas);
-        $rab_number = self::generateRabNumber();
+        $rap_number = self::generateRapNumber();
 
         DB::beginTransaction();
         try {
-            $rab = new Rab;
-            $rab->number = $rab_number;
-            $rab->project_id = $datas->project->id;
-            $rab->user_id = Auth::user()->id;
-            $rab->branch_id = Auth::user()->branch->id;
-            $rab->save();
+            $rap = new Rap;
+            $rap->number = $rap_number;
+            $rap->project_id = $datas->project->id;
+            $rap->user_id = Auth::user()->id;
+            $rap->branch_id = Auth::user()->branch->id;
+            $rap->save();
 
-            self::saveRabDetail($rab->id,$datas->checkedBoms);
-            $total_price = self::calculateTotalPrice($rab->id);
+            self::saveRapDetail($rap->id,$datas->checkedBoms);
+            $total_price = self::calculateTotalPrice($rap->id);
 
-            $modelRab = Rab::findOrFail($rab->id);
-            $modelRab->total_price = $total_price;
-            $modelRab->save();
+            $modelRap = Rap::findOrFail($rap->id);
+            $modelRap->total_price = $total_price;
+            $modelRap->save();
 
             self::updateStatusBom($datas->checkedBoms);
             self::checkstock($datas->checkedBoms);
             DB::commit();
-            return redirect()->route('rab.show', ['id' => $rab->id])->with('success', 'RAB Created');
+            return redirect()->route('rap.show', ['id' => $rap->id])->with('success', 'RAB Created');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('rab.selectProject')->with('error', $e->getMessage());
+            return redirect()->route('rap.selectProject')->with('error', $e->getMessage());
         }
     }
 
     public function show($id)
     {
-        $modelRab = Rab::findOrFail($id);
+        $modelRap = Rap::findOrFail($id);
 
-        return view('rab.show', compact('modelRab'));
+        return view('rap.show', compact('modelRap'));
     }
 
     public function edit($id)
     {
-        $modelRab = Rab::findOrFail($id);
-        $modelRAPD = RabDetail::where('rab_id',$modelRab->id)->with('bom','material')->get();
-        $project = Project::where('id',$modelRab->project_id)->first();
+        $modelRap = Rap::findOrFail($id);
+        $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material')->get();
+        $project = Project::where('id',$modelRap->project_id)->first();
 
-        return view('rab.edit', compact('modelRab','project','modelRAPD'));
+        return view('rap.edit', compact('modelRap','project','modelRAPD'));
     }
 
     public function update(Request $request, $id)
@@ -519,26 +519,26 @@ class RABController extends Controller
         }
     }
 
-    public function saveRabDetail($rab_id,$boms){
+    public function saveRapDetail($rap_id,$boms){
         foreach ($boms as $bom) {
             $modelBom = Bom::findOrFail($bom);
             foreach($modelBom->bomDetails as $bomDetail){
-                $rab_detail = new RabDetail;
-                $rab_detail->rab_id = $rab_id;
-                $rab_detail->bom_id = $bomDetail->bom_id;
-                $rab_detail->material_id = $bomDetail->material_id;
-                $rab_detail->quantity = $bomDetail->quantity;
-                $rab_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
-                $rab_detail->save();
+                $rap_detail = new RapDetail;
+                $rap_detail->rap_id = $rap_id;
+                $rap_detail->bom_id = $bomDetail->bom_id;
+                $rap_detail->material_id = $bomDetail->material_id;
+                $rap_detail->quantity = $bomDetail->quantity;
+                $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+                $rap_detail->save();
             }
         }
     }
 
     public function calculateTotalPrice($id){
-        $modelRab = Rab::findOrFail($id);
+        $modelRap = Rap::findOrFail($id);
         $total_price = 0;
-        foreach($modelRab->RabDetails as $RabDetail){
-            $total_price += $RabDetail->price;
+        foreach($modelRap->RapDetails as $RapDetail){
+            $total_price += $RapDetail->price;
         }
         return $total_price;
     }
@@ -551,21 +551,21 @@ class RABController extends Controller
         }
     }
 
-    private function generateRabNumber(){
-        $modelRab = Rab::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
+    private function generateRapNumber(){
+        $modelRap = Rap::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
         $branch_code = substr($modelBranch->code,4,2);
 		$number = 1;
-		if(isset($modelRab)){
-            $number += intval(substr($modelRab->number, -6));
+		if(isset($modelRap)){
+            $number += intval(substr($modelRap->number, -6));
 		}
         $year = date('y'.$branch_code.'000000');
         $year = intval($year);
 
-		$rab_number = $year+$number;
-        $rab_number = 'RAB-'.$rab_number;
-		return $rab_number;
+		$rap_number = $year+$number;
+        $rap_number = 'RAB-'.$rap_number;
+		return $rap_number;
     }
 
     public function getNewCostAPI($id){

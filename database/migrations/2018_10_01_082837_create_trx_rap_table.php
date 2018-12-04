@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRefRabTable extends Migration
+class CreateTrxRapTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateRefRabTable extends Migration
      */
     public function up()
     {
-        Schema::create('ref_rab', function (Blueprint $table) {
+        Schema::create('trx_rap', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number')->unique();
             $table->unsignedInteger('project_id');
+            $table->unsignedInteger('bom_id');
             $table->bigInteger('total_price')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');
@@ -25,7 +26,7 @@ class CreateRefRabTable extends Migration
             $table->foreign('project_id')->references('id')->on('pro_project');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('branch_id')->references('id')->on('mst_branch'); 
-            
+            $table->foreign('bom_id')->references('id')->on('mst_bom');
         });
     }
 
@@ -36,6 +37,6 @@ class CreateRefRabTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ref_rab');
+        Schema::dropIfExists('trx_rap');
     }
 }
