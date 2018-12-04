@@ -8,7 +8,7 @@
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
             'Project|'.$project->code => route('project.show', ['id' => $project->id]),
-            'Select Work' => ''
+            'Select WBS' => ''
         ]
     ]
 )
@@ -20,51 +20,37 @@
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header">
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Code</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->code}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Ship</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Customer</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+                    </div>
                 </div>
             </div>
             @verbatim
@@ -83,7 +69,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in works" class="popoverData"  data-content="" v-on:mouseover="dataForTooltip(data)" data-trigger="hover" rel="popover" data-placement="auto top" data-original-title="Details">
+                            <tr v-for="(data,index) in works">
                                 <td class="p-l-10">{{ index + 1 }}</td>
                                 <td class="tdEllipsis p-l-10">{{ data.name }}</td>
                                 <td class="tdEllipsis p-l-10">{{ data.description }}</td>
@@ -122,9 +108,10 @@
             'info'        : true,
             'autoWidth'   : false,
             'initComplete': function(){
-                $('div.overlay').remove();
+                $('div.overlay').hide();
             }
         });
+        jQuery('#wbs-table').wrap('<div class="dataTables_scroll" />');
     });
 
     var data = {
@@ -132,10 +119,21 @@
         menu : @json($menu)
     };
 
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
+
     var vm = new Vue({
         el: '#wbs',
         data: data,
         methods:{
+            tooltipText: function(text) {
+                return text
+            },
             createActivityRoute(data){
                 var url = "";
                 if(this.menu == "addAct"){
@@ -147,60 +145,6 @@
                 }
                 return url;
             },
-            dataForTooltip(data){
-                var status = "";
-                if(data.status == 1){
-                    status = "Open";
-                }else if(data.status == 0){
-                    status = "Done";
-                }
-
-                var actual_deadline = "-";
-                if(data.actual_deadline != null){
-                    actual_deadline = data.actual_deadline;
-                }
-                
-                var workParent = "-";
-                if(data.work != null){
-                    workParent = data.work.name;
-                }
-
-                var text = '<table class="tableFixed width100"><thead><th style="width:35%">Attribute</th><th style="width:5%"></th><th>Value</th></thead><tbody><tr><td>Code</td><td>:</td><td>'+data.code+
-                '</td></tr><tr><td>Name</td><td>:</td><td>'+data.name+
-                '</td></tr><tr><td class="valignTop">Description</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.description+
-                '</td></tr><tr><td class="valignTop">Deliverables</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.deliverables+
-                '</td></tr><tr><td>Status</td><td>:</td><td>'+status+
-                '</td></tr><tr><td>Planned Deadline</td><td>:</td><td>'+data.planned_deadline+
-                '</td></tr><tr><td>Actual Deadline</td><td>:</td><td>'+actual_deadline+
-                '</td></tr><tr><td>Progress</td><td>:</td><td>'+data.progress+
-                '%</td></tr><tr><td class="valignTop">Work Parent</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+workParent+
-                '</td></tr></tbody></table>'
-
-                function handlerMouseOver(ev) {
-                    $('.popoverData').popover({
-                        html: true,
-                    });
-                    var target = $(ev.target);
-                    var target = target.parent();
-                    
-                    if(target.attr('class')=="popoverData odd"||target.attr('class')=="popoverData even"){
-                        $(target).attr('data-content',text);
-                        $(target).popover('show');
-                    }else{
-                        $(target.parent()).popover('hide');
-                    }
-                }
-                $(".popoverData").mouseover(handlerMouseOver);
-
-                function handlerMouseOut(ev) {
-                    var target = $(ev.target);
-                    var target = target.parent(); 
-                    if(target.attr('class')=="popoverData odd" || target.attr('class')=="popoverData even"){
-                        $(target).attr('data-content',"");
-                    }
-                }
-                $(".popoverData").mouseout(handlerMouseOut);
-            }
         },
     });
 </script>

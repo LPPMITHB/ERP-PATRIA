@@ -8,6 +8,7 @@
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
             'Project|'.$activity->work->project->code => route('project.show', ['id' => $activity->work->project->id]),
+            'Select WBS' => route('project.listWBS',['id'=>$activity->work->project->id,'menu'=>'viewAct']),
             'List of Activities' => route('project.indexActivities', ['id' => $activity->work->id]),
             'View Activity|'.$activity->code => ""
         ]
@@ -21,111 +22,79 @@
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header">
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th colspan="2">Activity Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Name</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->progress}} %</b></td>
-                            </tr>
-                            <tr>
-                                <td>WBS</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->work->code}} - {{$activity->work->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->progress}} %</b></td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                </div>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>Activity Information</b></div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Code</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->code}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Name</div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->name}}"><b>: {{$activity->name}}</b></div>
 
-                <div class="col-sm-6">
-                    <table class="m-t-20">
-                        <tbody>
-                            <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $activity->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $activity->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned Duration</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->planned_duration}} Days</b></td>
-                            </tr>
-                            <tr>
-                                <td>Actual Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $activity->actual_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Actual End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $activity->actual_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Actual Duration</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$activity->actual_duration}} Days</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <div class="col-md-4 col-xs-6 no-padding">Description</div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->description}}"><b>: {{$activity->description}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Progress</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->progress}} %</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">WBS</div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->work->code}} - {{$activity->work->name}}"><b>: {{$activity->work->code}} - {{$activity->work->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Status</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->status == 1 ? 'Open' : 'Done'}} </b></div>
+                    </div>
+                </div>
+                
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">                        
+                        <div class="col-md-4 col-xs-6 no-padding">Planned Start Date</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $activity->planned_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+    
+                        <div class="col-md-4 col-xs-6 no-padding">Planned End Date</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $activity->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Planned Duration</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->planned_duration}}</b></div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Actual Start Date</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $activity->actual_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-xs-6 no-padding">Actual End Date</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $activity->actual_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+                        
+                        <div class="col-md-4 col-xs-6 no-padding">Actual Duration</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->actual_duration}}</b></div>
+                    </div>
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
                 <h4 class="box-title">List of Predecessor Activities</h4>
-                <table class="table table-bordered showTable tableFixed" id="activity-table">
+                <table class="table table-bordered showTable" id="activity-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -148,7 +117,7 @@
                                     @if($activity->status == 0)
                                         <i class='fa fa-check'></i>
                                     @else
-                                       <i class='fa fa-times'></i>
+                                        <i class='fa fa-times'></i>
                                     @endif   
                                 </td>
                             </tr>
@@ -175,6 +144,8 @@
                 $('div.overlay').remove();
             }
         });
+        jQuery('#activity-table').wrap('<div class="dataTables_scroll" />');
+
     });
 </script>
 @endpush

@@ -7,7 +7,8 @@
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
             'Project|'.$project->code => route('project.show', ['id' => $project->id]),
-            'Edit Activities' => ""
+            'Select WBS' => route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
+            'View Activities' => ""
         ]
     ]
 )
@@ -18,101 +19,72 @@
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header">
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Code</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->code}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Ship</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Customer</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-sm-6">
-                    <table class="tableFixed width100">
-                        <thead>
-                            <th style="width: 25%">Work Information</th>
-                            <th style="width: 3%"></th>
-                            <th></th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="">Name</td>
-                                <td>:</td>
-                                <td><b>{{$work->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Description</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Deliverables</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->deliverables}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Deadline</td>
-                                <td>:</td>
-                                <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td><b>{{$work->progress}} %</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Name</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->name}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Description</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->description}}"><b>: {{$work->description}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->deliverables}}"><b>: {{$work->deliverables}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Progress</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->progress}} %</b></div>
+                    </div>
                 </div>
+
             </div>
             @verbatim
             <div id="add_activity">
                 <div class="box-body">
                     <h4 class="box-title">List of Activities</h4>
-                    <table id="activity-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
+                    <table id="activity-table" class="table table-bordered" >
                         <thead>
                             <tr>
                                 <th style="width: 4%">No</th>
@@ -143,7 +115,7 @@
                                 </template>
                                 <td class="textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createRouteView(data.id)" >VIEW</a>
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data,index)">EDIT</button>
+                                    <button class="btn btn-primary btn-xs mobile_button_view" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data,index)">EDIT</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -159,7 +131,7 @@
                                     <h4 class="modal-title">Predecessor Activities for <b id="activity_code"></b></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                                    <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th class="p-l-5" style="width: 5%">No</th>
@@ -245,7 +217,7 @@
                                     </div> 
 
                                             
-                                    <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                                    <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th class="p-l-5" style="width: 5%">No</th>
@@ -292,6 +264,7 @@
 <script>
 $(document).ready(function(){
     $('div.overlay').hide();
+    jQuery('.table').wrap('<div class="dataTables_scroll" />');
 });
 
 var data = {

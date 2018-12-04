@@ -214,7 +214,7 @@ class ProjectManagementController extends Controller
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
-        $array['Add Sub WBS|'.$work->code] = "";
+        $array[$work->code] = "";
         return view('project_management.createSubWBS', compact('project', 'work','array','structures','childWorks'));
     }
     
@@ -222,10 +222,10 @@ class ProjectManagementController extends Controller
     function getParents($work, $array_reverse, $project_id, $iteration) {
         if ($work) {
             if($work->work){
-                $array_reverse['Add Sub WBS|'.$work->code] = route('project.createSubWBS',[$project_id,$work->work->id]);
+                $array_reverse[$work->code] = route('project.createSubWBS',[$project_id,$work->work->id]);
                 return self::getParents($work->work,$array_reverse, $project_id, $iteration);
             }else{
-                $array_reverse['Add Sub WBS|'.$work->code] = route('project.createSubWBS',[$project_id,$work->id]);
+                $array_reverse[$work->code] = route('project.createSubWBS',[$project_id,$work->id]);
                 return $array_reverse;
             }
         }

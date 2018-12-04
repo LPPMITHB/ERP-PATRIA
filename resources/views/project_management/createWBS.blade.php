@@ -18,58 +18,44 @@
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header">
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Code</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->code}}</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Ship</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Customer</div>
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Start Date</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">End Date</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+                    </div>
                 </div>
             </div>
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
                     <h4 class="box-title">Work Breakdown Structures</h4>
-                    <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                    <table id="wbs-table" class="table table-bordered" style="border-collapse:collapse;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
@@ -335,9 +321,6 @@ var vm = new Vue({
                         'ordering'    : false,
                         'info'        : true,
                         'autoWidth'   : false,
-                        columnDefs : [
-                            { targets: 0, sortable: false},
-                        ]
                     });
                 })
             });
