@@ -66,7 +66,7 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'username' => 'aldi',
+            'username' => 'aldy',
             'name' => 'Lievaldy Octa',
             'email' => 'aldy@gmail.com',
             'role_id' => 1,

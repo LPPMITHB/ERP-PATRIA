@@ -11,7 +11,7 @@ class MenusTableSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
+    {   
         DB::table('menus')->insert([
             'level' => 1,
             'name' => 'Dashboard',
@@ -25,17 +25,29 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 1,
+            'name' => 'Ship Building',
+            'icon' => 'fa-ship',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $building =  Menu::where('name','Ship Building')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 2,
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
             'is_active' => true,
             'roles' => 'ADMIN',
+            'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
         $projectManagement =  Menu::where('name','Project Management')->select('id')->first()->id;
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Manage Projects',
             'icon' => 'fa-calendar',
             'route_name'=> 'project.index',
@@ -47,7 +59,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Confirm Activity',
             'icon' => 'fa-clock-o',
             'route_name'=> 'project.indexConfirm',
@@ -59,7 +71,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'WBS & Estimator Configuration',
             'icon' => 'fa-clock-o',
             'route_name'=> 'project.selectProjectConfig',
@@ -71,18 +83,19 @@ class MenusTableSeeder extends Seeder
         ]);
         
         DB::table('menus')->insert([
-            'level' => 1,
+            'level' => 2,
             'name' => 'Bill Of Material',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN',
+            'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
         $bom =  Menu::where('name','Bill Of Material')->select('id')->first()->id;
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Manage BOM',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom.indexProject',
@@ -94,7 +107,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
              DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'View BOM',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom.selectProject',
@@ -106,18 +119,19 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 1,
+            'level' => 2,
             'name' => 'Cost Plan',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN',
+            'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
         $costPlan =  Menu::where('name','Cost Plan')->select('id')->first()->id;
         // DB::table('menus')->insert([
-        //     'level' => 2,
+        //     'level' => 3,
         //     'name' => 'Create RAB',
         //     'icon' => 'fa-file-text-o',
         //     'route_name'=> 'rab.selectProject',
@@ -128,7 +142,7 @@ class MenusTableSeeder extends Seeder
         //     'updated_at' => date('Y-m-d')
         // ]);
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'View RAP',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rab.indexSelectProject',
@@ -140,7 +154,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         // DB::table('menus')->insert([
-        //     'level' => 2,
+        //     'level' => 3,
         //     'name' => 'View RAB',
         //     'icon' => 'fa-file-text-o',
         //     'route_name'=> 'rab.indexSelectProject',
@@ -153,7 +167,7 @@ class MenusTableSeeder extends Seeder
         
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Create Cost',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rab.selectProjectCost',
@@ -166,7 +180,7 @@ class MenusTableSeeder extends Seeder
 
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Assign Cost',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rab.selectProjectAssignCost',
@@ -179,7 +193,7 @@ class MenusTableSeeder extends Seeder
 
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'View Planned Cost',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rab.selectProjectViewCost',
@@ -191,7 +205,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'View Remaining Material',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rab.selectProjectViewRM',
@@ -204,18 +218,19 @@ class MenusTableSeeder extends Seeder
 
 
         DB::table('menus')->insert([
-            'level' => 1,
+            'level' => 2,
             'name' => 'Material Management',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN',
+            'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
         $materialManagement =  Menu::where('name','Material Management')->select('id')->first()->id;
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Purchase Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -265,7 +280,7 @@ class MenusTableSeeder extends Seeder
 
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Purchase Order',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -327,7 +342,7 @@ class MenusTableSeeder extends Seeder
 
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Goods Receipt',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -377,7 +392,7 @@ class MenusTableSeeder extends Seeder
 
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Material Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -426,7 +441,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Goods Issue',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -450,7 +465,7 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        DB::table('menus')->insert([
+        /* DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create GI without Reference',
             'icon' => 'fa-file-text-o',
@@ -460,7 +475,7 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$goodsIssue,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]);
+        ]); */
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -476,7 +491,7 @@ class MenusTableSeeder extends Seeder
 
 
          DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Physical Inventory',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -528,7 +543,7 @@ class MenusTableSeeder extends Seeder
 
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Stock Management',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'stock_management.index',
@@ -540,7 +555,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Material Write Off',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_write_off.create',
@@ -552,7 +567,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Goods Movement',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_movement.index',
@@ -564,18 +579,19 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 1,
+            'level' => 2,
             'name' => 'Resource Management',
             'icon' => 'fa-database',
             'is_active' => true,
             'roles' => 'ADMIN',
+            'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
         
         $resourcemanagement = Menu::where('name','Resource Management')->select('id')->first()->id;
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Manage Resource',
             'icon' => 'fa-wrench',
             'route_name'=> 'resource.index',
@@ -587,7 +603,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Assign Resource',
             'icon' => 'fa-wrench',
             'route_name'=> 'resource.assignResource',
@@ -599,18 +615,19 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 1,
+            'level' => 2,
             'name' => 'Production Planning & Execution',
             'icon' => 'fa-database',
             'is_active' => true,
             'roles' => 'ADMIN',
+            'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
         $PPE =  Menu::where('name','Production Planning & Execution')->select('id')->first()->id;
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Create Production Order',
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.selectProject',
@@ -622,7 +639,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Release Production Order',
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.selectProjectRelease',
@@ -634,7 +651,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Confirm Production Order',
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.selectProjectConfirm',
@@ -646,7 +663,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Production Order Actual Cost Report',
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.selectProjectReport',
@@ -658,13 +675,33 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 2,
+            'level' => 3,
             'name' => 'Yard Plan',
             'icon' => 'fa-wrench',
             'route_name'=> 'yard_plan.index',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 1,
+            'name' => 'Ship Repair',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 1,
+            'name' => 'Trading',
+            'icon' => 'fa-archive',
+            'is_active' => true,
+            'roles' => 'ADMIN',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -806,7 +843,6 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-
 
         DB::table('menus')->insert([
             'level' => 1,

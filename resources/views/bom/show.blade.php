@@ -22,100 +22,68 @@
     <div class="col-sm-12">
         <div class="box ">
             <div class="box-header">
-                <div class="col-sm-4">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="p-r-40">Project Code</td>
-                                <td class="p-r-5">:</td>
-                                <td><b>{{$modelBOM->project->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Project Name</td>
-                                <td>:</td>
-                                <td><b>{{$modelBOM->project->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship Name</td>
-                                <td>:</td>
-                                <td><b>{{$modelBOM->project->ship->name}}</b></td>
+                <div class="col-xs-12 col-md-4">
+                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
 
-                                
-                            </tr>
-                            <tr>
-                                <td>Ship Type</td>
-                                <td>:</td>
-                                <td><b>{{$modelBOM->project->ship->type}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td><b>{{$modelBOM->project->customer->name}}</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="col-xs-4 no-padding">Project Code</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->code}}</b></div>
+                    
+                    <div class="col-xs-4 no-padding">Project Name</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->name}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Ship Name</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->name}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Ship Type</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->type}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Customer</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->customer->name}}</b></div>
                 </div>
-                <div class="col-sm-4">
-                    <table>
-                        <thead>
-                            <th colspan="2">WBS Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelBOM->work->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Name</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelBOM->work->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelBOM->work->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Deliverable</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelBOM->work->deliverables}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelBOM->work->progress}}%</b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <div class="col-xs-12 col-md-4">
+                    <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                
+                    <div class="col-xs-4 no-padding">Code</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->code}}</b></div>
+                    
+                    <div class="col-xs-4 no-padding">Name</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->name}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Description</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->description}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Deliverable</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->deliverables}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Progress</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->progress}}%</b></div>
                 </div>
-                <div class="col-sm-3">
-                    <table>
-                        <thead>
-                            <th colspan="2">BOM Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelBOM->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelBOM->description}}</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                       
+
+                <div class="col-xs-12 col-md-3 p-b-10">
+                    <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
+            
+                    <div class="col-md-5 col-xs-4 no-padding">Code</div>
+                    <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->code}}</b></div>
+                    
+                    <div class="col-md-5 col-xs-4 no-padding">Description</div>
+                    <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->description}}</b></div>
+
+                    <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
+                    <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$rap_number}}</b></a></div>
+
+                    @if(isset($modelPR))
+                        <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$pr_number}}</b></a></div>
+                    @else
+                        <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
+                    @endif
                 </div>
-                <div class="col-sm-1">
+                
+                <div class="col-md-1 col-xs-12">
                     @can('edit-bom')
-                        <a class="btn btn-sm btn-primary pull-right" href="{{ route('bom.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
+                        <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bom.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
                     @endcan
                 </div>
             </div>
@@ -124,15 +92,19 @@
                 <table id="materials-table" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th width="10%">No</th>
-                            <th width="45%">Material Name</th>
-                            <th width="45%">Quantity</th>
+                            <th width="5%">No</th>
+                            <th width="35%">Material Name</th>
+                            <th width="45%">Description</th>
+                            <th width="15%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(bomDetail,index) in bomDetail">
                             <td class="p-t-15 p-b-15">{{ index+1 }}</td>
-                            <td>{{ bomDetail.material.name }}</td>
+                            <td>{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
+                            <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
+                            <td v-else-if="bomDetail.material.description != ''">-</td>
+                            <td v-else>-</td>
                             <td>{{ bomDetail.quantity }}</td>
                         </tr>
                     </tbody>
@@ -161,6 +133,7 @@
                 $('div.overlay').hide();
             }
         });
+        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     });
 
     var data = {
@@ -172,35 +145,11 @@
         el : '#show-bom',
         data : data,
         created: function() {
-
             var data = this.bomDetail;
             data.forEach(bomDetail => {
                 bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             });
         }
     });
-
-    function deletebom(){
-        iziToast.show({
-            timeout: 10000,
-            color : 'red',
-            displayMode: 'replace',
-            icon: 'fa fa-warning',
-            title: 'Warning !',
-            message: 'Are you sure to delete BOM ?',
-            position: 'topRight',
-            progressBarColor: 'rgb(0, 255, 184)',
-            buttons: [
-                ['<button>OK</button>', function (instance, toast) {
-                    document.getElementById('delete-form-{{ $modelBOM->id }}').submit();
-                }, true], 
-                ['<button>CANCEL</button>', function (instance, toast) {
-                    instance.hide({
-                        transitionOut: 'fadeOutUp',
-                    }, toast, 'buttonName');
-                }]
-            ],
-        });
-    }
 </script>
 @endpush
