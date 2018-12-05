@@ -94,15 +94,15 @@
             </div>
             <div class="box-body p-t-0 p-b-0">
                 <h4 class="box-title">List of Predecessor Activities</h4>
-                <table class="table table-bordered showTable" id="activity-table">
+                <table class="table table-bordered showTable tableFixed" id="activity-table">
                     <thead>
                         <tr>
-                            <th width="5%">No</th>
+                            <th width="10px">No</th>
                             <th width="12%">Activity Code</th>
                             <th width="30%">Activity Name</th>
                             <th width="30%">WBS</th>
-                            <th width="10%">Progress</th>
-                            <th width="5%">Status</th>
+                            <th>Progress</th>
+                            <th width="20px">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -144,7 +144,6 @@
                 $('div.overlay').remove();
             }
         });
-        jQuery('#activity-table').wrap('<div class="dataTables_scroll" />');
 
     });
 </script>

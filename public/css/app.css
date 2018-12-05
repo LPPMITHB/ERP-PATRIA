@@ -23335,7 +23335,11 @@ textarea {
   }
 
   .tableFixed {
-    table-layout: auto !important;
+    width: 180%;
+  }
+
+  .table {
+    max-width: 100%;
   }
 }
 
@@ -23357,7 +23361,11 @@ textarea {
   }
 
   .tableFixed {
-    table-layout: auto !important;
+    width: 300%;
+  }
+
+  .table {
+    max-width: 200%;
   }
 }
 
