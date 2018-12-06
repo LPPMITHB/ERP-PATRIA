@@ -38,19 +38,19 @@ class Project extends Model
         return $this->hasMany('App\Models\Work');
     }
 
-    public function PurchaseRequisition()
+    public function purchaseRequisitions()
     {
         return $this->hasMany('App\Models\PurchaseRequisition');
     }
     
-    public function PurchaseOrder()
+    public function purchaseOrders()
     {
         return $this->hasMany('App\Models\PurchaseOrder');
     }
 
-    public function Rabs()
+    public function raps()
     {
-        return $this->hasMany('App\Models\Rab');
+        return $this->hasMany('App\Models\Rap');
     }
 
     public function yardPlans()

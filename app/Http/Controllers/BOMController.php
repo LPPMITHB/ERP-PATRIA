@@ -10,13 +10,25 @@ use App\Models\Material;
 use App\Models\Branch;
 use App\Models\Work;
 use App\Models\User;
+use App\Models\Rap;
+use App\Models\RapDetail;
+use App\Models\Stock;
+use App\Models\PurchaseRequisition;
+use App\Models\PurchaseRequisitionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 use Auth;
 
 class BOMController extends Controller
 {
+    protected $pr;
+
+    public function __construct(PurchaseRequisitionController $pr)
+    {
+        $this->pr = $pr;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -50,23 +62,46 @@ class BOMController extends Controller
             ]);
     
         foreach($works as $work){
-            if($work->work){
-                $wbs->push([
-                    "id" => $work->code , 
-                    "parent" => $work->work->code,
-                    "text" => $work->name,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('bom.create',$work->id)],
-                ]);
+            $bom_code = "";
+            $bom = Bom::where('work_id',$work->id)->first();
+            if($bom){
+                $bom_code = " - ".$bom->code;
+                if($work->work){
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $work->work->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                    ]);
+                }else{
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $project->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                    ]);
+                } 
             }else{
-                $wbs->push([
-                    "id" => $work->code , 
-                    "parent" => $project->code,
-                    "text" => $work->name,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('bom.create',$work->id)],
-                ]);
-            }  
+                if($work->work){
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $work->work->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                    ]);
+                }else{
+                    $wbs->push([
+                        "id" => $work->code , 
+                        "parent" => $project->code,
+                        "text" => $work->name. ''.$bom_code,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                    ]);
+                } 
+            } 
         }
 
         return view('bom.selectWBS', compact('project','wbs'));
@@ -176,6 +211,8 @@ class BOMController extends Controller
                 return redirect()->route('bom.create',$bom->id)->with('error', 'Failed Save Bom !');
             }else{
                 self::saveBomDetail($bom,$datas->materials);
+                self::createRap($datas,$bom);
+                self::checkStock($bom);
                 DB::commit();
                 return redirect()->route('bom.show', ['id' => $bom->id])->with('success', 'Bill Of Material Created');
             }
@@ -207,30 +244,6 @@ class BOMController extends Controller
         }
     }
 
-    // public function storeAssignBom(Request $request)
-    // {
-    //     $data = $request->json()->all();
-
-    //     DB::beginTransaction();
-    //     try {
-    //         $modelBOM = Bom::findOrFail($data['bom_id']);
-    //         if($data['work_id'] == ""){
-    //             $modelBOM->work_id = null;
-    //         }else{
-    //             $modelBOM->work_id = $data['work_id'];
-    //         }
-    //         if(!$modelBOM->save()){
-    //             return redirect()->route('bom.assignBom')->with('error','Failed to save, please try again !');
-    //         }else{
-    //             DB::commit();
-    //             return response(json_encode($modelBOM),Response::HTTP_OK);
-    //         }
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         return redirect()->route('bom.assignBom')->with('error', $e->getMessage());
-    //     }
-    // }
-
     /**
      * Display the specified resource.
      *
@@ -239,10 +252,21 @@ class BOMController extends Controller
      */
     public function show($id)
     {
+        $pr_number = '-';
+        $rap_number = '-';
         $modelBOM = Bom::where('id',$id)->with('project','bomDetails','user','branch')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material')->get();
 
-        return view('bom.show', compact('modelBOM','modelBOMDetail'));
+        $modelPR = PurchaseRequisition::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelPR)){
+            $pr_number = $modelPR->number;
+        }
+
+        $modelRAP = Rap::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelRAP)){
+            $rap_number = $modelRAP->number;
+        }
+        return view('bom.show', compact('modelBOM','modelBOMDetail','pr_number','rap_number','modelPR','modelRAP'));
     }
 
     /**
@@ -253,13 +277,25 @@ class BOMController extends Controller
      */
     public function edit($id)
     {
+        $pr_number = '-';
+        $rap_number = '-';
         $modelBOM = Bom::where('id',$id)->with('project')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material')->get();
         $materials = Material::orderBy('name')->get()->jsonSerialize();
         $project = $modelBOM->project;
         $project = Project::find($project->id)->with('ship','customer')->first();
 
-        return view('bom.edit', compact('modelBOM','materials','modelBOMDetail','project'));
+        $modelPR = PurchaseRequisition::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelPR)){
+            $pr_number = $modelPR->number;
+        }
+
+        $modelRAP = Rap::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelRAP)){
+            $rap_number = $modelRAP->number;
+        }
+
+        return view('bom.edit', compact('modelBOM','materials','modelBOMDetail','project','pr_number','rap_number','modelPR','modelRAP'));
     }
 
     /**
@@ -276,18 +312,31 @@ class BOMController extends Controller
         DB::beginTransaction();
         try {
             $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
-            $modelBOMDetail->material_id = $data['material_id'];
+            $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
+            // $modelBOMDetail->material_id = $data['material_id'];
             $modelBOMDetail->quantity = $data['quantityInt'];
 
             if(!$modelBOMDetail->save()){
-                return redirect()->route('bom.edit',$bom->id)->with('error','Failed to save, please try again !');
+                return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
             }else{
+                // update RAP
+                $modelRAP = Rap::where('bom_id',$modelBOMDetail->bom_id)->first();
+                foreach($modelRAP->rapDetails as $rapDetail){
+                    if($rapDetail->material_id == $modelBOMDetail->material_id){
+                        $rapDetail->quantity = $data['quantityInt'];
+                        $rapDetail->save();
+                    }
+                }
+                // update reserve mst_stock
+                $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
+                $modelStock->reserved += $diff;
+                $modelStock->save();
                 DB::commit();
                 return response(json_encode($modelBOMDetail),Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('bom.edit',$bom->id)->with('error', $e->getMessage());
+            return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error', $e->getMessage());
         }
     }
 
@@ -346,6 +395,23 @@ class BOMController extends Controller
         $bom_code = $code.''.sprintf('%04d', $number);
 		return $bom_code;
     }
+
+    private function generateRapNumber(){
+        $modelRap = Rap::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
+        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
+
+        $branch_code = substr($modelBranch->code,4,2);
+		$number = 1;
+		if(isset($modelRap)){
+            $number += intval(substr($modelRap->number, -6));
+		}
+        $year = date('y'.$branch_code.'000000');
+        $year = intval($year);
+
+		$rap_number = $year+$number;
+        $rap_number = 'RAP-'.$rap_number;
+		return $rap_number;
+    }
     
     private function saveBomDetail($bom, $materials){
         foreach($materials as $material){
@@ -357,7 +423,115 @@ class BOMController extends Controller
                 return redirect()->route('bom.create')->with('error', 'Failed Save Bom Detail !');
             }
         }
-        return true;
+    }
+
+    public function createRap($data,$bom){
+        $rap_number = self::generateRapNumber();
+        $rap = new Rap;
+        $rap->number = $rap_number;
+        $rap->project_id = $data->project_id;
+        $rap->bom_id = $bom->id;
+        $rap->user_id = Auth::user()->id;
+        $rap->branch_id = Auth::user()->branch->id;
+        if(!$rap->save()){
+            return redirect()->route('bom.create')->with('error', 'Failed Save RAP !');
+        }else{
+            self::saveRapDetail($rap->id,$bom->bomDetails);
+            $total_price = self::calculateTotalPrice($rap->id);
+
+            $modelRap = Rap::findOrFail($rap->id);
+            $modelRap->total_price = $total_price;
+            $modelRap->save();
+        }
+    }
+
+    public function saveRapDetail($rap_id,$bomDetails){
+        foreach($bomDetails as $bomDetail){
+            $rab_detail = new RapDetail;
+            $rab_detail->rap_id = $rap_id;
+            $rab_detail->material_id = $bomDetail->material_id;
+            $rab_detail->quantity = $bomDetail->quantity;
+            $rab_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+            $rab_detail->save();
+        }
+    }
+
+    public function calculateTotalPrice($id){
+        $modelRap = Rap::findOrFail($id);
+        $total_price = 0;
+        foreach($modelRap->RapDetails as $RapDetail){
+            $total_price += $RapDetail->price;
+        }
+        return $total_price;
+    }
+
+    public function checkStock($bom){
+        // create PR (optional)
+        foreach($bom->bomDetails as $bomDetail){
+            $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
+            $status = 0;
+            $project_id = $bomDetail->bom->project_id;
+            if(!isset($modelStock)){
+                $status = 1;
+            }else{
+                $remaining = $modelStock->quantity - $modelStock->reserved;
+                if($remaining < $bomDetail->quantity){
+                    $status = 1;
+                }
+            }
+        }
+        if($status == 1){
+            $pr_number = $this->pr->generatePRNumber();
+            $current_date = today();
+            $valid_to = $current_date->addDays(7);
+            $valid_to = $valid_to->toDateString();
+            $modelProject = Project::findOrFail($project_id);
+
+            $PR = new PurchaseRequisition;
+            $PR->number = $pr_number;
+            $PR->valid_date = $valid_to;
+            $PR->project_id = $project_id;
+            $PR->bom_id = $bom->id;
+            $PR->description = 'AUTO PR FOR '.$modelProject->code;
+            $PR->status = 1;
+            $PR->user_id = Auth::user()->id;
+            $PR->branch_id = Auth::user()->branch->id;
+            $PR->save();
+        }
+
+        // reservasi & PR Detail
+        foreach($bom->bomDetails as $bomDetail){
+            $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
+            
+            if(isset($modelStock)){
+                $remaining = $modelStock->quantity - $modelStock->reserved;
+                if($remaining < $bomDetail->quantity){
+                    $PRD = new PurchaseRequisitionDetail;
+                    $PRD->purchase_requisition_id = $PR->id;
+                    $PRD->material_id = $bomDetail->material_id;
+                    $PRD->work_id = $bomDetail->bom->work_id;
+                    $PRD->quantity = $bomDetail->quantity;
+                    $PRD->save();
+                }
+                $modelStock->reserved += $bomDetail->quantity;
+                $modelStock->updated_at = Carbon::now();
+                $modelStock->save();
+            }else{
+                $PRD = new PurchaseRequisitionDetail;
+                $PRD->purchase_requisition_id = $PR->id;
+                $PRD->material_id = $bomDetail->material_id;
+                $PRD->work_id = $bomDetail->bom->work_id;
+                $PRD->quantity = $bomDetail->quantity;
+                $PRD->save();
+
+                $modelStock = new Stock;
+                $modelStock->material_id = $bomDetail->material_id;
+                $modelStock->quantity = 0;
+                $modelStock->reserved = $bomDetail->quantity;
+                $modelStock->branch_id = Auth::user()->branch->id;
+                $modelStock->save();
+            }
+        }
     }
 
     public function getMaterialAPI($id){

@@ -33,8 +33,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ProjectWorkActivityTableSeeder::class);
         $this->call(BOMsTableSeeder::class);
         $this->call(BOMDetailsTableSeeder::class);
-        $this->call(RABTableSeeder::class);        
-        $this->call(RABDetailsTableSeeder::class);
+        $this->call(RAPTableSeeder::class);        
+        $this->call(RAPDetailsTableSeeder::class);
         $this->call(PRTableSeeder::class);
         $this->call(PRDetailsTableSeeder::class);
         $this->call(POTableSeeder::class);
