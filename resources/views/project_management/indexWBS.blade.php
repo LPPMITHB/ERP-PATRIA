@@ -63,12 +63,12 @@
                     <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                         <thead>
                             <tr>
-                                <th style="width: 3%">No</th>
+                                <th style="width: 5px">No</th>
                                 <th style="width: 18%">Name</th>
-                                <th style="width: 20%">Description</th>
-                                <th style="width: 15%">Deliverables</th>
-                                <th style="width: 10%">Deadline</th>
-                                <th style="width: 12%"></th>
+                                <th style="width: 30%">Description</th>
+                                <th style="width: 18%">Deliverables</th>
+                                <th style="width: 85px">Deadline</th>
+                                <th style="width: 85px"></th>
                             </tr>
                         </thead>
                         <tbody>

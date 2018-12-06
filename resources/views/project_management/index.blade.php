@@ -30,13 +30,13 @@
                 <table class="table table-bordered table-hover tableFixed" id="project-table">
                     <thead>
                         <tr>
-                            <th style="width: 5%">No</th>
-                            <th style="width: 10%">Code</th>
+                            <th style="width: 15px">No</th>
+                            <th>Code</th>
                             <th style="width: 10%">Ship</th>
                             <th style="width: 33%">Customer</th>
-                            <th style="width: 12%">Start Date</th>
-                            <th style="width: 10%">Progress</th>
-                            <th style="width: 10%"></th>
+                            <th>Start Date</th>
+                            <th>Progress</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,8 +45,8 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td>{{ $project->code }}</td>
-                                <td>{{ $project->ship->name }}</td>
-                                <td>{{ $project->customer->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->ship->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>
                                 <td>{{ $project->progress}}</td>
                                 <td class="p-l-0 p-r-0" align="center"><a href="{{ route('project.show', ['id'=>$project->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
@@ -81,7 +81,6 @@
                 $('div.overlay').remove();
             }
         });
-    jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
         
     });
 </script>
