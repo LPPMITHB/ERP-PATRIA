@@ -5,87 +5,98 @@
 @endsection
 
 @section('content')
-@foreach ($modelProject as $project)
-
-  <div class="row">
-      
-    <div class="col-lg-12 col-xs-12">
-      <!-- small box -->
-      @if(date("Y-m-d") > $project->planned_end_date && $project->progress != 100)
-      <div class="small-box bg-red">
-      @elseif(date("Y-m-d") == $project->planned_end_date  && $project->progress != 100)
-      <div class="small-box bg-yellow">
-      @else
-      <div class="small-box bg-aqua">
-      @endif
-        <div class="inner">
-          <div class="row">
-            <div class="col-md-2">
-                <h4>Project Code</h4>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#individual" data-toggle="tab">Individual Project</a></li>
+            <li><a href="#overall" data-toggle="tab">Overall Project</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="individual">
+                <div class="box-body">
+                    @foreach ($modelProject as $project)
+                      <div class="row">    
+                        <div class="col-lg-12 col-xs-12">
+                          <!-- small box -->
+                          @if(date("Y-m-d") > $project->planned_end_date && $project->progress != 100)
+                          <div class="small-box bg-red">
+                          @elseif(date("Y-m-d") == $project->planned_end_date  && $project->progress != 100)
+                          <div class="small-box bg-yellow">
+                          @else
+                          <div class="small-box bg-aqua">
+                          @endif
+                            <div class="inner">
+                              <div class="row">
+                                <div class="col-md-2 col-xs-4">
+                                    <h4>Project Code</h4>
+                                </div>
+                                <div class="col-md-4 col-xs-8">
+                                    <h4> : {{$project->code}}</h4>                
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <h4>Progress </h4>
+                                </div>
+                                <div class="col-md-4 col-xs-8">
+                                    <h4> : {{$project->progress}} %</h4>  
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <h4>Ship</h4>
+                                </div>
+                                <div class="col-md-4 col-xs-8">
+                                    <h4> : {{$project->ship->name}}</h4>                
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <h4>Days Left </h4>
+                                </div>
+                                <div class="col-md-4 col-xs-8">
+                                    @php
+                                      $earlier = new DateTime(date("Y-m-d"));
+                                      $later = new DateTime($project->planned_end_date);
+                    
+                                      $datediff = $later->diff($earlier)->format("%a");
+                                      if($later<$earlier){
+                                        $datediff = "- ".$datediff;
+                                      }
+                                    @endphp
+                                    <h4> : {{$datediff}} Days</h4>                
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <h4>Customer</h4>
+                                </div>
+                                <div class="col-md-4  col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" data-placement="bottom" title="{{$project->customer->name}}">
+                                    <h4> : {{$project->customer->name}}</h4>                
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <h4>Cost Absorption </h4>
+                                </div>
+                                <div class="col-md-4 col-xs-8">
+                                    <h4> : Rp {{$project->id}},899,900,000 / Rp 50,600,700,000</h4>                
+                                </div>
+                              </div>
+                              <br>
+                            </div>
+                            <div class="icon">
+                              <i class="fa fa-ship"></i>
+                              
+                            </div>
+                            <a href="{{ route('project.show',['id'=>$project->id]) }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
+                </div>
             </div>
-            <div class="col-md-4">
-                <h4> : {{$project->code}}</h4>                
-            </div>
-            <div class="col-md-2">
-                <h4>Progress </h4>
-            </div>
-            <div class="col-md-4">
-                <h4> : {{$project->progress}} %</h4>  
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-2">
-                <h4>Ship</h4>
-            </div>
-            <div class="col-md-4">
-                <h4> : {{$project->ship->name}}</h4>                
-            </div>
-            <div class="col-md-2">
-                <h4>Days Left </h4>
-            </div>
-            <div class="col-md-4">
-                @php
-                  $earlier = new DateTime(date("Y-m-d"));
-                  $later = new DateTime($project->planned_end_date);
-
-                  $datediff = $later->diff($earlier)->format("%a");
-                  if($later<$earlier){
-                    $datediff = "- ".$datediff;
-                  }
-                @endphp
-                <h4> : {{$datediff}} Days</h4>                
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-2">
-                <h4>Customer</h4>
-            </div>
-            <div class="col-md-4 tdEllipsis" data-container="body" data-toggle="tooltip" data-placement="bottom" title="{{$project->customer->name}}">
-                <h4> : {{$project->customer->name}}</h4>                
-            </div>
-            <div class="col-md-2">
-                <h4>Cost Absorption </h4>
-            </div>
-            <div class="col-md-4">
-                <h4> : Rp {{$project->id}},899,900,000 / Rp 50,600,700,000</h4>                
-            </div>
-          </div>
-          <br>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="overall">
+                <div class="box-body">
+                </div>
+            </div>  
         </div>
-        <div class="icon">
-          <i class="fa fa-ship"></i>
-          
-        </div>
-        <a href="{{ route('project.show',['id'=>$project->id]) }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-      </div>
+        <!-- /.tab-content -->
     </div>
   </div>
-@endforeach
-
-
-
-
-
+</div>
 
 {{-- <div class="row">
     <div class="col-md-3 col-sm-6 col-xs-12">

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRefRabOtherAndProcessCostTable extends Migration
+class CreateTrxRapOtherCostTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateRefRabOtherAndProcessCostTable extends Migration
      */
     public function up()
     {
-        Schema::create('ref_rab_other_and_process_cost', function (Blueprint $table) {
+        Schema::create('trx_rap_other_cost', function (Blueprint $table) {
             $table->increments('id');
             $table->string('description');
-            $table->string('type');
             $table->bigInteger('cost');
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('work_id')->nullable();

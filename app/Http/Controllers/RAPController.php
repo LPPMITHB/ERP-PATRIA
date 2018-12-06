@@ -147,7 +147,7 @@ class RAPController extends Controller
     {
         $project = Project::findOrFail($id);       
 
-        return view('rap.createCost', compact('project'));
+        return view('rap.createOtherCost', compact('project'));
     }
 
     public function assignCost($id)
@@ -312,7 +312,6 @@ class RAPController extends Controller
         DB::beginTransaction();
         try {
             $cost = new Cost;
-            $cost->type = $data['type'];
             $cost->description = $data['description'];
             $cost->cost = $data['cost'];
             $cost->project_id = $data['project_id'];
@@ -361,7 +360,6 @@ class RAPController extends Controller
         DB::beginTransaction();
         try {
             $cost = Cost::find($id);
-            $cost->type = $data['type'];
             $cost->description = $data['description'];
             $cost->cost = $data['cost'];
             $cost->project_id = $data['project_id'];
