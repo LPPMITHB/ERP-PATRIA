@@ -238,7 +238,7 @@ var vm = new Vue({
             });
         },
         getCosts(){
-            window.axios.get('/rab/getCosts/'+this.newCost.project_id).then(({ data }) => {
+            window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
                 this.costs = data;
                 this.newIndex = Object.keys(this.costs).length+1;
                 var dT = $('#cost-table').DataTable();
@@ -265,7 +265,7 @@ var vm = new Vue({
             var newCost = this.newCost;
             newCost.cost = newCost.cost.replace(/,/g , '');
             newCost = JSON.stringify(newCost);
-            var url = "{{ route('rab.storeCost') }}";
+            var url = "{{ route('rap.storeCost') }}";
             window.axios.post(url,newCost)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -296,7 +296,7 @@ var vm = new Vue({
         update(){            
             var editCost = this.editCost;   
             editCost.cost = editCost.cost.replace(/,/g , '');        
-            var url = "/rab/updateCost/"+editCost.cost_id;
+            var url = "/rap/updateCost/"+editCost.cost_id;
             editCost = JSON.stringify(editCost);
             window.axios.patch(url,editCost)
             .then((response) => {
