@@ -23,7 +23,7 @@ class CreateTrxRapTable extends Migration
             $table->unsignedInteger('branch_id');
             $table->timestamps();
 
-            $table->foreign('project_id')->references('id')->on('pro_project_work');
+            $table->foreign('project_id')->references('id')->on('pro_project');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('branch_id')->references('id')->on('mst_branch'); 
             $table->foreign('bom_id')->references('id')->on('mst_bom');
