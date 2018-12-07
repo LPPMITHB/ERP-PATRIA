@@ -44,7 +44,7 @@
                         @foreach($projects as $project)
                             <tr>
                                 <td>{{ $counter++ }}</td>
-                                <td>{{ $project->code }}</td>
+                                <td>{{ $project->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->ship->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>

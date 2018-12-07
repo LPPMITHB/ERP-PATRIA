@@ -78,7 +78,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Flag</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="flag" name="flag" >
+                                    <input type="text" class="form-control" id="flag" name="flag" required v-model="project.flag">
                                 </div>
                             </div>
 
@@ -86,7 +86,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Name</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_name" name="class_name" >
+                                    <input type="text" class="form-control" id="class_name" name="class_name" required v-model="project.class_name">
                                 </div>
                             </div>
 
@@ -94,7 +94,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Name</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_name" name="class_contact_person_name" >
+                                    <input type="text" class="form-control" id="class_contact_person_name" name="class_contact_person_name" v-model="project.class_cp_name">
                                 </div>
                             </div>
 
@@ -102,7 +102,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_phone" name="class_contact_person_phone" >
+                                    <input type="text" class="form-control" id="class_contact_person_phone" name="class_contact_person_phone" v-model="project.class_cp_phone" >
                                 </div>
                             </div>
 
@@ -110,7 +110,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person E-Mail</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_email" name="class_contact_person_email" >
+                                    <input type="text" class="form-control" id="class_contact_person_email" name="class_contact_person_email" v-model="project.class_cp_email">
                                 </div>
                             </div>
 
@@ -138,7 +138,7 @@
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input autocomplete="off" type="text" class="form-control datepicker" name="planned_start_date" id="planned_start_date" placeholder="Start Date">                                             
+                                        <input required autocomplete="off" type="text" class="form-control datepicker" name="planned_start_date" id="planned_start_date" placeholder="Start Date">                                             
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +150,7 @@
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input autocomplete="off" type="text" class="form-control datepicker" name="planned_end_date" id="planned_end_date" placeholder="End Date">                                                                                            
+                                        <input required autocomplete="off" type="text" class="form-control datepicker" name="planned_end_date" id="planned_end_date" placeholder="End Date">                                                                                            
                                     </div>
                                 </div>
                             </div>
@@ -158,12 +158,12 @@
                             <div class="form-group">
                                 <label for="planned_duration" class="col-sm-2 control-label">Duration</label>
                                 <div class="col-sm-5">
-                                    <input type="number" class="form-control" id="planned_duration" name="planned_duration" placeholder="Duration" >                                        
+                                    <input required type="number" class="form-control" id="planned_duration" name="planned_duration" placeholder="Duration" >                                        
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="planned_duration" class="col-sm-2 control-label">Upload Drawing</label>
+                                <label for="upload" class="col-sm-2 control-label">Upload Drawing</label>
                                 <div class="col-sm-2">
                                     <button type="button" class="btn btn-primary pull-right width100">UPLOAD</button>
                                 </div>
@@ -195,8 +195,14 @@ $(document).ready(function(){
         ships : @json($ships),
         ownerRep : "",
         project : {
-            number : "",
-            name : @json($project->name == null ? "": $project->name),   
+            number : @json($project->number == null ? "": $project->number),
+            name : @json($project->name == null ? "": $project->name),
+            flag : @json($project->flag == null ? "": $project->flag),
+            class_name : @json($project->class_name == null ? "": $project->class_name),
+            class_cp_name : @json($project->class_contact_person_name == null ? "": $project->class_contact_person_name),
+            class_cp_phone : @json($project->class_contact_person_phone == null ? "": $project->class_contact_person_phone),
+            class_cp_email : @json($project->class_contact_person_email == null ? "": $project->class_contact_person_email),
+            description : @json($project->description == null ? "": $project->description),
         },
         customer: "",
     };

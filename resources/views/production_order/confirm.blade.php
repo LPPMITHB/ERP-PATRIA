@@ -29,7 +29,7 @@
                             <tr>
                                 <td>Code</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->code}}</b></td>
+                                <td>&ensp;<b>{{$project->number}}</b></td>
                             </tr>
                             <tr>
                                 <td>Ship</td>

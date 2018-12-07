@@ -6,7 +6,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$project->code => route('project.show', ['id' => $project->id]),
+            'Project|'.$project->number => route('project.show', ['id' => $project->id]),
             'Select Work' => route('project.listWBS',['id'=>$project->id,'menu'=>'addWBS']),
             'Add Activities' => ""
         ]
@@ -28,7 +28,7 @@
                             <tr>
                                 <td>Code</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->code}}</b></td>
+                                <td>&ensp;<b>{{$project->number}}</b></td>
                             </tr>
                             <tr>
                                 <td>Ship</td>

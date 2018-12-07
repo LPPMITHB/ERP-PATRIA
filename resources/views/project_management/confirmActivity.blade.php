@@ -23,7 +23,7 @@
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Code</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->code}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Ship</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>

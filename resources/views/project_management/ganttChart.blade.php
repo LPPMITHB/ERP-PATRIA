@@ -7,7 +7,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$project->code => route('project.show',$project->id),
+            'Project|'.$project->number => route('project.show',$project->id),
             'Gantt Chart' => route('project.showGanttChart', ['id' => $project->id]),
         ]
     ]

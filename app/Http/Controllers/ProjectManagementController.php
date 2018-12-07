@@ -205,7 +205,7 @@ class ProjectManagementController extends Controller
         $array = [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$project->code => route('project.show',$project->id),
+            'Project|'.$project->number => route('project.show',$project->id),
             'Add WBS' => route('project.createWBS',$project->id),
         ];
         $iteration = 0;
@@ -392,7 +392,7 @@ class ProjectManagementController extends Controller
         DB::beginTransaction();
         try {
             $project = new Project;
-            $project->code =  $request->code;
+            $project->number =  $request->number;
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
@@ -440,7 +440,7 @@ class ProjectManagementController extends Controller
         $outstanding_item = Collection::make();
 
         $outstanding_item->push([
-                "id" => $project->code , 
+                "id" => $project->number , 
                 "parent" => "#",
                 "text" => $project->name,
                 "icon" => "fa fa-ship"
@@ -485,7 +485,7 @@ class ProjectManagementController extends Controller
                 if($work->progress == 100){
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#0b710b; font-weight:bold; color:white;"],
@@ -493,7 +493,7 @@ class ProjectManagementController extends Controller
                 }elseif($today>$work->planned_deadline && $work->progress != 100){
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:red; font-weight:bold; color:white;"],
@@ -501,7 +501,7 @@ class ProjectManagementController extends Controller
                 }elseif($today==$work->planned_deadline && $work->progress != 100){
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#f39c12; font-weight:bold; color:white;"],
@@ -509,7 +509,7 @@ class ProjectManagementController extends Controller
                 }else{
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#3db9d3; font-weight:bold; color:white;"],
@@ -830,7 +830,6 @@ class ProjectManagementController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|unique:pro_project,id,'.$id.'|string|max:255',
-            'description' => 'required',
             'customer' => 'required',
             'ship' => 'required',
             'planned_start_date' => 'required',

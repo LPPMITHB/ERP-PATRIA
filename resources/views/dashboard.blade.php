@@ -32,7 +32,7 @@
                                                       <h4>Project Code</h4>
                                                   </div>
                                                   <div class="col-md-4 col-xs-7 col-sm-8">
-                                                      <h4> : {{$project->code}}</h4>                
+                                                      <h4> : {{$project->number}}</h4>                
                                                   </div>
                                                   <div class="col-md-2 col-xs-5 col-sm-4">
                                                       <h4>Progress </h4>

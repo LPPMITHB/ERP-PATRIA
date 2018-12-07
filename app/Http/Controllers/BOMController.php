@@ -55,7 +55,7 @@ class BOMController extends Controller
         $wbs = Collection::make();
 
         $wbs->push([
-                "id" => $project->code , 
+                "id" => $project->number , 
                 "parent" => "#",
                 "text" => $project->name,
                 "icon" => "fa fa-ship"
@@ -77,7 +77,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
@@ -95,7 +95,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.create',$work->id)],
@@ -114,7 +114,7 @@ class BOMController extends Controller
         $wbs = Collection::make();
 
         $wbs->push([
-            "id" => $project->code , 
+            "id" => $project->number , 
             "parent" => "#",
             "text" => $project->name,
             "icon" => "fa fa-ship"
@@ -136,7 +136,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.show',$bom->id)],
@@ -153,7 +153,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                     ]);

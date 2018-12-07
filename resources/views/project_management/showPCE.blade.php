@@ -5,7 +5,7 @@
         'title' => 'Project Cost Evaluation » '.$project->name,
         'items' => [
             'Dashboard' => route('index'),
-            'Project|'.$project->code => route('project.show',$project->id),
+            'Project|'.$project->number => route('project.show',$project->id),
             'Project Cost Evaluation' => ""
         ]
     ]
@@ -22,7 +22,7 @@
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         
                         <div class="col-md-4 col-xs-6 no-padding">Code</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->code}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-4 col-xs-6 no-padding">Ship</div>
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->ship->name}}"><b>: {{$project->ship->name}}</b></div>

@@ -6,7 +6,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$project->code => route('project.show',$project->id),
+            'Project|'.$project->number => route('project.show',$project->id),
             'Add WBS' => ""
         ]
     ]
@@ -23,7 +23,7 @@
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Code</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->code}}</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Ship</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
