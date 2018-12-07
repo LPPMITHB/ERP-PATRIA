@@ -538,6 +538,7 @@ textarea {
   margin: 0 0 5px 0;
   white-space: nowrap;
   padding: 0;
+  text-align: left;
 }
 
 .small-box:hover .icon {
@@ -596,6 +597,9 @@ textarea {
   .table{
     max-width: 100%;
   }
+  .inner {
+    height: 140px;
+  }
 }
 
 @media only screen and (max-device-width: 500px) {
@@ -616,6 +620,9 @@ textarea {
   }
   .table{
     max-width: 200%;
+  }
+  .inner {
+    height: 140px;
   }
 }
 
