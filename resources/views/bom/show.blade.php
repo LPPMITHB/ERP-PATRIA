@@ -26,55 +26,55 @@
                     <div class="col-sm-12 no-padding"><b>Project Information</b></div>
 
                     <div class="col-xs-4 no-padding">Project Code</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->code}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->code}}"><b>: {{$modelBOM->project->code}}</b></div>
                     
                     <div class="col-xs-4 no-padding">Project Name</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->name}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->name}}"><b>: {{$modelBOM->project->name}}</b></div>
 
                     <div class="col-xs-4 no-padding">Ship Name</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->name}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->ship->name}}"><b>: {{$modelBOM->project->ship->name}}</b></div>
 
                     <div class="col-xs-4 no-padding">Ship Type</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->type}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->ship->type}}"><b>: {{$modelBOM->project->ship->type}}</b></div>
 
                     <div class="col-xs-4 no-padding">Customer</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->customer->name}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->customer->name}}"><b>: {{$modelBOM->project->customer->name}}</b></div>
                 </div>
 
                 <div class="col-xs-12 col-md-4">
                     <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                 
                     <div class="col-xs-4 no-padding">Code</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->code}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->work->code}}"><b>: {{$modelBOM->work->code}}</b></div>
                     
                     <div class="col-xs-4 no-padding">Name</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->name}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->work->name}}"><b>: {{$modelBOM->work->name}}</b></div>
 
                     <div class="col-xs-4 no-padding">Description</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->description}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->work->description}}"><b>: {{$modelBOM->work->description}}</b></div>
 
                     <div class="col-xs-4 no-padding">Deliverable</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->deliverables}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->work->deliverables}}"><b>: {{$modelBOM->work->deliverables}}</b></div>
 
                     <div class="col-xs-4 no-padding">Progress</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->progress}}%</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->work->progress}}%"><b>: {{$modelBOM->work->progress}}%</b></div>
                 </div>
 
                 <div class="col-xs-12 col-md-3 p-b-10">
                     <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
             
                     <div class="col-md-5 col-xs-4 no-padding">Code</div>
-                    <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->code}}</b></div>
+                    <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->code}}"><b>: {{$modelBOM->code}}</b></div>
                     
                     <div class="col-md-5 col-xs-4 no-padding">Description</div>
-                    <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->description}}</b></div>
+                    <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->description}}"><b>: {{$modelBOM->description}}</b></div>
 
                     <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                    <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$rap_number}}</b></a></div>
+                    <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$rap_number}}"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$rap_number}}</b></a></div>
 
                     @if(isset($modelPR))
                         <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$pr_number}}</b></a></div>
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis"  data-container="body" data-toggle="tooltip" title="{{$pr_number}}"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$pr_number}}</b></a></div>
                     @else
                         <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>

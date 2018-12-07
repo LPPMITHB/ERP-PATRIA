@@ -22776,6 +22776,10 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   z-index: 820;
 }
 
+.table {
+  width: 100% !important;
+}
+
 @media (max-width: 767px) {
   .content-wrapper,
   .main-footer {
@@ -23186,6 +23190,7 @@ table.dataTable thead .sorting_desc_disabled:after {
 
 .tableFixed {
   table-layout: fixed !important;
+  width: 98.7% !important;
 }
 
 .valignTop {
@@ -23384,10 +23389,6 @@ textarea {
 
 .indexTable {
   padding: 1px !important;
-}
-
-.table {
-  width: 100% !important;
 }
 
 /*

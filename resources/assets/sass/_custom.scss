@@ -13,6 +13,10 @@
   z-index: 820;
 }
 
+.table{
+    width:100% !important;
+}
+
 @media (max-width: 767px) {
 
   .content-wrapper,
@@ -383,7 +387,7 @@ a {
   padding: 0 !important;
 }
 
-.tdEllipsis {
+.tdEllipsis{
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap;
@@ -441,6 +445,7 @@ table.dataTable thead .sorting_desc_disabled:after {
 
 .tableFixed {
   table-layout: fixed !important;
+  width:98.7% !important;
 }
 
 .valignTop {
@@ -634,6 +639,4 @@ textarea {
     padding: 1px !important;
 }
 
-.table{
-    width:100% !important;
-}
+
