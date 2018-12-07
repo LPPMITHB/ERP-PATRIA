@@ -529,6 +529,48 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Master Data Service
+        $service = Menu::where('name','Service')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Index Service',
+            'menu_id' => $service,
+            'middleware' => 'index-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Service',
+            'menu_id' => $service,
+            'middleware' => 'create-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Service',
+            'menu_id' => $service,
+            'middleware' => 'show-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Service',
+            'menu_id' => $service,
+            'middleware' => 'edit-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Service',
+            'menu_id' => $service,
+            'middleware' => 'destroy-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Unit Of Measurement
         $uom = Menu::where('name','Unit Of Measurement')->select('id')->first()->id;
         DB::table('permissions')->insert([

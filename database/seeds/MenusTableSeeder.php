@@ -784,6 +784,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 2,
+            'name' => 'Service',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'service.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id' => $masterData,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
             'name' => 'Unit Of Measurement',
             'icon' => 'fa-wrench',
             'route_name'=> 'unit_of_measurement.index',

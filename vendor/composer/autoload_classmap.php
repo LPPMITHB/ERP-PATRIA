@@ -38,6 +38,7 @@ return array(
     'App\\Http\\Controllers\\RAPController' => $baseDir . '/app/Http/Controllers/RAPController.php',
     'App\\Http\\Controllers\\ResourceController' => $baseDir . '/app/Http/Controllers/ResourceController.php',
     'App\\Http\\Controllers\\RoleController' => $baseDir . '/app/Http/Controllers/RoleController.php',
+    'App\\Http\\Controllers\\ServiceController' => $baseDir . '/app/Http/Controllers/ServiceController.php',
     'App\\Http\\Controllers\\ShipController' => $baseDir . '/app/Http/Controllers/ShipController.php',
     'App\\Http\\Controllers\\StockManagementController' => $baseDir . '/app/Http/Controllers/StockManagementController.php',
     'App\\Http\\Controllers\\StorageLocationController' => $baseDir . '/app/Http/Controllers/StorageLocationController.php',

@@ -28,6 +28,7 @@ class RolesTableSeeder extends Seeder
                 'create-currencies' => true,'index-currencies' => true,'show-currencies' => true,'edit-currencies' => true,'destroy-currencies' => true,
                 'create-material' => true,'index-material' => true,'show-material' => true,'edit-material' => true,'destroy-material' => true,
                 'create-resource' => true,'index-resource' => true,'show-resource' => true,'edit-resource' => true,'destroy-resource' => true,
+                'create-service' => true,'index-service' => true,'show-service' => true,'edit-service' => true,'destroy-service' => true,
                 'create-unit-of-measurement' => true,'index-unit-of-measurement' => true,'show-unit-of-measurement' => true,'edit-unit-of-measurement' => true,'destroy-unit-of-measurement' => true,
                 'create-vendor' => true,'index-vendor' => true,'show-vendor' => true,'edit-vendor' => true,'destroy-vendor' => true,
                 'create-bom' => true,'index-bom' => true,'show-bom' => true,'edit-bom' => true,'destroy-bom' => true,

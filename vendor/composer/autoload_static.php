@@ -355,6 +355,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\Controllers\\RAPController' => __DIR__ . '/../..' . '/app/Http/Controllers/RAPController.php',
         'App\\Http\\Controllers\\ResourceController' => __DIR__ . '/../..' . '/app/Http/Controllers/ResourceController.php',
         'App\\Http\\Controllers\\RoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/RoleController.php',
+        'App\\Http\\Controllers\\ServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/ServiceController.php',
         'App\\Http\\Controllers\\ShipController' => __DIR__ . '/../..' . '/app/Http/Controllers/ShipController.php',
         'App\\Http\\Controllers\\StockManagementController' => __DIR__ . '/../..' . '/app/Http/Controllers/StockManagementController.php',
         'App\\Http\\Controllers\\StorageLocationController' => __DIR__ . '/../..' . '/app/Http/Controllers/StorageLocationController.php',

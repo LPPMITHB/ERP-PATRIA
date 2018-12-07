@@ -698,6 +698,22 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'resource.edit',
         ]);
 
+        $manageService = Menu::where('route_name','service.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageService,
+            'route_name' => 'service.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageService,
+            'route_name' => 'service.create',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageService,
+            'route_name' => 'service.edit',
+        ]);
+
         $assignResource = Menu::where('route_name','resource.assignResource')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $assignResource,

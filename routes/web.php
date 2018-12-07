@@ -261,6 +261,23 @@ Route::name('currencies.')->prefix('currencies')->group(function() {
     Route::delete('/{id}', 'CurrenciesController@destroy')->name('destroy');
 });
 
+//Service Routes
+Route::name('service.')->prefix('service')->group(function() {
+    Route::get('/create', 'ServiceController@create')->name('create')->middleware('can:create-service');
+
+    Route::get('/', 'ServiceController@index')->name('index')->middleware('can:index-service');
+
+    Route::get('/{id}', 'ServiceController@show')->name('show')->middleware('can:show-service');
+
+    Route::get('/{id}/edit', 'ServiceController@edit')->name('edit')->middleware('can:edit-service');
+
+    Route::patch('/{id}', 'ServiceController@update')->name('update')->middleware('can:edit-service');
+
+    Route::post('/', 'ServiceController@store')->name('store')->middleware('can:create-service');
+
+    Route::delete('/{id}', 'ServiceController@destroy')->name('destroy')->middleware('can:destroy-service');
+});
+
 //StorageLocation Routes
 Route::name('storage_location.')->prefix('storage_location')->group(function() {
     Route::get('/create', 'StorageLocationController@create')->name('create')->middleware('can:create-storage-location');
