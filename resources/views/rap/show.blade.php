@@ -34,8 +34,8 @@
                         <div class="col-xs-5 col-md-5">
                             Project Code
                         </div>
-                        <div class="col-xs-7 col-md-7 tdEllipsis">
-                            : <b> {{ $modelRap->project->code }} </b>
+                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRap->project->number}}">
+                            : <b> {{ $modelRap->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -99,7 +99,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                    <table class="table table-bordered showTable " id="boms-table">
+                    <table class="table table-bordered showTable tableFixed" id="boms-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -115,7 +115,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $rapDetail->material->name }}</td>
                                     <td>{{ $rapDetail->quantity }}</td>
-                                    <td>Rp.{{ number_format($rapDetail->material->cost_standard_price) }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price) }}</td>
                                 </tr>
                             @endforeach
@@ -140,7 +140,7 @@
             'lengthChange': false,
             'searching'   : false,
             'ordering'    : true,
-            'info'        : true,
+            'info'        : false,
             'autoWidth'   : false,
             'initComplete': function(){
             }

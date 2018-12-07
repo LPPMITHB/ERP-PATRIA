@@ -13,10 +13,6 @@
   z-index: 820;
 }
 
-.table{
-    width:100% !important;
-}
-
 @media (max-width: 767px) {
 
   .content-wrapper,
@@ -445,7 +441,6 @@ table.dataTable thead .sorting_desc_disabled:after {
 
 .tableFixed {
   table-layout: fixed !important;
-  width:98.7% !important;
 }
 
 .valignTop {
