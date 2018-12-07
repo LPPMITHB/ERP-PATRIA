@@ -1101,7 +1101,29 @@ class ProjectManagementController extends Controller
         $modelWBS = Work::where('project_id',$id)->where('work_id','!=',null)->get();
         $project = Project::findOrFail($id);
 
-        return view('project_management.showPCE', compact('modelWBS','project'));
+        $planned = Collection::make();
+
+        $actual = Collection::make();
+        foreach($project->works as $wbs){
+            $actualCostPerWbs = 0;
+            $plannedCostPerWbs = $wbs->bom != null ? $wbs->bom->rap != null ? $wbs->bom->rap->total_price : 0 : 0;
+
+            foreach($wbs->materialRequisitionDetails as $mrd){
+                $actualCostPerWbs = $mrd->material->cost_standard_price * $mrd->issued;
+            }
+
+            $planned->push([
+                "wbs_name" => $wbs->name,
+                "cost" => $plannedCostPerWbs,                   
+            ]);
+
+            $actual->push([
+                "wbs_name" => $wbs->name,
+                "cost" => $actualCostPerWbs,                   
+            ]);
+        }
+
+        return view('project_management.showPCE', compact('modelWBS','project','actual','planned'));
     }
 
     // Configuration WBS & Estimator

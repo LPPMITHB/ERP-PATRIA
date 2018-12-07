@@ -70,11 +70,13 @@
                                                 <th width="50%">Cost</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>WBS 001</td>
-                                                <td>Rp.{{number_format(120000000)}}</td>
-                                            </tr>
+                                        <tbody>   
+                                            @foreach ($planned as $data)
+                                                <tr>
+                                                    <td>{{$data['wbs_name']}}</td>
+                                                    <td>Rp {{number_format($data['cost'])}}</td>
+                                                </tr>    
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -87,11 +89,13 @@
                                                 <th width="50%">Cost</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>WBS 001</td>
-                                                <td>Rp.{{number_format(130000000)}}</td>
-                                            </tr>
+                                        <tbody>   
+                                            @foreach ($actual as $data)
+                                                <tr>
+                                                    <td>{{$data['wbs_name']}}</td>
+                                                    <td>Rp {{number_format($data['cost'])}}</td>
+                                                </tr>    
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>

@@ -33,8 +33,8 @@ class Bom extends Model
         return $this->belongsTo('App\Models\Work');
     }
 
-    public function RapDetails()
+    public function rap()
     {
-        return $this->hasMany('App\Models\RapDetail');
+        return $this->hasOne('App\Models\Rap');
     }
 }
