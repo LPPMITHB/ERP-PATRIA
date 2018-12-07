@@ -6,8 +6,8 @@
         'title' => 'Create Goods Receipt » Create Details',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Order' => route('goods_receipt.createGrWithRef'),
-            'Create Details' => route('goods_receipt.selectPO',$modelMR->id),
+            'Select Material Requisition' => route('goods_issue.createGiWithRef'),
+            'Create Details' => route('goods_issue.selectMR',$modelMR->id),
         ]
     ]
 )
@@ -62,7 +62,7 @@
                                         <th width="5%">No</th>
                                         <th width="45%">Material</th>
                                         <th width="15%">Quantity</th>
-                                        <th width="15%">Received</th>
+                                        <th width="15%">Issued</th>
                                         <th width="10%">Manage Picking</th>
                                     </tr>
                                 </thead>
