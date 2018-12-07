@@ -143,7 +143,7 @@ class MenusTableSeeder extends Seeder
         // ]);
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View RAP',
+            'name' => 'Manage RAP',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.indexSelectProject',
             'is_active' => true,
@@ -151,20 +151,7 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]);
-
-        // DB::table('menus')->insert([
-        //     'level' => 3,
-        //     'name' => 'View RAB',
-        //     'icon' => 'fa-file-text-o',
-        //     'route_name'=> 'rab.indexSelectProject',
-        //     'is_active' => true,
-        //     'roles' => 'ADMIN',
-        //     'menu_id'=>$costPlan,
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d')
-        // ]);
-        
+        ]);  
 
         DB::table('menus')->insert([
             'level' => 3,

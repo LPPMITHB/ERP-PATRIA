@@ -419,7 +419,7 @@ class RAPController extends Controller
         $modelRap = Rap::findOrFail($id);
         $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material')->get();
         $project = Project::where('id',$modelRap->project_id)->first();
-
+        
         return view('rap.edit', compact('modelRap','project','modelRAPD'));
     }
 
