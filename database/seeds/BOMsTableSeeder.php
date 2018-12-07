@@ -25,7 +25,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0002',
             'description' => 'BOM kedua',
             'project_id' => 1,
-            // 'work_id' => 4,
+            'work_id' => 4,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -34,7 +34,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0003',
             'description' => 'BOM ketiga',
             'project_id' => 1,
-            // 'work_id' => 3,
+            'work_id' => 3,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -70,7 +70,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0007',
             'description' => 'BOM ketujuh',
             'project_id' => 2,
-            // 'work_id' => 7,
+            'work_id' => 7,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -79,7 +79,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0008',
             'description' => 'BOM kedelapan',
             'project_id' => 2,
-            // 'work_id' => 7,
+            'work_id' => 7,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -88,7 +88,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0009',
             'description' => 'BOM kesembilan',
             'project_id' => 3,
-            // 'work_id' => 10,
+            'work_id' => 10,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -97,7 +97,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0010',
             'description' => 'BOM kesepuluh',
             'project_id' => 3,
-            // 'work_id' => 11,
+            'work_id' => 11,
             'user_id' => 5,
             'branch_id' => 1,
         ]);

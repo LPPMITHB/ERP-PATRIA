@@ -116,7 +116,7 @@ class PermissionsTableSeeder extends Seeder
         //     'updated_at' => date('Y-m-d'),
         // ]);
 
-        $viewRAB = Menu::where('name','View RAP')->select('id')->first()->id;
+        $viewRAB = Menu::where('name','Manage RAP')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Index Rab',
             'menu_id' => $viewRAB,

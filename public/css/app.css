@@ -23369,6 +23369,14 @@ textarea {
   }
 }
 
+.dataTables_filter {
+  display: none;
+}
+
+.indexTable {
+  padding: 1px !important;
+}
+
 /*
 This .scss loop will create "margin helpers" and "padding helpers" for use in your web projects.
 It will generate several classes such as:

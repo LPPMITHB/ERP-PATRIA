@@ -92,6 +92,35 @@
             var x = window.matchMedia("(max-width: 1024px)")
             myFunction(x) // Call listener function at run time
             x.addListener(myFunction) // Attach listener function on state changes
+
+            // table searching per coloumn
+            $('.tableIndex thead tr').clone(true).appendTo( '.tableIndex thead' );
+            $('.tableIndex thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+                var title = $(this).text();
+                if(title == 'No' || title == ""){
+                    $(this).html( '' );
+                }else{
+                    $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+                }
+
+                $( 'input', this ).on( 'keyup change', function () {
+                    if ( table.column(i).search() !== this.value ) {
+                        table
+                            .column(i)
+                            .search( this.value )
+                            .draw();
+                    }
+                });
+            });
+ 
+            var table = $('.tableIndex').DataTable( {
+                orderCellsTop   : true,
+                fixedHeader     : true,
+                paging          : true,
+                autoWidth       : true,
+                lengthChange    : false,
+            });
+
         </script>
         @stack('script')
     </body>
