@@ -24,7 +24,7 @@
             </div> <!-- /.box-header -->
             <div class="box-body">
                 {{-- <div style ="overflow:scroll"> --}}
-                <table class="table table-bordered table-hover tableFixed " id="customer-table">
+                <table class="table table-bordered table-hover" id="customer-table">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>

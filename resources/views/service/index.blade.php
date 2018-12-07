@@ -23,15 +23,14 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
-            {{-- <div style ="overflow:scroll"> --}}
-                <table class="table table-bordered table-hover tableFixed" id="service-table">
+                <table class="table table-bordered table-hover" id="service-table">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
-                            <th style="width: 15%">Code</th>
-                            <th style="width: 25%">Name</th>
-                            <th style="width: 25%">Description</th>
-                            <th style="width: 20%">Cost Standard Price</th>
+                            <th style="width: 10%">Code</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 30%">Description</th>
+                            <th style="width: 25%">Cost Standard Price</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
@@ -42,7 +41,8 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis">{{ $service->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->name}}">{{ $service->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->address}}">{{ $service->address }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->description}}">{{ $service->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->cost_standard_price}}">{{ $service->cost_standard_price }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('service.show', ['id'=>$service->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('service.edit',['id'=>$service->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
