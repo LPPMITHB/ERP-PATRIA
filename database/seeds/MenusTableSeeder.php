@@ -143,34 +143,21 @@ class MenusTableSeeder extends Seeder
         // ]);
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View RAP',
+            'name' => 'Manage RAP',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rab.indexSelectProject',
+            'route_name'=> 'rap.indexSelectProject',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]);
-
-        // DB::table('menus')->insert([
-        //     'level' => 3,
-        //     'name' => 'View RAB',
-        //     'icon' => 'fa-file-text-o',
-        //     'route_name'=> 'rab.indexSelectProject',
-        //     'is_active' => true,
-        //     'roles' => 'ADMIN',
-        //     'menu_id'=>$costPlan,
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d')
-        // ]);
-        
+        ]);  
 
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create Cost',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rab.selectProjectCost',
+            'route_name'=> 'rap.selectProjectCost',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$costPlan,
@@ -183,7 +170,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Assign Cost',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rab.selectProjectAssignCost',
+            'route_name'=> 'rap.selectProjectAssignCost',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$costPlan,
@@ -196,7 +183,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View Planned Cost',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rab.selectProjectViewCost',
+            'route_name'=> 'rap.selectProjectViewCost',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$costPlan,
@@ -208,7 +195,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View Remaining Material',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rab.selectProjectViewRM',
+            'route_name'=> 'rap.selectProjectViewRM',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$costPlan,

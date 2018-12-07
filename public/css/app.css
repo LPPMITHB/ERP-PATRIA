@@ -23279,6 +23279,7 @@ textarea {
   margin: 0 0 5px 0;
   white-space: nowrap;
   padding: 0;
+  text-align: left;
 }
 
 .small-box:hover .icon {
@@ -23306,6 +23307,87 @@ textarea {
 
 .dataTables_scroll {
   overflow: auto;
+}
+
+.mobile_device_potrait {
+  margin-left: 1px;
+}
+
+.gantt_chart_mobile_notification {
+  display: none;
+}
+
+@media only screen and (max-device-width: 1024px) {
+  .mobile_device_landscape {
+    margin-left: 15px;
+    margin-top: 5px;
+  }
+
+  .mobile_button_view {
+    display: none;
+  }
+
+  .gantt_chart_mobile {
+    display: block;
+  }
+
+  .gantt_chart_mobile_notification {
+    display: none;
+  }
+
+  .tableFixed {
+    width: 180%;
+  }
+
+  .table {
+    max-width: 100%;
+  }
+
+  .inner {
+    height: 140px;
+  }
+}
+
+@media only screen and (max-device-width: 500px) {
+  .mobile_device_potrait {
+    margin-top: 5px;
+  }
+
+  .gantt_chart_mobile {
+    display: none;
+  }
+
+  .gantt_chart_mobile_notification {
+    display: block;
+  }
+
+  .mobile_button_view {
+    display: none;
+  }
+
+  .tableFixed {
+    width: 300%;
+  }
+
+  .table {
+    max-width: 200%;
+  }
+
+  .inner {
+    height: 140px;
+  }
+}
+
+.dataTables_filter {
+  display: none;
+}
+
+.indexTable {
+  padding: 1px !important;
+}
+
+.table {
+  width: 100% !important;
 }
 
 /*

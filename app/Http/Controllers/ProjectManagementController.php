@@ -205,7 +205,7 @@ class ProjectManagementController extends Controller
         $array = [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$project->code => route('project.show',$project->id),
+            'Project|'.$project->number => route('project.show',$project->id),
             'Add WBS' => route('project.createWBS',$project->id),
         ];
         $iteration = 0;
@@ -214,7 +214,7 @@ class ProjectManagementController extends Controller
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
-        $array['Add Sub WBS|'.$work->code] = "";
+        $array[$work->code] = "";
         return view('project_management.createSubWBS', compact('project', 'work','array','structures','childWorks'));
     }
     
@@ -222,10 +222,10 @@ class ProjectManagementController extends Controller
     function getParents($work, $array_reverse, $project_id, $iteration) {
         if ($work) {
             if($work->work){
-                $array_reverse['Add Sub WBS|'.$work->code] = route('project.createSubWBS',[$project_id,$work->work->id]);
+                $array_reverse[$work->code] = route('project.createSubWBS',[$project_id,$work->work->id]);
                 return self::getParents($work->work,$array_reverse, $project_id, $iteration);
             }else{
-                $array_reverse['Add Sub WBS|'.$work->code] = route('project.createSubWBS',[$project_id,$work->id]);
+                $array_reverse[$work->code] = route('project.createSubWBS',[$project_id,$work->id]);
                 return $array_reverse;
             }
         }
@@ -392,7 +392,7 @@ class ProjectManagementController extends Controller
         DB::beginTransaction();
         try {
             $project = new Project;
-            $project->code =  $request->code;
+            $project->number =  $request->number;
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
@@ -440,7 +440,7 @@ class ProjectManagementController extends Controller
         $outstanding_item = Collection::make();
 
         $outstanding_item->push([
-                "id" => $project->code , 
+                "id" => $project->number , 
                 "parent" => "#",
                 "text" => $project->name,
                 "icon" => "fa fa-ship"
@@ -485,7 +485,7 @@ class ProjectManagementController extends Controller
                 if($work->progress == 100){
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#0b710b; font-weight:bold; color:white;"],
@@ -493,7 +493,7 @@ class ProjectManagementController extends Controller
                 }elseif($today>$work->planned_deadline && $work->progress != 100){
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:red; font-weight:bold; color:white;"],
@@ -501,7 +501,7 @@ class ProjectManagementController extends Controller
                 }elseif($today==$work->planned_deadline && $work->progress != 100){
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#f39c12; font-weight:bold; color:white;"],
@@ -509,7 +509,7 @@ class ProjectManagementController extends Controller
                 }else{
                     $outstanding_item->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name.' <b>| Progress : '.$work->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#3db9d3; font-weight:bold; color:white;"],
@@ -830,7 +830,6 @@ class ProjectManagementController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|unique:pro_project,id,'.$id.'|string|max:255',
-            'description' => 'required',
             'customer' => 'required',
             'ship' => 'required',
             'planned_start_date' => 'required',
@@ -1102,7 +1101,29 @@ class ProjectManagementController extends Controller
         $modelWBS = Work::where('project_id',$id)->where('work_id','!=',null)->get();
         $project = Project::findOrFail($id);
 
-        return view('project_management.showPCE', compact('modelWBS','project'));
+        $planned = Collection::make();
+
+        $actual = Collection::make();
+        foreach($project->works as $wbs){
+            $actualCostPerWbs = 0;
+            $plannedCostPerWbs = $wbs->bom != null ? $wbs->bom->rap != null ? $wbs->bom->rap->total_price : 0 : 0;
+
+            foreach($wbs->materialRequisitionDetails as $mrd){
+                $actualCostPerWbs = $mrd->material->cost_standard_price * $mrd->issued;
+            }
+
+            $planned->push([
+                "wbs_name" => $wbs->name,
+                "cost" => $plannedCostPerWbs,                   
+            ]);
+
+            $actual->push([
+                "wbs_name" => $wbs->name,
+                "cost" => $actualCostPerWbs,                   
+            ]);
+        }
+
+        return view('project_management.showPCE', compact('modelWBS','project','actual','planned'));
     }
 
     // Configuration WBS & Estimator

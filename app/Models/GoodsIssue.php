@@ -17,9 +17,4 @@ class GoodsIssue extends Model
     {
         return $this->hasMany('App\Models\GoodsIssueDetail');
     }
-
-    public function goodsIssues()
-    {
-        return $this->hasMany('App\Models\GoodsIssue');
-    }
 }

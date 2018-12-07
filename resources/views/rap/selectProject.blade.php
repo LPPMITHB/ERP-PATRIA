@@ -1,13 +1,13 @@
 @extends('layouts.main')
 
 @section('content-header')
-    @if($menu == "view_rab")
+    @if($menu == "view_rap")
         @breadcrumb(
             [
                 'title' => 'View RAP » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rab.indexSelectProject'),
+                    'Select Project' => route('rap.indexSelectProject'),
                 ]
             ]
         )
@@ -18,7 +18,7 @@
                 'title' => 'Create Cost » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rab.selectProjectCost'),
+                    'Select Project' => route('rap.selectProjectCost'),
                 ]
             ]
         )
@@ -29,7 +29,7 @@
                 'title' => 'Assign Cost » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rab.selectProjectAssignCost'),
+                    'Select Project' => route('rap.selectProjectAssignCost'),
                 ]
             ]
         )
@@ -40,7 +40,7 @@
                 'title' => 'View Planned Cost » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rab.selectProjectViewCost'),
+                    'Select Project' => route('rap.selectProjectViewCost'),
                 ]
             ]
         )
@@ -51,7 +51,7 @@
                 'title' => 'View Remaining Material » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rab.selectProjectViewRM'),
+                    'Select Project' => route('rap.selectProjectViewRM'),
                 ]
             ]
         )
@@ -63,11 +63,8 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header">
-                <h3 class="box-title">List of Projects</h3>
-            </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered" id="boms-table">
+                <table class="table table-bordered tablePaging" id="boms-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -84,29 +81,29 @@
                                 <td>{{ $project->name }}</td>
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->name }}</td>
-                                @if($menu == "create_rab")
+                                @if($menu == "create_rap")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rab.create', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.create', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
-                                @elseif($menu == "view_rab")
+                                @elseif($menu == "view_rap")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rab.index', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.index', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
                                 @elseif($menu == "create_cost")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rab.createCost', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.createCost', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
                                 @elseif($menu == "assign_cost")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rab.assignCost', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.assignCost', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
                                 @elseif($menu == "view_planned_cost")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rab.viewPlannedCost', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.viewPlannedCost', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
                                 @elseif($menu == "view_rm")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rab.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
                                 @endif
                             </tr>
@@ -125,18 +122,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#boms-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
-        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+        $('div.overlay').hide();
     });
 </script>
 @endpush

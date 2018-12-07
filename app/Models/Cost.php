@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cost extends Model
 {
-    protected $table = 'ref_rab_other_and_process_cost';
+    protected $table = 'trx_rap_other_cost';
 
     public function project()
     {

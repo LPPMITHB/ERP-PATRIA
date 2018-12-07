@@ -36,11 +36,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageProject,
             'route_name' => 'project.ganttChart',
         ]);
 
@@ -149,11 +144,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
-            'route_name' => 'bom.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBom,
             'route_name' => 'bom.edit',
         ]);
 
@@ -168,75 +158,70 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom.assignBom',
         ]);
 
-        // $createRab = Menu::where('route_name','rab.selectProject')->select('id')->first()->id;
+        // $createrap = Menu::where('route_name','rap.selectProject')->select('id')->first()->id;
         // DB::table('sidenav')->insert([
-        //     'menu_id' => $createRab,
-        //     'route_name' => 'rab.selectProject',
+        //     'menu_id' => $createrap,
+        //     'route_name' => 'rap.selectProject',
         // ]);
 
         // DB::table('sidenav')->insert([
-        //     'menu_id' => $createRab,
-        //     'route_name' => 'rab.create',
+        //     'menu_id' => $createrap,
+        //     'route_name' => 'rap.create',
         // ]);
 
         // DB::table('sidenav')->insert([
-        //     'menu_id' => $createRab,
-        //     'route_name' => 'rab.show',
+        //     'menu_id' => $createrap,
+        //     'route_name' => 'rap.show',
         // ]);
 
-        $viewRab = Menu::where('route_name','rab.indexSelectProject')->select('id')->first()->id;
+        $viewRap = Menu::where('route_name','rap.indexSelectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $viewRab,
-            'route_name' => 'rab.indexSelectProject',
+            'menu_id' => $viewRap,
+            'route_name' => 'rap.indexSelectProject',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $viewRab,
-            'route_name' => 'rab.index',
+            'menu_id' => $viewRap,
+            'route_name' => 'rap.index',
         ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewRab,
-            'route_name' => 'rab.show',
-        ]);
-
-        $createCost = Menu::where('route_name','rab.selectProjectCost')->select('id')->first()->id;
+        $createCost = Menu::where('route_name','rap.selectProjectCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createCost,
-            'route_name' => 'rab.selectProjectCost',
+            'route_name' => 'rap.selectProjectCost',
         ]);
         
         DB::table('sidenav')->insert([
             'menu_id' => $createCost,
-            'route_name' => 'rab.createCost',
+            'route_name' => 'rap.createCost',
         ]);
 
-        $assignCost = Menu::where('route_name','rab.selectProjectAssignCost')->select('id')->first()->id;
+        $assignCost = Menu::where('route_name','rap.selectProjectAssignCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $assignCost,
-            'route_name' => 'rab.selectProjectAssignCost',
+            'route_name' => 'rap.selectProjectAssignCost',
         ]);
         
         DB::table('sidenav')->insert([
             'menu_id' => $assignCost,
-            'route_name' => 'rab.assignCost',
+            'route_name' => 'rap.assignCost',
         ]);
 
-        $viewPlannedCost = Menu::where('route_name','rab.selectProjectViewCost')->select('id')->first()->id;
+        $viewPlannedCost = Menu::where('route_name','rap.selectProjectViewCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewPlannedCost,
-            'route_name' => 'rab.selectProjectViewCost',
+            'route_name' => 'rap.selectProjectViewCost',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $viewPlannedCost,
-            'route_name' => 'rab.viewPlannedCost',
+            'route_name' => 'rap.viewPlannedCost',
         ]);
 
-        $viewRemainingMaterial = Menu::where('route_name','rab.selectProjectViewRM')->select('id')->first()->id;
+        $viewRemainingMaterial = Menu::where('route_name','rap.selectProjectViewRM')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewRemainingMaterial,
-            'route_name' => 'rab.selectProjectViewRM',
+            'route_name' => 'rap.selectProjectViewRM',
         ]);
 
         $createPr = Menu::where('route_name','purchase_requisition.create')->select('id')->first()->id;
@@ -257,11 +242,6 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'purchase_requisition.index',
         ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewPr,
-            'route_name' => 'purchase_requisition.show',
-        ]);
-
         $createPo = Menu::where('route_name','purchase_order.selectPR')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createPo,
@@ -278,11 +258,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $viewPo,
             'route_name' => 'purchase_order.index',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewPo,
-            'route_name' => 'purchase_order.show',
         ]);
 
         $createGiWithRef = Menu::where('route_name','goods_issue.createGiWithRef')->select('id')->first()->id;
@@ -303,20 +278,10 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_issue.index',
         ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewGi,
-            'route_name' => 'goods_issue.show',
-        ]);
-
         $viewGr = Menu::where('route_name','goods_receipt.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewGr,
             'route_name' => 'goods_receipt.index',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewGr,
-            'route_name' => 'goods_receipt.show',
         ]);
 
         $createMrManually = Menu::where('route_name','material_requisition.create')->select('id')->first()->id;
@@ -336,12 +301,7 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $viewMr,
             'route_name' => 'material_requisition.index',
         ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewMr,
-            'route_name' => 'material_requisition.show',
-        ]);
-
+        
         $createGrWithRef = Menu::where('route_name','goods_receipt.createGrWithRef')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createGrWithRef,
@@ -468,6 +428,12 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'production_order.selectWOReport',
         ]);
 
+        $show = Menu::where('name','Production Planning & Execution')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $show,
+            'route_name' => 'production_order.index',
+        ]);
+
         $yardPlan = Menu::where('route_name','yard_plan.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $yardPlan,
@@ -488,11 +454,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $ship,
-            'route_name' => 'ship.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $ship,
             'route_name' => 'ship.edit',
         ]);
 
@@ -505,11 +466,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $branch,
             'route_name' => 'branch.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $branch,
-            'route_name' => 'branch.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -530,11 +486,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $company,
-            'route_name' => 'company.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $company,
             'route_name' => 'company.edit',
         ]);
 
@@ -547,11 +498,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $storageLocation,
             'route_name' => 'storage_location.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $storageLocation,
-            'route_name' => 'storage_location.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -572,11 +518,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $customer,
-            'route_name' => 'customer.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $customer,
             'route_name' => 'customer.edit',
         ]);
 
@@ -589,11 +530,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $material,
             'route_name' => 'material.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $material,
-            'route_name' => 'material.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -614,11 +550,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $uom,
-            'route_name' => 'unit_of_measurement.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $uom,
             'route_name' => 'unit_of_measurement.edit',
         ]);
 
@@ -631,11 +562,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $vendor,
             'route_name' => 'vendor.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $vendor,
-            'route_name' => 'vendor.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -656,11 +582,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $warehouse,
-            'route_name' => 'warehouse.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $warehouse,
             'route_name' => 'warehouse.edit',
         ]);
 
@@ -677,11 +598,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $yard,
-            'route_name' => 'yard.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $yard,
             'route_name' => 'yard.edit',
         ]);
 
@@ -694,11 +610,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $menus,
             'route_name' => 'menus.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $menus,
-            'route_name' => 'menus.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -725,11 +636,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $user,
-            'route_name' => 'user.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $user,
             'route_name' => 'user.edit',
         ]);
 
@@ -751,11 +657,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $role,
-            'route_name' => 'role.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $role,
             'route_name' => 'role.edit',
         ]);
 
@@ -768,11 +669,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $permission,
             'route_name' => 'permission.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $permission,
-            'route_name' => 'permission.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -795,11 +691,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $manageResource,
             'route_name' => 'resource.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageResource,
-            'route_name' => 'resource.show',
         ]);
 
         DB::table('sidenav')->insert([

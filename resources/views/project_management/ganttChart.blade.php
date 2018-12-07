@@ -7,7 +7,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$project->code => route('project.show',$project->id),
+            'Project|'.$project->number => route('project.show',$project->id),
             'Gantt Chart' => route('project.showGanttChart', ['id' => $project->id]),
         ]
     ]
@@ -16,12 +16,20 @@
 @endsection
 
 @section('content')
-<label>View by :</label>
-<label><input type="radio" name="scale" value="day" checked/>Day scale</label>
-<label><input type="radio" name="scale" value="month"/>Month scale</label>
-<label><input type="radio" name="scale" value="year"/>Year scale</label>
-<div class="row">
-    <div id="ganttChart" style='width:100%; height:490px;'></div>
+<div class="box-body gantt_chart_mobile">
+    <label>View by :</label>
+    <label><input type="radio" name="scale" value="day" checked/>Day scale</label>
+    <label><input type="radio" name="scale" value="month"/>Month scale</label>
+    <label><input type="radio" name="scale" value="year"/>Year scale</label>
+    <div class="row">
+        <div id="ganttChart" style='width:100%; height:490px;'></div>
+        
+    </div>
+</div>
+<div class="box">
+    <div class="box-body gantt_chart_mobile_notification">
+        <div class="col-xs-12 textCenter"><b>Please view Gantt Chart in Landscape Mode</b></div>
+    </div>
 </div>
 @verbatim
 <div id="confirm_activity">

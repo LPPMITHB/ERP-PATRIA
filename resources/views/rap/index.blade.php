@@ -6,8 +6,8 @@
         'title' => 'View RAP » Select Project » Select RAP',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.indexSelectProject'),
-            'Select RAP' => route('rab.index',$rabs[0]->project_id),
+            'Select Project' => route('rap.indexSelectProject'),
+            'Select RAP' => route('rap.index',$raps[0]->project_id),
         ]
     ]
 )
@@ -18,28 +18,29 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header">
-                <h3 class="box-title">List of Rencana Anggaran Pembangungan</h3>
-            </div> <!-- /.box-header -->
             <div class="box-body">
                 <table class="table table-bordered" id="boms-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="50%">Doc. Number</th>
-                            <th width="40%">Total Price</th>
+                            <th width="15%">Doc. Number</th>
+                            <th width="25%">Work</th>
+                            <th width="25%">BOM</th>
+                            <th width="25%">Total Price</th>
                             <th width="5%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($rabs as $rab)
+                        @foreach($raps as $rap)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $rab->number }}</td>
-                                <td>Rp.{{ number_format($rab->total_price) }}</td>
+                                <td>{{ $rap->number }}</td>
+                                <td>{{ $rap->bom->work->code }}</td>
+                                <td>{{ $rap->bom->code }}</td>
+                                <td>Rp.{{ number_format($rap->total_price) }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('rab.edit', ['id'=>$rab->id]) }}">EDIT</a>
-                                    <a class="btn btn-primary btn-xs" href="{{ route('rab.show', ['id'=>$rab->id]) }}">SELECT</a>
+                                    <a class="btn btn-primary btn-xs" href="{{ route('rap.edit', ['id'=>$rap->id]) }}">EDIT</a>
+                                    <a class="btn btn-primary btn-xs" href="{{ route('rap.show', ['id'=>$rap->id]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -60,7 +61,7 @@
         $('#boms-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
-            'searching'   : false,
+            'searching'   : true,
             'ordering'    : true,
             'info'        : true,
             'autoWidth'   : false,

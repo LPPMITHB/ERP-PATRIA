@@ -16,7 +16,7 @@ class CreateProProjectTable extends Migration
         //
         Schema::create('pro_project', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code')->unique();
+            $table->string('number')->unique();
             $table->unsignedInteger('ship_id');
             $table->unsignedInteger('customer_id');
             $table->string('name');

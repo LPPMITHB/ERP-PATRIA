@@ -13,7 +13,7 @@ class ProjectsTableSeeder extends Seeder
     {
 
         DB::table('pro_project')->insert([
-            'code' => 'PROJECT-01',
+            'number' => 'PROJECT-01',
             'name' => 'Tug Boat Project',
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,
@@ -32,7 +32,7 @@ class ProjectsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_project')->insert([
-            'code' => 'PROJECT-02',
+            'number' => 'PROJECT-02',
             'name' => 'Self Propelled Barge Project',
             'description' => 'kedua kali',
             // 'sales_order_id' => 1,
@@ -51,7 +51,7 @@ class ProjectsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_project')->insert([
-            'code' => 'PROJECT-03',
+            'number' => 'PROJECT-03',
             'name' => 'Offshore Supply Vessel Project',
             'description' => 'ketiga kali',
             // 'sales_order_id' => 1,
@@ -70,7 +70,7 @@ class ProjectsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_project')->insert([
-            'code' => 'PROJECT-04',
+            'number' => 'PROJECT-04',
             'name' => 'Deck Cargo Barge Project',
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,

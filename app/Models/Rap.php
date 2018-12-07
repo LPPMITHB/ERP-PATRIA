@@ -28,4 +28,9 @@ class Rap extends Model
         return $this->belongsTo('App\Models\Branch');
     }
 
+    public function bom()
+    {
+        return $this->hasOne('App\Models\Bom');
+    }
+
 }

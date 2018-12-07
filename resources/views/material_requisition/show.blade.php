@@ -6,7 +6,7 @@
         'title' => 'View Material Requisition » '.$modelMR->project->name,
         'items' => [
             'Dashboard' => route('index'),
-            'View Material Requisition' => route('rab.show',$modelMR->id),
+            'View Material Requisition' => route('material_requisition.show',$modelMR->id),
         ]
     ]
 )
@@ -24,7 +24,7 @@
                             <i class="fa fa-envelope"></i>
                         </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">PR Number</span>
+                            <span class="info-box-text">MR Number</span>
                             <span class="info-box-number">{{ $modelMR->number }}</span>
                         </div>
                     </div>

@@ -6,8 +6,9 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$project->code => route('project.show', ['id' => $project->id]),
-            'Edit Activities' => ""
+            'Project|'.$project->number => route('project.show', ['id' => $project->id]),
+            'Select WBS' => route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
+            'View Activities' => ""
         ]
     ]
 )
@@ -18,118 +19,89 @@
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header">
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-6 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Code</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Ship</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Customer</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-sm-6">
-                    <table class="tableFixed width100">
-                        <thead>
-                            <th style="width: 25%">Work Information</th>
-                            <th style="width: 3%"></th>
-                            <th></th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="">Name</td>
-                                <td>:</td>
-                                <td><b>{{$work->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Description</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Deliverables</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->deliverables}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Deadline</td>
-                                <td>:</td>
-                                <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td><b>{{$work->progress}} %</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-6 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Name</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->name}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Description</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->description}}"><b>: {{$work->description}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->deliverables}}"><b>: {{$work->deliverables}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Progress</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->progress}} %</b></div>
+                    </div>
                 </div>
+
             </div>
             @verbatim
             <div id="add_activity">
                 <div class="box-body">
                     <h4 class="box-title">List of Activities</h4>
-                    <table id="activity-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
+                    <table id="activity-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
-                                <th style="width: 4%">No</th>
-                                <th style="width: 14%">Name</th>
-                                <th style="width: 18%">Description</th>
+                                <th style="width: 5px">No</th>
+                                <th style="width: 15%">Name</th>
+                                <th style="width: 15%">Description</th>
                                 <th style="width: 10%">Start Date</th>
                                 <th style="width: 10%">End Date</th>
-                                <th style="width: 12%">Duration (Days)</th>
-                                <th style="width: 19%">Predecessor</th> 
-                                <th style="width: 10%"></th>
+                                <th style="width: 10%">Duration (Days)</th>
+                                <th style="width: 160px">Predecessor</th> 
+                                <th style="width: 85px"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in activities" class="popoverData"  data-content="" v-on:mouseover="dataForTooltip(data)" data-trigger="hover" rel="popover" data-placement="auto top" data-original-title="Details">
+                            <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }}</td>
@@ -143,7 +115,7 @@
                                 </template>
                                 <td class="textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createRouteView(data.id)" >VIEW</a>
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data,index)">EDIT</button>
+                                    <button class="btn btn-primary btn-xs mobile_button_view" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data,index)">EDIT</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -159,26 +131,28 @@
                                     <h4 class="modal-title">Predecessor Activities for <b id="activity_code"></b></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
-                                        <thead>
-                                            <tr>
-                                                <th class="p-l-5" style="width: 5%">No</th>
-                                                <th style="width: 16%">Code</th>
-                                                <th style="width: 26%">Name</th>
-                                                <th style="width: 30%">Description</th>
-                                                <th style="width: 23%">WBS Code</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(data,index) in predecessorTableView">
-                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                <td class="p-b-15 p-t-15">{{ data.code }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="box-body">
+                                        <table class="table table-bordered tableFixed">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 30px">No</th>
+                                                    <th>Code</th>
+                                                    <th style="width: 25%">Name</th>
+                                                    <th style="width: 30%">Description</th>
+                                                    <th>WBS Code</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(data,index) in predecessorTableView">
+                                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                    <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
@@ -245,7 +219,7 @@
                                     </div> 
 
                                             
-                                    <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                                    <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th class="p-l-5" style="width: 5%">No</th>
@@ -415,63 +389,6 @@ var vm = new Vue({
             }else{
                 this.editActivity.planned_end_date = "";
             }
-        },
-        dataForTooltip(data){
-            var status = "";
-            if(data.status == 1){
-                status = "Open";
-            }else if(data.status == 0){
-                status = "Closed";
-            }
-
-            var actual_duration = "-";
-            if(data.actual_duration != null){
-                actual_duration = data.actual_duration+" Days";
-            }
-
-            var actual_start_date = "-";
-            if(data.actual_start_date != null){
-                actual_start_date = data.actual_start_date;
-            }
-
-            var actual_end_date = "-";
-            if(data.actual_end_date != null){
-                actual_end_date = data.actual_end_date;
-            }
-
-            var text = '<table style="table-layout:fixed; width:100%"><thead><th style="width:35%">Attribute</th><th style="width:5%"></th><th>Value</th></thead><tbody><tr><td>Code</td><td>:</td><td>'+data.code+
-            '</td></tr><tr><td class="valignTop">Name</td><td class="valignTop" style="overflow-wrap: break-word;">:</td><td>'+data.name+
-            '</td></tr><tr><td class="valignTop">Description</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.description+
-            '</td></tr><tr><td>Status</td><td>:</td><td>'+status+
-            '</td></tr><tr><td>Actual Duration</td><td>:</td><td>'+actual_duration+
-            '</td></tr><tr><td>Actual Start Date</td><td>:</td><td>'+actual_start_date+
-            '</td></tr><tr><td>Actual End Date</td><td>:</td><td>'+actual_end_date+
-            '</td></tr><tr><td>Progress</td><td>:</td><td>'+data.progress+
-            '%</td></tr></tbody></table>'
-            
-            function handlerMouseOver(ev) {
-                $('.popoverData').popover({
-                    html: true,
-                });
-                var target = $(ev.target);
-                var target = target.parent();
-                if(target.attr('class')=="popoverData odd"||target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',text);
-                    $(target).popover('show');
-                }else{
-                    $('.popoverData').popover('hide');
-                }
-            }
-            $(".popoverData").mouseover(handlerMouseOver);
-
-            function handlerMouseOut(ev) {
-                var target = $(ev.target);
-                var target = target.parent(); 
-                if(target.attr('class')=="popoverData odd" || target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',"");
-                }
-            }
-            $(".popoverData").mouseout(handlerMouseOut);
         },
         getAllActivities(){
             window.axios.get('/project/getAllActivities/'+this.project_id).then(({ data }) => {

@@ -42,4 +42,9 @@ class Work extends Model
     {
         return $this->hasMany('App\Models\ResourceDetail');
     }
+
+    public function materialRequisitionDetails()
+    {
+        return $this->hasMany('App\Models\MaterialRequisitionDetail');
+    }
 }

@@ -42,6 +42,11 @@ class Project extends Model
     {
         return $this->hasMany('App\Models\PurchaseRequisition');
     }
+
+    public function materialRequisitions()
+    {
+        return $this->hasMany('App\Models\MaterialRequisition');
+    }
     
     public function purchaseOrders()
     {

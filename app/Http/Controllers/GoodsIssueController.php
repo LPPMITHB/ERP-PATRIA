@@ -75,7 +75,7 @@ class GoodsIssueController extends Controller
             }
             $this->checkStatusMR($datas->mr_id);
             DB::commit();
-            return redirect()->route('goods_issue.show',$GI->id)->with('success', 'Goods Receipt Created');
+            return redirect()->route('goods_issue.show',$GI->id)->with('success', 'Goods Issue Created');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('goods_issue.selectMR',$datas->mr_id)->with('error', $e->getMessage());

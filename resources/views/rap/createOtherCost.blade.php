@@ -2,10 +2,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Cost',
+        'title' => 'Create Other Cost',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.selectProjectCost'),
+            'Select Project' => route('rap.selectProjectCost'),
             'Create Cost' => ""
         ]
     ]
@@ -17,51 +17,37 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header p-b-0">
-                <div class="col-sm-6 p-l-0">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-xs-12 col-lg-4 col-md-12">    
+                    <div class="box-body">
+                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Code</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
+                        
+                        <div class="col-md-4 col-xs-4 no-padding">Ship</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Customer</div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+                    </div>
                 </div>
             </div>
             @verbatim
@@ -71,7 +57,6 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 20%">Type</th>
                                 <th style="width: 45%">Description</th>
                                 <th style="width: 20%">Cost</th>
                                 <th style="width: 10%"></th>
@@ -80,8 +65,6 @@
                         <tbody>
                             <tr v-for="(data,index) in costs">
                                 <td>{{ index + 1 }}</td>
-                                <td v-if="data.type == 0">Other Cost</td>
-                                <td v-else>Process Cost</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">Rp.{{ data.cost }}</td>
                                 <td class="p-l-0 textCenter">
@@ -94,12 +77,6 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft">
-                                    <selectize v-model="newCost.type" :settings="typeSettings">
-                                        <option value="0">Other Cost</option>
-                                        <option value="1">Process Cost</option>
-                                    </selectize>
-                                </td>
                                 <td class="p-l-0">
                                     <input v-model="newCost.description" class="form-control width100" rows="2" name="description" placeholder="Description">
                                 </td>
@@ -123,13 +100,6 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="form-group col-sm-12">
-                                            <label for="type" class="control-label">Type</label>
-                                            <selectize id="type" v-model="editCost.type" :settings="typeSettings">
-                                                <option value="0">Other Cost</option>
-                                                <option value="1">Process Cost</option>
-                                            </selectize>
-                                        </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
                                             <textarea id="description" v-model="editCost.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
@@ -172,7 +142,6 @@ var data = {
     works : [],
     newIndex : "", 
     newCost : {
-        type : "",
         description : "",
         cost : "",
         work_id : "",
@@ -180,16 +149,10 @@ var data = {
     },
     editCost : {
         cost_id : "",
-        type : "",
         description : "",
         cost : "",
         work_id : "",
         project_id : @json($project->id),
-    },
-    typeSettings: {
-        placeholder: 'Type',
-        plugins: ['dropdown_direction'],
-        dropdownDirection : 'down',
     },
     workSettings: {
         placeholder: 'Work (Optional)',
@@ -227,7 +190,6 @@ var vm = new Vue({
     methods:{
         openEditModal(data){
             this.editCost.cost_id = data.id;
-            this.editCost.type = data.type;
             this.editCost.description = data.description;
             this.editCost.work_id = data.work_id;
             this.editCost.cost = data.cost;
@@ -238,7 +200,7 @@ var vm = new Vue({
             });
         },
         getCosts(){
-            window.axios.get('/rab/getCosts/'+this.newCost.project_id).then(({ data }) => {
+            window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
                 this.costs = data;
                 this.newIndex = Object.keys(this.costs).length+1;
                 var dT = $('#cost-table').DataTable();
@@ -265,7 +227,7 @@ var vm = new Vue({
             var newCost = this.newCost;
             newCost.cost = newCost.cost.replace(/,/g , '');
             newCost = JSON.stringify(newCost);
-            var url = "{{ route('rab.storeCost') }}";
+            var url = "{{ route('rap.storeCost') }}";
             window.axios.post(url,newCost)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -283,7 +245,6 @@ var vm = new Vue({
                 }
                 
                 this.getCosts();
-                this.newCost.type = "";
                 this.newCost.description = "";
                 this.newCost.cost = "";
                 this.newCost.work_id = "";                
@@ -296,7 +257,7 @@ var vm = new Vue({
         update(){            
             var editCost = this.editCost;   
             editCost.cost = editCost.cost.replace(/,/g , '');        
-            var url = "/rab/updateCost/"+editCost.cost_id;
+            var url = "/rap/updateCost/"+editCost.cost_id;
             editCost = JSON.stringify(editCost);
             window.axios.patch(url,editCost)
             .then((response) => {
@@ -315,7 +276,6 @@ var vm = new Vue({
                 }
                 
                 this.getCosts();
-                this.newCost.type = "";
                 this.newCost.description = "";
                 this.newCost.cost = "";
                 this.newCost.work_id = "";

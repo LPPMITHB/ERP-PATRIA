@@ -90,7 +90,7 @@ class RAPController extends Controller
         $wbs = Collection::make();
 
         $wbs->push([
-                "id" => $project->code , 
+                "id" => $project->number , 
                 "parent" => "#",
                 "text" => $project->name,
                 "icon" => "fa fa-ship"
@@ -108,7 +108,7 @@ class RAPController extends Controller
             }else{
                 $wbs->push([
                     "id" => $work->code , 
-                    "parent" => $project->code,
+                    "parent" => $project->number,
                     "text" => $work->name,
                     "icon" => "fa fa-suitcase",
                     "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$work->id)],
@@ -147,7 +147,7 @@ class RAPController extends Controller
     {
         $project = Project::findOrFail($id);       
 
-        return view('rap.createCost', compact('project'));
+        return view('rap.createOtherCost', compact('project'));
     }
 
     public function assignCost($id)
@@ -176,7 +176,7 @@ class RAPController extends Controller
         $data = Collection::make();
 
         $data->push([
-            "id" => $project->code , 
+            "id" => $project->number , 
             "parent" => "#",
             "text" => $project->name.' <b>| Total Cost : Rp.'.number_format($totalCost).'</b>',
             "icon" => "fa fa-ship"
@@ -212,7 +212,7 @@ class RAPController extends Controller
             }else{
                 $data->push([
                     "id" => $work->code , 
-                    "parent" => $project->code,
+                    "parent" => $project->number,
                     "text" => $work->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
                     "icon" => "fa fa-suitcase"
                 ]);
@@ -247,7 +247,7 @@ class RAPController extends Controller
             if($cost->work_id == null){
                 $data->push([
                     "id" => 'COST'.$cost->id , 
-                    "parent" => $project->code,
+                    "parent" => $project->number,
                     "text" => ($cost->type == 0) ? 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>' : 'Process Cost - <b>Rp.'.number_format($cost->cost).'</b>' ,
                     "icon" => "fa fa-money"
                 ]);
@@ -312,7 +312,6 @@ class RAPController extends Controller
         DB::beginTransaction();
         try {
             $cost = new Cost;
-            $cost->type = $data['type'];
             $cost->description = $data['description'];
             $cost->cost = $data['cost'];
             $cost->project_id = $data['project_id'];
@@ -361,7 +360,6 @@ class RAPController extends Controller
         DB::beginTransaction();
         try {
             $cost = Cost::find($id);
-            $cost->type = $data['type'];
             $cost->description = $data['description'];
             $cost->cost = $data['cost'];
             $cost->project_id = $data['project_id'];
@@ -421,7 +419,7 @@ class RAPController extends Controller
         $modelRap = Rap::findOrFail($id);
         $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material')->get();
         $project = Project::where('id',$modelRap->project_id)->first();
-
+        
         return view('rap.edit', compact('modelRap','project','modelRAPD'));
     }
 

@@ -29,7 +29,6 @@
             }
         }
     }
-    
 @endphp
 <section class="sidebar">
 <ul class="sidebar-menu" data-widget="tree">
@@ -83,7 +82,7 @@
                                     @foreach($child as $child1)
                                     @if($menu3->id == $child1->id)
                                         <li class="{{ $menu3->id == $menuInfo['child'] ? 'active' : '' }}" data-toggle="tooltip" title="{{ $menu3->name }}" data-container="body" data-placement="right">
-                                        <a href="{{ Route::has($menu3->route_name) ? route($menu3->route_name) : '#' }}">
+                                            <a href="{{ Route::has($menu3->route_name) ? route($menu3->route_name) : '#' }}">
                                             <i class="fa {{ $menu3->icon }}"></i> 
                                             @if(strlen($menu3->name) > 18)
                                                 <span>{{ substr($menu3->name, 0, 18) }}...</span>

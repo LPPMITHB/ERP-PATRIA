@@ -55,7 +55,7 @@ class BOMController extends Controller
         $wbs = Collection::make();
 
         $wbs->push([
-                "id" => $project->code , 
+                "id" => $project->number , 
                 "parent" => "#",
                 "text" => $project->name,
                 "icon" => "fa fa-ship"
@@ -77,7 +77,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
@@ -95,7 +95,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.create',$work->id)],
@@ -114,7 +114,7 @@ class BOMController extends Controller
         $wbs = Collection::make();
 
         $wbs->push([
-            "id" => $project->code , 
+            "id" => $project->number , 
             "parent" => "#",
             "text" => $project->name,
             "icon" => "fa fa-ship"
@@ -136,7 +136,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.show',$bom->id)],
@@ -153,7 +153,7 @@ class BOMController extends Controller
                 }else{
                     $wbs->push([
                         "id" => $work->code , 
-                        "parent" => $project->code,
+                        "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                     ]);
@@ -212,7 +212,7 @@ class BOMController extends Controller
             }else{
                 self::saveBomDetail($bom,$datas->materials);
                 self::createRap($datas,$bom);
-                self::checkstock($bom);
+                self::checkStock($bom);
                 DB::commit();
                 return redirect()->route('bom.show', ['id' => $bom->id])->with('success', 'Bill Of Material Created');
             }
@@ -277,13 +277,25 @@ class BOMController extends Controller
      */
     public function edit($id)
     {
+        $pr_number = '-';
+        $rap_number = '-';
         $modelBOM = Bom::where('id',$id)->with('project')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material')->get();
         $materials = Material::orderBy('name')->get()->jsonSerialize();
         $project = $modelBOM->project;
         $project = Project::find($project->id)->with('ship','customer')->first();
 
-        return view('bom.edit', compact('modelBOM','materials','modelBOMDetail','project'));
+        $modelPR = PurchaseRequisition::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelPR)){
+            $pr_number = $modelPR->number;
+        }
+
+        $modelRAP = Rap::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelRAP)){
+            $rap_number = $modelRAP->number;
+        }
+
+        return view('bom.edit', compact('modelBOM','materials','modelBOMDetail','project','pr_number','rap_number','modelPR','modelRAP'));
     }
 
     /**
@@ -300,18 +312,31 @@ class BOMController extends Controller
         DB::beginTransaction();
         try {
             $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
-            $modelBOMDetail->material_id = $data['material_id'];
+            $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
+            // $modelBOMDetail->material_id = $data['material_id'];
             $modelBOMDetail->quantity = $data['quantityInt'];
 
             if(!$modelBOMDetail->save()){
-                return redirect()->route('bom.edit',$bom->id)->with('error','Failed to save, please try again !');
+                return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
             }else{
+                // update RAP
+                $modelRAP = Rap::where('bom_id',$modelBOMDetail->bom_id)->first();
+                foreach($modelRAP->rapDetails as $rapDetail){
+                    if($rapDetail->material_id == $modelBOMDetail->material_id){
+                        $rapDetail->quantity = $data['quantityInt'];
+                        $rapDetail->save();
+                    }
+                }
+                // update reserve mst_stock
+                $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
+                $modelStock->reserved += $diff;
+                $modelStock->save();
                 DB::commit();
                 return response(json_encode($modelBOMDetail),Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('bom.edit',$bom->id)->with('error', $e->getMessage());
+            return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error', $e->getMessage());
         }
     }
 

@@ -8,7 +8,7 @@
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
             'Project|'.$work->project->code => route('project.show',$work->project->id),
-            'Edit WBS' => route('project.indexWBS',$work->project->id),
+            'Select WBS' => route('project.indexWBS',$work->project->id),
             'View WBS|'.$work->code => ""
         ]
     ]
@@ -25,9 +25,9 @@
                 <table class="table table-bordered width100 showTable tableFixed">
                     <thead>
                         <tr>
-                            <th style="width: 5%">#</th>
-                            <th style="width: 35%">Attribute</th>
-                            <th style="width: 60%">Value</th>
+                            <th style="width: 10%">#</th>
+                            <th style="width: 40%">Attribute</th>
+                            <th style="width: 58%">Value</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@
                         <tr>
                             <td>5</td>
                             <td>Project</td>
-                            <td>{{ $work->project->code }} - {{ $work->project->name }}</td>
+                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $work->project->code }} - {{ $work->project->name }}">{{ $work->project->code }} - {{ $work->project->name }}</td>
                         </tr>
                         <tr>
                             <td>6</td>
@@ -78,7 +78,7 @@
                             <td>{{ $work->progress }} %</td>
                         </tr>
                         <tr>
-                            <td>10</td>
+                            <td >10</td>
                             <td>Status</td>
                             <td class="iconTd">
                                  @if ($work->status == 0)
