@@ -93,19 +93,19 @@
             myFunction(x) // Call listener function at run time
             x.addListener(myFunction) // Attach listener function on state changes
 
-            // table searching per coloumn
-            $('.tableIndex thead tr').clone(true).appendTo( '.tableIndex thead' );
-            $('.tableIndex thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            // table searching per coloumn with paging
+            $('.tablePaging thead tr').clone(true).appendTo( '.tablePaging thead' );
+            $('.tablePaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
                 var title = $(this).text();
                 if(title == 'No' || title == ""){
-                    $(this).html( '' );
+                    $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                 }else{
                     $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
                 }
 
                 $( 'input', this ).on( 'keyup change', function () {
-                    if ( table.column(i).search() !== this.value ) {
-                        table
+                    if ( tablePaging.column(i).search() !== this.value ) {
+                        tablePaging
                             .column(i)
                             .search( this.value )
                             .draw();
@@ -113,12 +113,40 @@
                 });
             });
  
-            var table = $('.tableIndex').DataTable( {
+            var tablePaging = $('.tablePaging').DataTable( {
                 orderCellsTop   : true,
                 fixedHeader     : true,
                 paging          : true,
                 autoWidth       : true,
                 lengthChange    : false,
+            });
+
+            // table searching per coloumn without paging
+            $('.tableNonPaging thead tr').clone(true).appendTo( '.tableNonPaging thead' );
+            $('.tableNonPaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+                var title = $(this).text();
+                if(title == 'No' || title == ""){
+                    $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+                }else{
+                    $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+                }
+
+                $( 'input', this ).on( 'keyup change', function () {
+                    if ( tableNonPaging.column(i).search() !== this.value ) {
+                        tableNonPaging
+                            .column(i)
+                            .search( this.value )
+                            .draw();
+                    }
+                });
+            });
+ 
+            var tableNonPaging = $('.tableNonPaging').DataTable( {
+                orderCellsTop   : true,
+                paging          : false,
+                autoWidth       : true,
+                lengthChange    : false,
+                info            : false,
             });
 
         </script>

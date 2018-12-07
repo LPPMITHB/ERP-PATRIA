@@ -64,7 +64,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tableIndex" id="boms-table">
+                <table class="table table-bordered tablePaging" id="boms-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -123,22 +123,6 @@
 <script>
     $(document).ready(function(){
         $('div.overlay').hide();
-        // $('.table').DataTable( {
-        //             orderCellsTop: true,
-        //             fixedHeader: true
-        //         });
-        // console.log(table);
-
-        // $('.table').DataTable({
-        //     'paging'        : true,
-        //     'lengthChange'  : false,
-        //     'searching'     : false,
-        //     'ordering'      : false,
-        //     'info'          : true,
-        //     'autoWidth'     : false,
-        //     'orderCellsTop' : true,
-        //     'fixedHeader'   : true
-        // });
     });
 </script>
 @endpush

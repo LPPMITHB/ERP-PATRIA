@@ -68,7 +68,7 @@
             @verbatim
             <div id="edit-rap">
                 <div class="box-body p-t-0 p-b-0">
-                    <table class="table table-bordered" id="rap-table">
+                    <table class="table table-bordered tableNonPagingVue">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -109,16 +109,33 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#rap-table').DataTable({
-            'paging'      : false,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : false,
-            'info'        : false,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').hide();
+        $('div.overlay').hide();
+
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'Material Name'){
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }else{
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tableNonPagingVue.column(i).search() !== this.value ) {
+                    tableNonPagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : true,
+            lengthChange    : false,
+            info            : false,
         });
     });
 
