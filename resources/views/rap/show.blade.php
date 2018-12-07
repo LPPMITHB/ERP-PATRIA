@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box box-blue">
             <div class="row">
-                <div class="col-sm-3 col-md-3">
+                <div class="col-sm-12 col-md-3">
                     <div class="info-box">
                         <span class="info-box-icon bg-blue">
                             <i class="fa fa-envelope"></i>
@@ -29,61 +29,77 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-6 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-5">
                             Project Code
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-7 tdEllipsis">
                             : <b> {{ $modelRap->project->code }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-5">
                             Project Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-7 tdEllipsis">
                             : <b> {{ $modelRap->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-5">
                             Customer Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-7 tdEllipsis">
                             : <b> {{ $modelRap->project->customer->name }} </b>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-5">
+                            Total Cost
+                        </div>
+                        <div class="col-xs-7 col-md-7 tdEllipsis">
+                            : <b>Rp.{{ number_format($modelRap->total_price) }} </b>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5 col-md-4 m-t-10 m-l-10">
+                    <div class="row">
+                        <div class="col-xs-5 col-md-4">
                             Ship Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-8 tdEllipsis">
                             : <b> {{ $modelRap->project->ship->name }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-4">
                             Ship Type
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-8 tdEllipsis">
                             : <b> {{ $modelRap->project->ship->type }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            Total Cost
+                        <div class="col-xs-5 col-md-4">
+                            Created At
                         </div>
-                        <div class="col-md-8">
-                            : <b>Rp.{{ number_format($modelRap->total_price) }} </b>
+                        <div class="col-xs-7 col-md-8 tdEllipsis">
+                            : <b>{{ $modelRap->created_at }} </b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-5 col-md-4">
+                            Created By
+                        </div>
+                        <div class="col-xs-7 col-md-8 tdEllipsis">
+                            : <b>{{ $modelRap->user->name }} </b>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                    <table class="table table-bordered showTable" id="boms-table">
+                    <table class="table table-bordered showTable " id="boms-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -117,6 +133,8 @@
 @push('script')
 <script>
     $(document).ready(function(){
+        $('div.overlay').hide();
+
         $('#boms-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -125,7 +143,6 @@
             'info'        : true,
             'autoWidth'   : false,
             'initComplete': function(){
-                $('div.overlay').remove();
             }
         });
     });
