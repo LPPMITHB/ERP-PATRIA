@@ -22,4 +22,9 @@ class MaterialRequisition extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function goodsIssues()
+    {
+        return $this->hasMany('App\Models\GoodsIssue');
+    }
 }
