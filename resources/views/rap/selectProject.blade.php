@@ -64,7 +64,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tablePaging" id="boms-table">
+                <table class="table table-bordered tablePaging">
                     <thead>
                         <tr>
                             <th width="5%">No</th>

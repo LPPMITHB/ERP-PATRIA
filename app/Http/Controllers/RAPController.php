@@ -418,14 +418,36 @@ class RAPController extends Controller
     {
         $modelRap = Rap::findOrFail($id);
         $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material')->get();
+        $modelBOM = Bom::where('id',$modelRap->bom_id)->first();
         $project = Project::where('id',$modelRap->project_id)->first();
         
-        return view('rap.edit', compact('modelRap','project','modelRAPD'));
+        return view('rap.edit', compact('modelRap','project','modelRAPD','modelBOM'));
     }
 
     public function update(Request $request, $id)
     {
-        //
+        $datas = json_decode($request->datas);
+        
+
+        DB::beginTransaction();
+        try {
+            foreach($datas as $data){
+                $modelRAPD = RapDetail::findOrFail($data->id);
+                $modelRAPD->price = str_replace(',', '', $data->priceTotal);
+                $modelRAPD->update();
+            }
+            $total_price = self::calculateTotalPrice($datas[0]->rap_id);
+
+            $modelRap = Rap::findOrFail($datas[0]->rap_id);
+            $modelRap->total_price = $total_price;
+            $modelRap->update();
+
+            DB::commit();
+            return redirect()->route('rap.show', ['id' => $datas[0]->rap_id])->with('success', 'RAP Updated !');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('rap.indexSelectProject')->with('error', $e->getMessage());
+        }
     }
 
     public function destroy($id)
