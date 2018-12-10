@@ -44,6 +44,12 @@ Auth::routes();
 
 // User Management Routes
 Route::name('user.')->prefix('user')->group(function() {
+    //Change Default Password
+    Route::get('/changeDefaultPassword', 'UserController@changeDefaultPassword')->name('changeDefaultPassword')->middleware('can:edit-user');   
+    
+    Route::patch('/updateDefaultPassword', 'UserController@updateDefaultPassword')->name('updateDefaultPassword')->middleware('can:edit-user');
+
+    //User
     Route::get('/create', 'UserController@create')->name('create')->middleware('can:create-user');
 
     Route::get('/', 'UserController@index')->name('index')->middleware('can:index-user');
@@ -51,7 +57,7 @@ Route::name('user.')->prefix('user')->group(function() {
     Route::get('/{id}', 'UserController@show')->name('show')->middleware('can:show-user');
 
     Route::get('/{id}/edit', 'UserController@edit')->name('edit')->middleware('can:edit-user');
-
+    
     Route::patch('/{id}', 'UserController@update')->name('update')->middleware('can:edit-user');
 
     Route::post('/', 'UserController@store')->name('store')->middleware('can:create-user');
@@ -61,6 +67,8 @@ Route::name('user.')->prefix('user')->group(function() {
     Route::get('/{id}/change', 'UserController@editPassword')->name('change_password')->middleware('can:edit-password');
 
     Route::patch('/{id}/update', 'UserController@updatePassword')->name('update_password')->middleware('can:edit-password');
+
+
 });
 
 // Role Management Routes

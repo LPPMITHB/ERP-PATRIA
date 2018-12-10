@@ -218,5 +218,25 @@ class UserController extends Controller
             DB::rollback();
             return redirect()->route('user.show',$user->id)->with('error', $e->getMessage());
         }
-    } 
+    }
+    
+    public function changeDefaultPassword(){
+        $configuration = Configuration::get('default-password');
+
+        return view('user.change_default_password',compact('configuration'));
+    }
+
+    public function updateDefaultPassword(Request $request){
+        $this->validate($request, [
+            'new_password' => 'required|string|min:6|confirmed',
+            'new_password_confirmation' => 'required',
+        ]);
+
+        $defaultPassword = Configuration::where('slug', 'default-password')->firstOrFail();
+        $array['password'] = $request->new_password;      
+        $defaultPassword->value = json_encode($array);
+        $defaultPassword->save();
+        
+        return redirect()->route('user.changeDefaultPassword')->with('success', 'Default Password Updated');
+    }
 }
