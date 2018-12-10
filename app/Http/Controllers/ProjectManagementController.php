@@ -388,11 +388,25 @@ class ProjectManagementController extends Controller
             'flag' => 'required',
             'class_name' => 'required'
         ]);
-
+        if($request->hasFile('drawing')){
+            // Get filename with the extension
+            $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
+            // Get just file name
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('drawing')->getClientOriginalExtension();
+            // File name to store
+            $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+            // Upload image
+            $path = $request->file('drawing')->storeAs('public/documents/project',$fileNameToStore);
+        }else{
+            $fileNameToStore = 'noimage.jpg';
+        }
         DB::beginTransaction();
         try {
             $project = new Project;
             $project->number =  $request->number;
+            $project->drawing = $fileNameToStore;
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
