@@ -17,6 +17,7 @@ class CreateProProjectTable extends Migration
         Schema::create('pro_project', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number')->unique();
+            $table->string('drawing')->nullable();
             $table->unsignedInteger('ship_id');
             $table->unsignedInteger('customer_id');
             $table->string('name');
@@ -54,7 +55,6 @@ class CreateProProjectTable extends Migration
      */
     public function down()
     {
-        //
         Schema::dropIfExists('pro_project');
     }
 }
