@@ -6,7 +6,7 @@
         'title' => 'Confirm Activities » Select Project',
         'items' => [
             'Dashboard' => route('index'),
-            'Projects' => route('project.index'),
+            'Projects' => route('activity.indexConfirm'),
         ]
     ]
 )
@@ -43,7 +43,7 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>
                                 <td>{{ $project->planned_end_date}}</td>
-                                <td><a href="{{ route('project.selectWBS', ['id'=>$project->id]) }}" class="btn btn-primary btn-xs">SELECT</a></td>
+                                <td><a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'confirmAct']) }}" class="btn btn-primary btn-xs">SELECT</a></td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -5,8 +5,8 @@
         'title' => 'Confirm Activities',
         'items' => [
             'Dashboard' => route('index'),
-            'View all Projects' => route('project.indexConfirm'),
-            'Select WBS' => route('project.selectWBS',['id'=>$project->id]),
+            'View all Projects' => route('activity.indexConfirm'),
+            'Select WBS' => route('activity.listWBS',['id'=>$project->id,'menu'=>'confirmAct']),
             'Confirm Activities' => ""
         ]
     ]
@@ -56,17 +56,17 @@
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->name}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Description</div>
-                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->description}}"><b>: {{$work->description}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->description}}"><b>: {{$wbs->description}}</b></div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
-                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->deliverables}}"><b>: {{$work->deliverables}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
                             @endphp
@@ -74,7 +74,7 @@
                         </div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Progress</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->progress}} %</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$wbs->progress}} %</b></div>
                     </div>
                 </div>
             </div>
@@ -168,7 +168,7 @@
                                                     <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                    <td class="p-b-15 p-t-15">{{ data.work.code }}</td>
+                                                    <td class="p-b-15 p-t-15">{{ data.wbs.code }}</td>
                                                     <td class="textCenter">
                                                         <template v-if="data.status == 0">
                                                             <i class='fa fa-check'></i>
@@ -245,7 +245,7 @@ $(document).ready(function(){
 });
 
 var data = {
-    work_id: @json($work->id),
+    wbs_id: @json($wbs->id),
     predecessorActivities : [],
     activities : [],
     confirmActivity : {
@@ -330,7 +330,7 @@ var vm = new Vue({
             this.predecessorTableView = [];
             if(data.predecessor != null){
                 this.havePredecessor = true;
-                window.axios.get('/project/getPredecessor/'+data.id).then(({ data }) => {
+                window.axios.get('/api/getPredecessor/'+data.id).then(({ data }) => {
                     this.predecessorActivities = data;
                 });
             }else{
@@ -362,65 +362,65 @@ var vm = new Vue({
                 this.confirmActivity.current_progress = 0;
             }
         },
-        dataForTooltip(data){
-            var status = "";
-            if(data.status == 1){
-                status = "Open";
-            }else if(data.status == 0){
-                status = "Closed";
-            }
+        // dataForTooltip(data){
+        //     var status = "";
+        //     if(data.status == 1){
+        //         status = "Open";
+        //     }else if(data.status == 0){
+        //         status = "Closed";
+        //     }
 
-            var actual_duration = "-";
-            if(data.actual_duration != null){
-                actual_duration = data.actual_duration+" Days";
-            }
+        //     var actual_duration = "-";
+        //     if(data.actual_duration != null){
+        //         actual_duration = data.actual_duration+" Days";
+        //     }
 
-            var actual_start_date = "-";
-            if(data.actual_start_date != null){
-                actual_start_date = data.actual_start_date;
-            }
+        //     var actual_start_date = "-";
+        //     if(data.actual_start_date != null){
+        //         actual_start_date = data.actual_start_date;
+        //     }
 
-            var actual_end_date = "-";
-            if(data.actual_end_date != null){
-                actual_end_date = data.actual_end_date;
-            }
+        //     var actual_end_date = "-";
+        //     if(data.actual_end_date != null){
+        //         actual_end_date = data.actual_end_date;
+        //     }
 
-            var text = '<table style="table-layout:fixed; width:100%"><thead><th style="width:35%">Attribute</th><th style="width:5%"></th><th>Value</th></thead><tbody><tr><td>Code</td><td>:</td><td>'+data.code+
-            '</td></tr><tr><td class="valignTop">Name</td><td class="valignTop" style="overflow-wrap: break-word;">:</td><td>'+data.name+
-            '</td></tr><tr><td class="valignTop">Description</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.description+
-            '</td></tr><tr><td>Status</td><td>:</td><td>'+status+
-            '</td></tr><tr><td>Actual Duration</td><td>:</td><td>'+actual_duration+
-            '</td></tr><tr><td>Actual Start Date</td><td>:</td><td>'+actual_start_date+
-            '</td></tr><tr><td>Actual End Date</td><td>:</td><td>'+actual_end_date+
-            '</td></tr><tr><td>Progress</td><td>:</td><td>'+data.progress+
-            '%</td></tr></tbody></table>'
+        //     var text = '<table style="table-layout:fixed; width:100%"><thead><th style="width:35%">Attribute</th><th style="width:5%"></th><th>Value</th></thead><tbody><tr><td>Code</td><td>:</td><td>'+data.code+
+        //     '</td></tr><tr><td class="valignTop">Name</td><td class="valignTop" style="overflow-wrap: break-word;">:</td><td>'+data.name+
+        //     '</td></tr><tr><td class="valignTop">Description</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.description+
+        //     '</td></tr><tr><td>Status</td><td>:</td><td>'+status+
+        //     '</td></tr><tr><td>Actual Duration</td><td>:</td><td>'+actual_duration+
+        //     '</td></tr><tr><td>Actual Start Date</td><td>:</td><td>'+actual_start_date+
+        //     '</td></tr><tr><td>Actual End Date</td><td>:</td><td>'+actual_end_date+
+        //     '</td></tr><tr><td>Progress</td><td>:</td><td>'+data.progress+
+        //     '%</td></tr></tbody></table>'
             
-            function handlerMouseOver(ev) {
-                $('.popoverData').popover({
-                    html: true,
-                });
-                var target = $(ev.target);
-                var target = target.parent();
-                if(target.attr('class')=="popoverData odd"||target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',text);
-                    $(target).popover('show');
-                }else{
-                    $('.popoverData').popover('hide');
-                }
-            }
-            $(".popoverData").mouseover(handlerMouseOver);
+        //     function handlerMouseOver(ev) {
+        //         $('.popoverData').popover({
+        //             html: true,
+        //         });
+        //         var target = $(ev.target);
+        //         var target = target.parent();
+        //         if(target.attr('class')=="popoverData odd"||target.attr('class')=="popoverData even"){
+        //             $(target).attr('data-content',text);
+        //             $(target).popover('show');
+        //         }else{
+        //             $('.popoverData').popover('hide');
+        //         }
+        //     }
+        //     $(".popoverData").mouseover(handlerMouseOver);
 
-            function handlerMouseOut(ev) {
-                var target = $(ev.target);
-                var target = target.parent(); 
-                if(target.attr('class')=="popoverData odd" || target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',"");
-                }
-            }
-            $(".popoverData").mouseout(handlerMouseOut);
-        },
+        //     function handlerMouseOut(ev) {
+        //         var target = $(ev.target);
+        //         var target = target.parent(); 
+        //         if(target.attr('class')=="popoverData odd" || target.attr('class')=="popoverData even"){
+        //             $(target).attr('data-content',"");
+        //         }
+        //     }
+        //     $(".popoverData").mouseout(handlerMouseOut);
+        // },
         getActivities(){
-            window.axios.get('/project/getActivities/'+this.work_id).then(({ data }) => {
+            window.axios.get('/api/getActivities/'+this.wbs_id).then(({ data }) => {
                 this.activities = data;
                 var dT = $('#activity-table').DataTable();
                 dT.destroy();
@@ -445,7 +445,7 @@ var vm = new Vue({
         },
         confirm(){            
             var confirmActivity = this.confirmActivity;
-            var url = "/project/updateActualActivity/"+confirmActivity.activity_id;
+            var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
             confirmActivity = JSON.stringify(confirmActivity);
             window.axios.patch(url,confirmActivity)
             .then((response) => {

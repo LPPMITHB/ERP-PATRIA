@@ -345,12 +345,12 @@
                     return text
                 },
                 openConfirmModal(data){
-                    window.axios.get('/project/getActivity/'+data).then(({ data }) => {
+                    window.axios.get('/api/getActivity/'+data).then(({ data }) => {
                         this.activity = data[0];
                         this.predecessorTableView = [];
                         if(this.activity.predecessor != null){
                             this.havePredecessor = true;
-                            window.axios.get('/project/getPredecessor/'+this.activity.id).then(({ data }) => {
+                            window.axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
                                 this.predecessorActivities = data;
                             });
                         }else{
@@ -384,7 +384,7 @@
                 },
                 confirm(){            
                     var confirmActivity = this.confirmActivity;
-                    var url = "/project/updateActualActivity/"+confirmActivity.activity_id;
+                    var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
                     confirmActivity = JSON.stringify(confirmActivity);
                     window.axios.patch(url,confirmActivity)
                     .then((response) => {
@@ -402,7 +402,7 @@
                             });
                         }
 
-                        window.axios.get('/project/getDataGantt/'+this.project_id).then(({ data }) => {
+                        window.axios.get('/api/getDataGantt/'+this.project_id).then(({ data }) => {
                             var tasks = {
                                 data:data.data,
                                 links:data.links

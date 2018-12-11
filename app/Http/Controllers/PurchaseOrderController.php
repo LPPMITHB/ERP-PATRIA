@@ -92,7 +92,7 @@ class PurchaseOrderController extends Controller
                 $POD->purchase_order_id = $PO->id;
                 $POD->quantity = $data->quantity;
                 $POD->resource_id = $data->resource_id;
-                $POD->work_id = $data->work_id;
+                $POD->wbs_id = $data->wbs_id;
                 $POD->total_price = $data->cost;
                 $POD->save();
 
@@ -135,7 +135,7 @@ class PurchaseOrderController extends Controller
                 $POD->quantity = $data->quantity;
                 $POD->material_id = $data->material_id;
                 $POD->purchase_requisition_detail_id = $data->id;
-                $POD->work_id = $data->work_id;
+                $POD->wbs_id = $data->wbs_id;
                 $POD->total_price = $data->material->cost_standard_price * $data->quantity;
                 $POD->save();
 

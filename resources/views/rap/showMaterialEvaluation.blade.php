@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Remaining Material » '.$work->bom->RabDetails[0]->rab->number,
+        'title' => 'View Remaining Material » '.$work->bom->RapDetails[0]->rap->number,
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rab.selectProjectViewRM'),

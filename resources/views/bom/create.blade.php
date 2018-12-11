@@ -212,7 +212,7 @@
         newIndex : 0, 
         submittedForm :{
             project_id : "",
-            work_id : "",
+            wbs_id : "",
             description : ""
         },
         input : {
@@ -312,7 +312,7 @@
                 this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
-                this.editInput.work_id = data.work_id;
+                this.editInput.wbs_id = data.wbs_id;
                 this.editInput.work_name = data.work_name;
                 this.editInput.index = index;
 
@@ -389,7 +389,7 @@
                         material.quantityInt = this.editInput.quantityInt;
                         material.quantity = this.editInput.quantity;
                         material.material_id = new_material_id;
-                        material.work_id = this.editInput.work_id;
+                        material.wbs_id = this.editInput.wbs_id;
 
                         window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
                             material.material_name = data.name;
@@ -442,7 +442,7 @@
         },
         created: function() {
             this.submittedForm.project_id = this.project.id;
-            this.submittedForm.work_id = this.work.id;          
+            this.submittedForm.wbs_id = this.work.id;          
 
             this.newIndex = this.materialTable.length + 1;
         }

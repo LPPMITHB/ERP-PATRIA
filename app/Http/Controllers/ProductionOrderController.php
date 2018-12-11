@@ -106,7 +106,7 @@ class ProductionOrderController extends Controller
         $project = Project::where('id',$modelPO->project_id)->with('customer','ship')->first();
 
         // tambahan material dari BOM
-        $modelBOM = Bom::where('work_id',$modelPO->work_id)->get();
+        $modelBOM = Bom::where('wbs_id',$modelPO->wbs_id)->get();
 
         $boms = Collection::make();
         foreach($modelBOM as $bom){
@@ -119,13 +119,13 @@ class ProductionOrderController extends Controller
                     ],
                     "quantity" => $bomDetail->quantity,
                     "material_id" => $bomDetail->material_id,
-                    "work_id" => $bomDetail->bom->work_id
+                    "wbs_id" => $bomDetail->bom->wbs_id
                 ]);
             }
         }
 
         // tambahan resource dari assign resource
-        $modelRD = ResourceDetail::where('work_id',$modelPO->work_id)->get();
+        $modelRD = ResourceDetail::where('wbs_id',$modelPO->wbs_id)->get();
 
         $resources = Collection::make();
         foreach($modelRD as $RD){
@@ -148,7 +148,7 @@ class ProductionOrderController extends Controller
         $project = Project::where('id',$modelPO->project_id)->with('customer','ship')->first();
 
         // tambahan material dari BOM
-        $modelBOM = Bom::where('work_id',$modelPO->work_id)->get();
+        $modelBOM = Bom::where('wbs_id',$modelPO->wbs_id)->get();
 
         $boms = Collection::make();
         foreach($modelBOM as $bom){
@@ -161,11 +161,11 @@ class ProductionOrderController extends Controller
                     ],
                     "quantity" => $bomDetail->quantity,
                     "material_id" => $bomDetail->material_id,
-                    "work_id" => $bomDetail->bom->work_id
+                    "wbs_id" => $bomDetail->bom->wbs_id
                 ]);
             }
         }
-        $modelRD = ResourceDetail::where('work_id',$modelPO->work_id)->get();
+        $modelRD = ResourceDetail::where('wbs_id',$modelPO->wbs_id)->get();
 
         $resources = Collection::make();
         foreach($modelRD as $RD){
@@ -194,8 +194,8 @@ class ProductionOrderController extends Controller
         $materials = Material::all()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
 
-        $modelBOM = Bom::where('work_id',$work->id)->get();
-        $modelRD = ResourceDetail::where('work_id',$work->id)->get();
+        $modelBOM = Bom::where('wbs_id',$work->id)->get();
+        $modelRD = ResourceDetail::where('wbs_id',$work->id)->get();
 
         return view('production_order.create', compact('work','project','materials','resources','modelBOM','modelRD'));
     }
@@ -218,7 +218,7 @@ class ProductionOrderController extends Controller
             $PO = new ProductionOrder;
             $PO->number = $po_number;
             $PO->project_id = $datas->project_id;
-            $PO->work_id = $datas->work_id;
+            $PO->wbs_id = $datas->wbs_id;
             $PO->status = 1;
             $PO->user_id = Auth::user()->id;
             $PO->branch_id = Auth::user()->branch->id;
@@ -344,7 +344,7 @@ class ProductionOrderController extends Controller
             $modelPOD = new ProductionOrderDetail;
             $modelPOD->production_order_id = $po_id;
             $modelPOD->material_id = $material->material_id;
-            $modelPOD->work_id = $material->work_id;
+            $modelPOD->wbs_id = $material->wbs_id;
             $modelPOD->quantity = $material->sugQuantity;
             $modelPOD->save();
         }

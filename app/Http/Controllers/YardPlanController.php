@@ -57,7 +57,7 @@ class YardPlanController extends Controller
             $yardPlan->planned_end_date= $datas->planned_end_date;
             $yardPlan->description = $datas->description;
             $yardPlan->project_id = $datas->project_id;
-            $yardPlan->work_id = $datas->work_id;
+            $yardPlan->wbs_id = $datas->wbs_id;
             $yardPlan->branch_id = Auth::user()->branch->id;
             $yardPlan->user_id = Auth::user()->id;
             $yardPlan->save();

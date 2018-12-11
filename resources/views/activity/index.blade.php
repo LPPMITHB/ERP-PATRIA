@@ -7,7 +7,7 @@
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
             'Project|'.$project->number => route('project.show', ['id' => $project->id]),
-            'Select WBS' => route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
+            'Select WBS' => route('activity.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
             'View Activities' => ""
         ]
     ]
@@ -57,17 +57,17 @@
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->name}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Description</div>
-                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->description}}"><b>: {{$work->description}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->description}}"><b>: {{$wbs->description}}</b></div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
-                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$work->deliverables}}"><b>: {{$work->deliverables}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
                             @endphp
@@ -75,7 +75,7 @@
                         </div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Progress</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$work->progress}} %</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$wbs->progress}} %</b></div>
                     </div>
                 </div>
 
@@ -115,7 +115,7 @@
                                 </template>
                                 <td class="textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createRouteView(data.id)" >VIEW</a>
-                                    <button class="btn btn-primary btn-xs mobile_button_view" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data,index)">EDIT</button>
+                                    <button class="btn btn-primary btn-xs mobile_button_view" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data)">EDIT</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -148,7 +148,7 @@
                                                     <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -235,7 +235,7 @@
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
                                     </table>                                
@@ -273,7 +273,7 @@ var data = {
     activities : [],
     allActivities : [],
     allActivitiesEdit: [],
-    work_id : @json($work->id),
+    wbs_id : @json($wbs->id),
     editActivity : {
         activity_id : "",
         name : "",
@@ -342,7 +342,7 @@ var vm = new Vue({
     }, 
     methods:{
         createRouteView(data){
-            return "/project/showActivity/"+data;
+            return "/activity/show/"+data;
         },
         refreshEdit() {
             this.editActivity.predecessor = null;
@@ -364,9 +364,8 @@ var vm = new Vue({
                 });
             }
         },
-        openModalEditActivity(data,index){
-            window.axios.get('/project/getAllActivities/'+this.project_id).then(({ data }) => {
-                data.splice(index, 1);
+        openModalEditActivity(data){
+            window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
                 this.allActivitiesEdit = data;
             });
             document.getElementById("edit_activity_code").innerHTML= data.code;
@@ -391,13 +390,13 @@ var vm = new Vue({
             }
         },
         getAllActivities(){
-            window.axios.get('/project/getAllActivities/'+this.project_id).then(({ data }) => {
+            window.axios.get('/api/getAllActivities/'+this.project_id).then(({ data }) => {
                 this.allActivities = data;
                 this.allActivitiesEdit = data;
             });
         },
         getActivities(){
-            window.axios.get('/project/getActivities/'+this.work_id).then(({ data }) => {
+            window.axios.get('/api/getActivities/'+this.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.getAllActivities();
                 $('#activity-table').DataTable().destroy();
@@ -419,7 +418,7 @@ var vm = new Vue({
         },
         update(){            
             var editActivity = this.editActivity;
-            var url = "/project/updateActivity/"+editActivity.activity_id;
+            var url = "/activity/update/"+editActivity.activity_id;
             editActivity = JSON.stringify(editActivity);
             $('div.overlay').show();            
             window.axios.patch(url,editActivity)

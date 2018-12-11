@@ -69,7 +69,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in works">
+                            <tr v-for="(data,index) in wbs">
                                 <td class="p-l-10">{{ index + 1 }}</td>
                                 <td class="tdEllipsis p-l-10">{{ data.name }}</td>
                                 <td class="tdEllipsis p-l-10">{{ data.description }}</td>
@@ -115,7 +115,7 @@
     });
 
     var data = {
-        works : @json($works),
+        wbs : @json($wbs),
         menu : @json($menu)
     };
 
@@ -137,11 +137,13 @@
             createActivityRoute(data){
                 var url = "";
                 if(this.menu == "addAct"){
-                    url = "/project/createActivities/"+data.id;
+                    url = "/activity/create/"+data.id;
                 }else if(this.menu == "mngNet"){
-                    url = "/project/manageNetwork/"+data.id;
+                    url = "/activity/manageNetwork/"+data.id;
                 }else if(this.menu == "viewAct"){
-                    url = "/project/indexActivities/"+data.id;
+                    url = "/activity/index/"+data.id;
+                }else if(this.menu == "confirmAct"){
+                    var url = "/activity/confirmActivity/"+data.id;
                 }
                 return url;
             },

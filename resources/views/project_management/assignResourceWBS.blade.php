@@ -232,7 +232,7 @@ var data = {
     resourceCategories : @json($resourceCategories),
     selected_resource_category : "",
     editWork : {
-        work_id: "",
+        wbs_id: "",
         name : "",
         description : "",
         deliverables : "",
@@ -311,21 +311,21 @@ var vm = new Vue({
     methods:{
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
-            this.editWork.work_id = data.id;
+            this.editWork.wbs_id = data.id;
             this.editWork.name = data.name;
             this.editWork.description = data.description;
             this.editWork.deliverables = data.deliverables;
             this.editWork.planned_deadline = data.planned_deadline;
             this.parent_work_deadline = "";
             this.works.forEach(work => {
-                if(work.id == data.work_id){
+                if(work.id == data.wbs_id){
                     this.parent_work_deadline = work.planned_deadline;
                 }
             });
             $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
         },
         assignResource(data){
-            this.editWork.work_id = data.id;
+            this.editWork.wbs_id = data.id;
             window.axios.get('/api/getAllResourcePM/'+data.id).then(({ data }) => {
                 this.selected_resource_category = data[0].categories;
                 if(data[0].resources.length > 0){
@@ -406,7 +406,7 @@ var vm = new Vue({
         },
         update(){            
             var editWork = this.editWork;
-            var url = "/project/updateWBS/"+editWork.work_id;
+            var url = "/project/updateWBS/"+editWork.wbs_id;
             editWork = JSON.stringify(editWork);
             $('div.overlay').show();            
             window.axios.patch(url,editWork)
@@ -440,7 +440,7 @@ var vm = new Vue({
                     var data = {};
                     data['selected_resource_category']= this.selected_resource_category;
                     data['dataResources']  = this.dataResources;
-                    var url = "/resource/storeResourceDetail/"+this.editWork.work_id;
+                    var url = "/resource/storeResourceDetail/"+this.editWork.wbs_id;
                     data = JSON.stringify(data);
                     $('div.overlay').show();            
                     window.axios.patch(url,data)
@@ -472,7 +472,7 @@ var vm = new Vue({
 
                 }else{
                     var selected_resource_category = this.selected_resource_category;
-                    var url = "/resource/storeResourceCategory/"+this.editWork.work_id;
+                    var url = "/resource/storeResourceCategory/"+this.editWork.wbs_id;
                     selected_resource_category = JSON.stringify(selected_resource_category);
                     $('div.overlay').show();            
                     window.axios.patch(url,selected_resource_category)

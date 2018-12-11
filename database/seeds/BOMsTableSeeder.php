@@ -16,7 +16,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM180001',
             'description' => 'BOM pertama',
             'project_id' => 1,
-            'work_id' => 1,
+            'wbs_id' => 1,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -34,7 +34,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM180003',
             'description' => 'BOM ketiga',
             'project_id' => 1,
-            'work_id' => 3,
+            'wbs_id' => 3,
             'user_id' => 5,
             'branch_id' => 1,
         ]);

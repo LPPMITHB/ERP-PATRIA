@@ -6,8 +6,8 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.selectProjectViewRM'),
-            'Select WBS' => route('rab.selectWBS',$project->id),
+            'Select Project' => route('rap.selectProjectViewRM'),
+            'Select WBS' => route('rap.selectWBS',$project->id),
         ]
     ]
 )

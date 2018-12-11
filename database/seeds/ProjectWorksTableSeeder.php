@@ -34,7 +34,7 @@ class ProjectWorksTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2018-9-30',
             'progress' => 0,
-            'work_id' => 1,
+            'wbs_id' => 1,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -62,7 +62,7 @@ class ProjectWorksTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2018-9-30',
             'progress' => 0,
-            'work_id' => 3,
+            'wbs_id' => 3,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -76,7 +76,7 @@ class ProjectWorksTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2018-9-30',
             'progress' => 0,
-            'work_id' => 4,
+            'wbs_id' => 4,
             'user_id' => 5,
             'branch_id' => 1,
         ]);

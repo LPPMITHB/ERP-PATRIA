@@ -3,13 +3,13 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View WBS » '.$work->code,
+        'title' => 'View WBS » '.$wbs->code,
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$work->project->code => route('project.show',$work->project->id),
-            'Select WBS' => route('project.indexWBS',$work->project->id),
-            'View WBS|'.$work->code => ""
+            'Project|'.$wbs->project->number => route('project.show',$wbs->project->id),
+            'Select WBS' => route('wbs.index',$wbs->project->id),
+            'View WBS|'.$wbs->code => ""
         ]
     ]
 )
@@ -34,56 +34,56 @@
                         <tr>
                             <td>1</td>
                             <td>Code</td>
-                            <td>{{ $work->code }}</td>
+                            <td>{{ $wbs->code }}</td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td>Name</td>
-                            <td>{{ $work->name }}</td>
+                            <td>{{ $wbs->name }}</td>
                         </tr>
                         <tr>
                             <td>3</td>
                             <td>Description</td>
-                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $work->description }}">{{ $work->description }}</td>
+                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $wbs->description }}">{{ $wbs->description }}</td>
                         </tr>
                         <tr>
                             <td>4</td>
                             <td>Deliverables</td>
-                            <td>{{ $work->deliverables }}</td>
+                            <td>{{ $wbs->deliverables }}</td>
                         </tr>
                         <tr>
                             <td>5</td>
                             <td>Project</td>
-                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $work->project->code }} - {{ $work->project->name }}">{{ $work->project->code }} - {{ $work->project->name }}</td>
+                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $wbs->project->number }} - {{ $wbs->project->name }}">{{ $wbs->project->number }} - {{ $wbs->project->name }}</td>
                         </tr>
                         <tr>
                             <td>6</td>
-                            <td>Parent Work</td>
-                            <td>{{ $work->work != null ? $work->work->code." - ".$work->work->name : "-" }}</td>
+                            <td>Parent WBS</td>
+                            <td>{{ $wbs->wbs != null ? $wbs->wbs->code." - ".$wbs->wbs->name : "-" }}</td>
                         </tr>
                         <tr>
                             <td>7</td>
                             <td>Planned Deadline</td>
-                            <td>{{ $work->planned_deadline }}</td>
+                            <td>{{ $wbs->planned_deadline }}</td>
                         </tr>
                         <tr>
                             <td>8</td>
                             <td>Actual Deadline</td>
-                            <td>{{ $work->actual_deadline != null ? $work->actual_deadline : '-' }}</td>
+                            <td>{{ $wbs->actual_deadline != null ? $wbs->actual_deadline : '-' }}</td>
                         </tr>
 
                         <tr>
                             <td>9</td>
                             <td>Progress</td>
-                            <td>{{ $work->progress }} %</td>
+                            <td>{{ $wbs->progress }} %</td>
                         </tr>
                         <tr>
                             <td >10</td>
                             <td>Status</td>
                             <td class="iconTd">
-                                 @if ($work->status == 0)
+                                 @if ($wbs->status == 0)
                                     <i class="fa fa-check"></i>
-                                @elseif ($work->status == 1)
+                                @elseif ($wbs->status == 1)
                                     <i class="fa fa-times"></i>
                                 @endif
                             </td>

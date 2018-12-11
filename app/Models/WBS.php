@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Work extends Model
+class WBS extends Model
 {
-    protected $table = 'pro_project_work';
+    protected $table = 'pro_wbs';
 
     public function project()
     {
@@ -15,22 +15,22 @@ class Work extends Model
   
     public function activities()
     {
-        return $this->hasMany('App\Models\Activity');
+        return $this->hasMany('App\Models\Activity', 'wbs_id');
     }
 
-    public function works() 
+    public function wbss() 
     {
-        return $this->hasMany(self::class);
+        return $this->hasMany(self::class, 'wbs_id');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo(self::class);
+        return $this->belongsTo(self::class, 'wbs_id');
     }
 
     public function bom()
     {
-        return $this->hasOne('App\Models\Bom');
+        return $this->hasOne('App\Models\Bom', 'wbs_id');
     }
 
     public function yardPlans()
@@ -45,6 +45,6 @@ class Work extends Model
 
     public function materialRequisitionDetails()
     {
-        return $this->hasMany('App\Models\MaterialRequisitionDetail');
+        return $this->hasMany('App\Models\MaterialRequisitionDetail', 'wbs_id');
     }
 }

@@ -3,13 +3,10 @@
 
 @breadcrumb(
     [
-        'title' => 'Change Password User',
-        'subtitle' => 'Change Password',
+        'title' => 'Change Default Password User',
         'items' => [
             'Dashboard' => route('index'),
-            'User' => route('user.index'),
-            $user->name => route('user.show',$user->id),
-            'Change Password' => route('user.change_password',$user->id),
+            'Change Default Password' => '',
         ]
     ]
 )
@@ -22,19 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <form class="form-horizontal" method="POST" action="{{ route('user.update_password',['id'=>$user->id]) }}">
+                <form class="form-horizontal" method="POST" action="{{ route('user.updateDefaultPassword')}}">
                     <input type="hidden" name="_method" value="PATCH">
                     @csrf
                     <div class="box-body">
@@ -43,7 +28,7 @@
                             <label for="current_password" class="col-sm-2 control-label">Current Password</label>
             
                             <div class="col-sm-10">
-                                <input type="password" class="form-control" id="current_password" name="current_password" required autofocus>
+                                <input disabled value="{{$configuration->password}}" type="text" class="form-control" id="current_password" name="current_password" required>
                             </div>
                         </div>
 
@@ -51,7 +36,7 @@
                             <label for="new_password" class="col-sm-2 control-label">New Password</label>
             
                             <div class="col-sm-10">
-                                <input type="password" class="form-control" id="new_password" name="new_password" required>
+                                <input type="password" class="form-control" id="new_password" name="new_password" required autofocus>
                             </div>
                         </div>
 

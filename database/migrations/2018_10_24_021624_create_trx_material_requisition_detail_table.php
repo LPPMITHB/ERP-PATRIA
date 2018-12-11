@@ -19,11 +19,11 @@ class CreateTrxMaterialRequisitionDetailTable extends Migration
             $table->integer('quantity');
             $table->integer('issued')->default(0);
             $table->unsignedInteger('material_id');
-            $table->unsignedInteger('work_id')->nullable();
+            $table->unsignedInteger('wbs_id')->nullable();
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');
-            $table->foreign('work_id')->references('id')->on('pro_project_work');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
             $table->foreign('material_requisition_id')->references('id')->on('trx_material_requisition');
         });
     }

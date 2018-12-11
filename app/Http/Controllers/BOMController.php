@@ -51,7 +51,7 @@ class BOMController extends Controller
     public function selectWBS($id)
     {
         $project = Project::find($id);
-        $works = $project->works;
+        $wbs = $project->wbs;
         $wbs = Collection::make();
 
         $wbs->push([
@@ -61,9 +61,9 @@ class BOMController extends Controller
                 "icon" => "fa fa-ship"
             ]);
     
-        foreach($works as $work){
+        foreach($wbs as $work){
             $bom_code = "";
-            $bom = Bom::where('work_id',$work->id)->first();
+            $bom = Bom::where('wbs_id',$work->id)->first();
             if($bom){
                 $bom_code = " - ".$bom->code;
                 if($work->work){
@@ -110,7 +110,7 @@ class BOMController extends Controller
     public function indexBom($id)
     {
         $project = Project::find($id);
-        $works = $project->works;
+        $wbs = $project->wbs;
         $wbs = Collection::make();
 
         $wbs->push([
@@ -120,9 +120,9 @@ class BOMController extends Controller
             "icon" => "fa fa-ship"
         ]);
     
-        foreach($works as $work){
+        foreach($wbs as $work){
             $bom_code = "";
-            $bom = Bom::where('work_id',$work->id)->first();
+            $bom = Bom::where('wbs_id',$work->id)->first();
             if($bom){
                 $bom_code = " - ".$bom->code;
                 if($work->work){
@@ -168,9 +168,9 @@ class BOMController extends Controller
     {
         $modelBOM = Bom::where('project_id',$id)->with('work')->get();
         $project = Project::findOrFail($id);
-        $works = Work::where('project_id',$id)->get();
+        $wbs = Work::where('project_id',$id)->get();
 
-        return view('bom.assignBom', compact('modelBOM','project','works'));
+        return view('bom.assignBom', compact('modelBOM','project','wbs'));
     }
 
     /**
@@ -204,7 +204,7 @@ class BOMController extends Controller
             $bom->code = $bom_code;
             $bom->description = $datas->description;
             $bom->project_id = $datas->project_id;
-            $bom->work_id = $datas->work_id;
+            $bom->wbs_id = $datas->wbs_id;
             $bom->branch_id = Auth::user()->branch->id;
             $bom->user_id = Auth::user()->id;
             if(!$bom->save()){
@@ -509,7 +509,7 @@ class BOMController extends Controller
                     $PRD = new PurchaseRequisitionDetail;
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->material_id = $bomDetail->material_id;
-                    $PRD->work_id = $bomDetail->bom->work_id;
+                    $PRD->wbs_id = $bomDetail->bom->wbs_id;
                     $PRD->quantity = $bomDetail->quantity;
                     $PRD->save();
                 }
@@ -520,7 +520,7 @@ class BOMController extends Controller
                 $PRD = new PurchaseRequisitionDetail;
                 $PRD->purchase_requisition_id = $PR->id;
                 $PRD->material_id = $bomDetail->material_id;
-                $PRD->work_id = $bomDetail->bom->work_id;
+                $PRD->wbs_id = $bomDetail->bom->wbs_id;
                 $PRD->quantity = $bomDetail->quantity;
                 $PRD->save();
 
