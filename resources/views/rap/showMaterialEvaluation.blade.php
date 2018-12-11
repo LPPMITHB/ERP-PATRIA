@@ -2,11 +2,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Remaining Material » '.$work->bom->RapDetails[0]->rap->number,
+        'title' => 'View Remaining Material » '.$wbs->bom->rap->number,
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.selectProjectViewRM'),
-            'Select WBS' => route('rab.selectWBS',$project->id),
+            'Select Project' => route('rap.selectProjectViewRM'),
+            'Select WBS' => route('rap.selectWBS',$project->id),
             'Show Remaining Material' => ""
         ]
     ]
@@ -64,27 +64,27 @@
                             <tr>
                                 <td>Code</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->code}}</b></td>
+                                <td>&ensp;<b>{{$wbs->code}}</b></td>
                             </tr>
                             <tr>
                                 <td>Name</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->name}}</b></td>
+                                <td>&ensp;<b>{{$wbs->name}}</b></td>
                             </tr>
                             <tr>
                                 <td>Description</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->description}}</b></td>
+                                <td>&ensp;<b>{{$wbs->description}}</b></td>
                             </tr>
                             <tr>
                                 <td>Deliverable</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->deliverables}}</b></td>
+                                <td>&ensp;<b>{{$wbs->deliverables}}</b></td>
                             </tr>
                             <tr>
                                 <td>Progress</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->progress}} %</b>
+                                <td>&ensp;<b>{{$wbs->progress}} %</b>
                                 </td>
                             </tr>
                         </tbody>
@@ -105,41 +105,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>MT0001 - ROUND BAR</td>
-                            <td>135</td>
-                            <td>30</td>
-                            <td>105</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>MT0002 - STEEL PLATE</td>
-                            <td>207</td>
-                            <td>57</td>
-                            <td>150</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>MT0003 - GRAB RAIL</td>
-                            <td>100</td>
-                            <td>23</td>
-                            <td>77</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>MT0004 - STEEL PLATE GRADE A</td>
-                            <td>25</td>
-                            <td>23</td>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>MT0005 - L 150x90x9</td>
-                            <td>350</td>
-                            <td>20</td>
-                            <td>330</td>
-                        </tr>
+                        @php($counter = 1)
+                        @foreach ($materialEvaluation as $data)
+                            <tr>
+                                <td>{{ $counter++ }}</td>
+                                <td>{{$data['material']}}</td>
+                                <td>{{$data['quantity']}}</td>
+                                <td>{{$data['used']}}</td>
+                                <td>{{$data['quantity'] - $data['used']}}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

@@ -3,12 +3,12 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create RAB » '.$project->name.' » Select Bill of Materials',
+        'title' => 'Create RAP » '.$project->name.' » Select Bill of Materials',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.selectProject'),
-            'Select Bill of Materials' => route('rab.create', ['id' => $project->id]),
+            'Select Project' => route('rap.selectProject'),
+            'Select Bill of Materials' => route('rap.create', ['id' => $project->id]),
         ]
     ]
 )
@@ -19,10 +19,10 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="create-rab" class="form-horizontal" method="POST" action="{{ route('rab.store') }}">
+            <form id="create-rap" class="form-horizontal" method="POST" action="{{ route('rap.store') }}">
             @csrf
                 @verbatim
-                <div id="rab">
+                <div id="rap">
                     <div class="box-body">
                         <table class="table table-bordered" id="boms-table">
                             <thead>
@@ -65,7 +65,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-rab');
+    const form = document.querySelector('form#create-rap');
 
     $(document).ready(function(){
         $('#boms-table').DataTable({
@@ -91,7 +91,7 @@
     }
 
     var app = new Vue({
-        el : '#rab',
+        el : '#rap',
         data : data,
         computed:{
             createOk: function(){

@@ -24,7 +24,7 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="15%">Doc. Number</th>
-                            <th width="25%">Work</th>
+                            <th width="25%">WBS</th>
                             <th width="25%">BOM</th>
                             <th width="25%">Total Price</th>
                             <th width="5%"></th>

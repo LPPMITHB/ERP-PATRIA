@@ -53,39 +53,14 @@
                     </div>
                 </div>
             </div>
-            @verbatim
-            <div id="wbs">
+            {{-- <div id="wbs"> --}}
                 <div class="box-body">
                     <h4 class="box-title">Work Breakdown Structures</h4>
-                    <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                        <thead>
-                            <tr>
-                                <th style="width: 15px">No</th>
-                                <th style="width: 20%">Name</th>
-                                <th style="width: 30%">Description</th>
-                                <th style="width: 20%">Deliverables</th>
-                                <th style="width: 85px">Deadline</th>
-                                <th style="width: 85px"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data,index) in wbs">
-                                <td class="p-l-10">{{ index + 1 }}</td>
-                                <td class="tdEllipsis p-l-10">{{ data.name }}</td>
-                                <td class="tdEllipsis p-l-10">{{ data.description }}</td>
-                                <td class="p-l-10">{{ data.deliverables }}</td>
-                                <td class="p-l-10">{{ data.planned_deadline }}</td>
-                                <td class="textCenter">
-                                    <a class="btn btn-primary btn-xs" :href="createActivityRoute(data)">
-                                        SELECT
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id="treeview">
+                    
+                    </div>
                 </div>
-            </div>
-            @endverbatim
+            {{-- </div> --}}
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
@@ -112,42 +87,33 @@
             }
         });
         jQuery('#wbs-table').wrap('<div class="dataTables_scroll" />');
-    });
 
-    var data = {
-        wbs : @json($wbs),
-        menu : @json($menu)
-    };
-
-    Vue.directive('tooltip', function(el, binding){
-        $(el).tooltip({
-            title: binding.value,
-            placement: binding.arg,
-            trigger: 'hover'             
-        })
-    })
-
-    var vm = new Vue({
-        el: '#wbs',
-        data: data,
-        methods:{
-            tooltipText: function(text) {
-                return text
+        var data = @json($dataWbs);
+        
+        $('#treeview').jstree({
+            "core": {
+                'data': data,
+                "check_callback": true,
+                "animation": 200,
+                "dblclick_toggle": false,
+                "keep_selected_style": false
             },
-            createActivityRoute(data){
-                var url = "";
-                if(this.menu == "addAct"){
-                    url = "/activity/create/"+data.id;
-                }else if(this.menu == "mngNet"){
-                    url = "/activity/manageNetwork/"+data.id;
-                }else if(this.menu == "viewAct"){
-                    url = "/activity/index/"+data.id;
-                }else if(this.menu == "confirmAct"){
-                    var url = "/activity/confirmActivity/"+data.id;
+            "plugins": ["dnd", "contextmenu"],
+            "contextmenu": {
+                "select_node": false, 
+                "show_at_node": false,
+            }
+            }).bind("changed.jstree", function (e, data) {
+                if(data.node) {
+                document.location = data.node.a_attr.href;
                 }
-                return url;
-            },
-        },
+            }).bind("loaded.jstree", function (event, data) {
+                // you get two params - event & data - check the core docs for a detailed description
+                $(this).jstree("open_all");
+            });
+
+        $('div.overlay').hide();
     });
+
 </script>
 @endpush

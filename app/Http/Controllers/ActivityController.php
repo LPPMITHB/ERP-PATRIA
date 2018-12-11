@@ -16,20 +16,55 @@ use Auth;
 class ActivityController extends Controller
 {
     public function listWBS($id, $menu){
-        $wbs = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $id)->with('wbs')->get();
         $project = Project::find($id);
+        $wbss = $project->wbss;
+        $dataWbs = Collection::make();
 
-        if($menu == "addAct"){
-            $menuTitle = "Add Activities » Select Work";
-        }elseif($menu == "mngNet"){
-            $menuTitle = "Manage Network » Select Work";
-        }elseif($menu == "viewAct"){
-            $menuTitle = "View Activities » Select Work";
-        }else{
-            $menuTitle = "";
-        }
+        $dataWbs->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
         
-        return view('activity.listWBS', compact('wbs','project','menu','menuTitle'));
+        if($menu == "addAct"){
+            $route = "/activity/create/";
+            $menuTitle = "Add Activities » Select WBS";
+        }elseif($menu == "mngNet"){
+            $route = "/activity/manageNetwork/";
+            $menuTitle = "Manage Network » Select WBS";
+        }elseif($menu == "viewAct"){
+            $route = "/activity/index/";
+            $menuTitle = "View Activities » Select WBS";
+        }elseif($menu == "confirmAct"){
+            $route = "/activity/confirmActivity/";
+            $menuTitle = "Confirm Activity » Select WBS";
+        }else{
+            $route = "";
+            $menuTitle = "Select WBS";
+        }
+    
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                $dataWbs->push([
+                    "id" => $wbs->code , 
+                    "parent" => $wbs->wbs->code,
+                    "text" => $wbs->name,
+                    "icon" => "fa fa-suitcase",
+                    "a_attr" =>  ["href" => $route.$wbs->id],
+                ]);
+            }else{
+                $dataWbs->push([
+                    "id" => $wbs->code , 
+                    "parent" => $project->number,
+                    "text" => $wbs->name,
+                    "icon" => "fa fa-suitcase",
+                    "a_attr" =>  ["href" => $route.$wbs->id],
+                ]);
+            } 
+        } 
+        
+        return view('activity.listWBS', compact('dataWbs','project','menu','menuTitle'));
     }
 
     public function create($id)
@@ -62,6 +97,7 @@ class ActivityController extends Controller
             if(count($data['predecessor']) >0){
                 $activity->predecessor = $stringPredecessor;
             }
+            $activity->weight = $data['weight']; 
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
@@ -93,6 +129,7 @@ class ActivityController extends Controller
 
             $activity->planned_start_date = $planStartDate->format('Y-m-d');
             $activity->planned_end_date = $planEndDate->format('Y-m-d');
+            $activity->weight = $data['weight']; 
             if($data['predecessor'] != null){
                 $stringPredecessor = '['.implode(',', $data['predecessor']).']';
                 $activity->predecessor = $stringPredecessor;

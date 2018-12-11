@@ -61,9 +61,9 @@ class BOMController extends Controller
                 "icon" => "fa fa-ship"
             ]);
     
-        foreach($wbs as $work){
+        foreach($wbss as $wbs){
             $bom_code = "";
-            $bom = Bom::where('wbs_id',$work->id)->first();
+            $bom = Bom::where('wbs_id',$wbs->id)->first();
             if($bom){
                 $bom_code = " - ".$bom->code;
                 if($work->wbs){
@@ -78,7 +78,7 @@ class BOMController extends Controller
                     $data->push([
                         "id" => $work->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                     ]);
@@ -90,20 +90,19 @@ class BOMController extends Controller
                         "parent" => $work->wbs->code,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 }else{
                     $data->push([
                         "id" => $work->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 } 
             } 
         }
-
         return view('bom.selectWBS', compact('project','data'));
     }
 
@@ -450,12 +449,12 @@ class BOMController extends Controller
 
     public function saveRapDetail($rap_id,$bomDetails){
         foreach($bomDetails as $bomDetail){
-            $rab_detail = new RapDetail;
-            $rab_detail->rap_id = $rap_id;
-            $rab_detail->material_id = $bomDetail->material_id;
-            $rab_detail->quantity = $bomDetail->quantity;
-            $rab_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
-            $rab_detail->save();
+            $rap_detail = new RapDetail;
+            $rap_detail->rap_id = $rap_id;
+            $rap_detail->material_id = $bomDetail->material_id;
+            $rap_detail->quantity = $bomDetail->quantity;
+            $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+            $rap_detail->save();
         }
     }
 
