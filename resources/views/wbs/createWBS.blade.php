@@ -86,10 +86,8 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft">
-                                    <selectize class="p-t-5" id="material" v-model="newWork.name" :settings="nameSettings">
-                                        <option v-for="(structure, index) in structures" :value="structure.name">{{ structure.name }}</option>
-                                    </selectize>
+                                <td class="p-l-0">
+                                    <input v-model="newWork.name" type="text" class="form-control width100" id="name" name="name" placeholder="Name">
                                 </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newWork.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
