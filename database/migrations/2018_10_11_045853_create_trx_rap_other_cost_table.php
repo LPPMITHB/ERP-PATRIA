@@ -37,6 +37,6 @@ class CreateTrxRapOtherCostTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ref_rab_other_and_process_cost');
+        Schema::dropIfExists('ref_rap_other_and_process_cost');
     }
 }

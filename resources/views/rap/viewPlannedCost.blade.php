@@ -5,7 +5,7 @@
         'title' => 'View Planned Cost » '.$project->name,
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.selectProjectViewCost'),
+            'Select Project' => route('rap.selectProjectViewCost'),
             'View Planned Cost' => ""
         ]
     ]
