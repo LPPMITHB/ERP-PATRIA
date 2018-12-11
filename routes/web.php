@@ -451,23 +451,23 @@ Route::name('activity.')->prefix('activity')->group(function() {
 Route::name('rap.')->prefix('rap')->group(function() {
     Route::get('/create/{id}', 'RAPController@create')->name('create');
     
-    Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:index-rab');
+    Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:index-rap');
 
-    Route::get('/indexSelectProject', 'RAPController@indexSelectProject')->name('indexSelectProject')->middleware('can:index-rab');
+    Route::get('/indexSelectProject', 'RAPController@indexSelectProject')->name('indexSelectProject')->middleware('can:index-rap');
 
-    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:index-rab');
+    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:index-rap');
     
-    Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:index-rab');
+    Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:index-rap');
 
-    Route::get('/selectProjectAssignCost', 'RAPController@selectProjectAssignCost')->name('selectProjectAssignCost')->middleware('can:index-rab');
+    Route::get('/selectProjectAssignCost', 'RAPController@selectProjectAssignCost')->name('selectProjectAssignCost')->middleware('can:index-rap');
 
-    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:index-rab');
+    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:index-rap');
 
-    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:index-rab');
+    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:index-rap');
     
-    Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:index-rab');
+    Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:index-rap');
 
-    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:index-rab');
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:index-rap');
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost');
 

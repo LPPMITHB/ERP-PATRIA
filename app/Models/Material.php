@@ -58,6 +58,11 @@ class Material extends Model
         return $this->hasMany('App\Models\GoodsIssueDetail');
     }
 
+    public function materialRequisitionDetails()
+    {
+        return $this->hasMany('App\Models\MaterialRequisitionDetail');
+    }
+
     public function productionOrderDetails()
     {
         return $this->hasMany('App\Models\ProductionOrderDetail');
