@@ -447,12 +447,12 @@ class BOMController extends Controller
 
     public function saveRapDetail($rap_id,$bomDetails){
         foreach($bomDetails as $bomDetail){
-            $rab_detail = new RapDetail;
-            $rab_detail->rap_id = $rap_id;
-            $rab_detail->material_id = $bomDetail->material_id;
-            $rab_detail->quantity = $bomDetail->quantity;
-            $rab_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
-            $rab_detail->save();
+            $rap_detail = new RapDetail;
+            $rap_detail->rap_id = $rap_id;
+            $rap_detail->material_id = $bomDetail->material_id;
+            $rap_detail->quantity = $bomDetail->quantity;
+            $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+            $rap_detail->save();
         }
     }
 

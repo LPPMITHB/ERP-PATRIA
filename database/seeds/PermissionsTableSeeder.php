@@ -106,45 +106,45 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
         
-        //RAB
-        // $createRAB = Menu::where('name','Create RAB')->select('id')->first()->id;
+        //RAP
+        // $createRAP = Menu::where('name','Create RAP')->select('id')->first()->id;
         // DB::table('permissions')->insert([
-        //     'name' => 'Create Rab',
-        //     'menu_id' => $createRAB,
-        //     'middleware' => 'create-rab',
+        //     'name' => 'Create Rap',
+        //     'menu_id' => $createRAP,
+        //     'middleware' => 'create-rap',
         //     'created_at' => date('Y-m-d'),
         //     'updated_at' => date('Y-m-d'),
         // ]);
 
-        $viewRAB = Menu::where('name','Manage RAP')->select('id')->first()->id;
+        $viewRAP = Menu::where('name','Manage RAP')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Rab',
-            'menu_id' => $viewRAB,
-            'middleware' => 'index-rab',
+            'name' => 'Index Rap',
+            'menu_id' => $viewRAP,
+            'middleware' => 'index-rap',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Show Rab',
-            'menu_id' => $viewRAB,
-            'middleware' => 'show-rab',
+            'name' => 'Show Rap',
+            'menu_id' => $viewRAP,
+            'middleware' => 'show-rap',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Edit Rab',
-            'menu_id' => $viewRAB,
-            'middleware' => 'edit-rab',
+            'name' => 'Edit Rap',
+            'menu_id' => $viewRAP,
+            'middleware' => 'edit-rap',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Destroy Rab',
-            'menu_id' => $viewRAB,
-            'middleware' => 'destroy-rab',
+            'name' => 'Destroy Rap',
+            'menu_id' => $viewRAP,
+            'middleware' => 'destroy-rap',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

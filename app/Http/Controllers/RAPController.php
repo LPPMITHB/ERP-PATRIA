@@ -29,7 +29,7 @@ class RAPController extends Controller
         $this->pr = $pr;
     }
 
-    // create RAB
+    // create RAP
     public function selectProject()
     {
         $projects = Project::where('status',1)->get();
@@ -38,7 +38,7 @@ class RAPController extends Controller
         return view('rap.selectProject', compact('projects','menu'));
     }
 
-    // view RAB
+    // view RAP
     public function indexSelectProject()
     {
         $projects = Project::where('status',1)->get();
@@ -124,6 +124,15 @@ class RAPController extends Controller
     {
         $work = Work::findOrFail($id);
         $project = $work->project;
+        $materialEvaluation = Collection::make();
+
+        $materialEvaluation->push([
+            "material" => "",
+            "quantity" => "",
+            "used" => "",
+        ]);
+
+
 
         return view('rap.showMaterialEvaluation', compact('project','work'));
     } 
@@ -235,7 +244,7 @@ class RAPController extends Controller
                     }
                 }
                 $data->push([
-                    "id" => 'WORK'.$work.'COST'.$RapCost.'RAB'.$rap->id , 
+                    "id" => 'WORK'.$work.'COST'.$RapCost.'RAP'.$rap->id , 
                     "parent" => $work_code,
                     "text" => $rap->number. ' - <b>Rp.'.number_format($RapCost).'</b>' ,
                     "icon" => "fa fa-money"
@@ -400,7 +409,7 @@ class RAPController extends Controller
             self::updateStatusBom($datas->checkedBoms);
             self::checkstock($datas->checkedBoms);
             DB::commit();
-            return redirect()->route('rap.show', ['id' => $rap->id])->with('success', 'RAB Created');
+            return redirect()->route('rap.show', ['id' => $rap->id])->with('success', 'RAP Created');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('rap.selectProject')->with('error', $e->getMessage());
@@ -584,7 +593,7 @@ class RAPController extends Controller
         $year = intval($year);
 
 		$rap_number = $year+$number;
-        $rap_number = 'RAB-'.$rap_number;
+        $rap_number = 'RAP-'.$rap_number;
 		return $rap_number;
     }
 

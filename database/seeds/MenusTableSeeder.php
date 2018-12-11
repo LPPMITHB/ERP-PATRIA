@@ -132,9 +132,9 @@ class MenusTableSeeder extends Seeder
         $costPlan =  Menu::where('name','Cost Plan')->select('id')->first()->id;
         // DB::table('menus')->insert([
         //     'level' => 3,
-        //     'name' => 'Create RAB',
+        //     'name' => 'Create RAP',
         //     'icon' => 'fa-file-text-o',
-        //     'route_name'=> 'rab.selectProject',
+        //     'route_name'=> 'rap.selectProject',
         //     'is_active' => true,
         //     'roles' => 'ADMIN',
         //     'menu_id'=>$costPlan,

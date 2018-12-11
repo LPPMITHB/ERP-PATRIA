@@ -31,7 +31,7 @@ class RolesTableSeeder extends Seeder
                 'create-unit-of-measurement' => true,'index-unit-of-measurement' => true,'show-unit-of-measurement' => true,'edit-unit-of-measurement' => true,'destroy-unit-of-measurement' => true,
                 'create-vendor' => true,'index-vendor' => true,'show-vendor' => true,'edit-vendor' => true,'destroy-vendor' => true,
                 'create-bom' => true,'index-bom' => true,'show-bom' => true,'edit-bom' => true,'destroy-bom' => true,
-                'create-rab' => true,'index-rab' => true,'show-rab' => true,'edit-rab' => true,'destroy-rab' => true,
+                'create-rap' => true,'index-rap' => true,'show-rap' => true,'edit-rap' => true,'destroy-rap' => true,
                 'create-project' => true,'index-project' => true,'show-project' => true,'edit-project' => true,'destroy-project' => true,
                 'create-purchase-requisition' => true,'index-purchase-requisition' => true,'show-purchase-requisition' => true,'edit-purchase-requisition' => true,'destroy-purchase-requisition' => true,
                 'create-purchase-order' => true,'index-purchase-order' => true,'show-purchase-order' => true,'edit-purchase-order' => true,'destroy-purchase-order' => true,

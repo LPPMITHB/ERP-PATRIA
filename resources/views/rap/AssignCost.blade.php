@@ -5,7 +5,7 @@
         'title' => 'Assign Cost » '.$project->name,
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.selectProjectAssignCost'),
+            'Select Project' => route('rap.selectProjectAssignCost'),
             'Assign Cost' => ""
         ]
     ]
@@ -135,7 +135,7 @@
         }
         $('div.overlay').show();
         data = JSON.stringify(data);
-        var url = "{{ route('rab.storeAssignCost') }}";
+        var url = "{{ route('rap.storeAssignCost') }}";
         window.axios.patch(url,data).then((response) => {
             getNewCost(response.data.project_id);
 
