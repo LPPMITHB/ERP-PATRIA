@@ -730,6 +730,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Business Unit',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'business_unit.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$masterData,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 2,
