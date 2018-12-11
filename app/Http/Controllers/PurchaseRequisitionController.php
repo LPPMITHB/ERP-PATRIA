@@ -232,7 +232,8 @@ class PurchaseRequisitionController extends Controller
     }
 
     // function
-    public function generatePRNumber(){$modelPR = PurchaseRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
+    public function generatePRNumber(){
+        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
         $branch_code = substr($modelBranch->code,4,2);

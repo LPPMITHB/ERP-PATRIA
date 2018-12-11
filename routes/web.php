@@ -339,6 +339,8 @@ Route::name('yard.')->prefix('yard')->group(function() {
 
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
+    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
+
     Route::patch('/storeAssignBom', 'BOMController@storeAssignBom')->name('storeAssignBom')->middleware('can:create-bom');
 
     Route::get('/createBomFromProject/{id}', 'BOMController@createBomFromProject')->name('createBomFromProject');
@@ -358,8 +360,6 @@ Route::name('bom.')->prefix('bom')->group(function() {
     Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom');
 
     Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom');
-
-    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
     Route::patch('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom');
 

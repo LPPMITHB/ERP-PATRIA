@@ -47,6 +47,15 @@
                                     <input v-model="submittedForm.description" type="text" class="form-control" id="description" name="description" required>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="business_unit" class="col-sm-2 control-label">Business Unit</label>
+                                <div class="col-sm-10">
+                                    <selectize id="business_unit" v-model="business_unit" :settings="businessUnitSettings">
+                                        <option v-for="main_menu in main_menus" :value="main_menu.id">{{ main_menu.name }}</option>
+                                    </selectize>  
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <div v-for ="menu in menus">
@@ -116,6 +125,7 @@
 
     var data = {
        menus : @json($menus),
+       main_menus : @json($mainMenu),
        menu_id : "",
        permissionsLeft : [],
        permissionsRight : [],
@@ -127,6 +137,10 @@
            permissions : [],
            checkedPermissions : []
        },
+       businessUnitSettings: {
+            placeholder: 'Please Select Business Unit'
+        },
+       business_unit : "",
     }
 
     var app = new Vue({

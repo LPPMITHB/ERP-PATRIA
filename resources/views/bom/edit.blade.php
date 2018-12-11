@@ -47,19 +47,19 @@
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                     
                         <div class="col-xs-4 no-padding">Code</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->code}}</b></div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->code}}</b></div>
                         
                         <div class="col-xs-4 no-padding">Name</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->name}}</b></div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->name}}</b></div>
 
                         <div class="col-xs-4 no-padding">Description</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->description}}</b></div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->description}}</b></div>
 
                         <div class="col-xs-4 no-padding">Deliverable</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->deliverables}}</b></div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->deliverables}}</b></div>
 
                         <div class="col-xs-4 no-padding">Progress</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->work->progress}}%</b></div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->progress}}%</b></div>
                     </div>
 
                     <div class="col-xs-12 col-md-3 p-b-10">
@@ -203,7 +203,7 @@
         bom : @json($modelBOM),
         project : @json($project),
         materials : @json($materials),
-        work : @json($modelBOM->work),
+        wbs : @json($modelBOM->wbs),
         newIndex : 0, 
         submittedForm :{
             project_id : "",
@@ -292,8 +292,10 @@
                 var bom_id = this.bom.id;
 
                 var url = "{{ route('bom.update') }}";
+                console.log(url);
 
                 window.axios.patch(url,data).then((response) => {
+                    console.log(response);
                     iziToast.success({
                         title: 'Edit Success',
                         position: 'topRight',

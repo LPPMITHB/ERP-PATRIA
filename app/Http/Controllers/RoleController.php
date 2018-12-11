@@ -13,10 +13,10 @@ use Auth;
 
 class RoleController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,9 +35,10 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $menus = Menu::where('menu_id', null)->get();
+        $menus = Menu::where('menu_id', null)->where('name','!=','Ship Building')->where('name','!=','Ship Repair')->where('name','!=','Trading')->get();
+        $mainMenu = Menu::whereIn('name',['Ship Building','Ship Repair','Trading'])->get();
         $role = new Role;
-        return view('role.create', compact('role', 'menus'));
+        return view('role.create', compact('role', 'menus','mainMenu'));
     }
 
     /**
