@@ -28,9 +28,9 @@ class Bom extends Model
         return $this->belongsTo('App\Models\Branch');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo('App\Models\Work');
+        return $this->belongsTo('App\Models\WBS', 'wbs_id');
     }
 
     public function rap()

@@ -23,9 +23,9 @@ class PurchaseOrderDetail extends Model
         return $this->belongsTo('App\Models\PurchaseRequisitionDetail');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo('App\Models\Work');
+        return $this->belongsTo('App\Models\WBS');
     }
     
     public function purchaseOrder()

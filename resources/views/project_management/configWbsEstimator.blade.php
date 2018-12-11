@@ -86,7 +86,7 @@
                                     </selectize>
                                 </td>
                                 <td class="no-padding">
-                                    <selectize v-model="dataInput.work_id" :settings="workSettings">
+                                    <selectize v-model="dataInput.wbs_id" :settings="workSettings">
                                         <option v-for="(work, index) in modelWork" :value="work.id">{{ work.name }}</option>
                                     </selectize>    
                                 </td>
@@ -118,7 +118,7 @@
         modelEstimator : [],
         dataInput : {
             estimator_id : "",
-            work_id : []
+            wbs_id : []
         },
         datas: [],
         estimatorSettings: {

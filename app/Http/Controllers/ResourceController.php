@@ -84,12 +84,12 @@ class ResourceController extends Controller
         }
     }
 
-    public function storeResourceDetail(Request $request, $work_id)
+    public function storeResourceDetail(Request $request, $wbs_id)
     {
         $data = $request->json()->all();
         DB::beginTransaction();
         try {
-            $work = Work::find($work_id);
+            $work = Work::find($wbs_id);
             $resourceDetailWork = $work->resourceDetails;
             if(count($resourceDetailWork)>0){
                 foreach ($resourceDetailWork as $resourceDetail) {
@@ -106,7 +106,7 @@ class ResourceController extends Controller
                 $resourceDetail = new ResourceDetail;
                 $resourceDetail->resource_id = $detail['resource_id'];
                 $resourceDetail->project_id = $work->project->id;
-                $resourceDetail->work_id = $work->id;
+                $resourceDetail->wbs_id = $work->id;
                 $resourceDetail->category_id = $resource->category->id;
                 $resourceDetail->quantity = $detail['quantityInt'];
                 $resourceDetail->save();
@@ -118,7 +118,7 @@ class ResourceController extends Controller
                 if(in_array($category, $categoryFromResource) != true){
                     $resourceDetail = new ResourceDetail;
                     $resourceDetail->project_id = $work->project->id;
-                    $resourceDetail->work_id = $work->id;
+                    $resourceDetail->wbs_id = $work->id;
                     $resourceDetail->category_id = $category;
                     $resourceDetail->save();
                 }
@@ -133,12 +133,12 @@ class ResourceController extends Controller
         }
     }
 
-    public function storeResourceCategory(Request $request, $work_id)
+    public function storeResourceCategory(Request $request, $wbs_id)
     {
         $data = $request->json()->all();
         DB::beginTransaction();
         try {
-            $work = Work::find($work_id);
+            $work = Work::find($wbs_id);
             $resourceDetailWork = $work->resourceDetails;
             if(count($resourceDetailWork)>0){
                 foreach ($resourceDetailWork as $resourceDetail) {
@@ -148,7 +148,7 @@ class ResourceController extends Controller
             foreach($data as $category_id){
                 $resourceDetail = new ResourceDetail;
                 $resourceDetail->project_id = $work->project->id;
-                $resourceDetail->work_id = $work->id;
+                $resourceDetail->wbs_id = $work->id;
                 $resourceDetail->category_id = $category_id;
                 $resourceDetail->save();
             }
@@ -233,7 +233,7 @@ class ResourceController extends Controller
         try {
             $resource_ref->resource_id = $data['resource_id'];
             $resource_ref->project_id = $data['project_id'];
-            $resource_ref->work_id = $data['work_id'];
+            $resource_ref->wbs_id = $data['wbs_id'];
             $resource_ref->category_id = $data['category_id'];
             $resource_ref->quantity = $data['quantity'];
 
@@ -258,7 +258,7 @@ class ResourceController extends Controller
             $resource = new ResourceDetail;
             $resource->resource_id = $data['resource_id'];
             $resource->project_id = $data['project_id'];
-            $resource->work_id = $data['work_id'];
+            $resource->wbs_id = $data['wbs_id'];
             $resource->category_id = $data['category_id'];
             $resource->quantity = $data['quantity'];
             

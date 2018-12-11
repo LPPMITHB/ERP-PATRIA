@@ -24,6 +24,7 @@ class RolesTableSeeder extends Seeder
                 'create-company' => true,'index-company' => true,'show-company' => true,'edit-company' => true,'destroy-company' => true,
                 'create-storage-location' => true,'index-storage-location' => true,'show-storage-location' => true,'edit-storage-location' => true,'destroy-storage-location' => true,
                 'create-branch' => true,'index-branch' => true,'show-branch' => true,'edit-branch' => true,'destroy-branch' => true,
+                'create-business-unit' => true,'index-business-unit' => true,'show-business-unit' => true,'edit-business-unit' => true,'destroy-business-unit' => true,
                 'create-customer' => true,'index-customer' => true,'show-customer' => true,'edit-customer' => true,'destroy-customer' => true,
                 'create-currencies' => true,'index-currencies' => true,'show-currencies' => true,'edit-currencies' => true,'destroy-currencies' => true,
                 'create-material' => true,'index-material' => true,'show-material' => true,'edit-material' => true,'destroy-material' => true,

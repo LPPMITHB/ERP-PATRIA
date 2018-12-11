@@ -129,7 +129,7 @@
                                                     <input class="form-control" v-model="dataInput.cost" placeholder="Please Input Cost">
                                                 </td>
                                                 <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.work_id" :settings="workSettings">
+                                                    <selectize v-model="dataInput.wbs_id" :settings="workSettings">
                                                         <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                                     </selectize>
                                                 </td>
@@ -200,7 +200,7 @@
             cost : "",
             uom_id : "",
             uom_name : "",
-            work_id : "",
+            wbs_id : "",
             work_name : ""
         },
         // editInput : {
@@ -210,7 +210,7 @@
         //     material_name : "",
         //     quantity : "",
         //     quantityInt : 0,
-        //     work_id : "",
+        //     wbs_id : "",
         //     work_name : ""
         // },
         submittedForm : {}
@@ -244,7 +244,7 @@
                 var string_newValue = this.dataInput.quantityInt+"";
                 this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInput.resource_id == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1 || parseInt(this.dataInput.cost.replace(/,/g , '')) < 1 || this.dataInput.work_id == ""){
+                if(this.dataInput.resource_id == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1 || parseInt(this.dataInput.cost.replace(/,/g , '')) < 1 || this.dataInput.wbs_id == ""){
                     isOk = true;
                 }
 
@@ -294,14 +294,14 @@
                 material.quantityInt = this.editInput.quantityInt;
                 material.quantity = this.editInput.quantity;
                 material.material_id = new_material_id;
-                material.work_id = this.editInput.work_id;
+                material.wbs_id = this.editInput.wbs_id;
 
                 window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
                     console.log(data);
                     material.material_name = data.name;
                     material.material_code = data.code;
 
-                        window.axios.get('/api/getWork/'+this.editInput.work_id).then(({ data }) => {
+                        window.axios.get('/api/getWork/'+this.editInput.wbs_id).then(({ data }) => {
                         material.work_name = data.name;
                         $('div.overlay').hide();
                     })
@@ -332,7 +332,7 @@
                 this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
-                this.editInput.work_id = data.work_id;
+                this.editInput.wbs_id = data.wbs_id;
                 this.editInput.work_name = data.work_name;
                 this.editInput.index = index;
 
@@ -359,7 +359,7 @@
                 this.dataInput.cost = "";
                 this.dataInput.uom_id = "";
                 this.dataInput.uom_name = "";
-                this.dataInput.work_id = "";
+                this.dataInput.wbs_id = "";
                 this.dataInput.work_name = "";
 
                 this.newIndex = Object.keys(this.dataResource).length+1;
@@ -406,7 +406,7 @@
                 quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 Vue.nextTick(() => this.editInput.quantity = quantity_string);
             },
-            'dataInput.work_id': function(newValue){
+            'dataInput.wbs_id': function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWork/'+newValue).then(({ data }) => {
@@ -422,7 +422,7 @@
                         $('div.overlay').hide();
                     })
                 }else{
-                    this.dataInput.work_id = "";
+                    this.dataInput.wbs_id = "";
                 }
             },
             'dataInput.resource_id': function(newValue){
@@ -444,7 +444,7 @@
                         $('div.overlay').hide();
                     })
                 }else{
-                    this.dataInput.work_id = "";
+                    this.dataInput.wbs_id = "";
                 }
             },
         },

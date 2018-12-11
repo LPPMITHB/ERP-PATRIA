@@ -18,9 +18,9 @@ class ResourceDetail extends Model
         return $this->belongsTo('App\Models\Resource');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo('App\Models\Work');
+        return $this->belongsTo('App\Models\WBS');
     }
 
     public function category()

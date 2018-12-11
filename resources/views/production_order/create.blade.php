@@ -273,7 +273,7 @@
         },
         datas : [],
         project_id :@json($project->id),
-        work_id :@json($work->id),
+        wbs_id :@json($work->id),
         materials : @json($materials),
         resources : @json($resources),
         newIndex : "",
@@ -334,7 +334,7 @@
 
                 this.submittedForm.datas = datas;
                 this.submittedForm.project_id = this.project_id;
-                this.submittedForm.work_id = this.work_id;
+                this.submittedForm.wbs_id = this.wbs_id;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');

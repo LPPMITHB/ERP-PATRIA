@@ -67,7 +67,7 @@ Route::get('/getSlocGM/{id}', 'GoodsMovementController@getSlocAPI')->name('api.g
 Route::get('/getSlocToGM/{id}', 'GoodsMovementController@getSlocToAPI')->name('api.goods_movement.getSlocToAPI');
 Route::get('/getSlocDetailGM/{id}', 'GoodsMovementController@getSlocDetailAPI')->name('api.goods_movement.getSlocDetailAPI');
 
-//goods issue
+// goods issue
 Route::get('/getSlocDetail/{id}', 'GoodsIssueController@getSlocDetailAPI')->name('api.goods_issue.getSlocDetailAPI');
 
 // production order
@@ -75,7 +75,7 @@ Route::get('/getMaterialWO/{id}', 'ProductionOrderController@getMaterialAPI')->n
 Route::get('/getResourceWO/{id}', 'ProductionOrderController@getResourceAPI')->name('api.production_order.getResourceAPI');
 Route::get('/getStockWO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
 
-//assign Resource
+// assign Resource
 Route::get('/getResourceAssign/{id}', 'ResourceController@getResourceAssignApi')->name('api.resource.getResourceAssignApi');
 Route::get('/getWorkAssignResource/{id}', 'ResourceController@getWorkAssignResourceApi')->name('api.resource.getWorkAssignResourceApi');
 Route::get('/getWorkNameAssignResource/{id}', 'ResourceController@getWorkNameAssignResourceApi')->name('api.resource.getWorkNameAssignResourceApi');
@@ -88,9 +88,26 @@ Route::get('/getCategoryAR/{id}', 'ResourceController@getCategoryARApi')->name('
 // yard plan
 Route::get('/getWork/{id}', 'YardPlanController@getWorkAPI')->name('api.yard_plan.getWorkAPI');
 
-//project
-Route::get('/getCustomerPM/{id}', 'ProjectManagementController@getCustomerPM')->name('api.yard_plan.getCustomerPM');
-Route::get('/getResourceByCategoryPM/{id}', 'ProjectManagementController@getResourceByCategoryAPI')->name('api.yard_plan.getResourceByCategoryAPI');
-Route::get('/getResourcePM/{id}', 'ProjectManagementController@getResourceAPI')->name('api.yard_plan.getResourceAPI');
-Route::get('/getAllResourcePM/{id}', 'ProjectManagementController@getAllResourceAPI')->name('api.yard_plan.getAllResourceAPI');
+// project
+Route::get('/getCustomerPM/{id}', 'ProjectController@getCustomerPM')->name('api.yard_plan.getCustomerPM');
+Route::get('/getResourceByCategoryPM/{id}', 'ProjectController@getResourceByCategoryAPI')->name('api.yard_plan.getResourceByCategoryAPI');
+Route::get('/getResourcePM/{id}', 'ProjectController@getResourceAPI')->name('api.yard_plan.getResourceAPI');
+Route::get('/getAllResourcePM/{id}', 'ProjectController@getAllResourceAPI')->name('api.yard_plan.getAllResourceAPI');
+Route::get('/getActivity/{id}', 'ProjectController@getActivityAPI')->name('getActivityAPI')->name('api.project.getActivityAPI');
+Route::get('/getDataGantt/{id}', 'ProjectController@getDataGanttAPI')->name('getDataGanttAPI')->name('api.project.getDataGanttAPI');
+
+
+// wbs
+Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('getWorks')->name('api.wbs.getWbsAPI');
+Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('getAllWorks')->name('api.wbs.getAllWbsAPI');
+Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('getAllWorks')->name('api.wbs.getSubWbsAPI');
+
+// activity
+Route::get('/getActivities/{id}', 'ActivityController@getActivitiesAPI')->name('getActivitiesAPI')->name('api.activity.getActivitiesAPI');
+Route::get('/getActivitiesNetwork/{id}', 'ActivityController@getActivitiesNetworkAPI')->name('getActivitiesNetworkAPI')->name('api.activity.getActivitiesNetworkAPI');
+Route::get('/getAllActivities/{id}', 'ActivityController@getAllActivitiesAPI')->name('getAllActivitiesAPI')->name('api.activity.getAllActivitiesAPI');
+Route::get('/getAllActivitiesEdit/{project_id}/{activity_id}', 'ActivityController@getAllActivitiesEditAPI')->name('getAllActivitiesEditAPI')->name('api.activity.getAllActivitiesEditAPI');
+Route::get('/getPredecessor/{id}', 'ActivityController@getPredecessorAPI')->name('getPredecessorAPI')->name('api.activity.getPredecessorAPI');
+Route::get('/getProject/{id}', 'ActivityController@getProjectAPI')->name('getProjectAPI')->name('api.activity.getProjectAPI');
+
 

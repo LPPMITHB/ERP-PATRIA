@@ -78,7 +78,7 @@ class PurchaseRequisitionController extends Controller
                 if(count($modelPRD)>0){
                     $status = 0;
                     foreach($modelPRD as $PurchaseRD){
-                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->work_id == $data->work_id){
+                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id){
                             $PurchaseRD->quantity +=$data->quantityInt;
                             $PurchaseRD->save();
 
@@ -90,7 +90,7 @@ class PurchaseRequisitionController extends Controller
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = $data->quantityInt;
                         $PRD->material_id = $data->material_id;
-                        $PRD->work_id = $data->work_id;
+                        $PRD->wbs_id = $data->wbs_id;
                         $PRD->save();
                     }
                 }else{
@@ -98,7 +98,7 @@ class PurchaseRequisitionController extends Controller
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->quantity = $data->quantityInt;
                     $PRD->material_id = $data->material_id;
-                    $PRD->work_id = $data->work_id;
+                    $PRD->wbs_id = $data->wbs_id;
                     $PRD->save();
                 }
             }
@@ -121,7 +121,7 @@ class PurchaseRequisitionController extends Controller
             $PRD->purchase_requisition_id = $datas['pr_id'];
             $PRD->quantity = $datas['quantity'];
             $PRD->material_id = $datas['material_id'];
-            $PRD->work_id = $datas['work_id'];
+            $PRD->wbs_id = $datas['wbs_id'];
             if(!$PRD->save()){
                 return back()->with('error','Failed to save, please try again !');
             }
@@ -136,7 +136,7 @@ class PurchaseRequisitionController extends Controller
     public function updatePRD(Request $request)
     {
         $datas = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('work_id',$datas['work_id'])->first();
+        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('wbs_id',$datas['wbs_id'])->first();
         DB::beginTransaction();
         try {
             $modelPRD->quantity += $datas['quantity'];
@@ -196,7 +196,7 @@ class PurchaseRequisitionController extends Controller
     public function update(Request $request)
     {
         $datas = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('work_id',$datas['work_id'])->first();
+        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('wbs_id',$datas['wbs_id'])->first();
         DB::beginTransaction();
         try {
             $modelPRD->quantity = $datas['quantity'];

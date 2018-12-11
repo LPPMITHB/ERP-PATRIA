@@ -28,9 +28,9 @@ class ProductionOrder extends Model
         return $this->hasMany('App\Models\ProductionOrderDetail');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo('App\Models\Work');
+        return $this->belongsTo('App\Models\WBS');
     }
   
 }

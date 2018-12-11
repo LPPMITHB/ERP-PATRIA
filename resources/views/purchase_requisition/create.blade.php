@@ -115,7 +115,7 @@
                                                     <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                                 </td>
                                                 <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.work_id" :settings="workSettings">
+                                                    <selectize v-model="dataInput.wbs_id" :settings="workSettings">
                                                         <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                                     </selectize>
                                                 </td>
@@ -156,7 +156,7 @@
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Work Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.work_id" :settings="workSettings">
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="workSettings">
                                                     <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
                                             </div>
@@ -214,7 +214,7 @@
             material_name : "",
             quantity : "",
             quantityInt : 0,
-            work_id : "",
+            wbs_id : "",
             work_name : ""
         },
         editInput : {
@@ -224,7 +224,7 @@
             material_name : "",
             quantity : "",
             quantityInt : 0,
-            work_id : "",
+            wbs_id : "",
             work_name : ""
         },
         material_id:[],
@@ -303,7 +303,7 @@
                         material.quantityInt = this.editInput.quantityInt;
                         material.quantity = this.editInput.quantity;
                         material.material_id = new_material_id;
-                        material.work_id = this.editInput.work_id;
+                        material.wbs_id = this.editInput.wbs_id;
 
                         window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
                             console.log(data);
@@ -321,7 +321,7 @@
                             // var jsonMaterialId = JSON.stringify(this.material_id);
                             // this.getNewMaterials(jsonMaterialId);
 
-                             window.axios.get('/api/getWork/'+this.editInput.work_id).then(({ data }) => {
+                             window.axios.get('/api/getWork/'+this.editInput.wbs_id).then(({ data }) => {
                                 material.work_name = data.name;
                                 $('div.overlay').hide();
                             })
@@ -368,7 +368,7 @@
                 this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
-                this.editInput.work_id = data.work_id;
+                this.editInput.wbs_id = data.wbs_id;
                 this.editInput.work_name = data.work_name;
                 this.editInput.index = index;
 
@@ -416,7 +416,7 @@
                     this.dataInput.material_code = "";
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
-                    this.dataInput.work_id = "";
+                    this.dataInput.wbs_id = "";
                     this.dataInput.work_name = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;
@@ -483,7 +483,7 @@
                 quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 Vue.nextTick(() => this.editInput.quantity = quantity_string);
             },
-        'dataInput.work_id': function(newValue){
+        'dataInput.wbs_id': function(newValue){
             if(newValue != ""){
                 $('div.overlay').show();
                 window.axios.get('/api/getWork/'+newValue).then(({ data }) => {
@@ -499,7 +499,7 @@
                     $('div.overlay').hide();
                 })
             }else{
-                this.dataInput.work_id = "";
+                this.dataInput.wbs_id = "";
             }
         },
         },
