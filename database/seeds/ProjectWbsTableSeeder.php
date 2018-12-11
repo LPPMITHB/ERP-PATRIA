@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ProjectWorksTableSeeder extends Seeder
+class ProjectWbsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,9 +13,9 @@ class ProjectWorksTableSeeder extends Seeder
     {
         
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0001',
-            'name' => 'PRW 001 001',
-            'description' => 'PRW 001 001',
+            'code' => 'WBS180001',
+            'name' => 'WBS 1',
+            'description' => 'WBS 1',
             'deliverables' => 'Satu',
             'project_id' => 1,
             'status' => 1,
@@ -26,8 +26,8 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0016',
-            'name' => 'PRW 001 006',
+            'code' => 'WBS180002',
+            'name' => 'WBS 1.1',
             'description' => '',
             'deliverables' => 'Level 2',
             'project_id' => 1,
@@ -40,22 +40,22 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0017',
-            'name' => 'PRW 001 007',
+            'code' => 'WBS180003',
+            'name' => 'WBS 1.2',
             'description' => '',
             'deliverables' => 'Level 2',
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-30',
             'progress' => 0,
-            'wbs_id' => 2,
+            'wbs_id' => 1,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0018',
-            'name' => 'PRW 001 008',
+            'code' => 'WBS180004',
+            'name' => 'WBS 1.1.1',
             'description' => '',
             'deliverables' => 'Level 3',
             'project_id' => 1,
@@ -68,8 +68,8 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0019',
-            'name' => 'PRW 001 009',
+            'code' => 'WBS180005',
+            'name' => 'WBS 1.1.1.1',
             'description' => '',
             'deliverables' => 'Level 4',
             'project_id' => 1,
@@ -82,24 +82,24 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0002',
-            'name' => 'PRW 001 002',
-            'description' => 'PRW 001 002',
-            'deliverables' => 'Dua',                
+            'code' => 'WBS180006',
+            'name' => 'WBS 1.1.1.1.1',
+            'description' => '',
+            'deliverables' => 'Level 5',
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-30',
             'progress' => 0,
-            'work_id' => 5,
+            'wbs_id' => 5,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0003',
-            'name' => 'PRW 001 003',
-            'description' => 'PRW 001 003',
-            'deliverables' => 'Tiga',                
+            'code' => 'WBS180007',
+            'name' => 'WBS 2',
+            'description' => '',
+            'deliverables' => 'WBS 2 Level 1',                
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-10',
@@ -109,10 +109,10 @@ class ProjectWorksTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0004',
-            'name' => 'PRW 001 004',
-            'description' => 'PRW 001 004',
-            'deliverables' => 'Empat', 
+            'code' => 'WBS180008',
+            'name' => 'WBS 2.1',
+            'description' => '',
+            'deliverables' => 'Level 2',                
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-12-22',
@@ -158,15 +158,15 @@ class ProjectWorksTableSeeder extends Seeder
             'planned_deadline' => '2019-2-2',
             // 'actual_deadline' => '',
             'progress' => 0,
-            'work_id' => 7,
+            'wbs_id' => 7,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0008',
-            'name' => 'PRW 301 008',
-            'description' => 'PRW 301 008',
+            'code' => 'WBS180009',
+            'name' => 'WBS 3',
+            'description' => '',
             'deliverables' => 'Level 1', 
             'project_id' => 1,
             'status' => 1,
@@ -174,12 +174,12 @@ class ProjectWorksTableSeeder extends Seeder
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
-
+        ]);     
+        
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW0009',
-            'name' => 'PRW 301 009',
-            'description' => 'PRW 301 009',
+            'code' => 'WBS180010',
+            'name' => 'WBS2 1',
+            'description' => '',
             'deliverables' => 'Level 1', 
             'project_id' => 3,
             'status' => 1,
@@ -220,41 +220,25 @@ class ProjectWorksTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00012',
-            'name' => 'PRW 302 012',
-            'description' => 'PRW 302 012',
-            'deliverables' => 'Level 2', 
-            'project_id' => 3,
-            'wbs_id' => 9,
+            'code' => 'WBS180011',
+            'name' => 'WBS2 1.2',
+            'description' => '',
+            'deliverables' => 'Level 2',
+            'project_id' => 2,
             'status' => 1,
             'planned_deadline' => '2019-1-5',
             'progress' => 0,
+            'wbs_id' => 10,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00013',
-            'name' => 'PRW 303 013',
-            'description' => 'PRW 303 013',
-            'deliverables' => 'Level 3', 
-            'project_id' => 3,
-            'wbs_id' => 10,
-            'status' => 1,
-            'planned_deadline' => '2019-12-23',
-            // 'actual_deadline' => '',
-            'progress' => 0,
-            'user_id' => 5,
-            'branch_id' => 1,
-        ]);
-
-        DB::table('pro_wbs')->insert([
-            'code' => 'PRW00014',
-            'name' => 'PRW 303 014',
-            'description' => 'PRW 303 014',
-            'deliverables' => 'Level 3', 
-            'project_id' => 3,
-            'wbs_id' => 10,
+            'code' => 'WBS180012',
+            'name' => 'WBS2 2',
+            'description' => '',
+            'deliverables' => 'Level 1', 
+            'project_id' => 2,
             'status' => 1,
             'planned_deadline' => '2019-3-15',
             'progress' => 0,
@@ -263,42 +247,39 @@ class ProjectWorksTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00015',
-            'name' => 'PRW 303 015',
-            'description' => 'PRW 303 015',
-            'deliverables' => 'Level 3', 
-            'project_id' => 3,
-            'wbs_id' => 11,
+            'code' => 'WBS180013',
+            'name' => 'WBS2 2.1',
+            'description' => '',
+            'deliverables' => 'Level 2',
+            'project_id' => 2,
             'status' => 1,
             'planned_deadline' => '2019-2-25',
             'progress' => 0,
-            'work_id' => 12,
+            'wbs_id' => 12,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00023',
-            'name' => 'PRW 304 016',
-            'description' => 'PRW 304 016',
-            'deliverables' => 'Level 4', 
-            'project_id' => 3,
-            'wbs_id' => 13,
+            'code' => 'WBS180014',
+            'name' => 'WBS2 2.2',
+            'description' => '',
+            'deliverables' => 'Level 2',
+            'project_id' => 2,
             'status' => 1,
             'planned_deadline' => '2019-3-7',
             'progress' => 0,
-            'work_id' => 12,
+            'wbs_id' => 12,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00024',
-            'name' => 'PRW 304 017',
-            'description' => 'PRW 304 017',
-            'deliverables' => 'Level 4', 
-            'project_id' => 3,
-            'wbs_id' => 13,
+            'code' => 'WBS180015',
+            'name' => 'WBS2 3',
+            'description' => '',
+            'deliverables' => 'Level 1', 
+            'project_id' => 2,
             'status' => 1,
             'planned_deadline' => '2019-6-18',
             'progress' => 0,
@@ -307,25 +288,24 @@ class ProjectWorksTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00025',
-            'name' => 'PRW 304 018',
-            'description' => 'PRW 304 018',
-            'deliverables' => 'Level 4', 
-            'project_id' => 3,
-            'wbs_id' => 14,
+            'code' => 'WBS180016',
+            'name' => 'WBS2 3.1',
+            'description' => '',
+            'deliverables' => 'Level 2',
+            'project_id' => 2,
             'status' => 1,
             'planned_deadline' => '2019-6-6',
             'progress' => 0,
-            'work_id' => 15,
+            'wbs_id' => 15,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00026',
-            'name' => 'PRW 305 019',
-            'description' => 'PRW 305 019',
-            'deliverables' => 'Level 5', 
+            'code' => 'WBS180017',
+            'name' => 'WBS3 1',
+            'description' => '',
+            'deliverables' => 'Level 1', 
             'project_id' => 3,
             'wbs_id' => 16,
             'status' => 1,
@@ -336,10 +316,10 @@ class ProjectWorksTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00020',
-            'name' => 'PRW 305 020',
-            'description' => 'PRW 305 020',
-            'deliverables' => 'Level 5', 
+            'code' => 'WBS180018',
+            'name' => 'WBS3 2',
+            'description' => '',
+            'deliverables' => 'Level 1', 
             'project_id' => 3,
             'wbs_id' => 16,
             'status' => 1,
@@ -350,12 +330,11 @@ class ProjectWorksTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00021',
-            'name' => 'PRW 305 021',
-            'description' => 'PRW 305 021',
-            'deliverables' => 'Level 5', 
-            'project_id' => 3,
-            'wbs_id' => 16,
+            'code' => 'WBS180019',
+            'name' => 'WBS4 1',
+            'description' => '',
+            'deliverables' => 'Level 1', 
+            'project_id' => 4,
             'status' => 1,
             'planned_deadline' => '2018-9-9',
             'progress' => 0,
@@ -364,12 +343,11 @@ class ProjectWorksTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'PRW00022',
-            'name' => 'PRW 305 022',
-            'description' => 'PRW 305 022',
-            'deliverables' => 'Level 5', 
-            'project_id' => 3,
-            'wbs_id' => 17,
+            'code' => 'WBS180020',
+            'name' => 'WBS4 2',
+            'description' => '',
+            'deliverables' => 'Level 1', 
+            'project_id' => 4,
             'status' => 1,
             'planned_deadline' => '2018-10-29',
             'progress' => 0,
