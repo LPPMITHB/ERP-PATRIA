@@ -34,7 +34,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelMR->number }}</td>
                                 <td>{{ $modelMR->description }}</td>
-                                <td>{{ $modelMR->project->name }} - {{$modelMR->project->code}}</td>
+                                <td>{{ $modelMR->project->name }} - {{$modelMR->project->number}}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     <a href="{{ route('goods_issue.selectMR', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                 </td>

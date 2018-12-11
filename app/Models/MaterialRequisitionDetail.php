@@ -13,13 +13,13 @@ class MaterialRequisitionDetail extends Model
         return $this->belongsTo('App\Models\Material');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo('App\Models\Work');
+        return $this->belongsTo('App\Models\WBS');
     }
 
     public function material_requisition()
     {
-        return $this->belongsTo('App\Models\MaterialRequisition');
+        return $this->belongsTo('App\Models\MaterialRequisition', 'wbs_id');
     }
 }

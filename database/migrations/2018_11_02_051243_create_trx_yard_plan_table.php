@@ -22,14 +22,14 @@ class CreateTrxYardPlanTable extends Migration
             $table->date('actual_end_date')->nullable();
             $table->longText('description')->nullable();
             $table->unsignedInteger('project_id');
-            $table->unsignedInteger('work_id')->nullable();
+            $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
             $table->foreign('yard_id')->references('id')->on('mst_yard');
             $table->foreign('project_id')->references('id')->on('pro_project');
-            $table->foreign('work_id')->references('id')->on('pro_project_work');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
 
         });
     }

@@ -7,9 +7,9 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
-            'Project|'.$activity->work->project->code => route('project.show', ['id' => $activity->work->project->id]),
-            'Select WBS' => route('project.listWBS',['id'=>$activity->work->project->id,'menu'=>'viewAct']),
-            'List of Activities' => route('project.indexActivities', ['id' => $activity->work->id]),
+            'Project|'.$activity->wbs->project->number => route('project.show', ['id' => $activity->wbs->project->id]),
+            'Select WBS' => route('activity.listWBS',['id'=>$activity->wbs->project->id,'menu'=>'viewAct']),
+            'List of Activities' => route('activity.index', ['id' => $activity->wbs->id]),
             'View Activity|'.$activity->code => ""
         ]
     ]
@@ -39,17 +39,17 @@
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->progress}} %</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">WBS</div>
-                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->work->code}} - {{$activity->work->name}}"><b>: {{$activity->work->code}} - {{$activity->work->name}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->wbs->code}} - {{$activity->wbs->name}}"><b>: {{$activity->wbs->code}} - {{$activity->wbs->name}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Status</div>
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->status == 1 ? 'Open' : 'Done'}} </b></div>
                     </div>
                 </div>
                 
-                <div class="col-xs-12 col-lg-4 col-md-12">    
+                <div class="col-xs-12 col-lg-4 col-md-12 activityContinue">    
                     <div class="box-body">                        
-                        <div class="col-md-4 col-xs-6 no-padding">Planned Start Date</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-5 col-xs-6 no-padding">Planned Start Date</div>
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: @php
                                 $date = DateTime::createFromFormat('Y-m-d', $activity->planned_start_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
@@ -57,8 +57,8 @@
                             </b>
                         </div>
     
-                        <div class="col-md-4 col-xs-6 no-padding">Planned End Date</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-5 col-xs-6 no-padding">Planned End Date</div>
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: @php
                                 $date = DateTime::createFromFormat('Y-m-d', $activity->planned_end_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
@@ -66,11 +66,11 @@
                             </b>
                         </div>
                         
-                        <div class="col-md-4 col-xs-6 no-padding">Planned Duration</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->planned_duration}}</b></div>
+                        <div class="col-md-5 col-xs-6 no-padding">Planned Duration</div>
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: {{$activity->planned_duration}}</b></div>
 
-                        <div class="col-md-4 col-xs-6 no-padding">Actual Start Date</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-5 col-xs-6 no-padding">Actual Start Date</div>
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: @php
                                 $date = DateTime::createFromFormat('Y-m-d', $activity->actual_start_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
@@ -78,8 +78,8 @@
                             </b>
                         </div>
 
-                        <div class="col-md-4 col-xs-6 no-padding">Actual End Date</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-5 col-xs-6 no-padding">Actual End Date</div>
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: @php
                                 $date = DateTime::createFromFormat('Y-m-d', $activity->actual_end_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
@@ -87,8 +87,8 @@
                             </b>
                         </div>
                         
-                        <div class="col-md-4 col-xs-6 no-padding">Actual Duration</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->actual_duration}}</b></div>
+                        <div class="col-md-5 col-xs-6 no-padding">Actual Duration</div>
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: {{$activity->actual_duration}}</b></div>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $activity->code }}</td>
                                 <td>{{ $activity->name }}</td>
-                                <td>{{$activity->work->code}} - {{$activity->work->name}}</td>
+                                <td>{{$activity->wbs->code}} - {{$activity->wbs->name}}</td>
                                 <td>{{$activity->progress}} %</td>
                                 <td class="textCenter">
                                     @if($activity->status == 0)
@@ -144,6 +144,8 @@
                 $('div.overlay').remove();
             }
         });
+        jQuery('#activity-table').wrap('<div class="dataTables_scroll" />');
+
 
     });
 </script>

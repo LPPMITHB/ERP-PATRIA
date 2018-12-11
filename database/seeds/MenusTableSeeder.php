@@ -62,7 +62,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Confirm Activity',
             'icon' => 'fa-clock-o',
-            'route_name'=> 'project.indexConfirm',
+            'route_name'=> 'activity.indexConfirm',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=> $projectManagement,

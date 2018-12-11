@@ -17,14 +17,14 @@ class CreateMstResourceDetailTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('resource_id')->nullable();           
             $table->unsignedInteger('project_id')->nullable();           
-            $table->unsignedInteger('work_id')->nullable();       
+            $table->unsignedInteger('wbs_id')->nullable();       
             $table->unsignedInteger('category_id');       
             $table->integer('quantity')->nullable();
             $table->timestamps();
 
             $table->foreign('resource_id')->references('id')->on('mst_resource');
             $table->foreign('project_id')->references('id')->on('pro_project');          
-            $table->foreign('work_id')->references('id')->on('pro_project_work');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
             $table->foreign('category_id')->references('id')->on('mst_category');
         });
     }

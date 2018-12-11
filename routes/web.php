@@ -195,9 +195,9 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::patch('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
 
-    Route::patch('/storeResourceDetail/{work_id}', 'ResourceController@storeResourceDetail')->name('storeResourceDetail')->middleware('can:create-resource');
+    Route::patch('/storeResourceDetail/{wbs_id}', 'ResourceController@storeResourceDetail')->name('storeResourceDetail')->middleware('can:create-resource');
     
-    Route::patch('/storeResourceCategory/{work_id}', 'ResourceController@storeResourceCategory')->name('storeResourceCategory')->middleware('can:create-resource');
+    Route::patch('/storeResourceCategory/{wbs_id}', 'ResourceController@storeResourceCategory')->name('storeResourceCategory')->middleware('can:create-resource');
 
 });
 
@@ -356,89 +356,78 @@ Route::name('bom.')->prefix('bom')->group(function() {
 //Project Routes
 Route::name('project.')->prefix('project')->group(function() {
     // Project Cost Evaluation
-    Route::get('/projectCE/{id}', 'ProjectManagementController@projectCE')->name('projectCE')->middleware('can:create-project');
-
-    // WBS & Estimator Configuration
-    Route::get('/selectProjectConfig', 'ProjectManagementController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project');
-
-    Route::get('/configWbsEstimator/{id}', 'ProjectManagementController@configWbsEstimator')->name('configWbsEstimator')->middleware('can:create-project');
-
-    //Confirm Activity
-    Route::get('/indexConfirm', 'ProjectManagementController@indexConfirm')->name('indexConfirm')->middleware('can:show-project');
-
-    Route::get('/selectWBS/{id}', 'ProjectManagementController@selectWBS')->name('selectWBS')->middleware('can:show-project');
-
-    Route::get('/confirmActivity/{id}', 'ProjectManagementController@confirmActivity')->name('confirmActivity')->middleware('can:show-project');
-
-    Route::get('/getPredecessor/{id}', 'ProjectManagementController@getPredecessor')->name('getPredecessor')->middleware('can:show-project');
-
-    Route::patch('updateActualActivity/{id}', 'ProjectManagementController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project');    
-
-    //WBS
-    Route::get('/createWBS/{id}', 'ProjectManagementController@createWBS')->name('createWBS')->middleware('can:create-project');
-
-    Route::post('/storeWBS', 'ProjectManagementController@storeWBS')->name('storeWBS')->middleware('can:create-project');
-    
-    Route::patch('updateWBS/{id}', 'ProjectManagementController@updateWBS')->name('updateWBS')->middleware('can:edit-project');    
-    
-    Route::get('/createSubWBS/{project_id}/{work_id}', 'ProjectManagementController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
-    
-    Route::get('/getWorks/{id}', 'ProjectManagementController@getWorks')->name('getWorks')->middleware('can:show-project');
-
-    Route::get('/getSubWBS/{id}', 'ProjectManagementController@getSubWBS')->name('getSubWBS')->middleware('can:show-project');
-    
-    Route::get('/getAllWorks/{id}', 'ProjectManagementController@getAllWorks')->name('getAllWorks')->middleware('can:show-project');
-    
-    Route::get('/indexWBS/{id}', 'ProjectManagementController@indexWBS')->name('indexWBS')->middleware('can:show-project');
-    
-    Route::get('/showWBS/{id}', 'ProjectManagementController@showWBS')->name('showWBS')->middleware('can:show-project');
-
-    //Activity 
-    Route::get('/listWBS/{id}/{menu}', 'ProjectManagementController@listWBS')->name('listWBS')->middleware('can:show-project');
-
-    Route::get('/createActivities/{id}', 'ProjectManagementController@createActivities')->name('createActivities')->middleware('can:create-project');
-
-    Route::patch('updateActivity/{id}', 'ProjectManagementController@updateActivity')->name('updateActivity')->middleware('can:edit-project');    
-
-    Route::get('/getActivities/{id}', 'ProjectManagementController@getActivities')->name('getActivities')->middleware('can:show-project');
-    
-    Route::get('/getAllActivities/{id}', 'ProjectManagementController@getAllActivities')->name('getAllActivities')->middleware('can:show-project');
-
-    Route::post('/storeActivity', 'ProjectManagementController@storeActivity')->name('storeActivity')->middleware('can:create-project');
-    
-    Route::get('/indexActivities/{id}', 'ProjectManagementController@indexActivities')->name('indexActivities')->middleware('can:show-project');
-
-    Route::get('/showActivity/{id}', 'ProjectManagementController@showActivity')->name('showActivity')->middleware('can:show-project');
-    
-    //Network
-    Route::patch('updatePredecessor/{id}', 'ProjectManagementController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
-    
-    Route::get('/manageNetwork/{id}', 'ProjectManagementController@manageNetwork')->name('manageNetwork')->middleware('can:show-project');
+    Route::get('/projectCE/{id}', 'ProjectController@projectCE')->name('projectCE')->middleware('can:create-project');
     
     //GanttChart
-    Route::get('/ganttChart/{id}', 'ProjectManagementController@showGanttChart')->name('showGanttChart')->middleware('can:show-project');
-
-    Route::get('/getActivity/{id}', 'ProjectManagementController@getActivity')->name('getActivity')->middleware('can:show-project');
-
-    Route::get('/getDataGantt/{id}', 'ProjectManagementController@getDataGantt')->name('getDataGantt')->middleware('can:show-project');
-
+    Route::get('/ganttChart/{id}', 'ProjectController@showGanttChart')->name('showGanttChart')->middleware('can:show-project');
 
     //Project
-    Route::get('/create', 'ProjectManagementController@create')->name('create')->middleware('can:create-project');
+    Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project');
 
-    Route::get('/', 'ProjectManagementController@index')->name('index')->middleware('can:index-project');
+    Route::get('/', 'ProjectController@index')->name('index')->middleware('can:index-project');
 
-    Route::get('/{id}', 'ProjectManagementController@show')->name('show')->middleware('can:show-project');
+    Route::get('/{id}', 'ProjectController@show')->name('show')->middleware('can:show-project');
 
-    Route::get('/{id}/edit', 'ProjectManagementController@edit')->name('edit')->middleware('can:edit-project');
+    Route::get('/{id}/edit', 'ProjectController@edit')->name('edit')->middleware('can:edit-project');
 
-    Route::patch('/{id}', 'ProjectManagementController@update')->name('update')->middleware('can:edit-project');
+    Route::patch('/{id}', 'ProjectController@update')->name('update')->middleware('can:edit-project');
     
-    Route::post('/', 'ProjectManagementController@store')->name('store')->middleware('can:create-project');
+    Route::post('/', 'ProjectController@store')->name('store')->middleware('can:create-project');
 
-    Route::delete('/{id}', 'ProjectManagementController@destroy')->name('destroy')->middleware('can:destroy-project');   
+    Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project');   
     
+});
+
+// WBS Routes
+Route::name('wbs.')->prefix('wbs')->group(function() {
+    // WBS & Estimator Configuration
+    Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project');
+
+    Route::get('/configWbsEstimator/{id}', 'WBSController@configWbsEstimator')->name('configWbsEstimator')->middleware('can:create-project');
     
+    //WBS
+    Route::get('/listWBS/{id}/{menu}', 'WBSController@listWBS')->name('listWBS')->middleware('can:show-project');
+
+    Route::get('/createWBS/{id}', 'WBSController@createWBS')->name('createWBS')->middleware('can:create-project');
+
+    Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project');
+    
+    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');    
+    
+    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
+    
+    Route::get('/index/{id}', 'WBSController@index')->name('index')->middleware('can:show-project');
+    
+    Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');    
+});
+
+// Activity Routes
+Route::name('activity.')->prefix('activity')->group(function() {
+    //Confirm Activity
+    Route::get('/indexConfirm', 'ActivityController@indexConfirm')->name('indexConfirm')->middleware('can:show-project');
+
+    Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project');
+
+    Route::patch('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project');    
+
+    //Activity 
+    Route::get('/listWBS/{id}/{menu}', 'ActivityController@listWBS')->name('listWBS')->middleware('can:show-project');
+
+    Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project');
+
+    Route::patch('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project');    
+
+    Route::post('/store', 'ActivityController@store')->name('store')->middleware('can:create-project');
+    
+    Route::get('/index/{id}', 'ActivityController@index')->name('index')->middleware('can:show-project');
+
+    Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project');
+    
+    //Network
+    Route::patch('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
+    
+    Route::get('/manageNetwork/{id}', 'ActivityController@manageNetwork')->name('manageNetwork')->middleware('can:show-project');
+   
 });
 
 //RAB Routes

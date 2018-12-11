@@ -7,7 +7,7 @@
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
             'Project|'.$project->number => route('project.show', ['id' => $project->id]),
-            'Select Work' => route('project.listWBS',['id'=>$project->id,'menu'=>'addWBS']),
+            'Select WBS' => route('activity.listWBS',['id'=>$project->id,'menu'=>'addAct']),
             'Add Activities' => ""
         ]
     ]
@@ -67,33 +67,35 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <table class="tableFixed width100">
+                    <table>
                         <thead>
-                            <th style="width: 25%">Work Information</th>
-                            <th style="width: 3%"></th>
+                            <th>WBS Information</th>
+                            <th></th>
                             <th></th>
                         </thead>
+                    </table>
+                    <table class="tableFixed width100">
                         <tbody>
                             <tr>
-                                <td style="">Name</td>
-                                <td>:</td>
-                                <td><b>{{$work->name}}</b></td>
+                                <td style="width: 25%">Name</td>
+                                <td style="width: 3%">:</td>
+                                <td><b>{{$wbs->name}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Description</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->description}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->description}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Deliverables</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->deliverables}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->deliverables}}</b></td>
                             </tr>
                             <tr>
                                 <td>Deadline</td>
                                 <td>:</td>
                                 <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
                                             $date = $date->format('d-m-Y');
                                             echo $date;
                                         @endphp
@@ -103,7 +105,7 @@
                             <tr>
                                 <td>Progress</td>
                                 <td>:</td>
-                                <td><b>{{$work->progress}} %</b></td>
+                                <td><b>{{$wbs->progress}} %</b></td>
                             </tr>
                         </tbody>
                     </table>
@@ -127,7 +129,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in activities" class="popoverData"  data-content="" v-on:mouseover="dataForTooltip(data)" data-trigger="hover" rel="popover" data-placement="auto top" data-original-title="Details">
+                            <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.name }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
@@ -143,7 +145,7 @@
                                     <td>-</td>
                                 </template>
                                 <td class="textCenter">
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data,index)">EDIT</button>
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data)">EDIT</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -209,7 +211,7 @@
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -249,7 +251,7 @@
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -335,7 +337,7 @@
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
                                     </table>                                
@@ -380,7 +382,7 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
-        work_id : @json($work->id), 
+        wbs_id : @json($wbs->id), 
         predecessor : [],
     },
     editActivity : {
@@ -506,9 +508,8 @@ var vm = new Vue({
                 });
             }
         },
-        openModalEditActivity(data,index){
-            window.axios.get('/project/getAllActivities/'+this.project_id).then(({ data }) => {
-                data.splice(index, 1);
+        openModalEditActivity(data){
+            window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
                 this.allActivitiesEdit = data;
             });
             document.getElementById("edit_activity_code").innerHTML= data.code;
@@ -544,71 +545,13 @@ var vm = new Vue({
                 this.editActivity.planned_end_date = "";
             }
         },
-        dataForTooltip(data){
-            var status = "";
-            if(data.status == 1){
-                status = "Open";
-            }else if(data.status == 0){
-                status = "Closed";
-            }
-
-            var actual_duration = "-";
-            if(data.actual_duration != null){
-                actual_duration = data.actual_duration+" Days";
-            }
-
-            var actual_start_date = "-";
-            if(data.actual_start_date != null){
-                actual_start_date = data.actual_start_date;
-            }
-
-            var actual_end_date = "-";
-            if(data.actual_end_date != null){
-                actual_end_date = data.actual_end_date;
-            }
-
-            var text = '<table style="table-layout:fixed; width:100%"><thead><th style="width:35%">Attribute</th><th style="width:5%"></th><th>Value</th></thead><tbody><tr><td>Code</td><td>:</td><td>'+data.code+
-            '</td></tr><tr><td class="valignTop">Name</td><td class="valignTop" style="overflow-wrap: break-word;">:</td><td>'+data.name+
-            '</td></tr><tr><td class="valignTop">Description</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.description+
-            '</td></tr><tr><td>Status</td><td>:</td><td>'+status+
-            '</td></tr><tr><td>Actual Duration</td><td>:</td><td>'+actual_duration+
-            '</td></tr><tr><td>Actual Start Date</td><td>:</td><td>'+actual_start_date+
-            '</td></tr><tr><td>Actual End Date</td><td>:</td><td>'+actual_end_date+
-            '</td></tr><tr><td>Progress</td><td>:</td><td>'+data.progress+
-            '%</td></tr></tbody></table>'
-            
-            function handlerMouseOver(ev) {
-                $('.popoverData').popover({
-                    html: true,
-                });
-                var target = $(ev.target);
-                var target = target.parent();
-                if(target.attr('class')=="popoverData odd"||target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',text);
-                    $(target).popover('show');
-                }else{
-                    $('.popoverData').popover('hide');
-                }
-            }
-            $(".popoverData").mouseover(handlerMouseOver);
-
-            function handlerMouseOut(ev) {
-                var target = $(ev.target);
-                var target = target.parent(); 
-                if(target.attr('class')=="popoverData odd" || target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',"");
-                }
-            }
-            $(".popoverData").mouseout(handlerMouseOut);
-        },
         getAllActivities(){
-            window.axios.get('/project/getAllActivities/'+this.project_id).then(({ data }) => {
+            window.axios.get('/api/getAllActivities/'+this.project_id).then(({ data }) => {
                 this.allActivities = data;
-                this.allActivitiesEdit = data;
             });
         },
         getActivities(){
-            window.axios.get('/project/getActivities/'+this.newActivity.work_id).then(({ data }) => {
+            window.axios.get('/api/getActivities/'+this.newActivity.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.newIndex = Object.keys(this.activities).length+1;
                 
@@ -632,7 +575,7 @@ var vm = new Vue({
         add(){            
             var newActivity = this.newActivity;
             newActivity = JSON.stringify(newActivity);
-            var url = "{{ route('project.storeActivity') }}";
+            var url = "{{ route('activity.store') }}";
             $('div.overlay').show();            
             window.axios.post(url,newActivity)
             .then((response) => {
@@ -668,7 +611,7 @@ var vm = new Vue({
         },
         update(){            
             var editActivity = this.editActivity;
-            var url = "/project/updateActivity/"+editActivity.activity_id;
+            var url = "/activity/update/"+editActivity.activity_id;
             editActivity = JSON.stringify(editActivity);
             $('div.overlay').show();            
             window.axios.patch(url,editActivity)

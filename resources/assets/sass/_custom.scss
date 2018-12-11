@@ -577,6 +577,10 @@ textarea {
   display: none;
 }
 
+.activityContinue{
+  margin-top: 20px;
+}
+
 @media only screen and (max-device-width: 1024px) {
   .mobile_device_landscape{
     margin-left: 15px;
@@ -599,6 +603,9 @@ textarea {
   }
   .inner {
     height: 140px;
+  }
+  .activityContinue{
+    margin-top: -20px;
   }
 }
 
@@ -624,6 +631,9 @@ textarea {
   .inner {
     height: 140px;
   }
+  .activityContinue{
+    margin-top: -20px;
+  }
 }
 
 .dataTables_filter{
@@ -634,6 +644,7 @@ textarea {
     padding: 1px !important;
 }
 
+//ini ngebuat view di hp rusak
 .table{
     width:100% !important;
 }

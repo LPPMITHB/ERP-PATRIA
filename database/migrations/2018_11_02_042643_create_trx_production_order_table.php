@@ -17,7 +17,7 @@ class CreateTrxProductionOrderTable extends Migration
             $table->increments('id');
             $table->string('number')->unique();
             $table->unsignedInteger('project_id');
-            $table->unsignedInteger('work_id');
+            $table->unsignedInteger('wbs_id');
             $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
@@ -26,7 +26,7 @@ class CreateTrxProductionOrderTable extends Migration
             $table->foreign('branch_id')->references('id')->on('mst_branch'); 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('project_id')->references('id')->on('pro_project');
-            $table->foreign('work_id')->references('id')->on('pro_project_work');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
         });
     }
 

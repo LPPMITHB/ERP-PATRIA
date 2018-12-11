@@ -8,8 +8,8 @@
             'Dashboard' => route('index'),
             'View all Projects' => route('project.index'),
             'Project|'.$project->number => route('project.show', ['id' => $project->id]),
-            'Select Work' =>  route('project.listWBS',['id'=>$project->id,'menu'=>'mngNet']),
-            'Manage Network' => ''
+            'Select WBS' =>  route('activity.listWBS',['id'=>$project->id,'menu'=>'mngNet']),
+            'Manage Netwbs' => ''
         ]
     ]
 )
@@ -71,7 +71,7 @@
                 <div class="col-sm-6">
                     <table class="tableFixed width100">
                         <thead>
-                            <th style="width: 25%">Work Information</th>
+                            <th style="width: 25%">WBS Information</th>
                             <th style="width: 3%"></th>
                             <th></th>
                         </thead>
@@ -79,23 +79,23 @@
                             <tr>
                                 <td style="">Name</td>
                                 <td>:</td>
-                                <td><b>{{$work->name}}</b></td>
+                                <td><b>{{$wbs->name}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Description</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->description}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->description}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Deliverables</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->deliverables}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->deliverables}}</b></td>
                             </tr>
                             <tr>
                                 <td>Deadline</td>
                                 <td>:</td>
                                 <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
                                             $date = $date->format('d-m-Y');
                                             echo $date;
                                         @endphp
@@ -105,14 +105,14 @@
                             <tr>
                                 <td>Progress</td>
                                 <td>:</td>
-                                <td><b>{{$work->progress}} %</b></td>
+                                <td><b>{{$wbs->progress}} %</b></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             @verbatim
-            <div id="activities">
+            <div id="activitiesVue">
                 <div class="box-body">
                     <h4 class="box-title">List of Activities</h4>
                     <table id="activity-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
@@ -129,16 +129,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in activities" class="popoverData"  data-content="" v-on:mouseover="dataForTooltip(data)" data-trigger="hover" rel="popover" data-placement="auto top" data-original-title="Details">
+                            <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.name }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }}</td>
-                                <td class="tdEllipsis">
-                                        {{ data.predecessorText }}
-                                </td>
+                                <td class="tdEllipsis"  data-container="body" v-tooltip:top="tooltipText(data.predecessorText)">{{ data.predecessorText }}</td>
                                 <td>
                                     <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_predecessor" @click="populateSelectize(data,index)">EDIT</button>
                                 </td>
@@ -180,7 +178,7 @@
                                             <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                             <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                             <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                            <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.work.name)">{{ data.work.name}}</td>
+                                            <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -214,7 +212,7 @@
 
     var data = {
         project_id: @json($project->id),
-        work_id : @json($work->id),
+        wbs_id : @json($wbs->id),
         activities :"",
         allActivities : [],
         allActivitiesEdit: [],
@@ -238,10 +236,13 @@
     })
 
     var vm = new Vue({
-        el: '#activities',
+        el: '#activitiesVue',
         data: data,
         methods:{
             populateSelectize(data, index){
+                window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
+                    this.allActivitiesEdit = data;
+                });
                 document.getElementById("edit_activity_code").innerHTML= data.code;
                 var predecessorObj = JSON.parse(data.predecessor);
                 this.selectizeValue = predecessorObj;
@@ -255,88 +256,14 @@
             tooltipText: function(text) {
                 return text
             },
-            dataForTooltip(data){
-                var status = "";
-                if(data.status == 1){
-                    status = "Open";
-                }else if(data.status == 0){
-                    status = "Closed";
-                }
-
-                var actual_duration = "-";
-                if(data.actual_duration != null){
-                    actual_duration = data.actual_duration+" Days";
-                }
-
-                var actual_start_date = "-";
-                if(data.actual_start_date != null){
-                    actual_start_date = data.actual_start_date;
-                }
-
-                var actual_end_date = "-";
-                if(data.actual_end_date != null){
-                    actual_end_date = data.actual_end_date;
-                }
-
-                var text = '<table style="table-layout:fixed; width:100%"><thead><th style="width:35%">Attribute</th><th style="width:5%"></th><th>Value</th></thead><tbody><tr><td>Code</td><td>:</td><td>'+data.code+
-                '</td></tr><tr><td class="valignTop">Name</td><td class="valignTop" style="overflow-wrap: break-word;">:</td><td>'+data.name+
-                '</td></tr><tr><td class="valignTop">Description</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.description+
-                '</td></tr><tr><td>Status</td><td>:</td><td>'+status+
-                '</td></tr><tr><td>Actual Duration</td><td>:</td><td>'+actual_duration+
-                '</td></tr><tr><td>Actual Start Date</td><td>:</td><td>'+actual_start_date+
-                '</td></tr><tr><td>Actual End Date</td><td>:</td><td>'+actual_end_date+
-                '</td></tr><tr><td>Progress</td><td>:</td><td>'+data.progress+
-                '%</td></tr><tr><td class="valignTop">Predecessor</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.predecessorText+
-                '</td></tr></tbody></table>'
-
-                function handlerMouseOver(ev) {
-                    $('.popoverData').popover({
-                        html: true,
-                    });
-                    var target = $(ev.target);
-                    var target = target.parent();
-                    if(target.attr('class')=="popoverData odd"||target.attr('class')=="popoverData even"){
-                        $(target).attr('data-content',text);
-                        $(target).popover('show');
-                    }else{
-                        $('.popoverData').popover('hide');
-                    }
-                }
-                $(".popoverData").mouseover(handlerMouseOver);
-
-                function handlerMouseOut(ev) {
-                    var target = $(ev.target);
-                    var target = target.parent(); 
-                    if(target.attr('class')=="popoverData odd" || target.attr('class')=="popoverData even"){
-                        $(target).attr('data-content',"");
-                    }
-                }
-                $(".popoverData").mouseout(handlerMouseOut);
+            getAllActivities(){
+                window.axios.get('/api/getAllActivities/'+this.project_id).then(({ data }) => {
+                    this.allActivities = data;
+                });
             },
             getActivities(){
-                window.axios.get('/project/getActivities/'+this.work_id).then(({ data }) => {
+                window.axios.get('/api/getActivitiesNetwork/'+this.wbs_id).then(({ data }) => {
                     this.activities = data;
-                    window.axios.get('/project/getAllActivities/'+this.project_id).then(({ data }) => {
-                        this.allActivities = data;
-                        this.allActivitiesEdit = data;
-                        this.activities.forEach(activity => {
-                            var predecessorObj = JSON.parse(activity.predecessor);
-                            activity['predecessorText'] = "-";
-                            if(predecessorObj != null){
-                                predecessorObj.forEach(predecessorTo => {
-                                    for(var i = 0; i < this.allActivities.length; i++){
-                                        if(predecessorTo==this.allActivities[i].id){
-                                            if(activity.predecessorText == "-"){
-                                                activity.predecessorText =  this.allActivities[i].code;
-                                            }else{
-                                                activity.predecessorText =  activity.predecessorText+", "+this.allActivities[i].code;
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    });
 
                     $('#activity-table').DataTable().destroy();
                     this.$nextTick(function() {
@@ -358,7 +285,7 @@
                 var activityUpdate = this.activities[this.activeIndex];
                 var idUpd = activityUpdate.id;
                 activityUpdate = JSON.stringify(activityUpdate);
-                var url = "/project/updatePredecessor/"+idUpd;
+                var url = "/activity/updatePredecessor/"+idUpd;
                 $('div.overlay').show();
                 window.axios.patch(url,activityUpdate)
                 .then((response) => {
@@ -405,6 +332,7 @@
             },
         },
         created: function(){
+            this.getAllActivities();
             this.getActivities();
         }
     });

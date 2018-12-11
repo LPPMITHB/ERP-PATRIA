@@ -33,9 +33,9 @@ class Project extends Model
         return $this->belongsTo('App\Models\Branch');
     }
 
-    public function works()
+    public function wbss()
     {
-        return $this->hasMany('App\Models\Work');
+        return $this->hasMany('App\Models\WBS');
     }
 
     public function purchaseRequisitions()

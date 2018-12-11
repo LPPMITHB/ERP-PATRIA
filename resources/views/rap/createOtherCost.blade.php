@@ -144,14 +144,14 @@ var data = {
     newCost : {
         description : "",
         cost : "",
-        work_id : "",
+        wbs_id : "",
         project_id : @json($project->id),
     },
     editCost : {
         cost_id : "",
         description : "",
         cost : "",
-        work_id : "",
+        wbs_id : "",
         project_id : @json($project->id),
     },
     workSettings: {
@@ -191,7 +191,7 @@ var vm = new Vue({
         openEditModal(data){
             this.editCost.cost_id = data.id;
             this.editCost.description = data.description;
-            this.editCost.work_id = data.work_id;
+            this.editCost.wbs_id = data.wbs_id;
             this.editCost.cost = data.cost;
         },
         getWorks(){
@@ -247,7 +247,7 @@ var vm = new Vue({
                 this.getCosts();
                 this.newCost.description = "";
                 this.newCost.cost = "";
-                this.newCost.work_id = "";                
+                this.newCost.wbs_id = "";                
             })
             .catch((error) => {
                 console.log(error);
@@ -278,7 +278,7 @@ var vm = new Vue({
                 this.getCosts();
                 this.newCost.description = "";
                 this.newCost.cost = "";
-                this.newCost.work_id = "";
+                this.newCost.wbs_id = "";
             })
             .catch((error) => {
                 console.log(error);

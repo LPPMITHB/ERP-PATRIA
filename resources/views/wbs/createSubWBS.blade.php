@@ -63,7 +63,7 @@
                 <div class="col-sm-6">
                     <table>
                         <thead>
-                            <th>Work Breakdown Structure Information</th>
+                            <th>WBS Information</th>
                             <th></th>
                             <th></th>
                         </thead>
@@ -73,23 +73,23 @@
                             <tr>
                                 <td style="width: 25%">Name</td>
                                 <td style="width: 3%">:</td>
-                                <td><b>{{$work->name}}</b></td>
+                                <td><b>{{$wbs->name}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Description</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->description}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->description}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Deliverable</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->deliverables}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->deliverables}}</b></td>
                             </tr>
                             <tr>
                                 <td>Planned Deadline</td>
                                 <td>:</td>
                                 <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
                                             $date = $date->format('d-m-Y');
                                             echo $date;
                                         @endphp
@@ -99,7 +99,7 @@
                             <tr>
                                 <td>Progress</td>
                                 <td>:</td>
-                                <td><b>{{$work->progress}} %</b></td>
+                                <td><b>{{$wbs->progress}} %</b></td>
                             </tr>
                         </tbody>
                     </table>
@@ -121,7 +121,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in works" class="popoverData"  data-content="" v-on:mouseover="dataForTooltip(data)" data-trigger="hover" rel="popover" data-placement="auto top" data-original-title="Details">
+                            <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.name }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
@@ -171,15 +171,15 @@
                                     <div class="row m-t-15">
                                         <div class="form-group col-sm-12">
                                             <label for="name" class="control-label">Name</label>
-                                            <input id="name" type="text" class="form-control" v-model="editWork.name" placeholder="Insert Name here..." >
+                                            <input id="name" type="text" class="form-control" v-model="editWbs.name" placeholder="Insert Name here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
-                                            <textarea id="description" v-model="editWork.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
+                                            <textarea id="description" v-model="editWbs.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="deliverables" class="control-label">Deliverables</label>
-                                            <textarea id="deliverables" v-model="editWork.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
+                                            <textarea id="deliverables" v-model="editWbs.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="edit_planned_deadline" class="control-label">Deadline</label>
@@ -187,7 +187,7 @@
                                                 <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input v-model="editWork.planned_deadline" type="text" class="form-control datepicker" id="edit_planned_deadline" placeholder="Insert Deadline here...">                                                                                               
+                                                <input v-model="editWbs.planned_deadline" type="text" class="form-control datepicker" id="edit_planned_deadline" placeholder="Insert Deadline here...">                                                                                               
                                             </div>  
                                         </div>
                                     </div>                                
@@ -220,21 +220,21 @@ $(document).ready(function(){
 });
 
 var data = {
-    works : "",
+    wbs : "",
     newIndex : "", 
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
-    work_deadline : @json($work->planned_deadline),
+    wbs_deadline : @json($wbs->planned_deadline),
     newSubWBS : {
         name : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
-        work_id : @json($work->id),
+        wbs_id : @json($wbs->id),
         project_id : @json($project->id),
     },
-    editWork : {
-        work_id: "",
+    editWbs : {
+        wbs_id: "",
         name : "",
         description : "",
         deliverables : "",
@@ -258,7 +258,7 @@ var vm = new Vue({
         );
         $("#edit_planned_deadline").datepicker().on(
             "changeDate", () => {
-                this.editWork.planned_deadline = $('#edit_planned_deadline').val();
+                this.editWbs.planned_deadline = $('#edit_planned_deadline').val();
             }
         );
     },
@@ -288,68 +288,21 @@ var vm = new Vue({
     methods:{
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
-            this.editWork.work_id = data.id;
-            this.editWork.name = data.name;
-            this.editWork.description = data.description;
-            this.editWork.deliverables = data.deliverables;
-            this.editWork.planned_deadline = data.planned_deadline;
+            this.editWbs.wbs_id = data.id;
+            this.editWbs.name = data.name;
+            this.editWbs.description = data.description;
+            this.editWbs.deliverables = data.deliverables;
+            this.editWbs.planned_deadline = data.planned_deadline;
             $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
         },
         createSubWBSRoute(data){
-            var url = "/project/createSubWBS/"+this.newSubWBS.project_id+"/"+data.id;
+            var url = "/wbs/createSubWBS/"+this.newSubWBS.project_id+"/"+data.id;
             return url;
         },
-        dataForTooltip(data){
-            var status = "";
-            if(data.status == 1){
-                status = "Open";
-            }else if(data.status == 0){
-                status = "Closed";
-            }
-
-            var actual_deadline = "-";
-            if(data.actual_deadline != null){
-                actual_deadline = data.actual_deadline;
-            }
-
-            var text = '<table class="tableFixed width100"><thead><th style="width:35%">Attribute</th><th style="width:5%"></th><th>Value</th></thead><tbody><tr><td>Code</td><td>:</td><td>'+data.code+
-            '</td></tr><tr><td>Name</td><td>:</td><td>'+data.name+
-            '</td></tr><tr><td class="valignTop">Description</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.description+
-            '</td></tr><tr><td class="valignTop">Deliverables</td><td class="valignTop">:</td><td class="valignTop" style="overflow-wrap: break-word;">'+data.deliverables+
-            '</td></tr><tr><td>Status</td><td>:</td><td>'+status+
-            '</td></tr><tr><td>Planned Deadline</td><td>:</td><td>'+data.planned_deadline+
-            '</td></tr><tr><td>Actual Deadline</td><td>:</td><td>'+actual_deadline+
-            '</td></tr><tr><td>Progress</td><td>:</td><td>'+data.progress+'%</td></tr></tbody></table>'
-            
-            function handlerMouseOver(ev) {
-                $('.popoverData').popover({
-                    html: true,
-                });
-                var target = $(ev.target);
-                var target = target.parent();
-                 
-                if(target.attr('class')=="popoverData odd"||target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',text);
-                    $(target).popover('show');
-                }else{
-                    $(target.parent()).popover('hide');
-                }
-            }
-            $(".popoverData").mouseover(handlerMouseOver);
-
-            function handlerMouseOut(ev) {
-                var target = $(ev.target);
-                var target = target.parent(); 
-                if(target.attr('class')=="popoverData odd" || target.attr('class')=="popoverData even"){
-                    $(target).attr('data-content',"");
-                }
-            }
-            $(".popoverData").mouseout(handlerMouseOut);
-        },
         getSubWBS(){
-            window.axios.get('/project/getSubWBS/'+this.newSubWBS.work_id).then(({ data }) => {
-                this.works = data;
-                this.newIndex = Object.keys(this.works).length+1;
+            window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
+                this.wbs = data;
+                this.newIndex = Object.keys(this.wbs).length+1;
                 
                 $('#wbs-table').DataTable().destroy();
                 this.$nextTick(function() {
@@ -370,7 +323,7 @@ var vm = new Vue({
         add(){            
             var newSubWBS = this.newSubWBS;
             newSubWBS = JSON.stringify(newSubWBS);
-            var url = "{{ route('project.storeWBS') }}";
+            var url = "{{ route('wbs.store') }}";
             $('div.overlay').show();            
             window.axios.post(url,newSubWBS)
             .then((response) => {
@@ -402,11 +355,11 @@ var vm = new Vue({
 
         },
         update(){            
-            var editWork = this.editWork;
-            var url = "/project/updateWBS/"+editWork.work_id;
-            editWork = JSON.stringify(editWork);
+            var editWbs = this.editWbs;
+            var url = "/wbs/update/"+editWbs.wbs_id;
+            editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
-            window.axios.patch(url,editWork)
+            window.axios.patch(url,editWbs)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -437,57 +390,57 @@ var vm = new Vue({
         'newSubWBS.planned_deadline': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
-            var deadline_parent_work = new Date(this.work_deadline).toDateString();
+            var deadline_parent_wbs = new Date(this.wbs_deadline).toDateString();
 
             var deadline = new Date(newValue);
-            var deadline_parent_work = new Date(deadline_parent_work);
+            var deadline_parent_wbs = new Date(deadline_parent_wbs);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            if(deadline > deadline_parent_work){
+            if(deadline > deadline_parent_wbs){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this work deadline is after parent work deadline",
+                    title: "this wbs deadline is after parent wbs deadline",
                     position: 'topRight',
                 });
             } else if(deadline < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this work deadline is behind project start date",
+                    title: "this wbs deadline is behind project start date",
                     position: 'topRight',
                 });
             }else if(deadline > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this work deadline is after project end date",
+                    title: "this wbs deadline is after project end date",
                     position: 'topRight',
                 });
             }
         },
-        'editWork.planned_deadline': function(newValue){
+        'editWbs.planned_deadline': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
-            var deadline_parent_work = new Date(this.work_deadline).toDateString();
+            var deadline_parent_wbs = new Date(this.wbs_deadline).toDateString();
             
             var deadline = new Date(newValue);
-            var deadline_parent_work = new Date(deadline_parent_work);
+            var deadline_parent_wbs = new Date(deadline_parent_wbs);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            if(deadline > deadline_parent_work){
+            if(deadline > deadline_parent_wbs){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this work deadline is after parent work deadline",
+                    title: "this wbs deadline is after parent wbs deadline",
                     position: 'topRight',
                 });
             } else if(deadline < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this work deadline is behind project start date",
+                    title: "this wbs deadline is behind project start date",
                     position: 'topRight',
                 });
             }else if(deadline > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this work deadline is after project end date",
+                    title: "this wbs deadline is after project end date",
                     position: 'topRight',
                 });
             }

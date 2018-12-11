@@ -35,7 +35,7 @@
                             Project Code
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelRap->project->code }} </b>
+                            : <b> {{ $modelRap->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">

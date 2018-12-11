@@ -72,7 +72,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in works">
+                            <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
@@ -102,15 +102,15 @@
                                         <div class="row">
                                             <div class="form-group col-sm-12">
                                                 <label for="name" class="control-label">Name</label>
-                                                <input id="name" type="text" class="form-control" v-model="editWork.name" placeholder="Insert Name here..." >
+                                                <input id="name" type="text" class="form-control" v-model="editWbs.name" placeholder="Insert Name here..." >
                                             </div>
                                             <div class="form-group col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
-                                                <textarea id="description" v-model="editWork.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
+                                                <textarea id="description" v-model="editWbs.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
                                             </div>
                                             <div class="form-group col-sm-12">
                                                 <label for="deliverables" class="control-label">Deliverables</label>
-                                                <textarea id="deliverables" v-model="editWork.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
+                                                <textarea id="deliverables" v-model="editWbs.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
                                             </div>
                                             <div class="form-group col-sm-12">
                                                 <label for="edit_planned_deadline" class="control-label">Deadline</label>
@@ -118,7 +118,7 @@
                                                     <div class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                     </div>
-                                                    <input v-model="editWork.planned_deadline" type="text" class="form-control datepicker" id="edit_planned_deadline" placeholder="Insert Deadline here...">                                                                                               
+                                                    <input v-model="editWbs.planned_deadline" type="text" class="form-control datepicker" id="edit_planned_deadline" placeholder="Insert Deadline here...">                                                                                               
                                                 </div>  
                                             </div>
                                         </div>  
@@ -148,19 +148,19 @@ $(document).ready(function(){
 });
 
 var data = {
-    works : "",
+    wbs : "",
     newIndex : "",
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
-    editWork : {
-        work_id: "",
+    editWbs : {
+        wbs_id: "",
         name : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
         project_id : @json($project->id),
     },
-    parent_work_deadline : "",
+    parent_wbs_deadline : "",
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -180,17 +180,17 @@ var vm = new Vue({
         });
         $("#edit_planned_deadline").datepicker().on(
             "changeDate", () => {
-                this.editWork.planned_deadline = $('#edit_planned_deadline').val();
+                this.editWbs.planned_deadline = $('#edit_planned_deadline').val();
             }
         );
     },
     computed:{
         updateOk: function(){
             let isOk = false;
-                if(this.editWork.name == ""
-                || this.editWork.description == ""
-                || this.editWork.deliverables == ""
-                || this.editWork.planned_deadline == "")
+                if(this.editWbs.name == ""
+                || this.editWbs.description == ""
+                || this.editWbs.deliverables == ""
+                || this.editWbs.planned_deadline == "")
                 {
                     isOk = true;
                 }
@@ -203,27 +203,27 @@ var vm = new Vue({
             return text
         },       
         createRouteView(data){
-            return "/project/showWBS/"+data;
+            return "/wbs/show/"+data;
         },
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
-            this.editWork.work_id = data.id;
-            this.editWork.name = data.name;
-            this.editWork.description = data.description;
-            this.editWork.deliverables = data.deliverables;
-            this.editWork.planned_deadline = data.planned_deadline;
-            this.parent_work_deadline = "";
-            this.works.forEach(work => {
-                if(work.id == data.work_id){
-                    this.parent_work_deadline = work.planned_deadline;
+            this.editWbs.wbs_id = data.id;
+            this.editWbs.name = data.name;
+            this.editWbs.description = data.description;
+            this.editWbs.deliverables = data.deliverables;
+            this.editWbs.planned_deadline = data.planned_deadline;
+            this.parent_wbs_deadline = "";
+            this.wbs.forEach(wbs => {
+                if(wbs.id == data.wbs_id){
+                    this.parent_wbs_deadline = wbs.planned_deadline;
                 }
             });
             $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
         },
         
-        getWorks(){
-            window.axios.get('/project/getAllWorks/'+this.editWork.project_id).then(({ data }) => {
-                this.works = data;
+        getWbs(){
+            window.axios.get('/api/getAllWbs/'+this.editWbs.project_id).then(({ data }) => {
+                this.wbs = data;
                 var dT = $('#wbs-table').DataTable();
                 dT.destroy();
                 this.$nextTick(function() {
@@ -239,11 +239,11 @@ var vm = new Vue({
             });
         },
         update(){            
-            var editWork = this.editWork;
-            var url = "/project/updateWBS/"+editWork.work_id;
-            editWork = JSON.stringify(editWork);
+            var editWbs = this.editWbs;
+            var url = "/wbs/update/"+editWbs.wbs_id;
+            editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
-            window.axios.patch(url,editWork)
+            window.axios.patch(url,editWbs)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -261,7 +261,7 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 
-                this.getWorks();   
+                this.getWbs();   
             })
             .catch((error) => {
                 console.log(error);
@@ -270,20 +270,20 @@ var vm = new Vue({
         },
     },
     watch : {
-        'editWork.planned_deadline': function(newValue){
+        'editWbs.planned_deadline': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
             
             var deadline = new Date(newValue);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            if(this.parent_work_deadline != ""){
-                var parent_work_deadline = new Date(this.parent_work_deadline).toDateString();
-                var parent_work_deadline = new Date(parent_work_deadline);
-                if(deadline > parent_work_deadline){
+            if(this.parent_wbs_deadline != ""){
+                var parent_wbs_deadline = new Date(this.parent_wbs_deadline).toDateString();
+                var parent_wbs_deadline = new Date(parent_wbs_deadline);
+                if(deadline > parent_wbs_deadline){
                     iziToast.warning({
                         displayMode: 'replace',
-                        title: "Your deadline is after parent work deadline",
+                        title: "Your deadline is after parent WBS deadline",
                         position: 'topRight',
                     });
                 }
@@ -303,7 +303,7 @@ var vm = new Vue({
         },
     },
     created: function() {
-        this.getWorks();
+        this.getWbs();
     },
     
 });

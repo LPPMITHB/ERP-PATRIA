@@ -68,7 +68,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td>{{ datas.resource.name }}</td>
                                             <td>{{ datas.project.name }}</td>
-                                            <template v-if="datas.work_id == null">
+                                            <template v-if="datas.wbs_id == null">
 
                                                 <td>{{ "Not Assigned" }}</td>
                                             
@@ -108,7 +108,7 @@
                                             {{ "Not Assign" }}
                                         </td>
                                         <td class="p-l-0 textLeft">
-                                            <selectize v-model="dataInput.work_id" :settings="workSettings">
+                                            <selectize v-model="dataInput.wbs_id" :settings="workSettings">
                                                 <option v-for="(work, index) in workDetail" :value="work.id">{{ work.name }}</option>
                                             </selectize>
                                         </td>
@@ -144,7 +144,7 @@
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="work_name" class="control-label">Work Name</label>
-                                                <selectize v-model="editInput.work_id" :settings="workSettings">
+                                                <selectize v-model="editInput.wbs_id" :settings="workSettings">
                                                     <option v-for="(work, index) in workDetail" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
                                             </div>
@@ -189,7 +189,7 @@
         dataInput : {
             project_id : "",
             resource_id :"",
-            work_id : "",
+            wbs_id : "",
             category_id : "",
             quantity : "",
         },
@@ -198,7 +198,7 @@
             resourcedetail_id : "",
             project_id : "",
             resource_id :"",
-            work_id : "",
+            wbs_id : "",
             category_id : "",
             quantity : "",
         },
@@ -229,7 +229,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.resource_id == "" || this.dataInput.project_id == "" || this.dataInput.work_id == ""){
+                if(this.dataInput.resource_id == "" || this.dataInput.project_id == "" || this.dataInput.wbs_id == ""){
                     isOk = true;
                 }
 
@@ -239,7 +239,7 @@
             updateOk: function(){
                 let isOk = false;
 
-                if(this.editInput.resource_id == "" || this.editInput.project_id == "" || this.editInput.work_id == ""){
+                if(this.editInput.resource_id == "" || this.editInput.project_id == "" || this.editInput.wbs_id == ""){
                     isOk = true;
                 }
 
@@ -277,7 +277,7 @@
                         this.getResource();
                         this.dataInput.resource_id = "";
                         this.dataInput.project_id = "";
-                        this.dataInput.work_id = "";             
+                        this.dataInput.wbs_id = "";             
                     })
                     .catch((error) => {
                         console.log(error);
@@ -368,7 +368,7 @@
                 this.editInput.project_name = data.project_name;
                 this.editInput.resource_id = data.resource_id;
                 this.editInput.resource_name = data.resource_name;
-                this.editInput.work_id = data.work_id;
+                this.editInput.wbs_id = data.wbs_id;
                 this.editInput.work_name = data.work_name;
                 this.editInput.index = index;
             },

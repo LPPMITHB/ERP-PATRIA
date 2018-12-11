@@ -81,7 +81,7 @@
                                 <div class="row form-group">
                                     <div class="col-sm-12">
                                         <label for="work" class="control-label">Work</label>
-                                        <selectize id="work" v-model="submittedForm.work_id" :settings="workSettings">
+                                        <selectize id="work" v-model="submittedForm.wbs_id" :settings="workSettings">
                                             <option v-for="(work, index) in modelWork" :value="work.id">{{ work.code }}-{{ work.name }}</option>
                                         </selectize>
                                     </div>
@@ -277,7 +277,7 @@
             planned_end_date : "",
             yard_id : "", 
             project_id : "",
-            work_id : "",
+            wbs_id : "",
             description : "",
         },
         projectSettings: {
@@ -315,7 +315,7 @@
         },
         watch : {
             'submittedForm.project_id' : function(newValue){
-                this.submittedForm.work_id = "";
+                this.submittedForm.wbs_id = "";
                 window.axios.get('/api/getWork/'+newValue).then(({ data }) => {
                     this.modelWork = data;
                     $('div.overlay').hide();

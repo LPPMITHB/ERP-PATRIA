@@ -32,7 +32,7 @@ return array(
     'App\\Http\\Controllers\\PermissionController' => $baseDir . '/app/Http/Controllers/PermissionController.php',
     'App\\Http\\Controllers\\PhysicalInventoryController' => $baseDir . '/app/Http/Controllers/PhysicalInventoryController.php',
     'App\\Http\\Controllers\\ProductionOrderController' => $baseDir . '/app/Http/Controllers/ProductionOrderController.php',
-    'App\\Http\\Controllers\\ProjectManagementController' => $baseDir . '/app/Http/Controllers/ProjectManagementController.php',
+    'App\\Http\\Controllers\\ProjectController' => $baseDir . '/app/Http/Controllers/ProjectController.php',
     'App\\Http\\Controllers\\PurchaseOrderController' => $baseDir . '/app/Http/Controllers/PurchaseOrderController.php',
     'App\\Http\\Controllers\\PurchaseRequisitionController' => $baseDir . '/app/Http/Controllers/PurchaseRequisitionController.php',
     'App\\Http\\Controllers\\RAPController' => $baseDir . '/app/Http/Controllers/RAPController.php',

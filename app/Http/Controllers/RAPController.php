@@ -137,7 +137,7 @@ class RAPController extends Controller
 
     public function create($id)
     {
-        $modelBOMs = BOM::where('work_id','!=','null')->where('status',1)->where('project_id',$id)->with('work')->get();
+        $modelBOMs = BOM::where('wbs_id','!=','null')->where('status',1)->where('project_id',$id)->with('work')->get();
         $project = Project::findOrFail($id);
 
         return view('rap.create', compact('modelBOMs','project'));
@@ -186,14 +186,14 @@ class RAPController extends Controller
             // $RapCost = 0;
             // foreach($raps as $rap){
             //     foreach($rap->RapDetails as $RD){
-            //         if($RD->bom->work_id == $work->id){
+            //         if($RD->bom->wbs_id == $work->id){
             //             $RapCost += $RD->quantity * $RD->price;
             //         }
             //     }
             // }
             // $otherCost = 0;
             // foreach($costs as $cost){
-            //     if($cost->work_id == $work->id){
+            //     if($cost->wbs_id == $work->id){
             //         $otherCost += $cost->cost;
             //     }
             // }
@@ -223,13 +223,13 @@ class RAPController extends Controller
         foreach($raps as $rap){
             $works = [];
             foreach($rap->RapDetails as $RD){
-                array_push($works,$RD->bom->work_id);
+                array_push($works,$RD->bom->wbs_id);
             }
             $works = array_unique($works);
             foreach($works as $work){
                 $RapCost = 0;
                 foreach($rap->RapDetails as $RD){
-                    if($RD->bom->work_id == $work){
+                    if($RD->bom->wbs_id == $work){
                         $RapCost += $RD->price;
                         $work_code = $RD->bom->work->code;
                     }
@@ -244,7 +244,7 @@ class RAPController extends Controller
         }
 
         foreach($costs as $cost){
-            if($cost->work_id == null){
+            if($cost->wbs_id == null){
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $project->number,
@@ -268,7 +268,7 @@ class RAPController extends Controller
             $RapCost = 0;
             foreach($raps as $rap){
                 foreach($rap->RapDetails as $RD){
-                    if($RD->bom->work_id == $work->id){
+                    if($RD->bom->wbs_id == $work->id){
                         $RapCost += $RD->price;
                     }
                 }
@@ -276,7 +276,7 @@ class RAPController extends Controller
 
             $otherCost = 0;
             foreach($costs as $cost){
-                if($cost->work_id == $work->id){
+                if($cost->wbs_id == $work->id){
                     $otherCost += $cost->cost;
                 }
             } 
@@ -288,7 +288,7 @@ class RAPController extends Controller
             $RapCost = 0;
             foreach($raps as $rap){
                 foreach($rap->RapDetails as $RD){
-                    if($RD->bom->work_id == $work->id){
+                    if($RD->bom->wbs_id == $work->id){
                         $RapCost += $RD->price;
                     }
                 }
@@ -296,7 +296,7 @@ class RAPController extends Controller
 
             $otherCost = 0;
             foreach($costs as $cost){
-                if($cost->work_id == $work->id){
+                if($cost->wbs_id == $work->id){
                     $otherCost += $cost->cost;
                 }
             } 
@@ -337,10 +337,10 @@ class RAPController extends Controller
         DB::beginTransaction();
         try {
             $modelCost = Cost::findOrFail($data['cost_id']);
-            if($data['work_id'] == ""){
-                $modelCost->work_id = null;
+            if($data['wbs_id'] == ""){
+                $modelCost->wbs_id = null;
             }else{
-                $modelCost->work_id = $data['work_id'];
+                $modelCost->wbs_id = $data['wbs_id'];
             }
             if(!$modelCost->save()){
                 return redirect()->route('rap.assignCost')->with('error','Failed to save, please try again !');
@@ -492,7 +492,7 @@ class RAPController extends Controller
                     $PRD = new PurchaseRequisitionDetail;
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->material_id = $data->bomDetail->material_id;
-                    $PRD->work_id = $data->bomDetail->bom->work_id;
+                    $PRD->wbs_id = $data->bomDetail->bom->wbs_id;
                     $PRD->quantity = $data->bomDetail->quantity;
                     $PRD->save();
                 }
@@ -503,7 +503,7 @@ class RAPController extends Controller
                 $PRD = new PurchaseRequisitionDetail;
                 $PRD->purchase_requisition_id = $PR->id;
                 $PRD->material_id = $data->bomDetail->material_id;
-                $PRD->work_id = $data->bomDetail->bom->work_id;
+                $PRD->wbs_id = $data->bomDetail->bom->wbs_id;
                 $PRD->quantity = $data->bomDetail->quantity;
                 $PRD->save();
 

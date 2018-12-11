@@ -349,7 +349,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\Controllers\\PermissionController' => __DIR__ . '/../..' . '/app/Http/Controllers/PermissionController.php',
         'App\\Http\\Controllers\\PhysicalInventoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/PhysicalInventoryController.php',
         'App\\Http\\Controllers\\ProductionOrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductionOrderController.php',
-        'App\\Http\\Controllers\\ProjectManagementController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProjectManagementController.php',
+        'App\\Http\\Controllers\\ProjectController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProjectController.php',
         'App\\Http\\Controllers\\PurchaseOrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/PurchaseOrderController.php',
         'App\\Http\\Controllers\\PurchaseRequisitionController' => __DIR__ . '/../..' . '/app/Http/Controllers/PurchaseRequisitionController.php',
         'App\\Http\\Controllers\\RAPController' => __DIR__ . '/../..' . '/app/Http/Controllers/RAPController.php',
