@@ -21,7 +21,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-solid">
+        <div class="box">
             <div class="box-header">
                 <div class="col-xs-12 col-lg-4 col-md-12">    
                     <div class="box-body">

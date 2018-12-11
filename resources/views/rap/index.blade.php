@@ -19,7 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered" id="boms-table">
+                <table class="table table-bordered tablePaging" id="boms-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -58,17 +58,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#boms-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

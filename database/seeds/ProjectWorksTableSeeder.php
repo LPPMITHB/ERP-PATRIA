@@ -43,7 +43,7 @@ class ProjectWorksTableSeeder extends Seeder
             'code' => 'PRW0017',
             'name' => 'PRW 001 007',
             'description' => '',
-            'deliverables' => 'Level 3',
+            'deliverables' => 'Level 2',
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-30',
@@ -57,7 +57,7 @@ class ProjectWorksTableSeeder extends Seeder
             'code' => 'PRW0018',
             'name' => 'PRW 001 008',
             'description' => '',
-            'deliverables' => 'Level 4',
+            'deliverables' => 'Level 3',
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-30',
@@ -71,7 +71,7 @@ class ProjectWorksTableSeeder extends Seeder
             'code' => 'PRW0019',
             'name' => 'PRW 001 009',
             'description' => '',
-            'deliverables' => 'Level 5',
+            'deliverables' => 'Level 4',
             'project_id' => 1,
             'status' => 1,
             'planned_deadline' => '2018-9-30',
@@ -88,8 +88,9 @@ class ProjectWorksTableSeeder extends Seeder
             'deliverables' => 'Dua',                
             'project_id' => 1,
             'status' => 1,
-            'planned_deadline' => '2018-9-10',
+            'planned_deadline' => '2018-9-30',
             'progress' => 0,
+            'work_id' => 5,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -101,7 +102,7 @@ class ProjectWorksTableSeeder extends Seeder
             'deliverables' => 'Tiga',                
             'project_id' => 1,
             'status' => 1,
-            'planned_deadline' => '2018-11-15',
+            'planned_deadline' => '2018-9-10',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
@@ -157,6 +158,7 @@ class ProjectWorksTableSeeder extends Seeder
             'planned_deadline' => '2019-2-2',
             // 'actual_deadline' => '',
             'progress' => 0,
+            'work_id' => 7,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -166,10 +168,9 @@ class ProjectWorksTableSeeder extends Seeder
             'name' => 'PRW 301 008',
             'description' => 'PRW 301 008',
             'deliverables' => 'Level 1', 
-            'project_id' => 3,
+            'project_id' => 1,
             'status' => 1,
-            'planned_deadline' => '2019-1-5',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2018-12-22',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
@@ -212,12 +213,11 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 8,
             'status' => 1,
-            'planned_deadline' => '2019-12-30',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2019-2-22',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
+        ]); 
 
         DB::table('pro_wbs')->insert([
             'code' => 'PRW00012',
@@ -227,8 +227,7 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 9,
             'status' => 1,
-            'planned_deadline' => '2019-12-30',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2019-1-5',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
@@ -257,12 +256,11 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 10,
             'status' => 1,
-            'planned_deadline' => '2019-12-21',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2019-3-15',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
+        ]); 
 
         DB::table('pro_wbs')->insert([
             'code' => 'PRW00015',
@@ -272,9 +270,9 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 11,
             'status' => 1,
-            'planned_deadline' => '2019-12-15',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2019-2-25',
             'progress' => 0,
+            'work_id' => 12,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -287,9 +285,9 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 13,
             'status' => 1,
-            'planned_deadline' => '2019-11-28',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2019-3-7',
             'progress' => 0,
+            'work_id' => 12,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -302,12 +300,11 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 13,
             'status' => 1,
-            'planned_deadline' => '2019-11-28',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2019-6-18',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
+        ]); 
 
         DB::table('pro_wbs')->insert([
             'code' => 'PRW00025',
@@ -317,9 +314,9 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 14,
             'status' => 1,
-            'planned_deadline' => '2019-11-25',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2019-6-6',
             'progress' => 0,
+            'work_id' => 15,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -332,12 +329,11 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 16,
             'status' => 1,
-            'planned_deadline' => '2019-11-11',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2018-11-27',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
+        ]); 
 
         DB::table('pro_wbs')->insert([
             'code' => 'PRW00020',
@@ -347,12 +343,11 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 16,
             'status' => 1,
-            'planned_deadline' => '2019-11-18',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2018-10-15',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
+        ]); 
 
         DB::table('pro_wbs')->insert([
             'code' => 'PRW00021',
@@ -362,12 +357,11 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 16,
             'status' => 1,
-            'planned_deadline' => '2019-11-11',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2018-9-9',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
+        ]); 
 
         DB::table('pro_wbs')->insert([
             'code' => 'PRW00022',
@@ -377,12 +371,10 @@ class ProjectWorksTableSeeder extends Seeder
             'project_id' => 3,
             'wbs_id' => 17,
             'status' => 1,
-            'planned_deadline' => '2019-11-15',
-            // 'actual_deadline' => '',
+            'planned_deadline' => '2018-10-29',
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
-                    
+        ]); 
     }
 }

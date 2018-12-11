@@ -383,7 +383,7 @@ a {
   padding: 0 !important;
 }
 
-.tdEllipsis {
+.tdEllipsis{
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap;
@@ -644,7 +644,30 @@ textarea {
     padding: 1px !important;
 }
 
-//ini ngebuat view di hp rusak
-.table{
-    width:100% !important;
+[hidden] {
+    display: none !important;
+}
+
+::-webkit-scrollbar
+{
+    width: 9px;   /*for vertical scrollbars*/ 
+    height: 10px;  /*for horizontal scrollbars*/ 
+}
+
+::-webkit-scrollbar-track
+{
+    background: rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background-color: #818B99;
+    border: 3px solid transparent;
+    border-radius: 9px;
+    -moz-background-clip: content-box;
+    -webkit-background-clip: content-box;
+    background-clip: content-box;
 }
