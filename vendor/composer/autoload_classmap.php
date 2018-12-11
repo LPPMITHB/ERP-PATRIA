@@ -89,6 +89,7 @@ return array(
     'App\\Models\\Resource' => $baseDir . '/app/Models/Resource.php',
     'App\\Models\\ResourceDetail' => $baseDir . '/app/Models/ResourceDetail.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
+    'App\\Models\\Service' => $baseDir . '/app/Models/Service.php',
     'App\\Models\\Ship' => $baseDir . '/app/Models/Ship.php',
     'App\\Models\\Sidenav' => $baseDir . '/app/Models/Sidenav.php',
     'App\\Models\\Snapshot' => $baseDir . '/app/Models/Snapshot.php',

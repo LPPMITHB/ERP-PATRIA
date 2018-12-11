@@ -406,6 +406,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\Resource' => __DIR__ . '/../..' . '/app/Models/Resource.php',
         'App\\Models\\ResourceDetail' => __DIR__ . '/../..' . '/app/Models/ResourceDetail.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\Service' => __DIR__ . '/../..' . '/app/Models/Service.php',
         'App\\Models\\Ship' => __DIR__ . '/../..' . '/app/Models/Ship.php',
         'App\\Models\\Sidenav' => __DIR__ . '/../..' . '/app/Models/Sidenav.php',
         'App\\Models\\Snapshot' => __DIR__ . '/../..' . '/app/Models/Snapshot.php',

@@ -114,7 +114,7 @@ class UnitOfMeasurementController extends Controller
         $uom->name = ucwords($request->input('name'));
         $uom->unit = $request->input('unit');
         $uom->status = $request->input('status');
-        $uom->save();
+        $uom->update();
 
         DB::commit();
         return redirect()->route('unit_of_measurement.show',$uom->id)->with('success', 'Unit Of Measurement Updated Succesfully');

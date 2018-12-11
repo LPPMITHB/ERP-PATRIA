@@ -121,7 +121,7 @@ class ServiceController extends Controller
         $service->description = $request->input('description');
         $service->cost_standard_price = $request->input('cost_standard_price');
         $service->status = $request->input('status');
-        $service->save();
+        $service->update();
 
         DB::commit();
         return redirect()->route('service.show',$service->id)->with('success', 'Service Updated Succesfully');

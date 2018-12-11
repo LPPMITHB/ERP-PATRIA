@@ -105,6 +105,48 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        //BOS
+        $manageBOS = Menu::where('name','Manage BOS')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Index Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'index-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'create-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'show-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'edit-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'destroy-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
         
         //RAB
         // $createRAB = Menu::where('name','Create RAB')->select('id')->first()->id;

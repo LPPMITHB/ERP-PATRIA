@@ -152,8 +152,8 @@ class CustomerController extends Controller
         $user->email = $request->input('contact_person_email');
         $user->address = ucfirst($request->input('address'));
         $user->phone_number = $request->input('contact_person_phone');
-        $customer->save();
-        $user->save();
+        $customer->update();
+        $user->update();
         
             DB::commit();
             return redirect()->route('customer.show',$customer->id)->with('success', 'Customer Updated Succesfully');

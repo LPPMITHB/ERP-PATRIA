@@ -118,7 +118,7 @@ class VendorController extends Controller
         $vendor->phone_number = $request->input('phone_number');
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
-        $vendor->save();
+        $vendor->update();
 
         DB::commit();
         return redirect()->route('vendor.show',$vendor->id)->with('success','Vendor Updated Succesfully!');

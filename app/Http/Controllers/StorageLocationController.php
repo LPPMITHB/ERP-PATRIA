@@ -132,7 +132,7 @@ class StorageLocationController extends Controller
         $storage_location->description = $request->input('description');
         $storage_location->warehouse_id = $request->input('warehouse');
         $storage_location->status = $request->input('status');
-        $storage_location->save();
+        $storage_location->update();
 
         DB::commit();
             return redirect()->route('storage_location.show',$storage_location->id)->with('success', 'Success Edit Storage Location');
