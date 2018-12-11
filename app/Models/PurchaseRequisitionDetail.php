@@ -13,8 +13,8 @@ class PurchaseRequisitionDetail extends Model
         return $this->belongsTo('App\Models\Material');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo('App\Models\Work');
+        return $this->belongsTo('App\Models\WBS');
     }
 }

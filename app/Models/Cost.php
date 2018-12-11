@@ -13,9 +13,9 @@ class Cost extends Model
         return $this->belongsTo('App\Models\Project');
     }
 
-    public function work()
+    public function wbs()
     {
-        return $this->belongsTo('App\Models\Work');
+        return $this->belongsTo('App\Models\WBS');
     }
 
     public function user()

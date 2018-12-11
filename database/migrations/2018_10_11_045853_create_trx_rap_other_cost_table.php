@@ -18,13 +18,13 @@ class CreateTrxRapOtherCostTable extends Migration
             $table->string('description');
             $table->bigInteger('cost');
             $table->unsignedInteger('project_id');
-            $table->unsignedInteger('work_id')->nullable();
+            $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('pro_project');
-            $table->foreign('work_id')->references('id')->on('pro_project_work');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('branch_id')->references('id')->on('mst_branch'); 
         });
@@ -37,6 +37,6 @@ class CreateTrxRapOtherCostTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ref_rab_other_and_process_cost');
+        Schema::dropIfExists('ref_rap_other_and_process_cost');
     }
 }

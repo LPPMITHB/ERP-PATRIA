@@ -22776,10 +22776,6 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   z-index: 820;
 }
 
-.table {
-  width: 100% !important;
-}
-
 @media (max-width: 767px) {
   .content-wrapper,
   .main-footer {
@@ -23190,7 +23186,6 @@ table.dataTable thead .sorting_desc_disabled:after {
 
 .tableFixed {
   table-layout: fixed !important;
-  width: 98.7% !important;
 }
 
 .valignTop {
@@ -23322,6 +23317,10 @@ textarea {
   display: none;
 }
 
+.activityContinue {
+  margin-top: 20px;
+}
+
 @media only screen and (max-device-width: 1024px) {
   .mobile_device_landscape {
     margin-left: 15px;
@@ -23350,6 +23349,10 @@ textarea {
 
   .inner {
     height: 140px;
+  }
+
+  .activityContinue {
+    margin-top: -20px;
   }
 }
 
@@ -23381,6 +23384,10 @@ textarea {
   .inner {
     height: 140px;
   }
+
+  .activityContinue {
+    margin-top: -20px;
+  }
 }
 
 .dataTables_filter {
@@ -23389,6 +23396,32 @@ textarea {
 
 .indexTable {
   padding: 1px !important;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  /*for vertical scrollbars*/
+  height: 10px;
+  /*for horizontal scrollbars*/
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  background-color: #818B99;
+  border: 3px solid transparent;
+  border-radius: 9px;
+  background-clip: content-box;
 }
 
 /*

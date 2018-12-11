@@ -18,11 +18,11 @@
 <div class="row">
     <div class="box-tools pull-left m-l-15">
         <a href="{{ route('project.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
-        <a href="{{ route('project.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
-        <a href="{{ route('project.indexWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW WBS</a>
-        <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
-        <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
-        <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'mngNet']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
+        <a href="{{ route('wbs.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
+        <a href="{{ route('wbs.index',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW WBS</a>
+        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
+        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
+        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'mngNet']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
         <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
     </div>
 </div>
@@ -136,35 +136,137 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-12" style="margin-top: -5px;">
-        <div class="box box-solid">
-            <div class="box-body">
-                <div class="col-sm-12">
-                    <table class="marginAuto">
-                        <tbody>
-                            <tr>
-                                <td class="textCenter"><h3 style="margin-top: -1%;">PROGRESS ({{$project->progress}} %)</h3></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="progress" style="height:20px">
-                        @if($project->planned_end_date < $today)
-                            <div class="progress-bar progress-bar-danger" role="progressbar" style="width: {{$project->progress}}%" aria-valuenow="{{$project->progress}}" aria-valuemin="0" aria-valuemax="100">
+@verbatim
+<div id="confirm_activity">
+    <div class="row">
+        <div class="col-sm-12" style="margin-top: -5px;">
+            <div class="box box-solid">
+                <div class="box-body">
+                    <div class="col-sm-12">
+                        <table class="marginAuto">
+                            <tbody>
+                                <tr>
+                                    <td class="textCenter"><h3 style="margin-top: -1%;">PROGRESS ({{project.progress}} %)</h3></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="progress" style="height:20px">
+                            <div :class="progressBarColor" role="progressbar" :style="styleProgressBar(project.progress)" :aria-valuenow="project.progress" aria-valuemin="0" aria-valuemax="100">
                             </div>
-                        @elseif($project->planned_end_date == $today)
-                            <div class="progress-bar progress-bar-warning" role="progressbar" style="width: {{$project->progress}}%" aria-valuenow="{{$project->progress}}" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        @else
-                            <div class="progress-bar progress-bar-success" role="progressbar" style="width: {{$project->progress}}%" aria-valuenow="{{$project->progress}}" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        @endif
-                    </div>  
+                        </div>  
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="confirm_activity_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Confirm Activity <b id="confirm_activity_code"></b></h4>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <thead>
+                            <th colspan="2">Activity Details</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Planned Start Date</td>
+                                <td>:</td>
+                                <td>&ensp;<b id="planned_start_date"></b></td>
+                            </tr>
+                            <tr>
+                                <td>Planned End Date</td>
+                                <td>:</td>
+                                <td>&ensp;<b id="planned_end_date"></b></td>
+                            </tr>
+                            <tr>
+                                <td>Planned Duration</td>
+                                <td>:</td>
+                                <td>&ensp;<b id="planned_duration"></b></td>
+                            </tr>
+                            <tr>
+                                <td>Predecessor</td>
+                                <td>:</td>
+                                <td>&ensp;<template v-if="havePredecessor == false">-</template></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <template v-if="havePredecessor == false"><br></template>
+                    <template v-if="havePredecessor == true">
+                        <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                            <thead>
+                                <tr>
+                                    <th class="p-l-5" style="width: 5%">No</th>
+                                    <th style="width: 15%">Code</th>
+                                    <th style="width: 29%">Name</th>
+                                    <th style="width: 29%">Description</th>
+                                    <th style="width: 15%">WBS Code</th>
+                                    <th style="width: 12%">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(data,index) in predecessorActivities">
+                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                    <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                    <td class="p-b-15 p-t-15">{{ data.wbs.code }}</td>
+                                    <td class="textCenter">
+                                        <template v-if="data.status == 0">
+                                            <i class='fa fa-check'></i>
+                                        </template>
+                                        <template v-else>
+                                            <i class='fa fa-times'></i>
+                                        </template>    
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label for="actual_start_date" class=" control-label">Actual Start Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">                                             
+                            </div>
+                        </div>
+                                
+                        <div class="form-group col-sm-4">
+                            <label for="actual_end_date" class=" control-label">Actual End Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input :disabled="alreadyStart" v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-sm-4">
+                            <label for="duration" class=" control-label">Actual Duration</label>
+                            <input :disabled="alreadyStart" @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
+                        </div> 
+                        
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button :disabled="alreadyStart" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 </div>
+@endverbatim
         
 <div class="row">
     <div class="col-sm-12" style="margin-top: -5px;">
@@ -297,116 +399,7 @@
 
 
 
-@verbatim
-<div id="confirm_activity">
-    <div class="modal fade" id="confirm_activity_modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Confirm Activity <b id="confirm_activity_code"></b></h4>
-                </div>
-                <div class="modal-body">
-                    <table>
-                        <thead>
-                            <th colspan="2">Activity Details</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b id="planned_start_date"></b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b id="planned_end_date"></b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Duration</td>
-                                <td>:</td>
-                                <td>&ensp;<b id="planned_duration"></b></td>
-                            </tr>
-                            <tr>
-                                <td>Predecessor</td>
-                                <td>:</td>
-                                <td>&ensp;<template v-if="havePredecessor == false">-</template></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <template v-if="havePredecessor == false"><br></template>
-                    <template v-if="havePredecessor == true">
-                        <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
-                            <thead>
-                                <tr>
-                                    <th class="p-l-5" style="width: 5%">No</th>
-                                    <th style="width: 15%">Code</th>
-                                    <th style="width: 29%">Name</th>
-                                    <th style="width: 29%">Description</th>
-                                    <th style="width: 15%">WBS Code</th>
-                                    <th style="width: 12%">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(data,index) in predecessorActivities">
-                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                    <td class="p-b-15 p-t-15">{{ data.code }}</td>
-                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                    <td class="p-b-15 p-t-15">{{ data.work.code }}</td>
-                                    <td class="textCenter">
-                                        <template v-if="data.status == 0">
-                                            <i class='fa fa-check'></i>
-                                        </template>
-                                        <template v-else>
-                                            <i class='fa fa-times'></i>
-                                        </template>    
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </template>
-                    <div class="row">
-                        <div class="form-group col-sm-4">
-                            <label for="actual_start_date" class=" control-label">Actual Start Date</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">                                             
-                            </div>
-                        </div>
-                                
-                        <div class="form-group col-sm-4">
-                            <label for="actual_end_date" class=" control-label">Actual End Date</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input :disabled="alreadyStart" v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
-                            </div>
-                        </div>
-                        
-                        <div class="form-group col-sm-4">
-                            <label for="duration" class=" control-label">Actual Duration</label>
-                            <input :disabled="alreadyStart" @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
-                        </div> 
-                        
-                    </div>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button :disabled="alreadyStart" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-</div>
-@endverbatim
+
 
 
 @endsection
@@ -657,6 +650,8 @@
 
         var data = {
             project_id : @json($project->id),
+            project : @json($project),
+            today : @json($today),
             predecessorActivities : [],
             activity:"",
             confirmActivity : {
@@ -718,18 +713,33 @@
                     });
                     return isOkAlreadyStart || isOkPredecessor;
                 },
+                progressBarColor: function(){
+                    let classStyle = "";
+                    if(this.project.planned_end_date < this.today){
+                        classStyle = "progress-bar progress-bar-danger";
+                    }else if(this.project.planned_end_date == this.today){
+                        classStyle = "progress-bar progress-bar-warning";
+                    }else{
+                        classStyle = "progress-bar progress-bar-success";
+                    }
+                    return classStyle;
+                }   
+
             }, 
             methods:{
+                styleProgressBar: function(data){
+                    return "width: "+data+"%";
+                },
                 tooltipText: function(text) {
                     return text
                 },
                 openConfirmModal(data){
-                    window.axios.get('/project/getActivity/'+data).then(({ data }) => {
+                    window.axios.get('/api/getActivity/'+data).then(({ data }) => {
                         this.activity = data[0];
                         this.predecessorTableView = [];
                         if(this.activity.predecessor != null){
                             this.havePredecessor = true;
-                            window.axios.get('/project/getPredecessor/'+this.activity.id).then(({ data }) => {
+                            window.axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
                                 this.predecessorActivities = data;
                             });
                         }else{
@@ -763,7 +773,7 @@
                 },
                 confirm(){            
                     var confirmActivity = this.confirmActivity;
-                    var url = "/project/updateActualActivity/"+confirmActivity.activity_id;
+                    var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
                     confirmActivity = JSON.stringify(confirmActivity);
                     window.axios.patch(url,confirmActivity)
                     .then((response) => {
@@ -781,7 +791,7 @@
                             });
                         }
 
-                        window.axios.get('/project/getDataGantt/'+this.project_id).then(({ data }) => {
+                        window.axios.get('/api/getDataGantt/'+this.project_id).then(({ data }) => {
                             var tasks = {
                                 data:data.data,
                                 links:data.links
@@ -794,6 +804,10 @@
                                 }
                             })
                         });
+
+                        window.axios.get('/api/getProject/'+this.project_id).then(({ data }) => {
+                            this.project = data;
+                        });                        
                         
                         this.confirmActivity.activity_id = "";
                         this.confirmActivity.actual_start_date = "";
@@ -834,7 +848,7 @@
                         $('#actual_end_date').datepicker('setDate', null);
                         this.confirmActivity.actual_duration = "";
                     }
-                },          
+                },       
             },
         });
 

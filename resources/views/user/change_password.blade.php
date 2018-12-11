@@ -6,7 +6,7 @@
         'title' => 'Change Password User',
         'subtitle' => 'Change Password',
         'items' => [
-            'Home' => route('index'),
+            'Dashboard' => route('index'),
             'User' => route('user.index'),
             $user->name => route('user.show',$user->id),
             'Change Password' => route('user.change_password',$user->id),

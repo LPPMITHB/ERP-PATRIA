@@ -104,7 +104,7 @@
                                             <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                         </td>
                                         <td class="p-l-0 textLeft">
-                                            <selectize v-model="dataInput.work_id" :settings="workSettings">
+                                            <selectize v-model="dataInput.wbs_id" :settings="workSettings">
                                                 <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                             </selectize>
                                         </td>
@@ -141,7 +141,7 @@
                                         </div>
                                         <div class="col-sm-12">
                                             <label for="type" class="control-label">Work Name</label>
-                                            <selectize id="edit_modal" v-model="editInput.work_id" :settings="workSettings" disabled>
+                                            <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="workSettings" disabled>
                                                 <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                             </selectize>
                                         </div>
@@ -187,12 +187,12 @@
         dataInput : {
             material_id :"",
             quantity : "",
-            work_id : "",
+            wbs_id : "",
         },
         editInput : {
             material_id : "",
             quantity : "",
-            work_id : "",
+            wbs_id : "",
         },
     }
 
@@ -203,7 +203,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantity == "" || this.dataInput.work_id == "" || parseInt((this.dataInput.quantity+"").replace(/,/g , '')) < 1){
+                if(this.dataInput.material_id == "" || this.dataInput.quantity == "" || this.dataInput.wbs_id == "" || parseInt((this.dataInput.quantity+"").replace(/,/g , '')) < 1){
                     isOk = true;
                 }
 
@@ -212,7 +212,7 @@
             updateOk: function(){
                 let isOk = false;
 
-                if(this.editInput.material_id == "" || this.editInput.quantity == "" || this.editInput.work_id == "" || parseInt((this.editInput.quantity+"").replace(/,/g , '')) < 1){
+                if(this.editInput.material_id == "" || this.editInput.quantity == "" || this.editInput.wbs_id == "" || parseInt((this.editInput.quantity+"").replace(/,/g , '')) < 1){
                     isOk = true;
                 }
                 return isOk;
@@ -235,7 +235,7 @@
                 var currentPRD = this.modelPRD;
                 var status = 0;
                 currentPRD.forEach(prDetail => {
-                    if(prDetail.material_id == newPRD.material_id && prDetail.work_id == newPRD.work_id){
+                    if(prDetail.material_id == newPRD.material_id && prDetail.wbs_id == newPRD.wbs_id){
                         status = 1;
                     }
                 });
@@ -247,7 +247,7 @@
                     window.axios.post(url,newPRD).then((response) => {
                         this.dataInput.material_id = "";
                         this.dataInput.quantity = "";
-                        this.dataInput.work_id = "";
+                        this.dataInput.wbs_id = "";
 
                         this.getPRD(this.dataInput.pr_id);
 
@@ -272,7 +272,7 @@
                     window.axios.patch(url,newPRD).then((response) => {
                         this.dataInput.material_id = "";
                         this.dataInput.quantity = "";
-                        this.dataInput.work_id = "";
+                        this.dataInput.wbs_id = "";
 
                         this.getPRD(this.dataInput.pr_id);
 
@@ -297,7 +297,7 @@
             openEditModal(data,index){
                 this.editInput.material_id = data.material_id;
                 this.editInput.quantity = data.quantity;
-                this.editInput.work_id = data.work_id;
+                this.editInput.wbs_id = data.wbs_id;
                 this.editInput.index = index;
                 this.editInput.pr_id = this.dataInput.pr_id
             },
@@ -308,7 +308,7 @@
                 window.axios.patch(url,newPRD).then((response) => {
                     this.editInput.material_id = "";
                     this.editInput.quantity = "";
-                    this.editInput.work_id = "";
+                    this.editInput.wbs_id = "";
 
                     this.getPRD(this.dataInput.pr_id);
 

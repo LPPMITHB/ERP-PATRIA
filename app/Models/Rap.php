@@ -30,7 +30,7 @@ class Rap extends Model
 
     public function bom()
     {
-        return $this->hasOne('App\Models\Bom');
+        return $this->belongsTo('App\Models\Bom');
     }
 
 }

@@ -41,7 +41,7 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.createWBS',
+            'route_name' => 'wbs.createWBS',
         ]);
 
         DB::table('sidenav')->insert([
@@ -84,7 +84,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project.projectCE',
         ]);
 
-        $confirmActivity = Menu::where('route_name','project.indexConfirm')->select('id')->first()->id;
+        $confirmActivity = Menu::where('route_name','activity.indexConfirm')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $confirmActivity,
             'route_name' => 'project.indexConfirm',

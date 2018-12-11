@@ -5,7 +5,7 @@
         'title' => 'Assign Cost » '.$project->name,
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rab.selectProjectAssignCost'),
+            'Select Project' => route('rap.selectProjectAssignCost'),
             'Assign Cost' => ""
         ]
     ]
@@ -86,14 +86,14 @@
                                 <td v-else>{{ 'Process Cost' }}</td>
                                 <td class="tdEllipsis">{{ cost.description }}</td>
                                 <td class="tdEllipsis">Rp.{{ cost.cost }}</td>
-                                <template v-if="cost.work_id == null">
+                                <template v-if="cost.wbs_id == null">
                                     <td>{{ "Not Assigned" }}</td>
                                 </template>
                                 <template v-else>
                                     <td>{{ "Assigned" }}</td>
                                 </template>
                                 <td class="no-padding">
-                                    <selectize v-model="cost.work_id" :id="index" :settings="workSettings">
+                                    <selectize v-model="cost.wbs_id" :id="index" :settings="workSettings">
                                         <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                     </selectize>
                                 </td>
@@ -126,16 +126,16 @@
         });
     }
 
-    function save(work_id,index){
+    function save(wbs_id,index){
         var costs = this.data.costs;
         var cost_id = costs[index].id;
         var data = {
             cost_id : cost_id,
-            work_id : work_id
+            wbs_id : wbs_id
         }
         $('div.overlay').show();
         data = JSON.stringify(data);
-        var url = "{{ route('rab.storeAssignCost') }}";
+        var url = "{{ route('rap.storeAssignCost') }}";
         window.axios.patch(url,data).then((response) => {
             getNewCost(response.data.project_id);
 
@@ -165,10 +165,10 @@
             plugins: ['dropdown_direction'],
             dropdownDirection : 'down',
             onChange : function(id){
-                var work_id = id;
+                var wbs_id = id;
                 var obj = $(this)[0];
                 var index = obj.$input["0"].id;
-                save(work_id,index);
+                save(wbs_id,index);
             }
         },
     };

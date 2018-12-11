@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\BomDetail; 
+use App\Models\Rap; 
+
 
 class RAPDetailsTableSeeder extends Seeder
 {
@@ -11,89 +14,24 @@ class RAPDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 1,
-            'material_id' => 1,
-            'quantity' => 6,
-            'price' => 840000,
-        ]);
-        
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 1,
-            'material_id' => 3,
-            'quantity' => 9,
-            'price' => 2700000,
-        ]);
+        $modelBD = BomDetail::all();
+        foreach($modelBD as $bd){
+            DB::table('trx_rap_detail')->insert([
+                'rap_id' => $bd->bom_id,
+                'material_id' => $bd->material_id,
+                'quantity' => $bd->quantity,
+                'price' => $bd->material->cost_standard_price * $bd->quantity
+            ]);
+        }
 
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 1,
-            'material_id' => 4,
-            'quantity' => 12,
-            'price' => 768000000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 1,
-            'material_id' => 8,
-            'quantity' => 20,
-            'price' => 2000000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 1,
-            'material_id' => 18,
-            'quantity' => 8,
-            'price' => 68000000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 1,
-            'material_id' => 30,
-            'quantity' => 3,
-            'price' => 660000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 2,
-            'material_id' => 2,
-            'quantity' => 10,
-            'price' => 25000000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 2,
-            'material_id' => 7,
-            'quantity' => 5,
-            'price' => 250000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 2,
-            'material_id' => 10,
-            'quantity' => 8,
-            'price' => 44000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 2,
-            'material_id' => 8,
-            'quantity' => 18,
-            'price' => 1800000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 2,
-            'material_id' => 33,
-            'quantity' => 6,
-            'price' => 228000000,
-        ]);
-
-        DB::table('trx_rap_detail')->insert([
-            'rap_id' => 3,
-            'material_id' => 11,
-            'quantity' => 5,
-            'price' => 20000000,
-        ]);
+        $modelRap = Rap::all();
+        foreach($modelRap as $rap){
+            $total_price = 0;
+            foreach($rap->rapDetails as $rd){
+                $total_price += $rd->price;
+            }
+            $rap->total_price = $total_price;
+            $rap->update();
+        }
     }
 }

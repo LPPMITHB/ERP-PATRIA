@@ -62,7 +62,7 @@ class MaterialRequisitionController extends Controller
                 $MRD->material_requisition_id = $MR->id;
                 $MRD->quantity = $data->quantityInt;
                 $MRD->material_id = $data->material_id;
-                $MRD->work_id = $data->work_id;
+                $MRD->wbs_id = $data->wbs_id;
                 $MRD->save();
 
                 $this->reserveStock($data->material_id, $data->quantityInt);

@@ -37,7 +37,7 @@
                     <form class="form-horizontal" method="POST" action="{{ route('project.update',['id'=>$project->id]) }}">
                     <input type="hidden" name="_method" value="PATCH">
                 @else
-                    <form id="create-project" class="form-horizontal" method="POST" action="{{ route('project.store') }}">
+                    <form id="create-project" class="form-horizontal" method="POST" action="{{ route('project.store') }}" enctype="multipart/form-data">
                 @endif
                     @csrf
                     <div class="box-body">
@@ -164,8 +164,15 @@
 
                             <div class="form-group">
                                 <label for="upload" class="col-sm-2 control-label">Upload Drawing</label>
-                                <div class="col-sm-2">
-                                    <button type="button" class="btn btn-primary pull-right width100">UPLOAD</button>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <label class="input-group-btn">
+                                            <span class="btn btn-primary">
+                                                Browse&hellip; <input type="file" style="display: none;" multiple id="drawing" name="drawing">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control" readonly>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -190,6 +197,26 @@
 @push('script')
 <script>
 $(document).ready(function(){
+    $(document).on('change', ':file', function() {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
+
+    // We can watch for our custom `fileselect` event like this
+    $(document).ready( function() {
+        $(':file').on('fileselect', function(event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+            if( input.length ) {
+                input.val(log);
+            } else {
+                if( log ) alert(log);
+            }
+        });
+    });
+
     var data = {
         customers : @json($customers),
         ships : @json($ships),

@@ -62,7 +62,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Confirm Activity',
             'icon' => 'fa-clock-o',
-            'route_name'=> 'project.indexConfirm',
+            'route_name'=> 'activity.indexConfirm',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=> $projectManagement,
@@ -132,9 +132,9 @@ class MenusTableSeeder extends Seeder
         $costPlan =  Menu::where('name','Cost Plan')->select('id')->first()->id;
         // DB::table('menus')->insert([
         //     'level' => 3,
-        //     'name' => 'Create RAB',
+        //     'name' => 'Create RAP',
         //     'icon' => 'fa-file-text-o',
-        //     'route_name'=> 'rab.selectProject',
+        //     'route_name'=> 'rap.selectProject',
         //     'is_active' => true,
         //     'roles' => 'ADMIN',
         //     'menu_id'=>$costPlan,
@@ -767,6 +767,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Business Unit',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'business_unit.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$masterData,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 2,
@@ -920,6 +931,18 @@ class MenusTableSeeder extends Seeder
             'name' => 'Currencies',
             'icon' => 'fa-wrench',
             'route_name'=> 'currencies.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$configuration,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Change Default Password',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'user.changeDefaultPassword',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$configuration,
