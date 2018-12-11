@@ -26,7 +26,7 @@
                     <div class="col-sm-12 no-padding"><b>Project Information</b></div>
 
                     <div class="col-xs-4 no-padding">Project Code</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->number}}"><b>: {{$modelBOM->project->number}}</b></div>
+                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->code}}"><b>: {{$modelBOM->project->code}}</b></div>
                     
                     <div class="col-xs-4 no-padding">Project Name</div>
                     <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->name}}"><b>: {{$modelBOM->project->name}}</b></div>

@@ -45,5 +45,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ResourcesTableSeeder::class);
         $this->call(ProductionOrderTableSeeder::class);
         $this->call(ProductionOrderDetailsTableSeeder::class);    
+        $this->call(BusinessUnitsTableSeeder::class);    
     }
 }

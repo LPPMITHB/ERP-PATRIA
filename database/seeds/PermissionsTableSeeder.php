@@ -319,6 +319,48 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Master Data Business Unit
+        $businessUnit = Menu::where('name','Business Unit')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Index Business Unit',
+            'menu_id' => $businessUnit,
+            'middleware' => 'index-business-unit',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Business Unit',
+            'menu_id' => $businessUnit,
+            'middleware' => 'create-business-unit',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Business Unit',
+            'menu_id' => $businessUnit,
+            'middleware' => 'show-business-unit',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Business Unit',
+            'menu_id' => $businessUnit,
+            'middleware' => 'edit-business-unit',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Business Unit',
+            'menu_id' => $businessUnit,
+            'middleware' => 'destroy-business-unit',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         // Master Data Company
         $company = Menu::where('name','Company')->select('id')->first()->id;
         DB::table('permissions')->insert([
