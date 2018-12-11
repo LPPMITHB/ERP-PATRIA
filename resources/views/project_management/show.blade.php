@@ -799,7 +799,7 @@
                             gantt.render();
                             gantt.parse(tasks);
                             gantt.eachTask(function(task){
-                                if(task.id.indexOf("PRW") !== -1){
+                                if(task.id.indexOf("WBS") !== -1){
                                     gantt.open(task.id);
                                 }
                             })

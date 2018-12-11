@@ -51,60 +51,60 @@ class BOMController extends Controller
     public function selectWBS($id)
     {
         $project = Project::find($id);
-        $wbs = $project->wbs;
-        $wbs = Collection::make();
+        $wbss = $project->wbss;
+        $dataWbs = Collection::make();
 
-        $wbs->push([
-                "id" => $project->number , 
-                "parent" => "#",
-                "text" => $project->name,
-                "icon" => "fa fa-ship"
-            ]);
+        $dataWbs->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
     
-        foreach($wbs as $work){
+        foreach($wbss as $wbs){
             $bom_code = "";
-            $bom = Bom::where('wbs_id',$work->id)->first();
+            $bom = Bom::where('wbs_id',$wbs->id)->first();
             if($bom){
                 $bom_code = " - ".$bom->code;
-                if($work->work){
-                    $wbs->push([
-                        "id" => $work->code , 
-                        "parent" => $work->work->code,
-                        "text" => $work->name. ''.$bom_code,
+                if($wbs->wbs){
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                     ]);
                 }else{
-                    $wbs->push([
-                        "id" => $work->code , 
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                     ]);
                 } 
             }else{
-                if($work->work){
-                    $wbs->push([
-                        "id" => $work->code , 
-                        "parent" => $work->work->code,
-                        "text" => $work->name. ''.$bom_code,
+                if($wbs->wbs){
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 }else{
-                    $wbs->push([
-                        "id" => $work->code , 
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 } 
             } 
         }
 
-        return view('bom.selectWBS', compact('project','wbs'));
+        return view('bom.selectWBS', compact('project','dataWbs'));
     }
 
     public function indexBom($id)
