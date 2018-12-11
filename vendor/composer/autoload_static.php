@@ -323,8 +323,9 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
     );
 
     public static $classMap = array (
+        'App\\BusinessUnit' => __DIR__ . '/../..' . '/app/Models/BusinessUnit.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
-        'App\\Currency' => __DIR__ . '/../..' . '/app/Currency.php',
+        'App\\Currency' => __DIR__ . '/../..' . '/app/Models/Currency.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
@@ -332,6 +333,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\BOMController' => __DIR__ . '/../..' . '/app/Http/Controllers/BOMController.php',
         'App\\Http\\Controllers\\BranchController' => __DIR__ . '/../..' . '/app/Http/Controllers/BranchController.php',
+        'App\\Http\\Controllers\\BusinessUnitController' => __DIR__ . '/../..' . '/app/Http/Controllers/BusinessUnitController.php',
         'App\\Http\\Controllers\\CompanyController' => __DIR__ . '/../..' . '/app/Http/Controllers/CompanyController.php',
         'App\\Http\\Controllers\\ConfigurationController' => __DIR__ . '/../..' . '/app/Http/Controllers/ConfigurationController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
@@ -431,6 +433,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'BOMDetailsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BOMDetailsTableSeeder.php',
         'BOMsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BOMsTableSeeder.php',
         'BranchesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BranchesTableSeeder.php',
+        'BusinessUnitsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BusinessUnitsTableSeeder.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
         'Carbon\\Exceptions\\InvalidDateException' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',

@@ -148,6 +148,23 @@ Route::name('branch.')->prefix('branch')->group(function() {
     Route::delete('/{id}', 'BranchController@destroy')->name('destroy')->middleware('can:destroy-branch');
 });
 
+//Business Unit Routes
+Route::name('business_unit.')->prefix('business_unit')->group(function() {
+    Route::get('/create', 'BusinessUnitController@create')->name('create')->middleware('can:create-business-unit');
+
+    Route::get('/', 'BusinessUnitController@index')->name('index')->middleware('can:index-business-unit');
+
+    Route::get('/{id}', 'BusinessUnitController@show')->name('show')->middleware('can:show-business-unit');
+
+    Route::get('/{id}/edit', 'BusinessUnitController@edit')->name('edit')->middleware('can:edit-business-unit');
+
+    Route::patch('/{id}', 'BusinessUnitController@update')->name('update')->middleware('can:edit-business-unit');
+
+    Route::post('/', 'BusinessUnitController@store')->name('store')->middleware('can:create-business-unit');
+
+    Route::delete('/{id}', 'BusinessUnitController@destroy')->name('destroy')->middleware('can:destroy-business-unit');
+});
+
 //Material Routes
 Route::name('material.')->prefix('material')->group(function() {
     Route::get('/create', 'MaterialController@create')->name('create')->middleware('can:create-material');

@@ -6,8 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\BusinessUnit' => $baseDir . '/app/Models/BusinessUnit.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
-    'App\\Currency' => $baseDir . '/app/Currency.php',
+    'App\\Currency' => $baseDir . '/app/Models/Currency.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
     'App\\Http\\Controllers\\Auth\\LoginController' => $baseDir . '/app/Http/Controllers/Auth/LoginController.php',
@@ -15,6 +16,7 @@ return array(
     'App\\Http\\Controllers\\Auth\\ResetPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ResetPasswordController.php',
     'App\\Http\\Controllers\\BOMController' => $baseDir . '/app/Http/Controllers/BOMController.php',
     'App\\Http\\Controllers\\BranchController' => $baseDir . '/app/Http/Controllers/BranchController.php',
+    'App\\Http\\Controllers\\BusinessUnitController' => $baseDir . '/app/Http/Controllers/BusinessUnitController.php',
     'App\\Http\\Controllers\\CompanyController' => $baseDir . '/app/Http/Controllers/CompanyController.php',
     'App\\Http\\Controllers\\ConfigurationController' => $baseDir . '/app/Http/Controllers/ConfigurationController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
@@ -114,6 +116,7 @@ return array(
     'BOMDetailsTableSeeder' => $baseDir . '/database/seeds/BOMDetailsTableSeeder.php',
     'BOMsTableSeeder' => $baseDir . '/database/seeds/BOMsTableSeeder.php',
     'BranchesTableSeeder' => $baseDir . '/database/seeds/BranchesTableSeeder.php',
+    'BusinessUnitsTableSeeder' => $baseDir . '/database/seeds/BusinessUnitsTableSeeder.php',
     'Carbon\\Carbon' => $vendorDir . '/nesbot/carbon/src/Carbon/Carbon.php',
     'Carbon\\CarbonInterval' => $vendorDir . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
     'Carbon\\Exceptions\\InvalidDateException' => $vendorDir . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
