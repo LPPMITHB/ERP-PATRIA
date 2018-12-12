@@ -115,9 +115,10 @@ class RoleController extends Controller
         $checkedPermissions = array_keys(json_decode($userPermissions, true));
         $checkedPermissions = $checkedPermissions;
         
-        $menus = Menu::where('menu_id', null)->get();
+        $menus = Menu::where('menu_id', null)->where('name','!=','Ship Building')->where('name','!=','Ship Repair')->where('name','!=','Trading')->get();
+        $mainMenu = Menu::whereIn('name',['Ship Building','Ship Repair','Trading'])->get();
 
-        return view('role.edit', compact('role', 'checkedPermissions', 'menus'));
+        return view('role.edit', compact('role', 'checkedPermissions', 'menus','mainMenu'));
     }
 
     /**

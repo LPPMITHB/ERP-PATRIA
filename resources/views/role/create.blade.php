@@ -62,7 +62,9 @@
                                 <a href="" @click.prevent="getMenu(menu)">
                                     <div class="box box-solid no-margin m-b-10 ">
                                         <div class="box-header with-border" :id="menu.id">
-                                            <span>{{ menu.name }}</span>
+                                            <div class="col-sm-10 tdEllipsis no-padding">
+                                                <span>{{ menu.name }}</span>
+                                            </div>
                                             <i class="fa fa-angle-double-right pull-right"></i>
                                         </div>
                                     </div>
@@ -71,8 +73,10 @@
                             <div v-for ="menu in optionalMenus">
                                 <a href="" @click.prevent="getMenu(menu)">
                                     <div class="box box-solid no-margin m-b-10 ">
-                                        <div class="box-header with-border" :id="menu.id">
-                                            <span>{{ menu.name }}</span>
+                                        <div class="box-header with-border " :id="menu.id">
+                                            <div class="col-sm-10 tdEllipsis no-padding">
+                                                <span>{{ menu.name }}</span>
+                                            </div>
                                             <i class="fa fa-angle-double-right pull-right"></i>
                                         </div>
                                     </div>

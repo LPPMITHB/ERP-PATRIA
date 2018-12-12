@@ -48,13 +48,36 @@
                                     <input v-model="role.description" type="text" class="form-control" id="description" name="description" required>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="business_unit" class="col-sm-2 control-label">Business Unit</label>
+                                <div class="col-sm-10">
+                                    <selectize id="business_unit" v-model="business_unit" :settings="businessUnitSettings">
+                                        <option v-for="main_menu in main_menus" :value="main_menu.id">{{ main_menu.name }}</option>
+                                    </selectize>  
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <div v-for ="menu in menus">
                                 <a href="" @click.prevent="getMenu(menu)">
                                     <div class="box box-solid no-margin m-b-10 ">
                                         <div class="box-header with-border" :id="menu.id">
-                                            <span>{{ menu.name }}</span>
+                                            <div class="col-sm-10 tdEllipsis no-padding">
+                                                <span>{{ menu.name }}</span>
+                                            </div>
+                                            <i class="fa fa-angle-double-right pull-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div v-for ="menu in optionalMenus">
+                                <a href="" @click.prevent="getMenu(menu)">
+                                    <div class="box box-solid no-margin m-b-10 ">
+                                        <div class="box-header with-border " :id="menu.id">
+                                            <div class="col-sm-10 tdEllipsis no-padding">
+                                                <span>{{ menu.name }}</span>
+                                            </div>
                                             <i class="fa fa-angle-double-right pull-right"></i>
                                         </div>
                                     </div>
@@ -72,14 +95,14 @@
                                         <div class="col-md-6">
                                             <template v-for="permission in permissionsLeft">
                                                 <template v-if="permission.menu_id == sub_menu.id">
-                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
+                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck="" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
                                                 </template>
                                             </template>
                                         </div>
                                         <div class="col-md-6">
                                             <template v-for="permission in permissionsRight">
                                                 <template v-if="permission.menu_id == sub_menu.id">
-                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
+                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck="" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
                                                 </template>
                                             </template>
                                         </div>
@@ -117,6 +140,8 @@
 
     var data = {
        menus : @json($menus),
+       optionalMenus : [],
+       main_menus : @json($mainMenu),
        role : @json($role),
        checkedPermissions : @json($checkedPermissions),
        menu_id : "",
@@ -129,6 +154,10 @@
            permissions : [],
            checkedPermissions : []
        },
+       businessUnitSettings: {
+            placeholder: 'Please Select Business Unit'
+        },
+       business_unit : "",
     }
 
     var vm = new Vue({
@@ -144,6 +173,38 @@
                 return isOk;
             },
         },
+        directives: {
+            icheck: {
+                inserted: function(el, b, vnode) {
+                    var vdirective = vnode.data.directives,
+                    vModel;
+                    for (var i = 0, vDirLength = vdirective.length; i < vDirLength; i++) {
+                    if (vdirective[i].name == "model") {
+                        vModel = vdirective[i].expression;
+                        break;
+                    }
+                    }
+                    jQuery(el).iCheck({
+                    checkboxClass: "icheckbox_square-blue",
+                    radioClass: "iradio_square-blue",
+                    increaseArea: "20%" // optional
+                    });
+
+                    jQuery(el).on("ifChanged", function(e) {
+                    if ($(el).attr("type") == "radio") {
+                        app.$data[vModel] = $(this).val();
+                    }
+                    if ($(el).attr("type") == "checkbox") {
+                        let data = app.$data[vModel];
+
+                        $(el).prop("checked")
+                        ? app.$data[vModel].push($(this).val())
+                        : data.splice(data.indexOf($(this).val()), 1);
+                    }
+                    });
+                }
+            }
+        }, 
         methods: {
             getMenu(menu){
                 if(this.menu_id != ""){
@@ -225,6 +286,25 @@
                 form.submit();
             }
         },
+        watch:{
+            'business_unit': function(newValue){
+                window.axios.get('/api/getSubMenu/'+newValue).then(({ data }) => {
+                    this.optionalMenus = [];
+                    data.forEach(menu => {
+                        this.optionalMenus.push(menu);
+                    });
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
+            }
+        }
     });
        
 </script>
