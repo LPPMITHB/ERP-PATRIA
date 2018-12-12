@@ -68,6 +68,16 @@
                                     </div>
                                 </a>
                             </div>
+                            <div v-for ="menu in optionalMenus">
+                                <a href="" @click.prevent="getMenu(menu)">
+                                    <div class="box box-solid no-margin m-b-10 ">
+                                        <div class="box-header with-border" :id="menu.id">
+                                            <span>{{ menu.name }}</span>
+                                            <i class="fa fa-angle-double-right pull-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
         
                         <div class="col-md-9">
@@ -125,6 +135,7 @@
 
     var data = {
        menus : @json($menus),
+       optionalMenus : [],
        main_menus : @json($mainMenu),
        menu_id : "",
        permissionsLeft : [],
@@ -266,6 +277,25 @@
                 form.submit();
             }
         },
+        watch:{
+            'business_unit': function(newValue){
+                window.axios.get('/api/getSubMenu/'+newValue).then(({ data }) => {
+                    this.optionalMenus = [];
+                    data.forEach(menu => {
+                        this.optionalMenus.push(menu);
+                    });
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
+            }
+        }
     });
        
 </script>
