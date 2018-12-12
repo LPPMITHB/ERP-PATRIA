@@ -65,11 +65,24 @@
 @endsection
 @push('script')
 <script>
-    var data = @json($data);
     $(document).ready(function(){
+        var data = @json($data);
         $('#treeview').jstree({
             "core": {
-                'data': data,
+                "data": [
+       'Simple root node',
+       {
+         'text' : 'Root node 2',
+         'state' : {
+           'opened' : true,
+           'selected' : true
+         },
+         'children' : [
+           { 'text' : 'Child 1' },
+           'Child 2'
+         ]
+      }
+    ],
                 "check_callback": true,
                 "animation": 200,
                 "dblclick_toggle": false,
