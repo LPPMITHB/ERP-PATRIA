@@ -69,25 +69,8 @@
         var data = @json($data);
         
         $('#treeview').jstree({
-            "core": {
-                'data': data,
-                "check_callback": true,
-                "animation": 200,
-                "dblclick_toggle": false,
-                "keep_selected_style": false
-            },
-            "plugins": ["dnd", "contextmenu"],
-            "contextmenu": {
-                "select_node": false, 
-                "show_at_node": false,
-            }
-            }).bind("changed.jstree", function (e, data) {
-                if(data.node) {
-                document.location = data.node.a_attr.href;
-                }
-            }).bind("loaded.jstree", function (event, data) {
-                // you get two params - event & data - check the core docs for a detailed description
-                $(this).jstree("open_all");
+
+           
             });
 
         $('div.overlay').hide();
