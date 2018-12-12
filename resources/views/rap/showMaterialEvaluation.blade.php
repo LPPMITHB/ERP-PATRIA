@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Remaining Material » '.$work->bom->rap->number,
+        'title' => 'View Remaining Material » '.$wbs->bom->rap->number,
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rap.selectProjectViewRM'),
@@ -64,27 +64,27 @@
                             <tr>
                                 <td>Code</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->code}}</b></td>
+                                <td>&ensp;<b>{{$wbs->code}}</b></td>
                             </tr>
                             <tr>
                                 <td>Name</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->name}}</b></td>
+                                <td>&ensp;<b>{{$wbs->name}}</b></td>
                             </tr>
                             <tr>
                                 <td>Description</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->description}}</b></td>
+                                <td>&ensp;<b>{{$wbs->description}}</b></td>
                             </tr>
                             <tr>
                                 <td>Deliverable</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->deliverables}}</b></td>
+                                <td>&ensp;<b>{{$wbs->deliverables}}</b></td>
                             </tr>
                             <tr>
                                 <td>Progress</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$work->progress}} %</b>
+                                <td>&ensp;<b>{{$wbs->progress}} %</b>
                                 </td>
                             </tr>
                         </tbody>
@@ -106,13 +106,15 @@
                     </thead>
                     <tbody>
                         @php($counter = 1)
-                        <tr>
-                            <td>{{ $counter++ }}</td>
-                            <td>MT0001 - ROUND BAR</td>
-                            <td>135</td>
-                            <td>30</td>
-                            <td>105</td>
-                        </tr>
+                        @foreach ($materialEvaluation as $data)
+                            <tr>
+                                <td>{{ $counter++ }}</td>
+                                <td>{{$data['material']}}</td>
+                                <td>{{$data['quantity']}}</td>
+                                <td>{{$data['used']}}</td>
+                                <td>{{$data['quantity'] - $data['used']}}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

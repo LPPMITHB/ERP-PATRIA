@@ -81,7 +81,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        var data = @json($wbs);
+        var data = @json($data);
         
         $('#treeview').jstree({
             "core": {

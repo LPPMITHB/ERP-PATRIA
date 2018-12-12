@@ -93,7 +93,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in activities" class="popoverData"  data-content="" v-on:mouseover="dataForTooltip(data)" data-trigger="hover" rel="popover" data-placement="auto top" data-original-title="Details">
+                            <tr v-for="(data,index) in activities" >
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.name }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>

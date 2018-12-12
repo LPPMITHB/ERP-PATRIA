@@ -27,6 +27,7 @@ class CreateProActivityTable extends Migration
             $table->date('actual_start_date')->nullable();
             $table->date('actual_end_date')->nullable();
             $table->float('progress')->default(0);
+            $table->integer('weight')->nullable();
             $table->longText('predecessor')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  
