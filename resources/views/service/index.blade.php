@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View All Unit Of Measurements',
+        'title' => 'View All Services',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Unit Of Measurements' => route('unit_of_measurement.index'),
+            'View All Services' => route('service.index'),
         ]
     ]
 )
@@ -19,32 +19,33 @@
         <div class="box">
             <div class="box-header m-b-10">
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('unit_of_measurement.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    <a href="{{ route('service.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
-            {{-- <div style ="overflow:scroll"> --}}
-                <table class="table table-bordered table-hover" id="uom-table">
+                <table class="table table-bordered table-hover" id="service-table">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
-                            <th style="width: 15%">Code</th>
-                            <th style="width: 25%">Name</th>
-                            <th style="width: 45%">Unit</th>
+                            <th style="width: 10%">Code</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 30%">Description</th>
+                            <th style="width: 25%">Cost Standard Price</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @php($counter = 1)
-                        @foreach($uoms as $uom)
+                        @foreach($services as $service)
                             <tr>
                                 <td>{{ $counter++ }}</td>
-                                <td class="tdEllipsis">{{ $uom->code }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$uom->name}}">{{ $uom->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$uom->unit}}">{{ $uom->unit }}</td>
+                                <td class="tdEllipsis">{{ $service->code }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->name}}">{{ $service->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->description}}">{{ $service->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->cost_standard_price}}">{{ $service->cost_standard_price }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
-                                    <a href="{{ route('unit_of_measurement.show', ['id'=>$uom->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                    <a href="{{ route('unit_of_measurement.edit',['id'=>$uom->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                    <a href="{{ route('service.show', ['id'=>$service->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    <a href="{{ route('service.edit',['id'=>$service->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                 </td>
                                 
                             </tr>
@@ -63,7 +64,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#uom-table').DataTable({
+        $('#service-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : false,

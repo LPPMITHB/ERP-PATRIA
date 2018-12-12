@@ -24,7 +24,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered table-hover tableFixed" id="company-table">
+                <table class="table table-bordered table-hover" id="company-table">
                     <thead>
                         <tr>
                             <th style ="width: 5%">No</th>

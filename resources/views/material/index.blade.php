@@ -26,7 +26,7 @@
             @verbatim
             <div id="index_material">
                 <div class="box-body">
-                    <table class="table table-bordered table-hover tableFixed" id="material-table">
+                    <table class="table table-bordered table-hover" id="material-table">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>

@@ -168,7 +168,7 @@ class MaterialController extends Controller
         $material->volume = $data->volume;
         $material->type = $data->type;
         $material->status = $data->status;
-        $material->save();
+        $material->update();
 
         DB::commit();
         return redirect()->route('material.show',$material->id)->with('success', 'Material Updated Succesfully');

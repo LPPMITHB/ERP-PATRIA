@@ -124,7 +124,7 @@ class ShipController extends Controller
             $ship->type = ucwords(strtolower($request->input('type')));
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');        
-            $ship->save();
+            $ship->update();
 
             
             DB::commit();
