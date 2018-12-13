@@ -3,13 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Customer',
-        'subtitle' => 'Show',
+        'title' => 'View Customer',
         'items' => [
             'Dashboard' => route('index'),
             'View All Customers' => route('customer.index'),
             $customer->name => route('customer.show',$customer->id),
-            //'Show' => route('customer.show', ['id' => $customer->id]),
         ]
     ]
 )
@@ -43,9 +41,9 @@
                 <table class="table table-bordered showTable">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Attribute</th>
-                            <th>Value</th>
+                            <th width="5%">#</th>
+                            <th width="30%">Attribute</th>
+                            <th width="65%">Value</th>
                         </tr>
                     </thead>
                     <tbody>

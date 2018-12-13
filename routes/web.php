@@ -358,10 +358,6 @@ Route::name('yard.')->prefix('yard')->group(function() {
 Route::name('bom.')->prefix('bom')->group(function() {
     Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
-    Route::patch('/storeAssignBom', 'BOMController@storeAssignBom')->name('storeAssignBom')->middleware('can:create-bom');
-
-    Route::get('/createBomFromProject/{id}', 'BOMController@createBomFromProject')->name('createBomFromProject');
-
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
 
     Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:index-bom');
@@ -372,8 +368,6 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:index-bom');
 
-    Route::get('/assignBom/{id}', 'BOMController@assignBom')->name('assignBom')->middleware('can:index-bom');
-
     Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom');
 
     Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom');
@@ -382,9 +376,32 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom');
 
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
-
     Route::patch('/destroy', 'BOMController@destroy')->name('destroy')->middleware('can:destroy-bom');
+});
+
+//BOM Repair Routes
+Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
+    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
+
+    Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
+
+    Route::get('/indexProject', 'BOMController@indexProjectRepair')->name('indexProject')->middleware('can:index-bom-repair');
+
+    Route::get('/selectProject', 'BOMController@selectProjectRepair')->name('selectProject')->middleware('can:index-bom-repair');
+    
+    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:index-bom-repair');
+
+    Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:index-bom-repair');
+
+    Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom-repair');
+
+    Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom-repair');
+
+    Route::patch('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
+
+    Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
+
+    Route::patch('/destroy', 'BOMController@destroy')->name('destroy')->middleware('can:destroy-bom-repair');
 });
 
 //BOS Routes

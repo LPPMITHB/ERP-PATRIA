@@ -34,18 +34,20 @@ class BOMController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexProject()
+    public function indexProject(Request $request)
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        $menu = $request->route()->getPrefix();
 
-        return view('bom.indexProject', compact('projects'));
+        return view('bom.indexProject', compact('projects','menu'));
     }
 
-    public function selectProject()
+    public function selectProject(Request $request)
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        $menu = $request->route()->getPrefix();
 
-        return view('bom.selectProject', compact('projects'));
+        return view('bom.selectProject', compact('projects','menu'));
     }
 
     public function selectWBS($id)
@@ -106,7 +108,7 @@ class BOMController extends Controller
         return view('bom.selectWBS', compact('project','data'));
     }
 
-    public function indexBom($id)
+    public function indexBom($id,$menu)
     {
         $project = Project::find($id);
         $wbs = $project->wbss;
@@ -381,6 +383,10 @@ class BOMController extends Controller
         }  
     }
 
+
+
+
+    // General Function
     private function generateBomCode(){
         $modelBOM = Bom::orderBy('code','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
@@ -560,5 +566,25 @@ class BOMController extends Controller
         $ids = json_decode($ids);
 
         return response(Material::orderBy('name')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+
+
+
+    // Untuk Module Ship Repair
+    public function indexProjectRepair(Request $request)
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = $request->route()->getPrefix();
+        
+        return view('bom.indexProject', compact('projects','menu'));
+    }
+
+    public function selectProjectRepair()
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = $request->route()->getPrefix();
+
+        return view('bom.selectProject', compact('projects','menu'));
     }
 }

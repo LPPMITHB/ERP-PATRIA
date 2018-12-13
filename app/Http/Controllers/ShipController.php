@@ -63,16 +63,12 @@ class ShipController extends Controller
             $ship->branch_id = Auth::user()->branch->id;
             $ship->save();
 
-            
             DB::commit();
             return redirect()->route('ship.show',$ship->id)->with('success', 'Success Created New Ship!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('ship.create')->with('error', $e->getMessage());
         }
-
-        
-
     }
 
     /**
@@ -125,10 +121,9 @@ class ShipController extends Controller
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');        
             $ship->update();
-
             
             DB::commit();
-            return redirect()->route('ship.show',$ship->id)->with('status', 'Ship Updated Succesfully!');
+            return redirect()->route('ship.show',$ship->id)->with('success', 'Ship Updated Succesfully!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('ship.update',$ship->id)->with('error', $e->getMessage());

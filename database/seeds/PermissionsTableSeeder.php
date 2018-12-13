@@ -106,6 +106,51 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //BOM Repair
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $bomRepair =  Menu::where('name','Bill Of Material')->where('menu_id',$repair)->select('id')->first()->id;
+        $manageBOMRepair = Menu::where('name','Manage BOM')->where('menu_id',$bomRepair)->select('id')->first()->id;
+        
+        DB::table('permissions')->insert([
+            'name' => 'Index Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'index-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'create-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'show-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'edit-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'destroy-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //BOS
         $manageBOS = Menu::where('name','Manage BOS')->select('id')->first()->id;
         DB::table('permissions')->insert([
