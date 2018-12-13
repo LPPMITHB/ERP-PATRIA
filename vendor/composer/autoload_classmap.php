@@ -123,6 +123,7 @@ return array(
     'App\\Providers\\RouteServiceProvider' => $baseDir . '/app/Providers/RouteServiceProvider.php',
     'BOMDetailsTableSeeder' => $baseDir . '/database/seeds/BOMDetailsTableSeeder.php',
     'BOMsTableSeeder' => $baseDir . '/database/seeds/BOMsTableSeeder.php',
+    'BOSsTableSeeder' => $baseDir . '/database/seeds/BOSsTableSeeder.php',
     'BranchesTableSeeder' => $baseDir . '/database/seeds/BranchesTableSeeder.php',
     'BusinessUnitsTableSeeder' => $baseDir . '/database/seeds/BusinessUnitsTableSeeder.php',
     'Carbon\\Carbon' => $vendorDir . '/nesbot/carbon/src/Carbon/Carbon.php',
