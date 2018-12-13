@@ -450,7 +450,7 @@ Route::name('project.')->prefix('project')->group(function() {
     Route::get('/ganttChart/{id}', 'ProjectController@showGanttChart')->name('showGanttChart')->middleware('can:show-project');
 
     //Project
-    Route::get('/create/{business_unit}', 'ProjectController@create')->name('create')->middleware('can:create-project');
+    Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:index-project');
 
@@ -463,6 +463,31 @@ Route::name('project.')->prefix('project')->group(function() {
     Route::post('/', 'ProjectController@store')->name('store')->middleware('can:create-project');
 
     Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project');   
+    
+});
+
+//Project Routes
+Route::name('project_repair.')->prefix('project_repair')->group(function() {
+    // Project Cost Evaluation
+    Route::get('/projectCE/{id}', 'ProjectController@projectCE')->name('projectCE')->middleware('can:show-project-repair');
+    
+    //GanttChart
+    Route::get('/ganttChart/{id}', 'ProjectController@showGanttChart')->name('showGanttChart')->middleware('can:show-project-repair');
+
+    //Project
+    Route::get('/create', 'ProjectController@createRepair')->name('create')->middleware('can:create-project-repair');
+
+    Route::get('/', 'ProjectController@indexRepair')->name('index')->middleware('can:index-project-repair');
+
+    Route::get('/{id}', 'ProjectController@showRepair')->name('show')->middleware('can:show-project-repair');
+
+    Route::get('/{id}/edit', 'ProjectController@editRepair')->name('edit')->middleware('can:edit-project-repair');
+
+    Route::patch('/{id}', 'ProjectController@updateRepair')->name('update')->middleware('can:edit-project-repair');
+    
+    Route::post('/', 'ProjectController@storeRepair')->name('store')->middleware('can:create-project-repair');
+
+    Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project-repair');   
     
 });
 

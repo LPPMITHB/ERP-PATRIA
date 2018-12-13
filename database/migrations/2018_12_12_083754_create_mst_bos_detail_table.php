@@ -16,12 +16,12 @@ class CreateMstBosDetailTable extends Migration
         Schema::create('mst_bos_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('bos_id')->nullable();
-            $table->unsignedInteger('material_id')->nullable();
-            $table->integer('quantity');
+            $table->unsignedInteger('service_id')->nullable();
+            $table->integer('cost_standard_price');
             $table->timestamps();
 
             $table->foreign('bos_id')->references('id')->on('mst_bos');
-            $table->foreign('material_id')->references('id')->on('mst_material');
+            $table->foreign('service_id')->references('id')->on('mst_service');
         });
     }
 

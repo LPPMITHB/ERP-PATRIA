@@ -64,6 +64,51 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Project Repair
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $projectManagementRepair =  Menu::where('name','Project Management')->where('menu_id',$repair)->select('id')->first()->id;
+        $manageProjectRepair = Menu::where('name','Manage Projects')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
+        
+        DB::table('permissions')->insert([
+            'name' => 'Index Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'index-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'create-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'show-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'edit-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'destroy-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //BOM
         $manageBOM = Menu::where('name','Manage BOM')->select('id')->first()->id;
         DB::table('permissions')->insert([

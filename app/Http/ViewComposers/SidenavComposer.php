@@ -33,16 +33,11 @@ class SidenavComposer
         $menus = array();
         $child = array();
         foreach ($menusActive as $menu){
-            $roles = explode(',',$menu->roles);
-            foreach($roles as $role){
-                if($role == $roleUser){
-                    if($menu->menu_id != ""){
-                        $menus[] = $menu->menu; 
-                        $child[] = $menu;
-                    }else{
-                        $menus[] = $menu; 
-                    }
-                }
+            if($menu->menu_id != ""){
+                $menus[] = $menu->menu; 
+                $child[] = $menu;
+            }else{
+                $menus[] = $menu; 
             }
         }
         $sidenavs = Sidenav::all();
