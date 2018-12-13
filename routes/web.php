@@ -356,6 +356,8 @@ Route::name('yard.')->prefix('yard')->group(function() {
 
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
+    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
+
     Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
@@ -381,6 +383,8 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
 //BOM Repair Routes
 Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
+    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
+
     Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
