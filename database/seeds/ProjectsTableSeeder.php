@@ -19,7 +19,6 @@ class ProjectsTableSeeder extends Seeder
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,
             'ship_id' => 1,
-            'business_unit_id' => 1,
             'customer_id' => 4,
             'planned_start_date' => '2018-8-16',
             'planned_end_date' => '2018-12-30',
@@ -40,7 +39,6 @@ class ProjectsTableSeeder extends Seeder
             'description' => 'Real Case',
             // 'sales_order_id' => 1,
             'ship_id' => 2,
-            'business_unit_id' => 1,
             'customer_id' => 2,
             'planned_start_date' => '2018-12-29',
             'planned_end_date' => '2019-5-28',
@@ -61,7 +59,6 @@ class ProjectsTableSeeder extends Seeder
             'description' => 'ketiga kali',
             // 'sales_order_id' => 1,
             'ship_id' => 3,
-            'business_unit_id' => 1,
             'customer_id' => 1,
             'planned_start_date' => '2018-8-16',
             'planned_end_date' => '2019-1-16',
@@ -82,7 +79,6 @@ class ProjectsTableSeeder extends Seeder
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,
             'ship_id' => 4,
-            'business_unit_id' => 1,
             'customer_id' => 3,
             'planned_start_date' => '2018-8-16',
             'planned_end_date' => '2018-11-16',
@@ -95,6 +91,5 @@ class ProjectsTableSeeder extends Seeder
             'user_id' => 5,
             'branch_id' => 1,
         ]);
-
     }
 }
