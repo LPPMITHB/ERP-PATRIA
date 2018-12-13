@@ -15,6 +15,7 @@ use App\Models\Structure;
 use App\Models\Category;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
+use App\Models\BusinessUnit;
 use Illuminate\Support\Collection;
 use DB;
 use DateTime;
@@ -110,11 +111,12 @@ class ProjectController extends Controller
     {
         $customers = Customer::all();
         $ships = Ship::all();
+        $businessUnit = BusinessUnit::all();
         // $project_code = self::generateProjectCode();
         $project = new Project;
 
 
-        return view('project_management.create', compact('customers','ships','project'));
+        return view('project_management.create', compact('customers','ships','project','businessUnit'));
     }
   
 

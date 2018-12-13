@@ -8,6 +8,11 @@ class Project extends Model
 {
     protected $table = 'pro_project';
     
+    public function businessUnit()
+    {
+        return $this->belongsTo('App\Models\BusinessUnit');
+    }
+
     public function ship()
     {
         return $this->belongsTo('App\Models\Ship');

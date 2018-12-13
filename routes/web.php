@@ -379,7 +379,7 @@ Route::name('project.')->prefix('project')->group(function() {
     Route::get('/ganttChart/{id}', 'ProjectController@showGanttChart')->name('showGanttChart')->middleware('can:show-project');
 
     //Project
-    Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project');
+    Route::get('/create/{business_unit}', 'ProjectController@create')->name('create')->middleware('can:create-project');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:index-project');
 
