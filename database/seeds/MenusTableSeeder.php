@@ -353,17 +353,7 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // DB::table('menus')->insert([
-        //     'level' => 3,
-        //     'name' => 'Create GR without reference',
-        //     'icon' => 'fa-file-text-o',
-        //     'route_name'=> 'goods_receipt.createGrWithoutRef',
-        //     'is_active' => true,
-        //     'roles' => 'ADMIN',
-        //     'menu_id'=>$goodsReceipt,
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d')
-        // ]);
+        
 
         DB::table('menus')->insert([
             'level' => 3,

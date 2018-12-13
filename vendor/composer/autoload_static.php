@@ -443,6 +443,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'BOMDetailsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BOMDetailsTableSeeder.php',
         'BOMsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BOMsTableSeeder.php',
+        'BOSsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BOSsTableSeeder.php',
         'BranchesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BranchesTableSeeder.php',
         'BusinessUnitsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BusinessUnitsTableSeeder.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
