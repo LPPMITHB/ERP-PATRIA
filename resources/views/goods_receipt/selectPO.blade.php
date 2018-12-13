@@ -73,7 +73,7 @@
                                             <td class="tdEllipsis no-padding">
                                                 <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">
                                             </td>
-                                            <td>
+                                            <td class="p-l-0 p-r-0 p-t-0 p-b-0">
                                                 <selectize v-model="POD.sloc_id" :settings="slocSettings">
                                                     <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
                                                 </selectize>  
