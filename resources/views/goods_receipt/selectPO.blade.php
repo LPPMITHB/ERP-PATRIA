@@ -24,35 +24,34 @@
                     @verbatim
                     <div id="pod">
                         <div class="box_header">
-                            <div class="col-sm-12 p-l-0">
-                                <div class="col-sm-4 col-md-4 m-t-10">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6 p-l-0">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-sm-3 p-l-0 p-r-0">
                                             PO Number
                                         </div>
-                                        <div class="col-md-8">
-                                            : <b> {{ modelPO.number }} </b>
+                                        <div class="col-sm-3 p-l-0 p-r-0">
+                                            : <b> {{ modelPO.number }}</b>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-sm-3 p-l-0 p-r-0">
                                             Vendor
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="col-sm-3 p-l-0 p-r-0">
                                             : <b> {{ modelPO.vendor.name }} </b>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4" style="margin-bottom:6px;margin-left:50px">
-                                    <div class="col-sm-12">
-                                        <label for="">GR Description</label>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <textarea class="form-control" rows="3" v-model="description" style="width:326px"></textarea>
-                                    </div>
-                            </div>
+                                <div class="col-sm-2" >
+                                        GR Description  :
+                                </div>
+                                <div class="col-sm-4 p-l-0">
+                                    <textarea class="form-control" rows="3" v-model="description" style="width:390px"></textarea>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-sm-12">
                             <div class="row">
                                 <table class="table table-bordered table-hover" id="pod-table">
@@ -73,7 +72,7 @@
                                             <td class="tdEllipsis no-padding">
                                                 <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">
                                             </td>
-                                            <td>
+                                            <td class="no-padding">
                                                 <selectize v-model="POD.sloc_id" :settings="slocSettings">
                                                     <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
                                                 </selectize>  
