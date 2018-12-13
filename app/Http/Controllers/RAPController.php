@@ -238,16 +238,14 @@ class RAPController extends Controller
 
         foreach($raps as $rap){
             $wbss = [];
-            foreach($rap->RapDetails as $RD){
-                array_push($wbss,$RD->bom->wbs_id);
-            }
+            array_push($wbss,$rap->bom->wbs_id);
             $wbss = array_unique($wbss);
             foreach($wbss as $wbs){
                 $RapCost = 0;
-                foreach($rap->RapDetails as $RD){
-                    if($RD->bom->wbs_id == $wbs){
+                if($rap->bom->wbs_id == $wbs){
+                    $wbs_code = $rap->bom->wbs->code;
+                    foreach($rap->RapDetails as $RD){
                         $RapCost += $RD->price;
-                        $wbs_code = $RD->bom->wbs->code;
                     }
                 }
                 $data->push([
@@ -283,8 +281,8 @@ class RAPController extends Controller
         if(count($wbs->wbss)>0){
             $RapCost = 0;
             foreach($raps as $rap){
-                foreach($rap->RapDetails as $RD){
-                    if($RD->bom->wbs_id == $wbs->id){
+                if($rap->bom->wbs_id == $wbs->id){
+                    foreach($rap->rapDetails as $RD){
                         $RapCost += $RD->price;
                     }
                 }
@@ -303,8 +301,8 @@ class RAPController extends Controller
         }else{
             $RapCost = 0;
             foreach($raps as $rap){
-                foreach($rap->RapDetails as $RD){
-                    if($RD->bom->wbs_id == $wbs->id){
+                if($rap->bom->wbs_id == $wbs->id){
+                    foreach($rap->rapDetails as $RD){
                         $RapCost += $RD->price;
                     }
                 }

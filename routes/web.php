@@ -514,7 +514,7 @@ Route::name('activity.')->prefix('activity')->group(function() {
    
 });
 
-//RAB Routes
+//rap Routes
 Route::name('rap.')->prefix('rap')->group(function() {
     Route::get('/create/{id}', 'RAPController@create')->name('create');
     
@@ -546,19 +546,19 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::patch('/storeAssignCost', 'RAPController@storeAssignCost')->name('storeAssignCost');
 
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:show-rab');
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:show-rap');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:edit-rab');    
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:edit-rap');    
     
-    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rab');
+    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     
-    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rab');
+    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
     
-    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rab');
+    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
     
-    Route::post('/', 'RAPController@store')->name('store')->middleware('can:create-rab');
+    Route::post('/', 'RAPController@store')->name('store')->middleware('can:create-rap');
     
-    Route::delete('/{id}', 'RAPController@destroy')->name('destroy')->middleware('can:destroy-rab');
+    Route::delete('/{id}', 'RAPController@destroy')->name('destroy')->middleware('can:destroy-rap');
     
 });
 
