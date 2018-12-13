@@ -647,7 +647,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-2',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 44,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -662,7 +662,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-2',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 44,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -677,7 +677,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-2',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 44,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -692,7 +692,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-2',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 44,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -707,7 +707,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-2',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 44,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -722,7 +722,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-2',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 44,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
