@@ -737,7 +737,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-8',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 42,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -842,7 +842,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-3',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 42,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -932,7 +932,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-3',
             'progress' => 0,
-            'wbs_id' => 43,
+            'wbs_id' => 42,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
