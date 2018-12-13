@@ -119,49 +119,7 @@ class ProjectWbsTableSeeder extends Seeder
             'progress' => 0,
             'user_id' => 5,
             'branch_id' => 1,
-        ]);
-                    
-        DB::table('pro_wbs')->insert([
-            'code' => 'PRW0005',
-            'name' => 'PRW 002 005',
-            'description' => 'PRW 002 005',
-            'deliverables' => 'Lima', 
-            'project_id' => 1,
-            'status' => 1,
-            'planned_deadline' => '2019-5-11',
-            'progress' => 0,
-            'user_id' => 5,
-            'branch_id' => 1,
-        ]);
-
-        DB::table('pro_wbs')->insert([
-            'code' => 'PRW0006',
-            'name' => 'PRW 002 006',
-            'description' => 'PRW 002 006',
-            'deliverables' => 'Enam', 
-            'project_id' => 1,
-            'status' => 1,
-            'planned_deadline' => '2018-10-18',
-            // 'actual_deadline' => '',
-            'progress' => 0,
-            'user_id' => 5,
-            'branch_id' => 1,
-        ]);
-
-        DB::table('pro_wbs')->insert([
-            'code' => 'PRW0007',
-            'name' => 'PRW 002 007',
-            'description' => 'PRW 003 007',
-            'deliverables' => 'Tujuh', 
-            'project_id' => 1,
-            'status' => 1,
-            'planned_deadline' => '2019-2-2',
-            // 'actual_deadline' => '',
-            'progress' => 0,
-            'wbs_id' => 7,
-            'user_id' => 5,
-            'branch_id' => 1,
-        ]);
+        ]);             
 
         DB::table('pro_wbs')->insert([
             'code' => 'WBS180009',
