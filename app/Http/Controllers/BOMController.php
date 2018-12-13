@@ -51,7 +51,7 @@ class BOMController extends Controller
     public function selectWBS($id)
     {
         $project = Project::find($id);
-        $wbs = $project->wbss;
+        $wbss = $project->wbss;
         $data = Collection::make();
 
         $data->push([
@@ -61,44 +61,44 @@ class BOMController extends Controller
                 "icon" => "fa fa-ship"
             ]);
     
-        foreach($wbs as $work){
+        foreach($wbss as $wbs){
             $bom_code = "";
-            $bom = Bom::where('wbs_id',$work->id)->first();
+            $bom = Bom::where('wbs_id',$wbs->id)->first();
             if($bom){
                 $bom_code = " - ".$bom->code;
-                if($work->wbs){
+                if($wbs->wbs){
                     $data->push([
-                        "id" => $work->code , 
-                        "parent" => $work->wbs->code,
-                        "text" => $work->name. ''.$bom_code,
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                     ]);
                 }else{
                     $data->push([
-                        "id" => $work->code , 
+                        "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                     ]);
                 } 
             }else{
-                if($work->wbs){
+                if($wbs->wbs){
                     $data->push([
-                        "id" => $work->code , 
-                        "parent" => $work->wbs->code,
-                        "text" => $work->name. ''.$bom_code,
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 }else{
                     $data->push([
-                        "id" => $work->code , 
+                        "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 } 
             } 
