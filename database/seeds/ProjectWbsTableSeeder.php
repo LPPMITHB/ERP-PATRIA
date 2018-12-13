@@ -517,7 +517,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //
+        // 37
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820017',
             'name' => 'Blok 1 (Fr. 0-15)',
@@ -714,21 +714,6 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820045',
-            'name' => 'Blok 1 (Fr. 0-15)',
-            'description' => '',
-            'deliverables' => 'Level 4',
-            'project_id' => 2,
-            'status' => 1,
-            'planned_deadline' => '2019-4-3',
-            'progress' => 0,
-            'wbs_id' => 49,
-            'user_id' => 5,
-            'branch_id' => 1,
-        ]);
-
-        //
-        DB::table('pro_wbs')->insert([
             'code' => 'WBS1820046',
             'name' => 'Master Block 2 (Fr. 15-21)',
             'description' => '',
@@ -802,7 +787,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //56
+        //55
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820051',
             'name' => 'Side sheel',
@@ -817,7 +802,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //57
+        //56
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820052',
             'name' => 'Blok 1 (Fr. 0-15)',
@@ -827,7 +812,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 56,
+            'wbs_id' => 55,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -842,7 +827,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 56,
+            'wbs_id' => 55,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -857,7 +842,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 56,
+            'wbs_id' => 55,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -872,7 +857,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 56,
+            'wbs_id' => 55,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -887,7 +872,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 56,
+            'wbs_id' => 55,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -902,12 +887,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 56,
+            'wbs_id' => 55,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //63
+        //62
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820058',
             'name' => 'Main deck',
@@ -932,7 +917,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -947,7 +932,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -962,7 +947,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -977,7 +962,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -992,7 +977,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1007,7 +992,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-17',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1022,7 +1007,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-13',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1037,7 +1022,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-13',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1052,12 +1037,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-9',
             'progress' => 0,
-            'wbs_id' => 63,
+            'wbs_id' => 62,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //73
+        //72
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820068',
             'name' => 'Outfitting Hull',
@@ -1072,7 +1057,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //74
+        //73
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820069',
             'name' => 'Fabrication',
@@ -1082,12 +1067,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 73,
+            'wbs_id' => 72,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //75
+        //74
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820070',
             'name' => 'Installation',
@@ -1097,12 +1082,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 73,
+            'wbs_id' => 72,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //76
+        //75
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820071',
             'name' => 'Piping & Safety System',
@@ -1117,7 +1102,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //77
+        //76
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820072',
             'name' => 'Cargo System',
@@ -1127,12 +1112,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //78
+        //77
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820073',
             'name' => 'General Service & Fire Fighting System',
@@ -1142,12 +1127,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //79
+        //78
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820074',
             'name' => 'Bilge & OWS System',
@@ -1157,12 +1142,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //80
+        //79
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820075',
             'name' => 'Emergency Fire Fighting System',
@@ -1172,12 +1157,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //
+        //80
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820076',
             'name' => 'Freshwater & Sea Water System',
@@ -1187,7 +1172,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1202,7 +1187,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1217,7 +1202,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1232,7 +1217,7 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -1247,12 +1232,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 76,
+            'wbs_id' => 75,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //86
+        //85
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820080',
             'name' => 'Electric & Mechanic',
@@ -1267,7 +1252,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //87
+        //86
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820081',
             'name' => 'Electric Installation',
@@ -1277,12 +1262,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-24',
             'progress' => 0,
-            'wbs_id' => 86,
+            'wbs_id' => 85,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //88
+        //87
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820082',
             'name' => 'Mechanic Installation',
@@ -1292,12 +1277,12 @@ class ProjectWbsTableSeeder extends Seeder
             'status' => 1,
             'planned_deadline' => '2019-4-6',
             'progress' => 0,
-            'wbs_id' => 86,
+            'wbs_id' => 85,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
 
-        //89
+        //88
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820083',
             'name' => 'Coating',
@@ -1312,7 +1297,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //90
+        //89
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820084',
             'name' => 'Interior and Furniture',
@@ -1327,7 +1312,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //91
+        //90
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820085',
             'name' => 'Launching',
@@ -1341,7 +1326,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //92
+        //91
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820086',
             'name' => 'Testing Commisioning and Familirisasion',
@@ -1355,7 +1340,7 @@ class ProjectWbsTableSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        //93
+        //92
         DB::table('pro_wbs')->insert([
             'code' => 'WBS1820087',
             'name' => 'DELIVERY',
