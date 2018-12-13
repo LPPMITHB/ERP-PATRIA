@@ -90,14 +90,14 @@
                             </div>
                         </div>
                         <div class="col-md-12 p-t-10">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered showTable m-b-0">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
                                         <th width="30%">Material</th>
                                         <th width="38%">Description</th>
-                                        <th width="7%">Quantity</th>
-                                        <th width="10%" ></th>
+                                        <th width="12%">Quantity</th>
+                                        <th width="5%" ></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -108,28 +108,21 @@
                                         <td v-else>{{ '-' }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
                                         <td class="p-l-0" align="center">
-                                            <a data-toggle="modal" data-target="#edit" class="btn btn-primary btn-xs" @click="getMaterial(index)">
-                                                <div class="btn-group">
-                                                    EDIT
-                                                </div>
-                                            </a>
-                                            <a class="btn btn-danger btn-xs" @click="">
-                                                <div class="btn-group">
-                                                    DELETE
-                                                </div>
-                                            </a>
+                                            
                                         </td>
                                     </tr>
+                                </table>
+                                <table class="table table-bordered">
                                     <tr>
-                                        <td>{{newIndex}}</td>
-                                        <td  class="no-padding">
+                                        <td width="5%">{{newIndex}}</td>
+                                        <td width="30%" class="no-padding">
                                             <selectize id="material" v-model="input.material_id" :settings="materialSettings">
                                                 <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
-                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
-                                        <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
+                                        <td width="38%" class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
+                                        <td width="12%" class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
+                                        <td width="5%" class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
                                             </div></a>
