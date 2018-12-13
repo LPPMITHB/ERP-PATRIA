@@ -676,6 +676,42 @@ class MenusTableSeeder extends Seeder
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
+            'name' => 'Project Management',
+            'icon' => 'fa-calendar',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=> $repair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $projectManagementRepair =  Menu::where('name','Project Management')->where('menu_id', $repair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage Projects',
+            'icon' => 'fa-calendar',
+            'route_name'=> 'project_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Confirm Activity',
+        //     'icon' => 'fa-clock-o',
+        //     'route_name'=> 'activity.indexConfirm',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN',
+        //     'menu_id'=> $projectManagementRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
             'name' => 'Bill Of Material',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
