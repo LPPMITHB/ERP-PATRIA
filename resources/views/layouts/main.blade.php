@@ -31,7 +31,7 @@
                 </section>
 
                 <!-- Main content -->
-                <section class="content p-b-0">
+                <section class="content p-b-0 p-t-5">
                     @yield('content')
                 </section>
                 <!-- /.content -->

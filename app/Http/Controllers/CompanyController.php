@@ -127,7 +127,7 @@ class CompanyController extends Controller
         $company->fax = $request->input('fax');
         $company->email = $request->input('email');
         $company->status = $request->input('status');
-        $company->save();
+        $company->update();
 
         DB::commit();
             return redirect()->route('company.show',$company->id)->with('success', 'Success Edit Company!');

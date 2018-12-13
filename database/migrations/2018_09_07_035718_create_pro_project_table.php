@@ -41,6 +41,7 @@ class CreateProProjectTable extends Migration
             $table->unsignedInteger('branch_id');            
             $table->timestamps();
 
+            $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');

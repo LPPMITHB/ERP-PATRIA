@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View all Ships',
+        'title' => 'View All Ships',
         'items' => [
             'Dashboard' => route('index'),
-            'View all Ships' => route('ship.index'),
+            'View All Ships' => '',
         ]
     ]
 )
@@ -17,13 +17,13 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header m-b-10">
-                <div class="box-tools pull-right p-t-5">
+            <div class="box-header">
+                <div class="box-tools pull-right">
                     <a href="{{ route('ship.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header -->
-            <div class="box-body">
-                <table class="table table-bordered table-hover" id="ship-table">
+            <div class="box-body p-b-0 p-t-15">
+                <table class="table table-bordered tablePaging" id="ship-table">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
@@ -61,17 +61,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#ship-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

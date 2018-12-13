@@ -105,6 +105,93 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        //BOM Repair
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $bomRepair =  Menu::where('name','Bill Of Material')->where('menu_id',$repair)->select('id')->first()->id;
+        $manageBOMRepair = Menu::where('name','Manage BOM')->where('menu_id',$bomRepair)->select('id')->first()->id;
+        
+        DB::table('permissions')->insert([
+            'name' => 'Index Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'index-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'create-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'show-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'edit-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'destroy-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //BOS
+        $manageBOS = Menu::where('name','Manage BOS')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Index Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'index-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'create-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'show-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'edit-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Bos',
+            'menu_id' => $manageBOS,
+            'middleware' => 'destroy-bos',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
         
         //RAP
         // $createRAP = Menu::where('name','Create RAP')->select('id')->first()->id;
@@ -567,6 +654,48 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Destroy Resource',
             'menu_id' => $resource,
             'middleware' => 'destroy-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Master Data Service
+        $service = Menu::where('name','Service')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Index Service',
+            'menu_id' => $service,
+            'middleware' => 'index-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Service',
+            'menu_id' => $service,
+            'middleware' => 'create-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Service',
+            'menu_id' => $service,
+            'middleware' => 'show-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Service',
+            'menu_id' => $service,
+            'middleware' => 'edit-service',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Destroy Service',
+            'menu_id' => $service,
+            'middleware' => 'destroy-service',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

@@ -89,8 +89,8 @@
                                 <textarea class="form-control" v-model="bom.description" style="width:100%"></textarea>  
                             </div>
                         </div>
-                        <div class="col-md-12 p-t-0">
-                            <table class="table table-bordered" id="materials-table">
+                        <div class="col-md-12 p-t-10">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -184,19 +184,6 @@
 
     $(document).ready(function(){
         $('div.overlay').hide();
-        $('.alert').addClass('animated bounce');
-        $('#materials-table').DataTable({
-            'paging'      : false,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : false,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').hide();
-            }
-        });
-        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     });
 
     var data = {
@@ -292,8 +279,10 @@
                 var bom_id = this.bom.id;
 
                 var url = "{{ route('bom.update') }}";
+                console.log(url);
 
                 window.axios.patch(url,data).then((response) => {
+                    console.log(response);
                     iziToast.success({
                         title: 'Edit Success',
                         position: 'topRight',

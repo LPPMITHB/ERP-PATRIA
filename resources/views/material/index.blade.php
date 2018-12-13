@@ -18,15 +18,15 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header m-b-10">
-                <div class="box-tools pull-right p-t-5">
+            <div class="box-header">
+                <div class="box-tools pull-right">
                     <a href="{{ route('material.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header -->
             @verbatim
             <div id="index_material">
-                <div class="box-body">
-                    <table class="table table-bordered table-hover tableFixed" id="material-table">
+                    <div class="box-body p-b-0 p-t-15">
+                    <table class="table table-bordered tablePagingVue" id="material-table">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
@@ -89,17 +89,33 @@
     });
     
     $(document).ready(function(){
-        $('#material-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
+        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == ""){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
             }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tablePagingVue.column(i).search() !== this.value ) {
+                    tablePagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
         });
+
+        var tablePagingVue = $('.tablePagingVue').DataTable( {
+            orderCellsTop   : true,
+            fixedHeader     : true,
+            paging          : true,
+            autoWidth       : true,
+            lengthChange    : false,
+        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

@@ -36,8 +36,6 @@ class CustomerController extends Controller
         $user = new User;
         $customer_code = self::generateCustomerCode();
         return view('customer.create', compact('customer', 'customer_code','user'));
-
-        
     }
 
     /**
@@ -56,35 +54,35 @@ class CustomerController extends Controller
             'contact_person_phone' => 'nullable|numeric'
         ]);
 
-        $configuration = Configuration::get('default-password');
+        $configuration = Configuration::get('default-password')->password;
         $password = $configuration;
 
         DB::beginTransaction();
         try {
-        $customer = new Customer;
-        $customer->code = strtoupper($request->input('code'));
-        $customer->name = ucwords($request->input('name'));
-        $customer->contact_person_name = $request->input('contact_person_name');
-        $customer->contact_person_email = $request->input('contact_person_email');
-        $customer->address = ucfirst($request->input('address'));
-        $customer->contact_person_phone = $request->input('contact_person_phone');
-        $customer->status = $request->input('status');
-        $customer->user_id = Auth::user()->id;
-        $customer->branch_id = Auth::user()->branch->id;
-        $customer->save();
+            $customer = new Customer;
+            $customer->code = strtoupper($request->input('code'));
+            $customer->name = ucwords($request->input('name'));
+            $customer->contact_person_name = $request->input('contact_person_name');
+            $customer->contact_person_email = $request->input('contact_person_email');
+            $customer->address = ucfirst($request->input('address'));
+            $customer->contact_person_phone = $request->input('contact_person_phone');
+            $customer->status = $request->input('status');
+            $customer->user_id = Auth::user()->id;
+            $customer->branch_id = Auth::user()->branch->id;
+            $customer->save();
 
-        $modelRole = Role::where('name','CUSTOMER')->first();
+            $modelRole = Role::where('name','CUSTOMER')->first();
 
-        $user = new User;
-        $user->username = $request->input('code');
-        $user->name = $request->input('name');
-        $user->email = $request->input('contact_person_email');
-        $user->password = Hash::make($password);
-        $user->address = $request->input('address');
-        $user->phone_number = $request->input('contact_person_phone');
-        $user->role_id = $modelRole->id;
-        $user->branch_id = Auth::user()->branch->id;
-        $user->save();
+            $user = new User;
+            $user->username = $request->input('code');
+            $user->name = $request->input('name');
+            $user->email = $request->input('contact_person_email');
+            $user->password = Hash::make($password);
+            $user->address = $request->input('address');
+            $user->phone_number = $request->input('contact_person_phone');
+            $user->role_id = $modelRole->id;
+            $user->branch_id = Auth::user()->branch->id;
+            $user->save();
 
             DB::commit();
             return redirect()->route('customer.show',$customer->id)->with('status', 'Success Created New Customer!');
@@ -139,21 +137,21 @@ class CustomerController extends Controller
 
         DB::beginTransaction();
         try {
-        $customer = Customer::find($id);
-        $customer->name = ucwords($request->input('name'));
-        $customer->contact_person_name = $request->input('contact_person_name');
-        $customer->contact_person_email = $request->input('contact_person_email');
-        $customer->address = ucfirst($request->input('address'));
-        $customer->contact_person_phone = $request->input('contact_person_phone');
-        $customer->status = $request->input('status');
+            $customer = Customer::find($id);
+            $customer->name = ucwords($request->input('name'));
+            $customer->contact_person_name = $request->input('contact_person_name');
+            $customer->contact_person_email = $request->input('contact_person_email');
+            $customer->address = ucfirst($request->input('address'));
+            $customer->contact_person_phone = $request->input('contact_person_phone');
+            $customer->status = $request->input('status');
+            $customer->update();
 
-        $user = User::where('username', $customer->code)->first();
-        $user->name = ucwords($request->input('name'));
-        $user->email = $request->input('contact_person_email');
-        $user->address = ucfirst($request->input('address'));
-        $user->phone_number = $request->input('contact_person_phone');
-        $customer->save();
-        $user->save();
+            $user = User::where('username', $customer->code)->first();
+            $user->name = ucwords($request->input('name'));
+            $user->email = $request->input('contact_person_email');
+            $user->address = ucfirst($request->input('address'));
+            $user->phone_number = $request->input('contact_person_phone');
+            $user->update();
         
             DB::commit();
             return redirect()->route('customer.show',$customer->id)->with('success', 'Customer Updated Succesfully');

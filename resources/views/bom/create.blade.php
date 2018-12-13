@@ -70,27 +70,27 @@
                                         <tr>
                                             <td>Code</td>
                                             <td>:</td>
-                                            <td>&ensp;<b>{{work.code}}</b></td>
+                                            <td>&ensp;<b>{{wbs.code}}</b></td>
                                         </tr>
                                         <tr>
                                             <td>Name</td>
                                             <td>:</td>
-                                            <td>&ensp;<b>{{work.name}}</b></td>
+                                            <td>&ensp;<b>{{wbs.name}}</b></td>
                                         </tr>
                                         <tr>
                                             <td>Description</td>
                                             <td>:</td>
-                                            <td>&ensp;<b>{{work.description}}</b></td>
+                                            <td>&ensp;<b>{{wbs.description}}</b></td>
                                         </tr>
                                         <tr>
                                             <td>Deliverable</td>
                                             <td>:</td>
-                                            <td>&ensp;<b>{{work.deliverables}}</b></td>
+                                            <td>&ensp;<b>{{wbs.deliverables}}</b></td>
                                         </tr>
                                         <tr>
                                             <td>Progress</td>
                                             <td>:</td>
-                                            <td>&ensp;<b>{{work.progress}}%</b>
+                                            <td>&ensp;<b>{{wbs.progress}}%</b>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -200,15 +200,13 @@
 
     $(document).ready(function(){
         $('div.overlay').hide();
-        $('.alert').addClass('animated bounce');
-        
     });
 
     var data = {
         submit: "ok",
         project : @json($project),
         materials : @json($materials),
-        work : @json($work),
+        wbs : @json($wbs),
         newIndex : 0, 
         submittedForm :{
             project_id : "",
@@ -313,7 +311,7 @@
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.work_name = data.work_name;
+                this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
@@ -442,7 +440,7 @@
         },
         created: function() {
             this.submittedForm.project_id = this.project.id;
-            this.submittedForm.wbs_id = this.work.id;          
+            this.submittedForm.wbs_id = this.wbs.id;          
 
             this.newIndex = this.materialTable.length + 1;
         }

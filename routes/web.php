@@ -286,6 +286,23 @@ Route::name('currencies.')->prefix('currencies')->group(function() {
     Route::delete('/{id}', 'CurrenciesController@destroy')->name('destroy');
 });
 
+//Service Routes
+Route::name('service.')->prefix('service')->group(function() {
+    Route::get('/create', 'ServiceController@create')->name('create')->middleware('can:create-service');
+
+    Route::get('/', 'ServiceController@index')->name('index')->middleware('can:index-service');
+
+    Route::get('/{id}', 'ServiceController@show')->name('show')->middleware('can:show-service');
+
+    Route::get('/{id}/edit', 'ServiceController@edit')->name('edit')->middleware('can:edit-service');
+
+    Route::patch('/{id}', 'ServiceController@update')->name('update')->middleware('can:edit-service');
+
+    Route::post('/', 'ServiceController@store')->name('store')->middleware('can:create-service');
+
+    Route::delete('/{id}', 'ServiceController@destroy')->name('destroy')->middleware('can:destroy-service');
+});
+
 //StorageLocation Routes
 Route::name('storage_location.')->prefix('storage_location')->group(function() {
     Route::get('/create', 'StorageLocationController@create')->name('create')->middleware('can:create-storage-location');
@@ -339,9 +356,7 @@ Route::name('yard.')->prefix('yard')->group(function() {
 
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
-    Route::patch('/storeAssignBom', 'BOMController@storeAssignBom')->name('storeAssignBom')->middleware('can:create-bom');
-
-    Route::get('/createBomFromProject/{id}', 'BOMController@createBomFromProject')->name('createBomFromProject');
+    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
 
@@ -353,21 +368,73 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:index-bom');
 
-    Route::get('/assignBom/{id}', 'BOMController@assignBom')->name('assignBom')->middleware('can:index-bom');
-
     Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom');
 
     Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom');
-
-    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
     Route::patch('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom');
 
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
-
     Route::patch('/destroy', 'BOMController@destroy')->name('destroy')->middleware('can:destroy-bom');
+});
+
+//BOM Repair Routes
+Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
+    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
+
+    Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
+
+    Route::get('/indexProject', 'BOMController@indexProjectRepair')->name('indexProject')->middleware('can:index-bom-repair');
+
+    Route::get('/selectProject', 'BOMController@selectProjectRepair')->name('selectProject')->middleware('can:index-bom-repair');
+    
+    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:index-bom-repair');
+
+    Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:index-bom-repair');
+
+    Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom-repair');
+
+    Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom-repair');
+
+    Route::patch('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
+
+    Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
+
+    Route::patch('/destroy', 'BOMController@destroy')->name('destroy')->middleware('can:destroy-bom-repair');
+});
+
+//BOS Routes
+Route::name('bos.')->prefix('bos')->group(function() {
+    Route::patch('/storeAssignBos', 'BOSController@storeAssignBos')->name('storeAssignBos')->middleware('can:create-bos');
+
+    Route::get('/createBosFromProject/{id}', 'BOSController@createBosFromProject')->name('createBosFromProject');
+
+    Route::get('/create/{id}', 'BOSController@create')->name('create')->middleware('can:create-bos');
+
+    Route::get('/indexProject', 'BOSController@indexProject')->name('indexProject')->middleware('can:index-bos');
+
+    Route::get('/selectProject', 'BOSController@selectProject')->name('selectProject')->middleware('can:index-bos');
+    
+    Route::get('/selectWBS/{id}', 'BOSController@selectWBS')->name('selectWBS')->middleware('can:index-bos');
+
+    Route::get('/indexBos/{id}', 'BOSController@indexBos')->name('indexBos')->middleware('can:index-bos');
+
+    Route::get('/assignBos/{id}', 'BOSController@assignBos')->name('assignBos')->middleware('can:index-bos');
+
+    Route::get('/{id}', 'BOSController@show')->name('show')->middleware('can:show-bos');
+
+    Route::get('/{id}/edit', 'BOSController@edit')->name('edit')->middleware('can:edit-bos');
+
+    Route::patch('/', 'BOSController@update')->name('update')->middleware('can:edit-bos');
+
+    Route::patch('/updateDesc', 'BOSController@updateDesc')->name('updateDesc')->middleware('can:edit-bos');
+
+    Route::post('/', 'BOSController@store')->name('store')->middleware('can:create-bos');
+
+    Route::post('/storeBos', 'BOSController@storeBos')->name('storeBos')->middleware('can:create-bos');
+
+    Route::patch('/destroy', 'BOSController@destroy')->name('destroy')->middleware('can:destroy-bos');
 });
 
 //Project Routes
@@ -447,7 +514,7 @@ Route::name('activity.')->prefix('activity')->group(function() {
    
 });
 
-//RAB Routes
+//rap Routes
 Route::name('rap.')->prefix('rap')->group(function() {
     Route::get('/create/{id}', 'RAPController@create')->name('create');
     
@@ -479,19 +546,19 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::patch('/storeAssignCost', 'RAPController@storeAssignCost')->name('storeAssignCost');
 
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:show-rab');
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:show-rap');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:edit-rab');    
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:edit-rap');    
     
-    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rab');
+    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     
-    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rab');
+    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
     
-    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rab');
+    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
     
-    Route::post('/', 'RAPController@store')->name('store')->middleware('can:create-rab');
+    Route::post('/', 'RAPController@store')->name('store')->middleware('can:create-rap');
     
-    Route::delete('/{id}', 'RAPController@destroy')->name('destroy')->middleware('can:destroy-rab');
+    Route::delete('/{id}', 'RAPController@destroy')->name('destroy')->middleware('can:destroy-rap');
     
 });
 

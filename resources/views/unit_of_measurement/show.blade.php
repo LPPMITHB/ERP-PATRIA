@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered width100 showTable tableFixed">
+                <table class="table table-bordered width100 showTable">
                     <thead>
                         <tr>
                             <th style="width: 5%">#</th>

@@ -137,7 +137,7 @@ class BranchController extends Controller
         $branch->email = $request->input('email');
         $branch->status = $request->input('status');
         $branch->company_id = $request->input('company');
-        $branch->save();
+        $branch->update();
 
         DB::commit();
         return redirect()->route('branch.show',$branch->id)->with('success', 'Branch Updated Succesfully');

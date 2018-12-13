@@ -64,26 +64,25 @@ class MaterialController extends Controller
             'height' => 'nullable|numeric',
             'length' => 'nullable|numeric',
             'width' => 'nullable|numeric',
-            'volume' => 'nullable|numeric'
         ]);
 
         DB::beginTransaction();
         try {
-        $material = new Material;
-        $material->code = $data->code;
-        $material->name = $data->name;
-        $material->description = $data->description;
-        $material->cost_standard_price = $data->cost_standard_price;
-        $material->weight = $data->weight;
-        $material->height = $data->height;
-        $material->length = $data->lengths;
-        $material->width = $data->width;
-        $material->volume = $data->volume;
-        $material->type = $data->type;
-        $material->status = $data->status;
-        $material->user_id = Auth::user()->id;
-        $material->branch_id = Auth::user()->branch->id;
-        $material->save();
+            $material = new Material;
+            $material->code = $data->code;
+            $material->name = $data->name;
+            $material->description = $data->description;
+            $material->cost_standard_price = $data->cost_standard_price;
+            $material->weight = $data->weight;
+            $material->height = $data->height;
+            $material->length = $data->lengths;
+            $material->width = $data->width;
+            $material->volume = $data->volume;
+            $material->type = $data->type;
+            $material->status = $data->status;
+            $material->user_id = Auth::user()->id;
+            $material->branch_id = Auth::user()->branch->id;
+            $material->save();
         
         DB::commit();
         return redirect()->route('material.show',$material->id)->with('success', 'Success Created New Material!');
@@ -168,7 +167,7 @@ class MaterialController extends Controller
         $material->volume = $data->volume;
         $material->type = $data->type;
         $material->status = $data->status;
-        $material->save();
+        $material->update();
 
         DB::commit();
         return redirect()->route('material.show',$material->id)->with('success', 'Material Updated Succesfully');

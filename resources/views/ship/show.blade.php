@@ -6,7 +6,7 @@
         'title' => 'View Ship',
         'items' => [
             'Dashboard' => route('index'),
-            'View all Ships' => route('ship.index'),
+            'View All Ships' => route('ship.index'),
             $ship->name => route('ship.show',$ship->id),
         ]
     ]
@@ -38,12 +38,12 @@
             </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered table-hover showTable">
+                <table class="table table-bordered showTable">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Attribute</th>
-                            <th>Value</th>
+                            <th width="5%">#</th>
+                            <th width="30%">Attribute</th>
+                            <th width="65%">Value</th>
                         </tr>
                     </thead>
                     <tbody>

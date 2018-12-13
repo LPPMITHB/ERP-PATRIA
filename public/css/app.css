@@ -23424,6 +23424,10 @@ textarea {
   background-clip: content-box;
 }
 
+.tablePaging {
+  width: 100% !important;
+}
+
 /*
 This .scss loop will create "margin helpers" and "padding helpers" for use in your web projects.
 It will generate several classes such as:
