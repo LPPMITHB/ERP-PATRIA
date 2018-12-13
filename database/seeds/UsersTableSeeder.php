@@ -91,5 +91,23 @@ class UsersTableSeeder extends Seeder
             'branch_id' => 1,
             'password' => bcrypt('patria'),
         ]);
+
+        DB::table('users')->insert([
+            'username' => 'pmp',
+            'name' => 'User PMP',
+            'email' => 'pmp@pmp.com',
+            'role_id' => 4,
+            'branch_id' => 2,
+            'password' => bcrypt('patria'),
+        ]);
+
+        DB::table('users')->insert([
+            'username' => 'pami',
+            'name' => 'User PAMI',
+            'email' => 'pami@pami.com',
+            'role_id' => 5,
+            'branch_id' => 1,
+            'password' => bcrypt('patria'),
+        ]);
     }
 }
