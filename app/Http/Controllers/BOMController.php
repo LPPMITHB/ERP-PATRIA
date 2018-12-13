@@ -306,39 +306,39 @@ class BOMController extends Controller
      * @param  \App\BOM  $bOM
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
-    {
-        $data = $request->json()->all();
+    // public function update(Request $request)
+    // {
+    //     $data = $request->json()->all();
 
-        DB::beginTransaction();
-        try {
-            $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
-            $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
-            $modelBOMDetail->quantity = $data['quantityInt'];
+    //     DB::beginTransaction();
+    //     try {
+    //         $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
+    //         $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
+    //         $modelBOMDetail->quantity = $data['quantityInt'];
 
-            if(!$modelBOMDetail->update()){
-                return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
-            }else{
-                // update RAP
-                $modelRAP = Rap::where('bom_id',$modelBOMDetail->bom_id)->first();
-                foreach($modelRAP->rapDetails as $rapDetail){
-                    if($rapDetail->material_id == $modelBOMDetail->material_id){
-                        $rapDetail->quantity = $data['quantityInt'];
-                        $rapDetail->update();
-                    }
-                }
-                // update reserve mst_stock
-                $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
-                $modelStock->reserved += $diff;
-                $modelStock->update();
-                DB::commit();
-                return response(json_encode($modelBOMDetail),Response::HTTP_OK);
-            }
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error', $e->getMessage());
-        }
-    }
+    //         if(!$modelBOMDetail->update()){
+    //             return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
+    //         }else{
+    //             // update RAP
+    //             $modelRAP = Rap::where('bom_id',$modelBOMDetail->bom_id)->first();
+    //             foreach($modelRAP->rapDetails as $rapDetail){
+    //                 if($rapDetail->material_id == $modelBOMDetail->material_id){
+    //                     $rapDetail->quantity = $data['quantityInt'];
+    //                     $rapDetail->update();
+    //                 }
+    //             }
+    //             // update reserve mst_stock
+    //             $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
+    //             $modelStock->reserved += $diff;
+    //             $modelStock->update();
+    //             DB::commit();
+    //             return response(json_encode($modelBOMDetail),Response::HTTP_OK);
+    //         }
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error', $e->getMessage());
+    //     }
+    // }
 
     public function updateDesc(Request $request)
     {
