@@ -26,14 +26,12 @@ if (token) {
 // selectize
 require("selectize");
 
-
-
 // dhtmlxgantt
 require("dhtmlx-gantt");
 require("dhtmlx-gantt/codebase/ext/dhtmlxgantt_marker.js");
 
 //bootstrap-multiselect
-require("bootstrap-multiselect");
+require("bootstrap-multiselect/dist/js/bootstrap-multiselect.js");
 
 // Bootstrap
 require("admin-lte/bower_components/bootstrap/dist/js/bootstrap.min.js");
