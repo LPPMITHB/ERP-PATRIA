@@ -356,6 +356,8 @@ Route::name('yard.')->prefix('yard')->group(function() {
 
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
+    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
+
     Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
@@ -381,6 +383,8 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
 //BOM Repair Routes
 Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
+    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
+
     Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
@@ -459,6 +463,31 @@ Route::name('project.')->prefix('project')->group(function() {
     Route::post('/', 'ProjectController@store')->name('store')->middleware('can:create-project');
 
     Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project');   
+    
+});
+
+//Project Routes
+Route::name('project_repair.')->prefix('project_repair')->group(function() {
+    // Project Cost Evaluation
+    Route::get('/projectCE/{id}', 'ProjectController@projectCE')->name('projectCE')->middleware('can:show-project-repair');
+    
+    //GanttChart
+    Route::get('/ganttChart/{id}', 'ProjectController@showGanttChart')->name('showGanttChart')->middleware('can:show-project-repair');
+
+    //Project
+    Route::get('/create', 'ProjectController@createRepair')->name('create')->middleware('can:create-project-repair');
+
+    Route::get('/', 'ProjectController@indexRepair')->name('index')->middleware('can:index-project-repair');
+
+    Route::get('/{id}', 'ProjectController@showRepair')->name('show')->middleware('can:show-project-repair');
+
+    Route::get('/{id}/edit', 'ProjectController@editRepair')->name('edit')->middleware('can:edit-project-repair');
+
+    Route::patch('/{id}', 'ProjectController@updateRepair')->name('update')->middleware('can:edit-project-repair');
+    
+    Route::post('/', 'ProjectController@storeRepair')->name('store')->middleware('can:create-project-repair');
+
+    Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project-repair');   
     
 });
 

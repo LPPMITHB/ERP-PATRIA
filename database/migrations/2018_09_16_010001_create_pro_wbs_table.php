@@ -25,6 +25,7 @@ class CreateProWbsTable extends Migration
             $table->date('planned_deadline');
             $table->date('actual_deadline')->nullable();
             $table->float('progress')->default(0);
+            $table->float('weight')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  
             $table->integer('process_cost')->nullable();

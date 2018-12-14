@@ -82,7 +82,7 @@ class ProjectManagementController extends Controller
 
         $projects = Project::orderBy('planned_start_date', 'asc')->get();
 
-        return view('project_management.index', compact('projects'));
+        return view('project.index', compact('projects'));
 
         // $sos = SalesOrder::where('status', 1)->get();
         // $modelSO = array();
@@ -98,14 +98,14 @@ class ProjectManagementController extends Controller
         //     $modelSO[] = $arr;
         // }
 
-        // return view('project_management.index', compact('modelSO'));
+        // return view('project.index', compact('modelSO'));
     }
 
     public function indexConfirm()
     {
         $projects = Project::all();
 
-        return view('project_management.indexConfirm', compact('projects'));
+        return view('project.indexConfirm', compact('projects'));
     }
 
     /**
@@ -121,7 +121,7 @@ class ProjectManagementController extends Controller
         $project = new Project;
 
 
-        return view('project_management.create', compact('customers','ships','project'));
+        return view('project.create', compact('customers','ships','project'));
     }
 
     public function createWBS($id)
@@ -129,7 +129,7 @@ class ProjectManagementController extends Controller
         $structures = Structure::where('is_substructure', 0)->select('name')->get()->jsonSerialize();
         $project = Project::find($id);
 
-        return view('project_management.createWBS', compact('project','structures'));
+        return view('project.createWBS', compact('project','structures'));
     }
 
     public function listWBS($id, $menu){
@@ -146,7 +146,7 @@ class ProjectManagementController extends Controller
             $menuTitle = "";
         }
         
-        return view('project_management.listWBS', compact('works','project','menu','menuTitle'));
+        return view('project.listWBS', compact('works','project','menu','menuTitle'));
     }
     
     public function manageNetwork($id)
@@ -154,14 +154,14 @@ class ProjectManagementController extends Controller
         $work = Work::find($id);
         $project = $work->project;
 
-        return view('project_management.indexNetwork', compact('project','work'));
+        return view('project.indexNetwork', compact('project','work'));
     }
 
     public function selectWBS($id){
         $works = Work::orderBy('planned_deadline', 'asc')->where('project_id', $id)->with('work')->get();
         $project = Project::find($id);
         
-        return view('project_management.selectWBSConfirm', compact('works','project'));
+        return view('project.selectWBSConfirm', compact('works','project'));
     }
 
     public function confirmActivity($id)
@@ -169,7 +169,7 @@ class ProjectManagementController extends Controller
         $work = Work::find($id);
         $project = $work->project;
 
-        return view('project_management.confirmActivity', compact('project','work'));
+        return view('project.confirmActivity', compact('project','work'));
     }
 
     public function indexWBS($id)
@@ -177,7 +177,7 @@ class ProjectManagementController extends Controller
         $project = Project::find($id);
         $resourceCategories = Category::where('used_for', 'RESOURCE')->get();
 
-        return view('project_management.indexWBS', compact('project','resourceCategories'));
+        return view('project.indexWBS', compact('project','resourceCategories'));
     }
 
     public function indexActivities($id)
@@ -185,7 +185,7 @@ class ProjectManagementController extends Controller
         $work = Work::find($id);
         $project = $work->project;
 
-        return view('project_management.indexActivities', compact('project','work'));
+        return view('project.indexActivities', compact('project','work'));
     }
     
 
@@ -194,7 +194,7 @@ class ProjectManagementController extends Controller
         $work = Work::find($id);
         $project = $work->project;
 
-        return view('project_management.createActivities', compact('project', 'work'));
+        return view('project.createActivities', compact('project', 'work'));
     }
 
     public function createSubWBS($project_id, $work_id)
@@ -215,7 +215,7 @@ class ProjectManagementController extends Controller
             $array[$key] = $value;
         }
         $array[$work->code] = "";
-        return view('project_management.createSubWBS', compact('project', 'work','array','structures','childWorks'));
+        return view('project.createSubWBS', compact('project', 'work','array','structures','childWorks'));
     }
     
     //BUAT BREADCRUMB DINAMIS
@@ -538,7 +538,7 @@ class ProjectManagementController extends Controller
         $data->jsonSerialize();
 
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project_management.show', compact('project','today','data','links','outstanding_item','modelPrO'));
+        return view('project.show', compact('project','today','data','links','outstanding_item','modelPrO'));
     }
 
     public function showActivity($id)
@@ -553,7 +553,7 @@ class ProjectManagementController extends Controller
                 $activityPredecessor->push($refActivity);
             }
         }
-        return view('project_management.showActivity', compact('activity','activityPredecessor'));
+        return view('project.showActivity', compact('activity','activityPredecessor'));
 
     }
 
@@ -561,7 +561,7 @@ class ProjectManagementController extends Controller
     {
         $work = Work::find($id);
 
-        return view('project_management.showWBS', compact('work'));
+        return view('project.showWBS', compact('work'));
 
     }
 
@@ -578,7 +578,7 @@ class ProjectManagementController extends Controller
         
         $links->jsonSerialize();
         $data->jsonSerialize();
-        return view('project_management.ganttChart', compact('project','data','links'));
+        return view('project.ganttChart', compact('project','data','links'));
     }
     
 
@@ -830,7 +830,7 @@ class ProjectManagementController extends Controller
         $customers = Customer::all();
         $ships = Ship::all();
 
-        return view('project_management.create', compact('project','customers','ships'));
+        return view('project.create', compact('project','customers','ships'));
     }
 
     /**
@@ -1137,21 +1137,21 @@ class ProjectManagementController extends Controller
             ]);
         }
 
-        return view('project_management.showPCE', compact('modelWBS','project','actual','planned'));
+        return view('project.showPCE', compact('modelWBS','project','actual','planned'));
     }
 
     // Configuration WBS & Estimator
     public function selectProjectConfig(){
         $modelProject = Project::where('status',1)->get();
 
-        return view('project_management.selectProject', compact('modelProject'));
+        return view('project.selectProject', compact('modelProject'));
     }
 
     public function configWbsEstimator($id){
         $project = Project::findOrFail($id);
         $works = Work::where('project_id',$project->id)->whereNull('work_id')->get();
 
-        return view('project_management.configWbsEstimator', compact('project','works'));
+        return view('project.configWbsEstimator', compact('project','works'));
     }
 
     //API

@@ -110,63 +110,63 @@ class BOSController extends Controller
     public function indexBos($id)
     {
         $project = Project::find($id);
-        $wbs = $project->wbs;
-        $wbs = Collection::make();
+        $wbs = $project->wbss;
+        $data = Collection::make();
 
-        $wbs->push([
+        $data->push([
             "id" => $project->number , 
             "parent" => "#",
             "text" => $project->name,
             "icon" => "fa fa-ship"
         ]);
-    
-        foreach($wbss as $wbs){
+
+        foreach($wbs as $work){
             $bos_code = "";
-            $bos = Bos::where('wbs_id',$wbs->id)->first();
+            $bos = Bos::where('wbs_id',$work->id)->first();
             if($bos){
                 $bos_code = " - ".$bos->code;
-                if($wbs->wbs){
-                    $wbss->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. ''.$bos_code,
+                if($work->wbs){
+                    $data->push([
+                        "id" => $work->code , 
+                        "parent" => $work->wbs->code,
+                        "text" => $work->name. ''.$bos_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bos.show',$bos->id)],
                     ]);
                 }else{
-                    $wbss->push([
-                        "id" => $wbs->code , 
+                    $data->push([
+                        "id" => $work->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->name. ''.$bos_code,
+                        "text" => $work->name. ''.$bos_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bos.show',$bos->id)],
                     ]);
                 } 
             }else{
-                if($wbs->wbs){
-                    $wbss->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. ''.$bos_code,
+                if($work->wbs){
+                    $data->push([
+                        "id" => $work->code , 
+                        "parent" => $work->wbs->code,
+                        "text" => $work->name. ''.$bos_code,
                         "icon" => "fa fa-suitcase",
                     ]);
                 }else{
-                    $wbss->push([
-                        "id" => $wbs->code , 
+                    $data->push([
+                        "id" => $work->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->name. ''.$bos_code,
+                        "text" => $work->name. ''.$bos_code,
                         "icon" => "fa fa-suitcase",
                     ]);
                 } 
             }
              
         }
-        return view('bos.indexBos', compact('project','wbs'));
+        return view('bos.indexBos', compact('project','data'));
     }
 
     public function assignBos($id)
     {
-        $modelBOS = Bos::where('project_id',$id)->with('wbs')->get();
+        $modelBOS = Bos::where('project_id',$id)->with('work')->get();
         $project = Project::findOrFail($id);
         $wbs = WBS::where('project_id',$id)->get();
 
@@ -211,7 +211,7 @@ class BOSController extends Controller
                 return redirect()->route('bos.create',$bos->id)->with('error', 'Failed Save BOS !');
             }else{
                 self::saveBosDetail($bos,$datas->services);
-                self::createRap($datas,$bos);
+                // self::createRap($datas,$bos);
                 DB::commit();
                 return redirect()->route('bos.show', ['id' => $bos->id])->with('success', 'Bill Of Service Created');
             }
@@ -229,8 +229,8 @@ class BOSController extends Controller
         try {
             $bos_detail = new BosDetail;
             $bos_detail->bos_id = $data['bos_id'];
-            $bos_detail->material_id = $data['material_id'];
-            $bos_detail->quantity = $data['quantityInt'];
+            $bos_detail->service_id = $data['service_id'];
+            $bos_detail->cost_standard_price = $data['cost_standard_priceInt'];
             if(!$bos_detail->save()){
                 return back()->with('error','Failed to save, please try again !');
             }else{
@@ -251,21 +251,21 @@ class BOSController extends Controller
      */
     public function show($id)
     {
-        $pr_number = '-';
-        $rap_number = '-';
+        // $pr_number = '-';
+        // $rap_number = '-';
         $modelBOS = Bos::where('id',$id)->with('project','bosDetails','user','branch')->first();
         $modelBOSDetail = BosDetail::where('bos_id',$modelBOS->id)->with('service')->get();
 
-        $modelPR = PurchaseRequisition::where('bos_id',$modelBOS->id)->first();
-        if(isset($modelPR)){
-            $pr_number = $modelPR->number;
-        }
+        // $modelPR = PurchaseRequisition::where('bos_id',$modelBOS->id)->first();
+        // if(isset($modelPR)){
+        //     $pr_number = $modelPR->number;
+        // }
 
-        $modelRAP = Rap::where('bos_id',$modelBOS->id)->first();
-        if(isset($modelRAP)){
-            $rap_number = $modelRAP->number;
-        }
-        return view('bos.show', compact('modelBOS','modelBOSDetail','pr_number','rap_number','modelPR','modelRAP'));
+        // $modelRAP = Rap::where('bos_id',$modelBOS->id)->first();
+        // if(isset($modelRAP)){
+        //     $rap_number = $modelRAP->number;
+        // }
+        return view('bos.show', compact('modelBOS','modelBOSDetail'));
     }
 
     /**
@@ -276,25 +276,25 @@ class BOSController extends Controller
      */
     public function edit($id)
     {
-        $pr_number = '-';
-        $rap_number = '-';
+        // $pr_number = '-';
+        // $rap_number = '-';
         $modelBOS = Bos::where('id',$id)->with('project')->first();
-        $modelBOSDetail = BosDetail::where('bos_id',$modelBOS->id)->with('material')->get();
-        $materials = Material::orderBy('name')->get()->jsonSerialize();
+        $modelBOSDetail = BosDetail::where('bos_id',$modelBOS->id)->with('service')->get();
+        $services = Service::orderBy('name')->get()->jsonSerialize();
         $project = $modelBOS->project;
         $project = Project::find($project->id)->with('ship','customer')->first();
 
-        $modelPR = PurchaseRequisition::where('bos_id',$modelBOS->id)->first();
-        if(isset($modelPR)){
-            $pr_number = $modelPR->number;
-        }
+        // $modelPR = PurchaseRequisition::where('bos_id',$modelBOS->id)->first();
+        // if(isset($modelPR)){
+        //     $pr_number = $modelPR->number;
+        // }
 
-        $modelRAP = Rap::where('bos_id',$modelBOS->id)->first();
-        if(isset($modelRAP)){
-            $rap_number = $modelRAP->number;
-        }
+        // $modelRAP = Rap::where('bos_id',$modelBOS->id)->first();
+        // if(isset($modelRAP)){
+        //     $rap_number = $modelRAP->number;
+        // }
 
-        return view('bos.edit', compact('modelBOS','materials','modelBOSDetail','project','pr_number','rap_number','modelPR','modelRAP'));
+        return view('bos.edit', compact('modelBOS','services','modelBOSDetail','project'));
     }
 
     /**
@@ -311,25 +311,25 @@ class BOSController extends Controller
         DB::beginTransaction();
         try {
             $modelBOSDetail = BosDetail::findOrFail($data['bos_detail_id']);
-            $diff = $data['quantityInt'] - $modelBOSDetail->quantity;
+            $diff = $data['cost_standard_priceInt'] - $modelBOSDetail->cost_standard_price;
             // $modelBOSDetail->material_id = $data['material_id'];
-            $modelBOSDetail->quantity = $data['quantityInt'];
+            $modelBOSDetail->cost_standard_price = $data['cost_standard_priceInt'];
 
             if(!$modelBOSDetail->save()){
                 return redirect()->route('bos.edit',$modelBOSDetail->bos_id)->with('error','Failed to save, please try again !');
             }else{
                 // update RAP
-                $modelRAP = Rap::where('bos_id',$modelBOSDetail->bos_id)->first();
-                foreach($modelRAP->rapDetails as $rapDetail){
-                    if($rapDetail->material_id == $modelBOSDetail->material_id){
-                        $rapDetail->quantity = $data['quantityInt'];
-                        $rapDetail->save();
-                    }
-                }
+                // $modelRAP = Rap::where('bos_id',$modelBOSDetail->bos_id)->first();
+                // foreach($modelRAP->rapDetails as $rapDetail){
+                //     if($rapDetail->material_id == $modelBOSDetail->material_id){
+                //         $rapDetail->cost_standard_price = $data['cost_standard_priceInt'];
+                //         $rapDetail->save();
+                //     }
+                // }
                 // update reserve mst_stock
-                $modelStock = Stock::where('material_id',$modelBOSDetail->material_id)->first();
-                $modelStock->reserved += $diff;
-                $modelStock->save();
+                // $modelStock = Stock::where('material_id',$modelBOSDetail->material_id)->first();
+                // $modelStock->reserved += $diff;
+                // $modelStock->save();
                 DB::commit();
                 return response(json_encode($modelBOSDetail),Response::HTTP_OK);
             }
@@ -424,45 +424,45 @@ class BOSController extends Controller
         }
     }
 
-    public function createRap($data,$bos){
-        $rap_number = self::generateRapNumber();
-        $rap = new Rap;
-        $rap->number = $rap_number;
-        $rap->project_id = $data->project_id;
-        $rap->bos_id = $bos->id;
-        $rap->user_id = Auth::user()->id;
-        $rap->branch_id = Auth::user()->branch->id;
-        if(!$rap->save()){
-            return redirect()->route('bos.create')->with('error', 'Failed Save RAP !');
-        }else{
-            self::saveRapDetail($rap->id,$bos->bosDetails);
-            $total_price = self::calculateTotalPrice($rap->id);
+    // public function createRap($data,$bos){
+    //     $rap_number = self::generateRapNumber();
+    //     $rap = new Rap;
+    //     $rap->number = $rap_number;
+    //     $rap->project_id = $data->project_id;
+    //     $rap->bos_id = $bos->id;
+    //     $rap->user_id = Auth::user()->id;
+    //     $rap->branch_id = Auth::user()->branch->id;
+    //     if(!$rap->save()){
+    //         return redirect()->route('bos.create')->with('error', 'Failed Save RAP !');
+    //     }else{
+    //         self::saveRapDetail($rap->id,$bos->bosDetails);
+    //         $total_price = self::calculateTotalPrice($rap->id);
 
-            $modelRap = Rap::findOrFail($rap->id);
-            $modelRap->total_price = $total_price;
-            $modelRap->save();
-        }
-    }
+    //         $modelRap = Rap::findOrFail($rap->id);
+    //         $modelRap->total_price = $total_price;
+    //         $modelRap->save();
+    //     }
+    // }
 
-    public function saveRapDetail($rap_id,$bosDetails){
-        foreach($bosDetails as $bosDetail){
-            $rap_detail = new RapDetail;
-            $rap_detail->rap_id = $rap_id;
-            $rap_detail->material_id = $bosDetail->material_id;
-            $rap_detail->quantity = $bosDetail->quantity;
-            $rap_detail->price = $bosDetail->quantity * $bosDetail->material->cost_standard_price;
-            $rap_detail->save();
-        }
-    }
+    // public function saveRapDetail($rap_id,$bosDetails){
+    //     foreach($bosDetails as $bosDetail){
+    //         $rap_detail = new RapDetail;
+    //         $rap_detail->rap_id = $rap_id;
+    //         $rap_detail->service_id = $bosDetail->service_id;
+    //         $rap_detail->quantity = $bosDetail->quantity;
+    //         $rap_detail->price = $bosDetail->quantity * $bosDetail->material->cost_standard_price;
+    //         $rap_detail->save();
+    //     }
+    // }
 
-    public function calculateTotalPrice($id){
-        $modelRap = Rap::findOrFail($id);
-        $total_price = 0;
-        foreach($modelRap->RapDetails as $RapDetail){
-            $total_price += $RapDetail->price;
-        }
-        return $total_price;
-    }
+    // public function calculateTotalPrice($id){
+    //     $modelRap = Rap::findOrFail($id);
+    //     $total_price = 0;
+    //     foreach($modelRap->RapDetails as $RapDetail){
+    //         $total_price += $RapDetail->price;
+    //     }
+    //     return $total_price;
+    // }
 
     public function getServiceAPI($id){
 
@@ -471,7 +471,7 @@ class BOSController extends Controller
 
     public function getBosAPI($id){
 
-        return response(BosDetail::where('bos_id',$id)->with('material')->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(BosDetail::where('bos_id',$id)->with('service')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getNewBosAPI($id){
@@ -481,7 +481,7 @@ class BOSController extends Controller
 
     public function getBosDetailAPI($id){
 
-        return response($modelBD = BosDetail::where('id',$id)->with('material')->first()->jsonSerialize(), Response::HTTP_OK);
+        return response($modelBD = BosDetail::where('id',$id)->with('service')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getServicesAPI($ids){

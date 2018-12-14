@@ -31,7 +31,7 @@ class CreateProProjectTable extends Migration
             $table->date('actual_end_date')->nullable();
             $table->string('actual_duration')->nullable();
             $table->float('progress');
-            $table->string('flag');
+            $table->string('flag')->nullable();
             $table->string('class_name')->nullable();
             $table->string('class_contact_person_name')->nullable();
             $table->string('class_contact_person_phone')->nullable();

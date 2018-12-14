@@ -15,6 +15,7 @@ use App\Models\Structure;
 use App\Models\Category;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
+use App\Models\BusinessUnit;
 use Illuminate\Support\Collection;
 use DB;
 use DateTime;
@@ -77,12 +78,13 @@ class ProjectController extends Controller
     //     return response($rows ,200);
     // }
 
-     public function index()
+    public function index(Request $request)
     {
 
-        $projects = Project::orderBy('planned_start_date', 'asc')->get();
+        $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 1)->get();
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
-        return view('project_management.index', compact('projects'));
+        return view('project.index', compact('projects','menu'));
 
         // $sos = SalesOrder::where('status', 1)->get();
         // $modelSO = array();
@@ -98,7 +100,32 @@ class ProjectController extends Controller
         //     $modelSO[] = $arr;
         // }
 
-        // return view('project_management.index', compact('modelSO'));
+        // return view('project.index', compact('modelSO'));
+    }
+
+    public function indexRepair(Request $request)
+    {
+
+        $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+
+        return view('project.index', compact('projects','menu'));
+
+        // $sos = SalesOrder::where('status', 1)->get();
+        // $modelSO = array();
+
+        // foreach($sos as $data){
+        //     $arr = array(
+        //         'number'    => $data->number,
+        //         'customer'  => $data->quotation->customer->name,
+        //         'product'   => $data->quotation->estimator->ship->name,
+        //         'created_at'=> $data->created_at,
+        //     );
+
+        //     $modelSO[] = $arr;
+        // }
+
+        // return view('project.index', compact('modelSO'));
     }
 
     /**
@@ -106,15 +133,26 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $customers = Customer::all();
         $ships = Ship::all();
         // $project_code = self::generateProjectCode();
         $project = new Project;
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
+        return view('project.create', compact('customers','ships','project','businessUnit','menu'));
+    }
 
-        return view('project_management.create', compact('customers','ships','project'));
+    public function createRepair(Request $request)
+    {
+        $customers = Customer::all();
+        $ships = Ship::all();
+        // $project_code = self::generateProjectCode();
+        $project = new Project;
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+
+        return view('project.create', compact('customers','ships','project','businessUnit','menu'));
     }
   
 
@@ -158,6 +196,7 @@ class ProjectController extends Controller
             $project->planned_end_date = $planEndDate->format('Y-m-d');
             $project->planned_duration =  $request->planned_duration;
             $project->progress = 0;
+            $project->business_unit_id = 1;
             $project->user_id = Auth::user()->id;
             $project->branch_id = Auth::user()->branch->id;
             $project->save();
@@ -171,14 +210,61 @@ class ProjectController extends Controller
         }
     }
 
+    public function storeRepair(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|unique:pro_project|string|max:255',
+            'customer' => 'required',
+            'ship' => 'required',
+            'planned_start_date' => 'required',
+            'planned_end_date' => 'required',
+            'planned_duration' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $project = new Project;
+            $project->number =  $request->number;
+            $project->name = $request->name;
+            $project->description = $request->description;
+            $project->customer_id = $request->customer;
+            $project->ship_id = $request->ship;
+            $project->flag = $request->flag;
+            $project->class_name = $request->class_name;
+            $project->class_contact_person_name = $request->class_contact_person_name;
+            $project->class_contact_person_phone = $request->class_contact_person_phone;
+            $project->class_contact_person_email = $request->class_contact_person_email;
+
+            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
+            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
+
+            $project->planned_start_date = $planStartDate->format('Y-m-d');
+            $project->planned_end_date = $planEndDate->format('Y-m-d');
+            $project->planned_duration =  $request->planned_duration;
+            $project->progress = 0;
+            $project->business_unit_id = 2;
+            $project->user_id = Auth::user()->id;
+            $project->branch_id = Auth::user()->branch->id;
+            $project->save();
+
+            
+            DB::commit();
+            return redirect()->route('project_repair.show', ['id' => $project->id])->with('success', 'Project Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project.create')->with('error', $e->getMessage());
+        }
+    }
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $project = Project::find($id);
         $wbss = $project->wbss;
         $today = date("Y-m-d");
@@ -201,7 +287,35 @@ class ProjectController extends Controller
         $data->jsonSerialize();
 
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project_management.show', compact('project','today','data','links','outstanding_item','modelPrO'));
+        return view('project.show', compact('project','today','data','links','outstanding_item','modelPrO','menu'));
+    }
+
+    public function showRepair(Request $request, $id)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        $project = Project::find($id);
+        $wbss = $project->wbss;
+        $today = date("Y-m-d");
+
+        $data = Collection::make();
+        $links = Collection::make();
+        $outstanding_item = Collection::make();
+
+        $outstanding_item->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        self::getOutstandingItem($wbss,$outstanding_item, $project,$today);
+        self::getDataForGantt($project, $wbss, $data, $links, $today);       
+
+        $links->jsonSerialize();
+        $data->jsonSerialize();
+
+        $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
+        return view('project.show', compact('project','today','data','links','outstanding_item','modelPrO','menu'));
     }
 
     public function showGanttChart($id)
@@ -217,7 +331,7 @@ class ProjectController extends Controller
         
         $links->jsonSerialize();
         $data->jsonSerialize();
-        return view('project_management.ganttChart', compact('project','data','links'));
+        return view('project.ganttChart', compact('project','data','links'));
     }
 
     /**
@@ -226,14 +340,26 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $project = Project::findOrFail($id);
         $customers = Customer::all();
         $ships = Ship::all();
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
-        return view('project_management.create', compact('project','customers','ships'));
+        return view('project.create', compact('project','customers','ships','menu'));
     }
+
+    public function editRepair(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $customers = Customer::all();
+        $ships = Ship::all();
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+
+        return view('project.create', compact('project','customers','ships','menu'));
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -260,7 +386,12 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
-
+            $project->flag = $request->flag;
+            $project->class_name = $request->class_name;
+            $project->class_contact_person_name = $request->class_contact_person_name;
+            $project->class_contact_person_phone = $request->class_contact_person_phone;
+            $project->class_contact_person_email = $request->class_contact_person_email;
+            
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
             $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
 
@@ -272,6 +403,47 @@ class ProjectController extends Controller
             
             DB::commit();
             return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Updated');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project.update', ['id' => $project->id])->with('error', $e->getMessage());
+        }
+    }
+
+    public function updateRepair(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required|unique:pro_project,id,'.$id.'|string|max:255',
+            'customer' => 'required',
+            'ship' => 'required',
+            'planned_start_date' => 'required',
+            'planned_end_date' => 'required',
+            'planned_duration' => 'required'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $project = Project::findOrFail($id);
+            $project->name = $request->name;
+            $project->description = $request->description;
+            $project->customer_id = $request->customer;
+            $project->ship_id = $request->ship;
+            $project->flag = $request->flag;
+            $project->class_name = $request->class_name;
+            $project->class_contact_person_name = $request->class_contact_person_name;
+            $project->class_contact_person_phone = $request->class_contact_person_phone;
+            $project->class_contact_person_email = $request->class_contact_person_email;
+
+            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
+            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
+
+            $project->planned_start_date = $planStartDate->format('Y-m-d');
+            $project->planned_end_date = $planEndDate->format('Y-m-d');
+            $project->planned_duration =  $request->planned_duration;
+            $project->save();
+
+            
+            DB::commit();
+            return redirect()->route('project_repair.show', ['id' => $project->id])->with('success', 'Project Updated');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('project.update', ['id' => $project->id])->with('error', $e->getMessage());
@@ -317,21 +489,21 @@ class ProjectController extends Controller
             ]);
         }
 
-        return view('project_management.showPCE', compact('modelWBS','project','actual','planned'));
+        return view('project.showPCE', compact('modelWBS','project','actual','planned'));
     }
 
     // Configuration WBS & Estimator
     public function selectProjectConfig(){
         $modelProject = Project::where('status',1)->get();
 
-        return view('project_management.selectProject', compact('modelProject'));
+        return view('project.selectProject', compact('modelProject'));
     }
 
     public function configWbsEstimator($id){
         $project = Project::findOrFail($id);
         $wbss = Work::where('project_id',$project->id)->whereNull('wbs_id')->get();
 
-        return view('project_management.configWbsEstimator', compact('project','wbss'));
+        return view('project.configWbsEstimator', compact('project','wbss'));
     }
     
     //Methods

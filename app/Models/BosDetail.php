@@ -13,9 +13,9 @@ class BosDetail extends Model
         return $this->belongsTo('App\Models\Bos');
     }
 
-    public function material()
+    public function service()
     {
-        return $this->belongsTo('App\Models\Material');
+        return $this->belongsTo('App\Models\Service');
     }
 
     public function user()

@@ -91,6 +91,5 @@ class ProjectsTableSeeder extends Seeder
             'user_id' => 5,
             'branch_id' => 1,
         ]);
-
     }
 }

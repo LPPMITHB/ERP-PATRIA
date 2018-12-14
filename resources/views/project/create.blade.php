@@ -34,10 +34,18 @@
         <div class="box box-solid p-t-20">
             <div class="box-body">
                 @if($project->id)
-                    <form class="form-horizontal" method="POST" action="{{ route('project.update',['id'=>$project->id]) }}">
+                    @if($menu == "building")
+                        <form class="form-horizontal" method="POST" action="{{ route('project.update',['id'=>$project->id]) }}">
+                    @else
+                        <form class="form-horizontal" method="POST" action="{{ route('project_repair.update',['id'=>$project->id]) }}">
+                    @endif
                     <input type="hidden" name="_method" value="PATCH">
                 @else
-                    <form id="create-project" class="form-horizontal" method="POST" action="{{ route('project.store') }}" enctype="multipart/form-data">
+                    @if($menu == "building")
+                        <form id="create-project" class="form-horizontal" method="POST" action="{{ route('project.store') }}" enctype="multipart/form-data">
+                    @else
+                        <form id="create-project" class="form-horizontal" method="POST" action="{{ route('project_repair.store') }}" enctype="multipart/form-data">
+                    @endif
                 @endif
                     @csrf
                     <div class="box-body">
@@ -74,7 +82,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div v-if="(menu=='building')" class="form-group">
                                 <label for="ship" class="col-sm-2 control-label">Flag</label>
                 
                                 <div class="col-sm-10">
@@ -82,7 +90,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div v-if="(menu=='building')" class="form-group">
                                 <label for="ship" class="col-sm-2 control-label">Classification Name</label>
                 
                                 <div class="col-sm-10">
@@ -90,7 +98,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div v-if="(menu=='building')" class="form-group">
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Name</label>
                 
                                 <div class="col-sm-10">
@@ -98,7 +106,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div v-if="(menu=='building')" class="form-group">
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone</label>
                 
                                 <div class="col-sm-10">
@@ -106,7 +114,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div v-if="(menu=='building')" class="form-group">
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person E-Mail</label>
                 
                                 <div class="col-sm-10">
@@ -232,6 +240,7 @@ $(document).ready(function(){
             description : @json($project->description == null ? "": $project->description),
         },
         customer: "",
+        menu : @json($menu),
     };
 
     var vm = new Vue({

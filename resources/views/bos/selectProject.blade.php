@@ -3,10 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Bill Of Material » Select Project',
+        'title' => 'View Bill Of Service » Select Project',
+        'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => '',
+            'Select Project' => route('bos.selectProject'),
         ]
     ]
 )
@@ -21,7 +22,7 @@
                 <h3 class="box-title">List of Projects</h3>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered" id="boms-table">
+                <table class="table table-bordered" id="boss-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -39,11 +40,7 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->name }}</td>
                                 <td align="center">
-                                    @if($menu == '/bom')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom.indexBom', ['id'=>$project->id,'menu'=>$menu]) }}">SELECT</a>
-                                    @elseif($menu == '/bom_repair')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.indexBom', ['id'=>$project->id,'menu'=>$menu]) }}">SELECT</a>
-                                    @endif
+                                    <a class="btn btn-primary btn-xs" href="{{ route('bos.indexBos', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -61,7 +58,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#boms-table').DataTable({
+        $('#boss-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : false,

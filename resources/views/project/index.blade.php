@@ -23,7 +23,11 @@
         <div class="box">
             <div class="box-header m-b-10">
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('project.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    @if($menu == "building")
+                        <a href="{{ route('project.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    @else
+                        <a href="{{ route('project_repair.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    @endif
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
@@ -49,8 +53,13 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>
                                 <td>{{ $project->progress}}</td>
-                                <td class="p-l-0 p-r-0" align="center"><a href="{{ route('project.show', ['id'=>$project->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                @if($menu == "building")
+                                    <td class="p-l-0 p-r-0" align="center"><a href="{{ route('project.show', ['id'=>$project->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                @else
+                                    <td class="p-l-0 p-r-0" align="center"><a href="{{ route('project_repair.show', ['id'=>$project->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    <a href="{{ route('project_repair.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                @endif
                                 </td>
                             </tr>
                         @endforeach
