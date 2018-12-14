@@ -34,7 +34,7 @@
                         <div class="col-xs-8 no-padding"><b>: {{$modelBOS->project->name}}</b></div>
 
                         <div class="col-xs-4 no-padding">Ship Name</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOS->project->ship->name}}</b></div>
+                        <div class="col-xs-8 no-padding"><b>: {{$modelBOS->project->ship->type}}</b></div>
 
                         <div class="col-xs-4 no-padding">Ship Type</div>
                         <div class="col-xs-8 no-padding"><b>: {{$modelBOS->project->ship->type}}</b></div>

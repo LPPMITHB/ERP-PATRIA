@@ -28,7 +28,7 @@
                         <tr>
                             <th style="width: 5%">No</th>
                             <th style="width: 35%">Type</th>
-                            <th style="width: 50%">description</th>
+                            <th style="width: 50%">Description</th>
                             {{-- <th style="width: 15%">Code</th> --}}
                             {{-- <th style="width: 35%">Name</th> --}}
                             <th style="width: 10%"></th>

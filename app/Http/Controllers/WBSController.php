@@ -17,10 +17,9 @@ class WBSController extends Controller
 {
     public function createWBS($id)
     {
-        $structures = Structure::where('is_substructure', 0)->select('name')->get()->jsonSerialize();
         $project = Project::find($id);
 
-        return view('wbs.createWBS', compact('project','structures'));
+        return view('wbs.createWBS', compact('project'));
     }
 
     public function store(Request $request)
@@ -35,7 +34,7 @@ class WBSController extends Controller
         DB::beginTransaction();
         try {
             $wbs = new WBS;
-            $wbs->code = self::generateWbsCode();
+            $wbs->code = self::generateWbsCode($data['project_id']);
             $wbs->name = $data['name'];
             $wbs->description = $data['description'];
             $wbs->deliverables = $data['deliverables'];
@@ -46,6 +45,7 @@ class WBSController extends Controller
             }
             $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data['planned_deadline']);
             $wbs->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $wbs->weight =  $data['weight'];
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
 
@@ -100,6 +100,7 @@ class WBSController extends Controller
 
             $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data['planned_deadline']);
             $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $wbs_ref->weight =  $data['weight'];
 
             if(!$wbs_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -130,16 +131,20 @@ class WBSController extends Controller
     }
     
     //Methods
-    public function generateWbsCode(){
-        $code = 'PRW';
-        $modelWbs = WBS::orderBy('code', 'desc')->first();
+    public function generateWbsCode($id){
+        $code = 'WBS';
+        $project = Project::find($id);
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+
+        $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
         
         $number = 1;
 		if(isset($modelWbs)){
             $number += intval(substr($modelWbs->code, -4));
 		}
 
-        $wbs_code = $code.''.sprintf('%04d', $number);
+        $wbs_code = $code.sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $wbs_code;
     }
 

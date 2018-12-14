@@ -55,7 +55,7 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $ship->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $ship->type }}">
                             </div>
                         </div> --}}
 

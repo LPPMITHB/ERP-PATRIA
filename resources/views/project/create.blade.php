@@ -2,30 +2,59 @@
 @section('content-header')
 
 @if($project->id)
-@breadcrumb(
-    [
-        'title' => 'Edit Project',
-        'items' => [
-            'Home' => route('index'),
-            'View all Projects' => route('project.index'),
-            $project->name => route('project.show',$project->id),
-            'Edit' => route('project.edit',$project->id),
-        ]
-    ]
-)
-@endbreadcrumb
+    @if($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Edit Project',
+                'items' => [
+                    'Home' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    $project->name => route('project.show',$project->id),
+                    'Edit' => route('project.edit',$project->id),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Edit Project',
+                'items' => [
+                    'Home' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    $project->name => route('project_repair.show',$project->id),
+                    'Edit' => route('project_repair.edit',$project->id),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @else
-@breadcrumb(
-    [
-        'title' => 'Create Project',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Project' => route('project.index'),
-            'Create' => route('project.create'),
-        ]
-    ]
-)
-@endbreadcrumb
+    @if($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Create Project',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Project' => route('project.index'),
+                    'Create' => route('project.create'),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Create Project',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Project' => route('project_repair.index'),
+                    'Create' => route('project_repair.create'),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endif
 @endsection
 @section('content')
@@ -123,7 +152,7 @@
                             </div>
 
                             <div class="form-group">
-                                    <label for="ship" class="col-sm-2 control-label">Ship Name</label>
+                                    <label for="ship" class="col-sm-2 control-label">Ship Type</label>
                     
                                     <div class="col-sm-10">
                                         <selectize name="ship" id="ship" required>

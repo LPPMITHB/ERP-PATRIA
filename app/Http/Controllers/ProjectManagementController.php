@@ -62,7 +62,7 @@ class ProjectManagementController extends Controller
     //         $arr = array(
     //             'number'    => $data->number,
     //             'customer'  => $data->quotation->customer->name,
-    //             'product'   => $data->quotation->estimator->ship->name,
+    //             'product'   => $data->quotation->estimator->ship->type,
     //             'created_at'=> substr($data->created_at, 0, 10),
     //         );
 
@@ -91,7 +91,7 @@ class ProjectManagementController extends Controller
         //     $arr = array(
         //         'number'    => $data->number,
         //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->name,
+        //         'product'   => $data->quotation->estimator->ship->type,
         //         'created_at'=> $data->created_at,
         //     );
 

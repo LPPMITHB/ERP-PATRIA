@@ -54,8 +54,8 @@ class ShipController extends Controller
         DB::beginTransaction();
         try {
             $ship = new Ship;
-            // $ship->code = strtoupper($request->input('code'));
-            // $ship->name = ucwords($request->input('name'));
+            $ship->code = strtoupper($request->input('code'));
+            $ship->type = ucwords($request->input('name'));
             $ship->type = ucwords(strtolower($request->input('type')));
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');
@@ -115,8 +115,8 @@ class ShipController extends Controller
         DB::beginTransaction();
         try {
             $ship = Ship::find($id);
-            // $ship->code = strtoupper($request->input('code'));
-            // $ship->name = ucwords($request->input('name'));
+            $ship->code = strtoupper($request->input('code'));
+            $ship->type = ucwords($request->input('name'));
             $ship->type = ucwords(strtolower($request->input('type')));
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');        
