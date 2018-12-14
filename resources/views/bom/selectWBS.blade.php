@@ -26,7 +26,7 @@
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Ship</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Customer</div>
                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>

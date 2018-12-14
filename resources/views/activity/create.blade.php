@@ -33,7 +33,7 @@
                             <tr>
                                 <td>Ship</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
+                                <td>&ensp;<b>{{$project->ship->type}}</b></td>
                             </tr>
                             <tr>
                                 <td>Customer</td>
@@ -694,7 +694,6 @@ var vm = new Vue({
         'newActivity.weight': function(newValue){
             this.newActivity.weight = (this.newActivity.weight+"").replace(/\D/g, "");  
             if(newValue>this.maxWeight){
-               this.newActivity.weight = this.maxWeight; 
                iziToast.show({
                     timeout: 6000,
                     color : 'red',
@@ -721,8 +720,17 @@ var vm = new Vue({
         },
         'editActivity.weight': function(newValue){
             this.editActivity.weight = (this.editActivity.weight+"").replace(/\D/g, "");  
-            if(newValue>100){
-               this.editActivity.weight = 100; 
+            if(newValue>this.maxWeight){
+                iziToast.show({
+                    timeout: 6000,
+                    color : 'red',
+                    displayMode: 'replace',
+                    icon: 'fa fa-warning',
+                    title: 'Warning !',
+                    message: 'Total weight cannot be more than 100%',
+                    position: 'topRight',
+                    progressBarColor: 'rgb(0, 255, 184)',
+                });
             }
         },
         activities: function(newValue){

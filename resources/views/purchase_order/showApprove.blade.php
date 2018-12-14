@@ -51,7 +51,7 @@
                             Ship Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->project->ship->name }} </b>
+                            : <b> {{ $modelPO->project->ship->type }} </b>
                         </div>
                     </div>
                     <div class="row">

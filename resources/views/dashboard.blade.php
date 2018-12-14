@@ -44,7 +44,7 @@
                                                       <h4>Ship</h4>
                                                   </div>
                                                   <div class="col-md-4 col-xs-7 col-sm-8">
-                                                      <h4> : {{$project->ship->name}}</h4>                
+                                                      <h4> : {{$project->ship->type}}</h4>                
                                                   </div>
                                                   <div class="col-md-2 col-xs-5 col-sm-4">
                                                       <h4>Days Left </h4>

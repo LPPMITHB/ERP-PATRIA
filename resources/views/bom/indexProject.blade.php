@@ -35,7 +35,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td class="tdEllipsis">{{ $project->name }}</td>
                                 <td class="tdEllipsis">{{ $project->customer->name }}</td>
-                                <td class="tdEllipsis">{{ $project->ship->name }}</td>
+                                <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
                                     @if($menu == '/bom')

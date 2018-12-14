@@ -34,7 +34,7 @@ class WBSController extends Controller
         DB::beginTransaction();
         try {
             $wbs = new WBS;
-            $wbs->code = self::generateWbsCode();
+            $wbs->code = self::generateWbsCode($data['project_id']);
             $wbs->name = $data['name'];
             $wbs->description = $data['description'];
             $wbs->deliverables = $data['deliverables'];
@@ -45,6 +45,7 @@ class WBSController extends Controller
             }
             $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data['planned_deadline']);
             $wbs->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $wbs->weight =  $data['weight'];
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
 
@@ -129,18 +130,20 @@ class WBSController extends Controller
     }
     
     //Methods
-    public function generateWbsCode(){
+    public function generateWbsCode($id){
         $code = 'WBS';
-        dd(date('Y'));
-        $projectSequence = Project::orderBy('created_at','desc')->whereYear('created_at', '=', date('Y'))->first();
-        $modelWbs = WBS::orderBy('code', 'desc')->first();
+        $project = Project::find($id);
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+
+        $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
         
         $number = 1;
 		if(isset($modelWbs)){
             $number += intval(substr($modelWbs->code, -4));
 		}
 
-        $wbs_code = $code.''.sprintf('%04d', $number);
+        $wbs_code = $code.sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $wbs_code;
     }
 
