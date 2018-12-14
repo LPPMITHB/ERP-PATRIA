@@ -34,18 +34,20 @@ class BOMController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexProject()
+    public function indexProject(Request $request)
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        $menu = $request->route()->getPrefix();
 
-        return view('bom.indexProject', compact('projects'));
+        return view('bom.indexProject', compact('projects','menu'));
     }
 
-    public function selectProject()
+    public function selectProject(Request $request)
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        $menu = $request->route()->getPrefix();
 
-        return view('bom.selectProject', compact('projects'));
+        return view('bom.selectProject', compact('projects','menu'));
     }
 
     public function selectWBS($id)
@@ -304,39 +306,39 @@ class BOMController extends Controller
      * @param  \App\BOM  $bOM
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
-    {
-        $data = $request->json()->all();
+    // public function update(Request $request)
+    // {
+    //     $data = $request->json()->all();
 
-        DB::beginTransaction();
-        try {
-            $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
-            $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
-            $modelBOMDetail->quantity = $data['quantityInt'];
+    //     DB::beginTransaction();
+    //     try {
+    //         $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
+    //         $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
+    //         $modelBOMDetail->quantity = $data['quantityInt'];
 
-            if(!$modelBOMDetail->update()){
-                return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
-            }else{
-                // update RAP
-                $modelRAP = Rap::where('bom_id',$modelBOMDetail->bom_id)->first();
-                foreach($modelRAP->rapDetails as $rapDetail){
-                    if($rapDetail->material_id == $modelBOMDetail->material_id){
-                        $rapDetail->quantity = $data['quantityInt'];
-                        $rapDetail->update();
-                    }
-                }
-                // update reserve mst_stock
-                $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
-                $modelStock->reserved += $diff;
-                $modelStock->update();
-                DB::commit();
-                return response(json_encode($modelBOMDetail),Response::HTTP_OK);
-            }
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error', $e->getMessage());
-        }
-    }
+    //         if(!$modelBOMDetail->update()){
+    //             return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
+    //         }else{
+    //             // update RAP
+    //             $modelRAP = Rap::where('bom_id',$modelBOMDetail->bom_id)->first();
+    //             foreach($modelRAP->rapDetails as $rapDetail){
+    //                 if($rapDetail->material_id == $modelBOMDetail->material_id){
+    //                     $rapDetail->quantity = $data['quantityInt'];
+    //                     $rapDetail->update();
+    //                 }
+    //             }
+    //             // update reserve mst_stock
+    //             $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
+    //             $modelStock->reserved += $diff;
+    //             $modelStock->update();
+    //             DB::commit();
+    //             return response(json_encode($modelBOMDetail),Response::HTTP_OK);
+    //         }
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error', $e->getMessage());
+    //     }
+    // }
 
     public function updateDesc(Request $request)
     {
@@ -381,6 +383,10 @@ class BOMController extends Controller
         }  
     }
 
+
+
+
+    // General Function
     private function generateBomCode(){
         $modelBOM = Bom::orderBy('code','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
@@ -560,5 +566,25 @@ class BOMController extends Controller
         $ids = json_decode($ids);
 
         return response(Material::orderBy('name')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+
+
+
+    // Untuk Module Ship Repair
+    public function indexProjectRepair(Request $request)
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = $request->route()->getPrefix();
+        
+        return view('bom.indexProject', compact('projects','menu'));
+    }
+
+    public function selectProjectRepair()
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = $request->route()->getPrefix();
+
+        return view('bom.selectProject', compact('projects','menu'));
     }
 }

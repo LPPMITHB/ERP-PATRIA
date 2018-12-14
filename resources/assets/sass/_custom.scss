@@ -565,6 +565,10 @@ textarea {
   padding-left: 0px;
 }
 
+.no-padding {
+  padding: 0px;
+}
+
 .dataTables_scroll {
   overflow: auto;
 }
@@ -670,4 +674,8 @@ textarea {
     -moz-background-clip: content-box;
     -webkit-background-clip: content-box;
     background-clip: content-box;
+}
+
+.tablePaging{
+    width: 100% !important;
 }

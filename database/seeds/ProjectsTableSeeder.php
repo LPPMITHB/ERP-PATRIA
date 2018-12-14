@@ -14,6 +14,7 @@ class ProjectsTableSeeder extends Seeder
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-01',
+            'business_unit_id' => 1,
             'name' => 'Tug Boat Project',
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,
@@ -29,31 +30,31 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
-            'business_unit_id' => 1,
         ]);
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-02',
-            'name' => 'Self Propelled Barge Project',
-            'description' => 'kedua kali',
+            'business_unit_id' => 1,
+            'name' => 'OIL BARGE 1100KL PROJECT',
+            'description' => 'Real Case',
             // 'sales_order_id' => 1,
             'ship_id' => 2,
             'customer_id' => 2,
-            'planned_start_date' => '2018-8-31',
-            'planned_end_date' => '2019-7-30',
+            'planned_start_date' => '2018-12-29',
+            'planned_end_date' => '2019-5-28',
             'progress' => 0,
-            'planned_duration' => '334',
-            'actual_start_date' => '2018-8-31',
-            'actual_end_date' => '2019-7-30',
-            'actual_duration' => '334',
+            'planned_duration' => '151',
+            'actual_start_date' => '2018-12-29',
+            'actual_end_date' => '2019-5-28',
+            'actual_duration' => '151',
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
-            'business_unit_id' => 1,
         ]);
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-03',
+            'business_unit_id' => 2,
             'name' => 'Offshore Supply Vessel Project',
             'description' => 'ketiga kali',
             // 'sales_order_id' => 1,
@@ -69,11 +70,11 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
-            'business_unit_id' => 2,
         ]);
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-04',
+            'business_unit_id' => 3,
             'name' => 'Deck Cargo Barge Project',
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,
@@ -89,8 +90,6 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
-            'business_unit_id' => 3,
         ]);
-
     }
 }

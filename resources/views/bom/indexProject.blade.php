@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tablePaging">
+                <table class="table table-bordered tablePaging tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -33,12 +33,16 @@
                         @foreach($projects as $project)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $project->name }}</td>
-                                <td>{{ $project->customer->name }}</td>
-                                <td>{{ $project->ship->name }}</td>
-                                <td>{{ $project->ship->type }}</td>
+                                <td class="tdEllipsis">{{ $project->name }}</td>
+                                <td class="tdEllipsis">{{ $project->customer->name }}</td>
+                                <td class="tdEllipsis">{{ $project->ship->name }}</td>
+                                <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('bom.selectWBS', ['id'=>$project->id]) }}">CREATE</a>
+                                    @if($menu == '/bom')
+                                        <a class="btn btn-primary btn-xs" href="{{ route('bom.selectWBS', ['id'=>$project->id]) }}">CREATE</a>
+                                    @elseif($menu == '/bom_repair')
+                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.selectWBS', ['id'=>$project->id]) }}">CREATE</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

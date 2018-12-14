@@ -69,7 +69,7 @@
                     <div class="col-md-5 col-xs-4 no-padding">Description</div>
                     <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOS->description}}"><b>: {{$modelBOS->description}}</b></div>
 
-                    <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
+                    {{-- <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
                     <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$rap_number}}"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$rap_number}}</b></a></div>
 
                     @if(isset($modelPR))
@@ -78,34 +78,34 @@
                     @else
                         <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
-                    @endif
+                    @endif --}}
                 </div>
                 
                 <div class="col-md-1 col-xs-12">
-                    @can('edit-bom')
-                        <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bom.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
+                    @can('edit-bos')
+                        <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bos.edit',['id'=>$modelBOS->id]) }}">EDIT</a>
                     @endcan
                 </div>
             </div>
             @verbatim
-            <div class="box-body" id="show-bom">
-                <table id="materials-table" class="table table-bordered">
+            <div class="box-body" id="show-bos">
+                <table id="services-table" class="table table-bordered">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
+                            <th width="35%">Service Name</th>
                             <th width="45%">Description</th>
-                            <th width="15%">Quantity</th>
+                            <th width="15%">Cost Standard Price</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(bomDetail,index) in bomDetail">
+                        <tr v-for="(bosDetail,index) in bosDetail">
                             <td class="p-t-15 p-b-15">{{ index+1 }}</td>
-                            <td>{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
-                            <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
-                            <td v-else-if="bomDetail.material.description != ''">-</td>
+                            <td>{{ bosDetail.service.code }} - {{ bosDetail.service.name }}</td>
+                            <td v-if="bosDetail.service.description != null">{{ bosDetail.service.description }}</td>
+                            <td v-else-if="bosDetail.service.description != ''">-</td>
                             <td v-else>-</td>
-                            <td>{{ bomDetail.quantity }}</td>
+                            <td>{{ bosDetail.cost_standard_price }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -122,7 +122,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#materials-table').DataTable({
+        $('#services-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : true,
@@ -136,17 +136,17 @@
     });
 
     var data = {
-        bom : @json($modelBOM),
-        bomDetail : @json($modelBOMDetail),
+        bos : @json($modelBOS),
+        bosDetail : @json($modelBOSDetail),
     }
 
     var vm = new Vue({
-        el : '#show-bom',
+        el : '#show-bos',
         data : data,
         created: function() {
-            var data = this.bomDetail;
-            data.forEach(bomDetail => {
-                bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+            var data = this.bosDetail;
+            data.forEach(bosDetail => {
+                bosDetail.cost_standard_price = (bosDetail.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             });
         }
     });

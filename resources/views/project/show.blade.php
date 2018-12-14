@@ -102,7 +102,7 @@
                         </div>
 
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Actual Duration</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->actual_duration}}</b></div>                        
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->actual_duration != null ? $project->actual_duration : '-' }}</b></div>                        
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-4 col-md-12">    
@@ -110,26 +110,32 @@
                         <div class="col-md-4 col-xs-6 no-padding">Owner CP</div>
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->contact_person_name}} - {{$project->customer->contact_person_phone}}"><b>: {{$project->customer->contact_person_name}} - {{$project->customer->contact_person_phone}}</b></div>
                         
-                        <div class="col-md-4 col-xs-6 no-padding">Flag</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->flag}}</b></div>
+                        @if($menu == "building")
+                            <div class="col-md-4 col-xs-6 no-padding">Flag</div>
+                            <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->flag}}</b></div>
 
-                        <div class="col-md-4 col-xs-6 no-padding">Class Name</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_name}}</b></div>
+                            <div class="col-md-4 col-xs-6 no-padding">Class Name</div>
+                            <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_name}}</b></div>
 
-                        <div class="col-md-4 col-xs-6 no-padding">Class CP Name</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_name}}</b></div>
-                        
-                        <div class="col-md-4 col-xs-6 no-padding">Class CP Phone</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_phone}}</b></div>
-                        
-                        <div class="col-md-4 col-xs-6 no-padding">Class CP Email</div>
-                        <div class="col-md-8 col-xs-6 no-padding"></b>: {{$project->class_contact_person_email}}</b></div>
+                            <div class="col-md-4 col-xs-6 no-padding">Class CP Name</div>
+                            <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_name}}</b></div>
+                            
+                            <div class="col-md-4 col-xs-6 no-padding">Class CP Phone</div>
+                            <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_phone}}</b></div>
+                            
+                            <div class="col-md-4 col-xs-6 no-padding">Class CP Email</div>
+                            <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_email}}</b></div>
+                        @endif
                     </div>
                 </div>
 
                 <div class="col-lg-1 col-md-12 col-xs-12">
                     @can('edit-project')
-                        <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-sm col-xs-12">EDIT</a>
+                        @if($menu == "building")
+                            <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-sm col-xs-12">EDIT</a>
+                        @else
+                            <a href="{{ route('project_repair.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-sm col-xs-12">EDIT</a>
+                        @endif
                     @endcan
                 </div>
             </div>

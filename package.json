@@ -16,19 +16,20 @@
         "jquery": "^3.2",
         "laravel-mix": "^2.1.14",
         "lodash": "^4.17.11",
-        "popper.js": "^1.14.4",
-        "vue": "^2.5.17"
+        "popper.js": "^1.14.6",
+        "vue": "^2.5.21",
+        "vue-template-compiler": "^2.5.21"
     },
     "dependencies": {
         "admin-lte": "^2.4.8",
-        "ajv": "^6.5.4",
-        "bootstrap-multiselect": "^0.9.13-1",
+        "ajv": "^6.6.1",
+        "bootstrap-multiselect": "^0.9.13",
         "chart.js": "^2.7.3",
         "dhtmlx-gantt": "^5.2.0",
         "fullcalendar": "^3.9.0",
         "imagemin": "^6.0.0",
         "izitoast": "^1.4.0",
-        "jstree": "^3.3.6",
+        "jstree": "^3.3.7",
         "selectize": "^0.12.6"
     }
 }

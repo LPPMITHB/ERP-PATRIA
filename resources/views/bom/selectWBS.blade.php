@@ -67,9 +67,8 @@
 <script>
 
     $(document).ready(function(){
-        $('div.overlay').hide();
         var data = @json($data);
-        console.log(data);
+
         $('#treeview').jstree({
             "core": {
                 "data": data,
@@ -91,6 +90,8 @@
             // you get two params - event & data - check the core docs for a detailed description
             $(this).jstree("open_all");
         });
+
+        $('div.overlay').hide();
     });
         
 

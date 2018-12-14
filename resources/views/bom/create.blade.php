@@ -200,8 +200,6 @@
 
     $(document).ready(function(){
         $('div.overlay').hide();
-        $('.alert').addClass('animated bounce');
-        
     });
 
     var data = {

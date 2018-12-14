@@ -23305,6 +23305,10 @@ textarea {
   padding-left: 0px;
 }
 
+.no-padding {
+  padding: 0px;
+}
+
 .dataTables_scroll {
   overflow: auto;
 }
@@ -23422,6 +23426,10 @@ textarea {
   border: 3px solid transparent;
   border-radius: 9px;
   background-clip: content-box;
+}
+
+.tablePaging {
+  width: 100% !important;
 }
 
 /*

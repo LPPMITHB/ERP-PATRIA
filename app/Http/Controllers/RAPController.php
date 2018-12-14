@@ -30,18 +30,18 @@ class RAPController extends Controller
     }
 
     // create RAP
-    public function selectProject()
-    {
-        $projects = Project::where('status',1)->get();
-        $menu = "create_rap";
+    // public function selectProject()
+    // {
+    //     $projects = Project::where('status',1)->get();
+    //     $menu = "create_rap";
 
-        return view('rap.selectProject', compact('projects','menu'));
-    }
+    //     return view('rap.selectProject', compact('projects','menu'));
+    // }
 
     // view RAP
     public function indexSelectProject()
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_rap";
 
         return view('rap.selectProject', compact('projects','menu'));
@@ -50,7 +50,7 @@ class RAPController extends Controller
     // create cost
     public function selectProjectCost()
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "create_cost";
 
         return view('rap.selectProject', compact('projects','menu'));
@@ -59,7 +59,7 @@ class RAPController extends Controller
     // assign cost
     public function selectProjectAssignCost()
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "assign_cost";
 
         return view('rap.selectProject', compact('projects','menu'));
@@ -68,7 +68,7 @@ class RAPController extends Controller
     // view planned cost
     public function selectProjectViewCost()
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_planned_cost";
 
         return view('rap.selectProject', compact('projects','menu'));
@@ -77,7 +77,7 @@ class RAPController extends Controller
     // view planned cost
     public function selectProjectViewRM()
     {
-        $projects = Project::where('status',1)->get();
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_rm";
 
         return view('rap.selectProject', compact('projects','menu'));
@@ -125,22 +125,24 @@ class RAPController extends Controller
         $wbs = WBS::findOrFail($id);
         $project = $wbs->project;
         $materialEvaluation = Collection::make();
+        $modelBom = Bom::where('wbs_id',$id)->first();
 
-        foreach($wbs->bom->bomDetails as $bomDetail){
-            $wbs_id = $bomDetail->bom->wbs->id;
-            foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                if ($mrd->wbs_id == $wbs_id) {
-                    $materialEvaluation->push([
-                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                        "quantity" => $bomDetail->quantity,
-                        "used" => $mrd->issued,
-                    ]);
-                }
-            }
+        foreach($modelBom->bomDetails as $bomDetail){
+            $materialEvaluation->push([
+                "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                "quantity" => $bomDetail->quantity,
+                "used" => 0,
+            ]);
+            // foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+            //     if ($mrd->wbs_id == $id) {
+            //         $materialEvaluation->push([
+            //             "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+            //             "quantity" => $bomDetail->quantity,
+            //             "used" => $mrd->issued,
+            //         ]);
+            //     }
+            // }
         }
-
-
-
         return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation'));
     } 
     
@@ -238,16 +240,14 @@ class RAPController extends Controller
 
         foreach($raps as $rap){
             $wbss = [];
-            foreach($rap->RapDetails as $RD){
-                array_push($wbss,$RD->bom->wbs_id);
-            }
+            array_push($wbss,$rap->bom->wbs_id);
             $wbss = array_unique($wbss);
             foreach($wbss as $wbs){
                 $RapCost = 0;
-                foreach($rap->RapDetails as $RD){
-                    if($RD->bom->wbs_id == $wbs){
+                if($rap->bom->wbs_id == $wbs){
+                    $wbs_code = $rap->bom->wbs->code;
+                    foreach($rap->RapDetails as $RD){
                         $RapCost += $RD->price;
-                        $wbs_code = $RD->bom->wbs->code;
                     }
                 }
                 $data->push([
@@ -283,8 +283,8 @@ class RAPController extends Controller
         if(count($wbs->wbss)>0){
             $RapCost = 0;
             foreach($raps as $rap){
-                foreach($rap->RapDetails as $RD){
-                    if($RD->bom->wbs_id == $wbs->id){
+                if($rap->bom->wbs_id == $wbs->id){
+                    foreach($rap->rapDetails as $RD){
                         $RapCost += $RD->price;
                     }
                 }
@@ -303,8 +303,8 @@ class RAPController extends Controller
         }else{
             $RapCost = 0;
             foreach($raps as $rap){
-                foreach($rap->RapDetails as $RD){
-                    if($RD->bom->wbs_id == $wbs->id){
+                if($rap->bom->wbs_id == $wbs->id){
+                    foreach($rap->rapDetails as $RD){
                         $RapCost += $RD->price;
                     }
                 }

@@ -23,7 +23,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered table-hover" id="sloc-table">
+                <table class="table table-bordered tablePaging tableFixed" id="sloc-table">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
@@ -69,17 +69,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#sloc-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

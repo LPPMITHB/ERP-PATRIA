@@ -178,13 +178,13 @@
             name : "",
             description : "",
             cost_standard_price : "",
-            weight : "",
-            height :"",
-            lengths :"",
-            width :"",
-            volume :"",
-            status : "",
-            type : "",
+            weight : 0,
+            height :0,
+            lengths :0,
+            width :0,
+            volume :0,
+            status : 1,
+            type : 1,
         }
     }
 
