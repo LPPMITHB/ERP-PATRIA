@@ -214,7 +214,7 @@ class ResourceController extends Controller
             $resource->status = $datas->dataInput->status;
             $resource->user_id = Auth::user()->id;
             $resource->branch_id = Auth::user()->branch->id;
-            $resource->save();
+            $resource->update();
 
             DB::commit();
             return redirect()->route('resource.show',$resource->id)->with('success', 'Resource Updated Succesfully');

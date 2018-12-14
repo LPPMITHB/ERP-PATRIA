@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Unit Of Measurement',
+        'title' => 'View Service',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Unit Of Measurement' => route('unit_of_measurement.index'),
-            $uom->name => route('unit_of_measurement.show',$uom->id),
+            'View All Services' => route('service.index'),
+            $service->name => route('service.show',$service->id),
         ]
     ]
 )
@@ -23,8 +23,8 @@
                 <div class="box-title"></div>
                 <div class="box-tools pull-right p-t-5">
 
-                    @can('edit-unit-of-measurement')
-                        <a href="{{ route('unit_of_measurement.edit',['id'=>$uom->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    @can('edit-service')
+                        <a href="{{ route('service.edit',['id'=>$service->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                     @endcan
 
                 </div>
@@ -34,33 +34,38 @@
                     <thead>
                         <tr>
                             <th style="width: 5%">#</th>
-                            <th style="width: 35%">Attribute</th>
-                            <th style="width: 60%">Value</th>
+                            <th style="width: 40%">Attribute</th>
+                            <th style="width: 55%">Value</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
                             <td>Code</td>
-                            <td>{{ $uom->code }}</td>
+                            <td>{{ $service->code }}</td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td>Name</td>
-                            <td>{{ $uom->name }}</td>
+                            <td>{{ $service->name }}</td>
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td>Unit</td>
-                            <td>{{ $uom->unit }}</td>
+                            <td>Description</td>
+                            <td class="tdEllipsis" data-toggle="tooltip" title="{{ $service->description }}">{{ $service->description }}</td>
                         </tr>
                         <tr>
                             <td>4</td>
+                            <td>Cost Standard Price</td>
+                            <td>{{ $service->cost_standard_price }}</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
                             <td>Status</td>
                             <td class="iconTd">
-                                @if ($uom->status == 1)
+                                @if ($service->status == 1)
                                         <i class="fa fa-check"></i>
-                                @elseif ($uom->status == 0)
+                                @elseif ($service->status == 0)
                                     <i class="fa fa-times"></i>
                                 @endif
                             </td>

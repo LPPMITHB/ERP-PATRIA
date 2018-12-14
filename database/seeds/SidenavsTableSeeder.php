@@ -116,6 +116,37 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project.configWbsEstimator',
         ]);
 
+        $manageBos = Menu::where('route_name','bos.indexProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBos,
+            'route_name' => 'bos.indexProject',
+        ]);
+
+         DB::table('sidenav')->insert([
+            'menu_id' => $manageBos,
+            'route_name' => 'bos.selectWBS',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBos,
+            'route_name' => 'bos.indexBos',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBos,
+            'route_name' => 'bos.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBos,
+            'route_name' => 'bos.create',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBos,
+            'route_name' => 'bos.edit',
+        ]);
+
         $manageBom = Menu::where('route_name','bom.indexProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
@@ -696,6 +727,22 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $manageResource,
             'route_name' => 'resource.edit',
+        ]);
+
+        $manageService = Menu::where('route_name','service.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageService,
+            'route_name' => 'service.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageService,
+            'route_name' => 'service.create',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageService,
+            'route_name' => 'service.edit',
         ]);
 
         $assignResource = Menu::where('route_name','resource.assignResource')->select('id')->first()->id;

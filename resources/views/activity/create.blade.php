@@ -120,10 +120,11 @@
                             <tr>
                                 <th style="width: 4%">No</th>
                                 <th style="width: 14%">Name</th>
-                                <th style="width: 18%">Description</th>
+                                <th style="width: 16%">Description</th>
                                 <th style="width: 10%">Start Date</th>
                                 <th style="width: 10%">End Date</th>
-                                <th style="width: 12%">Duration (Days)</th>
+                                <th >Duration</th>
+                                <th >Weight</th>
                                 <th style="width: 19%">Predecessor</th> 
                                 <th style="width: 10%"></th>
                             </tr>
@@ -135,7 +136,8 @@
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
-                                <td>{{ data.planned_duration }}</td>
+                                <td>{{ data.planned_duration }} Day(s)</td>
+                                <td>{{ data.weight }} %</td>
                                 <template v-if="data.predecessor != null">
                                     <td class="p-l-5">
                                         <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#predecessor_activity"  @click="openModalPredecessor(data)">VIEW PREDECESSOR ACTIVITIES</button>
@@ -159,13 +161,16 @@
                                     <textarea v-model="newActivity.description" class="form-control width100" rows="3" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newActivity.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                    <input autocomplete="off" v-model="newActivity.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newActivity.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
+                                    <input autocomplete="off" v-model="newActivity.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
                                 </td>
                                 <td class="p-l-0">
                                     <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
+                                </td>
+                                <td class="p-l-0">
+                                    <input v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
                                 </td>
                                 <td class="p-l-0 textCenter">
                                     <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#add_dependant_activity">MANAGE DEPENDANT ACTIVITIES</button>
@@ -275,17 +280,17 @@
                                     <h4 class="modal-title">Edit Activity <b id="edit_activity_code"></b></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="p-l-0 form-group">
+                                    <div class="p-l-0 form-group col-sm-12">
                                         <label for="name" class="control-label">Name</label>
                                         <textarea id="name" v-model="editActivity.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>                                                
                                     </div>
 
-                                    <div class="p-l-0 form-group">
+                                    <div class="p-l-0 form-group col-sm-12">
                                         <label for="description" class=" control-label">Description</label>
                                         <textarea id="description" v-model="editActivity.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
                                     </div>
 
-                                    <div class="p-l-0 form-group col-sm-4">
+                                    <div class="p-l-0 form-group col-sm-3">
                                         <label for="edit_planned_start_date" class=" control-label">Start Date</label>
                                         <div class="input-group date">
                                             <div class="input-group-addon">
@@ -295,7 +300,7 @@
                                         </div>
                                     </div>
                                             
-                                    <div class="p-l-0 form-group col-sm-4">
+                                    <div class="p-l-0 form-group col-sm-3">
                                         <label for="edit_planned_end_date" class=" control-label">End Date</label>
                                         <div class="input-group date">
                                             <div class="input-group-addon">
@@ -305,11 +310,16 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="p-l-0 form-group col-sm-4">
+                                    <div class="p-l-0 form-group col-sm-3">
                                         <label for="duration" class=" control-label">Duration</label>
                                         <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
                                     </div>
                                         
+                                    <div class="p-l-0 form-group col-sm-3">
+                                        <label for="weight" class=" control-label">Weight</label>
+                                        <input v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
+                                    </div>
+
                                     <div class="p-l-0 form-group col-sm-10">
                                         <label for="predecessor" class="control-label">Predecessor</label>
                                         <selectize id="predecessor" v-model="editActivity.predecessor" :settings="indexActivitiesSettings">
@@ -376,6 +386,7 @@ var data = {
     newIndex : "",
     allActivities : [],
     allActivitiesEdit : [],
+    maxWeight : 0,
     newActivity : {
         name : "",
         description : "",
@@ -384,6 +395,7 @@ var data = {
         planned_duration : "",
         wbs_id : @json($wbs->id), 
         predecessor : [],
+        weight : "",
     },
     editActivity : {
         activity_id : "",
@@ -393,6 +405,7 @@ var data = {
         planned_end_date : "",
         planned_duration : "",
         predecessor : [],
+        weight : "",
     },
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
@@ -516,6 +529,7 @@ var vm = new Vue({
             this.editActivity.activity_id = data.id;
             this.editActivity.name = data.name;
             this.editActivity.description = data.description;
+            this.editActivity.weight = data.weight;
             $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date));
             $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date));
             var predecessorObj = JSON.parse(data.predecessor);
@@ -601,6 +615,7 @@ var vm = new Vue({
                 this.newActivity.planned_start_date = "";
                 this.newActivity.planned_end_date = "";
                 this.newActivity.planned_duration = "";
+                this.newActivity.weight = "";
                 this.newActivity.predecessor = [];
             })
             .catch((error) => {
@@ -675,6 +690,22 @@ var vm = new Vue({
                 });
             }
         },
+        'newActivity.weight': function(newValue){
+            this.newActivity.weight = (this.newActivity.weight+"").replace(/\D/g, "");  
+            if(newValue>this.maxWeight){
+               this.newActivity.weight = this.maxWeight; 
+               iziToast.show({
+                    timeout: 6000,
+                    color : 'red',
+                    displayMode: 'replace',
+                    icon: 'fa fa-warning',
+                    title: 'Warning !',
+                    message: 'Total weight cannot be more than 100%',
+                    position: 'topRight',
+                    progressBarColor: 'rgb(0, 255, 184)',
+                });
+            }
+        },
         'editActivity.predecessor': function(newValue){
             this.predecessorTableEdit = [];
             if(newValue != null){
@@ -687,7 +718,19 @@ var vm = new Vue({
                 });
             }
         },
-        
+        'editActivity.weight': function(newValue){
+            this.editActivity.weight = (this.editActivity.weight+"").replace(/\D/g, "");  
+            if(newValue>100){
+               this.editActivity.weight = 100; 
+            }
+        },
+        activities: function(newValue){
+            var weightTotal = 0;
+            this.activities.forEach(activity => {
+                weightTotal += activity.weight; 
+            });
+            this.maxWeight = 100 - weightTotal;
+        },
     },
     created: function() {
         this.getActivities();

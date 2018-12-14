@@ -29,6 +29,7 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'business_unit_id' => 1,
         ]);
 
         DB::table('pro_project')->insert([
@@ -48,6 +49,7 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'business_unit_id' => 1,
         ]);
 
         DB::table('pro_project')->insert([
@@ -67,6 +69,7 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'business_unit_id' => 2,
         ]);
 
         DB::table('pro_project')->insert([
@@ -86,6 +89,7 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'business_unit_id' => 3,
         ]);
 
     }

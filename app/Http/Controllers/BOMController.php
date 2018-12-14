@@ -8,7 +8,7 @@ use App\Models\Bom;
 use App\Models\BomDetail;
 use App\Models\Material;
 use App\Models\Branch;
-use App\Models\Work;
+use App\Models\WBS;
 use App\Models\User;
 use App\Models\Rap;
 use App\Models\RapDetail;
@@ -51,90 +51,89 @@ class BOMController extends Controller
     public function selectWBS($id)
     {
         $project = Project::find($id);
-        $wbs = $project->wbs;
-        $wbs = Collection::make();
+        $wbss = $project->wbss;
+        $data = Collection::make();
 
-        $wbs->push([
+        $data->push([
                 "id" => $project->number , 
                 "parent" => "#",
                 "text" => $project->name,
                 "icon" => "fa fa-ship"
             ]);
     
-        foreach($wbs as $work){
+        foreach($wbss as $wbs){
             $bom_code = "";
-            $bom = Bom::where('wbs_id',$work->id)->first();
+            $bom = Bom::where('wbs_id',$wbs->id)->first();
             if($bom){
                 $bom_code = " - ".$bom->code;
-                if($work->work){
-                    $wbs->push([
-                        "id" => $work->code , 
-                        "parent" => $work->work->code,
-                        "text" => $work->name. ''.$bom_code,
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                     ]);
                 }else{
-                    $wbs->push([
-                        "id" => $work->code , 
+                    $data->push([
+                        "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                     ]);
                 } 
             }else{
-                if($work->work){
-                    $wbs->push([
-                        "id" => $work->code , 
-                        "parent" => $work->work->code,
-                        "text" => $work->name. ''.$bom_code,
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 }else{
-                    $wbs->push([
-                        "id" => $work->code , 
+                    $data->push([
+                        "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $work->name. ''.$bom_code,
+                        "text" => $wbs->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$work->id)],
+                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                     ]);
                 } 
             } 
         }
-
-        return view('bom.selectWBS', compact('project','wbs'));
+        return view('bom.selectWBS', compact('project','data'));
     }
 
     public function indexBom($id)
     {
         $project = Project::find($id);
-        $wbs = $project->wbs;
-        $wbs = Collection::make();
+        $wbs = $project->wbss;
+        $data = Collection::make();
 
-        $wbs->push([
+        $data->push([
             "id" => $project->number , 
             "parent" => "#",
             "text" => $project->name,
             "icon" => "fa fa-ship"
         ]);
-    
+
         foreach($wbs as $work){
             $bom_code = "";
             $bom = Bom::where('wbs_id',$work->id)->first();
             if($bom){
                 $bom_code = " - ".$bom->code;
-                if($work->work){
-                    $wbs->push([
+                if($work->wbs){
+                    $data->push([
                         "id" => $work->code , 
-                        "parent" => $work->work->code,
+                        "parent" => $work->wbs->code,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('bom.show',$bom->id)],
                     ]);
                 }else{
-                    $wbs->push([
+                    $data->push([
                         "id" => $work->code , 
                         "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
@@ -143,15 +142,15 @@ class BOMController extends Controller
                     ]);
                 } 
             }else{
-                if($work->work){
-                    $wbs->push([
+                if($work->wbs){
+                    $data->push([
                         "id" => $work->code , 
-                        "parent" => $work->work->code,
+                        "parent" => $work->wbs->code,
                         "text" => $work->name. ''.$bom_code,
                         "icon" => "fa fa-suitcase",
                     ]);
                 }else{
-                    $wbs->push([
+                    $data->push([
                         "id" => $work->code , 
                         "parent" => $project->number,
                         "text" => $work->name. ''.$bom_code,
@@ -161,7 +160,7 @@ class BOMController extends Controller
             }
              
         }
-        return view('bom.indexBom', compact('project','wbs'));
+        return view('bom.indexBom', compact('project','data'));
     }
 
     public function assignBom($id)
@@ -180,11 +179,11 @@ class BOMController extends Controller
      */
     public function create($id)
     {
-        $work = Work::findOrFail($id);
-        $project = Project::where('id',$work->project_id)->with('ship','customer')->first();
+        $wbs = WBS::findOrFail($id);
+        $project = Project::where('id',$wbs->project_id)->with('ship','customer')->first();
         $materials = Material::orderBy('name')->get()->jsonSerialize();
 
-        return view('bom.create', compact('project','materials','bom_code','work'));
+        return view('bom.create', compact('project','materials','bom_code','wbs'));
     }
 
     /**
@@ -313,10 +312,9 @@ class BOMController extends Controller
         try {
             $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
             $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
-            // $modelBOMDetail->material_id = $data['material_id'];
             $modelBOMDetail->quantity = $data['quantityInt'];
 
-            if(!$modelBOMDetail->save()){
+            if(!$modelBOMDetail->update()){
                 return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
             }else{
                 // update RAP
@@ -324,13 +322,13 @@ class BOMController extends Controller
                 foreach($modelRAP->rapDetails as $rapDetail){
                     if($rapDetail->material_id == $modelBOMDetail->material_id){
                         $rapDetail->quantity = $data['quantityInt'];
-                        $rapDetail->save();
+                        $rapDetail->update();
                     }
                 }
                 // update reserve mst_stock
                 $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
                 $modelStock->reserved += $diff;
-                $modelStock->save();
+                $modelStock->update();
                 DB::commit();
                 return response(json_encode($modelBOMDetail),Response::HTTP_OK);
             }
@@ -384,15 +382,19 @@ class BOMController extends Controller
     }
 
     private function generateBomCode(){
-        $code = 'BOM';
-        $modelBOM = BOM::orderBy('code', 'desc')->first();
-        
-        $number = 1;
+        $modelBOM = Bom::orderBy('code','desc')->where('branch_id',Auth::user()->branch_id)->first();
+        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
+
+        $branch_code = substr($modelBranch->code,4,2);
+		$number = 1;
 		if(isset($modelBOM)){
             $number += intval(substr($modelBOM->code, -4));
 		}
+        $year = date('y0000');
+        $year = intval($year);
 
-        $bom_code = $code.''.sprintf('%04d', $number);
+		$bom_code = $year+$number;
+        $bom_code = 'BOM'.$bom_code;
 		return $bom_code;
     }
 

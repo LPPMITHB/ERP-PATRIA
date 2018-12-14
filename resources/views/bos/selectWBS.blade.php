@@ -1,27 +1,25 @@
 @extends('layouts.main')
-
 @section('content-header')
 @breadcrumb(
-    [   
-        'title' => $menuTitle,
+    [
+        'title' => 'Manage Bill Of Services » Select WBS',
+        'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$project->number => route('project.show', ['id' => $project->id]),
-            'Select WBS' => ''
+            'Select Project' => route('bos.indexProject'),
+            'Select WBS' => route('bos.indexProject'),
         ]
     ]
 )
 @endbreadcrumb
 @endsection
-
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-solid">
+        <div class="box">
             <div class="box-header">
-                <div class="col-xs-12 col-lg-4 col-md-12">    
-                    <div class="box-body">
+                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
+                    <div class="box-body no-padding">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Code</div>
@@ -53,67 +51,46 @@
                     </div>
                 </div>
             </div>
-            {{-- <div id="wbs"> --}}
-                <div class="box-body">
-                    <h4 class="box-title">Work Breakdown Structures</h4>
-                    <div id="treeview">
+            <div class="box-body p-l-0 p-t-0">
+                <div id="treeview">
                     
-                    </div>
                 </div>
-            {{-- </div> --}}
+            </div>
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
-            </div>
-            <div id="myPopoverContent" style="display : none;">
-                
             </div>
         </div>
     </div>
 </div>
 @endsection
-
 @push('script')
 <script>
+    var data = @json($data);
+
     $(document).ready(function(){
-        $('#wbs-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').hide();
-            }
-        });
-        jQuery('#wbs-table').wrap('<div class="dataTables_scroll" />');
-
-        var data = @json($dataWbs);
-        
-        $('#treeview').jstree({
-            "core": {
-                'data': data,
-                "check_callback": true,
-                "animation": 200,
-                "dblclick_toggle": false,
-                "keep_selected_style": false
-            },
-            "plugins": ["dnd", "contextmenu"],
-            "contextmenu": {
-                "select_node": false, 
-                "show_at_node": false,
-            }
-            }).bind("changed.jstree", function (e, data) {
-                if(data.node) {
-                document.location = data.node.a_attr.href;
-                }
-            }).bind("loaded.jstree", function (event, data) {
-                // you get two params - event & data - check the core docs for a detailed description
-                $(this).jstree("open_all");
-            });
-
         $('div.overlay').hide();
     });
-
+        
+    $('#treeview').jstree({
+        "core": {
+            "data": data,
+            "check_callback": true,
+            "animation": 200,
+            "dblclick_toggle": false,
+            "keep_selected_style": false
+        },
+        "plugins": ["dnd", "contextmenu"],
+        "contextmenu": {
+            "select_node": false, 
+            "show_at_node": false,
+        }
+    }).bind("changed.jstree", function (e, data) {
+        if(data.node) {
+            document.location = data.node.a_attr.href;
+        }
+    }).bind("loaded.jstree", function (event, data) {
+        // you get two params - event & data - check the core docs for a detailed description
+        $(this).jstree("open_all");
+    });
 </script>
 @endpush

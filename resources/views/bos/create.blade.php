@@ -2,13 +2,13 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Manage Bill Of Material',
+        'title' => 'Manage Bill Of Service',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('bom.indexProject'),
-            'Select WBS' => route('bom.selectWBS',$project->id),
-            'Manage Bill Of Material' => '',
+            'Select Project' => route('bos.indexProject'),
+            'Select WBS' => route('bos.selectWBS',$project->id),
+            'Manage Bill Of Service' => '',
         ]
     ]
 )
@@ -20,10 +20,10 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body no-padding p-b-10">
-                <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.store') }}">
+                <form id="create-bos" class="form-horizontal" method="POST" action="{{ route('bos.store') }}">
                 @csrf
                     @verbatim
-                    <div id="bom">
+                    <div id="bos">
                         <div class="box-header">
                             <div class="col-sm-4">
                                 <table>
@@ -97,7 +97,7 @@
                                 </table>
                             </div>
                             <div class="col-sm-4">
-                                <td rowspan="2">BOM Description</td>
+                                <td rowspan="2">BOS Description</td>
                                 <td rowspan="2">:</td>
                                 <td rowspan="2">
                                     <textarea class="form-control" rows="3" v-model="submittedForm.description" style="width:326px"></textarea>  
@@ -110,23 +110,23 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="28%">Material</th>
+                                        <th width="28%">Service</th>
                                         <th width="38%">Description</th>
-                                        <th width="19%">Quantity</th>
-                                        <th width="10%" ></th>
+                                        <th width="19%">Cost Standard Price</th>
+                                        <th width="10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(material, index) in materialTable">
+                                    <tr v-for="(service, index) in serviceTable">
                                         <td>{{ index + 1 }}</td>
-                                        <td>{{ material.material_name }}</td>
-                                        <td>{{ material.description }}</td>
-                                        <td>{{ material.quantity }}</td>
+                                        <td>{{ service.service_name }}</td>
+                                        <td>{{ service.description }}</td>
+                                        <td>{{ service.cost_standard_price }}</td>
                                         <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(service,index)">
                                                 EDIT
                                             </a>
-                                            <a href="#" @click="removeRow(material.material_id)" class="btn btn-danger btn-xs">
+                                            <a href="#" @click="removeRow(service.service_id)" class="btn btn-danger btn-xs">
                                                 <div class="btn-group">DELETE</div>
                                             </a>
                                         </td>
@@ -134,12 +134,12 @@
                                     <tr>
                                         <td>{{newIndex}}</td>
                                         <td class="no-padding">
-                                            <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.name }}</option>
+                                            <selectize id="service" v-model="input.service_id" :settings="serviceSettings">
+                                                <option v-for="(service, index) in services" :value="service.id">{{ service.name }}</option>
                                             </selectize>    
                                         </td>
                                         <td class="no-padding"><input class="form-control" type="text" :value="input.description" disabled></td>
-                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.cost_standard_price"></td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
@@ -159,24 +159,24 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        <h4 class="modal-title">Edit Material</h4>
+                                        <h4 class="modal-title">Edit Service</h4>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <label for="type" class="control-label">Service</label>
+                                                <selectize id="edit_modal" v-model="editInput.service_id" :settings="serviceSettings">
+                                                    <option v-for="(service, index) in services_modal" :value="service.id">{{ service.code }} - {{ service.name }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
-                                                <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <label for="cost_standard_price" class="control-label">Cost standard price</label>
+                                                <input type="text" id="cost_standard_price" v-model="editInput.cost_standard_price" class="form-control" placeholder="Please Input Cost standard price">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_service_id, editInput.service_id)">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +196,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-bom');
+    const form = document.querySelector('form#create-bos');
 
     $(document).ready(function(){
         $('div.overlay').hide();
@@ -207,7 +207,7 @@
     var data = {
         submit: "ok",
         project : @json($project),
-        materials : @json($materials),
+        services : @json($services),
         wbs : @json($wbs),
         newIndex : 0, 
         submittedForm :{
@@ -216,41 +216,41 @@
             description : ""
         },
         input : {
-            material_id : "",
-            material_name : "",
-            material_code : "",
+            service_id : "",
+            service_name : "",
+            service_code : "",
             description : "",
-            quantity : "",
-            quantityInt : 0
+            cost_standard_price : "",
+            cost_standard_priceInt : 0
         },
         editInput : {
-            old_material_id : "",
-            material_id : "",
-            material_code : "",
-            material_name : "",
-            quantity : "",
-            quantityInt : 0,
+            old_service_id : "",
+            service_id : "",
+            service_code : "",
+            service_name : "",
+            cost_standard_price : "",
+            cost_standard_priceInt : 0,
         },
-        materialTable : [],
-        materialSettings: {
-            placeholder: 'Please Select Material'
+        serviceTable : [],
+        serviceSettings: {
+            placeholder: 'Please Select service'
         },
-        material_id:[],
-        material_id_modal:[],
-        materials_modal :[],
+        service_id:[],
+        service_id_modal:[],
+        services_modal :[],
     }
 
     var vm = new Vue({
-        el : '#bom',
+        el : '#bos',
         data : data,
         computed:{
             inputOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.input.quantityInt+"";
-                this.input.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.input.cost_standard_priceInt+"";
+                this.input.cost_standard_priceInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                if(this.input.service_id == "" || this.input.service_name == "" || this.input.description == "" || this.input.cost_standard_price == "" || this.input.cost_standard_priceInt < 1){
                     isOk = true;
                 }
                 return isOk;
@@ -258,7 +258,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.materialTable.length < 1 || this.submit == ""){
+                if(this.serviceTable.length < 1 || this.submit == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -266,10 +266,10 @@
             updateOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.editInput.cost_standard_priceInt+"";
+                this.editInput.cost_standard_priceInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
+                if(this.editInput.service_id == "" || this.editInput.cost_standard_priceInt < 1 || this.editInput.cost_standard_priceInt == "" || isNaN(this.editInput.cost_standard_priceInt)){
                     isOk = true;
                 }
 
@@ -277,9 +277,9 @@
             }
         },
         methods: {
-            getNewMaterials(jsonMaterialId){
-                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
-                    this.materials = data;
+            getNewServices(jsonServiceId){
+                window.axios.get('/api/getServicesBOS/'+jsonServiceId).then(({ data }) => {
+                    this.services = data;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -291,9 +291,9 @@
                     $('div.overlay').hide();
                 })
             },
-            getNewModalMaterials(jsonMaterialId){
-                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
-                    this.materials_modal = data;
+            getNewModalServices(jsonServiceId){
+                window.axios.get('/api/getServicesBOS/'+jsonServiceId).then(({ data }) => {
+                    this.services_modal = data;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -306,32 +306,32 @@
                 })
             },
             openEditModal(data,index){
-                this.editInput.material_id = data.material_id;
-                this.editInput.old_material_id = data.material_id;
-                this.editInput.material_code = data.material_code;
-                this.editInput.material_name = data.material_name;
-                this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = data.quantityInt;
+                this.editInput.service_id = data.service_id;
+                this.editInput.old_service_id = data.service_id;
+                this.editInput.service_code = data.service_code;
+                this.editInput.service_name = data.service_name;
+                this.editInput.cost_standard_price = data.cost_standard_price;
+                this.editInput.cost_standard_priceInt = data.cost_standard_priceInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
 
-                var material_id = JSON.stringify(this.material_id);
-                material_id = JSON.parse(material_id);
+                var service_id = JSON.stringify(this.service_id);
+                service_id = JSON.parse(service_id);
                 
-                this.material_id_modal = material_id;
-                this.material_id_modal.forEach(id => {
-                    if(id == data.material_id){
-                        var index = this.material_id_modal.indexOf(id);
-                        this.material_id_modal.splice(index, 1);
+                this.service_id_modal = service_id;
+                this.service_id_modal.forEach(id => {
+                    if(id == data.service_id){
+                        var index = this.service_id_modal.indexOf(id);
+                        this.service_id_modal.splice(index, 1);
                     }
                 });
-                var jsonMaterialId = JSON.stringify(this.material_id_modal);
-                this.getNewModalMaterials(jsonMaterialId);
+                var jsonServiceId = JSON.stringify(this.service_id_modal);
+                this.getNewModalServices(jsonServiceId);
             },
             submitForm(){
                 this.submit = "";
-                this.submittedForm.materials = this.materialTable;
+                this.submittedForm.services = this.serviceTable;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -341,70 +341,70 @@
                 form.submit();
             },
             submitToTable(){
-                if(this.input.material_id != "" && this.input.material_name != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                if(this.input.service_id != "" && this.input.service_name != "" && this.input.description != "" && this.input.cost_standard_price != "" && this.input.cost_standard_priceInt > 0){
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
-                    this.materialTable.push(data);
+                    this.serviceTable.push(data);
 
-                    this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+                    this.service_id.push(data.service_id); //ini buat nambahin service_id terpilih
 
-                    var jsonMaterialId = JSON.stringify(this.material_id);
-                    this.getNewMaterials(jsonMaterialId);             
+                    var jsonServiceId = JSON.stringify(this.service_id);
+                    this.getNewServices(jsonServiceId);             
 
-                    this.newIndex = this.materialTable.length + 1;  
+                    this.newIndex = this.serviceTable.length + 1;  
 
                     this.input.description = "";
-                    this.input.material_id = "";
-                    this.input.material_name = "";
-                    this.input.quantity = "";
-                    this.input.quantityInt = 0;
+                    this.input.service_id = "";
+                    this.input.service_name = "";
+                    this.input.cost_standard_price = "";
+                    this.input.cost_standard_priceInt = 0;
                 }
             },
-            removeRow: function(materialId) {
-                var index_materialId = "";
-                var index_materialTable = "";
+            removeRow: function(serviceId) {
+                var index_serviceId = "";
+                var index_serviceTable = "";
 
-                this.material_id.forEach(id => {
-                    if(id == materialId){
-                        index_materialId = this.material_id.indexOf(id);
+                this.service_id.forEach(id => {
+                    if(id == serviceId){
+                        index_serviceId = this.service_id.indexOf(id);
                     }
                 });
-                this.materialTable.forEach(data => {
-                    if(data.material_id == materialId){
-                        index_materialTable = this.materialTable.indexOf(data.material_id);
+                this.serviceTable.forEach(data => {
+                    if(data.service_id == serviceId){
+                        index_serviceTable = this.serviceTable.indexOf(data.service_id);
                     }
                 });
 
-                this.materialTable.splice(index_materialTable, 1);
-                this.material_id.splice(index_materialId, 1);
-                this.newIndex = this.materialTable.length + 1;
+                this.serviceTable.splice(index_serviceTable, 1);
+                this.service_id.splice(index_serviceId, 1);
+                this.newIndex = this.serviceTable.length + 1;
 
-                var jsonMaterialId = JSON.stringify(this.material_id);
-                this.getNewMaterials(jsonMaterialId);
+                var jsonServiceId = JSON.stringify(this.service_id);
+                this.getNewServices(jsonServiceId);
             },
-            update(old_material_id, new_material_id){
-                this.materialTable.forEach(material => {
-                    if(material.material_id == old_material_id){
-                        var material = this.materialTable[this.editInput.index];
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                        material.material_id = new_material_id;
-                        material.wbs_id = this.editInput.wbs_id;
+            update(old_service_id, new_service_id){
+                this.serviceTable.forEach(service => {
+                    if(service.service_id == old_service_id){
+                        var service = this.serviceTable[this.editInput.index];
+                        service.cost_standard_priceInt = this.editInput.cost_standard_priceInt;
+                        service.cost_standard_price = this.editInput.cost_standard_price;
+                        service.service_id = new_service_id;
+                        service.wbs_id = this.editInput.wbs_id;
 
-                        window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
-                            material.material_name = data.name;
-                            material.material_code = data.code;
+                        window.axios.get('/api/getServiceBOS/'+new_service_id).then(({ data }) => {
+                            service.service_name = data.name;
+                            service.service_code = data.code;
 
-                            this.material_id.forEach(id => {
-                                if(id == old_material_id){
-                                    var index = this.material_id.indexOf(id);
-                                    this.material_id.splice(index, 1);
+                            this.service_id.forEach(id => {
+                                if(id == old_service_id){
+                                    var index = this.service_id.indexOf(id);
+                                    this.service_id.splice(index, 1);
                                 }
                             });
-                            this.material_id.push(new_material_id);
+                            this.service_id.push(new_service_id);
 
-                            var jsonMaterialId = JSON.stringify(this.material_id);
-                            this.getNewMaterials(jsonMaterialId);
+                            var jsonServiceId = JSON.stringify(this.service_id);
+                            this.getNewServices(jsonServiceId);
 
                             $('div.overlay').hide();
                         })
@@ -421,30 +421,31 @@
             },
         },
         watch: {
-            'input.material_id': function(newValue){
+            'input.service_id': function(newValue){
                 if(newValue != ""){
-                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getServiceBOS/'+newValue).then(({ data }) => {
                         if(data.description == "" || data.description == null){
                             this.input.description = '-';
                         }else{
                             this.input.description = data.description;
+                            this.input.cost_standard_price = data.cost_standard_price;
 
                         }
-                        this.input.material_name = data.name;
-                        this.input.material_code = data.code;
+                        this.input.service_name = data.name;
+                        this.input.service_code = data.code;
                     });
                 }
             },
-            'input.quantity': function(newValue){
-                this.input.quantityInt = newValue;
-                this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            'input.cost_standard_price': function(newValue){
+                this.input.cost_standard_priceInt = newValue;
+                this.input.cost_standard_price = (this.input.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             }
         },
         created: function() {
             this.submittedForm.project_id = this.project.id;
             this.submittedForm.wbs_id = this.wbs.id;          
 
-            this.newIndex = this.materialTable.length + 1;
+            this.newIndex = this.serviceTable.length + 1;
         }
     });
        

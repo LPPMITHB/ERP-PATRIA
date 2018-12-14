@@ -47,13 +47,36 @@
                                     <input v-model="submittedForm.description" type="text" class="form-control" id="description" name="description" required>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="business_unit" class="col-sm-2 control-label">Business Unit</label>
+                                <div class="col-sm-10">
+                                    <selectize id="business_unit" v-model="business_unit" :settings="businessUnitSettings">
+                                        <option v-for="main_menu in main_menus" :value="main_menu.id">{{ main_menu.name }}</option>
+                                    </selectize>  
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <div v-for ="menu in menus">
                                 <a href="" @click.prevent="getMenu(menu)">
                                     <div class="box box-solid no-margin m-b-10 ">
                                         <div class="box-header with-border" :id="menu.id">
-                                            <span>{{ menu.name }}</span>
+                                            <div class="col-sm-10 tdEllipsis no-padding">
+                                                <span>{{ menu.name }}</span>
+                                            </div>
+                                            <i class="fa fa-angle-double-right pull-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div v-for ="menu in optionalMenus">
+                                <a href="" @click.prevent="getMenu(menu)">
+                                    <div class="box box-solid no-margin m-b-10 ">
+                                        <div class="box-header with-border " :id="menu.id">
+                                            <div class="col-sm-10 tdEllipsis no-padding">
+                                                <span>{{ menu.name }}</span>
+                                            </div>
                                             <i class="fa fa-angle-double-right pull-right"></i>
                                         </div>
                                     </div>
@@ -116,6 +139,8 @@
 
     var data = {
        menus : @json($menus),
+       optionalMenus : [],
+       main_menus : @json($mainMenu),
        menu_id : "",
        permissionsLeft : [],
        permissionsRight : [],
@@ -127,6 +152,10 @@
            permissions : [],
            checkedPermissions : []
        },
+       businessUnitSettings: {
+            placeholder: 'Please Select Business Unit'
+        },
+       business_unit : "",
     }
 
     var app = new Vue({
@@ -252,6 +281,25 @@
                 form.submit();
             }
         },
+        watch:{
+            'business_unit': function(newValue){
+                window.axios.get('/api/getSubMenu/'+newValue).then(({ data }) => {
+                    this.optionalMenus = [];
+                    data.forEach(menu => {
+                        this.optionalMenus.push(menu);
+                    });
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
+            }
+        }
     });
        
 </script>

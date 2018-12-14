@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered showTable tableFixed">
+                <table class="table table-bordered showTable">
                     <thead>
                         <tr>
                             <th style="width: 5%">#</th>
