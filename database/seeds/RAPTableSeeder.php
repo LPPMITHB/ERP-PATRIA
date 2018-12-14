@@ -13,7 +13,7 @@ class RAPTableSeeder extends Seeder
     public function run()
     {
         $modelBoms = Bom::all();
-        $number = 1801000001;
+        $number = 1800001;
         foreach($modelBoms as $bom){
             DB::table('trx_rap')->insert([
                 'number' => 'RAP-'.$number,

@@ -16,7 +16,7 @@ class PRTableSeeder extends Seeder
         $valid_to = $valid_to->toDateString();
 
         DB::table('trx_purchase_requisition')->insert([
-            'number' => 'PR-1800000001',
+            'number' => 'PR00001',
             'valid_date' => $valid_to,
             'project_id' => 1,
             'description' => 'purchase requisition pertama',
@@ -28,7 +28,7 @@ class PRTableSeeder extends Seeder
         ]);
 
         DB::table('trx_purchase_requisition')->insert([
-            'number' => 'PR-1800000002',
+            'number' => 'PR00002',
             'valid_date' => $valid_to,
             'project_id' => 1,
             'description' => 'purchase requisition kedua',
