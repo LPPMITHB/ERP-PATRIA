@@ -39,9 +39,9 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->name }}</td>
                                 <td align="center">
-                                    @if($menu == 'building')
+                                    @if($menu == '/bom')
                                         <a class="btn btn-primary btn-xs" href="{{ route('bom.indexBom', ['id'=>$project->id,'menu'=>$menu]) }}">SELECT</a>
-                                    @elseif($menu == 'repair')
+                                    @elseif($menu == '/bom_repair')
                                         <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.indexBom', ['id'=>$project->id,'menu'=>$menu]) }}">SELECT</a>
                                     @endif
                                 </td>

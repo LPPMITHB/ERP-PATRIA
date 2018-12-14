@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UOMTableSeeder::class);
         $this->call(CategoriesTableSeeder::class);
         $this->call(ResourcesTableSeeder::class);
+        $this->call(ServicesTableSeeder::class);
         $this->call(ProductionOrderTableSeeder::class);
         $this->call(ProductionOrderDetailsTableSeeder::class);    
     }

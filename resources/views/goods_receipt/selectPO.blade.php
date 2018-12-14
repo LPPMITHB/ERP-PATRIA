@@ -47,7 +47,7 @@
                                         GR Description  :
                                 </div>
                                 <div class="col-sm-4 p-l-0">
-                                    <textarea class="form-control" rows="3" v-model="description" style="width:390px"></textarea>
+                                    <textarea class="form-control" rows="3" v-model="description" style="width:376px"></textarea>
                                 </div>
                             </div>
                         </div>

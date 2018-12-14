@@ -13,7 +13,7 @@ class BOMsTableSeeder extends Seeder
     {
         //
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180001',
+            'code' => 'BOM0100001',
             'description' => 'BOM pertama',
             'project_id' => 1,
             'wbs_id' => 1,
@@ -22,7 +22,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180002',
+            'code' => 'BOM0100002',
             'description' => 'BOM kedua',
             'project_id' => 1,
             'wbs_id' => 2,
@@ -31,7 +31,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180003',
+            'code' => 'BOM0100003',
             'description' => 'BOM ketiga',
             'project_id' => 1,
             'wbs_id' => 3,
@@ -40,7 +40,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180004',
+            'code' => 'BOM0100004',
             'description' => 'BOM keempat',
             'project_id' => 1,
             'wbs_id' => 4,
@@ -49,7 +49,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180005',
+            'code' => 'BOM0100005',
             'description' => 'BOM kelima',
             'project_id' => 1,
             'wbs_id' => 5,
@@ -58,7 +58,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180006',
+            'code' => 'BOM0100006',
             'description' => 'BOM keenam',
             'project_id' => 1,
             'wbs_id' => 6,
@@ -67,7 +67,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180007',
+            'code' => 'BOM0100007',
             'description' => 'BOM ketujuh',
             'project_id' => 1,
             'wbs_id' => 7,
@@ -76,7 +76,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180008',
+            'code' => 'BOM0100008',
             'description' => 'BOM kedelapan',
             'project_id' => 1,
             'wbs_id' => 8,
@@ -85,7 +85,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180009',
+            'code' => 'BOM0100009',
             'description' => 'BOM kesembilan',
             'project_id' => 1,
             'wbs_id' => 9,
@@ -94,7 +94,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180010',
+            'code' => 'BOM0100010',
             'description' => 'BOM kesepuluh',
             'project_id' => 1,
             'wbs_id' => 10,
@@ -103,7 +103,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180011',
+            'code' => 'BOM0100011',
             'description' => 'BOM kesebelas',
             'project_id' => 1,
             'wbs_id' => 11,
@@ -112,7 +112,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180012',
+            'code' => 'BOM0100012',
             'description' => 'BOM keduabelas',
             'project_id' => 1,
             'wbs_id' => 12,
@@ -121,7 +121,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180013',
+            'code' => 'BOM0100013',
             'description' => 'BOM ketigabelas',
             'project_id' => 1,
             'wbs_id' => 13,
@@ -130,7 +130,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180014',
+            'code' => 'BOM0100014',
             'description' => 'BOM keempatbelas',
             'project_id' => 1,
             'wbs_id' => 14,
@@ -139,7 +139,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180015',
+            'code' => 'BOM0100015',
             'description' => 'BOM kelimabelas',
             'project_id' => 1,
             'wbs_id' => 15,
@@ -148,7 +148,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180016',
+            'code' => 'BOM0100016',
             'description' => 'BOM keenambelas',
             'project_id' => 1,
             'wbs_id' => 16,
@@ -157,7 +157,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180017',
+            'code' => 'BOM0100017',
             'description' => 'BOM ketujuhbelas',
             'project_id' => 1,
             'wbs_id' => 17,
@@ -166,7 +166,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180018',
+            'code' => 'BOM0100018',
             'description' => 'BOM kedelapanbelas',
             'project_id' => 1,
             'wbs_id' => 18,
@@ -175,7 +175,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180019',
+            'code' => 'BOM0100019',
             'description' => 'BOM kesembilanbelas',
             'project_id' => 1,
             'wbs_id' => 19,
@@ -184,7 +184,7 @@ class BOMsTableSeeder extends Seeder
         ]);
 
         DB::table('mst_bom')->insert([
-            'code' => 'BOM180020',
+            'code' => 'BOM0100020',
             'description' => 'BOM keduapuluh',
             'project_id' => 1,
             'wbs_id' => 20,
