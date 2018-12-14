@@ -152,11 +152,11 @@
                             </div>
 
                             <div class="form-group">
-                                    <label for="ship" class="col-sm-2 control-label">Ship Name</label>
+                                    <label for="ship" class="col-sm-2 control-label">Ship Type</label>
                     
                                     <div class="col-sm-10">
                                         <selectize name="ship" id="ship" required>
-                                            <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.name }}</option>
+                                            <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.type }}</option>
                                         </selectize>
                                     </div>
                                 </div>

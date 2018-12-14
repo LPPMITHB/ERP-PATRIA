@@ -57,7 +57,7 @@ class ProjectsTableSeeder extends Seeder
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-03',
             'business_unit_id' => 2,
-            'project_sequence' => 3,
+            'project_sequence' => 1,
             'name' => 'Offshore Supply Vessel Project',
             'description' => 'ketiga kali',
             // 'sales_order_id' => 1,
@@ -77,8 +77,8 @@ class ProjectsTableSeeder extends Seeder
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-04',
-            'business_unit_id' => 3,
-            'project_sequence' => 4,
+            'business_unit_id' => 2,
+            'project_sequence' => 2,
             'name' => 'Deck Cargo Barge Project',
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,

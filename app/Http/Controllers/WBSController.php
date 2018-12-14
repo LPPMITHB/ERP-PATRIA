@@ -17,10 +17,9 @@ class WBSController extends Controller
 {
     public function createWBS($id)
     {
-        $structures = Structure::where('is_substructure', 0)->select('name')->get()->jsonSerialize();
         $project = Project::find($id);
 
-        return view('wbs.createWBS', compact('project','structures'));
+        return view('wbs.createWBS', compact('project'));
     }
 
     public function store(Request $request)
@@ -132,6 +131,8 @@ class WBSController extends Controller
     //Methods
     public function generateWbsCode(){
         $code = 'WBS';
+        dd(date('Y'));
+        $projectSequence = Project::orderBy('created_at','desc')->whereYear('created_at', '=', date('Y'))->first();
         $modelWbs = WBS::orderBy('code', 'desc')->first();
         
         $number = 1;
