@@ -267,14 +267,14 @@ class RAPController extends Controller
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $project->number,
-                    "text" => ($cost->type == 0) ? 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>' : 'Process Cost - <b>Rp.'.number_format($cost->cost).'</b>' ,
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }else{
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $cost->wbs->code,
-                    "text" => ($cost->type == 0) ? 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>' : 'Process Cost - <b>Rp.'.number_format($cost->cost).'</b>' ,
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }
@@ -333,6 +333,7 @@ class RAPController extends Controller
             $cost = new Cost;
             $cost->description = $data['description'];
             $cost->cost = $data['cost'];
+            $cost->wbs_id = $data['wbs_id'];
             $cost->project_id = $data['project_id'];
 
             $cost->user_id = Auth::user()->id;
@@ -381,9 +382,14 @@ class RAPController extends Controller
             $cost = Cost::find($id);
             $cost->description = $data['description'];
             $cost->cost = $data['cost'];
+            if($data['wbs_id'] == ""){
+                $cost->wbs_id = null;
+            }else{
+                $cost->wbs_id = $data['wbs_id'];
+            }
             $cost->project_id = $data['project_id'];
 
-            if(!$cost->save()){
+            if(!$cost->update()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
@@ -609,5 +615,10 @@ class RAPController extends Controller
 
     public function getNewCostAPI($id){
         return response(Cost::where('project_id',$id)->with('wbs')->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getAllWorksCostAPI($project_id){
+        $works = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
+        return response($works, Response::HTTP_OK);
     }
 }
