@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Remaining Material » '.$wbs->bom->rap->number,
+        'title' => 'View Remaining Material',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rap.selectProjectViewRM'),
@@ -16,7 +16,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-solid">
+        <div class="box">
             <div class="box-header">
                 <div class="col-sm-6">
                     <table>
