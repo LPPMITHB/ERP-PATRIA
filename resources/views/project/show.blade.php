@@ -4,7 +4,7 @@
     @if ($menu == "building")
         @breadcrumb(
             [
-                'title' => 'Show Project » '.$project->ship->name,
+                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->ship->name,
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Projects' => route('project.index'),
@@ -16,7 +16,7 @@
     @else
         @breadcrumb(
             [
-                'title' => 'Show Project » '.$project->ship->name,
+                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->ship->name,
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Projects' => route('project_repair.index'),
