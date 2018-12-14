@@ -176,6 +176,8 @@ class ProjectController extends Controller
         ]);
 
         DB::beginTransaction();
+        $projectSequence = Project::orderBy('created_at','desc')->whereYear('created_at', '=', date('Y'))->first();
+        dd($projectSequence);
         try {
             $project = new Project;
             $project->number =  $request->number;

@@ -1,17 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View All Projects',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Projects' => route('project.index'),
+@if($menu == "building")
+    @breadcrumb(
+        [
+            'title' => 'View All Projects',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Projects' => route('project.index'),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
-
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'View All Projects',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Projects' => route('project_repair.index'),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 <style>
 
 </style>

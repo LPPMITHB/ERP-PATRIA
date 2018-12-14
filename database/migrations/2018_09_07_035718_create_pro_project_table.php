@@ -19,6 +19,7 @@ class CreateProProjectTable extends Migration
             $table->string('number')->unique();
             $table->string('drawing')->nullable();
             $table->unsignedInteger('business_unit_id');
+            $table->unsignedInteger('project_sequence');
             $table->unsignedInteger('ship_id');
             $table->unsignedInteger('customer_id');
             $table->string('name');

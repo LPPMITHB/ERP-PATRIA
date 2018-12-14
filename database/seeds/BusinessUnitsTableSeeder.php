@@ -14,17 +14,17 @@ class BusinessUnitsTableSeeder extends Seeder
         //
         DB::table('mst_business_unit')->insert([
             'name' => 'Building',
-            'description' => 'Pembuatan Kapal Laut',
+            'description' => 'Ship Building',
         ]);
 
         DB::table('mst_business_unit')->insert([
             'name' => 'Repair',
-            'description' => 'Perbaikan Kapal Laut',
+            'description' => 'Ship Repair',
         ]);
 
         DB::table('mst_business_unit')->insert([
             'name' => 'Trading',
-            'description' => 'Penjualan Spare Part Kapal Laut',
+            'description' => 'Ship Spare Parts Trading',
         ]);
 
     }
