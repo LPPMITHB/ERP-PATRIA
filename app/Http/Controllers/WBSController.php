@@ -131,7 +131,7 @@ class WBSController extends Controller
     
     //Methods
     public function generateWbsCode(){
-        $code = 'PRW';
+        $code = 'WBS';
         $modelWbs = WBS::orderBy('code', 'desc')->first();
         
         $number = 1;

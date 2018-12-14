@@ -173,7 +173,7 @@
                                     <input v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
                                 </td>
                                 <td class="p-l-0 textCenter">
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#add_dependant_activity">MANAGE DEPENDANT ACTIVITIES</button>
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
                                 </td>
                                 <td>
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">SUBMIT</button>
@@ -182,14 +182,14 @@
                         </tfoot>
                     </table>
 
-                    <div class="modal fade" id="add_dependant_activity">
+                    <div class="modal fade" id="add_dependent_activity">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Dependant Activity</h4>
+                                    <h4 class="modal-title">Dependent Activity</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="p-l-0 form-group col-sm-10">
@@ -215,7 +215,7 @@
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
@@ -346,7 +346,7 @@
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
@@ -610,6 +610,7 @@ var vm = new Vue({
                 }
             
                 this.getActivities();
+                this.getAllActivities();   
                 this.newActivity.name = "";
                 this.newActivity.description = "";
                 this.newActivity.planned_start_date = "";
@@ -647,7 +648,7 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 
-                this.getActivities();   
+                this.getActivities();
             })
             .catch((error) => {
                 console.log(error);

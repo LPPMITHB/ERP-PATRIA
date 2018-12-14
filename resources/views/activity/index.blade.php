@@ -234,7 +234,7 @@
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
