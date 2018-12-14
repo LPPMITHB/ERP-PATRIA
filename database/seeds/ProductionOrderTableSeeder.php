@@ -13,7 +13,7 @@ class ProductionOrderTableSeeder extends Seeder
     {
         //
         DB::table('trx_production_order')->insert([
-            'number' => 'PrO-1800000001',
+            'number' => 'PRO00001',
             'project_id' => 1,
             'wbs_id' => 1,
             'status' => 1,
@@ -22,7 +22,7 @@ class ProductionOrderTableSeeder extends Seeder
             ]);
 
         DB::table('trx_production_order')->insert([
-            'number' => 'PrO-1800000002',
+            'number' => 'PRO00002',
             'project_id' => 1,
             'wbs_id' => 2,
             'status' => 1,
@@ -31,7 +31,7 @@ class ProductionOrderTableSeeder extends Seeder
             ]);    
             
         DB::table('trx_production_order')->insert([
-            'number' => 'PrO-1800000003',
+            'number' => 'PRO00003',
             'project_id' => 2,
             'wbs_id' => 5,
             'status' => 1,
