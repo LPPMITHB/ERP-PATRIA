@@ -7,7 +7,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View All Ships' => route('ship.index'),
-            $ship->name => route('ship.show',$ship->id),
+            $ship->type => route('ship.show',$ship->id),
         ]
     ]
 )
@@ -55,7 +55,7 @@
                         <tr>
                             <td>2</td>
                             <td>Name</td>
-                            <td>{{ $ship->name }}</td>
+                            <td>{{ $ship->type }}</td>
                         </tr>
                         <tr>
                             <td>3</td>

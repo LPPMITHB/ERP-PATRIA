@@ -4,7 +4,7 @@
     @if ($menu == "building")
         @breadcrumb(
             [
-                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->ship->name,
+                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->name,
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Projects' => route('project.index'),
@@ -16,7 +16,7 @@
     @else
         @breadcrumb(
             [
-                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->ship->name,
+                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->name,
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Projects' => route('project_repair.index'),
@@ -50,11 +50,11 @@
                         <div class="col-md-4 col-xs-6 no-padding">Project Code</div>
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->number}}</b></div>
                         
-                        <div class="col-md-4 col-xs-6 no-padding">Project Name</div>
+                        <div class="col-md-4 col-xs-6 no-padding">Ship Name</div>
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->name}}</b></div>
 
-                        <div class="col-md-4 col-xs-6 no-padding">Ship Name</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->ship->name}}</b></div>
+                        <div class="col-md-4 col-xs-6 no-padding">Ship Type</div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->ship->type}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Customer Name</div>
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>

@@ -63,7 +63,7 @@ class ProjectController extends Controller
     //         $arr = array(
     //             'number'    => $data->number,
     //             'customer'  => $data->quotation->customer->name,
-    //             'product'   => $data->quotation->estimator->ship->name,
+    //             'product'   => $data->quotation->estimator->ship->type,
     //             'created_at'=> substr($data->created_at, 0, 10),
     //         );
 
@@ -93,7 +93,7 @@ class ProjectController extends Controller
         //     $arr = array(
         //         'number'    => $data->number,
         //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->name,
+        //         'product'   => $data->quotation->estimator->ship->type,
         //         'created_at'=> $data->created_at,
         //     );
 
@@ -118,7 +118,7 @@ class ProjectController extends Controller
         //     $arr = array(
         //         'number'    => $data->number,
         //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->name,
+        //         'product'   => $data->quotation->estimator->ship->type,
         //         'created_at'=> $data->created_at,
         //     );
 
@@ -176,11 +176,11 @@ class ProjectController extends Controller
         ]);
 
         DB::beginTransaction();
-        $projectSequence = Project::orderBy('created_at','desc')->whereYear('created_at', '=', date('Y'))->first();
-        dd($projectSequence);
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
         try {
             $project = new Project;
             $project->number =  $request->number;
+            $project->project_sequence = $modelProject->project_sequence + 1;
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;

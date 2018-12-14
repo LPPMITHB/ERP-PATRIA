@@ -16,7 +16,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-solid">
+        <div class="box">
             <div class="box-header">
                 <div class="col-xs-12 col-lg-4 col-md-12">    
                     <div class="box-body">
@@ -26,7 +26,7 @@
                         <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Ship</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
                         <div class="col-md-3 col-xs-4 no-padding">Customer</div>
                         <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
@@ -63,6 +63,7 @@
                                 <th style="width: 20%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
+                                <th style="width: 11%">Weight</th>
                                 <th style="width: 12%"></th>
                             </tr>
                         </thead>
@@ -73,6 +74,7 @@
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">{{ data.deliverables }}</td>
                                 <td>{{ data.planned_deadline }}</td>
+                                <td>{{ data.weight }} %</td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createSubWBS(data)">
                                         ADD WBS
@@ -97,6 +99,9 @@
                                 </td>
                                 <td class="p-l-0">
                                     <input v-model="newWork.planned_deadline" type="text" class="form-control datepicker width100" id="planned_deadline" name="planned_deadline" placeholder="Deadline">
+                                </td>
+                                <td class="p-l-0">
+                                    <input v-model="newWork.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight">
                                 </td>
                                 <td>
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
@@ -136,6 +141,10 @@
                                                 <input v-model="editWbs.planned_deadline" type="text" class="form-control datepicker" id="edit_planned_deadline" placeholder="Insert Deadline here...">                                                                                               
                                             </div>  
                                         </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="weight" class="control-label">Weight</label>
+                                            <input id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -168,7 +177,6 @@ $(document).ready(function(){
 var data = {
     wbs : "",
     newIndex : "", 
-    structures : @json($structures),
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
     newWork : {
@@ -177,6 +185,7 @@ var data = {
         deliverables : "",
         planned_deadline : "",
         project_id : @json($project->id),
+        weight : ""
     },
     editWbs : {
         wbs_id: "",
@@ -185,17 +194,7 @@ var data = {
         deliverables : "",
         planned_deadline : "",
         project_id : @json($project->id),
-    },
-    nameSettings: {
-        placeholder: 'Name',
-        create: function(input) {
-            return {
-                value: input,
-                text: input
-            }
-        },
-        plugins: ['dropdown_direction'],
-        dropdownDirection : 'down',
+        weight : "",
     },
 };
 
@@ -223,6 +222,7 @@ var vm = new Vue({
                 if(this.newWork.name == ""
                 || this.newWork.description == ""
                 || this.newWork.deliverables == ""
+                || this.newWork.weight == ""
                 || this.newWork.planned_deadline == "")
                 {
                     isOk = true;
@@ -234,6 +234,7 @@ var vm = new Vue({
                 if(this.editWbs.name == ""
                 || this.editWbs.description == ""
                 || this.editWbs.deliverables == ""
+                || this.editWbs.weight == ""
                 || this.editWbs.planned_deadline == "")
                 {
                     isOk = true;
@@ -302,6 +303,7 @@ var vm = new Vue({
                 this.newWork.description = "";
                 this.newWork.deliverables = "";
                 this.newWork.planned_deadline = "";                
+                this.newWork.weight = "";                
             })
             .catch((error) => {
                 console.log(error);

@@ -39,7 +39,7 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td>{{ $ship->code }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->name}}">{{ $ship->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->type}}">{{ $ship->type }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->type}}">{{ $ship->type }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('ship.show', ['id'=>$ship->id]) }}" class="btn btn-primary btn-xs">VIEW</a>

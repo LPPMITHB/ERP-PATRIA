@@ -39,7 +39,7 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td>{{ $project->number }}</td>
-                                <td>{{ $project->ship->name }}</td>
+                                <td>{{ $project->ship->type }}</td>
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>
                                 <td>{{ $project->planned_end_date}}</td>
