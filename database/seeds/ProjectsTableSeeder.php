@@ -31,6 +31,8 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
 
         DB::table('pro_project')->insert([
@@ -52,6 +54,8 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
 
         DB::table('pro_project')->insert([
@@ -73,6 +77,8 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
 
         DB::table('pro_project')->insert([
@@ -94,6 +100,8 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
     }
 }
