@@ -132,7 +132,7 @@ class GoodsReceiptController extends Controller
         
         if($modelPOD){
             $modelPOD->received = $modelPOD->received + $received;
-            $modelPOD->save();
+            $modelPOD->update();
         }else{
 
         }
@@ -144,13 +144,13 @@ class GoodsReceiptController extends Controller
 
         if($modelStock){
             $modelStock->quantity += $received;
-            $modelStock->save();
+            $modelStock->update();
         }else{
             $modelStock = new Stock;
             $modelStock->quantity = $received;
             $modelStock->branch_id = Auth::user()->branch->id;;
             $modelStock->material_id = $material_id;
-            $modelStock->save();
+            $modelStock->update();
                 
         }
     }
@@ -160,13 +160,13 @@ class GoodsReceiptController extends Controller
         
         if($modelSlocDetail){
             $modelSlocDetail->quantity += $received;
-            $modelSlocDetail->save();
+            $modelSlocDetail->update();
         }else{
             $modelSlocDetail = new StorageLocationDetail    ;
             $modelSlocDetail->quantity = $received;
             $modelSlocDetail->material_id = $material_id;
             $modelSlocDetail->storage_location_id = $sloc_id;
-            $modelSlocDetail->save();
+            $modelSlocDetail->update();
         }
     }
     public function checkStatusPO($po_id){
@@ -207,7 +207,7 @@ class GoodsReceiptController extends Controller
         DB::beginTransaction();
         try {
             $modelGRD->quantity = $datas['quantity'];
-            $modelGRD->save();
+            $modelGRD->update();
             
             DB::commit();
             return response(json_encode($modelPRD),Response::HTTP_OK);

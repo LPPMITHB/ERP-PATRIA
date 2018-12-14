@@ -28,6 +28,12 @@ Route::get('/getNewBom/{id}', 'BOMController@getNewBomAPI')->name('api.bom.getNe
 Route::get('/getBomDetail/{id}', 'BOMController@getBomDetailAPI')->name('api.bom.getBomDetailAPI');
 Route::get('/getMaterialsBOM/{id}', 'BOMController@getMaterialsAPI')->name('api.bom.getMaterialsAPI');
 
+// bos
+Route::get('/getServiceBOS/{id}', 'BOSController@getServiceAPI')->name('api.bos.getServiceAPI');
+Route::get('/getBos/{id}', 'BOSController@getBosAPI')->name('api.bos.getBosAPI');
+Route::get('/getNewBos/{id}', 'BOSController@getNewBosAPI')->name('api.bos.getNewBosAPI');
+Route::get('/getBosDetail/{id}', 'BOSController@getBosDetailAPI')->name('api.bos.getBosDetailAPI');
+Route::get('/getServicesBOS/{id}', 'BOSController@getServicesAPI')->name('api.bos.getServicesAPI');
 
 // rap
 Route::get('/getNewCost/{id}', 'RAPController@getNewCostAPI')->name('api.bom.getNewCostAPI');
