@@ -100,6 +100,7 @@ class WBSController extends Controller
 
             $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data['planned_deadline']);
             $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $wbs_ref->weight =  $data['weight'];
 
             if(!$wbs_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);

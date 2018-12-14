@@ -59,11 +59,11 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 20%">Name</th>
-                                <th style="width: 20%">Description</th>
+                                <th style="width: 17%">Name</th>
+                                <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
-                                <th style="width: 11%">Weight</th>
+                                <th style="width: 11%">Weight ({{totalWeight}}/100)</th>
                                 <th style="width: 12%"></th>
                             </tr>
                         </thead>
@@ -89,19 +89,19 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
-                                    <input v-model="newWork.name" type="text" class="form-control width100" id="name" name="name" placeholder="Name">
+                                    <input v-model="newWbs.name" type="text" class="form-control width100" id="name" name="name" placeholder="Name">
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWork.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
+                                    <textarea v-model="newWbs.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWork.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
+                                    <textarea v-model="newWbs.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newWork.planned_deadline" type="text" class="form-control datepicker width100" id="planned_deadline" name="planned_deadline" placeholder="Deadline">
+                                    <input v-model="newWbs.planned_deadline" type="text" class="form-control datepicker width100" id="planned_deadline" name="planned_deadline" placeholder="Deadline">
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newWork.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight">
+                                    <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight (%)">
                                 </td>
                                 <td>
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
@@ -142,7 +142,7 @@
                                             </div>  
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="weight" class="control-label">Weight</label>
+                                            <label for="weight" class="control-label">Weight (%)</label>
                                             <input id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
                                         </div>
                                     </div>
@@ -179,7 +179,7 @@ var data = {
     newIndex : "", 
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
-    newWork : {
+    newWbs : {
         name : "",
         description : "",
         deliverables : "",
@@ -196,6 +196,9 @@ var data = {
         project_id : @json($project->id),
         weight : "",
     },
+    maxWeight : 0,
+    totalWeight : 0,
+    active_id : "",
 };
 
 var vm = new Vue({
@@ -207,7 +210,7 @@ var vm = new Vue({
         });
         $("#planned_deadline").datepicker().on(
             "changeDate", () => {
-                this.newWork.planned_deadline = $('#planned_deadline').val();
+                this.newWbs.planned_deadline = $('#planned_deadline').val();
             }
         );
         $("#edit_planned_deadline").datepicker().on(
@@ -219,11 +222,11 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newWork.name == ""
-                || this.newWork.description == ""
-                || this.newWork.deliverables == ""
-                || this.newWork.weight == ""
-                || this.newWork.planned_deadline == "")
+                if(this.newWbs.name == ""
+                || this.newWbs.description == ""
+                || this.newWbs.deliverables == ""
+                || this.newWbs.weight == ""
+                || this.newWbs.planned_deadline == "")
                 {
                     isOk = true;
                 }
@@ -247,21 +250,28 @@ var vm = new Vue({
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
+            this.active_id = data.id;
             this.editWbs.name = data.name;
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
             this.editWbs.planned_deadline = data.planned_deadline;
+            this.editWbs.weight = data.weight;
             $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
         },
         createSubWBS(data){
-            var url = "/wbs/createSubWBS/"+this.newWork.project_id+"/"+data.id;
+            var url = "/wbs/createSubWBS/"+this.newWbs.project_id+"/"+data.id;
             return url;
         },
         getWBS(){
-            window.axios.get('/api/getWbs/'+this.newWork.project_id).then(({ data }) => {
+            window.axios.get('/api/getWbs/'+this.newWbs.project_id).then(({ data }) => {
                 this.wbs = data;
                 this.newIndex = Object.keys(this.wbs).length+1;
-
+                this.totalWeight = 0;
+                this.wbs.forEach(data => {
+                    this.totalWeight += data.weight;
+                });
+                this.totalWeight = roundNumber(this.totalWeight,2);
+                this.maxWeight = roundNumber((100 - this.totalWeight),2);
                 $('#wbs-table').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#wbs-table').DataTable({
@@ -276,11 +286,11 @@ var vm = new Vue({
             });
         },
         add(){            
-            var newWork = this.newWork;
-            newWork = JSON.stringify(newWork);
+            var newWbs = this.newWbs;
+            newWbs = JSON.stringify(newWbs);
             var url = "{{ route('wbs.store') }}";
             $('div.overlay').show();            
-            window.axios.post(url,newWork)
+            window.axios.post(url,newWbs)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -299,11 +309,11 @@ var vm = new Vue({
                 }
                 
                 this.getWBS();
-                this.newWork.name = "";
-                this.newWork.description = "";
-                this.newWork.deliverables = "";
-                this.newWork.planned_deadline = "";                
-                this.newWork.weight = "";                
+                this.newWbs.name = "";
+                this.newWbs.description = "";
+                this.newWbs.deliverables = "";
+                this.newWbs.planned_deadline = "";                
+                this.newWbs.weight = "";                
             })
             .catch((error) => {
                 console.log(error);
@@ -356,7 +366,7 @@ var vm = new Vue({
         //     other_cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         //     Vue.nextTick(() => this.editWbs.other_cost_string = other_cost_string);
         // },
-        'newWork.planned_deadline': function(newValue){
+        'newWbs.planned_deadline': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
             
@@ -398,11 +408,51 @@ var vm = new Vue({
                 });
             }
         },
+        'newWbs.weight': function(newValue){
+            this.newWbs.weight = (this.newWbs.weight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2)>this.maxWeight){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    message: 'Total weight cannot be more than 100%',
+                    position: 'topRight',
+                });
+            }
+        },
+        'editWbs.weight': function(newValue){
+            this.editWbs.weight = (this.editWbs.weight+"").replace(/[^0-9.]/g, "");  
+            var totalWeight = 0;
+            this.wbs.forEach(data => {
+                if(data.id != this.active_id){
+                    totalWeight += data.weight;
+                }
+            });
+            var maxWeightEdit = roundNumber(100 - roundNumber(totalWeight,2),2);
+            if(this.editWbs.weight>maxWeightEdit){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    message: 'Total weight cannot be more than 100%',
+                    position: 'topRight',
+                });
+            }
+        },
     },
     created: function() {
         this.getWBS();
     },
     
 });
+
+function roundNumber(num, scale) {
+  if(!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+  } else {
+    var arr = ("" + num).split("e");
+    var sig = ""
+    if(+arr[1] + scale > 0) {
+      sig = "+";
+    }
+    return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+  }
+}
 </script>
 @endpush

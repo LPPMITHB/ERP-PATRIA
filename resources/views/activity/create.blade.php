@@ -114,7 +114,7 @@
             @verbatim
             <div id="add_activity">
                 <div class="box-body">
-                    <h4 class="box-title">List of Activities</h4>
+                    <h4 class="box-title">List of Activities (Weight : <b>{{totalWeight}}%</b> / <b>{{wbsWeight}}%</b>)</h4>
                     <table id="activity-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
@@ -381,6 +381,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
     activities :[],
     newIndex : "",
@@ -417,6 +418,8 @@ var data = {
         maxItems : null,
         plugins: ['remove_button'],
     },
+    maxWeight : 0,
+    totalWeight : 0,
     predecessorTable: [],
     predecessorTableView :[],
     predecessorTableEdit:[],
@@ -480,6 +483,7 @@ var vm = new Vue({
                 || this.newActivity.description == ""
                 || this.newActivity.planned_start_date == ""
                 || this.newActivity.planned_end_date == ""
+                || this.newActivity.weight == ""
                 || this.newActivity.planned_duration == "")
                 {
                     isOk = true;
@@ -568,7 +572,13 @@ var vm = new Vue({
             window.axios.get('/api/getActivities/'+this.newActivity.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.newIndex = Object.keys(this.activities).length+1;
-                
+
+                this.totalWeight = 0;
+                this.activities.forEach(data => {
+                    this.totalWeight += data.weight;
+                });
+                this.totalWeight = roundNumber(this.totalWeight,2);
+                this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
                 $('#activity-table').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#activity-table').DataTable({
@@ -662,15 +672,10 @@ var vm = new Vue({
             handler: function(newValue) {
                 this.newActivity.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
                 if(parseInt(newValue.planned_duration) < 1 ){
-                    iziToast.show({
-                        timeout: 6000,
-                        color : 'red',
+                    iziToast.warning({
                         displayMode: 'replace',
-                        icon: 'fa fa-warning',
-                        title: 'Warning !',
-                        message: 'End Date cannot be ahead Start Date',
+                        title: 'End Date cannot be ahead Start Date',
                         position: 'topRight',
-                        progressBarColor: 'rgb(0, 255, 184)',
                     });
                     this.newActivity.planned_duration = "";
                     this.newActivity.planned_end_date = "";
@@ -691,18 +696,30 @@ var vm = new Vue({
                 });
             }
         },
-        'newActivity.weight': function(newValue){
-            this.newActivity.weight = (this.newActivity.weight+"").replace(/\D/g, "");  
-            if(newValue>this.maxWeight){
-               iziToast.show({
-                    timeout: 6000,
-                    color : 'red',
+        'editActivity.weight': function(newValue){
+            this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");  
+            var totalWeight = 0;
+            this.activities.forEach(data => {
+                if(data.id != this.active_id){
+                    totalWeight += data.weight;
+                }
+            });
+            var maxWeightEdit = roundNumber(this.wbsWeight - roundNumber(totalWeight,2),2);            
+            if(this.editActivity.weight>maxWeightEdit){
+                iziToast.warning({
                     displayMode: 'replace',
-                    icon: 'fa fa-warning',
-                    title: 'Warning !',
-                    message: 'Total weight cannot be more than 100%',
+                    title: 'Total weight cannot be more than '+this.wbsWeight+'%',
                     position: 'topRight',
-                    progressBarColor: 'rgb(0, 255, 184)',
+                });
+            }
+        },
+        'newActivity.weight': function(newValue){
+            this.newActivity.weight = (this.newActivity.weight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2)>this.maxWeight){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total weight cannot be more than '+this.wbsWeight+'%',
+                    position: 'topRight',
                 });
             }
         },
@@ -717,28 +734,6 @@ var vm = new Vue({
                     });
                 });
             }
-        },
-        'editActivity.weight': function(newValue){
-            this.editActivity.weight = (this.editActivity.weight+"").replace(/\D/g, "");  
-            if(newValue>this.maxWeight){
-                iziToast.show({
-                    timeout: 6000,
-                    color : 'red',
-                    displayMode: 'replace',
-                    icon: 'fa fa-warning',
-                    title: 'Warning !',
-                    message: 'Total weight cannot be more than 100%',
-                    position: 'topRight',
-                    progressBarColor: 'rgb(0, 255, 184)',
-                });
-            }
-        },
-        activities: function(newValue){
-            var weightTotal = 0;
-            this.activities.forEach(activity => {
-                weightTotal += activity.weight; 
-            });
-            this.maxWeight = 100 - weightTotal;
         },
     },
     created: function() {
@@ -756,6 +751,19 @@ function datediff(first, second) {
     // Take the difference between the dates and divide by milliseconds per day.
     // Round to nearest whole number to deal with DST.
     return Math.round(((second-first)/(1000*60*60*24))+1);
+}
+
+function roundNumber(num, scale) {
+  if(!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+  } else {
+    var arr = ("" + num).split("e");
+    var sig = ""
+    if(+arr[1] + scale > 0) {
+      sig = "+";
+    }
+    return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+  }
 }
 </script>
 @endpush
