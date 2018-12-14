@@ -165,7 +165,6 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:pro_project|string|max:255',
             'customer' => 'required',
             'ship' => 'required',
             'planned_start_date' => 'required',
@@ -174,6 +173,12 @@ class ProjectController extends Controller
             'flag' => 'required',
             'class_name' => 'required'
         ]);
+        $projects = Project::all();
+        foreach ($projects as $project) {
+            if($project->name == $request->name){
+                return redirect()->route('project.create')->with('error',"The Project Name Has Been Taken")->withInput();
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -206,7 +211,7 @@ class ProjectController extends Controller
             return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Created');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('project.create')->with('error', $e->getMessage());
+            return redirect()->route('project.create')->with( 'error',$e->getMessage())->withInput();
         }
     }
 

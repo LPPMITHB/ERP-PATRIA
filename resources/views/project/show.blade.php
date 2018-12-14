@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Show Project » '.$project->businessUnit->name.' » ' .$project->ship->name,
+        'title' => 'Show Project » '.$project->businessUnit->name.' » ' .$project->name,
         'items' => [
             'Dashboard' => route('index'),
             'View All Projects' => route('project.index'),
@@ -277,7 +277,7 @@
 <div class="row">
     <div class="col-sm-12" style="margin-top: -5px;">
         <div class="box box-solid">
-            <div class="box-header with-border"><h4><b>Gantt Chartt</b></h4></div>
+            <div class="box-header with-border"><h4><b>Gantt Chart</b></h4></div>
             <div class="box-body gantt_chart_mobile">
                 <label>View by :</label>
                 <label><input type="radio" name="scale" value="day" />Day scale</label>
