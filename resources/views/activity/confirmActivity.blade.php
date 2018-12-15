@@ -82,21 +82,23 @@
             <div id="confirm_activity">
                 <div class="box-body">
                     <h4 class="box-title">List of Activities</h4>
-                    <table id="activity-table" class="table table-bordered" >
+                    <table id="activity-table" class="table table-bordered tableFixed" >
                         <thead>
                             <tr>
-                                <th style="width: 4%">No</th>
-                                <th style="width: 35%">Name</th>
-                                <th style="width: 40%">Description</th>
+                                <th style="width: 10px">No</th>
+                                <th style="width: 20%">Name</th>
+                                <th style="width: 35%">Description</th>
                                 <th style="width: 8%">Status</th>
-                                <th style="width: 10%"></th>
+                                <th style="width: 8%">Progress</th>
+                                <th style="width: 8%">Weight</th>
+                                <th style="width: 55px"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in activities" >
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="textCenter">
                                     <template v-if="data.status == 0">
                                         <i class='fa fa-check'></i>
@@ -105,6 +107,8 @@
                                         <i class='fa fa-times'></i>
                                     </template>
                                 </td>
+                                <td>{{ data.progress }} %</td>
+                                <td>{{ data.weight }} %</td>
                                 <td class="textCenter">
                                     <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal"  @click="openConfirmModal(data)">CONFIRM</button>
                                 </td>
@@ -198,7 +202,7 @@
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input :disabled="alreadyStart" v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
+                                                <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
                                             </div>
                                         </div>
                                         
@@ -206,18 +210,18 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-sm-6">
-                                            <label for="duration" class=" control-label">Actual Duration</label>
-                                            <input :disabled="alreadyStart" @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
+                                            <label for="duration" class=" control-label">Actual Duration (Days)</label>
+                                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
                                         </div> 
                                         <div class="form-group col-sm-6">
                                             <label for="duration" class=" control-label">Current Progress (%)</label>
-                                            <input :disabled="alreadyStart" v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
+                                            <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
                                         </div> 
                                     </div>
                                     
                                 </div>
                                 <div class="modal-footer">
-                                    <button :disabled="alreadyStart" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
+                                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
                                 </div>
                             </div>
                             <!-- /.modal-content -->
@@ -253,7 +257,7 @@ var data = {
         actual_start_date : "",
         actual_end_date : "",
         actual_duration : "",
-        current_progress : "",
+        current_progress : 0,
     },
     havePredecessor : false,
 };
@@ -289,38 +293,14 @@ var vm = new Vue({
             "changeDate", () => {
                 this.confirmActivity.actual_end_date = $('#actual_end_date').val();
                 if(this.confirmActivity.actual_start_date != "" && this.confirmActivity.actual_end_date != ""){
-                    this.confirmActivity.current_progress = 100;
                     this.confirmActivity.actual_duration = datediff(parseDate(this.confirmActivity.actual_start_date), parseDate(this.confirmActivity.actual_end_date));
                 }else{
                     this.confirmActivity.actual_duration ="";
-                    this.confirmActivity.current_progress = 0;
                 }
             }
         );
     },
     computed:{
-        alreadyStart: function(){
-            let isOkAlreadyStart = false;
-            if(this.confirmActivity.actual_start_date == "")
-            {
-                isOkAlreadyStart = true;
-            }
-            
-            let isOkPredecessor = false;
-            
-            document.getElementById("actual_start_date").disabled = false;
-            
-            this.predecessorActivities.forEach(activity => {
-                if(activity.status == 1){
-                    isOkPredecessor = true;
-                    document.getElementById("actual_start_date").disabled = true;
-                }
-            });
-            return isOkAlreadyStart || isOkPredecessor;
-        },
-        predecessorStatusCheck: function(){
-            
-        },
     }, 
     methods:{
         tooltipText: function(text) {
@@ -335,6 +315,17 @@ var vm = new Vue({
                 });
             }else{
                 this.havePredecessor = false;
+                this.predecessorActivities = [];
+            }
+            this.confirmActivity.current_progress = data.progress;
+            if(this.confirmActivity.current_progress != 100){
+                document.getElementById("actual_end_date").disabled = true;
+                document.getElementById("actual_duration").disabled = true;
+                this.confirmActivity.actual_end_date = "";
+                this.confirmActivity.actual_duration = "";
+            }else{
+                document.getElementById("actual_end_date").disabled = false;
+                document.getElementById("actual_duration").disabled = false;
             }
             document.getElementById("confirm_activity_code").innerHTML= data.code;
             document.getElementById("planned_start_date").innerHTML= data.planned_start_date;
@@ -355,11 +346,9 @@ var vm = new Vue({
                 
                 actual_end_date.setDate(actual_end_date.getDate() + actual_duration-1);
                 $('#actual_end_date').datepicker('setDate', actual_end_date);
-                this.confirmActivity.current_progress = 100;
 
             }else{
                 this.confirmActivity.actual_end_date = "";
-                this.confirmActivity.current_progress = 0;
             }
         },
         // dataForTooltip(data){
@@ -462,7 +451,6 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                 }
-                
                 this.getActivities();   
             })
             .catch((error) => {
@@ -474,29 +462,62 @@ var vm = new Vue({
     watch: {
         confirmActivity:{
             handler: function(newValue) {
-                this.confirmActivity.actual_duration = newValue.actual_duration+"".replace(/\D/g, "");
-                if(parseInt(newValue.actual_duration) < 1 ){
-                    iziToast.show({
-                        timeout: 6000,
-                        color : 'red',
-                        displayMode: 'replace',
-                        icon: 'fa fa-warning',
-                        title: 'Warning !',
-                        message: 'End Date cannot be ahead Start Date',
-                        position: 'topRight',
-                        progressBarColor: 'rgb(0, 255, 184)',
-                    });
-                    this.confirmActivity.actual_duration = "";
+                if(this.confirmActivity.actual_start_date == ""){
+                    document.getElementById("actual_end_date").disabled = true;
+                    document.getElementById("actual_duration").disabled = true;
+                    document.getElementById("btnSave").disabled = true;
+                    document.getElementById("current_progress").disabled = true;
+                }else{
+                    document.getElementById("actual_end_date").disabled = false;
+                    document.getElementById("actual_duration").disabled = false;
+                    document.getElementById("btnSave").disabled = false;
+                    document.getElementById("current_progress").disabled = false;
+                }         
+                
+                this.predecessorActivities.forEach(activity => {
+                    if(activity.status == 1){
+                        document.getElementById("actual_start_date").disabled = true;
+                        document.getElementById("actual_end_date").disabled = true;
+                        document.getElementById("actual_duration").disabled = true;
+                        document.getElementById("btnSave").disabled = true;
+                        document.getElementById("current_progress").disabled = true;
+                    }
+                });
+
+                if(this.confirmActivity.current_progress != 100){
+                    document.getElementById("actual_end_date").disabled = true;
+                    document.getElementById("actual_duration").disabled = true;
                     this.confirmActivity.actual_end_date = "";
+                    this.confirmActivity.actual_duration = "";
+                }else{
+                    document.getElementById("actual_end_date").disabled = false;
+                    document.getElementById("actual_duration").disabled = false;
+                    if(this.confirmActivity.actual_end_date == ""){
+                        document.getElementById("btnSave").disabled = true;
+                    }else{
+                        document.getElementById("btnSave").disabled = false;
+                    }
                 }
             },
             deep: true
-        },
+        }, 
         'confirmActivity.actual_start_date' :function(newValue){
             if(newValue == ""){
                 $('#actual_end_date').datepicker('setDate', null);
                 this.confirmActivity.actual_duration = "";
             }
+        },
+        'confirmActivity.actual_duration' : function(newValue){
+            this.confirmActivity.actual_duration = newValue+"".replace(/\D/g, "");
+                if(parseInt(newValue) < 1 ){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'End Date cannot be ahead Start Date',
+                        position: 'topRight',
+                    });
+                    this.confirmActivity.actual_duration = "";
+                    this.confirmActivity.actual_end_date = "";
+                }
         },
         
                 

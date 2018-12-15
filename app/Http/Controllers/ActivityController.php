@@ -265,12 +265,11 @@ class ActivityController extends Controller
 
             $project = $wbs->project;
             $oldestWorks= $project->wbss->where('wbs_id', null);
-            $wbsContribution = 1/(count($oldestWorks));
-            $totalWorkPercentage = 0;
+            $progress = 0;
             foreach($oldestWorks as $wbs){
-                $totalWorkPercentage = $totalWorkPercentage + ($wbs->progress*($wbsContribution));
+                $progress += $wbs->progress* ($wbs->weight /100); 
             }            
-            $project->progress = $totalWorkPercentage;
+            $project->progress = $progress;
             $project->save();
             
             DB::commit();
@@ -303,47 +302,39 @@ class ActivityController extends Controller
     function changeWorkProgress($wbs){
         if($wbs){
             if($wbs->wbs){
-                $totalFinishedActivity = 0;
-                $totalActivity = count($wbs->activities);
+                $progress = 0;
                 if($wbs->activities){
                     foreach($wbs->activities as $activity){
                         if($activity->status == 0){
-                            $totalFinishedActivity++;
+                            $progress += $activity->progress * ($activity->weight/100);
                         }
                     }
                 }
 
-                $childWorkPercentage = 0;
                 if($wbs->wbss){
-                    $totalActivity = $totalActivity + count($wbs->wbss);
-                    $childWorkContribution = 1/$totalActivity;
                     foreach($wbs->wbss as $child_wbs){
-                        $childWorkPercentage = $childWorkPercentage + ($child_wbs->progress*($childWorkContribution));
+                        $progress += $child_wbs->progress * ($child_wbs->weight/100);
                     }
                 }
-                $wbs->progress = (($totalFinishedActivity/$totalActivity)*100) + $childWorkPercentage;
+                $wbs->progress = ($progress /$wbs->weight) *100;
                 $wbs->save();
                 self::changeWorkProgress($wbs->wbs);
             }else{
-                $totalFinishedActivity = 0;
-                $totalActivity = count($wbs->activities);
+                $progress = 0;
                 if($wbs->activities){
                     foreach($wbs->activities as $activity){
                         if($activity->status == 0){
-                            $totalFinishedActivity++;
+                            $progress += $activity->progress * ($activity->weight/100);
                         }
                     }
                 }
 
-                $childWorkPercentage = 0;
                 if($wbs->wbss){
-                    $totalActivity = $totalActivity + count($wbs->wbss);
-                    $childWorkContribution = 1/$totalActivity;
                     foreach($wbs->wbss as $child_wbs){
-                        $childWorkPercentage = $childWorkPercentage + ($child_wbs->progress*($childWorkContribution));
+                        $progress += $child_wbs->progress * ($child_wbs->weight/100);
                     }
                 }
-                $wbs->progress = (($totalFinishedActivity/$totalActivity)*100) + $childWorkPercentage;
+                $wbs->progress = ($progress /$wbs->weight) *100;
                 $wbs->save();
             }
         }
