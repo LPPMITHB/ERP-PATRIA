@@ -54,7 +54,7 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <h4 class="box-title">Work Breakdown Structures</h4>
+                    <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>100%</b>)</h4>
                     <table id="wbs-table" class="table table-bordered" style="border-collapse:collapse;">
                         <thead>
                             <tr>
@@ -63,16 +63,16 @@
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
-                                <th style="width: 11%">Weight ({{totalWeight}}/100)</th>
+                                <th style="width: 11%">Weight</th>
                                 <th style="width: 12%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
-                                <td class="tdEllipsis">{{ data.deliverables }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td>{{ data.planned_deadline }}</td>
                                 <td>{{ data.weight }} %</td>
                                 <td class="p-l-0 textCenter">
@@ -201,6 +201,14 @@ var data = {
     active_id : "",
 };
 
+Vue.directive('tooltip', function(el, binding){
+    $(el).tooltip({
+        title: binding.value,
+        placement: binding.arg,
+        trigger: 'hover'             
+    })
+})
+
 var vm = new Vue({
     el: '#add_wbs',
     data: data,
@@ -247,6 +255,9 @@ var vm = new Vue({
 
     }, 
     methods:{
+        tooltipText: function(text) {
+            return text
+        },
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;

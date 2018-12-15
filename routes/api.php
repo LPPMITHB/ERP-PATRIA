@@ -99,21 +99,22 @@ Route::get('/getCustomerPM/{id}', 'ProjectController@getCustomerPM')->name('api.
 Route::get('/getResourceByCategoryPM/{id}', 'ProjectController@getResourceByCategoryAPI')->name('api.yard_plan.getResourceByCategoryAPI');
 Route::get('/getResourcePM/{id}', 'ProjectController@getResourceAPI')->name('api.yard_plan.getResourceAPI');
 Route::get('/getAllResourcePM/{id}', 'ProjectController@getAllResourceAPI')->name('api.yard_plan.getAllResourceAPI');
-Route::get('/getActivity/{id}', 'ProjectController@getActivityAPI')->name('getActivityAPI')->name('api.project.getActivityAPI');
-Route::get('/getDataGantt/{id}', 'ProjectController@getDataGanttAPI')->name('getDataGanttAPI')->name('api.project.getDataGanttAPI');
+Route::get('/getActivity/{id}', 'ProjectController@getActivityAPI')->name('api.project.getActivityAPI');
+Route::get('/getDataGantt/{id}', 'ProjectController@getDataGanttAPI')->name('api.project.getDataGanttAPI');
 
 
 // wbs
-Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('getWorks')->name('api.wbs.getWbsAPI');
-Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('getAllWorks')->name('api.wbs.getAllWbsAPI');
-Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('getAllWorks')->name('api.wbs.getSubWbsAPI');
+Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI');
+Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('api.wbs.getAllWbsAPI');
+Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('api.wbs.getSubWbsAPI');
+Route::get('/getWeightWbs/{id}', 'WBSController@getWeightWbsAPI')->name('api.wbs.getWeightWbsAPI');
 
 // activity
-Route::get('/getActivities/{id}', 'ActivityController@getActivitiesAPI')->name('getActivitiesAPI')->name('api.activity.getActivitiesAPI');
-Route::get('/getActivitiesNetwork/{id}', 'ActivityController@getActivitiesNetworkAPI')->name('getActivitiesNetworkAPI')->name('api.activity.getActivitiesNetworkAPI');
-Route::get('/getAllActivities/{id}', 'ActivityController@getAllActivitiesAPI')->name('getAllActivitiesAPI')->name('api.activity.getAllActivitiesAPI');
-Route::get('/getAllActivitiesEdit/{project_id}/{activity_id}', 'ActivityController@getAllActivitiesEditAPI')->name('getAllActivitiesEditAPI')->name('api.activity.getAllActivitiesEditAPI');
-Route::get('/getPredecessor/{id}', 'ActivityController@getPredecessorAPI')->name('getPredecessorAPI')->name('api.activity.getPredecessorAPI');
-Route::get('/getProject/{id}', 'ActivityController@getProjectAPI')->name('getProjectAPI')->name('api.activity.getProjectAPI');
+Route::get('/getActivities/{id}', 'ActivityController@getActivitiesAPI')->name('api.activity.getActivitiesAPI');
+Route::get('/getActivitiesNetwork/{id}', 'ActivityController@getActivitiesNetworkAPI')->name('api.activity.getActivitiesNetworkAPI');
+Route::get('/getAllActivities/{id}', 'ActivityController@getAllActivitiesAPI')->name('api.activity.getAllActivitiesAPI');
+Route::get('/getAllActivitiesEdit/{project_id}/{activity_id}', 'ActivityController@getAllActivitiesEditAPI')->name('api.activity.getAllActivitiesEditAPI');
+Route::get('/getPredecessor/{id}', 'ActivityController@getPredecessorAPI')->name('api.activity.getPredecessorAPI');
+Route::get('/getProject/{id}', 'ActivityController@getProjectAPI')->name('api.activity.getProjectAPI');
 
 

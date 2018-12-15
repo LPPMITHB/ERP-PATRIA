@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use App\Models\Structure;
 use App\Models\Project;
@@ -97,7 +98,6 @@ class WBSController extends Controller
             $wbs_ref->name = $data['name'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
-
             $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data['planned_deadline']);
             $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
             $wbs_ref->weight =  $data['weight'];
@@ -114,12 +114,84 @@ class WBSController extends Controller
         }
     }
 
+    public function updateWithForm(Request $request, $id)
+    {
+        $data = json_decode($request->datas);
+        $wbs_ref = WBS::find($id);
+        $wbss = WBS::where('project_id',$data->project_id)->get();
+        foreach ($wbss as $wbs) {
+            if($wbs->name == $data->name && $wbs_ref->name != $data->name ){
+                return response(["error"=>"WBS Name must be UNIQUE"],Response::HTTP_OK);
+            }
+        }
+        DB::beginTransaction();
+        try {
+            $wbs_ref->name = $data->name;
+            $wbs_ref->description = $data->description;
+            $wbs_ref->deliverables = $data->deliverables;
+            $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data->planned_deadline);
+            $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $wbs_ref->weight =  $data->weight;
+
+            if(!$wbs_ref->save()){
+                return redirect()->route('wbs.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+            }else{
+                DB::commit();
+                return redirect()->route('wbs.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return redirect()->route('wbs.show', ['id' => $id])->with('success', 'Bill Of Material Created');
+        }
+    }
+
     public function index($id)
     {
         $project = Project::find($id);
         $resourceCategories = Category::where('used_for', 'RESOURCE')->get();
 
-        return view('wbs.index', compact('project','resourceCategories'));
+        $wbss=$project->wbss;
+        $dataJsTree = Collection::make();
+        $dataJsTree->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                if(count($wbs->activities)>0){
+                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    $dataJsTree->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => "/wbs/show/".$wbs->id],
+                    ]);
+                }else{
+                    $dataJsTree->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => "/wbs/show/".$wbs->id],
+                    ]);
+                }
+            }else{
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+
+                $dataJsTree->push([
+                    "id" => $wbs->code , 
+                    "parent" => $project->number,
+                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                    "icon" => "fa fa-suitcase",
+                    "a_attr" =>  ["href" => "/wbs/show/".$wbs->id],
+                ]);
+            } 
+        }
+
+        return view('wbs.index', compact('project','resourceCategories','dataJsTree'));
     }
 
     public function show($id)
@@ -168,12 +240,19 @@ class WBSController extends Controller
     }
 
     public function getAllWbsAPI($project_id){
-        $wbss = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
+        $wbss = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->with('wbs')->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 
     public function getSubWbsAPI($wbs_id){
         $wbss = WBS::orderBy('planned_deadline', 'asc')->where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
+    }
+
+    public function getWeightWbsAPI($wbs_id){
+        $wbs = WBS::find($wbs_id);
+        $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+
+        return response($totalWeight, Response::HTTP_OK);
     }
 }
