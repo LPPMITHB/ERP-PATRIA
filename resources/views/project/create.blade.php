@@ -2,30 +2,59 @@
 @section('content-header')
 
 @if($project->id)
-@breadcrumb(
-    [
-        'title' => 'Edit Project',
-        'items' => [
-            'Home' => route('index'),
-            'View all Projects' => route('project.index'),
-            $project->name => route('project.show',$project->id),
-            'Edit' => route('project.edit',$project->id),
-        ]
-    ]
-)
-@endbreadcrumb
+    @if($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Edit Project',
+                'items' => [
+                    'Home' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    $project->name => route('project.show',$project->id),
+                    'Edit' => route('project.edit',$project->id),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Edit Project',
+                'items' => [
+                    'Home' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    $project->name => route('project_repair.show',$project->id),
+                    'Edit' => route('project_repair.edit',$project->id),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @else
-@breadcrumb(
-    [
-        'title' => 'Create Project',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Project' => route('project.index'),
-            'Create' => route('project.create'),
-        ]
-    ]
-)
-@endbreadcrumb
+    @if($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Create Project',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Project' => route('project.index'),
+                    'Create' => route('project.create'),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Create Project',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Project' => route('project_repair.index'),
+                    'Create' => route('project_repair.create'),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endif
 @endsection
 @section('content')
@@ -54,14 +83,14 @@
                             <div class="form-group">
                                 <label for="number" class="col-sm-2 control-label">Project Number</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="number" name="number" required autofocus v-model="project.number">
+                                    <input type="text" class="form-control" id="number" name="number"  required autofocus v-model="project.number">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="name" class="col-sm-2 control-label">Project Name</label>
+                                <label for="name" class="col-sm-2 control-label">Ship Name</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="name" name="name" required v-model="project.name">
+                                    <input type="text" class="form-control" id="name" name="name"  required v-model="project.name">
                                 </div>
                             </div>
 
@@ -78,7 +107,7 @@
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Owner Representative</label>
                                 <div class="col-sm-10">
-                                    <input type="text" disabled class="form-control" id="name" name="name"  v-model="ownerRep">
+                                    <input type="text" disabled class="form-control" id="owner_rep" name="owner_rep"  v-model="ownerRep">
                                 </div>
                             </div>
 
@@ -123,11 +152,11 @@
                             </div>
 
                             <div class="form-group">
-                                    <label for="ship" class="col-sm-2 control-label">Ship Name</label>
+                                    <label for="ship" class="col-sm-2 control-label">Ship Type</label>
                     
                                     <div class="col-sm-10">
                                         <selectize name="ship" id="ship" required>
-                                            <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.name }}</option>
+                                            <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.type }}</option>
                                         </selectize>
                                     </div>
                                 </div>
@@ -135,7 +164,7 @@
                             <div class="form-group">
                                 <label for="description" class="col-sm-2 control-label">Description</label>
                                 <div class="col-sm-10">
-                                    <textarea class="form-control" rows="3" name="description">{{ project.description }}</textarea>
+                                    <textarea class="form-control" rows="3" name="description" >{{ project.description }}</textarea>
                                 </div>
                             </div>
 
@@ -226,6 +255,17 @@ $(document).ready(function(){
     });
 
     var data = {
+        oldData : {
+            number : @json(Request::old('number')),
+            name : @json(Request::old('name')),
+            flag : @json(Request::old('flag')),
+            class_name : @json(Request::old('class_name')),
+            class_cp_name : @json(Request::old('class_contact_person_name')),
+            class_cp_phone : @json(Request::old('class_contact_person_phone')),
+            class_cp_email :@json(Request::old('class_contact_person_email')),
+            description : @json(Request::old('description')),
+        },
+
         customers : @json($customers),
         ships : @json($ships),
         ownerRep : "",
@@ -254,7 +294,34 @@ $(document).ready(function(){
                     });
                 }
             }
+        },
+        created: function() {
+            if(this.oldData.number !=null) {
+                this.project.number=this.oldData.number;
+            }
+            if(this.oldData.name !=null) {
+                this.project.name=this.oldData.name;
+            }
+            if(this.oldData.flag !=null) {
+                this.project.flag=this.oldData.flag;
+            }
+            if(this.oldData.class_name !=null) {
+                this.project.class_name=this.oldData.class_name;
+            }
+            if(this.oldData.class_cp_name !=null) {
+                this.project.class_cp_name=this.oldData.class_cp_name;
+            }
+            if(this.oldData.class_cp_phone !=null) {
+                this.project.class_cp_phone=this.oldData.class_cp_phone;
+            }
+            if(this.oldData.class_cp_email !=null) {
+                this.project.class_cp_email=this.oldData.class_cp_email;
+            }
+            if(this.oldData.description !=null) {
+                this.project.description=this.oldData.description;
+            // console.log(this.oldData);
         }
+    },
 
     });
     $('div.overlay').hide();
@@ -357,8 +424,26 @@ $(document).ready(function(){
         var selectizeShip = $selectShip[0].selectize;
         selectizeShip.setValue(@JSON($project->ship_id));
     }
-    
 
+    if(@JSON(Request::old('planned_start_date')) != null){
+        var planned_start_date = new Date(@JSON(Request::old('planned_start_date')));
+        $('#planned_start_date').datepicker('setDate', @JSON(Request::old('planned_start_date')) );
+    }
+    if(@JSON(Request::old('planned_end_date')) != null){
+        var planned_end_date = new Date(@JSON(Request::old('planned_end_date')));
+        $('#planned_end_date').datepicker('setDate', @JSON(Request::old('planned_end_date')) );
+    }
+
+    if(@JSON(Request::old('customer')) != null){
+        var $selectCustomer = $("#customer").selectize();
+        var selectizeCustomer = $selectCustomer[0].selectize;
+        selectizeCustomer.setValue(@JSON(Request::old('customer')) );
+    }
+    if(@JSON(Request::old('ship')) != null){
+        var $selectShip = $("#ship").selectize();
+        var selectizeShip = $selectShip[0].selectize;
+        selectizeShip.setValue(@JSON(Request::old('ship')));
+    }
 
 
 });

@@ -146,7 +146,7 @@ class YardController extends Controller
     }
     
     public function generateYardCode(){
-        $code = 'Y';
+        $code = 'YRD';
         $modelYard = Yard::orderBy('code', 'desc')->first();
         
         $number = 1;

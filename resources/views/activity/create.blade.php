@@ -33,7 +33,7 @@
                             <tr>
                                 <td>Ship</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
+                                <td>&ensp;<b>{{$project->ship->type}}</b></td>
                             </tr>
                             <tr>
                                 <td>Customer</td>
@@ -114,7 +114,7 @@
             @verbatim
             <div id="add_activity">
                 <div class="box-body">
-                    <h4 class="box-title">List of Activities</h4>
+                    <h4 class="box-title">List of Activities (Weight : <b>{{totalWeight}}%</b> / <b>{{wbsWeight}}%</b>)</h4>
                     <table id="activity-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
@@ -173,7 +173,7 @@
                                     <input v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
                                 </td>
                                 <td class="p-l-0 textCenter">
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#add_dependant_activity">MANAGE DEPENDANT ACTIVITIES</button>
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
                                 </td>
                                 <td>
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">SUBMIT</button>
@@ -182,14 +182,14 @@
                         </tfoot>
                     </table>
 
-                    <div class="modal fade" id="add_dependant_activity">
+                    <div class="modal fade" id="add_dependent_activity">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Dependant Activity</h4>
+                                    <h4 class="modal-title">Dependent Activity</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="p-l-0 form-group col-sm-10">
@@ -215,7 +215,7 @@
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
@@ -346,7 +346,7 @@
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
@@ -381,6 +381,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
     activities :[],
     newIndex : "",
@@ -417,9 +418,12 @@ var data = {
         maxItems : null,
         plugins: ['remove_button'],
     },
+    maxWeight : 0,
+    totalWeight : 0,
     predecessorTable: [],
     predecessorTableView :[],
     predecessorTableEdit:[],
+    constWeightAct : 0,
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -478,8 +482,7 @@ var vm = new Vue({
             let isOk = false;
                 if(this.newActivity.name == ""
                 || this.newActivity.description == ""
-                || this.newActivity.planned_start_date == ""
-                || this.newActivity.planned_end_date == ""
+                || this.newActivity.weight == ""
                 || this.newActivity.planned_duration == "")
                 {
                     isOk = true;
@@ -530,6 +533,7 @@ var vm = new Vue({
             this.editActivity.name = data.name;
             this.editActivity.description = data.description;
             this.editActivity.weight = data.weight;
+            this.constWeightAct = data.weight;
             $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date));
             $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date));
             var predecessorObj = JSON.parse(data.predecessor);
@@ -565,10 +569,14 @@ var vm = new Vue({
             });
         },
         getActivities(){
+            window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+            })
             window.axios.get('/api/getActivities/'+this.newActivity.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.newIndex = Object.keys(this.activities).length+1;
-                
+
+                this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
                 $('#activity-table').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#activity-table').DataTable({
@@ -599,24 +607,24 @@ var vm = new Vue({
                         title: response.data.error,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }else{
                     iziToast.success({
                         displayMode: 'replace',
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
+                    this.getActivities();
+                    this.getAllActivities();   
+                    this.newActivity.name = "";
+                    this.newActivity.description = "";
+                    this.newActivity.planned_start_date = "";
+                    this.newActivity.planned_end_date = "";
+                    this.newActivity.planned_duration = "";
+                    this.newActivity.weight = "";
+                    this.newActivity.predecessor = [];                     
                 }
-            
-                this.getActivities();
-                this.newActivity.name = "";
-                this.newActivity.description = "";
-                this.newActivity.planned_start_date = "";
-                this.newActivity.planned_end_date = "";
-                this.newActivity.planned_duration = "";
-                this.newActivity.weight = "";
-                this.newActivity.predecessor = [];
             })
             .catch((error) => {
                 console.log(error);
@@ -647,7 +655,7 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 
-                this.getActivities();   
+                this.getActivities();
             })
             .catch((error) => {
                 console.log(error);
@@ -661,15 +669,10 @@ var vm = new Vue({
             handler: function(newValue) {
                 this.newActivity.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
                 if(parseInt(newValue.planned_duration) < 1 ){
-                    iziToast.show({
-                        timeout: 6000,
-                        color : 'red',
+                    iziToast.warning({
                         displayMode: 'replace',
-                        icon: 'fa fa-warning',
-                        title: 'Warning !',
-                        message: 'End Date cannot be ahead Start Date',
+                        title: 'End Date cannot be ahead Start Date',
                         position: 'topRight',
-                        progressBarColor: 'rgb(0, 255, 184)',
                     });
                     this.newActivity.planned_duration = "";
                     this.newActivity.planned_end_date = "";
@@ -690,19 +693,28 @@ var vm = new Vue({
                 });
             }
         },
+        'editActivity.weight': function(newValue){
+            this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");  
+            window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+                var totalEdit = roundNumber(data - this.constWeightAct,2);
+                maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
+                if(this.editActivity.weight>maxWeightEdit){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'Total weight cannot be more than '+this.wbsWeight+'%',
+                        position: 'topRight',
+                    });
+                }
+            });
+        },
         'newActivity.weight': function(newValue){
-            this.newActivity.weight = (this.newActivity.weight+"").replace(/\D/g, "");  
-            if(newValue>this.maxWeight){
-               this.newActivity.weight = this.maxWeight; 
-               iziToast.show({
-                    timeout: 6000,
-                    color : 'red',
+            this.newActivity.weight = (this.newActivity.weight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2)>this.maxWeight){
+                iziToast.warning({
                     displayMode: 'replace',
-                    icon: 'fa fa-warning',
-                    title: 'Warning !',
-                    message: 'Total weight cannot be more than 100%',
+                    title: 'Total weight cannot be more than '+this.wbsWeight+'%',
                     position: 'topRight',
-                    progressBarColor: 'rgb(0, 255, 184)',
                 });
             }
         },
@@ -717,19 +729,6 @@ var vm = new Vue({
                     });
                 });
             }
-        },
-        'editActivity.weight': function(newValue){
-            this.editActivity.weight = (this.editActivity.weight+"").replace(/\D/g, "");  
-            if(newValue>100){
-               this.editActivity.weight = 100; 
-            }
-        },
-        activities: function(newValue){
-            var weightTotal = 0;
-            this.activities.forEach(activity => {
-                weightTotal += activity.weight; 
-            });
-            this.maxWeight = 100 - weightTotal;
         },
     },
     created: function() {
@@ -747,6 +746,19 @@ function datediff(first, second) {
     // Take the difference between the dates and divide by milliseconds per day.
     // Round to nearest whole number to deal with DST.
     return Math.round(((second-first)/(1000*60*60*24))+1);
+}
+
+function roundNumber(num, scale) {
+  if(!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+  } else {
+    var arr = ("" + num).split("e");
+    var sig = ""
+    if(+arr[1] + scale > 0) {
+      sig = "+";
+    }
+    return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+  }
 }
 </script>
 @endpush

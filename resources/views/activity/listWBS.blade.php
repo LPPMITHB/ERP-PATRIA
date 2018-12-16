@@ -28,7 +28,7 @@
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Ship</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Customer</div>
                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
@@ -103,14 +103,14 @@
                 "select_node": false, 
                 "show_at_node": false,
             }
-            }).bind("changed.jstree", function (e, data) {
-                if(data.node) {
-                document.location = data.node.a_attr.href;
-                }
-            }).bind("loaded.jstree", function (event, data) {
-                // you get two params - event & data - check the core docs for a detailed description
-                $(this).jstree("open_all");
-            });
+        }).bind("changed.jstree", function (e, data) {
+            if(data.node) {
+            document.location = data.node.a_attr.href;
+            }
+        }).bind("loaded.jstree", function (event, data) {
+            // you get two params - event & data - check the core docs for a detailed description
+            $(this).jstree("open_all");
+        });
 
         $('div.overlay').hide();
     });

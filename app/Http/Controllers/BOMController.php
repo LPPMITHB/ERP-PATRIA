@@ -108,7 +108,7 @@ class BOMController extends Controller
         return view('bom.selectWBS', compact('project','data'));
     }
 
-    public function indexBom($id,$menu)
+    public function indexBom($id)
     {
         $project = Project::find($id);
         $wbs = $project->wbss;

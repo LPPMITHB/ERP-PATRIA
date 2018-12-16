@@ -37,7 +37,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $project->name }}</td>
                                 <td>{{ $project->customer->name }}</td>
-                                <td>{{ $project->ship->name }}</td>
+                                <td>{{ $project->ship->type }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
                                     <a class="btn btn-primary btn-xs" href="{{ route('project.configWbsEstimator', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>

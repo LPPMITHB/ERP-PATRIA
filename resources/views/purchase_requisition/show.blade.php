@@ -51,7 +51,7 @@
                             Ship Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPR->project->ship->name }} </b>
+                            : <b> {{ $modelPR->project->ship->type }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -118,7 +118,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $PRD->material->name }}</td>
                                 <td>{{ number_format($PRD->quantity) }}</td>
-                                <td>{{ $PRD->work->name }}</td>
+                                <td>{{ $PRD->wbs->name }}</td>
                             </tr>
                         @endforeach
                     </tbody>

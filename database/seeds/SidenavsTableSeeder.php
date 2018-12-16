@@ -304,16 +304,16 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap.inputActualOtherCost',
         ]);
 
-        $assignCost = Menu::where('route_name','rap.selectProjectAssignCost')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $assignCost,
-            'route_name' => 'rap.selectProjectAssignCost',
-        ]);
+        // $assignCost = Menu::where('route_name','rap.selectProjectAssignCost')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $assignCost,
+        //     'route_name' => 'rap.selectProjectAssignCost',
+        // ]);
         
-        DB::table('sidenav')->insert([
-            'menu_id' => $assignCost,
-            'route_name' => 'rap.assignCost',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $assignCost,
+        //     'route_name' => 'rap.assignCost',
+        // ]);
 
         $viewPlannedCost = Menu::where('route_name','rap.selectProjectViewCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([

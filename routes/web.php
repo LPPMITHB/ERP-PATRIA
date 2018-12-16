@@ -505,7 +505,9 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project');
     
-    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');    
+    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');  
+      
+    Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project');    
     
     Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
     

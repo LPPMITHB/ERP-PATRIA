@@ -133,12 +133,10 @@ class RoleController extends Controller
         $datas = json_decode($request->datas);
         $stringPermissions = '{'.implode(',', $datas->permissions).'}';
         $menus = array();
-
         foreach($datas->checkedPermissions as $checkedPermission){
             $permission = Permission::where('middleware',$checkedPermission)->select('menu_id')->first();
             $menus[] = $permission;
         }
-
         $menus = array_unique($menus);
 
         DB::beginTransaction();
@@ -199,7 +197,6 @@ class RoleController extends Controller
 
     public function updateMenu($menus,$role){
         $allMenu = Menu::all();
-
         foreach($allMenu as $menu){
             $roles = explode(',',$menu->roles);
 

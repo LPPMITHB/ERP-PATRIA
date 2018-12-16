@@ -13,7 +13,7 @@ class POTableSeeder extends Seeder
     {
         //
         DB::table('trx_purchase_order')->insert([
-            'number' => 'PO-1800000001',
+            'number' => 'PO1800001',
             'purchase_requisition_id' => 1,
             'vendor_id' => 1,
             'project_id' => 1,

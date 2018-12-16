@@ -34,7 +34,7 @@
                             <tr>
                                 <td>Ship</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
+                                <td>&ensp;<b>{{$project->ship->type}}</b></td>
                             </tr>
                             <tr>
                                 <td>Customer</td>

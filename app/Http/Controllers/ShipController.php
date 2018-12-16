@@ -33,7 +33,7 @@ class ShipController extends Controller
     public function create()
     {
         $ship = new Ship;
-        $ship_code = self::generateShipCode();
+        // $ship_code = self::generateShipCode();
         return view('ship.create', compact('ship','ship_code'));
     }
 
@@ -46,16 +46,21 @@ class ShipController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'code' => 'required|alpha_dash|unique:mst_ship|string|max:255',
-            'name' => 'required|string|max:255',
+            // 'code' => 'required|alpha_dash|unique:mst_ship|string|max:255',
+            // 'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
         ]);
+
+        $ships = Ship::all();
+        foreach($ships as $ship) {
+            if($ship->type == $request->type){
+                return redirect()->route('ship.create')->with('error',"The Ship Type Has Been Taken")->withInput();
+            }
+        }
 
         DB::beginTransaction();
         try {
             $ship = new Ship;
-            $ship->code = strtoupper($request->input('code'));
-            $ship->name = ucwords($request->input('name'));
             $ship->type = ucwords(strtolower($request->input('type')));
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');
@@ -107,16 +112,15 @@ class ShipController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'code' => 'required|alpha_dash|unique:mst_ship,code,'.$id.',id|string|max:255',
-            'name' => 'required|string|max:255',
+            // 'code' => 'required|alpha_dash|unique:mst_ship,code,'.$id.',id|string|max:255',
+            // 'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
         ]);
         
         DB::beginTransaction();
         try {
             $ship = Ship::find($id);
-            $ship->code = strtoupper($request->input('code'));
-            $ship->name = ucwords($request->input('name'));
+            // $ship->name = ucwords($request->input('name'));
             $ship->type = ucwords(strtolower($request->input('type')));
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');        
@@ -148,16 +152,16 @@ class ShipController extends Controller
         }   
     }
 
-    public function generateShipCode(){
-        $code = 'SH';
-        $modelShip = Ship::orderBy('code', 'desc')->first();
+    // public function generateShipCode(){
+    //     $code = 'SH';
+    //     $modelShip = Ship::orderBy('code', 'desc')->first();
         
-        $number = 1;
-		if(isset($modelShip)){
-            $number += intval(substr($modelShip->code, -4));
-		}
+    //     $number = 1;
+	// 	if(isset($modelShip)){
+    //         $number += intval(substr($modelShip->code, -4));
+	// 	}
 
-        $ship_code = $code.''.sprintf('%04d', $number);
-		return $ship_code;
-	}
+    //     $ship_code = $code.''.sprintf('%04d', $number);
+	// 	return $ship_code;
+	// }
 }

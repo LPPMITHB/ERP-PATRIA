@@ -62,7 +62,7 @@ class ProjectManagementController extends Controller
     //         $arr = array(
     //             'number'    => $data->number,
     //             'customer'  => $data->quotation->customer->name,
-    //             'product'   => $data->quotation->estimator->ship->name,
+    //             'product'   => $data->quotation->estimator->ship->type,
     //             'created_at'=> substr($data->created_at, 0, 10),
     //         );
 
@@ -91,7 +91,7 @@ class ProjectManagementController extends Controller
         //     $arr = array(
         //         'number'    => $data->number,
         //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->name,
+        //         'product'   => $data->quotation->estimator->ship->type,
         //         'created_at'=> $data->created_at,
         //     );
 
@@ -231,15 +231,8 @@ class ProjectManagementController extends Controller
         }
     }
 
-    
-
     public function getWorks($project_id){
         $works = Work::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->where('work_id', null)->get()->jsonSerialize();
-        return response($works, Response::HTTP_OK);
-    }
-
-    public function getAllWorks($project_id){
-        $works = Work::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
         return response($works, Response::HTTP_OK);
     }
 

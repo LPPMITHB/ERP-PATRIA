@@ -160,7 +160,7 @@
        business_unit : "",
     }
 
-    var vm = new Vue({
+    var app = new Vue({
         el : '#role',
         data : data,
         computed:{
@@ -277,7 +277,6 @@
                     this.submittedForm.permissions.push(permission[i]);
                 }
                 
-
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');

@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Remaining Material » » Select WBS',
+        'title' => 'View Remaining Material » '.$project->name. ' » Select WBS',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
@@ -32,7 +32,11 @@
                             <tr>
                                 <td>Ship</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
+<<<<<<< HEAD
+                                <td>&ensp;<b>{{$project->name}}</b></td>
+=======
+                                <td>&ensp;<b>{{$project->ship->type}}</b></td>
+>>>>>>> origin/BJ-BenedictJeremiah
                             </tr>
                             <tr>
                                 <td>Customer</td>

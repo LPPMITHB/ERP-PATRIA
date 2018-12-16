@@ -13,7 +13,7 @@ class ProjectWbsTableSeeder extends Seeder
     {
         
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180001',
+            'code' => 'WBS18010001',
             'name' => 'WBS 1',
             'description' => 'WBS 1',
             'deliverables' => 'Satu',
@@ -26,7 +26,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180002',
+            'code' => 'WBS18010002',
             'name' => 'WBS 1.1',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -40,7 +40,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180003',
+            'code' => 'WBS18010003',
             'name' => 'WBS 1.2',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -54,7 +54,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180004',
+            'code' => 'WBS18010004',
             'name' => 'WBS 1.1.1',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -68,7 +68,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180005',
+            'code' => 'WBS18010005',
             'name' => 'WBS 1.1.1.1',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -82,7 +82,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180006',
+            'code' => 'WBS18010006',
             'name' => 'WBS 1.1.1.1.1',
             'description' => '',
             'deliverables' => 'Level 5',
@@ -96,7 +96,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180007',
+            'code' => 'WBS18010007',
             'name' => 'WBS 2',
             'description' => '',
             'deliverables' => 'WBS 2 Level 1',                
@@ -109,7 +109,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180008',
+            'code' => 'WBS18010008',
             'name' => 'WBS 2.1',
             'description' => '',
             'deliverables' => 'Level 2',                
@@ -122,7 +122,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);             
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180009',
+            'code' => 'WBS18010009',
             'name' => 'WBS 3',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -135,7 +135,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);     
         
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180010',
+            'code' => 'WBS18010010',
             'name' => 'WBS2 1',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -148,7 +148,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180011',
+            'code' => 'WBS18010011',
             'name' => 'WBS2 1.2',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -162,7 +162,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180012',
+            'code' => 'WBS18010012',
             'name' => 'WBS2 2',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -175,7 +175,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180013',
+            'code' => 'WBS18010013',
             'name' => 'WBS2 2.1',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -189,7 +189,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180014',
+            'code' => 'WBS18010014',
             'name' => 'WBS2 2.2',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -203,7 +203,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180015',
+            'code' => 'WBS18010015',
             'name' => 'WBS2 3',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -216,7 +216,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180016',
+            'code' => 'WBS18010016',
             'name' => 'WBS2 3.1',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -230,7 +230,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]);
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180017',
+            'code' => 'WBS18010017',
             'name' => 'WBS3 1',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -243,7 +243,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180018',
+            'code' => 'WBS18010018',
             'name' => 'WBS3 2',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -256,7 +256,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180019',
+            'code' => 'WBS18010019',
             'name' => 'WBS4 1',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -269,7 +269,7 @@ class ProjectWbsTableSeeder extends Seeder
         ]); 
 
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS180020',
+            'code' => 'WBS18010020',
             'name' => 'WBS4 2',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -283,7 +283,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //21
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820001',
+            'code' => 'WBS18020001',
             'name' => 'CONTRACT SIGN',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -297,7 +297,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //22
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820002',
+            'code' => 'WBS18020002',
             'name' => 'APPROVED DESIGN, SPECIFICATION & SHIP DOCUMENT',
             'description' => '',
             'deliverables' => 'Level 1', 
@@ -311,7 +311,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //23
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820003',
+            'code' => 'WBS18020003',
             'name' => 'Design Drawings & Submission',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -326,7 +326,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //24
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820004',
+            'code' => 'WBS18020004',
             'name' => 'Distribution DWG to stakeholder',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -341,7 +341,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //25
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820005',
+            'code' => 'WBS18020005',
             'name' => 'Procurement Process',
             'description' => '',
             'deliverables' => 'Level 1',
@@ -355,7 +355,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //26
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820006',
+            'code' => 'WBS18020006',
             'name' => 'Production Process',
             'description' => '',
             'deliverables' => 'Level 1',
@@ -369,7 +369,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //27
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820007',
+            'code' => 'WBS18020007',
             'name' => 'Hull Structure',
             'description' => '',
             'deliverables' => 'Level 2',
@@ -384,7 +384,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //28
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820008',
+            'code' => 'WBS18020008',
             'name' => 'Bottom',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -399,7 +399,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //29
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820009',
+            'code' => 'WBS18020009',
             'name' => 'Transom',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -414,7 +414,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //30
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820010',
+            'code' => 'WBS18020010',
             'name' => 'Blok 1 (Fr. 0-15)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -429,7 +429,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //31
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820011',
+            'code' => 'WBS18020011',
             'name' => 'Master Block 2 (frame 15-21)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -444,7 +444,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820012',
+            'code' => 'WBS18020012',
             'name' => 'Block 3 (frame 21-25)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -459,7 +459,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820013',
+            'code' => 'WBS18020013',
             'name' => 'Block 4 (frame 25-30)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -474,7 +474,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820014',
+            'code' => 'WBS18020014',
             'name' => 'Block 5 (frame 30-34)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -489,7 +489,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820015',
+            'code' => 'WBS18020015',
             'name' => 'Block 6 (frame 34-43)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -504,7 +504,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //36
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820016',
+            'code' => 'WBS18020016',
             'name' => 'Tank top',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -519,7 +519,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         // 37
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820017',
+            'code' => 'WBS18020017',
             'name' => 'Blok 1 (Fr. 0-15)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -534,7 +534,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820018',
+            'code' => 'WBS18020018',
             'name' => 'Master Block 2 (Fr. 15-21)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -549,7 +549,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820019',
+            'code' => 'WBS18020019',
             'name' => 'Block 3 (Fr. 21-25)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -564,7 +564,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820020',
+            'code' => 'WBS18020020',
             'name' => 'Block 4 (Fr. 25-30)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -579,7 +579,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820036',
+            'code' => 'WBS18020036',
             'name' => 'Block 5 (Fr. 30-34)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -594,7 +594,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820037',
+            'code' => 'WBS18020037',
             'name' => 'Block 6 (Fr. 34-40)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -609,7 +609,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //43
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820038',
+            'code' => 'WBS18020038',
             'name' => 'Transbulkhead',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -624,7 +624,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //44
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820039',
+            'code' => 'WBS18020039',
             'name' => 'Blok 1 (Fr. 0-15)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -639,7 +639,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820040',
+            'code' => 'WBS18020040',
             'name' => 'Master Block 2 (Fr. 15-21)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -654,7 +654,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820041',
+            'code' => 'WBS18020041',
             'name' => 'Block 3 (Fr. 21-25)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -669,7 +669,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820042',
+            'code' => 'WBS18020042',
             'name' => 'Block 4 (Fr. 25-30)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -684,7 +684,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820043',
+            'code' => 'WBS18020043',
             'name' => 'Block 6 (Fr. 34-40)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -699,7 +699,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //49
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820044',
+            'code' => 'WBS18020044',
             'name' => 'Longbulkhead',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -714,7 +714,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820046',
+            'code' => 'WBS18020046',
             'name' => 'Master Block 2 (Fr. 15-21)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -729,7 +729,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820047',
+            'code' => 'WBS18020047',
             'name' => 'Block 3 (Fr. 21-25)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -744,7 +744,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820048',
+            'code' => 'WBS18020048',
             'name' => 'Block 4 (Fr. 25-30)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -759,7 +759,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820049',
+            'code' => 'WBS18020049',
             'name' => 'Block 5 (Fr. 30-34)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -774,7 +774,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820050',
+            'code' => 'WBS18020050',
             'name' => 'Block 6 (Fr. 34-40)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -789,7 +789,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //55
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820051',
+            'code' => 'WBS18020051',
             'name' => 'Side sheel',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -804,7 +804,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //56
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820052',
+            'code' => 'WBS18020052',
             'name' => 'Blok 1 (Fr. 0-15)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -819,7 +819,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820053',
+            'code' => 'WBS18020053',
             'name' => 'Master Block 2 (Fr. 15-21)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -834,7 +834,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820054',
+            'code' => 'WBS18020054',
             'name' => 'Block 3 (Fr. 21-25)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -849,7 +849,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820055',
+            'code' => 'WBS18020055',
             'name' => 'Block 4 (Fr. 25-30)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -864,7 +864,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820056',
+            'code' => 'WBS18020056',
             'name' => 'Block 5 (Fr. 30-34)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -879,7 +879,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820057',
+            'code' => 'WBS18020057',
             'name' => 'Block 6 (Fr. 34-40)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -894,7 +894,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //62
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820058',
+            'code' => 'WBS18020058',
             'name' => 'Main deck',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -909,7 +909,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820059',
+            'code' => 'WBS18020059',
             'name' => 'Blok 1 (Fr. 0-15)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -924,7 +924,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820060',
+            'code' => 'WBS18020060',
             'name' => 'Master Block 2 (Fr. 15-21)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -939,7 +939,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820061',
+            'code' => 'WBS18020061',
             'name' => 'Block 3 (Fr. 21-25)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -954,7 +954,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820062',
+            'code' => 'WBS18020062',
             'name' => 'Block 4 (Fr. 25-30)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -969,7 +969,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820063',
+            'code' => 'WBS18020063',
             'name' => 'Block 5 (Fr. 30-34)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -984,7 +984,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820064',
+            'code' => 'WBS18020064',
             'name' => 'Block 6 (Fr. 34-40)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -999,7 +999,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820065',
+            'code' => 'WBS18020065',
             'name' => 'Block 8 (deck house)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1014,7 +1014,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820066',
+            'code' => 'WBS18020066',
             'name' => 'Block 9 (winch house)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1029,7 +1029,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820067',
+            'code' => 'WBS18020067',
             'name' => 'Block 7 (skeg)',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1044,7 +1044,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //72
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820068',
+            'code' => 'WBS18020068',
             'name' => 'Outfitting Hull',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -1059,7 +1059,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //73
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820069',
+            'code' => 'WBS18020069',
             'name' => 'Fabrication',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1074,7 +1074,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //74
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820070',
+            'code' => 'WBS18020070',
             'name' => 'Installation',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1089,7 +1089,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //75
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820071',
+            'code' => 'WBS18020071',
             'name' => 'Piping & Safety System',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -1104,7 +1104,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //76
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820072',
+            'code' => 'WBS18020072',
             'name' => 'Cargo System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1119,7 +1119,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //77
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820073',
+            'code' => 'WBS18020073',
             'name' => 'General Service & Fire Fighting System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1134,7 +1134,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //78
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820074',
+            'code' => 'WBS18020074',
             'name' => 'Bilge & OWS System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1149,7 +1149,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //79
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820075',
+            'code' => 'WBS18020075',
             'name' => 'Emergency Fire Fighting System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1164,7 +1164,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //80
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820076',
+            'code' => 'WBS18020076',
             'name' => 'Freshwater & Sea Water System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1179,7 +1179,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820077',
+            'code' => 'WBS18020077',
             'name' => 'Fuel Oil System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1194,7 +1194,7 @@ class ProjectWbsTableSeeder extends Seeder
     
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820078',
+            'code' => 'WBS18020078',
             'name' => 'Holding Tank & Sewage System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1209,7 +1209,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820021',
+            'code' => 'WBS18020021',
             'name' => 'Air Compressor & Air Pressure',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1224,7 +1224,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820079',
+            'code' => 'WBS18020079',
             'name' => 'CO2 Fixed System',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1239,7 +1239,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //85
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820080',
+            'code' => 'WBS18020080',
             'name' => 'Electric & Mechanic',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -1254,7 +1254,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //86
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820081',
+            'code' => 'WBS18020081',
             'name' => 'Electric Installation',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1269,7 +1269,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //87
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820082',
+            'code' => 'WBS18020082',
             'name' => 'Mechanic Installation',
             'description' => '',
             'deliverables' => 'Level 4',
@@ -1284,7 +1284,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //88
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820083',
+            'code' => 'WBS18020083',
             'name' => 'Coating',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -1299,7 +1299,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //89
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820084',
+            'code' => 'WBS18020084',
             'name' => 'Interior and Furniture',
             'description' => '',
             'deliverables' => 'Level 3',
@@ -1314,7 +1314,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //90
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820085',
+            'code' => 'WBS18020085',
             'name' => 'Launching',
             'description' => '',
             'deliverables' => 'Level 1',
@@ -1328,7 +1328,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //91
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820086',
+            'code' => 'WBS18020086',
             'name' => 'Testing Commisioning and Familirisasion',
             'description' => '',
             'deliverables' => 'Level 1',
@@ -1342,7 +1342,7 @@ class ProjectWbsTableSeeder extends Seeder
 
         //92
         DB::table('pro_wbs')->insert([
-            'code' => 'WBS1820087',
+            'code' => 'WBS18020087',
             'name' => 'DELIVERY',
             'description' => '',
             'deliverables' => 'Level 1',

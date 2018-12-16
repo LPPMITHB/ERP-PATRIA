@@ -2847,6 +2847,7 @@ return array(
     'SebastianBergmann\\Timer\\RuntimeException' => $vendorDir . '/phpunit/php-timer/src/RuntimeException.php',
     'SebastianBergmann\\Timer\\Timer' => $vendorDir . '/phpunit/php-timer/src/Timer.php',
     'SebastianBergmann\\Version' => $vendorDir . '/sebastian/version/src/Version.php',
+    'ServicesTableSeeder' => $baseDir . '/database/seeds/ServicesTableSeeder.php',
     'ShipsTableSeeder' => $baseDir . '/database/seeds/ShipsTableSeeder.php',
     'SidenavsTableSeeder' => $baseDir . '/database/seeds/SidenavsTableSeeder.php',
     'StocksTableSeeder' => $baseDir . '/database/seeds/StocksTableSeeder.php',

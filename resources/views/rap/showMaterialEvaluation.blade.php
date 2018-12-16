@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Remaining Material » '.$wbs->bom->rap->number,
+        'title' => 'View Remaining Material',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rap.selectProjectViewRM'),
@@ -16,89 +16,53 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-solid">
-            <div class="box-header">
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->number}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$project->progress}} %</b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Currrent Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{date("d-m-Y")}}</b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div class="box">
+            <div class="box-header no-padding p-t-10">
+                <div class="col-xs-12 col-md-4">
+                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+
+                    <div class="col-xs-4 no-padding">Project Code</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Ship Type</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Customer</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$project->customer->name}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Progress</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$project->progress}}%</b></div>
+
+                    <div class="col-xs-4 no-padding">Current Date</div>
+                    <div class="col-xs-8 no-padding"><b>: {{date("d-m-Y")}}</b></div>
                 </div>
 
-                <div class="col-sm-6 ">
-                    <table>
-                        <thead>
-                            <th colspan="2">WBS Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Code</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$wbs->code}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Name</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$wbs->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$wbs->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Deliverable</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$wbs->deliverables}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$wbs->progress}} %</b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                
+                    <div class="col-xs-4 no-padding">Code</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$wbs->code}}</b></div>
+                    
+                    <div class="col-xs-4 no-padding">Name</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
 
+                    <div class="col-xs-4 no-padding">Description</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Deliverable</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$wbs->deliverables}}</b></div>
+
+                    <div class="col-xs-4 no-padding">Progress</div>
+                    <div class="col-xs-8 no-padding"><b>: {{$wbs->progress}}%</b></div>
+                </div>
             </div>
-            <div class="box-body">
-                <h4 class="p-l-10">Material Evaluation</h4>
-                <table class="table table-bordered showTable" style="border-collapse:collapse;">
+            <div class="box-body p-t-0">
+                <h4>Material Evaluation</h4>
+                <table class="table table-bordered showTable tablePagingVue scroll" style="border-collapse:collapse;">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="50%">Material</th>
+                            <th width="50%">Material Name</th>
                             <th width="15%">Quantity</th>
                             <th width="15%">Used</th>
                             <th width="15%">Remaining</th>
@@ -110,9 +74,9 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td>{{$data['material']}}</td>
-                                <td>{{$data['quantity']}}</td>
-                                <td>{{$data['used']}}</td>
-                                <td>{{$data['quantity'] - $data['used']}}</td>
+                                <td>{{number_format($data['quantity'])}}</td>
+                                <td>{{number_format($data['used'])}}</td>
+                                <td>{{number_format($data['quantity'] - $data['used'])}}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -128,6 +92,32 @@
 @push('script')
 <script>
     $(document).ready(function(){
+        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'Material Name'){
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }else{
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tablePagingVue.column(i).search() !== this.value ) {
+                    tablePagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tablePagingVue = $('.tablePagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : true,
+            autoWidth       : true,
+            lengthChange    : false,
+            info            : false,
+        });
         $('div.overlay').hide();
     });
     

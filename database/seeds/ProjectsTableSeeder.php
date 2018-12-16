@@ -15,6 +15,7 @@ class ProjectsTableSeeder extends Seeder
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-01',
             'business_unit_id' => 1,
+            'project_sequence' => 1,
             'name' => 'Tug Boat Project',
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,
@@ -30,11 +31,14 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-02',
             'business_unit_id' => 1,
+            'project_sequence' => 2,
             'name' => 'OIL BARGE 1100KL PROJECT',
             'description' => 'Real Case',
             // 'sales_order_id' => 1,
@@ -50,11 +54,14 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-03',
             'business_unit_id' => 2,
+            'project_sequence' => 1,
             'name' => 'Offshore Supply Vessel Project',
             'description' => 'ketiga kali',
             // 'sales_order_id' => 1,
@@ -70,11 +77,14 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
 
         DB::table('pro_project')->insert([
             'number' => 'PROJECT-04',
-            'business_unit_id' => 3,
+            'business_unit_id' => 2,
+            'project_sequence' => 2,
             'name' => 'Deck Cargo Barge Project',
             'description' => 'pertama kali',
             // 'sales_order_id' => 1,
@@ -90,6 +100,8 @@ class ProjectsTableSeeder extends Seeder
             'flag' => 'INDONESIA',
             'user_id' => 5,
             'branch_id' => 1,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
     }
 }
