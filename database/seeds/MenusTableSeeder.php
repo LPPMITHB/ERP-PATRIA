@@ -155,7 +155,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Create Cost',
+            'name' => 'Create Other Cost',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.selectProjectCost',
             'is_active' => true,
@@ -166,17 +166,17 @@ class MenusTableSeeder extends Seeder
         ]);
 
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Assign Cost',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'rap.selectProjectAssignCost',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id'=>$costPlan,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Assign Cost',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'rap.selectProjectAssignCost',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN',
+        //     'menu_id'=>$costPlan,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
 
         DB::table('menus')->insert([
