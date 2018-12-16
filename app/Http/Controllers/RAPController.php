@@ -65,15 +65,6 @@ class RAPController extends Controller
         return view('rap.selectProject', compact('projects','menu'));
     }
 
-    // assign cost
-    public function selectProjectAssignCost()
-    {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
-        $menu = "assign_cost";
-
-        return view('rap.selectProject', compact('projects','menu'));
-    }
-
     // view planned cost
     public function selectProjectViewCost()
     {
@@ -165,14 +156,6 @@ class RAPController extends Controller
         return view('rap.index', compact('raps'));
     }
 
-    // public function create($id)
-    // {
-    //     $modelBOMs = BOM::where('wbs_id','!=','null')->where('status',1)->where('project_id',$id)->with('wbs')->get();
-    //     $project = Project::findOrFail($id);
-
-    //     return view('rap.create', compact('modelBOMs','project'));
-    // }
-
     public function createCost($id)
     {
         $project = Project::findOrFail($id);       
@@ -185,14 +168,6 @@ class RAPController extends Controller
         $project = Project::findOrFail($id);       
 
         return view('rap.inputActualOtherCost', compact('project'));
-    }
-
-    public function assignCost($id)
-    {
-        $project = Project::findOrFail($id);   
-        $costs = Cost::where('project_id', $id)->with('wbs')->get()->jsonSerialize();    
-
-        return view('rap.assignCost', compact('project','costs'));
     }
 
     public function viewPlannedCost($id)

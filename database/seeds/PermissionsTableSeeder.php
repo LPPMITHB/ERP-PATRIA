@@ -235,6 +235,16 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // create actual other cost
+        $inputActualOtherCost = Menu::where('name','Input Actual Other Cost')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Input Actual Other Cost',
+            'menu_id' => $inputActualOtherCost,
+            'middleware' => 'create-actual-other-cost',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         // view planned cost
         $viewPlannedCost = Menu::where('name','View Planned Cost')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -254,6 +264,8 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        
 
         //Purchase Requisition
         $createPR = Menu::where('name','Create PR')->select('id')->first()->id;
