@@ -56,14 +56,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Project',
-            'menu_id' => $manageProject,
-            'middleware' => 'destroy-project',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Project Repair
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $projectManagementRepair =  Menu::where('name','Project Management')->where('menu_id',$repair)->select('id')->first()->id;
@@ -101,14 +93,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Project',
-            'menu_id' => $manageProjectRepair,
-            'middleware' => 'destroy-project-repair',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //BOM
         $manageBOM = Menu::where('name','Manage BOM')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -139,14 +123,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Bom',
             'menu_id' => $manageBOM,
             'middleware' => 'edit-bom',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Bom',
-            'menu_id' => $manageBOM,
-            'middleware' => 'destroy-bom',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -188,14 +164,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Bom Repair',
-            'menu_id' => $manageBOMRepair,
-            'middleware' => 'destroy-bom-repair',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //BOS
         $manageBOS = Menu::where('name','Manage BOS')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -226,14 +194,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Bos',
             'menu_id' => $manageBOS,
             'middleware' => 'edit-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'destroy-bos',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -273,14 +233,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Rap',
-            'menu_id' => $viewRAP,
-            'middleware' => 'destroy-rap',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Purchase Requisition
         $createPR = Menu::where('name','Create PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -312,14 +264,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Purchase Requisition',
             'menu_id' => $viewPR,
             'middleware' => 'edit-purchase-requisition',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Purchase Requisition',
-            'menu_id' => $viewPR,
-            'middleware' => 'destroy-purchase-requisition',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -359,14 +303,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Purchase Order',
-            'menu_id' => $viewPO,
-            'middleware' => 'destroy-purchase-order',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Ship
         $ship = Menu::where('name','Ship')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -397,14 +333,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Ship',
             'menu_id' => $ship,
             'middleware' => 'edit-ship',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Ship',
-            'menu_id' => $ship,
-            'middleware' => 'destroy-ship',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -443,14 +371,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Branch',
-            'menu_id' => $branch,
-            'middleware' => 'destroy-branch',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Business Unit
         $businessUnit = Menu::where('name','Business Unit')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -481,14 +401,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Business Unit',
             'menu_id' => $businessUnit,
             'middleware' => 'edit-business-unit',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Business Unit',
-            'menu_id' => $businessUnit,
-            'middleware' => 'destroy-business-unit',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -527,14 +439,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Company',
-            'menu_id' => $company,
-            'middleware' => 'destroy-company',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Storage Location
         $storageLocation = Menu::where('name','Storage Location')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -565,14 +469,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Storage Location',
             'menu_id' => $storageLocation,
             'middleware' => 'edit-storage-location',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Storage Location',
-            'menu_id' => $storageLocation,
-            'middleware' => 'destroy-storage-location',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -611,14 +507,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Customer',
-            'menu_id' => $customer,
-            'middleware' => 'destroy-customer',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Material
         $material = Menu::where('name','Material')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -649,14 +537,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Material',
             'menu_id' => $material,
             'middleware' => 'edit-material',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Material',
-            'menu_id' => $material,
-            'middleware' => 'destroy-material',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -695,14 +575,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Resource',
-            'menu_id' => $resource,
-            'middleware' => 'destroy-resource',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Service
         $service = Menu::where('name','Service')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -733,14 +605,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Service',
             'menu_id' => $service,
             'middleware' => 'edit-service',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Service',
-            'menu_id' => $service,
-            'middleware' => 'destroy-service',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -779,14 +643,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Unit Of Measurement',
-            'menu_id' => $uom,
-            'middleware' => 'destroy-unit-of-measurement',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Vendor
         $vendor = Menu::where('name','Vendor')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -817,14 +673,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Vendor',
             'menu_id' => $vendor,
             'middleware' => 'edit-vendor',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Vendor',
-            'menu_id' => $vendor,
-            'middleware' => 'destroy-vendor',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -863,14 +711,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Warehouse',
-            'menu_id' => $warehouse,
-            'middleware' => 'destroy-warehouse',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Yard
         $yard = Menu::where('name','Yard')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -905,14 +745,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy yard',
-            'menu_id' => $yard,
-            'middleware' => 'destroy-yard',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Menu
         $menu = Menu::where('name','Menus')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -943,14 +775,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Menu',
             'menu_id' => $menu,
             'middleware' => 'edit-menu',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Menu',
-            'menu_id' => $menu,
-            'middleware' => 'destroy-menu',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -995,6 +819,14 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Currencies',
             'menu_id' => $currencies,
             'middleware' => 'edit-currencies',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Currencies',
+            'menu_id' => $currencies,
+            'middleware' => 'show-currencies',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -1065,14 +897,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy User',
-            'menu_id' => $userManagement,
-            'middleware' => 'destroy-user',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Role
         $roleManagement = Menu::where('name','Role Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -1107,14 +931,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Role',
-            'menu_id' => $roleManagement,
-            'middleware' => 'destroy-role',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Master Data Permission
         $permissionManagement = Menu::where('name','Permission Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -1145,14 +961,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Permission',
             'menu_id' => $permissionManagement,
             'middleware' => 'edit-permission',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Permission',
-            'menu_id' => $permissionManagement,
-            'middleware' => 'destroy-permission',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -1211,14 +1019,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Goods Movement',
-            'menu_id' => $goodsMovement,
-            'middleware' => 'destroy-goods-movement',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         //Production Order
         $createProductionOrder = Menu::where('name','Create Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -1249,14 +1049,6 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Production Order',
             'menu_id' => $createProductionOrder,
             'middleware' => 'edit-production-order',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Destroy Production Order',
-            'menu_id' => $createProductionOrder,
-            'middleware' => 'destroy-production-order',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
