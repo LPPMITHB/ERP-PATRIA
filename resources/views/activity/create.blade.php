@@ -423,6 +423,7 @@ var data = {
     predecessorTable: [],
     predecessorTableView :[],
     predecessorTableEdit:[],
+    constWeightAct : 0,
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -481,8 +482,6 @@ var vm = new Vue({
             let isOk = false;
                 if(this.newActivity.name == ""
                 || this.newActivity.description == ""
-                || this.newActivity.planned_start_date == ""
-                || this.newActivity.planned_end_date == ""
                 || this.newActivity.weight == ""
                 || this.newActivity.planned_duration == "")
                 {
@@ -534,6 +533,7 @@ var vm = new Vue({
             this.editActivity.name = data.name;
             this.editActivity.description = data.description;
             this.editActivity.weight = data.weight;
+            this.constWeightAct = data.weight;
             $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date));
             $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date));
             var predecessorObj = JSON.parse(data.predecessor);
@@ -569,15 +569,13 @@ var vm = new Vue({
             });
         },
         getActivities(){
+            window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+            })
             window.axios.get('/api/getActivities/'+this.newActivity.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.newIndex = Object.keys(this.activities).length+1;
 
-                this.totalWeight = 0;
-                this.activities.forEach(data => {
-                    this.totalWeight += data.weight;
-                });
-                this.totalWeight = roundNumber(this.totalWeight,2);
                 this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
                 $('#activity-table').DataTable().destroy();
                 this.$nextTick(function() {
@@ -609,25 +607,24 @@ var vm = new Vue({
                         title: response.data.error,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }else{
                     iziToast.success({
                         displayMode: 'replace',
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
+                    this.getActivities();
+                    this.getAllActivities();   
+                    this.newActivity.name = "";
+                    this.newActivity.description = "";
+                    this.newActivity.planned_start_date = "";
+                    this.newActivity.planned_end_date = "";
+                    this.newActivity.planned_duration = "";
+                    this.newActivity.weight = "";
+                    this.newActivity.predecessor = [];                     
                 }
-            
-                this.getActivities();
-                this.getAllActivities();   
-                this.newActivity.name = "";
-                this.newActivity.description = "";
-                this.newActivity.planned_start_date = "";
-                this.newActivity.planned_end_date = "";
-                this.newActivity.planned_duration = "";
-                this.newActivity.weight = "";
-                this.newActivity.predecessor = [];
             })
             .catch((error) => {
                 console.log(error);
@@ -698,20 +695,18 @@ var vm = new Vue({
         },
         'editActivity.weight': function(newValue){
             this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");  
-            var totalWeight = 0;
-            this.activities.forEach(data => {
-                if(data.id != this.active_id){
-                    totalWeight += data.weight;
+            window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+                var totalEdit = roundNumber(data - this.constWeightAct,2);
+                maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
+                if(this.editActivity.weight>maxWeightEdit){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'Total weight cannot be more than '+this.wbsWeight+'%',
+                        position: 'topRight',
+                    });
                 }
             });
-            var maxWeightEdit = roundNumber(this.wbsWeight - roundNumber(totalWeight,2),2);            
-            if(this.editActivity.weight>maxWeightEdit){
-                iziToast.warning({
-                    displayMode: 'replace',
-                    title: 'Total weight cannot be more than '+this.wbsWeight+'%',
-                    position: 'topRight',
-                });
-            }
         },
         'newActivity.weight': function(newValue){
             this.newActivity.weight = (this.newActivity.weight+"").replace(/[^0-9.]/g, "");  

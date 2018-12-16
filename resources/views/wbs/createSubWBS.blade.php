@@ -63,7 +63,7 @@
                 <div class="col-sm-6">
                     <table>
                         <thead>
-                            <th>WBS Information ({{$wbs->weight}}%)</th>
+                            <th>WBS Information</th>
                             <th></th>
                             <th></th>
                         </thead>
@@ -108,7 +108,7 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <h4 class="box-title">Work Breakdown Structure</h4>
+                    <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>{{parentWbsWeight}}%</b>)</h4>
                     <table id="wbs-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
@@ -117,16 +117,16 @@
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
-                                <th style="width: 11%">Weight ({{totalWeight}}/{{parentWbsWeight}})</th>
+                                <th style="width: 11%">Weight</th>
                                 <th style="width: 12%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
-                                <td>{{ data.deliverables }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td>{{ data.planned_deadline }}</td>
                                 <td>{{ data.weight }} %</td>
                                 <td class="textCenter">
@@ -258,6 +258,13 @@ var data = {
     active_id : "",
 };
 
+Vue.directive('tooltip', function(el, binding){
+    $(el).tooltip({
+        title: binding.value,
+        placement: binding.arg,
+        trigger: 'hover'             
+    })
+})
 
 var vm = new Vue({
     el: '#add_wbs',
@@ -314,6 +321,9 @@ var vm = new Vue({
 
     }, 
     methods:{
+        tooltipText: function(text) {
+            return text
+        },
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
@@ -330,14 +340,13 @@ var vm = new Vue({
             return url;
         },
         getSubWBS(){
+            window.axios.get('/api/getWeightWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+            });
             window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
                 this.wbs = data;
                 this.newIndex = Object.keys(this.wbs).length+1;
-                this.totalWeight = 0;
-                this.wbs.forEach(data => {
-                    this.totalWeight += data.weight;
-                });
-                this.totalWeight = roundNumber(this.totalWeight,2);
+
                 this.maxWeight = roundNumber((this.parentWbsWeight-this.totalWeight),2);
                 $('#wbs-table').DataTable().destroy();
                 this.$nextTick(function() {
