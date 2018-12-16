@@ -555,6 +555,8 @@ Route::name('rap.')->prefix('rap')->group(function() {
     
     Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:index-rap');
 
+    Route::get('/selectProjectActualOtherCost', 'RAPController@selectProjectActualOtherCost')->name('selectProjectActualOtherCost')->middleware('can:index-rap');
+    
     Route::get('/selectProjectAssignCost', 'RAPController@selectProjectAssignCost')->name('selectProjectAssignCost')->middleware('can:index-rap');
 
     Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:index-rap');
@@ -567,11 +569,15 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost');
 
+    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost');
+
     Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
 
     Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost');
 
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
+
+    Route::post('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
 
     Route::patch('/storeAssignCost', 'RAPController@storeAssignCost')->name('storeAssignCost');
 

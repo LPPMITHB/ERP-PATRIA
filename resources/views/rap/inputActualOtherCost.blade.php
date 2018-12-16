@@ -2,11 +2,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Other Cost',
+        'title' => 'Input Actual Other Cost',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rap.selectProjectCost'),
-            'Create Cost' => ""
+            'Select Project' => route('rap.selectProjectActualOtherCost'),
+            'Input Actual Cost' => ""
         ]
     ]
 )
@@ -51,14 +51,15 @@
                 </div>
             </div>
             @verbatim
-            <div id="create_cost">
+            <div id="input_actual_other_cost">
                 <div class="box-body p-t-0">
                     <table id="cost-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 45%">Description</th>
-                                <th style="width: 20%">Cost</th>
+                                <th style="width: 25%">Description</th>
+                                <th style="width: 20%">Planned Cost</th>
+                                <th style="width: 20%">Actual Cost</th>
                                 <th style="width: 10%"></th>
                             </tr>
                         </thead>
@@ -67,6 +68,9 @@
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
+                                <td class="no-padding">
+                                    <input v-model="newCost.actual_cost" class="form-control width100" rows="2" name="actual_cost" placeholder="Actual cost">
+                                </td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
                                         EDIT
@@ -74,20 +78,6 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0">
-                                    <input v-model="newCost.description" class="form-control width100" rows="2" name="description" placeholder="Description">
-                                </td>
-                                <td class="p-l-0">
-                                    <input v-model="newCost.cost" class="form-control width100" rows="2" name="cost" placeholder="Cost">
-                                </td>
-                                <td class="p-l-0 textCenter">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
-                                </td>
-                            </tr>
-                        </tfoot>
                     </table>
                     <div class="modal fade" id="edit_cost">
                         <div class="modal-dialog">
@@ -105,8 +95,12 @@
                                             <textarea id="description" v-model="editCost.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="cost" class="control-label">Cost</label>
-                                            <input type="text" id="cost" v-model="editCost.cost" class="form-control" placeholder="Insert Cost here...">
+                                            <label for="cost" class="control-label">Plan Cost</label>
+                                            <input type="text" id="cost" v-model="editCost.cost" class="form-control" placeholder="Insert Plan Cost here...">
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="actual_cost" class="control-label">Actual Cost</label>
+                                            <input type="text" id="actual_cost" v-model="editCost.actual_cost" class="form-control" placeholder="Insert Actual Cost here...">
                                         </div>
                                     </div>
                                 </div>
@@ -144,6 +138,7 @@ var data = {
     newCost : {
         description : "",
         cost : "",
+        actual_cost : "",
         wbs_id : "",
         project_id : @json($project->id),
     },
@@ -151,6 +146,7 @@ var data = {
         cost_id : "",
         description : "",
         cost : "",
+        actual_cost : "",
         wbs_id : "",
         project_id : @json($project->id),
     },
@@ -162,7 +158,7 @@ var data = {
 };
 
 var vm = new Vue({
-    el: '#create_cost',
+    el: '#input_actual_other_cost',
     data: data,
     computed:{
         createOk: function(){
@@ -193,6 +189,7 @@ var vm = new Vue({
             this.editCost.description = data.description;
             this.editCost.wbs_id = data.wbs_id;
             this.editCost.cost = data.cost;
+            this.editCost.actual_cost = data.actual_cost;
         },
         getWorks(){
             window.axios.get('/project/getAllWorks/'+this.newCost.project_id).then(({ data }) => {
@@ -202,6 +199,7 @@ var vm = new Vue({
         getCosts(){
             window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
                 this.costs = data;
+                console.log(this.costs)
                 this.newIndex = Object.keys(this.costs).length+1;
                 var dT = $('#cost-table').DataTable();
                 dT.destroy();
@@ -227,7 +225,7 @@ var vm = new Vue({
             var newCost = this.newCost;
             newCost.cost = newCost.cost.replace(/,/g , '');
             newCost = JSON.stringify(newCost);
-            var url = "{{ route('rap.storeCost') }}";
+            var url = "{{ route('rap.storeActualCost') }}";
             window.axios.post(url,newCost)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -246,6 +244,7 @@ var vm = new Vue({
                 
                 this.getCosts();
                 this.newCost.description = "";
+                this.newCost.cost = "";
                 this.newCost.cost = "";
                 this.newCost.wbs_id = "";                
             })
@@ -278,6 +277,7 @@ var vm = new Vue({
                 this.getCosts();
                 this.newCost.description = "";
                 this.newCost.cost = "";
+                this.newCost.actual_cost = "";
                 this.newCost.wbs_id = "";
             })
             .catch((error) => {
