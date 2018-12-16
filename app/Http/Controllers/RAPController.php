@@ -56,6 +56,15 @@ class RAPController extends Controller
         return view('rap.selectProject', compact('projects','menu'));
     }
 
+    // input actual other cost
+    public function selectProjectActualOtherCost()
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        $menu = "input_actual_other_cost";
+
+        return view('rap.selectProject', compact('projects','menu'));
+    }
+
     // assign cost
     public function selectProjectAssignCost()
     {
@@ -169,6 +178,13 @@ class RAPController extends Controller
         $project = Project::findOrFail($id);       
 
         return view('rap.createOtherCost', compact('project'));
+    }
+
+    public function inputActualOtherCost($id)
+    {
+        $project = Project::findOrFail($id);       
+
+        return view('rap.inputActualOtherCost', compact('project'));
     }
 
     public function assignCost($id)
@@ -332,8 +348,34 @@ class RAPController extends Controller
         try {
             $cost = new Cost;
             $cost->description = $data['description'];
-            $cost->cost = $data['cost'];
+            $cost->plan_cost = $data['cost'];
             $cost->wbs_id = $data['wbs_id'];
+            $cost->project_id = $data['project_id'];
+
+            $cost->user_id = Auth::user()->id;
+            $cost->branch_id = Auth::user()->branch->id;
+
+            if(!$cost->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new cost"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeActualCost(Request $request)
+    {
+        $data = $request->json()->all();
+        DB::beginTransaction();
+        try {
+            $cost = new Cost;
+            $cost->description = $data['description'];
+            $cost->plan_cost = $data['cost'];
+            $cost->actual_cost = $data['actual_cost'];
             $cost->project_id = $data['project_id'];
 
             $cost->user_id = Auth::user()->id;
@@ -381,7 +423,7 @@ class RAPController extends Controller
         try {
             $cost = Cost::find($id);
             $cost->description = $data['description'];
-            $cost->cost = $data['cost'];
+            $cost->plan_cost = $data['cost'];
             if($data['wbs_id'] == ""){
                 $cost->wbs_id = null;
             }else{

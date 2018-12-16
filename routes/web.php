@@ -512,6 +512,10 @@ Route::name('rap.')->prefix('rap')->group(function() {
     
     Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:create-other-cost');
 
+    Route::get('/selectProjectActualOtherCost', 'RAPController@selectProjectActualOtherCost')->name('selectProjectActualOtherCost')->middleware('can:index-rap');
+    
+    Route::get('/selectProjectAssignCost', 'RAPController@selectProjectAssignCost')->name('selectProjectAssignCost')->middleware('can:index-rap');
+
     Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:view-planned-cost');
 
     Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:view-remaining-material');
@@ -522,14 +526,22 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost');
 
-    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');;
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');
+    
+    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost');
+
+    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
 
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
 
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
+     
+    Route::post('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');    
-    
+    Route::patch('/storeAssignCost', 'RAPController@storeAssignCost')->name('storeAssignCost');
+
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:create-other-cost');
+
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     
     Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');

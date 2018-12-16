@@ -165,6 +165,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Input Actual Other Cost',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'rap.selectProjectActualOtherCost',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$costPlan,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         // DB::table('menus')->insert([
         //     'level' => 3,
