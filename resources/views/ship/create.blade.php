@@ -63,7 +63,7 @@
                             <label for="type" class="col-sm-2 control-label">Type</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="type" name="type" required value="{{ $ship->type }}">
+                                <input type="text" class="form-control" id="type" name="type" required autofocus value={{ old('type') }}>
                             </div>
                         </div>
 
@@ -71,7 +71,7 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" value="{{ $ship->description }}">
+                                <input type="text" class="form-control" id="description" name="description" value={{ old('description')}}>
                             </div>
                         </div>
                         

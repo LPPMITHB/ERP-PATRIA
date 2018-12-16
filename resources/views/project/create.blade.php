@@ -319,7 +319,7 @@ $(document).ready(function(){
             }
             if(this.oldData.description !=null) {
                 this.project.description=this.oldData.description;
-            console.log(this.oldData);
+            // console.log(this.oldData);
         }
     },
 
