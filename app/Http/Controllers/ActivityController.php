@@ -20,10 +20,11 @@ class ActivityController extends Controller
         $wbss = $project->wbss;
         $dataWbs = Collection::make();
 
+        $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
         $dataWbs->push([
-            "id" => $project->number , 
+            "id" => $project->number, 
             "parent" => "#",
-            "text" => $project->name,
+            "text" => $project->name. " | Weight : (".$totalWeightProject."% / 100%)",
             "icon" => "fa fa-ship"
         ]);
         
@@ -39,6 +40,9 @@ class ActivityController extends Controller
         }elseif($menu == "confirmAct"){
             $route = "/activity/confirmActivity/";
             $menuTitle = "Confirm Activity » Select WBS";
+        }elseif($menu == "viewWbs"){
+            $route = "/wbs/show/";
+            $menuTitle = "View WBS » Select WBS";
         }else{
             $route = "";
             $menuTitle = "Select WBS";
@@ -46,18 +50,31 @@ class ActivityController extends Controller
     
         foreach($wbss as $wbs){
             if($wbs->wbs){
-                $dataWbs->push([
-                    "id" => $wbs->code , 
-                    "parent" => $wbs->wbs->code,
-                    "text" => $wbs->name,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => $route.$wbs->id],
-                ]);
+                if(count($wbs->activities)>0){
+                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $route.$wbs->id],
+                    ]);
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $route.$wbs->id],
+                    ]);
+                }
             }else{
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+
                 $dataWbs->push([
                     "id" => $wbs->code , 
                     "parent" => $project->number,
-                    "text" => $wbs->name,
+                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                     "icon" => "fa fa-suitcase",
                     "a_attr" =>  ["href" => $route.$wbs->id],
                 ]);
@@ -83,7 +100,7 @@ class ActivityController extends Controller
         DB::beginTransaction();
         try {
             $activity = new Activity;
-            $activity->code = self::generateActivityCode();
+            $activity->code = self::generateActivityCode($data['wbs_id']);
             $activity->name = $data['name'];
             $activity->description = $data['description'];
             $activity->wbs_id = $data['wbs_id'];            
@@ -266,16 +283,20 @@ class ActivityController extends Controller
     }
     
     //Method
-    public function generateActivityCode(){
-        $code = 'PRA';
-        $modelActivity = Activity::orderBy('code', 'desc')->first();
+    public function generateActivityCode($id){
+        $code = 'ACT';
+        $project = WBS::find($id)->project;
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+
+        $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
         
         $number = 1;
 		if(isset($modelActivity)){
             $number += intval(substr($modelActivity->code, -4));
 		}
 
-        $activity_code = $code.''.sprintf('%04d', $number);
+        $activity_code = $code.sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $activity_code;
     }
 

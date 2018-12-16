@@ -33,7 +33,7 @@
     <div class="box-tools pull-left m-l-15">
         <a href="{{ route('project.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
         <a href="{{ route('wbs.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
-        <a href="{{ route('wbs.index',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW WBS</a>
+        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'viewWbs']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
         <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
         <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
         <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'mngNet']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
@@ -232,10 +232,10 @@
                             <tbody>
                                 <tr v-for="(data,index) in predecessorActivities">
                                     <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                    <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                    <td class="p-b-15 p-t-15 tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                    <td class="p-b-15 p-t-15">{{ data.wbs.code }}</td>
+                                    <td class="p-b-15 p-t-15 tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.wbs.code)">{{ data.wbs.code }}</td>
                                     <td class="textCenter">
                                         <template v-if="data.status == 0">
                                             <i class='fa fa-check'></i>
@@ -291,7 +291,7 @@
 <div class="row">
     <div class="col-sm-12" style="margin-top: -5px;">
         <div class="box box-solid">
-            <div class="box-header with-border"><h4><b>Gantt Chartt</b></h4></div>
+            <div class="box-header with-border"><h4><b>Gantt Chart</b></h4></div>
             <div class="box-body gantt_chart_mobile">
                 <label>View by :</label>
                 <label><input type="radio" name="scale" value="day" />Day scale</label>
@@ -594,7 +594,7 @@
             return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
         };
         gantt.templates.grid_file = function(item) { 
-            if(item.id.indexOf("PRW") != -1){
+            if(item.id.indexOf("WBS") != -1){
                 return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
             }else{
                 return "<div class='gantt_tree_icon textCenter'><i class='fa fa-clock-o'></i></div>"; 
@@ -884,7 +884,7 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            if(id.indexOf("PRA") !== -1){
+            if(id.indexOf("ACT") !== -1){
                 $("#confirm_activity_modal").modal('show');
                 vm.openConfirmModal(id);
                 return true;
