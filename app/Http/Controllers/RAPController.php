@@ -156,13 +156,13 @@ class RAPController extends Controller
         return view('rap.index', compact('raps'));
     }
 
-    public function create($id)
-    {
-        $modelBOMs = BOM::where('wbs_id','!=','null')->where('status',1)->where('project_id',$id)->with('wbs')->get();
-        $project = Project::findOrFail($id);
+    // public function create($id)
+    // {
+    //     $modelBOMs = BOM::where('wbs_id','!=','null')->where('status',1)->where('project_id',$id)->with('wbs')->get();
+    //     $project = Project::findOrFail($id);
 
-        return view('rap.create', compact('modelBOMs','project'));
-    }
+    //     return view('rap.create', compact('modelBOMs','project'));
+    // }
 
     public function createCost($id)
     {

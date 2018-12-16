@@ -14,45 +14,41 @@
 Route::get('/', 'PagesController@index')->name('index')->middleware('can:show-dashboard');
 Auth::routes();
 
-
 // Configuration Routes
-// Route::name('config.')->prefix('config')->middleware('auth')->group(function() {
-    // Appearance Routes
-    Route::name('appearance.')->prefix('appearance')->group(function() {
-        Route::get('/', 'ConfigurationController@appearanceIndex')->name('index');
+Route::name('appearance.')->prefix('appearance')->group(function() {
+    Route::get('/', 'ConfigurationController@appearanceIndex')->name('index');
 
-        Route::post('/', 'ConfigurationController@appearanceSave')->name('save');
-    });
+    Route::post('/', 'ConfigurationController@appearanceSave')->name('save');
+});
 
-    // Menu Routes
-    Route::name('menus.')->prefix('menus')->group(function() {
-        Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');
-    
-        Route::get('/', 'MenuController@index')->name('index')->middleware('can:index-menu');
-    
-        Route::get('/{id}', 'MenuController@show')->name('show')->middleware('can:show-menu');
-    
-        Route::get('/{id}/edit', 'MenuController@edit')->name('edit')->middleware('can:edit-menu');
-    
-        Route::patch('/{id}', 'MenuController@update')->name('update')->middleware('can:edit-menu');
-    
-        Route::post('/', 'MenuController@store')->name('store')->middleware('can:create-menu');
-    
-        Route::delete('/{id}', 'MenuController@destroy')->name('destroy')->middleware('can:destroy-menu');
-    });
-// });
+// Menu Routes
+Route::name('menus.')->prefix('menus')->group(function() {
+    Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');
+
+    Route::get('/', 'MenuController@index')->name('index')->middleware('can:list-menu');
+
+    Route::get('/{id}', 'MenuController@show')->name('show')->middleware('can:show-menu');
+
+    Route::get('/{id}/edit', 'MenuController@edit')->name('edit')->middleware('can:edit-menu');
+
+    Route::patch('/{id}', 'MenuController@update')->name('update')->middleware('can:edit-menu');
+
+    Route::post('/', 'MenuController@store')->name('store')->middleware('can:create-menu');
+
+    Route::delete('/{id}', 'MenuController@destroy')->name('destroy')->middleware('can:destroy-menu');
+});
 
 // User Management Routes
 Route::name('user.')->prefix('user')->group(function() {
     //Change Default Password
-    Route::get('/changeDefaultPassword', 'UserController@changeDefaultPassword')->name('changeDefaultPassword')->middleware('can:edit-user');   
+    Route::get('/changeDefaultPassword', 'UserController@changeDefaultPassword')->name('changeDefaultPassword')->middleware('can:edit-default-password');   
     
-    Route::patch('/updateDefaultPassword', 'UserController@updateDefaultPassword')->name('updateDefaultPassword')->middleware('can:edit-user');
+    Route::patch('/updateDefaultPassword', 'UserController@updateDefaultPassword')->name('updateDefaultPassword')->middleware('can:edit-default-password');
 
     //User
     Route::get('/create', 'UserController@create')->name('create')->middleware('can:create-user');
 
-    Route::get('/', 'UserController@index')->name('index')->middleware('can:index-user');
+    Route::get('/', 'UserController@index')->name('index')->middleware('can:list-user');
 
     Route::get('/{id}', 'UserController@show')->name('show')->middleware('can:show-user');
 
@@ -62,20 +58,16 @@ Route::name('user.')->prefix('user')->group(function() {
 
     Route::post('/', 'UserController@store')->name('store')->middleware('can:create-user');
 
-    Route::delete('/{id}', 'UserController@destroy')->name('destroy')->middleware('can:destroy-user');
-
     Route::get('/{id}/change', 'UserController@editPassword')->name('change_password')->middleware('can:edit-password');
 
     Route::patch('/{id}/update', 'UserController@updatePassword')->name('update_password')->middleware('can:edit-password');
-
-
 });
 
 // Role Management Routes
 Route::name('role.')->prefix('role')->group(function() {
     Route::get('/create', 'RoleController@create')->name('create')->middleware('can:create-role');
 
-    Route::get('/', 'RoleController@index')->name('index')->middleware('can:index-role');
+    Route::get('/', 'RoleController@index')->name('index')->middleware('can:list-role');
 
     Route::get('/{id}', 'RoleController@show')->name('show')->middleware('can:show-role');
 
@@ -84,15 +76,13 @@ Route::name('role.')->prefix('role')->group(function() {
     Route::patch('/{id}', 'RoleController@update')->name('update')->middleware('can:edit-role');
 
     Route::post('/', 'RoleController@store')->name('store')->middleware('can:create-role');
-
-    Route::delete('/{id}', 'RoleController@destroy')->name('destroy')->middleware('can:destroy-role');
 });
 
 // Permission Management Routes
 Route::name('permission.')->prefix('permission')->group(function() {
     Route::get('/create', 'PermissionController@create')->name('create')->middleware('can:create-permission');
 
-    Route::get('/', 'PermissionController@index')->name('index')->middleware('can:index-permission');
+    Route::get('/', 'PermissionController@index')->name('index')->middleware('can:list-permission');
 
     Route::get('/{id}', 'PermissionController@show')->name('show')->middleware('can:show-permission');
 
@@ -101,15 +91,13 @@ Route::name('permission.')->prefix('permission')->group(function() {
     Route::patch('/{id}', 'PermissionController@update')->name('update')->middleware('can:edit-permission');
 
     Route::post('/', 'PermissionController@store')->name('store')->middleware('can:create-permission');
-
-    Route::delete('/{id}', 'PermissionController@destroy')->name('destroy')->middleware('can:destroy-permission');
 });
 
 //Ship Routes
 Route::name('ship.')->prefix('ship')->group(function() {
     Route::get('/create', 'ShipController@create')->name('create')->middleware('can:create-ship');
 
-    Route::get('/', 'ShipController@index')->name('index')->middleware('can:index-ship');
+    Route::get('/', 'ShipController@index')->name('index')->middleware('can:list-ship');
 
     Route::get('/{id}', 'ShipController@show')->name('show')->middleware('can:show-ship');
 
@@ -118,15 +106,13 @@ Route::name('ship.')->prefix('ship')->group(function() {
     Route::patch('/{id}', 'ShipController@update')->name('update')->middleware('can:edit-ship');
 
     Route::post('/', 'ShipController@store')->name('store')->middleware('can:create-ship');
-
-    Route::delete('/{id}', 'ShipController@destroy')->name('destroy')->middleware('can:destroy-ship');
 });
 
 //Customer Routes
 Route::name('customer.')->prefix('customer')->group(function() {
     Route::get('/create', 'CustomerController@create')->name('create')->middleware('can:create-customer');
 
-    Route::get('/', 'CustomerController@index')->name('index')->middleware('can:index-customer');
+    Route::get('/', 'CustomerController@index')->name('index')->middleware('can:list-customer');
 
     Route::get('/{id}', 'CustomerController@show')->name('show')->middleware('can:show-customer');
 
@@ -135,15 +121,13 @@ Route::name('customer.')->prefix('customer')->group(function() {
     Route::patch('/{id}', 'CustomerController@update')->name('update')->middleware('can:edit-customer');
 
     Route::post('/', 'CustomerController@store')->name('store')->middleware('can:create-customer');
-
-    Route::delete('/{id}', 'CustomerController@destroy')->name('destroy')->middleware('can:destroy-customer');
 });
 
 //Branch Routes
 Route::name('branch.')->prefix('branch')->group(function() {
     Route::get('/create', 'BranchController@create')->name('create')->middleware('can:create-branch');
 
-    Route::get('/', 'BranchController@index')->name('index')->middleware('can:index-branch');
+    Route::get('/', 'BranchController@index')->name('index')->middleware('can:list-branch');
 
     Route::get('/{id}', 'BranchController@show')->name('show')->middleware('can:show-branch');
 
@@ -152,15 +136,13 @@ Route::name('branch.')->prefix('branch')->group(function() {
     Route::patch('/{id}', 'BranchController@update')->name('update')->middleware('can:edit-branch');
 
     Route::post('/', 'BranchController@store')->name('store')->middleware('can:create-branch');
-
-    Route::delete('/{id}', 'BranchController@destroy')->name('destroy')->middleware('can:destroy-branch');
 });
 
 //Business Unit Routes
 Route::name('business_unit.')->prefix('business_unit')->group(function() {
     Route::get('/create', 'BusinessUnitController@create')->name('create')->middleware('can:create-business-unit');
 
-    Route::get('/', 'BusinessUnitController@index')->name('index')->middleware('can:index-business-unit');
+    Route::get('/', 'BusinessUnitController@index')->name('index')->middleware('can:list-business-unit');
 
     Route::get('/{id}', 'BusinessUnitController@show')->name('show')->middleware('can:show-business-unit');
 
@@ -169,15 +151,13 @@ Route::name('business_unit.')->prefix('business_unit')->group(function() {
     Route::patch('/{id}', 'BusinessUnitController@update')->name('update')->middleware('can:edit-business-unit');
 
     Route::post('/', 'BusinessUnitController@store')->name('store')->middleware('can:create-business-unit');
-
-    Route::delete('/{id}', 'BusinessUnitController@destroy')->name('destroy')->middleware('can:destroy-business-unit');
 });
 
 //Material Routes
 Route::name('material.')->prefix('material')->group(function() {
     Route::get('/create', 'MaterialController@create')->name('create')->middleware('can:create-material');
 
-    Route::get('/', 'MaterialController@index')->name('index')->middleware('can:index-material');
+    Route::get('/', 'MaterialController@index')->name('index')->middleware('can:list-material');
 
     Route::get('/{id}', 'MaterialController@show')->name('show')->middleware('can:show-material');
 
@@ -186,17 +166,15 @@ Route::name('material.')->prefix('material')->group(function() {
     Route::patch('/{id}', 'MaterialController@update')->name('update')->middleware('can:edit-material');
 
     Route::post('/', 'MaterialController@store')->name('store')->middleware('can:create-material');
-
-    Route::delete('/{id}', 'MaterialController@destroy')->name('destroy')->middleware('can:destroy-material');
 });
 
 //Resource Management Routes
 Route::name('resource.')->prefix('resource')->group(function() {
-    Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:index-resource');
+    Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource');
 
     Route::get('/create', 'ResourceController@create')->name('create')->middleware('can:create-resource');
 
-    Route::get('/', 'ResourceController@index')->name('index')->middleware('can:index-resource');
+    Route::get('/', 'ResourceController@index')->name('index')->middleware('can:list-resource');
 
     Route::get('/{id}', 'ResourceController@show')->name('show')->middleware('can:show-resource');
 
@@ -206,8 +184,6 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::post('/', 'ResourceController@store')->name('store')->middleware('can:create-resource');
 
-    Route::delete('/{id}', 'ResourceController@destroy')->name('destroy')->middleware('can:destroy-resource');
-
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
 
     Route::patch('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
@@ -215,14 +191,13 @@ Route::name('resource.')->prefix('resource')->group(function() {
     Route::patch('/storeResourceDetail/{wbs_id}', 'ResourceController@storeResourceDetail')->name('storeResourceDetail')->middleware('can:create-resource');
     
     Route::patch('/storeResourceCategory/{wbs_id}', 'ResourceController@storeResourceCategory')->name('storeResourceCategory')->middleware('can:create-resource');
-
 });
 
 //Unit Of Measurement Routes
 Route::name('unit_of_measurement.')->prefix('unit_of_measurement')->group(function() {
     Route::get('/create', 'UnitOfMeasurementController@create')->name('create')->middleware('can:create-unit-of-measurement');
 
-    Route::get('/', 'UnitOfMeasurementController@index')->name('index')->middleware('can:index-unit-of-measurement');
+    Route::get('/', 'UnitOfMeasurementController@index')->name('index')->middleware('can:list-unit-of-measurement');
 
     Route::get('/{id}', 'UnitOfMeasurementController@show')->name('show')->middleware('can:show-unit-of-measurement');
 
@@ -231,15 +206,13 @@ Route::name('unit_of_measurement.')->prefix('unit_of_measurement')->group(functi
     Route::patch('/{id}', 'UnitOfMeasurementController@update')->name('update')->middleware('can:edit-unit-of-measurement');
 
     Route::post('/', 'UnitOfMeasurementController@store')->name('store')->middleware('can:create-unit-of-measurement');
-
-    Route::delete('/{id}', 'UnitOfMeasurementController@destroy')->name('destroy')->middleware('can:destroy-unit-of-measurement');
 });
 
 //Vendor Routes
 Route::name('vendor.')->prefix('vendor')->group(function() {
     Route::get('/create', 'VendorController@create')->name('create')->middleware('can:create-vendor');
 
-    Route::get('/', 'VendorController@index')->name('index')->middleware('can:index-vendor');
+    Route::get('/', 'VendorController@index')->name('index')->middleware('can:list-vendor');
 
     Route::get('/{id}', 'VendorController@show')->name('show')->middleware('can:show-vendor');
 
@@ -248,15 +221,13 @@ Route::name('vendor.')->prefix('vendor')->group(function() {
     Route::patch('/{id}', 'VendorController@update')->name('update')->middleware('can:edit-vendor');
 
     Route::post('/', 'VendorController@store')->name('store')->middleware('can:create-vendor');
-
-    Route::delete('/{id}', 'VendorController@destroy')->name('destroy')->middleware('can:destroy-vendor');
 });
 
 //Company Routes
 Route::name('company.')->prefix('company')->group(function() {
     Route::get('/create', 'CompanyController@create')->name('create')->middleware('can:create-company');
 
-    Route::get('/', 'CompanyController@index')->name('index')->middleware('can:index-company');
+    Route::get('/', 'CompanyController@index')->name('index')->middleware('can:list-company');
 
     Route::get('/{id}', 'CompanyController@show')->name('show')->middleware('can:show-company');
 
@@ -265,8 +236,6 @@ Route::name('company.')->prefix('company')->group(function() {
     Route::patch('/{id}', 'CompanyController@update')->name('update')->middleware('can:edit-company');
 
     Route::post('/', 'CompanyController@store')->name('store')->middleware('can:create-company');
-
-    Route::delete('/{id}', 'CompanyController@destroy')->name('destroy')->middleware('can:destroy-company');
 });
 
 //Currencies Routes
@@ -282,15 +251,13 @@ Route::name('currencies.')->prefix('currencies')->group(function() {
     Route::patch('/{id}', 'CurrenciesController@update')->name('update');
 
     Route::post('/', 'CurrenciesController@store')->name('store');
-
-    Route::delete('/{id}', 'CurrenciesController@destroy')->name('destroy');
 });
 
 //Service Routes
 Route::name('service.')->prefix('service')->group(function() {
     Route::get('/create', 'ServiceController@create')->name('create')->middleware('can:create-service');
 
-    Route::get('/', 'ServiceController@index')->name('index')->middleware('can:index-service');
+    Route::get('/', 'ServiceController@index')->name('index')->middleware('can:list-service');
 
     Route::get('/{id}', 'ServiceController@show')->name('show')->middleware('can:show-service');
 
@@ -299,15 +266,13 @@ Route::name('service.')->prefix('service')->group(function() {
     Route::patch('/{id}', 'ServiceController@update')->name('update')->middleware('can:edit-service');
 
     Route::post('/', 'ServiceController@store')->name('store')->middleware('can:create-service');
-
-    Route::delete('/{id}', 'ServiceController@destroy')->name('destroy')->middleware('can:destroy-service');
 });
 
 //StorageLocation Routes
 Route::name('storage_location.')->prefix('storage_location')->group(function() {
     Route::get('/create', 'StorageLocationController@create')->name('create')->middleware('can:create-storage-location');
 
-    Route::get('/', 'StorageLocationController@index')->name('index')->middleware('can:index-storage-location');
+    Route::get('/', 'StorageLocationController@index')->name('index')->middleware('can:list-storage-location');
 
     Route::get('/{id}', 'StorageLocationController@show')->name('show')->middleware('can:show-storage-location');
 
@@ -316,15 +281,13 @@ Route::name('storage_location.')->prefix('storage_location')->group(function() {
     Route::patch('/{id}', 'StorageLocationController@update')->name('update')->middleware('can:edit-storage-location');
 
     Route::post('/', 'StorageLocationController@store')->name('store')->middleware('can:create-storage-location');
-
-    Route::delete('/{id}', 'StorageLocationController@destroy')->name('destroy')->middleware('can:destroy-storage-location');
 });
 
 //Warehouse Routes
 Route::name('warehouse.')->prefix('warehouse')->group(function() {
     Route::get('/create', 'WarehouseController@create')->name('create')->middleware('can:create-warehouse');
 
-    Route::get('/', 'WarehouseController@index')->name('index')->middleware('can:index-warehouse');
+    Route::get('/', 'WarehouseController@index')->name('index')->middleware('can:list-warehouse');
 
     Route::get('/{id}', 'WarehouseController@show')->name('show')->middleware('can:show-warehouse');
 
@@ -333,15 +296,13 @@ Route::name('warehouse.')->prefix('warehouse')->group(function() {
     Route::patch('/{id}', 'WarehouseController@update')->name('update')->middleware('can:edit-warehouse');
 
     Route::post('/', 'WarehouseController@store')->name('store')->middleware('can:create-warehouse');
-
-    Route::delete('/{id}', 'WarehouseController@destroy')->name('destroy')->middleware('can:destroy-warehouse');
 });
 
 //Yard Routes
 Route::name('yard.')->prefix('yard')->group(function() {
     Route::get('/create', 'YardController@create')->name('create')->middleware('can:create-yard');
 
-    Route::get('/', 'YardController@index')->name('index')->middleware('can:index-yard');
+    Route::get('/', 'YardController@index')->name('index')->middleware('can:list-yard');
 
     Route::get('/{id}', 'YardController@show')->name('show')->middleware('can:show-yard');
 
@@ -350,8 +311,6 @@ Route::name('yard.')->prefix('yard')->group(function() {
     Route::patch('/{id}', 'YardController@update')->name('update')->middleware('can:edit-yard');
 
     Route::post('/', 'YardController@store')->name('store')->middleware('can:create-yard');
-
-    Route::delete('/{id}', 'YardController@destroy')->name('destroy')->middleware('can:destroy-yard');
 });
 
 //BOM Routes
@@ -362,13 +321,13 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
 
-    Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:index-bom');
+    Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:create-bom');
 
-    Route::get('/selectProject', 'BOMController@selectProject')->name('selectProject')->middleware('can:index-bom');
+    Route::get('/selectProject', 'BOMController@selectProject')->name('selectProject')->middleware('can:list-bom');
     
-    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:index-bom');
+    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:list-bom');
 
-    Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:index-bom');
+    Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:edit-bom');
 
     Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom');
 
@@ -377,8 +336,6 @@ Route::name('bom.')->prefix('bom')->group(function() {
     Route::patch('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom');
-
-    Route::patch('/destroy', 'BOMController@destroy')->name('destroy')->middleware('can:destroy-bom');
 });
 
 //BOM Repair Routes
@@ -389,13 +346,13 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
 
-    Route::get('/indexProject', 'BOMController@indexProjectRepair')->name('indexProject')->middleware('can:index-bom-repair');
+    Route::get('/indexProject', 'BOMController@indexProjectRepair')->name('indexProject')->middleware('can:list-bom-repair');
 
-    Route::get('/selectProject', 'BOMController@selectProjectRepair')->name('selectProject')->middleware('can:index-bom-repair');
+    Route::get('/selectProject', 'BOMController@selectProjectRepair')->name('selectProject')->middleware('can:list-bom-repair');
     
-    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:index-bom-repair');
+    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:list-bom-repair');
 
-    Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:index-bom-repair');
+    Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:list-bom-repair');
 
     Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom-repair');
 
@@ -416,15 +373,15 @@ Route::name('bos.')->prefix('bos')->group(function() {
 
     Route::get('/create/{id}', 'BOSController@create')->name('create')->middleware('can:create-bos');
 
-    Route::get('/indexProject', 'BOSController@indexProject')->name('indexProject')->middleware('can:index-bos');
+    Route::get('/indexProject', 'BOSController@indexProject')->name('indexProject')->middleware('can:list-bos');
 
-    Route::get('/selectProject', 'BOSController@selectProject')->name('selectProject')->middleware('can:index-bos');
+    Route::get('/selectProject', 'BOSController@selectProject')->name('selectProject')->middleware('can:list-bos');
     
-    Route::get('/selectWBS/{id}', 'BOSController@selectWBS')->name('selectWBS')->middleware('can:index-bos');
+    Route::get('/selectWBS/{id}', 'BOSController@selectWBS')->name('selectWBS')->middleware('can:list-bos');
 
-    Route::get('/indexBos/{id}', 'BOSController@indexBos')->name('indexBos')->middleware('can:index-bos');
+    Route::get('/indexBos/{id}', 'BOSController@indexBos')->name('indexBos')->middleware('can:list-bos');
 
-    Route::get('/assignBos/{id}', 'BOSController@assignBos')->name('assignBos')->middleware('can:index-bos');
+    Route::get('/assignBos/{id}', 'BOSController@assignBos')->name('assignBos')->middleware('can:list-bos');
 
     Route::get('/{id}', 'BOSController@show')->name('show')->middleware('can:show-bos');
 
@@ -452,7 +409,7 @@ Route::name('project.')->prefix('project')->group(function() {
     //Project
     Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project');
 
-    Route::get('/', 'ProjectController@index')->name('index')->middleware('can:index-project');
+    Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project');
 
     Route::get('/{id}', 'ProjectController@show')->name('show')->middleware('can:show-project');
 
@@ -477,7 +434,7 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
     //Project
     Route::get('/create', 'ProjectController@createRepair')->name('create')->middleware('can:create-project-repair');
 
-    Route::get('/', 'ProjectController@indexRepair')->name('index')->middleware('can:index-project-repair');
+    Route::get('/', 'ProjectController@indexRepair')->name('index')->middleware('can:list-project-repair');
 
     Route::get('/{id}', 'ProjectController@showRepair')->name('show')->middleware('can:show-project-repair');
 
@@ -547,50 +504,37 @@ Route::name('activity.')->prefix('activity')->group(function() {
 
 //rap Routes
 Route::name('rap.')->prefix('rap')->group(function() {
-    Route::get('/create/{id}', 'RAPController@create')->name('create');
+    Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:list-rap');
+
+    Route::get('/indexSelectProject', 'RAPController@indexSelectProject')->name('indexSelectProject')->middleware('can:list-rap');
+
+    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:list-rap');
     
-    Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:index-rap');
+    Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:create-other-cost');
 
-    Route::get('/indexSelectProject', 'RAPController@indexSelectProject')->name('indexSelectProject')->middleware('can:index-rap');
+    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:view-planned-cost');
 
-    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:index-rap');
+    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:view-remaining-material');
     
-    Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:index-rap');
+    Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material');
 
-    Route::get('/selectProjectAssignCost', 'RAPController@selectProjectAssignCost')->name('selectProjectAssignCost')->middleware('can:index-rap');
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material');
 
-    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:index-rap');
+    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost');
 
-    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:index-rap');
-    
-    Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:index-rap');
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');;
 
-    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:index-rap');
+    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
 
-    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost');
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 
-    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
-
-    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost');
-
-    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
-
-    Route::patch('/storeAssignCost', 'RAPController@storeAssignCost')->name('storeAssignCost');
-
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:show-rap');
-
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:edit-rap');    
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');    
     
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     
     Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
     
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
-    
-    Route::post('/', 'RAPController@store')->name('store')->middleware('can:create-rap');
-    
-    Route::delete('/{id}', 'RAPController@destroy')->name('destroy')->middleware('can:destroy-rap');
-    
 });
 
 //Purchase Requisition Routes
@@ -601,7 +545,7 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::patch('/updatePRD', 'PurchaseRequisitionController@updatePRD')->name('updatePRD')->middleware('can:edit-purchase-requisition');
 
-    Route::get('/', 'PurchaseRequisitionController@index')->name('index');
+    Route::get('/', 'PurchaseRequisitionController@index')->name('index')->middleware('can:list-requisition');
 
     Route::get('/create', 'PurchaseRequisitionController@create')->name('create')->middleware('can:create-purchase-requisition');
 
@@ -627,9 +571,9 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
     Route::post('/storeResource', 'PurchaseOrderController@storeResource')->name('storeResource')->middleware('can:create-purchase-order');
 
-    Route::get('/createPOResource', 'PurchaseOrderController@createPOResource')->name('createPOResource')->middleware('can:index-purchase-requisition');
+    Route::get('/createPOResource', 'PurchaseOrderController@createPOResource')->name('createPOResource')->middleware('can:list-purchase-requisition');
 
-    Route::get('/selectPR', 'PurchaseOrderController@selectPR')->name('selectPR')->middleware('can:index-purchase-requisition');
+    Route::get('/selectPR', 'PurchaseOrderController@selectPR')->name('selectPR')->middleware('can:list-purchase-requisition');
     
     Route::get('/', 'PurchaseOrderController@index')->name('index');
 
@@ -757,7 +701,7 @@ Route::name('material_write_off.')->prefix('material_write_off')->group(function
 
 //Goods Movement Routes
 Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
-    Route::get('/', 'GoodsMovementController@index')->name('index')->middleware('can:index-goods-movement');
+    Route::get('/', 'GoodsMovementController@index')->name('index')->middleware('can:list-goods-movement');
 
     Route::get('/{id}', 'GoodsMovementController@show')->name('show')->middleware('can:show-goods-movement');
 
@@ -768,9 +712,9 @@ Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
 Route::name('production_order.')->prefix('production_order')->group(function() {
     Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease');
     
-    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:index-production-order');
+    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order');
 
-    Route::get('/report/{id}', 'ProductionOrderController@report')->name('report')->middleware('can:index-production-order');
+    Route::get('/report/{id}', 'ProductionOrderController@report')->name('report')->middleware('can:list-production-order');
 
     Route::get('/create/{id}', 'ProductionOrderController@create')->name('create')->middleware('can:create-production-order');
 

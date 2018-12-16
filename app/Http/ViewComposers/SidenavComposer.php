@@ -55,6 +55,6 @@ class SidenavComposer
         }
         $sidenavs = Sidenav::all();
         $menus = array_unique($menus);
-        $view->with('menus', $menus)->with('child',$child)->with('sidenavs', $sidenavs);
+        $view->with('menus', $menus)->with('child',$child)->with('sidenavs', $sidenavs)->with('roleUser',$roleUser);
     }
 }

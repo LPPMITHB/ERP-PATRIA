@@ -321,6 +321,16 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap.selectProjectViewRM',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRemainingMaterial,
+            'route_name' => 'rap.selectWBS',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRemainingMaterial,
+            'route_name' => 'rap.showMaterialEvaluation',
+        ]);
+
         $createPr = Menu::where('route_name','purchase_requisition.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createPr,
@@ -569,6 +579,22 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $branch,
             'route_name' => 'branch.edit',
         ]);
+
+        $business_unit = Menu::where('route_name','business_unit.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $business_unit,
+            'route_name' => 'business_unit.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $business_unit,
+            'route_name' => 'business_unit.create',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $business_unit,
+            'route_name' => 'business_unit.edit',
+        ]);
         
         $company = Menu::where('route_name','company.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
@@ -718,6 +744,12 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $appearance,
             'route_name' => 'appearance.index',
+        ]);
+
+        $changeDefaultPassword = Menu::where('route_name','user.changeDefaultPassword')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $changeDefaultPassword,
+            'route_name' => 'user.changeDefaultPassword',
         ]);
 
         $user = Menu::where('route_name','user.index')->select('id')->first()->id;

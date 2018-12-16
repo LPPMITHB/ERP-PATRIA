@@ -234,7 +234,6 @@
                         }
                     }
                     $('div.overlay').hide();
-                    
                 })
                 .catch((error) => {
                     iziToast.warning({

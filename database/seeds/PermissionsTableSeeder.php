@@ -25,9 +25,9 @@ class PermissionsTableSeeder extends Seeder
         //Project
         $manageProject = Menu::where('name','Manage Projects')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Project',
+            'name' => 'List Project',
             'menu_id' => $manageProject,
-            'middleware' => 'index-project',
+            'middleware' => 'list-project',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -62,9 +62,9 @@ class PermissionsTableSeeder extends Seeder
         $manageProjectRepair = Menu::where('name','Manage Projects')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
         
         DB::table('permissions')->insert([
-            'name' => 'Index Project',
+            'name' => 'List Project',
             'menu_id' => $manageProjectRepair,
-            'middleware' => 'index-project-repair',
+            'middleware' => 'list-project-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -94,15 +94,16 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //BOM
-        $manageBOM = Menu::where('name','Manage BOM')->select('id')->first()->id;
+        $viewBOM = Menu::where('name','View BOM')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Bom',
-            'menu_id' => $manageBOM,
-            'middleware' => 'index-bom',
+            'name' => 'List Bom',
+            'menu_id' => $viewBOM,
+            'middleware' => 'list-bom',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
+        $manageBOM = Menu::where('name','Manage BOM')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Bom',
             'menu_id' => $manageBOM,
@@ -133,9 +134,9 @@ class PermissionsTableSeeder extends Seeder
         $manageBOMRepair = Menu::where('name','Manage BOM')->where('menu_id',$bomRepair)->select('id')->first()->id;
         
         DB::table('permissions')->insert([
-            'name' => 'Index Bom Repair',
+            'name' => 'List Bom Repair',
             'menu_id' => $manageBOMRepair,
-            'middleware' => 'index-bom-repair',
+            'middleware' => 'list-bom-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -167,9 +168,9 @@ class PermissionsTableSeeder extends Seeder
         //BOS
         $manageBOS = Menu::where('name','Manage BOS')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Bos',
+            'name' => 'List Bos',
             'menu_id' => $manageBOS,
-            'middleware' => 'index-bos',
+            'middleware' => 'list-bos',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -199,20 +200,11 @@ class PermissionsTableSeeder extends Seeder
         ]);
         
         //RAP
-        // $createRAP = Menu::where('name','Create RAP')->select('id')->first()->id;
-        // DB::table('permissions')->insert([
-        //     'name' => 'Create Rap',
-        //     'menu_id' => $createRAP,
-        //     'middleware' => 'create-rap',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
-
         $viewRAP = Menu::where('name','Manage RAP')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Rap',
+            'name' => 'List Rap',
             'menu_id' => $viewRAP,
-            'middleware' => 'index-rap',
+            'middleware' => 'list-rap',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -233,6 +225,36 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // create other cost
+        $createOtherCost = Menu::where('name','Create Other Cost')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Other Cost',
+            'menu_id' => $createOtherCost,
+            'middleware' => 'create-other-cost',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // view planned cost
+        $viewPlannedCost = Menu::where('name','View Planned Cost')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Planned Cost',
+            'menu_id' => $viewPlannedCost,
+            'middleware' => 'view-planned-cost',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // view material remaining
+        $viewRemainingMaterial = Menu::where('name','View Remaining Material')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Remaining Material',
+            'menu_id' => $viewRemainingMaterial,
+            'middleware' => 'view-remaining-material',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Purchase Requisition
         $createPR = Menu::where('name','Create PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -245,9 +267,9 @@ class PermissionsTableSeeder extends Seeder
 
         $viewPR = Menu::where('name','View PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Purchase Requisition',
+            'name' => 'List Purchase Requisition',
             'menu_id' => $viewPR,
-            'middleware' => 'index-purchase-requisition',
+            'middleware' => 'list-purchase-requisition',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -280,9 +302,9 @@ class PermissionsTableSeeder extends Seeder
 
         $viewPO = Menu::where('name','View PO')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Purchase Order',
+            'name' => 'List Purchase Order',
             'menu_id' => $viewPO,
-            'middleware' => 'index-purchase-order',
+            'middleware' => 'list-purchase-order',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -306,9 +328,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Ship
         $ship = Menu::where('name','Ship')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Ship',
+            'name' => 'List Ship',
             'menu_id' => $ship,
-            'middleware' => 'index-ship',
+            'middleware' => 'list-ship',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -340,9 +362,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Branch
         $branch = Menu::where('name','Branch')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Branch',
+            'name' => 'List Branch',
             'menu_id' => $branch,
-            'middleware' => 'index-branch',
+            'middleware' => 'list-branch',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -374,9 +396,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Business Unit
         $businessUnit = Menu::where('name','Business Unit')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Business Unit',
+            'name' => 'List Business Unit',
             'menu_id' => $businessUnit,
-            'middleware' => 'index-business-unit',
+            'middleware' => 'list-business-unit',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -408,9 +430,9 @@ class PermissionsTableSeeder extends Seeder
         // Master Data Company
         $company = Menu::where('name','Company')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Company',
+            'name' => 'List Company',
             'menu_id' => $company,
-            'middleware' => 'index-company',
+            'middleware' => 'list-company',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -442,9 +464,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Storage Location
         $storageLocation = Menu::where('name','Storage Location')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Storage Location',
+            'name' => 'List Storage Location',
             'menu_id' => $storageLocation,
-            'middleware' => 'index-storage-location',
+            'middleware' => 'list-storage-location',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -476,9 +498,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Customer
         $customer = Menu::where('name','Customer')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Customer',
+            'name' => 'List Customer',
             'menu_id' => $customer,
-            'middleware' => 'index-customer',
+            'middleware' => 'list-customer',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -510,9 +532,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Material
         $material = Menu::where('name','Material')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Material',
+            'name' => 'List Material',
             'menu_id' => $material,
-            'middleware' => 'index-material',
+            'middleware' => 'list-material',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -544,9 +566,9 @@ class PermissionsTableSeeder extends Seeder
         //Resource Management
         $resource = Menu::where('name','Manage Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Resource',
+            'name' => 'List Resource',
             'menu_id' => $resource,
-            'middleware' => 'index-resource',
+            'middleware' => 'list-resource',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -578,9 +600,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Service
         $service = Menu::where('name','Service')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Service',
+            'name' => 'List Service',
             'menu_id' => $service,
-            'middleware' => 'index-service',
+            'middleware' => 'list-service',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -612,9 +634,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Unit Of Measurement
         $uom = Menu::where('name','Unit Of Measurement')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Unit Of Measurement',
+            'name' => 'List Unit Of Measurement',
             'menu_id' => $uom,
-            'middleware' => 'index-unit-of-measurement',
+            'middleware' => 'list-unit-of-measurement',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -646,9 +668,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Vendor
         $vendor = Menu::where('name','Vendor')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Vendor',
+            'name' => 'List Vendor',
             'menu_id' => $vendor,
-            'middleware' => 'index-vendor',
+            'middleware' => 'list-vendor',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -680,9 +702,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Warehouse
         $warehouse = Menu::where('name','Warehouse')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Warehouse',
+            'name' => 'List Warehouse',
             'menu_id' => $warehouse,
-            'middleware' => 'index-warehouse',
+            'middleware' => 'list-warehouse',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -714,9 +736,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Yard
         $yard = Menu::where('name','Yard')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index yard',
+            'name' => 'List yard',
             'menu_id' => $yard,
-            'middleware' => 'index-yard',
+            'middleware' => 'list-yard',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -748,9 +770,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Menu
         $menu = Menu::where('name','Menus')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Menu',
+            'name' => 'List Menu',
             'menu_id' => $menu,
-            'middleware' => 'index-menu',
+            'middleware' => 'list-menu',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -782,9 +804,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Appearence
         $appearance = Menu::where('name','Appearance')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Appearence',
+            'name' => 'List Appearence',
             'menu_id' => $appearance,
-            'middleware' => 'index-appearence',
+            'middleware' => 'list-appearence',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -797,12 +819,22 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Edit Default Password
+        $cdp = Menu::where('name','Change Default Password')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Edit Default Password',
+            'menu_id' => $cdp,
+            'middleware' => 'edit-default-password',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Currencies
         $currencies = Menu::where('name','Currencies')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Currencies',
+            'name' => 'List Currencies',
             'menu_id' => $currencies,
-            'middleware' => 'index-currencies',
+            'middleware' => 'list-currencies',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -834,9 +866,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data User
         $userManagement = Menu::where('name','User Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index User',
+            'name' => 'List User',
             'menu_id' => $userManagement,
-            'middleware' => 'index-user',
+            'middleware' => 'list-user',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -900,9 +932,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Role
         $roleManagement = Menu::where('name','Role Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Role',
+            'name' => 'List Role',
             'menu_id' => $roleManagement,
-            'middleware' => 'index-role',
+            'middleware' => 'list-role',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -934,9 +966,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Permission
         $permissionManagement = Menu::where('name','Permission Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Permission',
+            'name' => 'List Permission',
             'menu_id' => $permissionManagement,
-            'middleware' => 'index-permission',
+            'middleware' => 'list-permission',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -968,9 +1000,9 @@ class PermissionsTableSeeder extends Seeder
         //Stock Management
         $stockManagement = Menu::where('name','Stock Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
-        'name' => 'Index Stock Management',
+        'name' => 'List Stock Management',
         'menu_id' => $stockManagement,
-        'middleware' => 'index-stock-management',
+        'middleware' => 'list-stock-management',
         'created_at' => date('Y-m-d'),
         'updated_at' => date('Y-m-d'),
         ]);
@@ -988,9 +1020,9 @@ class PermissionsTableSeeder extends Seeder
         //Master Data Permission
         $goodsMovement = Menu::where('name','Goods Movement')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Goods Movement',
+            'name' => 'List Goods Movement',
             'menu_id' => $goodsMovement,
-            'middleware' => 'index-goods-movement',
+            'middleware' => 'list-goods-movement',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -1022,9 +1054,9 @@ class PermissionsTableSeeder extends Seeder
         //Production Order
         $createProductionOrder = Menu::where('name','Create Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index Production Order',
+            'name' => 'List Production Order',
             'menu_id' => $createProductionOrder,
-            'middleware' => 'index-production-order',
+            'middleware' => 'list-production-order',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

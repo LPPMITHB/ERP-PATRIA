@@ -181,7 +181,42 @@ class RoleController extends Controller
     public function saveMenu($menus,$role){
         foreach ($menus as $menu) {
             $modelMenu = Menu::find($menu);
+            if($modelMenu->menu_id){
+                if($modelMenu->menu->menu){
+                    if($modelMenu->menu->menu->menu){
+                        $roles = explode(',',$modelMenu->menu->menu->menu->roles);
 
+                        if(!in_array($role->name, $roles))
+                            array_push($roles, $role->name);
+    
+                        $stringRoles = implode(',', $roles);
+                        $stringRolesFinal = $stringRoles.",";
+    
+                        $modelMenu->menu->menu->menu->roles = $stringRolesFinal;
+                        $modelMenu->menu->menu->menu->save();
+                    }
+                    $roles = explode(',',$modelMenu->menu->menu->roles);
+
+                    if(!in_array($role->name, $roles))
+                        array_push($roles, $role->name);
+
+                    $stringRoles = implode(',', $roles);
+                    $stringRolesFinal = $stringRoles.",";
+
+                    $modelMenu->menu->menu->roles = $stringRolesFinal;
+                    $modelMenu->menu->menu->save();
+                }
+                $roles = explode(',',$modelMenu->menu->roles);
+
+                if(!in_array($role->name, $roles))
+                    array_push($roles, $role->name);
+
+                $stringRoles = implode(',', $roles);
+                $stringRolesFinal = $stringRoles.",";
+
+                $modelMenu->menu->roles = $stringRolesFinal;
+                $modelMenu->menu->save();
+            }
             $roles = explode(',',$modelMenu->roles);
 
             if(!in_array($role->name, $roles))
@@ -215,6 +250,54 @@ class RoleController extends Controller
 
         foreach ($menus as $menu) {
             $modelMenu = Menu::findOrFail($menu->menu_id);
+            if($modelMenu->menu_id){
+                if($modelMenu->menu->menu){
+                    if($modelMenu->menu->menu->menu){
+                        $roles = explode(',',$modelMenu->menu->menu->menu->roles);
+
+                        if(!in_array($role->name, $roles))
+                            array_push($roles, $role->name);
+            
+                        foreach($roles as $roleKey => $roleMenu){
+                            if($roleMenu == ""){
+                                unset($roles[$roleKey]);
+                            }
+                        }
+            
+                        $stringRoles = implode(',', $roles);
+                        $modelMenu->menu->menu->menu->roles = $stringRoles;
+                        $modelMenu->menu->menu->menu->save();
+                    }
+                    $roles = explode(',',$modelMenu->menu->menu->roles);
+
+                    if(!in_array($role->name, $roles))
+                        array_push($roles, $role->name);
+        
+                    foreach($roles as $roleKey => $roleMenu){
+                        if($roleMenu == ""){
+                            unset($roles[$roleKey]);
+                        }
+                    }
+        
+                    $stringRoles = implode(',', $roles);
+                    $modelMenu->menu->menu->roles = $stringRoles;
+                    $modelMenu->menu->menu->save();
+                }
+                $roles = explode(',',$modelMenu->menu->roles);
+
+                if(!in_array($role->name, $roles))
+                    array_push($roles, $role->name);
+    
+                foreach($roles as $roleKey => $roleMenu){
+                    if($roleMenu == ""){
+                        unset($roles[$roleKey]);
+                    }
+                }
+    
+                $stringRoles = implode(',', $roles);
+                $modelMenu->menu->roles = $stringRoles;
+                $modelMenu->menu->save();
+            }
             $roles = explode(',',$modelMenu->roles);
 
             if(!in_array($role->name, $roles))

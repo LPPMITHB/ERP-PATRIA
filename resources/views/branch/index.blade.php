@@ -6,7 +6,7 @@
         'title' => 'View All Branches',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Branches' => route('branch.index'),
+            'View All Branches' => '',
         ]
     ]
 )
@@ -17,14 +17,14 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header m-b-10">
-                <div class="box-tools pull-right p-t-5">
+            <div class="box-header">
+                <div class="box-tools pull-right">
                     <a href="{{ route('branch.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header -->
-            <div class="box-body">
+            <div class="box-body p-b-0 p-t-15">
             {{-- <div style ="overflow:scroll"> --}}
-                <table class="table table-bordered table-hover" id="branch-table">
+                <table class="table table-bordered tableFixed tablePaging">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
@@ -63,17 +63,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#branch-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

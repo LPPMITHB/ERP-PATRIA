@@ -6,7 +6,7 @@
         'title' => 'View All Customers',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Customers' => route('customer.index'),
+            'View All Customers' => '',
         ]
     ]
 )
@@ -23,7 +23,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body p-b-0 p-t-15">
-                <table class="table table-bordered tablePaging tableFixed ">
+                <table class="table table-bordered tablePaging tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
