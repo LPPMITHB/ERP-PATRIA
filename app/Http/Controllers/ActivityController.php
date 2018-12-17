@@ -265,13 +265,22 @@ class ActivityController extends Controller
         }
     }
 
-    public function indexConfirm()
+    public function indexConfirm(Request $request)
     {
-        $projects = Project::all();
+        $menu = $request->route()->getPrefix() == "/activity" ? "building" : "repair";
+        $projects = Project::where('business_unit_id',1)->get();
 
         return view('activity.indexConfirm', compact('projects'));
     }
     
+    public function indexConfirmRepair(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/activity" ? "building" : "repair";
+        $projects = Project::where('business_unit_id',2)->get();
+
+        return view('activity.indexConfirm', compact('projects'));
+    }
+
     public function confirmActivity($id)
     {
         $wbs = WBS::find($id);

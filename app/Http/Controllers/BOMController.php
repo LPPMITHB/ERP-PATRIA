@@ -160,7 +160,6 @@ class BOMController extends Controller
                     ]);
                 } 
             }
-             
         }
         return view('bom.indexBom', compact('project','data'));
     }
@@ -584,7 +583,7 @@ class BOMController extends Controller
         return view('bom.indexProject', compact('projects','menu'));
     }
 
-    public function selectProjectRepair()
+    public function selectProjectRepair(Request $request)
     {
         $projects = Project::where('status',1)->where('business_unit_id',2)->get();
         $menu = $request->route()->getPrefix();

@@ -709,17 +709,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // DB::table('menus')->insert([
-        //     'level' => 3,
-        //     'name' => 'Confirm Activity',
-        //     'icon' => 'fa-clock-o',
-        //     'route_name'=> 'activity.indexConfirm',
-        //     'is_active' => true,
-        //     'roles' => 'ADMIN',
-        //     'menu_id'=> $projectManagementRepair,
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d')
-        // ]);
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Confirm Activity',
+            'icon' => 'fa-clock-o',
+            'route_name'=> 'activity_repair.indexConfirm',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 2,
@@ -737,7 +737,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Manage BOM',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'bom_repair.indexProject',
+            'route_name'=> 'bom_repair.indexProjectRepair',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bomRepair,
@@ -749,7 +749,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View BOM',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'bom_repair.selectProject',
+            'route_name'=> 'bom_repair.selectProjectRepair',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bomRepair,
@@ -789,6 +789,78 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bos,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Cost Plan',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $repair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $costPlan =  Menu::where('name','Cost Plan')->where('menu_id',$repair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage RAP',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'rap_repair.indexSelectProjectRepair',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$costPlan,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);  
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create Other Cost',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'rap_repair.selectProjectCostRepair',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$costPlan,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Input Actual Other Cost',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'rap_repair.selectProjectActualOtherCostRepair',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$costPlan,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Planned Cost',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'rap_repair.selectProjectViewCostRepair',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$costPlan,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Remaining Material',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'rap_repair.selectProjectViewRMRepair',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

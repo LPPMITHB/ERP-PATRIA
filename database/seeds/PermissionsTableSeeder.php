@@ -264,8 +264,74 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-
         
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $costPlanRepair =  Menu::where('name','Cost Plan')->where('menu_id',$repair)->select('id')->first()->id;
+         //RAP repair
+        $manageRAPRepair = Menu::where('name','Manage RAP')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Rap Repair',
+            'menu_id' => $manageRAPRepair,
+            'middleware' => 'list-rap-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Rap Repair',
+            'menu_id' => $manageRAPRepair,
+            'middleware' => 'show-rap-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Rap Repair',
+            'menu_id' => $manageRAPRepair,
+            'middleware' => 'edit-rap-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+ 
+         // create other cost repair
+        $createOtherCost = Menu::where('name','Create Other Cost')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Other Cost Repair',
+            'menu_id' => $createOtherCost,
+            'middleware' => 'create-other-cost-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+ 
+        // create actual other cost repair
+        $inputActualOtherCost = Menu::where('name','Input Actual Other Cost')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Input Actual Other Cost Repair',
+            'menu_id' => $inputActualOtherCost,
+            'middleware' => 'create-actual-other-cost-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // view planned cost repair
+        $viewPlannedCost = Menu::where('name','View Planned Cost')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Planned Cost Repair',
+            'menu_id' => $viewPlannedCost,
+            'middleware' => 'view-planned-cost-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // view material remaining repair
+        $viewRemainingMaterial = Menu::where('name','View Remaining Material')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Remaining Material Repair',
+            'menu_id' => $viewRemainingMaterial,
+            'middleware' => 'view-remaining-material-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
         //Purchase Requisition
         $createPR = Menu::where('name','Create PR')->select('id')->first()->id;
