@@ -476,7 +476,7 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 // Activity Routes
 Route::name('activity.')->prefix('activity')->group(function() {
     //Confirm Activity
-    Route::get('/indexConfirm', 'ActivityController@indexConfirm')->name('indexConfirm')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/indexConfirm', 'ActivityController@indexConfirm')->name('indexConfirm')->middleware('can:show-project');
 
     Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project','can:show-project-repair');
 
@@ -499,6 +499,12 @@ Route::name('activity.')->prefix('activity')->group(function() {
     Route::patch('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project','can:edit-project-repair');
     
     Route::get('/manageNetwork/{id}', 'ActivityController@manageNetwork')->name('manageNetwork')->middleware('can:show-project','can:show-project-repair');
+});
+
+// Activity Routes
+Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
+    //Confirm Activity
+    Route::get('/indexConfirm', 'ActivityController@indexConfirmRepair')->name('indexConfirm')->middleware('can:show-project-repair');
    
 });
 

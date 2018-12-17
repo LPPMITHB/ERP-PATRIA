@@ -709,17 +709,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // DB::table('menus')->insert([
-        //     'level' => 3,
-        //     'name' => 'Confirm Activity',
-        //     'icon' => 'fa-clock-o',
-        //     'route_name'=> 'activity.indexConfirm',
-        //     'is_active' => true,
-        //     'roles' => 'ADMIN',
-        //     'menu_id'=> $projectManagementRepair,
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d')
-        // ]);
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Confirm Activity',
+            'icon' => 'fa-clock-o',
+            'route_name'=> 'activity_repair.indexConfirm',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 2,
