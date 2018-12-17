@@ -487,7 +487,7 @@
                     type: 'time',
                     time: {
                         tooltipFormat: 'll',
-                        unit: 'month'
+                        unit: 'month',
                     }
                 }],
                 yAxes: [{
@@ -508,7 +508,6 @@
             } 
         }
     });
-
     var progress = new Chart(progressCanvas, {
         type: 'line',
         data: {
@@ -540,7 +539,7 @@
                     type: 'time',
                     time: {
                         tooltipFormat: 'll',
-                        unit: 'month'
+                        unit: 'month',
                     }
                 }],
                 yAxes: [{
