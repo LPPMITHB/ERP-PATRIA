@@ -1,18 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Gantt Chart | '.$project->name,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$project->number => route('project.show',$project->id),
-            'Gantt Chart' => route('project.showGanttChart', ['id' => $project->id]),
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Gantt Chart | '.$project->name,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$project->number => route('project.show',$project->id),
+                    'Gantt Chart' => route('project.showGanttChart', ['id' => $project->id]),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Gantt Chart | '.$project->name,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$project->number => route('project_repair.show',$project->id),
+                    'Gantt Chart' => route('project_repair.showGanttChart', ['id' => $project->id]),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 
 @section('content')

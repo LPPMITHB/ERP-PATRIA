@@ -114,7 +114,7 @@ class ProjectsTableSeeder extends Seeder
             'ship_id' => 1,
             'customer_id' => 20,
             'planned_start_date' => '2018-12-16',
-            'planned_end_date' => '2018-1-31',
+            'planned_end_date' => '2019-1-31',
             'progress' => 0,
             'planned_duration' => '47',
             // 'actual_start_date' => '2018-8-20',

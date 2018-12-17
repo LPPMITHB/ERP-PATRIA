@@ -16,11 +16,12 @@ use Auth;
 
 class WBSController extends Controller
 {
-    public function createWBS($id)
+    public function createWBS($id, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $project = Project::find($id);
 
-        return view('wbs.createWBS', compact('project'));
+        return view('wbs.createWBS', compact('project','menu'));
     }
 
     public function store(Request $request)
@@ -62,25 +63,35 @@ class WBSController extends Controller
         }
     }
 
-    public function createSubWBS($project_id, $wbs_id)
+    public function createSubWBS($project_id, $wbs_id, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $wbs = WBS::find($wbs_id);
         $project = Project::find($project_id);
 
-        $array = [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$project->number => route('project.show',$project->id),
-            'Add WBS' => route('wbs.createWBS',$project->id),
-        ];
+        if($menu=="building"){
+            $array = [
+                'Dashboard' => route('index'),
+                'View all Projects' => route('project.index'),
+                'Project|'.$project->number => route('project.show',$project->id),
+                'Add WBS' => route('wbs.createWBS',$project->id),
+            ];
+        }else{
+            $array = [
+                'Dashboard' => route('index'),
+                'View all Projects' => route('project_repair.index'),
+                'Project|'.$project->number => route('project_repair.show',$project->id),
+                'Add WBS' => route('wbs_repair.createWBS',$project->id),
+            ];
+        }
         $iteration = 0;
         $array_reverse = [];
-        $array_reverse = array_reverse(self::getParents($wbs,$array_reverse,$project->id, $iteration));
+        $array_reverse = array_reverse(self::getParents($wbs,$array_reverse,$project->id, $iteration, $menu));
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
         $array[$wbs->code] = "";
-        return view('wbs.createSubWBS', compact('project', 'wbs','array','structures'));
+        return view('wbs.createSubWBS', compact('project', 'wbs','array','structures','menu'));
     }
 
     public function update(Request $request, $id)
@@ -116,6 +127,7 @@ class WBSController extends Controller
 
     public function updateWithForm(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $data = json_decode($request->datas);
         $wbs_ref = WBS::find($id);
         $wbss = WBS::where('project_id',$data->project_id)->get();
@@ -134,71 +146,37 @@ class WBSController extends Controller
             $wbs_ref->weight =  $data->weight;
 
             if(!$wbs_ref->save()){
-                return redirect()->route('wbs.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                if($menu == "building"){
+                    return redirect()->route('wbs.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                }elseif($menu == "repair"){
+                    return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                }
             }else{
                 DB::commit();
-                return redirect()->route('wbs.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
+                if($menu == "building"){
+                    return redirect()->route('wbs.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
+                }elseif($menu == "repair"){
+                    return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
+                }
             }
         } catch (\Exception $e) {
             DB::rollback();
-                return redirect()->route('wbs.show', ['id' => $id])->with('success', 'Bill Of Material Created');
+            if($menu == "building"){
+                return redirect()->route('wbs.show')->with( 'error',$e->getMessage())->withInput();
+            }elseif($menu == "repair"){
+                return redirect()->route('wbs_repair.show')->with( 'error',$e->getMessage())->withInput();
+            }
         }
     }
 
-    public function index($id)
+    
+
+    public function show($id, Request $request)
     {
-        $project = Project::find($id);
-        $resourceCategories = Category::where('used_for', 'RESOURCE')->get();
-
-        $wbss=$project->wbss;
-        $dataJsTree = Collection::make();
-        $dataJsTree->push([
-            "id" => $project->number , 
-            "parent" => "#",
-            "text" => $project->name,
-            "icon" => "fa fa-ship"
-        ]);
-        foreach($wbss as $wbs){
-            if($wbs->wbs){
-                if(count($wbs->activities)>0){
-                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
-                    $dataJsTree->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => "/wbs/show/".$wbs->id],
-                    ]);
-                }else{
-                    $dataJsTree->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => "/wbs/show/".$wbs->id],
-                    ]);
-                }
-            }else{
-                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
-
-                $dataJsTree->push([
-                    "id" => $wbs->code , 
-                    "parent" => $project->number,
-                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => "/wbs/show/".$wbs->id],
-                ]);
-            } 
-        }
-
-        return view('wbs.index', compact('project','resourceCategories','dataJsTree'));
-    }
-
-    public function show($id)
-    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $wbs = WBS::find($id);
 
-        return view('wbs.show', compact('wbs'));
+        return view('wbs.show', compact('wbs','menu'));
 
     }
     
@@ -222,13 +200,21 @@ class WBSController extends Controller
     }
 
     //BUAT BREADCRUMB DINAMIS
-    function getParents($wbs, $array_reverse, $project_id, $iteration) {
+    function getParents($wbs, $array_reverse, $project_id, $iteration, $menu) {
         if ($wbs) {
             if($wbs->wbs){
-                $array_reverse[$wbs->code] = route('wbs.createSubWBS',[$project_id,$wbs->wbs->id]);
-                return self::getParents($wbs->wbs,$array_reverse, $project_id, $iteration);
+                if($menu == 'building'){
+                    $array_reverse[$wbs->code] = route('wbs.createSubWBS',[$project_id,$wbs->wbs->id]);
+                }else{
+                    $array_reverse[$wbs->code] = route('wbs_repair.createSubWBS',[$project_id,$wbs->wbs->id]);
+                }
+                return self::getParents($wbs->wbs,$array_reverse, $project_id, $iteration,$menu);
             }else{
-                $array_reverse[$wbs->code] = route('wbs.createSubWBS',[$project_id,$wbs->id]);
+                if($menu == 'building'){
+                    $array_reverse[$wbs->code] = route('wbs.createSubWBS',[$project_id,$wbs->id]);
+                }else{
+                    $array_reverse[$wbs->code] = route('wbs_repair.createSubWBS',[$project_id,$wbs->id]);
+                }
                 return $array_reverse;
             }
         }
@@ -253,6 +239,13 @@ class WBSController extends Controller
     public function getWeightWbsAPI($wbs_id){
         $wbs = WBS::find($wbs_id);
         $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+
+        return response($totalWeight, Response::HTTP_OK);
+    }
+
+    public function getWeightProjectAPI($project_id){
+        $project = Project::find($project_id);
+        $totalWeight = $project->wbss->where('wbs_id',null)->sum('weight');
 
         return response($totalWeight, Response::HTTP_OK);
     }

@@ -1,19 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Manage Network',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$project->number => route('project.show', ['id' => $project->id]),
-            'Select WBS' =>  route('activity.listWBS',['id'=>$project->id,'menu'=>'mngNet']),
-            'Manage Netwbs' => ''
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Manage Network',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$project->number => route('project.show', ['id' => $project->id]),
+                    'Manage Networks' => ''
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Manage Network',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$project->number => route('project_repair.show', ['id' => $project->id]),
+                    'Manage Networks' => ''
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 
 @section('content')
@@ -68,48 +82,6 @@
                     </table>
                 </div>
 
-                <div class="col-sm-6">
-                    <table class="tableFixed width100">
-                        <thead>
-                            <th style="width: 25%">WBS Information</th>
-                            <th style="width: 3%"></th>
-                            <th></th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="">Name</td>
-                                <td>:</td>
-                                <td><b>{{$wbs->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Description</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Deliverables</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->deliverables}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Deadline</td>
-                                <td>:</td>
-                                <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td><b>{{$wbs->progress}} %</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
             @verbatim
             <div id="activitiesVue">
@@ -131,12 +103,12 @@
                         <tbody>
                             <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }}</td>
-                                <td class="tdEllipsis"  data-container="body" v-tooltip:top="tooltipText(data.predecessorText)">{{ data.predecessorText }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.predecessorText)">{{ data.predecessorText }}</td>
                                 <td>
                                     <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_predecessor" @click="populateSelectize(data,index)">EDIT</button>
                                 </td>
@@ -175,7 +147,7 @@
                                     <tbody>
                                         <tr v-for="(data,index) in predecessorTable">
                                             <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                            <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                            <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                             <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                             <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                             <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
@@ -211,8 +183,8 @@
     });
 
     var data = {
+        menu : @json($menu),
         project_id: @json($project->id),
-        wbs_id : @json($wbs->id),
         activities :"",
         allActivities : [],
         allActivitiesEdit: [],
@@ -262,7 +234,7 @@
                 });
             },
             getActivities(){
-                window.axios.get('/api/getActivitiesNetwork/'+this.wbs_id).then(({ data }) => {
+                window.axios.get('/api/getActivitiesNetwork/'+this.project_id).then(({ data }) => {
                     this.activities = data;
 
                     $('#activity-table').DataTable().destroy();
@@ -285,7 +257,12 @@
                 var activityUpdate = this.activities[this.activeIndex];
                 var idUpd = activityUpdate.id;
                 activityUpdate = JSON.stringify(activityUpdate);
-                var url = "/activity/updatePredecessor/"+idUpd;
+                var url = "";
+                if(this.menu == "building"){
+                    url = "/activity/updatePredecessor/"+idUpd;
+                }else{
+                    url = "/activity_repair/updatePredecessor/"+idUpd;
+                }
                 $('div.overlay').show();
                 window.axios.patch(url,activityUpdate)
                 .then((response) => {

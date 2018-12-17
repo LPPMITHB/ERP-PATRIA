@@ -212,15 +212,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="box-footer">
+                                <button v-if="projectUpdate!=''" type="submit" class="btn btn-primary pull-right">SAVE</button>
+                                <button v-else @click.prevent="submitForm()" type="button" class="btn btn-primary pull-right">CREATE</button>
+                            </div>
                         </div>
                         @endverbatim
-                    </div>
-                    <div class="box-footer">
-                        @if($project->id)
-                            <button type="submit" class="btn btn-primary pull-right">SAVE</button>
-                        @else
-                            <button type="submit" class="btn btn-primary pull-right">CREATE</button>
-                        @endif
                     </div>
                 </form>
             </div>
@@ -233,6 +230,7 @@
 @endsection
 @push('script')
 <script>
+    const form = document.querySelector('form#create-project');
 $(document).ready(function(){
     $(document).on('change', ':file', function() {
         var input = $(this),
@@ -265,7 +263,7 @@ $(document).ready(function(){
             class_cp_email :@json(Request::old('class_contact_person_email')),
             description : @json(Request::old('description')),
         },
-
+        projectUpdate:  @json($project->id== null ? "": $project->id),
         customers : @json($customers),
         ships : @json($ships),
         ownerRep : "",
@@ -281,11 +279,22 @@ $(document).ready(function(){
         },
         customer: "",
         menu : @json($menu),
+        business_unit_id: @json($menu != "building" ? 2 : 1),
     };
 
     var vm = new Vue({
         el: '#project',
         data: data,
+        methods : {
+            submitForm(){
+                let struturesElem = document.createElement('input');
+                struturesElem.setAttribute('type', 'hidden');
+                struturesElem.setAttribute('name', 'business_unit_id');
+                struturesElem.setAttribute('value', JSON.stringify(this.business_unit_id));
+                form.appendChild(struturesElem);
+                form.submit();
+            },
+        },
         watch : {
             customer: function(newValue){
                 if(newValue != ""){

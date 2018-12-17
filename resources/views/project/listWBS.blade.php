@@ -1,18 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [   
-        'title' => $menuTitle,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$project->number => route('project.show', ['id' => $project->id]),
-            'Select WBS' => ''
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [   
+                'title' => $menuTitle,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$project->number => route('project.show', ['id' => $project->id]),
+                    'Select WBS' => ''
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [   
+                'title' => $menuTitle,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$project->number => route('project_repair.show', ['id' => $project->id]),
+                    'Select WBS' => ''
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 
 @section('content')

@@ -1,19 +1,35 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View WBS » '.$wbs->code,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$wbs->project->number => route('project.show',$wbs->project->id),
-            'Select WBS' =>  route('activity.listWBS',['id'=>$wbs->project->id,'menu'=>'viewWbs']),
-            'View WBS|'.$wbs->code => ""
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'View WBS » '.$wbs->code,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$wbs->project->number => route('project.show',$wbs->project->id),
+                    'Select WBS' =>  route('project.listWBS',['id'=>$wbs->project->id,'menu'=>'viewWbs']),
+                    'View WBS|'.$wbs->code => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'View WBS » '.$wbs->code,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$wbs->project->number => route('project_repair.show',$wbs->project->id),
+                    'Select WBS' =>  route('project_repair.listWBS',['id'=>$wbs->project->id,'menu'=>'viewWbs']),
+                    'View WBS|'.$wbs->code => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 
 @section('content')
@@ -159,7 +175,11 @@
                 </div>
             </div>
             @endverbatim
-            <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs.updateWithForm',['id'=>$wbs->id]) }}">
+            @if ($menu == "building")
+                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs.updateWithForm',['id'=>$wbs->id]) }}">
+            @else
+                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}">                
+            @endif
                 @csrf
                 <input type="hidden" name="_method" value="PATCH">
             </form>
@@ -246,7 +266,6 @@ var vm = new Vue({
         },
         update(){            
             var editWbs = this.editWbs;
-            var url = "/wbs/update/"+editWbs.wbs_id;
             editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
             let struturesElem = document.createElement('input');
@@ -265,7 +284,7 @@ var vm = new Vue({
             var deadline = new Date(newValue);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            if(this.editWbs.parent_wbs.planned_deadline != ""){
+            if(this.editWbs.parent_wbs != null){
                 var editWbs_planned_deadline = new Date(this.editWbs.parent_wbs.planned_deadline).toDateString();
                 var editWbs_planned_deadline = new Date(editWbs_planned_deadline);
                 if(deadline > editWbs_planned_deadline){
@@ -292,27 +311,50 @@ var vm = new Vue({
         'editWbs.weight': function(newValue){
             var maxWeightEdit = 0;
             this.editWbs.weight = (this.editWbs.weight+"").replace(/[^0-9.]/g, "");
-            window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
-                this.totalWeight = data;
-                var totalEdit = roundNumber(data - this.constWeightWbs,2);
-                maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - totalEdit,2); 
-                if(this.editWbs.weight>maxWeightEdit){
-                    iziToast.warning({
-                        displayMode: 'replace',
-                        title: 'Total weight cannot be more than '+this.editWbs.parent_wbs.weight+'%',
-                        position: 'topRight',
-                    });
-                }
-            });
+            if(this.editWbs.parent_wbs != null){
+                window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
+                    this.totalWeight = data;
+                    var totalEdit = roundNumber(data - this.constWeightWbs,2);
+                    maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - totalEdit,2); 
+                    if(this.editWbs.weight>maxWeightEdit){
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: 'Total weight cannot exceed '+this.editWbs.parent_wbs.weight+'%',
+                            position: 'topRight',
+                        });
+                    }
+                });
+            }else{
+                window.axios.get('/api/getWeightProject/'+this.editWbs.project_id).then(({ data }) => {
+                    this.totalWeight = data;
+                    var totalEdit = roundNumber(data - this.constWeightWbs,2);
+                    maxWeightEdit = roundNumber(100 - totalEdit,2); 
+                    if(this.editWbs.weight>maxWeightEdit){
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: 'Total weight cannot exceed 100%',
+                            position: 'topRight',
+                        });
+                    }
+                });
+            }          
         },
     },
     created: function(){
-        window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
-            this.totalWeight = data;
-            $('#edit_planned_deadline').datepicker('setDate', new Date(this.rawPlannedDeadline));
-        });
-        this.editWbs.weight = (this.editWbs.weight+"").replace(/[^0-9.]/g, "");
-        var maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - roundNumber(this.totalWeight,2),2);            
+        if(this.editWbs.parent_wbs != null){
+            window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
+                this.totalWeight = data;
+                $('#edit_planned_deadline').datepicker('setDate', new Date(this.rawPlannedDeadline));
+            });
+            var maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - roundNumber(this.totalWeight,2),2);            
+        }else{
+            window.axios.get('/api/getWeightProject/'+this.editWbs.project_id).then(({ data }) => {
+                this.totalWeight = data;
+                $('#edit_planned_deadline').datepicker('setDate', new Date(this.rawPlannedDeadline));
+            });
+            var maxWeightEdit = roundNumber(100 - roundNumber(this.totalWeight,2),2);            
+
+        }
     }
     
 });

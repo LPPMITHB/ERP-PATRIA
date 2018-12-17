@@ -1,20 +1,37 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Activity » '.$activity->code,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$activity->wbs->project->number => route('project.show', ['id' => $activity->wbs->project->id]),
-            'Select WBS' => route('activity.listWBS',['id'=>$activity->wbs->project->id,'menu'=>'viewAct']),
-            'List of Activities' => route('activity.index', ['id' => $activity->wbs->id]),
-            'View Activity|'.$activity->code => ""
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'View Activity » '.$activity->code,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$activity->wbs->project->number => route('project.show', ['id' => $activity->wbs->project->id]),
+                    'Select WBS' => route('project.listWBS',['id'=>$activity->wbs->project->id,'menu'=>'viewAct']),
+                    'List of Activities' => route('activity.index', ['id' => $activity->wbs->id]),
+                    'View Activity|'.$activity->code => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'View Activity » '.$activity->code,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$activity->wbs->project->number => route('project_repair.show', ['id' => $activity->wbs->project->id]),
+                    'Select WBS' => route('project_repair.listWBS',['id'=>$activity->wbs->project->id,'menu'=>'viewAct']),
+                    'List of Activities' => route('activity_repair.index', ['id' => $activity->wbs->id]),
+                    'View Activity|'.$activity->code => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 
 @section('content')

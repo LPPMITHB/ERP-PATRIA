@@ -1,18 +1,34 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View All Activities',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$project->number => route('project.show', ['id' => $project->id]),
-            'Select WBS' => route('activity.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
-            'View Activities' => ""
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'View All Activities',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$project->number => route('project.show', ['id' => $project->id]),
+                    'Select WBS' => route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
+                    'View Activities' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'View All Activities',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$project->number => route('project_repair.show', ['id' => $project->id]),
+                    'Select WBS' => route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
+                    'View Activities' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 @section('content')
 <div class="row">
@@ -147,7 +163,7 @@
                                             <tbody>
                                                 <tr v-for="(data,index) in predecessorTableView">
                                                     <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                    <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
@@ -226,7 +242,7 @@
                                     </div> 
 
                                             
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered tableFixed">
                                         <thead>
                                             <tr>
                                                 <th class="p-l-5" style="width: 5%">No</th>
@@ -239,7 +255,7 @@
                                         <tbody>
                                             <tr v-for="(data,index) in predecessorTableEdit">
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
@@ -248,7 +264,7 @@
                                     </table>                                
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                    <button :disabled="updateOk" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update">SAVE</button>
                                 </div>
                             </div>
                             <!-- /.modal-content -->
@@ -276,6 +292,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    menu : @json($menu),
     wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
     activities : [],
@@ -341,20 +358,27 @@ var vm = new Vue({
         );
     },
     computed:{
-        // updateOk: function(){
-        //     let isOk = false;
-        //         if(this.dataUpd.uom_id == ""
-        //         || this.dataUpd.standard_price.replace(/,/g , '') < 1)
-        //         {
-        //             isOk = true;
-        //         }
-        //     return isOk;
-        // },
-
+        updateOk: function(){
+            let isOk = false;
+                if(this.editActivity.name == ""
+                || this.editActivity.description == ""
+                || this.editActivity.weight == ""
+                || this.editActivity.planned_duration == "")
+                {
+                    isOk = true;
+                }
+            return isOk;
+        },
     }, 
     methods:{
         createRouteView(data){
-            return "/activity/show/"+data;
+            var url = "";
+            if(this.menu == "building"){
+                url = "/activity/show/"+data;
+            }else{
+                url = "/activity_repair/show/"+data;    
+            }
+            return url;
         },
         refreshEdit() {
             this.editActivity.predecessor = null;
@@ -437,7 +461,12 @@ var vm = new Vue({
         },
         update(){            
             var editActivity = this.editActivity;
-            var url = "/activity/update/"+editActivity.activity_id;
+            var url = "";
+            if(this.menu == "building"){
+                url = "/activity/update/"+editActivity.activity_id;
+            }else{
+                url = "/activity_repair/update/"+editActivity.activity_id;
+            }
             editActivity = JSON.stringify(editActivity);
             $('div.overlay').show();            
             window.axios.patch(url,editActivity)
@@ -472,15 +501,10 @@ var vm = new Vue({
             handler: function(newValue) {
                 this.editActivity.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
                 if(parseInt(newValue.planned_duration) < 1 ){
-                    iziToast.show({
-                        timeout: 6000,
-                        color : 'red',
+                    iziToast.warning({
                         displayMode: 'replace',
-                        icon: 'fa fa-warning',
-                        title: 'Warning !',
-                        message: 'End Date cannot be ahead Start Date',
+                        title: 'End Date cannot be ahead Start Date',
                         position: 'topRight',
-                        progressBarColor: 'rgb(0, 255, 184)',
                     });
                     this.editActivity.planned_duration = "";
                     this.editActivity.planned_end_date = "";
@@ -491,7 +515,7 @@ var vm = new Vue({
         },
         'editActivity.predecessor': function(newValue){
             this.predecessorTableEdit = [];
-            if(newValue != null){
+            if(newValue != "" && newValue != null){
                 newValue.forEach(elementpredecessor => {
                     this.allActivities.forEach(elementactivities => {
                         if(elementpredecessor == elementactivities.id){
@@ -499,6 +523,23 @@ var vm = new Vue({
                         }
                     });
                 });
+                window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(newValue)).then(({ data }) => {
+                    this.editActivity.latest_predecessor = data;
+                    // Create new Date instance
+                    var dateRef = new Date(data.planned_end_date);
+
+                    var startDate = new Date(data.planned_end_date);
+                    var endDate = new Date(data.planned_end_date);
+                    var tempDuration = parseInt(this.editActivity.planned_duration)-1;
+                    // Add a day
+                    startDate.setDate(startDate.getDate());
+                    $('#edit_planned_start_date').datepicker('setDate', startDate);
+
+                    if(this.editActivity.planned_duration != ""){
+                        endDate.setDate(startDate.getDate() + tempDuration);
+                        $('#edit_planned_end_date').datepicker('setDate', endDate);
+                    }
+                })
             }
         },
         'editActivity.weight': function(newValue){
@@ -510,7 +551,7 @@ var vm = new Vue({
                 if(this.editActivity.weight>maxWeightEdit){
                     iziToast.warning({
                         displayMode: 'replace',
-                        title: 'Total weight cannot be more than '+this.wbsWeight+'%',
+                        title: 'Total weight cannot exceed '+this.wbsWeight+'%',
                         position: 'topRight',
                     });
                 }

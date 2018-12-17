@@ -80,54 +80,148 @@ class ProjectController extends Controller
     //     return response($rows ,200);
     // }
 
-    public function index(Request $request)
-    {
+    public function listWBS($id, $menu, Request $request){
+        $mainMenu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
-        $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 1)->get();
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        $project = Project::find($id);
+        $wbss = $project->wbss;
+        $dataWbs = Collection::make();
 
-        return view('project.index', compact('projects','menu'));
+        $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
+        $dataWbs->push([
+            "id" => $project->number, 
+            "parent" => "#",
+            "text" => $project->name. " | Weight : (".$totalWeightProject."% / 100%)",
+            "icon" => "fa fa-ship"
+        ]);
+        
+        if($menu == "addAct"){
+            if($mainMenu == "building"){
+                $route = "/activity/create/";
+            }else{
+                $route = "/activity_repair/create/";
+            }
+            $menuTitle = "Add Activities » Select WBS";
+        }elseif($menu == "viewAct"){
+            if($mainMenu == "building"){
+                $route = "/activity/index/";
+            }else{
+                $route = "/activity_repair/index/";
+            }
+            $menuTitle = "View Activities » Select WBS";
+        }elseif($menu == "confirmAct"){
+            if($mainMenu == "building"){
+                $route = "/activity/confirmActivity/";
+            }else{
+                $route = "/activity_repair/confirmActivity/";
+            }
+            $menuTitle = "Confirm Activity » Select WBS";
+        }elseif($menu == "viewWbs"){
+            if($mainMenu == "building"){
+                $route = "/wbs/show/";
+            }else{
+                $route = "/wbs_repair/show/";
+            }
+            $menuTitle = "View WBS » Select WBS";
+        }else{
+            $route = "";
+            $menuTitle = "Select WBS";
+        }
+    
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                if(count($wbs->activities)>0){
+                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $route.$wbs->id],
+                    ]);
+                    foreach($wbs->activities as $activity){
+                        if($menu == "viewAct"){
+                            if($mainMenu == "building"){
+                                $dataWbs->push([
+                                    "id" => $activity->code , 
+                                    "parent" => $activity->wbs->code,
+                                    "text" => $activity->name. " | Weight : ".$activity->weight."%",
+                                    "icon" => "fa fa-clock-o",
+                                    "a_attr" =>  ["href" => "/activity/show/".$activity->id],
+                                ]);
+                            }else{
+                                $dataWbs->push([
+                                    "id" => $activity->code , 
+                                    "parent" => $activity->wbs->code,
+                                    "text" => $activity->name. " | Weight : ".$activity->weight."%",
+                                    "icon" => "fa fa-clock-o",
+                                    "a_attr" =>  ["href" => "/activity_repair/show/".$activity->id],
+                                ]);
+                            }
+                        }else{
+                            $dataWbs->push([
+                                "id" => $activity->code , 
+                                "parent" => $activity->wbs->code,
+                                "text" => $activity->name. " | Weight : ".$activity->weight."%)",
+                                "icon" => "fa fa-clock-o",
+                            ]);
+                        }
+                    }
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $route.$wbs->id],
+                    ]);
+                }
+            }else{
+                if(count($wbs->activities)>0){
+                    foreach($wbs->activities as $activity){
+                        if($menu == "viewAct"){
+                            $dataWbs->push([
+                                "id" => $activity->code , 
+                                "parent" => $activity->wbs->code,
+                                "text" => $activity->name. " | Weight : ".$activity->weight."%",
+                                "icon" => "fa fa-clock-o",
+                                "a_attr" =>  ["href" => "/activity/show/".$activity->id],
+                        ]);
+                        }else{
+                            $dataWbs->push([
+                                "id" => $activity->code , 
+                                "parent" => $activity->wbs->code,
+                                "text" => $activity->name. " | Weight : ".$activity->weight."%)",
+                                "icon" => "fa fa-clock-o",
+                            ]);
+                        }
+                    }
+                }
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
 
-        // $sos = SalesOrder::where('status', 1)->get();
-        // $modelSO = array();
-
-        // foreach($sos as $data){
-        //     $arr = array(
-        //         'number'    => $data->number,
-        //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->type,
-        //         'created_at'=> $data->created_at,
-        //     );
-
-        //     $modelSO[] = $arr;
-        // }
-
-        // return view('project.index', compact('modelSO'));
+                $dataWbs->push([
+                    "id" => $wbs->code , 
+                    "parent" => $project->number,
+                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                    "icon" => "fa fa-suitcase",
+                    "a_attr" =>  ["href" => $route.$wbs->id],
+                ]);
+            } 
+        } 
+        
+        return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
 
-    public function indexRepair(Request $request)
+    public function index(Request $request)
     {
-
-        $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        if($menu=="repair"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
+        }else if($menu == "building"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 1)->get();
+        }
 
         return view('project.index', compact('projects','menu'));
-
-        // $sos = SalesOrder::where('status', 1)->get();
-        // $modelSO = array();
-
-        // foreach($sos as $data){
-        //     $arr = array(
-        //         'number'    => $data->number,
-        //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->type,
-        //         'created_at'=> $data->created_at,
-        //     );
-
-        //     $modelSO[] = $arr;
-        // }
-
-        // return view('project.index', compact('modelSO'));
     }
 
     /**
@@ -136,17 +230,6 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
-    {
-        $customers = Customer::all();
-        $ships = Ship::all();
-        // $project_code = self::generateProjectCode();
-        $project = new Project;
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
-
-        return view('project.create', compact('customers','ships','project','businessUnit','menu'));
-    }
-
-    public function createRepair(Request $request)
     {
         $customers = Customer::all();
         $ships = Ship::all();
@@ -166,19 +249,33 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'customer' => 'required',
-            'ship' => 'required',
-            'planned_start_date' => 'required',
-            'planned_end_date' => 'required',
-            'planned_duration' => 'required',
-            'flag' => 'required',
-            'class_name' => 'required'
-        ]);
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+
+        if($menu == "building"){
+            $this->validate($request, [
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+                'flag' => 'required',
+                'class_name' => 'required'
+            ]);
+        }elseif($menu == "repair"){
+            $this->validate($request, [
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+            ]);
+        } 
         $projects = Project::all();
         foreach ($projects as $project) {
             if($project->name == $request->name){
-                return redirect()->route('project.create')->with('error','The Project Name Has Been Taken')->withInput();
+                if($menu == "building"){
+                    return redirect()->route('project.create')->with('error','The Project Name Has Been Taken')->withInput();
+                }
             }
         }
 
@@ -205,67 +302,28 @@ class ProjectController extends Controller
             $project->planned_end_date = $planEndDate->format('Y-m-d');
             $project->planned_duration =  $request->planned_duration;
             $project->progress = 0;
-            $project->business_unit_id = 1;
+            $project->business_unit_id = $request->business_unit_id;
             $project->user_id = Auth::user()->id;
             $project->branch_id = Auth::user()->branch->id;
             $project->save();
 
             
             DB::commit();
-            return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Created');
+            if($menu == "building"){
+                return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Created');
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.show', ['id' => $project->id])->with('success', 'Project Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('project.create')->with( 'error',$e->getMessage())->withInput();
+            if($menu == "building"){
+                return redirect()->route('project.create')->with( 'error',$e->getMessage())->withInput();
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.create')->with( 'error',$e->getMessage())->withInput();
+            }
         }
     }
 
-    public function storeRepair(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'required|unique:pro_project|string|max:255',
-            'customer' => 'required',
-            'ship' => 'required',
-            'planned_start_date' => 'required',
-            'planned_end_date' => 'required',
-            'planned_duration' => 'required',
-        ]);
-
-        DB::beginTransaction();
-        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
-        try {
-            $project = new Project;
-            $project->number =  $request->number;
-            $project->name = $request->name;
-            $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
-            $project->description = $request->description;
-            $project->customer_id = $request->customer;
-            $project->ship_id = $request->ship;
-            $project->flag = $request->flag;
-            $project->class_name = $request->class_name;
-            $project->class_contact_person_name = $request->class_contact_person_name;
-            $project->class_contact_person_phone = $request->class_contact_person_phone;
-            $project->class_contact_person_email = $request->class_contact_person_email;
-
-            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
-            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
-
-            $project->planned_start_date = $planStartDate->format('Y-m-d');
-            $project->planned_end_date = $planEndDate->format('Y-m-d');
-            $project->planned_duration =  $request->planned_duration;
-            $project->progress = 0;
-            $project->business_unit_id = 2;
-            $project->user_id = Auth::user()->id;
-            $project->branch_id = Auth::user()->branch->id;
-            $project->save();
-
-            
-            DB::commit();
-            return redirect()->route('project_repair.show', ['id' => $project->id])->with('success', 'Project Created');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('project.create')->with('error', $e->getMessage());
-        }
-    }
 
     /**
      * Display the specified resource.
@@ -326,59 +384,11 @@ class ProjectController extends Controller
         'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress'));
     }
 
-    public function showRepair(Request $request, $id)
+
+    public function showGanttChart($id, Request $request)
     {
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
-        $project = Project::find($id);
-        $wbss = $project->wbss;
-        $today = date("Y-m-d");
-        //planned
-        $dataPlannedCost = Collection::make();
-        $modelBom = Bom::where('project_id',$id)->get();
-        $wbsChart = $project->wbss->groupBy('planned_deadline');
-        $dataPlannedCost->push([
-            "t" => $project->planned_start_date, 
-            "y" => "0",
-        ]);
 
-        //actual
-        $dataActualCost = Collection::make();
-        $modelMR = MaterialRequisition::where('project_id',$id)->get();
-        $dataPlannedCost->push([
-            "t" => $project->actual_start_date, 
-            "y" => "0",
-        ]);
-
-
-        //Progress
-        $dataActualProgress = Collection::make();
-        $dataPlannedProgress = Collection::make();
-        self::getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $wbss, $dataActualProgress, $dataPlannedProgress);
-
-        $ganttData = Collection::make();
-        $links = Collection::make();
-        $outstanding_item = Collection::make();
-
-        $outstanding_item->push([
-            "id" => $project->number , 
-            "parent" => "#",
-            "text" => $project->name,
-            "icon" => "fa fa-ship"
-        ]);
-
-        self::getOutstandingItem($wbss,$outstanding_item, $project,$today);
-        self::getDataForGantt($project, $wbss, $ganttData, $links, $today);     
-
-        $links->jsonSerialize();
-        $ganttData->jsonSerialize();
-
-        $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project.show', compact('project','today','ganttData','links','outstanding_item','modelPrO','menu',
-        'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress'));
-    }
-
-    public function showGanttChart($id)
-    {
         $today = date("Y-m-d");
         $project = Project::find($id);
         $wbss = $project->wbss;
@@ -391,7 +401,7 @@ class ProjectController extends Controller
         
         $links->jsonSerialize();
         $data->jsonSerialize();
-        return view('project.ganttChart', compact('project','data','links','today'));
+        return view('project.ganttChart', compact('project','data','links','today','menu'));
     }
 
     /**
@@ -407,19 +417,9 @@ class ProjectController extends Controller
         $ships = Ship::all();
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
+        
         return view('project.create', compact('project','customers','ships','menu'));
     }
-
-    public function editRepair(Request $request, $id)
-    {
-        $project = Project::findOrFail($id);
-        $customers = Customer::all();
-        $ships = Ship::all();
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
-
-        return view('project.create', compact('project','customers','ships','menu'));
-    }
-
 
     /**
      * Update the specified resource in storage.
@@ -430,16 +430,30 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|unique:pro_project,id,'.$id.'|string|max:255',
-            'customer' => 'required',
-            'ship' => 'required',
-            'planned_start_date' => 'required',
-            'planned_end_date' => 'required',
-            'planned_duration' => 'required'
-        ]);
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+
+        if($menu == "building"){
+            $this->validate($request, [
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+                'flag' => 'required',
+                'class_name' => 'required'
+            ]);
+        }elseif($menu == "repair"){
+            $this->validate($request, [
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+            ]);
+        } 
 
         DB::beginTransaction();
+        
         try {
             $project = Project::findOrFail($id);
             $project->name = $request->name;
@@ -462,51 +476,18 @@ class ProjectController extends Controller
 
             
             DB::commit();
-            return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Updated');
+            if($menu == "building"){
+                return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Updated');
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.show', ['id' => $project->id])->with('success', 'Project Updated');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('project.update', ['id' => $project->id])->with('error', $e->getMessage());
-        }
-    }
-
-    public function updateRepair(Request $request, $id)
-    {
-        $this->validate($request, [
-            'name' => 'required|unique:pro_project,id,'.$id.'|string|max:255',
-            'customer' => 'required',
-            'ship' => 'required',
-            'planned_start_date' => 'required',
-            'planned_end_date' => 'required',
-            'planned_duration' => 'required'
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $project = Project::findOrFail($id);
-            $project->name = $request->name;
-            $project->description = $request->description;
-            $project->customer_id = $request->customer;
-            $project->ship_id = $request->ship;
-            $project->flag = $request->flag;
-            $project->class_name = $request->class_name;
-            $project->class_contact_person_name = $request->class_contact_person_name;
-            $project->class_contact_person_phone = $request->class_contact_person_phone;
-            $project->class_contact_person_email = $request->class_contact_person_email;
-
-            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
-            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
-
-            $project->planned_start_date = $planStartDate->format('Y-m-d');
-            $project->planned_end_date = $planEndDate->format('Y-m-d');
-            $project->planned_duration =  $request->planned_duration;
-            $project->save();
-
-            
-            DB::commit();
-            return redirect()->route('project_repair.show', ['id' => $project->id])->with('success', 'Project Updated');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('project.update', ['id' => $project->id])->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('project.edit', ['id' => $project->id])->with('error', $e->getMessage());
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.edit', ['id' => $project->id])->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -523,7 +504,9 @@ class ProjectController extends Controller
 
         
     // Project Cost Evaluation
-    public function projectCE($id){
+    public function projectCE($id, Request $request){
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+
         $modelWBS = WBS::where('project_id',$id)->where('wbs_id','!=',null)->get();
         $project = Project::findOrFail($id);
 
@@ -552,71 +535,73 @@ class ProjectController extends Controller
 
         $modelWBS = WBS::where('project_id',$id)->get();
         foreach($modelWBS as $wbs){
-            foreach($wbs->bom->bomDetails as $bomDetail){
-                if(count($bomDetail->material->materialRequisitionDetails)>0){
-                    $status = 0;
-                    foreach($materialEvaluation as $key => $data){
-                        $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
-                        if($material == $data['material']){
-                            $status = 1;
-                            $quantity = $bomDetail->quantity + $data['quantity'];
-                            $issued = $data['used'];
-
-                            unset($materialEvaluation[$key]);
+            if($wbs->bom){
+                foreach($wbs->bom->bomDetails as $bomDetail){
+                    if(count($bomDetail->material->materialRequisitionDetails)>0){
+                        $status = 0;
+                        foreach($materialEvaluation as $key => $data){
                             $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
-
+                            if($material == $data['material']){
+                                $status = 1;
+                                $quantity = $bomDetail->quantity + $data['quantity'];
+                                $issued = $data['used'];
+    
+                                unset($materialEvaluation[$key]);
+                                $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+    
+                                foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                                    if ($mrd->wbs_id == $id) {
+                                        $materialEvaluation->push([
+                                            "material" => $material,
+                                            "quantity" => $quantity,
+                                            "used" => $issued + $mrd->issued,
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+                        if($status == 0){
                             foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                                 if ($mrd->wbs_id == $id) {
                                     $materialEvaluation->push([
-                                        "material" => $material,
-                                        "quantity" => $quantity,
-                                        "used" => $issued + $mrd->issued,
+                                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                        "quantity" => $bomDetail->quantity,
+                                        "used" => $mrd->issued,
                                     ]);
                                 }
                             }
                         }
-                    }
-                    if($status == 0){
-                        foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                            if ($mrd->wbs_id == $id) {
+                    }else{
+                        $status = 0;
+                        foreach($materialEvaluation as $key => $data){
+                            $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                            if($material == $data['material']){
+                                $status = 1;
+                                $quantity = $bomDetail->quantity + $data['quantity'];
+                                $issued = $data['used'];
+    
+                                unset($materialEvaluation[$key]);
+    
                                 $materialEvaluation->push([
                                     "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                                    "quantity" => $bomDetail->quantity,
-                                    "used" => $mrd->issued,
+                                    "quantity" => $quantity,
+                                    "used" => $issued,
                                 ]);
                             }
                         }
-                    }
-                }else{
-                    $status = 0;
-                    foreach($materialEvaluation as $key => $data){
-                        $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
-                        if($material == $data['material']){
-                            $status = 1;
-                            $quantity = $bomDetail->quantity + $data['quantity'];
-                            $issued = $data['used'];
-
-                            unset($materialEvaluation[$key]);
-
+                        if($status == 0){
                             $materialEvaluation->push([
                                 "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                                "quantity" => $quantity,
-                                "used" => $issued,
-                            ]);
-                        }
-                    }
-                    if($status == 0){
-                        $materialEvaluation->push([
-                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                            "quantity" => $bomDetail->quantity,
-                            "used" => 0,
-                            ]);
+                                "quantity" => $bomDetail->quantity,
+                                "used" => 0,
+                                ]);
+                            }
                         }
                     }
                 }
             }
             
-        return view('project.showPCE', compact('modelWBS','project','actual','planned','materialEvaluation'));
+        return view('project.showPCE', compact('modelWBS','project','actual','planned','materialEvaluation','menu'));
     }
 
     // Configuration WBS & Estimator

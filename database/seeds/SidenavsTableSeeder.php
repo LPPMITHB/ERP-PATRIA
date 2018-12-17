@@ -46,17 +46,12 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.createSubWBS',
+            'route_name' => 'wbs.createSubWBS',
         ]);
-        
+    
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.indexWBS',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageProject,
-            'route_name' => 'project.showWBS',
+            'route_name' => 'wbs.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -66,17 +61,22 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.createActivities',
+            'route_name' => 'activity.create',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.indexActivities',
+            'route_name' => 'activity.index',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.manageNetwork',
+            'route_name' => 'activity.show',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProject,
+            'route_name' => 'activity.manageNetwork',
         ]);
 
         DB::table('sidenav')->insert([
@@ -107,22 +107,17 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
-            'route_name' => 'wbs.createWBS',
+            'route_name' => 'wbs_repair.createWBS',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
-            'route_name' => 'project_repair.createSubWBS',
+            'route_name' => 'wbs_repair.createSubWBS',
         ]);
-        
+    
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
-            'route_name' => 'project_repair.indexWBS',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageProjectRepair,
-            'route_name' => 'project_repair.showWBS',
+            'route_name' => 'wbs_repair.show',
         ]);
 
         DB::table('sidenav')->insert([
@@ -132,18 +127,24 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
-            'route_name' => 'project_repair.createActivities',
+            'route_name' => 'activity_repair.create',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
-            'route_name' => 'project_repair.indexActivities',
+            'route_name' => 'activity_repair.index',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
-            'route_name' => 'project_repair.manageNetwork',
+            'route_name' => 'activity_repair.show',
         ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProjectRepair,
+            'route_name' => 'activity_repair.manageNetwork',
+        ]);
+
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
@@ -158,7 +159,7 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $confirmActivityRepair,
-            'route_name' => 'activity_repair.selectWBS',
+            'route_name' => 'activity_repair.selectWbs',
         ]);
 
         DB::table('sidenav')->insert([
@@ -174,7 +175,7 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $confirmActivityBuilding,
-            'route_name' => 'activity.selectWBS',
+            'route_name' => 'activity.selectWbs',
         ]);
 
         DB::table('sidenav')->insert([
