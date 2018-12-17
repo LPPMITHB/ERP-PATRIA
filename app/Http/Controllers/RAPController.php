@@ -56,11 +56,11 @@ class RAPController extends Controller
         return view('rap.selectProject', compact('projects','menu'));
     }
 
-    // assign cost
-    public function selectProjectAssignCost()
+    // input actual other cost
+    public function selectProjectActualOtherCost()
     {
         $projects = Project::where('status',1)->where('business_unit_id',1)->get();
-        $menu = "assign_cost";
+        $menu = "input_actual_other_cost";
 
         return view('rap.selectProject', compact('projects','menu'));
     }
@@ -156,27 +156,19 @@ class RAPController extends Controller
         return view('rap.index', compact('raps'));
     }
 
-    public function create($id)
-    {
-        $modelBOMs = BOM::where('wbs_id','!=','null')->where('status',1)->where('project_id',$id)->with('wbs')->get();
-        $project = Project::findOrFail($id);
-
-        return view('rap.create', compact('modelBOMs','project'));
-    }
-
     public function createCost($id)
     {
-        $project = Project::findOrFail($id);       
-
+        $project = Project::findOrFail($id);  
+        
         return view('rap.createOtherCost', compact('project'));
     }
 
-    public function assignCost($id)
+    public function inputActualOtherCost($id)
     {
-        $project = Project::findOrFail($id);   
-        $costs = Cost::where('project_id', $id)->with('wbs')->get()->jsonSerialize();    
+        $project = Project::findOrFail($id);       
+        $modelOtherCost = Cost::with('project','wbs')->get();   
 
-        return view('rap.assignCost', compact('project','costs'));
+        return view('rap.inputActualOtherCost', compact('project','modelOtherCost'));
     }
 
     public function viewPlannedCost($id)
@@ -332,7 +324,7 @@ class RAPController extends Controller
         try {
             $cost = new Cost;
             $cost->description = $data['description'];
-            $cost->cost = $data['cost'];
+            $cost->plan_cost = $data['cost'];
             $cost->wbs_id = $data['wbs_id'];
             $cost->project_id = $data['project_id'];
 
@@ -348,6 +340,26 @@ class RAPController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
                 return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeActualCost(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $cost = Cost::find($data['cost_id']);
+            $cost->actual_cost = $data['actual_cost'];
+            if(!$cost->update()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to Update Cost"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 
@@ -381,7 +393,7 @@ class RAPController extends Controller
         try {
             $cost = Cost::find($id);
             $cost->description = $data['description'];
-            $cost->cost = $data['cost'];
+            $cost->plan_cost = $data['cost'];
             if($data['wbs_id'] == ""){
                 $cost->wbs_id = null;
             }else{

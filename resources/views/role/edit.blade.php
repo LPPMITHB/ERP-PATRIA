@@ -160,7 +160,7 @@
        business_unit : "",
     }
 
-    var vm = new Vue({
+    var app = new Vue({
         el : '#role',
         data : data,
         computed:{
@@ -234,7 +234,6 @@
                         }
                     }
                     $('div.overlay').hide();
-                    
                 })
                 .catch((error) => {
                     iziToast.warning({
@@ -277,7 +276,6 @@
                     this.submittedForm.permissions.push(permission[i]);
                 }
                 
-
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');

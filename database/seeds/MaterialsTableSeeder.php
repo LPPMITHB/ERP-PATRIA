@@ -10,8 +10,7 @@ class MaterialsTableSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-        
+    { 
         DB::table('mst_material')->insert([
             'code' => 'MT0001',
             'name' => 'ROUND BAR',

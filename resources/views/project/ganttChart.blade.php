@@ -16,21 +16,27 @@
 @endsection
 
 @section('content')
-<div class="box-body gantt_chart_mobile">
-    <label>View by :</label>
-    <label><input type="radio" name="scale" value="day" checked/>Day scale</label>
-    <label><input type="radio" name="scale" value="month"/>Month scale</label>
-    <label><input type="radio" name="scale" value="year"/>Year scale</label>
-    <div class="row">
-        <div id="ganttChart" style='width:100%; height:490px;'></div>
-        
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-body gantt_chart_mobile">
+                <label>View by :</label>
+                <label><input type="radio" name="scale" value="day" checked/>Day scale</label>
+                <label><input type="radio" name="scale" value="month"/>Month scale</label>
+                <label><input type="radio" name="scale" value="year"/>Year scale</label>
+                <div class="col-sm-12 p-l-0">
+                    <div id="ganttChart" class="width100" style="height: 496px"></div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-body gantt_chart_mobile_notification">
+                    <div class="col-xs-12 textCenter"><b>Please view Gantt Chart in Landscape Mode</b></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="box">
-    <div class="box-body gantt_chart_mobile_notification">
-        <div class="col-xs-12 textCenter"><b>Please view Gantt Chart in Landscape Mode</b></div>
-    </div>
-</div>
+
 @verbatim
 <div id="confirm_activity">
     <div class="modal fade" id="confirm_activity_modal">
@@ -72,7 +78,7 @@
                     </table>
                     <template v-if="havePredecessor == false"><br></template>
                     <template v-if="havePredecessor == true">
-                        <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th class="p-l-5" style="width: 5%">No</th>
@@ -89,7 +95,7 @@
                                     <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                    <td class="p-b-15 p-t-15">{{ data.work.code }}</td>
+                                    <td class="p-b-15 p-t-15">{{ data.wbs.code }}</td>
                                     <td class="textCenter">
                                         <template v-if="data.status == 0">
                                             <i class='fa fa-check'></i>
@@ -103,7 +109,7 @@
                         </table>
                     </template>
                     <div class="row">
-                        <div class="form-group col-sm-4">
+                        <div class="form-group col-sm-6">
                             <label for="actual_start_date" class=" control-label">Actual Start Date</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">
@@ -113,26 +119,32 @@
                             </div>
                         </div>
                                 
-                        <div class="form-group col-sm-4">
+                        <div class="form-group col-sm-6">
                             <label for="actual_end_date" class=" control-label">Actual End Date</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input :disabled="alreadyStart" v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
+                                <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
                             </div>
                         </div>
                         
-                        <div class="form-group col-sm-4">
-                            <label for="duration" class=" control-label">Actual Duration</label>
-                            <input :disabled="alreadyStart" @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
-                        </div> 
                         
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label for="duration" class=" control-label">Actual Duration (Days)</label>
+                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
+                        </div> 
+                        <div class="form-group col-sm-6">
+                            <label for="duration" class=" control-label">Current Progress (%)</label>
+                            <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
+                        </div> 
                     </div>
                     
                 </div>
                 <div class="modal-footer">
-                    <button :disabled="alreadyStart" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
+                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -148,7 +160,6 @@
     $(document).ready(function(){
         var project = @json($data);
         var links = @json($links);
-        
         gantt.config.columns = [ 
             {name:"text", label:"Task name", width:"*", tree:true,
                 template:function(obj){
@@ -173,6 +184,9 @@
         ]; 
 
         gantt.config.grid_width = 270;
+
+        
+
         gantt.templates.rightside_text = function(start, end, task){
             if(task.status != undefined){
                 if(task.status == 0){
@@ -201,7 +215,7 @@
             return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
         };
         gantt.templates.grid_file = function(item) { 
-            if(item.id.indexOf("PRW") != -1){
+            if(item.id.indexOf("WBS") != -1){
                 return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
             }else{
                 return "<div class='gantt_tree_icon textCenter'><i class='fa fa-clock-o'></i></div>"; 
@@ -247,10 +261,9 @@
                     ];
                     break;
             }
-        }
-        
+        }      
 
-        setScaleConfig("day");
+        setScaleConfig("month");
         gantt.init("ganttChart");
         gantt.parse(tasks);
         gantt.showDate(new Date());
@@ -268,19 +281,6 @@
         }
         $('[data-toggle="tooltip"]').tooltip();
 
-        var data = {
-            project_id : @json($project->id),
-            predecessorActivities : [],
-            activity:"",
-            confirmActivity : {
-                activity_id : "",
-                actual_start_date : "",
-                actual_end_date : "",
-                actual_duration : "",
-            },
-            havePredecessor : false,
-        };
-
         Vue.directive('tooltip', function(el, binding){
             $(el).tooltip({
                 title: binding.value,
@@ -288,6 +288,22 @@
                 trigger: 'hover'             
             })
         })
+
+        var data = {
+            project_id : @json($project->id),
+            project : @json($project),
+            today : @json($today),
+            predecessorActivities : [],
+            activity:"",
+            confirmActivity : {
+                activity_id : "",
+                actual_start_date : "",
+                actual_end_date : "",
+                actual_duration : "",
+                current_progress : 0,
+            },
+            havePredecessor : false,
+        };
 
         var vm = new Vue({
             el: '#confirm_activity',
@@ -319,43 +335,39 @@
                     }
                 );
             },
-            computed:{
-                alreadyStart: function(){
-                    let isOkAlreadyStart = false;
-                    if(this.confirmActivity.actual_start_date == "")
-                    {
-                        isOkAlreadyStart = true;
-                    }
-                    
-                    let isOkPredecessor = false;
-                    
-                    document.getElementById("actual_start_date").disabled = false;
-                    
-                    this.predecessorActivities.forEach(activity => {
-                        if(activity.status == 1){
-                            isOkPredecessor = true;
-                            document.getElementById("actual_start_date").disabled = true;
-                        }
-                    });
-                    return isOkAlreadyStart || isOkPredecessor;
-                },
+            computed:{  
             }, 
             methods:{
                 tooltipText: function(text) {
                     return text
                 },
-                openConfirmModal(data){
-                    window.axios.get('/api/getActivity/'+data).then(({ data }) => {
+                openConfirmModal: function(data){
+                    axios.get('/api/getActivity/'+data).then(({ data }) => {
                         this.activity = data[0];
-                        this.predecessorTableView = [];
                         if(this.activity.predecessor != null){
                             this.havePredecessor = true;
-                            window.axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
+                            axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
                                 this.predecessorActivities = data;
                             });
                         }else{
                             this.havePredecessor = false;
                             this.predecessorActivities = [];
+                        }
+
+                        this.confirmActivity.current_progress = this.activity.progress;
+                        if(this.confirmActivity.current_progress != 100){
+                            document.getElementById("actual_end_date").disabled = true;
+                            document.getElementById("actual_duration").disabled = true;
+                            this.confirmActivity.actual_end_date = "";
+                            this.confirmActivity.actual_duration = "";
+                        }else{
+                            document.getElementById("actual_end_date").disabled = false;
+                            document.getElementById("actual_duration").disabled = false;
+                            if(this.confirmActivity.actual_end_date == ""){
+                                document.getElementById("btnSave").disabled = true;
+                            }else{
+                                document.getElementById("btnSave").disabled = false;
+                            }
                         }
                         document.getElementById("confirm_activity_code").innerHTML= this.activity.code;
                         document.getElementById("planned_start_date").innerHTML= this.activity.planned_start_date;
@@ -367,8 +379,6 @@
                         $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
                         $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
                     });
-                    
-
                 },
                 setEndDateEdit(){
                     if(this.confirmActivity.actual_duration != "" && this.confirmActivity.actual_start_date != ""){
@@ -410,11 +420,15 @@
                             gantt.render();
                             gantt.parse(tasks);
                             gantt.eachTask(function(task){
-                                if(task.id.indexOf("PRW") !== -1){
+                                if(task.id.indexOf("WBS") !== -1){
                                     gantt.open(task.id);
                                 }
                             })
                         });
+
+                        window.axios.get('/api/getProjectActivity/'+this.project_id).then(({ data }) => {
+                            this.project = data;
+                        });                        
                         
                         this.confirmActivity.activity_id = "";
                         this.confirmActivity.actual_start_date = "";
@@ -432,30 +446,57 @@
             watch: {
                 confirmActivity:{
                     handler: function(newValue) {
-                        this.confirmActivity.actual_duration = newValue.actual_duration+"".replace(/\D/g, "");
-                        if(parseInt(newValue.actual_duration) < 1 ){
-                            iziToast.show({
-                                timeout: 6000,
-                                color : 'red',
-                                displayMode: 'replace',
-                                icon: 'fa fa-warning',
-                                title: 'Warning !',
-                                message: 'End Date cannot be ahead Start Date',
-                                position: 'topRight',
-                                progressBarColor: 'rgb(0, 255, 184)',
-                            });
-                            this.confirmActivity.actual_duration = "";
+                        if(this.confirmActivity.actual_start_date == ""){
+                            document.getElementById("actual_end_date").disabled = true;
+                            document.getElementById("actual_duration").disabled = true;
+                            document.getElementById("btnSave").disabled = true;
+                            document.getElementById("current_progress").disabled = true;
+                        }else{
+                            document.getElementById("actual_end_date").disabled = false;
+                            document.getElementById("actual_duration").disabled = false;
+                            document.getElementById("btnSave").disabled = false;
+                            document.getElementById("current_progress").disabled = false;
+                        }         
+                        
+                        this.predecessorActivities.forEach(activity => {
+                            if(activity.status == 1){
+                                document.getElementById("actual_start_date").disabled = true;
+                                document.getElementById("actual_end_date").disabled = true;
+                                document.getElementById("actual_duration").disabled = true;
+                                document.getElementById("btnSave").disabled = true;
+                                document.getElementById("current_progress").disabled = true;
+                            }
+                        });
+
+                        if(this.confirmActivity.current_progress != 100){
+                            document.getElementById("actual_end_date").disabled = true;
+                            document.getElementById("actual_duration").disabled = true;
                             this.confirmActivity.actual_end_date = "";
+                            this.confirmActivity.actual_duration = "";
+                        }else{
+                            document.getElementById("actual_end_date").disabled = false;
+                            document.getElementById("actual_duration").disabled = false;
+                            if(this.confirmActivity.actual_end_date == ""){
+                                document.getElementById("btnSave").disabled = true;
+                            }else{
+                                document.getElementById("btnSave").disabled = false;
+                            }
                         }
                     },
                     deep: true
                 },
-                'confirmActivity.actual_start_date' :function(newValue){
-                    if(newValue == ""){
-                        $('#actual_end_date').datepicker('setDate', null);
-                        this.confirmActivity.actual_duration = "";
-                    }
-                },          
+                'confirmActivity.actual_duration' : function(newValue){
+                    this.confirmActivity.actual_duration = newValue+"".replace(/\D/g, "");
+                        if(parseInt(newValue) < 1 ){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: 'End Date cannot be ahead Start Date',
+                                position: 'topRight',
+                            });
+                            this.confirmActivity.actual_duration = "";
+                            this.confirmActivity.actual_end_date = "";
+                        }
+                },       
             },
         });
 
@@ -471,15 +512,14 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            if(id.indexOf("PRA") !== -1){
-                $("#confirm_activity_modal").modal('show');
+            if(id.indexOf("ACT") !== -1){
                 vm.openConfirmModal(id);
+                $("#confirm_activity_modal").modal('show');
                 return true;
             }else{
                 return true;
             }
         });
-
-    });    
+    });
 </script>
 @endpush

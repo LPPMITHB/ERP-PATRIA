@@ -16,6 +16,8 @@ use App\Models\Category;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
 use App\Models\BusinessUnit;
+use App\Models\MaterialRequisition;
+use App\Models\Bom;
 use Illuminate\Support\Collection;
 use DB;
 use DateTime;
@@ -185,7 +187,7 @@ class ProjectController extends Controller
         try {
             $project = new Project;
             $project->number =  $request->number;
-            $project->project_sequence = $modelProject->project_sequence + 1;
+            $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
@@ -229,10 +231,12 @@ class ProjectController extends Controller
         ]);
 
         DB::beginTransaction();
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
         try {
             $project = new Project;
             $project->number =  $request->number;
             $project->name = $request->name;
+            $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
@@ -276,7 +280,30 @@ class ProjectController extends Controller
         $wbss = $project->wbss;
         $today = date("Y-m-d");
 
-        $data = Collection::make();
+        //planned
+        $dataPlannedCost = Collection::make();
+        $modelBom = Bom::where('project_id',$id)->get();
+        $wbsChart = $project->wbss->groupBy('planned_deadline');
+        $dataPlannedCost->push([
+            "t" => $project->planned_start_date, 
+            "y" => "0",
+        ]);
+        
+        //actual
+        $dataActualCost = Collection::make();
+        $modelMR = MaterialRequisition::where('project_id',$id)->get();
+        $dataPlannedCost->push([
+            "t" => $project->actual_start_date, 
+            "y" => "0",
+        ]);
+
+        
+        //Progress
+        $dataActualProgress = Collection::make();
+        $dataPlannedProgress = Collection::make();
+        self::getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $wbss, $dataActualProgress, $dataPlannedProgress);
+        
+        $ganttData = Collection::make();
         $links = Collection::make();
         $outstanding_item = Collection::make();
 
@@ -288,13 +315,14 @@ class ProjectController extends Controller
         ]);
 
         self::getOutstandingItem($wbss,$outstanding_item, $project,$today);
-        self::getDataForGantt($project, $wbss, $data, $links, $today);       
+        self::getDataForGantt($project, $wbss, $ganttData, $links, $today);       
 
         $links->jsonSerialize();
-        $data->jsonSerialize();
-
+        $ganttData->jsonSerialize();
+        $dataPlannedCost->jsonSerialize();
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project.show', compact('project','today','data','links','outstanding_item','modelPrO','menu'));
+        return view('project.show', compact('project','today','ganttData','links','outstanding_item','modelPrO','menu',
+        'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress'));
     }
 
     public function showRepair(Request $request, $id)
@@ -327,6 +355,7 @@ class ProjectController extends Controller
 
     public function showGanttChart($id)
     {
+        $today = date("Y-m-d");
         $project = Project::find($id);
         $wbss = $project->wbss;
 
@@ -338,7 +367,7 @@ class ProjectController extends Controller
         
         $links->jsonSerialize();
         $data->jsonSerialize();
-        return view('project.ganttChart', compact('project','data','links'));
+        return view('project.ganttChart', compact('project','data','links','today'));
     }
 
     /**
@@ -669,31 +698,31 @@ class ProjectController extends Controller
     }
 
     function getDataForGantt($project, $wbss, $data, $links, $today){
+        $index = 0;
         foreach($wbss as $wbs){
             if(count($wbs->activities)>0){
                 $earliest_date = null;
-                $index = 0;
                 foreach($wbs->activities as $activity){
-                    $start_date_activity = date_create($activity->planned_start_date);
+                    $start_date_activity = date_create($activity->actual_start_date != null ? $activity->actual_start_date : $activity->planned_start_date );
                     if($today>$activity->planned_end_date && $activity->status != 0){
                         $data->push([
                             "id" => $activity->code , 
-                            "text" => $activity->name,
+                            "text" => $activity->actual_duration != null ? "[Actual] ".$activity->name." | Weight : ".$activity->weight."%" : $activity->name." | Weight : ".$activity->weight."%",
                             "progress" => 0,
                             "status" => 1,
                             "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
-                            "duration" => $activity->planned_duration,
+                            "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  ,
                             "parent" => $wbs->code,
                             "color" => "red"
                         ]);
                     }else if($today<$activity->planned_end_date && $activity->status == 0){
                         $data->push([
                             "id" => $activity->code , 
-                            "text" => $activity->name,
+                            "text" => $activity->actual_duration != null ? "[Actual] ".$activity->name." | Weight : ".$activity->weight."%" : $activity->name." | Weight : ".$activity->weight."%",
                             "progress" => 1,
                             "status" => 0,
                             "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
-                            "duration" => $activity->planned_duration, 
+                            "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  , 
                             "parent" => $wbs->code, 
                             "color" => "green"
                         ]);
@@ -701,26 +730,27 @@ class ProjectController extends Controller
                         if($activity->status == 0){
                             $data->push([
                                 "id" => $activity->code , 
-                                "text" => $activity->name,
+                                "text" => $activity->actual_duration != null ? "[Actual] ".$activity->name." | Weight : ".$activity->weight."%" : $activity->name." | Weight : ".$activity->weight."%",
                                 "progress" => 1,
                                 "status" => 0,
                                 "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
-                                "duration" => $activity->planned_duration, 
+                                "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  , 
                                 "parent" => $wbs->code, 
                                 "color" => "green"
                             ]);
                         }else{
                             $data->push([
                                 "id" => $activity->code , 
-                                "text" => $activity->name,
+                                "text" => $activity->actual_duration != null ? "[Actual] ".$activity->name." | Weight : ".$activity->weight."%" : $activity->name." | Weight : ".$activity->weight."%",
                                 "progress" => 0,
                                 "status" => 1,
                                 "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
-                                "duration" => $activity->planned_duration,
+                                "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  ,
                                 "parent" => $wbs->code,  
                             ]);
                         }
                     }
+
                     if($earliest_date != null){
                         if($earliest_date > $activity->planned_start_date){
                             $earliest_date = $activity->planned_start_date;
@@ -743,18 +773,17 @@ class ProjectController extends Controller
                         }
                     }
                 }
-                $start_date_wbs = date_create($earliest_date);
 
+                $start_date_wbs = date_create($earliest_date);
                 $earlier = new DateTime($earliest_date);
                 $later = new DateTime($wbs->planned_deadline);
-
                 $duration = $later->diff($earlier)->format("%a");
 
                 if($wbs->wbs_id != null){
                     if($today>$wbs->planned_deadline && $wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -764,7 +793,7 @@ class ProjectController extends Controller
                     }else if($wbs->progress == 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration, 
@@ -774,7 +803,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -785,7 +814,7 @@ class ProjectController extends Controller
                     if($today>$wbs->planned_deadline && $wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -794,7 +823,7 @@ class ProjectController extends Controller
                     }else if($wbs->progress == 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
@@ -803,7 +832,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
@@ -843,7 +872,7 @@ class ProjectController extends Controller
                     if($today>$wbs->planned_deadline && $wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -853,7 +882,7 @@ class ProjectController extends Controller
                     }else if($wbs->progress == 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration, 
@@ -863,7 +892,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -874,7 +903,7 @@ class ProjectController extends Controller
                     if($today>$wbs->planned_deadline && $wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -883,7 +912,7 @@ class ProjectController extends Controller
                     }else if($wbs->progress == 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
@@ -892,7 +921,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->name,
+                            "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
@@ -900,6 +929,84 @@ class ProjectController extends Controller
                     }
                 } 
             }   
+        }
+    }
+    public function getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $wbss, $dataActualProgress,$dataPlannedProgress)
+    {
+        $sorted = $wbsChart->all();
+        ksort($sorted);
+        $plannedCost = 0;
+        foreach($sorted as $date => $group){
+            foreach($group as $wbs){
+                if($wbs->bom){
+                    if($wbs->bom->rap->total_price != 0){
+                        $plannedCost += $wbs->bom->rap->total_price;
+                        $dataPlannedCost->push([
+                            "t" => $date, 
+                            "y" => $plannedCost."",
+                        ]);
+                    }
+                }
+            }
+            
+        }
+
+        $actualCost = 0;
+        foreach($modelMR as $mr){
+            $modelGI = $mr->goodsIssues->groupBy(function($date) {
+                return $date->created_at->toDateString();
+            });
+            $sorted = $modelGI->all();
+            ksort($sorted);
+            foreach($sorted as $date => $group){
+                foreach($group as $gi){
+                    $gids = $gi->goodsIssueDetails;
+                    foreach($gids as $gid){
+                        $actualCost += $gid->material->cost_standard_price * $gid->quantity;
+                    }
+                }
+                $dataActualCost->push([
+                    "t" => $date, 
+                    "y" => $actualCost."",
+                ]);
+            }
+        }
+
+        $actualProgress = 0;
+        $plannedProgress = 0;
+        foreach($wbss as $wbs){
+            $actualActivities =$wbs->activities->groupBy('actual_end_date');
+            $plannnedActivities =$wbs->activities->groupBy('planned_end_date');
+            $actualSorted = $actualActivities->all();
+            $plannedSorted = $plannnedActivities->all();
+            ksort($actualSorted);
+            ksort($plannedSorted);
+            foreach($actualSorted as $date => $group){
+                foreach($group as $activity){
+                    $actualProgress += $activity->progress * ($activity->weight/100);
+                }
+                if($date != null){
+                    $dataActualProgress->push([
+                        "t" => $date, 
+                        "y" => $actualProgress."",
+                    ]);
+                }else{
+                    $dataActualProgress->push([
+                        "t" => date('Y-m-d'), 
+                        "y" => $actualProgress."",
+                    ]);
+                }   
+            }
+            foreach($plannedSorted as $date => $group){
+                foreach($group as $activity){
+                    $plannedProgress += $activity->progress * ($activity->weight/100);
+                }
+                $dataPlannedProgress->push([
+                    "t" => date('Y-m-d'), 
+                    "y" => $plannedProgress."",
+                ]);
+                 
+            }
         }
     }
 

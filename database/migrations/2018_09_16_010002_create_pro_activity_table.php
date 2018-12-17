@@ -21,8 +21,8 @@ class CreateProActivityTable extends Migration
             $table->integer('status')->default(1);
             $table->unsignedInteger('wbs_id')->nullable();
             $table->integer('planned_duration');
-            $table->date('planned_start_date');
-            $table->date('planned_end_date');
+            $table->date('planned_start_date')->nullable();
+            $table->date('planned_end_date')->nullable();
             $table->integer('actual_duration')->nullable();
             $table->date('actual_start_date')->nullable();
             $table->date('actual_end_date')->nullable();

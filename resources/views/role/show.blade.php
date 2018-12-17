@@ -24,17 +24,6 @@
                     <li class="active"><a href="#info" data-toggle="tab">Role Info</a></li>
                     <li><a href="#permissions" data-toggle="tab">Permissions</a></li>
                     <div class="box-tools pull-right p-t-5 p-r-10">
-                    
-                        <!-- @can('destroy-role')
-                            <a data-toggle="tooltip" title="Delete Role" data-placement="top"  class="btn btn-danger btn-sm" href="#" onclick="deleteRole()">DELETE</a>
-                        @endcan
-
-                        <form id="delete-form-{{ $role->id }}" action="{{ route('role.destroy', ['id' => $role->id]) }}" method="POST" style="display: none;">
-                            <input type="hidden" name="_method" value="DELETE">
-                            @csrf
-                        </form> -->
-                    
-                    
                         @can('edit-role')
                             <a data-toggle="tooltip" title="Edit Role" data-placement="top" href="{{ route('role.edit',['id'=>$role->id]) }}"  class="btn btn-primary btn-sm">EDIT</a>
                         @endcan

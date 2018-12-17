@@ -155,10 +155,9 @@
                                         <button @click.prevent="update" type="button" class="btn btn-primary" data-dismiss="modal">SAVE</button>
                                     </div>
                                 </div>
-                                <!-- /.modal-content -->
                             </div>
-                            <!-- /.modal-dialog -->
                         </div>
+                        
                     </div>
                     @endverbatim
                 </div>
