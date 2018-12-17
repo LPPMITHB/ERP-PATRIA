@@ -78,6 +78,7 @@
                     }
                 });
             });
+            var alreadyWrap = true;
 
             function myFunction(x) {
                 if (x.matches) { // If media query matches
@@ -97,7 +98,7 @@
             $('.tablePaging thead tr').clone(true).appendTo( '.tablePaging thead' );
             $('.tablePaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
                 var title = $(this).text();
-                if(title == 'No' || title == ""){
+                if(title == 'Status' || title == 'No' || title == ""){
                     $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                 }else{
                     $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -125,7 +126,7 @@
             $('.tableNonPaging thead tr').clone(true).appendTo( '.tableNonPaging thead' );
             $('.tableNonPaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
                 var title = $(this).text();
-                if(title == 'No' || title == ""){
+                if(title == 'Status' || title == 'No' || title == ""){
                     $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                 }else{
                     $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );

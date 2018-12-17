@@ -4,10 +4,9 @@
 @breadcrumb(
     [
         'title' => 'View All Companies',
-        'subtitle' => 'Index',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Companies' => route('company.index'),
+            'View All Companies' => '',
         ]
     ]
 )
@@ -18,13 +17,13 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header m-b-10">
-                <div class="box-tools pull-right p-t-5">
+            <div class="box-header">
+                <div class="box-tools pull-right">
                     <a href="{{ route('company.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header -->
-            <div class="box-body">
-                <table class="table table-bordered table-hover" id="company-table">
+            <div class="box-body p-b-0 p-t-15">
+                <table class="table table-bordered tablePaging tableFixed" id="company-table">
                     <thead>
                         <tr>
                             <th style ="width: 5%">No</th>
@@ -65,17 +64,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#company-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

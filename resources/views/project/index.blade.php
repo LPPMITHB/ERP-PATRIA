@@ -48,7 +48,7 @@
                         <tr>
                             <th style="width: 15px">No</th>
                             <th>Code</th>
-                            <th style="width: 10%">Ship</th>
+                            <th style="width: 15%">Ship Name</th>
                             <th style="width: 33%">Customer</th>
                             <th>Start Date</th>
                             <th>Progress</th>

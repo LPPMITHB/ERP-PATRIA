@@ -231,15 +231,8 @@ class ProjectManagementController extends Controller
         }
     }
 
-    
-
     public function getWorks($project_id){
         $works = Work::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->where('work_id', null)->get()->jsonSerialize();
-        return response($works, Response::HTTP_OK);
-    }
-
-    public function getAllWorks($project_id){
-        $works = Work::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
         return response($works, Response::HTTP_OK);
     }
 
