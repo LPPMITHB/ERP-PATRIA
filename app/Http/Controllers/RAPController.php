@@ -39,48 +39,53 @@ class RAPController extends Controller
     // }
 
     // view RAP
-    public function indexSelectProject()
+    public function indexSelectProject(Request $request)
     {
         $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_rap";
+        $route = $request->route()->getPrefix();
 
-        return view('rap.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu','route'));
     }
 
     // create cost
-    public function selectProjectCost()
+    public function selectProjectCost(Request $request)
     {
         $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "create_cost";
+        $route = $request->route()->getPrefix();
 
-        return view('rap.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu','route'));
     }
 
     // input actual other cost
-    public function selectProjectActualOtherCost()
+    public function selectProjectActualOtherCost(Request $request)
     {
         $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "input_actual_other_cost";
+        $route = $request->route()->getPrefix();
 
-        return view('rap.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu','route'));
     }
 
     // view planned cost
-    public function selectProjectViewCost()
+    public function selectProjectViewCost(Request $request)
     {
         $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_planned_cost";
+        $route = $request->route()->getPrefix();
 
-        return view('rap.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu','route'));
     }
 
     // view planned cost
-    public function selectProjectViewRM()
+    public function selectProjectViewRM(Request $request)
     {
         $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_rm";
+        $route = $request->route()->getPrefix();
 
-        return view('rap.selectProject', compact('projects','menu'));
+        return view('rap.selectProject', compact('projects','menu','route'));
     }
 
     public function selectWBS($id)
@@ -632,5 +637,59 @@ class RAPController extends Controller
     public function getAllWorksCostAPI($project_id){
         $works = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
         return response($works, Response::HTTP_OK);
+    }
+
+
+
+
+
+     // view RAP repair
+    public function indexSelectProjectRepair(Request $request)
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = "view_rap";
+        $route = $request->route()->getPrefix();
+
+        return view('rap.selectProject', compact('projects','menu','route'));
+    }
+
+    // create cost repair
+    public function selectProjectCostRepair(Request $request)
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = "create_cost";
+        $route = $request->route()->getPrefix();
+
+        return view('rap.selectProject', compact('projects','menu','route'));
+    }
+
+    // input actual other cost repair
+    public function selectProjectActualOtherCostRepair(Request $request)
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = "input_actual_other_cost";
+        $route = $request->route()->getPrefix();
+
+        return view('rap.selectProject', compact('projects','menu','route'));
+    }
+
+    // view planned cost repair
+    public function selectProjectViewCostRepair(Request $request)
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = "view_planned_cost";
+        $route = $request->route()->getPrefix();
+
+        return view('rap.selectProject', compact('projects','menu','route'));
+    }
+
+    // view planned cost repair
+    public function selectProjectViewRMRepair(Request $request)
+    {
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        $menu = "view_rm";
+        $route = $request->route()->getPrefix();
+
+        return view('rap.selectProject', compact('projects','menu','route'));
     }
 }

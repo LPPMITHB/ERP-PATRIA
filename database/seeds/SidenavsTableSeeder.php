@@ -255,21 +255,48 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom.assignBom',
         ]);
 
-        // $createrap = Menu::where('route_name','rap.selectProject')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createrap,
-        //     'route_name' => 'rap.selectProject',
-        // ]);
+        // bom repair
+        $manageBomRepair = Menu::where('route_name','bom_repair.indexProjectRepair')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBomRepair,
+            'route_name' => 'bom_repair.indexProject',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createrap,
-        //     'route_name' => 'rap.create',
-        // ]);
+         DB::table('sidenav')->insert([
+            'menu_id' => $manageBomRepair,
+            'route_name' => 'bom_repair.selectWBS',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createrap,
-        //     'route_name' => 'rap.show',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBomRepair,
+            'route_name' => 'bom_repair.indexBom',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBomRepair,
+            'route_name' => 'bom_repair.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBomRepair,
+            'route_name' => 'bom_repair.create',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBomRepair,
+            'route_name' => 'bom_repair.edit',
+        ]);
+
+        $assignBom = Menu::where('route_name','bom_repair.selectProjectRepair')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $assignBom,
+            'route_name' => 'bom_repair.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $assignBom,
+            'route_name' => 'bom_repair.assignBom',
+        ]);
 
         $viewRap = Menu::where('route_name','rap.indexSelectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
@@ -304,17 +331,6 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap.inputActualOtherCost',
         ]);
 
-        // $assignCost = Menu::where('route_name','rap.selectProjectAssignCost')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $assignCost,
-        //     'route_name' => 'rap.selectProjectAssignCost',
-        // ]);
-        
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $assignCost,
-        //     'route_name' => 'rap.assignCost',
-        // ]);
-
         $viewPlannedCost = Menu::where('route_name','rap.selectProjectViewCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewPlannedCost,
@@ -340,6 +356,67 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $viewRemainingMaterial,
             'route_name' => 'rap.showMaterialEvaluation',
+        ]);
+
+        // repair
+        $viewRap = Menu::where('route_name','rap_repair.indexSelectProjectRepair')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRap,
+            'route_name' => 'rap_repair.indexSelectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRap,
+            'route_name' => 'rap_repair.index',
+        ]);
+
+        $createCost = Menu::where('route_name','rap_repair.selectProjectCostRepair')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createCost,
+            'route_name' => 'rap_repair.selectProjectCost',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $createCost,
+            'route_name' => 'rap_repair.createCost',
+        ]);
+
+        $inputActualOtherCost = Menu::where('route_name','rap_repair.selectProjectActualOtherCostRepair')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $inputActualOtherCost,
+            'route_name' => 'rap_repair.selectProjectActualOtherCost',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $inputActualOtherCost,
+            'route_name' => 'rap_repair.inputActualOtherCost',
+        ]);
+
+        $viewPlannedCost = Menu::where('route_name','rap_repair.selectProjectViewCostRepair')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewPlannedCost,
+            'route_name' => 'rap_repair.selectProjectViewCost',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewPlannedCost,
+            'route_name' => 'rap_repair.viewPlannedCost',
+        ]);
+
+        $viewRemainingMaterial = Menu::where('route_name','rap_repair.selectProjectViewRMRepair')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRemainingMaterial,
+            'route_name' => 'rap_repair.selectProjectViewRM',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRemainingMaterial,
+            'route_name' => 'rap_repair.selectWBS',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRemainingMaterial,
+            'route_name' => 'rap_repair.showMaterialEvaluation',
         ]);
 
         $createPr = Menu::where('route_name','purchase_requisition.create')->select('id')->first()->id;
