@@ -197,7 +197,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0200022',
             'description' => 'test',
             'project_id' => 2,
-            'wbs_id' => 75,
+            'wbs_id' => 95,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -206,7 +206,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0200025',
             'description' => 'test',
             'project_id' => 2,
-            'wbs_id' => 76,
+            'wbs_id' => 96,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -215,7 +215,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0200028',
             'description' => 'test',
             'project_id' => 2,
-            'wbs_id' => 77,
+            'wbs_id' => 97,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -224,7 +224,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0200031',
             'description' => 'test',
             'project_id' => 2,
-            'wbs_id' => 78,
+            'wbs_id' => 98,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
@@ -233,7 +233,7 @@ class BOMsTableSeeder extends Seeder
             'code' => 'BOM0200034',
             'description' => 'test',
             'project_id' => 2,
-            'wbs_id' => 78,
+            'wbs_id' => 99,
             'user_id' => 5,
             'branch_id' => 1,
         ]);
