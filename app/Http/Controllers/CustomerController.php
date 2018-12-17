@@ -48,7 +48,7 @@ class CustomerController extends Controller
     {
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_customer|string|max:255',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|unique:mst_customer|max:255',
             'contact_person_name' => 'required|string|max:255',
             'contact_person_email' => 'required|email|unique:mst_customer|string|max:255',
             'contact_person_phone' => 'nullable|numeric'
@@ -85,7 +85,7 @@ class CustomerController extends Controller
             $user->save();
 
             DB::commit();
-            return redirect()->route('customer.show',$customer->id)->with('status', 'Success Created New Customer!');
+            return redirect()->route('customer.show',$customer->id)->with('success', 'Success Created New Customer!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('customer.create')->with('error', $e->getMessage());
