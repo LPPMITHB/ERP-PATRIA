@@ -269,5 +269,71 @@ class BOMDetailsTableSeeder extends Seeder
             'quantity' => $quantity,
         ]);
 
+        //33
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 21,
+            'material_id' => 2,
+            'quantity' => 2,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 21,
+            'material_id' => 3,
+            'quantity' => 5,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 22,
+            'material_id' => 5,
+            'quantity' => 2,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 22,
+            'material_id' => 3,
+            'quantity' => 5,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 23,
+            'material_id' => 4,
+            'quantity' => 2,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 23,
+            'material_id' => 1,
+            'quantity' => 5,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 24,
+            'material_id' => 5,
+            'quantity' => 4,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 24,
+            'material_id' => 3,
+            'quantity' => 3,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 25,
+            'material_id' => 4,
+            'quantity' => 1,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 25,
+            'material_id' => 2,
+            'quantity' => 2,
+        ]);
+
+        DB::table('mst_bom_detail')->insert([
+            'bom_id' => 21,
+            'material_id' => 1,
+            'quantity' => 5,
+        ]);
     }
 }

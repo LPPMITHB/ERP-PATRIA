@@ -292,11 +292,12 @@ class ProjectController extends Controller
         //actual
         $dataActualCost = Collection::make();
         $modelMR = MaterialRequisition::where('project_id',$id)->get();
-        $dataPlannedCost->push([
-            "t" => $project->actual_start_date, 
-            "y" => "0",
-        ]);
-
+        if($project->actual_start_date != null){
+            $dataActualCost->push([
+                "t" => $project->actual_start_date, 
+                "y" => "0",
+            ]);
+        }
         
         //Progress
         $dataActualProgress = Collection::make();
@@ -991,22 +992,27 @@ class ProjectController extends Controller
                         "y" => $actualProgress."",
                     ]);
                 }else{
-                    $dataActualProgress->push([
-                        "t" => date('Y-m-d'), 
-                        "y" => $actualProgress."",
-                    ]);
+                    $project =$activity->wbs->project->actual_start_date;
+                    if($project != null){
+                        if(date('Y-m-d')>$activity->wbs->project->actual_start_date){
+                            $dataActualProgress->push([
+                                "t" => date('Y-m-d'), 
+                                "y" => $actualProgress."",
+                            ]);
+                        }
+                    }
                 }   
             }
             foreach($plannedSorted as $date => $group){
                 foreach($group as $activity){
-                    $plannedProgress += $activity->progress * ($activity->weight/100);
+                    $plannedProgress += 100 * ($activity->weight/100);
                 }
                 $dataPlannedProgress->push([
-                    "t" => date('Y-m-d'), 
+                    "t" => $date, 
                     "y" => $plannedProgress."",
                 ]);
-                 
             }
+
         }
     }
 
