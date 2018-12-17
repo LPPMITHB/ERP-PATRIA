@@ -158,16 +158,17 @@ class RAPController extends Controller
 
     public function createCost($id)
     {
-        $project = Project::findOrFail($id);       
-
+        $project = Project::findOrFail($id);  
+        
         return view('rap.createOtherCost', compact('project'));
     }
 
     public function inputActualOtherCost($id)
     {
         $project = Project::findOrFail($id);       
+        $modelOtherCost = Cost::with('project','wbs')->get();   
 
-        return view('rap.inputActualOtherCost', compact('project'));
+        return view('rap.inputActualOtherCost', compact('project','modelOtherCost'));
     }
 
     public function viewPlannedCost($id)
@@ -342,29 +343,31 @@ class RAPController extends Controller
         }
     }
 
-    public function storeActualCost(Request $request)
+    public function storeActualCost(Request $request, $id)
     {
         $data = $request->json()->all();
         DB::beginTransaction();
         try {
-            $cost = new Cost;
+            $cost = Cost::find($id);
             $cost->description = $data['description'];
             $cost->plan_cost = $data['cost'];
             $cost->actual_cost = $data['actual_cost'];
+            if($data['wbs_id'] == ""){
+                $cost->wbs_id = null;
+            }else{
+                $cost->wbs_id = $data['wbs_id'];
+            }
             $cost->project_id = $data['project_id'];
 
-            $cost->user_id = Auth::user()->id;
-            $cost->branch_id = Auth::user()->branch->id;
-
-            if(!$cost->save()){
+            if(!$cost->update()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
-                return response(["response"=>"Success to create new cost"],Response::HTTP_OK);
+                return response(["response"=>"Success to Update Cost"],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 

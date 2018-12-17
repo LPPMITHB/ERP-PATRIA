@@ -214,6 +214,8 @@ var vm = new Vue({
         getCosts(){
             window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
                 this.costs = data;
+            console.log(this.costs)
+
                 this.newIndex = Object.keys(this.costs).length+1;
                 var dT = $('#cost-table').DataTable();
                 dT.destroy();
