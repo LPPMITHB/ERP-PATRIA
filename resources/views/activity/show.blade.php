@@ -70,20 +70,26 @@
                         <div class="col-md-7 col-xs-6 no-padding"><b>: {{$activity->planned_duration}}</b></div>
 
                         <div class="col-md-5 col-xs-6 no-padding">Actual Start Date</div>
-                        <div class="col-md-7 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: @if($activity->actual_start_date != null)@php
                                 $date = DateTime::createFromFormat('Y-m-d', $activity->actual_start_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
                             @endphp
+                            @else
+                            -
+                            @endif
                             </b>
                         </div>
 
                         <div class="col-md-5 col-xs-6 no-padding">Actual End Date</div>
-                        <div class="col-md-7 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-7 col-xs-6 no-padding"><b>: @if($activity->actual_end_date != null)@php
                                 $date = DateTime::createFromFormat('Y-m-d', $activity->actual_end_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
                             @endphp
+                            @else
+                            -
+                            @endif
                             </b>
                         </div>
                         

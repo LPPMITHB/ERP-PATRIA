@@ -59,6 +59,24 @@ class ActivityController extends Controller
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $route.$wbs->id],
                     ]);
+                    foreach($wbs->activities as $activity){
+                        if($menu == "viewAct"){
+                            $dataWbs->push([
+                                "id" => $activity->code , 
+                                "parent" => $activity->wbs->code,
+                                "text" => $activity->name. " | Weight : ".$activity->weight."%",
+                                "icon" => "fa fa-clock-o",
+                                "a_attr" =>  ["href" => "/activity/show/".$activity->id],
+                        ]);
+                        }else{
+                            $dataWbs->push([
+                                "id" => $activity->code , 
+                                "parent" => $activity->wbs->code,
+                                "text" => $activity->name. " | Weight : ".$activity->weight."%)",
+                                "icon" => "fa fa-clock-o",
+                            ]);
+                        }
+                    }
                 }else{
                     $dataWbs->push([
                         "id" => $wbs->code , 
@@ -69,6 +87,26 @@ class ActivityController extends Controller
                     ]);
                 }
             }else{
+                if(count($wbs->activities)>0){
+                    foreach($wbs->activities as $activity){
+                        if($menu == "viewAct"){
+                            $dataWbs->push([
+                                "id" => $activity->code , 
+                                "parent" => $activity->wbs->code,
+                                "text" => $activity->name. " | Weight : ".$activity->weight."%",
+                                "icon" => "fa fa-clock-o",
+                                "a_attr" =>  ["href" => "/activity/show/".$activity->id],
+                        ]);
+                        }else{
+                            $dataWbs->push([
+                                "id" => $activity->code , 
+                                "parent" => $activity->wbs->code,
+                                "text" => $activity->name. " | Weight : ".$activity->weight."%)",
+                                "icon" => "fa fa-clock-o",
+                            ]);
+                        }
+                    }
+                }
                 $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
 
                 $dataWbs->push([
