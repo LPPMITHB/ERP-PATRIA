@@ -17,7 +17,7 @@ use App\Models\Resource;
 use App\Models\ResourceDetail;
 use App\Models\BusinessUnit;
 use App\Models\MaterialRequisition;
-use App\Models\BOM;
+use App\Models\Bom;
 use Illuminate\Support\Collection;
 use DB;
 use DateTime;
@@ -282,7 +282,7 @@ class ProjectController extends Controller
 
         //planned
         $dataPlannedCost = Collection::make();
-        $modelBom = BOM::where('project_id',$id)->get();
+        $modelBom = Bom::where('project_id',$id)->get();
         $wbsChart = $project->wbss->groupBy('planned_deadline');
         $dataPlannedCost->push([
             "t" => $project->planned_start_date, 
