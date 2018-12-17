@@ -582,13 +582,13 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
 
-    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
+    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
     Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
      
     Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
 
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:create-other-cost');
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     
@@ -601,37 +601,31 @@ Route::name('rap.')->prefix('rap')->group(function() {
 Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:list-rap');
 
-    Route::get('/indexSelectProject', 'RAPController@indexSelectProjectRepair')->name('indexSelectProjectRepair')->middleware('can:list-rap-repair');
+    Route::get('/indexSelectProject', 'RAPController@indexSelectProject')->name('indexSelectProject')->middleware('can:list-rap-repair');
 
-    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:list-rap');
+    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:list-rap-repair');
     
-    Route::get('/selectProjectCost', 'RAPController@selectProjectCostRepair')->name('selectProjectCostRepair')->middleware('can:create-other-cost-repair');
+    Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:create-other-cost-repair');
 
-    Route::get('/selectProjectActualOtherCost', 'RAPController@selectProjectActualOtherCostRepair')->name('selectProjectActualOtherCostRepair')->middleware('can:create-actual-other-cost-repair');
+    Route::get('/selectProjectActualOtherCost', 'RAPController@selectProjectActualOtherCost')->name('selectProjectActualOtherCost')->middleware('can:create-actual-other-cost-repair');
     
-    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCostRepair')->name('selectProjectViewCostRepair')->middleware('can:view-planned-cost-repair');
+    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:view-planned-cost-repair');
 
-    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRMRepair')->name('selectProjectViewRMRepair')->middleware('can:view-remaining-material-repair');
+    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:view-remaining-material-repair');
     
     Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material-repair');
 
     Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material');
 
-    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost');
+    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost-repair');
 
-    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost-repair');
     
-    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost');
+    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost-repair');
 
-    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
-
-    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
-
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost-repair');  
      
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
-
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:create-other-cost');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost-repair');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     

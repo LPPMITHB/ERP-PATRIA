@@ -7,7 +7,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rap.indexSelectProject'),
-            'Select RAP' => route('rap.index',$raps[0]->project_id),
+            'Select RAP' => '',
         ]
     ]
 )

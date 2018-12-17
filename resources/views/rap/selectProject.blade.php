@@ -7,7 +7,7 @@
                 'title' => 'View RAP » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rap.indexSelectProject'),
+                    'Select Project' => '',
                 ]
             ]
         )
@@ -15,32 +15,21 @@
     @elseif($menu == "create_cost")
         @breadcrumb(
             [
-                'title' => 'Create Cost » Select Project',
+                'title' => 'Create Other Cost » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rap.selectProjectCost'),
+                    'Select Project' => '',
                 ]
             ]
         )
         @endbreadcrumb
     @elseif($menu == "input_actual_other_cost")
-    @breadcrumb(
-        [
-            'title' => 'Input Actual Other Cost » Select Project',
-            'items' => [
-                'Dashboard' => route('index'),
-                'Select Project' => route('rap.selectProjectActualOtherCost'),
-            ]
-        ]
-    )
-    @endbreadcrumb
-    @elseif($menu == "assign_cost")
         @breadcrumb(
             [
-                'title' => 'Assign Cost » Select Project',
+                'title' => 'Input Actual Other Cost » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rap.selectProjectAssignCost'),
+                    'Select Project' => '',
                 ]
             ]
         )
@@ -51,7 +40,7 @@
                 'title' => 'View Planned Cost » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rap.selectProjectViewCost'),
+                    'Select Project' => '',
                 ]
             ]
         )
@@ -62,7 +51,7 @@
                 'title' => 'View Remaining Material » Select Project',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('rap.selectProjectViewRM'),
+                    'Select Project' => '',
                 ]
             ]
         )
@@ -92,34 +81,50 @@
                                 <td>{{ $project->name }}</td>
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
-                                @if($menu == "create_rap")
+                                @if($route == '/rap')
+                                    @if($menu == "view_rap")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap.index', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @elseif($menu == "create_cost")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap.createCost', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @elseif($menu == "input_actual_other_cost")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.create', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.inputActualOtherCost', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
-                                @elseif($menu == "view_rap")
+                                    @elseif($menu == "view_planned_cost")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap.viewPlannedCost', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @elseif($menu == "view_rm")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @endif
+                                @elseif($route == '/rap_repair')
+                                    @if($menu == "view_rap")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap_repair.index', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @elseif($menu == "create_cost")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap_repair.createCost', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @elseif($menu == "input_actual_other_cost")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.index', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('rap_repair.inputActualOtherCost', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
-                                @elseif($menu == "create_cost")
-                                    <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.createCost', ['id'=>$project->id]) }}">SELECT</a>
-                                    </td>
-                                @elseif($menu == "input_actual_other_cost")
-                                <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('rap.inputActualOtherCost', ['id'=>$project->id]) }}">SELECT</a>
-                                </td>
-                                @elseif($menu == "assign_cost")
-                                    <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.assignCost', ['id'=>$project->id]) }}">SELECT</a>
-                                    </td>
-                                @elseif($menu == "view_planned_cost")
-                                    <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.viewPlannedCost', ['id'=>$project->id]) }}">SELECT</a>
-                                    </td>
-                                @elseif($menu == "view_rm")
-                                    <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('rap.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
-                                    </td>
+                                    @elseif($menu == "view_planned_cost")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap_repair.viewPlannedCost', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @elseif($menu == "view_rm")
+                                        <td class="p-l-5 p-r-5" align="center">
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap_repair.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                        </td>
+                                    @endif
                                 @endif
                             </tr>
                         @endforeach
