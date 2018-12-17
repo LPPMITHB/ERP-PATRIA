@@ -408,6 +408,7 @@ var data = {
         planned_duration : "",
         predecessor : [],
         weight : "",
+        latest_predecessor : "",
     },
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
@@ -746,6 +747,23 @@ var vm = new Vue({
                         }
                     });
                 });
+                window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(newValue)).then(({ data }) => {
+                    this.editActivity.latest_predecessor = data;
+                    // Create new Date instance
+                    var dateRef = new Date(data.planned_end_date);
+
+                    var startDate = new Date(data.planned_end_date);
+                    var endDate = new Date(data.planned_end_date);
+                    var tempDuration = parseInt(this.editActivity.planned_duration)-1;
+                    // Add a day
+                    startDate.setDate(startDate.getDate() + 1);
+                    $('#edit_planned_start_date').datepicker('setDate', startDate);
+
+                    if(this.editActivity.planned_duration != ""){
+                        endDate.setDate(startDate.getDate() + tempDuration);
+                        $('#edit_planned_end_date').datepicker('setDate', endDate);
+                    }
+                })
             }
         },
     },
