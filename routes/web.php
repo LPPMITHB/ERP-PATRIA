@@ -346,9 +346,9 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
 
-    Route::get('/indexProject', 'BOMController@indexProjectRepair')->name('indexProject')->middleware('can:list-bom-repair');
+    Route::get('/indexProject', 'BOMController@indexProjectRepair')->name('indexProjectRepair')->middleware('can:list-bom-repair');
 
-    Route::get('/selectProject', 'BOMController@selectProjectRepair')->name('selectProject')->middleware('can:list-bom-repair');
+    Route::get('/selectProject', 'BOMController@selectProjectRepair')->name('selectProjectRepair')->middleware('can:list-bom-repair');
     
     Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:list-bom-repair');
 
@@ -551,6 +551,49 @@ Route::name('rap.')->prefix('rap')->group(function() {
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
 });
 
+//rap Routes
+Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
+    Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:list-rap');
+
+    Route::get('/indexSelectProject', 'RAPController@indexSelectProjectRepair')->name('indexSelectProjectRepair')->middleware('can:list-rap-repair');
+
+    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:list-rap');
+    
+    Route::get('/selectProjectCost', 'RAPController@selectProjectCostRepair')->name('selectProjectCostRepair')->middleware('can:create-other-cost-repair');
+
+    Route::get('/selectProjectActualOtherCost', 'RAPController@selectProjectActualOtherCostRepair')->name('selectProjectActualOtherCostRepair')->middleware('can:create-actual-other-cost-repair');
+    
+    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCostRepair')->name('selectProjectViewCostRepair')->middleware('can:view-planned-cost-repair');
+
+    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRMRepair')->name('selectProjectViewRMRepair')->middleware('can:view-remaining-material-repair');
+    
+    Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material-repair');
+
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material');
+
+    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost');
+
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');
+    
+    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost');
+
+    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
+
+    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
+
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
+     
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
+
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:create-other-cost');
+
+    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
+    
+    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
+    
+    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
+});
+
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
     Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove');
@@ -631,7 +674,6 @@ Route::name('physical_inventory.')->prefix('physical_inventory')->group(function
     Route::get('/indexAdjustStock', 'PhysicalInventoryController@indexAdjustStock')->name('indexAdjustStock');
 
     Route::patch('/storeAdjustStock/{id}', 'PhysicalInventoryController@storeAdjustStock')->name('storeAdjustStock');
-
 });
 
 // Good Receipt Routes
