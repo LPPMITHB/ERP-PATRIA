@@ -401,7 +401,7 @@ Route::name('bos.')->prefix('bos')->group(function() {
 //Project Routes
 Route::name('project.')->prefix('project')->group(function() {
     // Project Cost Evaluation
-    Route::get('/projectCE/{id}', 'ProjectController@projectCE')->name('projectCE')->middleware('can:create-project');
+    Route::get('/projectCE/{id}', 'ProjectController@projectCE')->name('projectCE')->middleware('can:show-project');
     
     //GanttChart
     Route::get('/ganttChart/{id}', 'ProjectController@showGanttChart')->name('showGanttChart')->middleware('can:show-project');

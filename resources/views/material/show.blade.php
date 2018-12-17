@@ -56,7 +56,7 @@
                         <tr>
                             <td>4</td>
                             <td>Cost Standard Price</td>
-                            <td>{{ $material->cost_standard_price }}</td>
+                            <td>{{ number_format($material->cost_standard_price) }}</td>
                         </tr>
                         <tr>
                             <td>5</td>

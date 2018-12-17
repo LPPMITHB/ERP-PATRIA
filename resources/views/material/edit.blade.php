@@ -133,7 +133,7 @@
                             </div>
                             <!-- /.box-body -->
                             <div class="box-footer">
-                                <button @click.prevent="submitForm" type="submit" class="btn btn-primary pull-right">EDIT</button>
+                                <button @click.prevent="submitForm" type="submit" class="btn btn-primary pull-right">SAVE</button>
                             </div>
                         </div>
                         @endverbatim
@@ -179,6 +179,7 @@
         data: data,
         methods : {
             submitForm(){
+                this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
@@ -197,7 +198,11 @@
                     }
                 },
                 deep: true
-            }
+            },
+            'submittedForm.cost_standard_price': function(newValue) {
+                this.submittedForm.cost_standard_price = (this.submittedForm.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");      
+            },
+        
         },
     });
 

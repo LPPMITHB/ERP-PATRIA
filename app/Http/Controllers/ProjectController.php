@@ -1002,10 +1002,9 @@ class ProjectController extends Controller
                     $plannedProgress += $activity->progress * ($activity->weight/100);
                 }
                 $dataPlannedProgress->push([
-                    "t" => date('Y-m-d'), 
+                    "t" => $date, 
                     "y" => $plannedProgress."",
                 ]);
-                 
             }
         }
     }
