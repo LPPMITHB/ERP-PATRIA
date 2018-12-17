@@ -120,41 +120,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($materialEvaluation as $data) 
                                             <tr>
-                                                <td>1</td>
-                                                <td>MT0001 - ROUND BAR</td>
-                                                <td>135</td>
-                                                <td>30</td>
-                                                <td>105</td>
+                                                <td class="tdEllipsis">{{ $loop->iteration }}</td>
+                                                <td class="tdEllipsis">{{ $data['material'] }}</td>
+                                                <td class="tdEllipsis">{{ number_format($data['quantity']) }}</td>
+                                                <td class="tdEllipsis">{{ number_format($data['used']) }}</td>
+                                                <td class="tdEllipsis">{{ number_format($data['quantity'] - $data['used']) }}</td>
                                             </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>MT0002 - STEEL PLATE</td>
-                                                <td>207</td>
-                                                <td>57</td>
-                                                <td>150</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>MT0003 - GRAB RAIL</td>
-                                                <td>100</td>
-                                                <td>23</td>
-                                                <td>77</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>MT0004 - STEEL PLATE GRADE A</td>
-                                                <td>25</td>
-                                                <td>23</td>
-                                                <td>2</td>
-                                            </tr>
-                                            <tr>
-                                                <td>5</td>
-                                                <td>MT0005 - L 150x90x9</td>
-                                                <td>350</td>
-                                                <td>20</td>
-                                                <td>330</td>
-                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>

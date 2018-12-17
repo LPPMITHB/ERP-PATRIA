@@ -51,19 +51,11 @@
                             </div>
                         </div> --}}
 
-                        {{-- <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
-            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $ship->type }}">
-                            </div>
-                        </div> --}}
-
                         <div class="form-group">
-                            <label for="type" class="col-sm-2 control-label">Type</label>
+                            <label for="name" class="col-sm-2 control-label">Type</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="type" name="type" required autofocus value={{ old('type') }}>
+                                <input type="text" class="form-control" id="type" name="type" required autofocus value="{{ $ship->type }}">
                             </div>
                         </div>
 
@@ -71,7 +63,7 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" value={{ old('description')}}>
+                                <input type="text" class="form-control" id="description" name="description" value={{ $ship->description }}>
                             </div>
                         </div>
                         
