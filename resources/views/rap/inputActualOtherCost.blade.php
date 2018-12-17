@@ -51,6 +51,7 @@
                 </div>
             </div>
             <form id="actual-cost" class="form-horizontal" method="POST" action="{{ route('rap.storeActualCost') }}">
+                <input type="hidden" name="_method" value="PATCH">
                 @csrf
                 @verbatim
                 <div id="input_actual_other_cost">
@@ -133,138 +134,133 @@
     </div>
 </div>
 @endsection
+
 @push('script')
 <script>
+    const form = document.querySelector('form#actual-cost');
 
-$(document).ready(function(){
-    $('div.overlay').hide();
-});
+    $(document).ready(function(){
+        $('div.overlay').hide();
+    });
 
-var data = {
-    costs : "",
-    works : [],
-    newIndex : "", 
-    modelOtherCost : @json($modelOtherCost),
-    newCost : {
-        description : "",
-        cost : "",
-        actual_cost : "",
-        wbs_id : "",
-        project_id : @json($project->id),
-    },
-    editCost : {
-        cost_id : "",
-        description : "",
-        cost : "",
-        actual_cost : "",
-        wbs_id : "",
-        wbs : "",
-        project_id : @json($project->id),
-    },
-    workSettings: {
-        placeholder: 'Work (Optional)',
-        plugins: ['dropdown_direction'],
-        dropdownDirection : 'down',
-    },
-};
-
-var vm = new Vue({
-    el: '#input_actual_other_cost',
-    data: data,
-    computed:{
-        createOk: function(){
-            let isOk = false;
-                if(this.modelOtherCost.actual_cost == "")
-                {
-                    isOk = true;
-                }
-            return isOk;
+    var data = {
+        costs : "",
+        works : [],
+        newIndex : "", 
+        modelOtherCost : @json($modelOtherCost),
+        newCost : {
+            description : "",
+            cost : "",
+            actual_cost : "",
+            wbs_id : "",
+            project_id : @json($project->id),
         },
-        updateOk: function(){
-            let isOk = false;
-                if(this.editCost.actual_cost == null)
-                {
-                    isOk = true;
-                }
-            return isOk;
+        editCost : {
+            cost_id : "",
+            description : "",
+            cost : "",
+            actual_cost : "",
+            wbs_id : "",
+            wbs : "",
+            project_id : @json($project->id),
         },
+        workSettings: {
+            placeholder: 'Work (Optional)',
+            plugins: ['dropdown_direction'],
+            dropdownDirection : 'down',
+        },
+    };
 
-    }, 
-    methods:{
-        openEditModal(data){
-            this.editCost.cost_id = data.id;
-            this.editCost.description = data.description;
-            this.editCost.wbs_id = data.wbs_id;
-            this.editCost.wbs = data.wbs.name;
-            this.editCost.cost = data.plan_cost;
-            this.editCost.actual_cost = data.actual_cost;
+    var vm = new Vue({
+        el: '#input_actual_other_cost',
+        data: data,
+        computed:{
+            createOk: function(){
+                let isOk = false;
+                    if(this.modelOtherCost.actual_cost == "")
+                    {
+                        isOk = true;
+                    }
+                return isOk;
+            },
+            updateOk: function(){
+                let isOk = false;
+                    if(this.editCost.actual_cost == null)
+                    {
+                        isOk = true;
+                    }
+                return isOk;
+            },
+
+        }, 
+        methods:{
+            openEditModal(data){
+                this.editCost.cost_id = data.id;
+                this.editCost.description = data.description;
+                this.editCost.wbs_id = data.wbs_id;
+                this.editCost.wbs = data.wbs.name;
+                this.editCost.cost = data.plan_cost;
+                this.editCost.actual_cost = data.actual_cost;
+            },
+            
+            
+            update(){            
+                var editCost = this.editCost;   
+                editCost.actual_cost = editCost.actual_cost.replace(/,/g , '');
+
+                var url = "{{ route('rap.storeActualCost') }}";
+                editCost = JSON.stringify(editCost);
+
+                window.axios.patch(url,editCost).then((response) => {
+                    if(response.data.error != undefined){
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: response.data.error,
+                            position: 'topRight',
+                        });
+                    }else{
+                        this.modelOtherCost = [];
+                        iziToast.success({
+                            displayMode: 'replace',
+                            title: response.data.response,
+                            position: 'topRight',
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            }
         },
-        
-        
-        update(){            
-            var editCost = this.editCost;   
-            editCost.actual_cost = editCost.actual_cost.replace(/,/g , '');        
-            var url = "/rap/storeActualCost/"+editCost.cost_id;
-            editCost = JSON.stringify(editCost);
-            console.log(this.editCost)
-            window.axios.patch(url,editCost)
-            .then((response) => {
-                if(response.data.error != undefined){
-                    iziToast.warning({
-                        displayMode: 'replace',
-                        title: response.data.error,
-                        position: 'topRight',
+        watch : {
+            modelOtherCost:{
+                handler: function(newValue) {
+                    var data = newValue;
+                    data.forEach(data => {
+                        data.actual_cost = (data.actual_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                     });
-                }else{
-                    iziToast.success({
-                        displayMode: 'replace',
-                        title: response.data.response,
-                        position: 'topRight',
-                    });
-                }
-                
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
-
-        }
-    },
-    watch : {
-        modelOtherCost:{
-            handler: function(newValue) {
-                var data = newValue;
-                data.forEach(data => {
-                    data.actual_cost = (data.actual_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                },
+                deep: true
+            },
+            'newCost.cost': function(newValue) {
+                var string_newValue = newValue+"";
+                cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                Vue.nextTick(() => this.newCost.cost = cost_string);
+            },
+            costs: function(newValue) {
+                newValue.forEach(cost => {
+                    cost.cost = (cost.cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                 });
             },
-            deep: true
+            'editCost.cost': function(newValue) {
+                var string_newValue = newValue+"";
+                cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                Vue.nextTick(() => this.editCost.cost = cost_string);
+            },
         },
+        created: function() {
 
-
-        'newCost.cost': function(newValue) {
-            var string_newValue = newValue+"";
-            cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            Vue.nextTick(() => this.newCost.cost = cost_string);
         },
-
-        costs: function(newValue) {
-            newValue.forEach(cost => {
-                cost.cost = (cost.cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
-            });
-        },
-        'editCost.cost': function(newValue) {
-            var string_newValue = newValue+"";
-            cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            Vue.nextTick(() => this.editCost.cost = cost_string);
-        },
-    },
-    created: function() {
-    },
-    
-});
-
-
+    });
 </script>
 @endpush

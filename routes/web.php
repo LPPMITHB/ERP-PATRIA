@@ -534,7 +534,7 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
      
-    Route::post('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
 
     Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:create-other-cost');
 

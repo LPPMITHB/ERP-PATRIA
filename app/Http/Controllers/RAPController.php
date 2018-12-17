@@ -343,22 +343,14 @@ class RAPController extends Controller
         }
     }
 
-    public function storeActualCost(Request $request, $id)
+    public function storeActualCost(Request $request)
     {
         $data = $request->json()->all();
+
         DB::beginTransaction();
         try {
-            $cost = Cost::find($id);
-            $cost->description = $data['description'];
-            $cost->plan_cost = $data['cost'];
+            $cost = Cost::find($data['cost_id']);
             $cost->actual_cost = $data['actual_cost'];
-            if($data['wbs_id'] == ""){
-                $cost->wbs_id = null;
-            }else{
-                $cost->wbs_id = $data['wbs_id'];
-            }
-            $cost->project_id = $data['project_id'];
-
             if(!$cost->update()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
