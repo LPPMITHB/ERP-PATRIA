@@ -409,10 +409,10 @@ class BOMController extends Controller
         $bom_code = 'BOM'.$code;
 		return $bom_code;
     }
-
+    
     private function generateRapNumber(){
         $modelRap = Rap::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        
+
 		$number = 1;
 		if(isset($modelRap)){
             $number += intval(substr($modelRap->number, -6));
