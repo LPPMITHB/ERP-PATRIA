@@ -64,7 +64,7 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->ship->type }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>
-                                <td>{{ $project->progress}}</td>
+                                <td>{{ $project->progress}} %</td>
                                 @if($menu == "building")
                                     <td class="p-l-0 p-r-0" align="center"><a href="{{ route('project.show', ['id'=>$project->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-xs">EDIT</a>

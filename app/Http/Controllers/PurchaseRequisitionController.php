@@ -251,7 +251,7 @@ class PurchaseRequisitionController extends Controller
     }
 
     public function getProjectApi($id){
-        $project = Project::where('id',$id)->with('ship','customer','works')->first()->jsonSerialize();
+        $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
 
         return response($project, Response::HTTP_OK);
     }

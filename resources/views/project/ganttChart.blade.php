@@ -426,7 +426,7 @@
                             })
                         });
 
-                        window.axios.get('/api/getProject/'+this.project_id).then(({ data }) => {
+                        window.axios.get('/api/getProjectActivity/'+this.project_id).then(({ data }) => {
                             this.project = data;
                         });                        
                         

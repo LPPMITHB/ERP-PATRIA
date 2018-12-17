@@ -46,7 +46,7 @@ Route::get('/getWork/{id}', 'PurchaseRequisitionController@getWorkAPI')->name('a
 Route::get('/getPRD/{id}', 'PurchaseRequisitionController@getPRDAPI')->name('api.purchase_requisition.getPRDAPI');
 
 // material_requisition
-Route::get('/getWorkMR/{id}', 'MaterialRequisitionController@getWorkAPI')->name('api.purchase_requisition.getWorkAPI');
+Route::get('/getWbsMR/{id}', 'MaterialRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
 
 
 // goods_receipt
@@ -115,6 +115,7 @@ Route::get('/getActivitiesNetwork/{id}', 'ActivityController@getActivitiesNetwor
 Route::get('/getAllActivities/{id}', 'ActivityController@getAllActivitiesAPI')->name('api.activity.getAllActivitiesAPI');
 Route::get('/getAllActivitiesEdit/{project_id}/{activity_id}', 'ActivityController@getAllActivitiesEditAPI')->name('api.activity.getAllActivitiesEditAPI');
 Route::get('/getPredecessor/{id}', 'ActivityController@getPredecessorAPI')->name('api.activity.getPredecessorAPI');
-Route::get('/getProject/{id}', 'ActivityController@getProjectAPI')->name('api.activity.getProjectAPI');
+Route::get('/getProjectActivity/{id}', 'ActivityController@getProjectAPI')->name('api.activity.getProjectAPI');
+Route::get('/getLatestPredecessor/{id}', 'ActivityController@getLatestPredecessorAPI')->name('api.activity.getLatestPredecessorAPI');
 
 
