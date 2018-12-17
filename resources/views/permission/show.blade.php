@@ -22,19 +22,9 @@
             <div class="box-header">
             <div class="box-title"></div>
             <div class="box-tools pull-right p-t-5">
-
                 @can('edit-permission')
                     <a class="btn btn-primary btn-sm" href="{{ route('permission.edit',['id'=>$permission->id]) }}">EDIT</a>
                 @endcan
-
-                <!-- @can('destroy-permission')
-                    <a data-toggle="tooltip" title="Delete Permission" data-placement="top"  class="btn btn-danger btn-sm" href="#" onclick="deletePermission()">DELETE</a>
-                @endcan
-
-                <form id="delete-form-{{ $permission->id }}" action="{{ route('permission.destroy', ['id' => $permission->id]) }}" method="POST" style="display: none;">
-                    <input type="hidden" name="_method" value="DELETE">
-                    @csrf
-                </form> -->
             </div>
             </div>
             <div class="box-body">

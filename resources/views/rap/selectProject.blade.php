@@ -23,6 +23,17 @@
             ]
         )
         @endbreadcrumb
+    @elseif($menu == "input_actual_other_cost")
+    @breadcrumb(
+        [
+            'title' => 'Input Actual Other Cost » Select Project',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap.selectProjectActualOtherCost'),
+            ]
+        ]
+    )
+    @endbreadcrumb
     @elseif($menu == "assign_cost")
         @breadcrumb(
             [
@@ -80,7 +91,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $project->name }}</td>
                                 <td>{{ $project->customer->name }}</td>
-                                <td>{{ $project->ship->name }}</td>
+                                <td>{{ $project->ship->type }}</td>
                                 @if($menu == "create_rap")
                                     <td class="p-l-5 p-r-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="{{ route('rap.create', ['id'=>$project->id]) }}">SELECT</a>
@@ -93,6 +104,10 @@
                                     <td class="p-l-5 p-r-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="{{ route('rap.createCost', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
+                                @elseif($menu == "input_actual_other_cost")
+                                <td class="p-l-5 p-r-5" align="center">
+                                    <a class="btn btn-primary btn-xs" href="{{ route('rap.inputActualOtherCost', ['id'=>$project->id]) }}">SELECT</a>
+                                </td>
                                 @elseif($menu == "assign_cost")
                                     <td class="p-l-5 p-r-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="{{ route('rap.assignCost', ['id'=>$project->id]) }}">SELECT</a>

@@ -69,7 +69,7 @@
                             Ship Name
                         </div>
                         <div class="col-xs-7 col-md-8 tdEllipsis">
-                            : <b> {{ $modelRap->project->ship->name }} </b>
+                            : <b> {{ $modelRap->project->ship->type }} </b>
                         </div>
                     </div>
                     <div class="row">

@@ -35,7 +35,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $project->name }}</td>
                                 <td>{{ $project->customer->name }}</td>
-                                <td>{{ $project->ship->name }}</td>
+                                <td>{{ $project->ship->type }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 <td align="center">
                                     <a class="btn btn-primary btn-xs" href="{{ route('bos.selectWBS', ['id'=>$project->id]) }}">CREATE</a>

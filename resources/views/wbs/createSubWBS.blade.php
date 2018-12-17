@@ -27,7 +27,7 @@
                             <tr>
                                 <td>Ship</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
+                                <td>&ensp;<b>{{$project->ship->type}}</b></td>
                             </tr>
                             <tr>
                                 <td>Customer</td>
@@ -108,25 +108,27 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <h4 class="box-title">Work Breakdown Structure</h4>
+                    <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>{{parentWbsWeight}}%</b>)</h4>
                     <table id="wbs-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 20%">Name</th>
-                                <th style="width: 20%">Description</th>
+                                <th style="width: 17%">Name</th>
+                                <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
+                                <th style="width: 11%">Weight</th>
                                 <th style="width: 12%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
-                                <td>{{ data.deliverables }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td>{{ data.planned_deadline }}</td>
+                                <td>{{ data.weight }} %</td>
                                 <td class="textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createSubWBSRoute(data)">
                                         ADD WBS
@@ -151,6 +153,9 @@
                                 </td>
                                 <td class="p-l-0">
                                     <input v-model="newSubWBS.planned_deadline" type="text" class="form-control datepicker width100" id="planned_deadline" name="planned_deadline" placeholder="Deadline">
+                                </td>
+                                <td class="p-l-0">
+                                    <input v-model="newSubWBS.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight (%)">
                                 </td>
                                 <td >
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
@@ -190,6 +195,10 @@
                                                 <input v-model="editWbs.planned_deadline" type="text" class="form-control datepicker" id="edit_planned_deadline" placeholder="Insert Deadline here...">                                                                                               
                                             </div>  
                                         </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="weight" class="control-label">Weight (%)</label>
+                                            <input id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
+                                        </div>
                                     </div>                                
                                 </div>
                                 <div class="modal-footer">
@@ -222,6 +231,7 @@ $(document).ready(function(){
 var data = {
     wbs : "",
     newIndex : "", 
+    parentWbsWeight : @json($wbs->weight),
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
     wbs_deadline : @json($wbs->planned_deadline),
@@ -232,6 +242,7 @@ var data = {
         planned_deadline : "",
         wbs_id : @json($wbs->id),
         project_id : @json($project->id),
+        weight : "",
     },
     editWbs : {
         wbs_id: "",
@@ -240,9 +251,20 @@ var data = {
         deliverables : "",
         planned_deadline : "",
         project_id : @json($project->id),
+        weight : "",
     },
+    maxWeight : 0,
+    totalWeight : 0,
+    active_id : "",
 };
 
+Vue.directive('tooltip', function(el, binding){
+    $(el).tooltip({
+        title: binding.value,
+        placement: binding.arg,
+        trigger: 'hover'             
+    })
+})
 
 var vm = new Vue({
     el: '#add_wbs',
@@ -268,7 +290,20 @@ var vm = new Vue({
                 if(this.newSubWBS.name == ""
                 || this.newSubWBS.description == ""
                 || this.newSubWBS.deliverables == ""
+                || this.newSubWBS.weight == ""
                 || this.newSubWBS.planned_deadline == "")
+                {
+                    isOk = true;
+                }
+            return isOk;
+        },
+        updateOk: function(){
+            let isOk = false;
+                if(this.editWbs.name == ""
+                || this.editWbs.description == ""
+                || this.editWbs.deliverables == ""
+                || this.editWbs.weight == ""
+                || this.editWbs.planned_deadline == "")
                 {
                     isOk = true;
                 }
@@ -286,13 +321,18 @@ var vm = new Vue({
 
     }, 
     methods:{
+        tooltipText: function(text) {
+            return text
+        },
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
+            this.active_id = data.id;
             this.editWbs.name = data.name;
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
             this.editWbs.planned_deadline = data.planned_deadline;
+            this.editWbs.weight = data.weight;
             $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
         },
         createSubWBSRoute(data){
@@ -300,10 +340,14 @@ var vm = new Vue({
             return url;
         },
         getSubWBS(){
+            window.axios.get('/api/getWeightWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+            });
             window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
                 this.wbs = data;
                 this.newIndex = Object.keys(this.wbs).length+1;
-                
+
+                this.maxWeight = roundNumber((this.parentWbsWeight-this.totalWeight),2);
                 $('#wbs-table').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#wbs-table').DataTable({
@@ -347,6 +391,7 @@ var vm = new Vue({
                 this.newSubWBS.description = "";
                 this.newSubWBS.deliverables = "";
                 this.newSubWBS.planned_deadline = "";
+                this.newSubWBS.weight = "";
             })
             .catch((error) => {
                 console.log(error);
@@ -399,19 +444,19 @@ var vm = new Vue({
             if(deadline > deadline_parent_wbs){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this wbs deadline is after parent wbs deadline",
+                    title: "This WBS deadline is after parent WBS deadline",
                     position: 'topRight',
                 });
             } else if(deadline < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this wbs deadline is behind project start date",
+                    title: "This WBS deadline is behind project start date",
                     position: 'topRight',
                 });
             }else if(deadline > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this wbs deadline is after project end date",
+                    title: "This WBS deadline is after project end date",
                     position: 'topRight',
                 });
             }
@@ -428,29 +473,67 @@ var vm = new Vue({
             if(deadline > deadline_parent_wbs){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this wbs deadline is after parent wbs deadline",
+                    title: "This WBS deadline is after parent WBS deadline",
                     position: 'topRight',
                 });
             } else if(deadline < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this wbs deadline is behind project start date",
+                    title: "This WBS deadline is behind project start date",
                     position: 'topRight',
                 });
             }else if(deadline > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this wbs deadline is after project end date",
+                    title: "This WBS deadline is after project end date",
                     position: 'topRight',
                 });
             }
         },  
-        
+        'newSubWBS.weight': function(newValue){
+            this.newSubWBS.weight = (this.newSubWBS.weight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2)>this.maxWeight){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total weight cannot be more than '+this.parentWbsWeight+'%',
+                    position: 'topRight',
+                });
+            }
+        },
+        'editWbs.weight': function(newValue){
+            this.editWbs.weight = (this.editWbs.weight+"").replace(/[^0-9.]/g, "");  
+            var totalWeight = 0;
+            this.wbs.forEach(data => {
+                if(data.id != this.active_id){
+                    totalWeight += data.weight;
+                }
+            });
+            var maxWeightEdit = roundNumber(this.parentWbsWeight - roundNumber(totalWeight,2),2);            
+            if(this.editWbs.weight>maxWeightEdit){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total weight cannot be more than '+this.parentWbsWeight+'%',
+                    position: 'topRight',
+                });
+            }
+        },
     },
     created: function() {
         this.getSubWBS();
     }
 });
 
+function roundNumber(num, scale) {
+  if(!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+  } else {
+    var arr = ("" + num).split("e");
+    var sig = ""
+    if(+arr[1] + scale > 0) {
+      sig = "+";
+    }
+    return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+  }
+}
 </script>
 @endpush

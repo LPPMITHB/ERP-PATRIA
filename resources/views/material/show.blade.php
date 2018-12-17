@@ -23,19 +23,9 @@
             <div class="box-header">
                 <div class="box-title"></div>
                 <div class="box-tools pull-right p-t-5">
-
                     @can('edit-material')
                         <a href="{{ route('material.edit',['id'=>$material->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                     @endcan
-
-                    <!-- @can('destroy-material')
-                        <button class="btn btn-danger btn-sm" onclick="event.preventDefault();document.getElementById('delete-form-{{ $material->id }}').submit();">DELETE</button>
-                    @endcan
-
-                    <form id="delete-form-{{ $material->id }}" action="{{ route('material.destroy', ['id' => $material->id]) }}" method="POST" style="display: none;">
-                        <input type="hidden" name="_method" value="DELETE">
-                        @csrf
-                    </form> -->
                 </div>
             </div>
             <div class="box-body">

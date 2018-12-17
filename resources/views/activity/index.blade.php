@@ -27,7 +27,7 @@
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Ship</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
                         <div class="col-md-4 col-xs-4 no-padding">Customer</div>
                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
@@ -83,18 +83,19 @@
             @verbatim
             <div id="add_activity">
                 <div class="box-body">
-                    <h4 class="box-title">List of Activities</h4>
+                    <h4 class="box-title">List of Activities (Weight : <b>{{totalWeight}}%</b> / <b>{{wbsWeight}}%</b>)</h4>
                     <table id="activity-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
-                                <th style="width: 5px">No</th>
-                                <th style="width: 15%">Name</th>
-                                <th style="width: 15%">Description</th>
-                                <th style="width: 10%">Start Date</th>
-                                <th style="width: 10%">End Date</th>
-                                <th style="width: 10%">Duration (Days)</th>
-                                <th style="width: 160px">Predecessor</th> 
-                                <th style="width: 85px"></th>
+                                    <th style="width: 4%">No</th>
+                                    <th style="width: 14%">Name</th>
+                                    <th style="width: 16%">Description</th>
+                                    <th style="width: 10%">Start Date</th>
+                                    <th style="width: 10%">End Date</th>
+                                    <th >Duration</th>
+                                    <th >Weight</th>
+                                    <th style="width: 19%">Predecessor</th> 
+                                    <th style="width: 10%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,6 +106,7 @@
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }}</td>
+                                <td>{{ data.weight }} %</td>
                                 <template v-if="data.predecessor != null">
                                     <td class="p-l-5">
                                         <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#predecessor_activity"  @click="openModalPredecessor(data)">VIEW PREDECESSOR ACTIVITIES</button>
@@ -183,30 +185,35 @@
                                         <textarea id="description" v-model="editActivity.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
                                     </div>
 
-                                    <div class="p-l-0 form-group col-sm-4">
-                                        <label for="edit_planned_start_date" class=" control-label">Start Date</label>
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
+                                    <div class="p-l-0 form-group col-sm-3">
+                                            <label for="edit_planned_start_date" class=" control-label">Start Date</label>
+                                            <div class="input-group date">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
                                             </div>
-                                            <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Start Date">                                             
                                         </div>
-                                    </div>
+                                                
+                                        <div class="p-l-0 form-group col-sm-3">
+                                            <label for="edit_planned_end_date" class=" control-label">End Date</label>
+                                            <div class="input-group date">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="p-l-0 form-group col-sm-3">
+                                            <label for="duration" class=" control-label">Duration</label>
+                                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
+                                        </div>
                                             
-                                    <div class="p-l-0 form-group col-sm-4">
-                                        <label for="edit_planned_end_date" class=" control-label">End Date</label>
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="End Date">                                                                                            
+                                        <div class="p-l-0 form-group col-sm-3">
+                                            <label for="weight" class=" control-label">Weight</label>
+                                            <input v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
                                         </div>
-                                    </div>
-                                    
-                                    <div class="p-l-0 form-group col-sm-4">
-                                        <label for="duration" class=" control-label">Duration</label>
-                                        <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
-                                    </div>
                                         
                                     <div class="p-l-0 form-group col-sm-10">
                                         <label for="predecessor" class="control-label">Predecessor</label>
@@ -234,7 +241,7 @@
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                 <td class="p-b-15 p-t-15">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependant_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.name)">{{ data.wbs.name}}</td>
                                             </tr>
                                         </tbody>
@@ -269,6 +276,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
     activities : [],
     allActivities : [],
@@ -282,6 +290,7 @@ var data = {
         planned_end_date : "",
         planned_duration : "",
         predecessor : null,
+        weight : "",
     },
     indexActivitiesSettings: {
         placeholder: 'Insert Predecessor Here...',
@@ -292,6 +301,9 @@ var data = {
     predecessorTable: [],
     predecessorTableView :[],
     predecessorTableEdit:[],
+    maxWeight : 0,
+    totalWeight : 0,
+    constWeightAct : 0,
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -372,6 +384,8 @@ var vm = new Vue({
             this.editActivity.activity_id = data.id;
             this.editActivity.name = data.name;
             this.editActivity.description = data.description;
+            this.editActivity.weight = data.weight;
+            this.constWeightAct = data.weight;
             $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date));
             $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date));
             var predecessorObj = JSON.parse(data.predecessor);
@@ -396,9 +410,14 @@ var vm = new Vue({
             });
         },
         getActivities(){
+            window.axios.get('/api/getWeightWbs/'+this.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+            })
             window.axios.get('/api/getActivities/'+this.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.getAllActivities();
+
+                this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
                 $('#activity-table').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#activity-table').DataTable({
@@ -482,6 +501,21 @@ var vm = new Vue({
                 });
             }
         },
+        'editActivity.weight': function(newValue){
+            this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");  
+            window.axios.get('/api/getWeightWbs/'+this.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+                var totalEdit = roundNumber(data - this.constWeightAct,2);
+                maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
+                if(this.editActivity.weight>maxWeightEdit){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'Total weight cannot be more than '+this.wbsWeight+'%',
+                        position: 'topRight',
+                    });
+                }
+            });
+        },
         
     },
     created: function() {
@@ -498,6 +532,19 @@ function datediff(first, second) {
     // Take the difference between the dates and divide by milliseconds per day.
     // Round to nearest whole number to deal with DST.
     return Math.round(((second-first)/(1000*60*60*24))+1);
+}
+
+function roundNumber(num, scale) {
+  if(!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+  } else {
+    var arr = ("" + num).split("e");
+    var sig = ""
+    if(+arr[1] + scale > 0) {
+      sig = "+";
+    }
+    return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+  }
 }
 </script>
 @endpush

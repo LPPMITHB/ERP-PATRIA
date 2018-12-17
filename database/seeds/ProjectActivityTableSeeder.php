@@ -13,9 +13,9 @@ class ProjectActivityTableSeeder extends Seeder
     {
         
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0001',
-            'name' => 'PRA 001 001',
-            'description' => 'PRA 001 001',
+            'code' => 'ACT0100001',
+            'name' => 'Activity 001 001',
+            'description' => 'Activity 001 001',
             'status' => 1,
             'wbs_id' => 1,
             'planned_duration' => 7,
@@ -29,9 +29,9 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0002',
-            'name' => 'PRA 001 002',
-            'description' => 'PRA 001 002',
+            'code' => 'ACT0100002',
+            'name' => 'Activity 001 002',
+            'description' => 'Activity 001 002',
             'status' => 1,
             'wbs_id' => 1,
             'planned_duration' => 23,
@@ -45,9 +45,9 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0003',
-            'name' => 'PRA 001 003',
-            'description' => 'PRA 001 003',
+            'code' => 'ACT0100003',
+            'name' => 'Activity 001 003',
+            'description' => 'Activity 001 003',
             'status' => 1,
             'wbs_id' => 1,
             'planned_duration' => 25,
@@ -61,9 +61,9 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0004',
-            'name' => 'PRA 002 004',
-            'description' => 'PRA 002 004',
+            'code' => 'ACT0100004',
+            'name' => 'Activity 002 004',
+            'description' => 'Activity 002 004',
             'status' => 1,
             'wbs_id' => 2,
             'planned_duration' => 10,
@@ -77,9 +77,9 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0005',
-            'name' => 'PRA 002 005',
-            'description' => 'PRA 002 005',
+            'code' => 'ACT0100005',
+            'name' => 'Activity 002 005',
+            'description' => 'Activity 002 005',
             'status' => 1,
             'wbs_id' => 2,
             'planned_duration' => 10,
@@ -94,7 +94,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //06
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0006',
+            'code' => 'ACT0200006',
             'name' => 'General Drawing',
             'description' => '-',
             'status' => 1,
@@ -107,7 +107,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0007',
+            'code' => 'ACT0200007',
             'name' => 'Construction Drawing',
             'description' => '-',
             'status' => 1,
@@ -120,7 +120,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0008',
+            'code' => 'ACT0200008',
             'name' => 'System Drawing',
             'description' => '-',
             'status' => 1,
@@ -133,7 +133,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0009',
+            'code' => 'ACT0200009',
             'name' => 'Electrical Drawing',
             'description' => '-',
             'status' => 1,
@@ -146,7 +146,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0010',
+            'code' => 'ACT0200010',
             'name' => 'Submission DWG to class',
             'description' => '-',
             'status' => 1,
@@ -159,7 +159,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0011',
+            'code' => 'ACT0200011',
             'name' => 'Approved DWG to class',
             'description' => '-',
             'status' => 1,
@@ -172,7 +172,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0012',
+            'code' => 'ACT0200012',
             'name' => 'Bill of Materials, Materials & Components',
             'description' => 'PPC Dept',
             'status' => 1,
@@ -185,7 +185,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0013',
+            'code' => 'ACT0200013',
             'name' => 'Prepare production DWG',
             'description' => '-',
             'status' => 1,
@@ -199,7 +199,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //14
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0014',
+            'code' => 'ACT0200014',
             'name' => 'Prepare facility support',
             'description' => '-',
             'status' => 1,
@@ -212,7 +212,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0015',
+            'code' => 'ACT0200015',
             'name' => 'Assignment subcont, Approve BOM',
             'description' => '-',
             'status' => 1,
@@ -225,7 +225,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0016',
+            'code' => 'ACT0200016',
             'name' => 'Prepare quality document, manual, and operation book of equipment',
             'description' => '-',
             'status' => 1,
@@ -238,7 +238,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0017',
+            'code' => 'ACT0200017',
             'name' => 'Prepare ship document',
             'description' => '-',
             'status' => 1,
@@ -252,7 +252,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //18
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0018',
+            'code' => 'ACT0200018',
             'name' => 'Raw Mateial',
             'description' => '-',
             'status' => 1,
@@ -265,7 +265,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0019',
+            'code' => 'ACT0200019',
             'name' => 'Generator Set',
             'description' => '-',
             'status' => 1,
@@ -278,7 +278,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0020',
+            'code' => 'ACT0200020',
             'name' => 'Deck Machineries & compressor',
             'description' => '-',
             'status' => 1,
@@ -291,7 +291,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0021',
+            'code' => 'ACT0200021',
             'name' => 'Pumps, pipe, valve dan fittings',
             'description' => '-',
             'status' => 1,
@@ -304,7 +304,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0022',
+            'code' => 'ACT0200022',
             'name' => 'Safety Equipment',
             'description' => '-',
             'status' => 1,
@@ -318,7 +318,7 @@ class ProjectActivityTableSeeder extends Seeder
 
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0023',
+            'code' => 'ACT0200023',
             'name' => 'Doors, windows, skylights and manhole',
             'description' => '-',
             'status' => 1,
@@ -331,7 +331,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0024',
+            'code' => 'ACT0200024',
             'name' => 'Electrical, panel & MSB',
             'description' => '-',
             'status' => 1,
@@ -344,7 +344,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0025',
+            'code' => 'ACT0200025',
             'name' => 'Lighting, Navigation and Communication',
             'description' => '-',
             'status' => 1,
@@ -357,7 +357,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0026',
+            'code' => 'ACT0200026',
             'name' => 'Coating and Anodes',
             'description' => '-',
             'status' => 1,
@@ -370,7 +370,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0027',
+            'code' => 'ACT0200027',
             'name' => 'Interior & Carpentry',
             'description' => '-',
             'status' => 1,
@@ -383,7 +383,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0028',
+            'code' => 'ACT0200028',
             'name' => 'Bollards, Tyre fender and chain',
             'description' => '-',
             'status' => 1,
@@ -397,7 +397,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //29 Transom
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0029',
+            'code' => 'ACT0200029',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -410,7 +410,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0030',
+            'code' => 'ACT0200030',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -423,7 +423,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0031',
+            'code' => 'ACT0200031',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -436,7 +436,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0032',
+            'code' => 'ACT0200032',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -449,7 +449,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0033',
+            'code' => 'ACT0200033',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -463,7 +463,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //34 Blok 1
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0034',
+            'code' => 'ACT0200034',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -476,7 +476,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0035',
+            'code' => 'ACT0200035',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -489,7 +489,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0036',
+            'code' => 'ACT0200036',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -502,7 +502,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0037',
+            'code' => 'ACT0200037',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -515,7 +515,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0038',
+            'code' => 'ACT0200038',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -529,7 +529,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //39 Block 2
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0039',
+            'code' => 'ACT0200039',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -542,7 +542,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0040',
+            'code' => 'ACT0200040',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -555,7 +555,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0041',
+            'code' => 'ACT0200041',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -568,7 +568,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0042',
+            'code' => 'ACT0200042',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -581,7 +581,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0043',
+            'code' => 'ACT0200043',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -595,7 +595,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //44 Block 3
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0044',
+            'code' => 'ACT0200044',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -608,7 +608,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0045',
+            'code' => 'ACT0200045',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -621,7 +621,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0046',
+            'code' => 'ACT0200046',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -634,7 +634,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0047',
+            'code' => 'ACT0200047',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -647,7 +647,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0048',
+            'code' => 'ACT0200048',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -661,7 +661,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //49 Block 4
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0049',
+            'code' => 'ACT0200049',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -674,7 +674,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0050',
+            'code' => 'ACT0200050',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -687,7 +687,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0051',
+            'code' => 'ACT0200051',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -700,7 +700,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0052',
+            'code' => 'ACT0200052',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -714,7 +714,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //53 Block 5
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0053',
+            'code' => 'ACT0200053',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -727,7 +727,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0054',
+            'code' => 'ACT0200054',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -740,7 +740,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0055',
+            'code' => 'ACT0200055',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -753,7 +753,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0056',
+            'code' => 'ACT0200056',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -766,7 +766,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0057',
+            'code' => 'ACT0200057',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -780,7 +780,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //58 Block 6
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0058',
+            'code' => 'ACT0200058',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -793,7 +793,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0059',
+            'code' => 'ACT0200059',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -806,7 +806,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0060',
+            'code' => 'ACT0200060',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -819,7 +819,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0061',
+            'code' => 'ACT0200061',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -832,7 +832,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0062',
+            'code' => 'ACT0200062',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -846,7 +846,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //63 Block 1
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0063',
+            'code' => 'ACT0200063',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -859,7 +859,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0064',
+            'code' => 'ACT0200064',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -872,7 +872,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0065',
+            'code' => 'ACT0200065',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -885,7 +885,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0066',
+            'code' => 'ACT0200066',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -898,7 +898,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0067',
+            'code' => 'ACT0200067',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -912,7 +912,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //68 Block 2
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0068',
+            'code' => 'ACT0200068',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -925,7 +925,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0069',
+            'code' => 'ACT0200069',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -938,7 +938,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0070',
+            'code' => 'ACT0200070',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -951,7 +951,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0071',
+            'code' => 'ACT0200071',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -964,7 +964,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0072',
+            'code' => 'ACT0200072',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -978,7 +978,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //73 Block 3
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0073',
+            'code' => 'ACT0200073',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -991,7 +991,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0074',
+            'code' => 'ACT0200074',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1004,7 +1004,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0075',
+            'code' => 'ACT0200075',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1017,7 +1017,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0076',
+            'code' => 'ACT0200076',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1030,7 +1030,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0077',
+            'code' => 'ACT0200077',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1044,7 +1044,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //78 Block 4
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0078',
+            'code' => 'ACT0200078',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1057,7 +1057,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0079',
+            'code' => 'ACT0200079',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1070,7 +1070,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0080',
+            'code' => 'ACT0200080',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1083,7 +1083,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0081',
+            'code' => 'ACT0200081',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1096,7 +1096,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0082',
+            'code' => 'ACT0200082',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1110,7 +1110,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //83 Block 5
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0083',
+            'code' => 'ACT0200083',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1123,7 +1123,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0084',
+            'code' => 'ACT0200084',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1136,7 +1136,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0085',
+            'code' => 'ACT0200085',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1149,7 +1149,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0086',
+            'code' => 'ACT0200086',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1162,7 +1162,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0087',
+            'code' => 'ACT0200087',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1176,7 +1176,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //88 Block 6
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0088',
+            'code' => 'ACT0200088',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1189,7 +1189,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0089',
+            'code' => 'ACT0200089',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1202,7 +1202,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0090',
+            'code' => 'ACT0200090',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1215,7 +1215,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0091',
+            'code' => 'ACT0200091',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1228,7 +1228,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0092',
+            'code' => 'ACT0200092',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1242,7 +1242,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //93 Block 1
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0093',
+            'code' => 'ACT0200093',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1255,7 +1255,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0094',
+            'code' => 'ACT0200094',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1268,7 +1268,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0095',
+            'code' => 'ACT0200095',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1281,7 +1281,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0096',
+            'code' => 'ACT0200096',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1294,7 +1294,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0097',
+            'code' => 'ACT0200097',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1308,7 +1308,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //98 Block 2
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0098',
+            'code' => 'ACT0200098',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1321,7 +1321,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0099',
+            'code' => 'ACT0200099',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1334,7 +1334,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0100',
+            'code' => 'ACT0200100',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1347,7 +1347,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0101',
+            'code' => 'ACT0200101',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1360,7 +1360,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0102',
+            'code' => 'ACT0200102',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1374,7 +1374,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //103 Block 3
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0103',
+            'code' => 'ACT0200103',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1387,7 +1387,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0104',
+            'code' => 'ACT0200104',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1400,7 +1400,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0105',
+            'code' => 'ACT0200105',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1413,7 +1413,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0106',
+            'code' => 'ACT0200106',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1426,7 +1426,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0107',
+            'code' => 'ACT0200107',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1440,7 +1440,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //104 Block 4
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0108',
+            'code' => 'ACT0200108',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1453,7 +1453,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0109',
+            'code' => 'ACT0200109',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1466,7 +1466,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0110',
+            'code' => 'ACT0200110',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1479,7 +1479,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0111',
+            'code' => 'ACT0200111',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1492,7 +1492,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0112',
+            'code' => 'ACT0200112',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1506,7 +1506,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //113 Block 6
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0113',
+            'code' => 'ACT0200113',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1519,7 +1519,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0114',
+            'code' => 'ACT0200114',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1532,7 +1532,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0115',
+            'code' => 'ACT0200115',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1545,7 +1545,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0116',
+            'code' => 'ACT0200116',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1558,7 +1558,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0117',
+            'code' => 'ACT0200117',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1572,7 +1572,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //118 Block 2
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0118',
+            'code' => 'ACT0200118',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1585,7 +1585,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0119',
+            'code' => 'ACT0200119',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1598,7 +1598,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0120',
+            'code' => 'ACT0200120',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1611,7 +1611,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0121',
+            'code' => 'ACT0200121',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1624,7 +1624,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0122',
+            'code' => 'ACT0200122',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1638,7 +1638,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //123 Block 3
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0123',
+            'code' => 'ACT0200123',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1651,7 +1651,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0124',
+            'code' => 'ACT0200124',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1664,7 +1664,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0125',
+            'code' => 'ACT0200125',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1677,7 +1677,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0126',
+            'code' => 'ACT0200126',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1690,7 +1690,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0127',
+            'code' => 'ACT0200127',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1704,7 +1704,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //128 Block 4
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0128',
+            'code' => 'ACT0200128',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1717,7 +1717,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0129',
+            'code' => 'ACT0200129',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1730,7 +1730,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0130',
+            'code' => 'ACT0200130',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1743,7 +1743,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0131',
+            'code' => 'ACT0200131',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1756,7 +1756,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0132',
+            'code' => 'ACT0200132',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1770,7 +1770,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //133 Block 5
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0133',
+            'code' => 'ACT0200133',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1783,7 +1783,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0134',
+            'code' => 'ACT0200134',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1796,7 +1796,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0135',
+            'code' => 'ACT0200135',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1809,7 +1809,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0136',
+            'code' => 'ACT0200136',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1822,7 +1822,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0137',
+            'code' => 'ACT0200137',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1836,7 +1836,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //138 Block 6
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0138',
+            'code' => 'ACT0200138',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1849,7 +1849,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0139',
+            'code' => 'ACT0200139',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1862,7 +1862,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0140',
+            'code' => 'ACT0200140',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1875,7 +1875,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0141',
+            'code' => 'ACT0200141',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1888,7 +1888,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0142',
+            'code' => 'ACT0200142',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1902,7 +1902,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //143 Block 1 Side Sheel
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0143',
+            'code' => 'ACT0200143',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1915,7 +1915,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0144',
+            'code' => 'ACT0200144',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1928,7 +1928,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0145',
+            'code' => 'ACT0200145',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1941,7 +1941,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0146',
+            'code' => 'ACT0200146',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1954,7 +1954,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0147',
+            'code' => 'ACT0200147',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1967,7 +1967,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0148',
+            'code' => 'ACT0200148',
             'name' => 'Side Sheel platting',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -1981,7 +1981,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //149 Block 2 Side Sheel
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0149',
+            'code' => 'ACT0200149',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -1994,7 +1994,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0150',
+            'code' => 'ACT0200150',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2007,7 +2007,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0151',
+            'code' => 'ACT0200151',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2020,7 +2020,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0152',
+            'code' => 'ACT0200152',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2033,7 +2033,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0153',
+            'code' => 'ACT0200153',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2046,7 +2046,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0154',
+            'code' => 'ACT0200154',
             'name' => 'Side sheel platting',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2060,7 +2060,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //155 Block 3 Side Sheel
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0155',
+            'code' => 'ACT0200155',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -2073,7 +2073,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0156',
+            'code' => 'ACT0200156',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2086,7 +2086,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0157',
+            'code' => 'ACT0200157',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2099,7 +2099,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0158',
+            'code' => 'ACT0200158',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2112,7 +2112,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0159',
+            'code' => 'ACT0200159',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2125,7 +2125,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0160',
+            'code' => 'ACT0200160',
             'name' => 'Side sheel platting',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2139,7 +2139,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //161 Block 4 Side Sheel
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0161',
+            'code' => 'ACT0200161',
             'name' => 'Material preparation',
             'description' => 'Cutting, Shearing, Bending',
             'status' => 1,
@@ -2152,7 +2152,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0162',
+            'code' => 'ACT0200162',
             'name' => 'Fit-up panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2165,7 +2165,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0163',
+            'code' => 'ACT0200163',
             'name' => 'Welding panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2178,7 +2178,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0164',
+            'code' => 'ACT0200164',
             'name' => 'Erection panel to building berth',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2191,7 +2191,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0165',
+            'code' => 'ACT0200165',
             'name' => 'Inspection panel',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2204,7 +2204,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0166',
+            'code' => 'ACT0200166',
             'name' => 'Side sheel platting',
             'description' => 'sub-assembly',
             'status' => 1,
@@ -2240,7 +2240,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //223
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0223',
+            'code' => 'ACT0200223',
             'name' => 'Material Preparation',
             'description' => 'cutting, shearing, bending',
             'status' => 1,
@@ -2254,7 +2254,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //224
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0224',
+            'code' => 'ACT0200224',
             'name' => 'Ladders, step stair & guard railing',
             'description' => '-',
             'status' => 1,
@@ -2268,7 +2268,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //225
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0225',
+            'code' => 'ACT0200225',
             'name' => 'Hatch coaming & manhole',
             'description' => '-',
             'status' => 1,
@@ -2282,7 +2282,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //226
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0226',
+            'code' => 'ACT0200226',
             'name' => 'Platform Deck',
             'description' => '-',
             'status' => 1,
@@ -2295,7 +2295,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0227',
+            'code' => 'ACT0200227',
             'name' => 'Bulwark/railing',
             'description' => '-',
             'status' => 1,
@@ -2308,7 +2308,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0228',
+            'code' => 'ACT0200228',
             'name' => 'Bollard, smith bracket',
             'description' => '-',
             'status' => 1,
@@ -2321,7 +2321,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0229',
+            'code' => 'ACT0200229',
             'name' => 'Main generator & Harbour generator seating',
             'description' => '-',
             'status' => 1,
@@ -2334,7 +2334,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0230',
+            'code' => 'ACT0200230',
             'name' => 'Vessel name, Draft, Plimsol mark',
             'description' => '-',
             'status' => 1,
@@ -2347,7 +2347,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0234',
+            'code' => 'ACT0200234',
             'name' => 'Anodes Sitting',
             'description' => '-',
             'status' => 1,
@@ -2361,7 +2361,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //235
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0235',
+            'code' => 'ACT0200235',
             'name' => 'Ladders, step stair & guard railing',
             'description' => '-',
             'status' => 1,
@@ -2374,7 +2374,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0236',
+            'code' => 'ACT0200236',
             'name' => 'Hatch coaming & manhole',
             'description' => '-',
             'status' => 1,
@@ -2387,7 +2387,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0237',
+            'code' => 'ACT0200237',
             'name' => 'Platform Deck',
             'description' => '-',
             'status' => 1,
@@ -2400,7 +2400,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0238',
+            'code' => 'ACT0200238',
             'name' => 'Bulwark/railing',
             'description' => '-',
             'status' => 1,
@@ -2413,7 +2413,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0245',
+            'code' => 'ACT0200245',
             'name' => 'Anodes',
             'description' => '-',
             'status' => 1,
@@ -2427,7 +2427,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //246 Cargo system
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0246',
+            'code' => 'ACT0200246',
             'name' => 'Marking & Cutting',
             'description' => '-',
             'status' => 1,
@@ -2440,7 +2440,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0247',
+            'code' => 'ACT0200247',
             'name' => 'Wedding spools',
             'description' => '-',
             'status' => 1,
@@ -2453,7 +2453,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0248',
+            'code' => 'ACT0200248',
             'name' => 'Inhouse test spools',
             'description' => '-',
             'status' => 1,
@@ -2466,7 +2466,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0249',
+            'code' => 'ACT0200249',
             'name' => 'Fit-up spools on board',
             'description' => '-',
             'status' => 1,
@@ -2479,7 +2479,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0250',
+            'code' => 'ACT0200250',
             'name' => 'Welding spools on board',
             'description' => '-',
             'status' => 1,
@@ -2492,7 +2492,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0251',
+            'code' => 'ACT0200251',
             'name' => 'Connection to pump system',
             'description' => '-',
             'status' => 1,
@@ -2505,7 +2505,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0252',
+            'code' => 'ACT0200252',
             'name' => 'Testing on board',
             'description' => '-',
             'status' => 1,
@@ -2535,7 +2535,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //309 Electric Installation
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0309',
+            'code' => 'ACT0200309',
             'name' => 'Marking, Fit-up and welding cable coaming & tray',
             'description' => '-',
             'status' => 1,
@@ -2548,7 +2548,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0310',
+            'code' => 'ACT0200310',
             'name' => 'Cable laying',
             'description' => '-',
             'status' => 1,
@@ -2561,7 +2561,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0311',
+            'code' => 'ACT0200311',
             'name' => 'Install Distribution Box and MSB',
             'description' => '-',
             'status' => 1,
@@ -2575,7 +2575,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //318
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0318',
+            'code' => 'ACT0200318',
             'name' => 'Fit-up/Leveling sitting main generator set and harbour generator',
             'description' => '-',
             'status' => 1,
@@ -2588,7 +2588,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0319',
+            'code' => 'ACT0200319',
             'name' => 'Installation of Diesel Generator Set & Harbour generator',
             'description' => '-',
             'status' => 1,
@@ -2601,7 +2601,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0320',
+            'code' => 'ACT0200320',
             'name' => 'Fit-up / Leveling sitting windlass',
             'description' => '-',
             'status' => 1,
@@ -2614,7 +2614,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0321',
+            'code' => 'ACT0200321',
             'name' => 'Installation windlass',
             'description' => '-',
             'status' => 1,
@@ -2628,7 +2628,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //322 Coating
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0322',
+            'code' => 'ACT0200322',
             'name' => 'Material and Surface preparation',
             'description' => '-',
             'status' => 1,
@@ -2641,7 +2641,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0323',
+            'code' => 'ACT0200323',
             'name' => 'Internal Hull',
             'description' => '-',
             'status' => 1,
@@ -2654,7 +2654,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0324',
+            'code' => 'ACT0200324',
             'name' => 'External Hull',
             'description' => '-',
             'status' => 1,
@@ -2668,7 +2668,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //327 Interior
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0327',
+            'code' => 'ACT0200327',
             'name' => 'Flooring preparation & installation',
             'description' => '-',
             'status' => 1,
@@ -2681,7 +2681,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0328',
+            'code' => 'ACT0200328',
             'name' => 'making, fitup partition & ceiling',
             'description' => '-',
             'status' => 1,
@@ -2694,7 +2694,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0329',
+            'code' => 'ACT0200329',
             'name' => 'making, fitup & install furniture in accomodation room',
             'description' => '-',
             'status' => 1,
@@ -2708,7 +2708,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //330 Testing
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0330',
+            'code' => 'ACT0200330',
             'name' => 'Load Test generator set & MSB',
             'description' => '-',
             'status' => 1,
@@ -2721,7 +2721,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0331',
+            'code' => 'ACT0200331',
             'name' => 'Pumps System',
             'description' => '-',
             'status' => 1,
@@ -2734,7 +2734,7 @@ class ProjectActivityTableSeeder extends Seeder
         ]);
 
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0332',
+            'code' => 'ACT0200332',
             'name' => 'Windlass',
             'description' => '-',
             'status' => 1,
@@ -2748,7 +2748,7 @@ class ProjectActivityTableSeeder extends Seeder
 
         //338 Delivery
         DB::table('pro_activity')->insert([
-            'code' => 'PRA0338',
+            'code' => 'ACT0200338',
             'name' => 'Handover statement (BAST)',
             'description' => '-',
             'status' => 1,

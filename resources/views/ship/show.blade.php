@@ -7,7 +7,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View All Ships' => route('ship.index'),
-            $ship->name => route('ship.show',$ship->id),
+            $ship->type => route('ship.show',$ship->id),
         ]
     ]
 )
@@ -47,28 +47,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        {{-- <tr>
                             <td>1</td>
                             <td>Code</td>
                             <td>{{ $ship->code }}</td>
-                        </tr>
-                        <tr>
+                        </tr> --}}
+                        {{-- <tr>
                             <td>2</td>
                             <td>Name</td>
                             <td>{{ $ship->name }}</td>
-                        </tr>
+                        </tr> --}}
                         <tr>
-                            <td>3</td>
+                            <td>1</td>
                             <td>Type</td>
                             <td>{{ $ship->type }}</td>
                         </tr>
                         <tr>
-                            <td>4</td>
+                            <td>2</td>
                             <td>Description</td>
                             <td>{{ $ship->description }}</td>
                         </tr>
                         <tr>
-                            <td>5</td>
+                            <td>3</td>
                             <td>Status</td>
                             <td class="iconTd">
                                 @if ($ship->status == 1)

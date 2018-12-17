@@ -63,7 +63,7 @@ class ProjectController extends Controller
     //         $arr = array(
     //             'number'    => $data->number,
     //             'customer'  => $data->quotation->customer->name,
-    //             'product'   => $data->quotation->estimator->ship->name,
+    //             'product'   => $data->quotation->estimator->ship->type,
     //             'created_at'=> substr($data->created_at, 0, 10),
     //         );
 
@@ -93,7 +93,7 @@ class ProjectController extends Controller
         //     $arr = array(
         //         'number'    => $data->number,
         //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->name,
+        //         'product'   => $data->quotation->estimator->ship->type,
         //         'created_at'=> $data->created_at,
         //     );
 
@@ -118,7 +118,7 @@ class ProjectController extends Controller
         //     $arr = array(
         //         'number'    => $data->number,
         //         'customer'  => $data->quotation->customer->name,
-        //         'product'   => $data->quotation->estimator->ship->name,
+        //         'product'   => $data->quotation->estimator->ship->type,
         //         'created_at'=> $data->created_at,
         //     );
 
@@ -165,7 +165,6 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:pro_project|string|max:255',
             'customer' => 'required',
             'ship' => 'required',
             'planned_start_date' => 'required',
@@ -174,11 +173,19 @@ class ProjectController extends Controller
             'flag' => 'required',
             'class_name' => 'required'
         ]);
+        $projects = Project::all();
+        foreach ($projects as $project) {
+            if($project->name == $request->name){
+                return redirect()->route('project.create')->with('error',"The Project Name Has Been Taken")->withInput();
+            }
+        }
 
         DB::beginTransaction();
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
         try {
             $project = new Project;
             $project->number =  $request->number;
+            $project->project_sequence = $modelProject->project_sequence + 1;
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
@@ -206,7 +213,7 @@ class ProjectController extends Controller
             return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Created');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('project.create')->with('error', $e->getMessage());
+            return redirect()->route('project.create')->with( 'error',$e->getMessage())->withInput();
         }
     }
 

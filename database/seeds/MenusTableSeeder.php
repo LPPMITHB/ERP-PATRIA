@@ -18,7 +18,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-dashboard',
             'route_name' => 'index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -28,7 +28,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Ship Building',
             'icon' => 'fa-ship',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -39,7 +39,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -52,7 +52,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-calendar',
             'route_name'=> 'project.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $projectManagementBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -64,7 +64,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-clock-o',
             'route_name'=> 'activity.indexConfirm',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $projectManagementBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -87,7 +87,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Bill Of Material',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -100,7 +100,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom.indexProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $bom,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -112,7 +112,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom.selectProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $bom,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -123,7 +123,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Cost Plan',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -147,7 +147,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.indexSelectProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -155,28 +155,39 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Create Cost',
+            'name' => 'Create Other Cost',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.selectProjectCost',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Assign Cost',
+            'name' => 'Input Actual Other Cost',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rap.selectProjectAssignCost',
+            'route_name'=> 'rap.selectProjectActualOtherCost',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Assign Cost',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'rap.selectProjectAssignCost',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN',
+        //     'menu_id'=>$costPlan,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
 
         DB::table('menus')->insert([
@@ -185,7 +196,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.selectProjectViewCost',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -197,7 +208,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.selectProjectViewRM',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -668,7 +679,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Ship Repair',
             'icon' => 'fa-wrench',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -679,7 +690,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -692,7 +703,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-calendar',
             'route_name'=> 'project_repair.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $projectManagementRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -715,7 +726,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Bill Of Material',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -728,7 +739,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom_repair.indexProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bomRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -740,7 +751,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom_repair.selectProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bomRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -751,7 +762,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Bill Of Service',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -764,7 +775,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bos.indexProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bos,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -776,7 +787,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bos.selectProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bos,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -797,7 +808,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Master Data',
             'icon' => 'fa-database',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -806,24 +817,11 @@ class MenusTableSeeder extends Seeder
         $masterData =  Menu::where('name','Master Data')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
-            'name' => 'Ship',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'ship.index',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id'=>$masterData,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-        
-
-        DB::table('menus')->insert([
-            'level' => 2,
             'name' => 'Branch',
             'icon' => 'fa-wrench',
             'route_name'=> 'branch.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -835,7 +833,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'business_unit.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -847,25 +845,11 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'company.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-
-
-        DB::table('menus')->insert([
-            'level' => 2,
-            'name' => 'Storage Location',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'storage_location.index',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id'=>$masterData,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
 
         DB::table('menus')->insert([
             'level' => 2,
@@ -873,12 +857,11 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'customer.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-
 
         DB::table('menus')->insert([
             'level' => 2,
@@ -886,7 +869,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'material.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -898,10 +881,34 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'service.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id' => $masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Ship',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'ship.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$masterData,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Storage Location',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'storage_location.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$masterData,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
 
         DB::table('menus')->insert([
@@ -958,7 +965,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Configuration',
             'icon' => 'fa-database',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -970,7 +977,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'menus.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$configuration,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -982,7 +989,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'appearance.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$configuration,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1006,7 +1013,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'user.changeDefaultPassword',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$configuration,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1018,7 +1025,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-users',
             'route_name'=> 'user.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1029,7 +1036,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-user-secret',
             'route_name'=> 'role.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1040,7 +1047,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-ban',
             'route_name'=> 'permission.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

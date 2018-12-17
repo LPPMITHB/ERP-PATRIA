@@ -16,7 +16,8 @@ class CreateTrxRapOtherCostTable extends Migration
         Schema::create('trx_rap_other_cost', function (Blueprint $table) {
             $table->increments('id');
             $table->string('description');
-            $table->bigInteger('cost');
+            $table->bigInteger('plan_cost');
+            $table->bigInteger('actual_cost')->nullable();
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('user_id');

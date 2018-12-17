@@ -78,11 +78,13 @@
                     }
                 });
             });
+            var alreadyWrap = true;
 
             function myFunction(x) {
-                if (x.matches) { // If media query matches
-                    console.log($('.table'));
-                    $('.table').wrap('<div class="dataTables_scroll" />');
+                if (x.matches && alreadyWrap) { // If media query matches
+                    alreadyWrap = false;
+                    console.log($('.scroll'));
+                    $('.scroll').wrap('<div class="dataTables_scroll" />');
                 } 
             }
 
@@ -98,7 +100,7 @@
             $('.tablePaging thead tr').clone(true).appendTo( '.tablePaging thead' );
             $('.tablePaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
                 var title = $(this).text();
-                if(title == 'No' || title == ""){
+                if(title == 'Status' || title == 'No' || title == ""){
                     $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                 }else{
                     $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -126,7 +128,7 @@
             $('.tableNonPaging thead tr').clone(true).appendTo( '.tableNonPaging thead' );
             $('.tableNonPaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
                 var title = $(this).text();
-                if(title == 'No' || title == ""){
+                if(title == 'Status' || title == 'No' || title == ""){
                     $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                 }else{
                     $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );

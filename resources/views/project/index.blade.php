@@ -1,17 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View All Projects',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Projects' => route('project.index'),
+@if($menu == "building")
+    @breadcrumb(
+        [
+            'title' => 'View All Projects',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Projects' => route('project.index'),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
-
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'View All Projects',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Projects' => route('project_repair.index'),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 <style>
 
 </style>
@@ -36,7 +48,7 @@
                         <tr>
                             <th style="width: 15px">No</th>
                             <th>Code</th>
-                            <th style="width: 10%">Ship</th>
+                            <th style="width: 15%">Ship Name</th>
                             <th style="width: 33%">Customer</th>
                             <th>Start Date</th>
                             <th>Progress</th>
@@ -49,7 +61,7 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td>{{ $project->number }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->ship->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->ship->type }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>
                                 <td>{{ $project->progress}}</td>

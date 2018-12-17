@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Remaining Material » » Select WBS',
+        'title' => 'View Remaining Material » '.$project->name. ' » Select WBS',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
@@ -16,7 +16,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-solid">
+        <div class="box">
             <div class="box-header">
                 <div class="col-sm-4 p-l-0">
                     <table>
@@ -32,7 +32,7 @@
                             <tr>
                                 <td>Ship</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$project->ship->name}}</b></td>
+                                <td>&ensp;<b>{{$project->ship->type}}</b></td>
                             </tr>
                             <tr>
                                 <td>Customer</td>
@@ -99,9 +99,9 @@
                 if(data.node) {
                 document.location = data.node.a_attr.href;
                 }
-            }).bind("loaded.jstree", function (event, data) {
-                // you get two params - event & data - check the core docs for a detailed description
-                $(this).jstree("open_all");
+            // }).bind("loaded.jstree", function (event, data) {
+            //     // you get two params - event & data - check the core docs for a detailed description
+            //     $(this).jstree("open_all");
             });
 
         $('div.overlay').hide();

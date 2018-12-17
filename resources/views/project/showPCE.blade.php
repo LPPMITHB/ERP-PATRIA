@@ -25,7 +25,7 @@
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->number}}</b></div>
                         
                         <div class="col-md-4 col-xs-6 no-padding">Ship</div>
-                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->ship->name}}"><b>: {{$project->ship->name}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->ship->type}}"><b>: {{$project->ship->type}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Customer</div>
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <h4 class="p-l-10">Planned Cost</h4>
-                                    <table class="table table-bordered showTable" style="border-collapse:collapse;">
+                                    <table class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <tr>
                                                 <th width="50%">WBS</th>
@@ -73,7 +73,7 @@
                                         <tbody>   
                                             @foreach ($planned as $data)
                                                 <tr>
-                                                    <td>{{$data['wbs_name']}}</td>
+                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_name']}}">{{$data['wbs_name']}}</td>
                                                     <td>Rp {{number_format($data['cost'])}}</td>
                                                 </tr>    
                                             @endforeach
@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="col-md-4">
                                 <h4 class="p-l-10">Actual Cost</h4>
-                                    <table class="table table-bordered showTable" style="border-collapse:collapse;">
+                                    <table class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <tr>
                                                 <th width="50%">WBS</th>
@@ -92,7 +92,7 @@
                                         <tbody>   
                                             @foreach ($actual as $data)
                                                 <tr>
-                                                    <td>{{$data['wbs_name']}}</td>
+                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_name']}}">{{$data['wbs_name']}}</td>
                                                     <td>Rp {{number_format($data['cost'])}}</td>
                                                 </tr>    
                                             @endforeach
@@ -109,7 +109,7 @@
                             <div class="box-body">
                                 <div class="col-md-12 no-padding">
                                     <h4 class="p-l-10">Material Evaluation</h4>
-                                    <table class="table table-bordered showTable" style="border-collapse:collapse;">
+                                    <table class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <tr>
                                                 <th width="5%">No</th>

@@ -8,7 +8,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Ships' => route('ship.index'),
-            $ship->name => route('ship.show',$ship->id),
+            $ship->type => route('ship.show',$ship->id),
             'Edit' => route('ship.edit',$ship->id),
         ]
     ]
@@ -43,27 +43,27 @@
                     @csrf
                     <div class="box-body">
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="code" class="col-sm-2 control-label">Code</label>
 
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="code" name="code" required autofocus value="{{ $ship->code == null ? $ship_code: $ship->code }}">
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $ship->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $ship->type }}">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group">
                             <label for="type" class="col-sm-2 control-label">Type</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="type" name="type" required value="{{ $ship->type }}">
+                                <input type="text" class="form-control" id="type" name="type" required autofocus value={{ old('type') }}>
                             </div>
                         </div>
 
@@ -71,7 +71,7 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" value="{{ $ship->description }}">
+                                <input type="text" class="form-control" id="description" name="description" value={{ old('description')}}>
                             </div>
                         </div>
                         

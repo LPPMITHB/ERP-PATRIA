@@ -22,19 +22,9 @@
             <div class="box-header">
                 <div class="box-title"></div>
                 <div class="box-tools pull-right p-t-5">
-
                     @can('edit-branch')
                         <a href="{{ route('branch.edit',['id'=>$branch->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                     @endcan
-
-                    <!-- @can('destroy-branch')
-                        <button class="btn btn-danger btn-sm" onclick="event.preventDefault();document.getElementById('delete-form-{{ $branch->id }}').submit();">DELETE</button>
-                    @endcan
-
-                    <form id="delete-form-{{ $branch->id }}" action="{{ route('branch.destroy', ['id' => $branch->id]) }}" method="POST" style="display: none;">
-                        <input type="hidden" name="_method" value="DELETE">
-                        @csrf
-                    </form> -->
                 </div>
             </div>
             <div class="box-body">

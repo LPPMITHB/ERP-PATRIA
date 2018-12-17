@@ -16,37 +16,35 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box">
-            <div class="box-header p-b-0">
+            <div class="box-header no-padding p-t-10">
                 <div class="col-xs-12 col-lg-4 col-md-12">    
-                    <div class="box-body">
-                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-                        
-                        <div class="col-md-4 col-xs-4 no-padding">Code</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
-                        
-                        <div class="col-md-4 col-xs-4 no-padding">Ship</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->name}}</b></div>
+                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                    
+                    <div class="col-md-4 col-xs-4 no-padding">Project Code</div>
+                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
+                    
+                    <div class="col-md-4 col-xs-4 no-padding">Ship Type</div>
+                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
-                        <div class="col-md-4 col-xs-4 no-padding">Customer</div>
-                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
+                    <div class="col-md-4 col-xs-4 no-padding">Customer</div>
+                    <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
 
-                        <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                $date = $date->format('d-m-Y');
-                                echo $date;
-                            @endphp
-                            </b>
-                        </div>
+                    <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                    <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                            $date = $date->format('d-m-Y');
+                            echo $date;
+                        @endphp
+                        </b>
+                    </div>
 
-                        <div class="col-md-4 col-xs-4 no-padding">End Date</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                $date = $date->format('d-m-Y');
-                                echo $date;
-                            @endphp
-                            </b>
-                        </div>
+                    <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                    <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                            $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                            $date = $date->format('d-m-Y');
+                            echo $date;
+                        @endphp
+                        </b>
                     </div>
                 </div>
             </div>
@@ -57,8 +55,9 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 45%">Description</th>
-                                <th style="width: 20%">Cost</th>
+                                <th style="width: 25%">Description</th>
+                                <th style="width: 15%">Cost (Rp.)</th>
+                                <th style="width: 25%">Work Breakdown Structure</th>
                                 <th style="width: 10%"></th>
                             </tr>
                         </thead>
@@ -66,7 +65,9 @@
                             <tr v-for="(data,index) in costs">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
-                                <td class="tdEllipsis">Rp.{{ data.cost }}</td>
+                                <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
+                                <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.name }}</td>
+                                <td v-else class="tdEllipsis">-</td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
                                         EDIT
@@ -77,13 +78,18 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0">
-                                    <input v-model="newCost.description" class="form-control width100" rows="2" name="description" placeholder="Description">
+                                <td class="no-padding">
+                                    <input v-model="newCost.description" class="form-control width100" rows="2" name="description">
                                 </td>
-                                <td class="p-l-0">
-                                    <input v-model="newCost.cost" class="form-control width100" rows="2" name="cost" placeholder="Cost">
+                                <td class="no-padding">
+                                    <input v-model="newCost.cost" class="form-control width100" rows="2" name="cost">
                                 </td>
-                                <td class="p-l-0 textCenter">
+                                <td class="no-padding">
+                                    <selectize v-model="newCost.wbs_id" :settings="workSettings">
+                                        <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                    </selectize>
+                                </td>
+                                <td class="no-padding textCenter">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
                                 </td>
                             </tr>
@@ -107,6 +113,12 @@
                                         <div class="form-group col-sm-12">
                                             <label for="cost" class="control-label">Cost</label>
                                             <input type="text" id="cost" v-model="editCost.cost" class="form-control" placeholder="Insert Cost here...">
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="wbs" class="control-label">Work Breakdown Structure</label>
+                                            <selectize v-model="editCost.wbs_id" :settings="workSettings">
+                                                <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                            </selectize>
                                         </div>
                                     </div>
                                 </div>
@@ -144,18 +156,18 @@ var data = {
     newCost : {
         description : "",
         cost : "",
-        wbs_id : "",
+        wbs_id : null,
         project_id : @json($project->id),
     },
     editCost : {
         cost_id : "",
         description : "",
         cost : "",
-        wbs_id : "",
+        wbs_id : null,
         project_id : @json($project->id),
     },
     workSettings: {
-        placeholder: 'Work (Optional)',
+        placeholder: 'Please Select Work (Optional)',
         plugins: ['dropdown_direction'],
         dropdownDirection : 'down',
     },
@@ -195,13 +207,15 @@ var vm = new Vue({
             this.editCost.cost = data.cost;
         },
         getWorks(){
-            window.axios.get('/project/getAllWorks/'+this.newCost.project_id).then(({ data }) => {
+            window.axios.get('/api/getAllWorks/'+this.newCost.project_id).then(({ data }) => {
                 this.works = data;
             });
         },
         getCosts(){
             window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
                 this.costs = data;
+            console.log(this.costs)
+
                 this.newIndex = Object.keys(this.costs).length+1;
                 var dT = $('#cost-table').DataTable();
                 dT.destroy();
