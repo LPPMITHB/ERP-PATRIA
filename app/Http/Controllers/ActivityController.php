@@ -208,7 +208,7 @@ class ActivityController extends Controller
 
             $wbs = $activity->wbs;
 
-            self::changeWorkProgress($wbs);
+            self::changeWbsProgress($wbs);
 
             $project = $wbs->project;
             $oldestWorks= $project->wbss->where('wbs_id', null);
@@ -247,15 +247,13 @@ class ActivityController extends Controller
 		return $activity_code;
     }
 
-    function changeWorkProgress($wbs){
+    function changeWbsProgress($wbs){
         if($wbs){
             if($wbs->wbs){
                 $progress = 0;
                 if($wbs->activities){
                     foreach($wbs->activities as $activity){
-                        if($activity->status == 0){
-                            $progress += $activity->progress * ($activity->weight/100);
-                        }
+                        $progress += $activity->progress * ($activity->weight/100);
                     }
                 }
 
@@ -266,14 +264,12 @@ class ActivityController extends Controller
                 }
                 $wbs->progress = ($progress /$wbs->weight) *100;
                 $wbs->save();
-                self::changeWorkProgress($wbs->wbs);
+                self::changeWbsProgress($wbs->wbs);
             }else{
                 $progress = 0;
                 if($wbs->activities){
                     foreach($wbs->activities as $activity){
-                        if($activity->status == 0){
-                            $progress += $activity->progress * ($activity->weight/100);
-                        }
+                        $progress += $activity->progress * ($activity->weight/100);
                     }
                 }
 
