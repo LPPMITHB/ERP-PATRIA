@@ -23,7 +23,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body p-b-0 p-t-15">
-                <table class="table table-bordered tablePaging tableFixed">
+                <table class="table table-bordered tableFixed" id="customer-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -37,7 +37,7 @@
                         @php($counter = 1)
                         @foreach($customers as $customer)
                             <tr>
-                                <td class="tdEllipsis">{{ $counter++ }}</td>
+                                <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis">{{ $customer->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$customer->name}}">{{ $customer->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$customer->address}}">{{ $customer->address }}</td>
@@ -61,7 +61,17 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#customer-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').remove();
+            }
+        });
     });
 </script>
 @endpush

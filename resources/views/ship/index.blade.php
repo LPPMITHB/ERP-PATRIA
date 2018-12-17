@@ -23,7 +23,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body p-b-0 p-t-15">
-                <table class="table table-bordered tablePaging" id="ship-table">
+                <table class="table table-bordered tableFixed" id="ship-table">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
@@ -63,7 +63,17 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#ship-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').remove();
+            }
+        });
     });
 </script>
 @endpush
