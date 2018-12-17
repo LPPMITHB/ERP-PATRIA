@@ -375,7 +375,7 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // repair
-        $viewRap = Menu::where('route_name','rap_repair.indexSelectProjectRepair')->select('id')->first()->id;
+        $viewRap = Menu::where('route_name','rap_repair.indexSelectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewRap,
             'route_name' => 'rap_repair.indexSelectProject',
@@ -386,7 +386,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap_repair.index',
         ]);
 
-        $createCost = Menu::where('route_name','rap_repair.selectProjectCostRepair')->select('id')->first()->id;
+        $createCost = Menu::where('route_name','rap_repair.selectProjectCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createCost,
             'route_name' => 'rap_repair.selectProjectCost',
@@ -397,7 +397,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap_repair.createCost',
         ]);
 
-        $inputActualOtherCost = Menu::where('route_name','rap_repair.selectProjectActualOtherCostRepair')->select('id')->first()->id;
+        $inputActualOtherCost = Menu::where('route_name','rap_repair.selectProjectActualOtherCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $inputActualOtherCost,
             'route_name' => 'rap_repair.selectProjectActualOtherCost',
@@ -408,7 +408,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap_repair.inputActualOtherCost',
         ]);
 
-        $viewPlannedCost = Menu::where('route_name','rap_repair.selectProjectViewCostRepair')->select('id')->first()->id;
+        $viewPlannedCost = Menu::where('route_name','rap_repair.selectProjectViewCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewPlannedCost,
             'route_name' => 'rap_repair.selectProjectViewCost',
@@ -419,7 +419,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap_repair.viewPlannedCost',
         ]);
 
-        $viewRemainingMaterial = Menu::where('route_name','rap_repair.selectProjectViewRMRepair')->select('id')->first()->id;
+        $viewRemainingMaterial = Menu::where('route_name','rap_repair.selectProjectViewRM')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewRemainingMaterial,
             'route_name' => 'rap_repair.selectProjectViewRM',
