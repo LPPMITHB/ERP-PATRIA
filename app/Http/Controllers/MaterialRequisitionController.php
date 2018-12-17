@@ -8,7 +8,7 @@ use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
 use App\Models\Branch;
 use App\Models\Material;
-use App\Models\Work;
+use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Stock;
 use Auth;
@@ -116,7 +116,7 @@ class MaterialRequisitionController extends Controller
     }
 
     //API
-    public function getWorkAPI($id){
-        return response(Work::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+    public function getWbsAPI($id){
+        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 }

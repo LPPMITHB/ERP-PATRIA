@@ -81,10 +81,8 @@
             var alreadyWrap = true;
 
             function myFunction(x) {
-                if (x.matches && alreadyWrap) { // If media query matches
-                    alreadyWrap = false;
-                    console.log($('.scroll'));
-                    $('.scroll').wrap('<div class="dataTables_scroll" />');
+                if (x.matches) { // If media query matches
+                    $('.table').wrap('<div class="dataTables_scroll" />');
                 } 
             }
 

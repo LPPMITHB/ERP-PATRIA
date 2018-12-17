@@ -397,6 +397,7 @@ var data = {
         wbs_id : @json($wbs->id), 
         predecessor : [],
         weight : "",
+        latest_predecessor : "",
     },
     editActivity : {
         activity_id : "",
@@ -691,6 +692,23 @@ var vm = new Vue({
                         }
                     });
                 });
+                window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(newValue)).then(({ data }) => {
+                    this.newActivity.latest_predecessor = data;
+                    // Create new Date instance
+                    var dateRef = new Date(data.planned_end_date);
+
+                    var startDate = new Date(data.planned_end_date);
+                    var endDate = new Date(data.planned_end_date);
+                    var tempDuration = parseInt(this.newActivity.planned_duration)-1;
+                    // Add a day
+                    startDate.setDate(startDate.getDate() + 1);
+                    $('#planned_start_date').datepicker('setDate', startDate);
+
+                    if(this.newActivity.planned_duration != ""){
+                        endDate.setDate(startDate.getDate() + tempDuration);
+                        $('#planned_end_date').datepicker('setDate', endDate);
+                    }
+                })
             }
         },
         'editActivity.weight': function(newValue){
