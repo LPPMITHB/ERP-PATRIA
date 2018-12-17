@@ -204,7 +204,7 @@ var vm = new Vue({
             this.editCost.cost_id = data.id;
             this.editCost.description = data.description;
             this.editCost.wbs_id = data.wbs_id;
-            this.editCost.cost = data.cost;
+            this.editCost.cost = data.plan_cost;
         },
         getWorks(){
             window.axios.get('/api/getAllWorks/'+this.newCost.project_id).then(({ data }) => {
@@ -214,6 +214,9 @@ var vm = new Vue({
         getCosts(){
             window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
                 this.costs = data;
+                this.costs.forEach(cost => {   
+                    cost.plan_cost = (cost.plan_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");      
+                });
                 this.newIndex = Object.keys(this.costs).length+1;
                 var dT = $('#cost-table').DataTable();
                 dT.destroy();

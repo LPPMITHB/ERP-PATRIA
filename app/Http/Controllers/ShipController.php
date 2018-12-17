@@ -54,7 +54,7 @@ class ShipController extends Controller
         $ships = Ship::all();
         foreach($ships as $ship) {
             if($ship->type == $request->type){
-                return redirect()->route('ship.create')->with('error',"The Ship Type Has Been Taken")->withInput();
+                return redirect()->route('ship.create')->with('error','The Ship Type Has Been Taken')->withInput();
             }
         }
 
@@ -72,7 +72,7 @@ class ShipController extends Controller
             return redirect()->route('ship.show',$ship->id)->with('success', 'Success Created New Ship!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('ship.create')->with('error', $e->getMessage());
+            return redirect()->route('ship.create')->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -120,7 +120,6 @@ class ShipController extends Controller
         DB::beginTransaction();
         try {
             $ship = Ship::find($id);
-            // $ship->name = ucwords($request->input('name'));
             $ship->type = ucwords(strtolower($request->input('type')));
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');        

@@ -72,7 +72,7 @@
                                     <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
                                     <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.name }}</td>
                                     <td v-else class="tdEllipsis">-</td>
-                                    <td v-if="data.actual_cost != null" class="tdEllipsis">Rp.{{ data.actual_cost }}</td>
+                                    <td v-if="data.actual_cost != ''" class="tdEllipsis">Rp.{{ data.actual_cost }}</td>
                                     <td v-else class="tdEllipsis">-</td>
                                     <td class="p-l-0 textCenter">
                                         <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
