@@ -131,6 +131,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0011',
         'name' => 'PT. BINTANG CAKRA BINASAMUDRA',
@@ -142,6 +143,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0012',
         'name' => 'PT. TRANS ENERGY INDONESIA',
@@ -153,6 +155,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0013',
         'name' => 'PT. BORNEO SAMUDRA PERKASA',
@@ -164,6 +167,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0014',
         'name' => 'PT. PELAYARAN GLORA PERSADA MANDIRI',
@@ -175,6 +179,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0015',
         'name' => 'PT. HASNUR INTERNASIONAL SHIPPING',
@@ -186,6 +191,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0016',
         'name' => 'PT. SIGUR ROS INDONESIA',
@@ -197,6 +203,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0017',
         'name' => 'PT. WAY PIDADA JAYA',
@@ -208,6 +215,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0018',
         'name' => 'PT. MAJU MUNDUR ASIK ASIK',
@@ -219,6 +227,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0019',
         'name' => 'PT. PERKASA ARUNG SAMUDRA',
@@ -230,6 +239,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0020',
         'name' => 'GLENCORE INTERNATIONAL, AG',
@@ -241,6 +251,7 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+
         DB::table('mst_customer')->insert([
         'code' => 'CUST0021',
         'name' => 'PT. ASMIN KOALINDO TUHUP',
@@ -252,5 +263,6 @@ class CustomersTableSeeder extends Seeder
         'branch_id' => 1,
         'user_id' =>5,
         ]);
+        
         }
     }
