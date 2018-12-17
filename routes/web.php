@@ -579,11 +579,11 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
-    Route::post('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
-
     Route::patch('/storeAssignCost', 'RAPController@storeAssignCost')->name('storeAssignCost');
 
     Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:show-rap');
+
+    Route::patch('storeActualCost/{id}', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:edit-rap');    
 
     Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:edit-rap');    
     

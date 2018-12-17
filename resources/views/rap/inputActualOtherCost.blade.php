@@ -50,71 +50,79 @@
                     </div>
                 </div>
             </div>
-            @verbatim
-            <div id="input_actual_other_cost">
-                <div class="box-body p-t-0">
-                    <table id="cost-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 25%">Description</th>
-                                <th style="width: 20%">Planned Cost</th>
-                                <th style="width: 20%">Actual Cost</th>
-                                <th style="width: 10%"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data,index) in costs">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
-                                <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
-                                <td class="no-padding">
-                                    <input v-model="newCost.actual_cost" class="form-control width100" rows="2" name="actual_cost" placeholder="Actual cost">
-                                </td>
-                                <td class="p-l-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
-                                        EDIT
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="modal fade" id="edit_cost">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                    <h4 class="modal-title">Edit Costs</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="form-group col-sm-12">
-                                            <label for="description" class="control-label">Description</label>
-                                            <textarea id="description" v-model="editCost.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
-                                        </div>
-                                        <div class="form-group col-sm-12">
-                                            <label for="cost" class="control-label">Plan Cost</label>
-                                            <input type="text" id="cost" v-model="editCost.cost" class="form-control" placeholder="Insert Plan Cost here...">
-                                        </div>
-                                        <div class="form-group col-sm-12">
-                                            <label for="actual_cost" class="control-label">Actual Cost</label>
-                                            <input type="text" id="actual_cost" v-model="editCost.actual_cost" class="form-control" placeholder="Insert Actual Cost here...">
+            <form id="actual-cost" class="form-horizontal" method="POST" action="{{ route('rap.storeActualCost') }}">
+                @csrf
+                @verbatim
+                <div id="input_actual_other_cost">
+                    <div class="box-body p-t-0">
+                        <table id="cost-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">No</th>
+                                    <th style="width: 15%">Description</th>
+                                    <th style="width: 15%">Planned Cost</th>
+                                    <th style="width: 15%">Work Breakdown Structure</th>
+                                    <th style="width: 15%">Actual Cost</th>
+                                    <th style="width: 15%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(data,index) in modelOtherCost">
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="tdEllipsis">{{ data.description }}</td>
+                                    <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
+                                    <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.name }}</td>
+                                    <td v-else class="tdEllipsis">-</td>
+                                    <td v-if="data.actual_cost != null" class="tdEllipsis">{{ data.actual_cost }}</td>
+                                    <td v-else class="tdEllipsis">-</td>
+                                    <td class="p-l-0 textCenter">
+                                        <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
+                                            EDIT ACTUAL COST
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="modal fade" id="edit_cost">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Edit Costs</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="form-group col-sm-12">
+                                                <label for="description" class="control-label">Description</label>
+                                                <textarea id="description" v-model="editCost.description" class="form-control" rows="2" disabled></textarea>
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                <label for="cost" class="control-label">Plan Cost</label>
+                                                <input type="text" id="cost" v-model="editCost.cost" class="form-control" disabled>
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                <label for="wbs" class="control-label">Work Breakdown Structure</label>
+                                                <input type="text" id="wbs" v-model="editCost.wbs" class="form-control" disabled>
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                <label for="actual_cost" class="control-label">Actual Cost</label>
+                                                <input type="text" id="actual_cost" v-model="editCost.actual_cost" class="form-control" placeholder="Insert Actual Cost here...">
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
-                                </div>
+                                <!-- /.modal-content -->
                             </div>
-                            <!-- /.modal-content -->
+                            <!-- /.modal-dialog -->
                         </div>
-                        <!-- /.modal-dialog -->
                     </div>
                 </div>
-            </div>
-            @endverbatim
+                @endverbatim
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
@@ -127,6 +135,7 @@
 @endsection
 @push('script')
 <script>
+
 $(document).ready(function(){
     $('div.overlay').hide();
 });
@@ -135,6 +144,7 @@ var data = {
     costs : "",
     works : [],
     newIndex : "", 
+    modelOtherCost : @json($modelOtherCost),
     newCost : {
         description : "",
         cost : "",
@@ -148,6 +158,7 @@ var data = {
         cost : "",
         actual_cost : "",
         wbs_id : "",
+        wbs : "",
         project_id : @json($project->id),
     },
     workSettings: {
@@ -163,9 +174,7 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newCost.name == ""
-                || this.newCost.description == ""
-                || this.newCost.cost == "")
+                if(this.modelOtherCost.actual_cost == "")
                 {
                     isOk = true;
                 }
@@ -173,9 +182,7 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editCost.name == ""
-                || this.editCost.description == ""
-                || this.editCost.cost == "")
+                if(this.editCost.actual_cost == null)
                 {
                     isOk = true;
                 }
@@ -188,76 +195,18 @@ var vm = new Vue({
             this.editCost.cost_id = data.id;
             this.editCost.description = data.description;
             this.editCost.wbs_id = data.wbs_id;
-            this.editCost.cost = data.cost;
+            this.editCost.wbs = data.wbs.name;
+            this.editCost.cost = data.plan_cost;
             this.editCost.actual_cost = data.actual_cost;
         },
-        getWorks(){
-            window.axios.get('/project/getAllWorks/'+this.newCost.project_id).then(({ data }) => {
-                this.works = data;
-            });
-        },
-        getCosts(){
-            window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
-                this.costs = data;
-                console.log(this.costs)
-                this.newIndex = Object.keys(this.costs).length+1;
-                var dT = $('#cost-table').DataTable();
-                dT.destroy();
-                this.$nextTick(function() {
-                    $('#cost-table').DataTable({
-                        'paging'      : true,
-                        'lengthChange': false,
-                        'searching'   : false,
-                        'ordering'    : false,
-                        'info'        : true,
-                        'autoWidth'   : false,
-                        'initComplete': function(){
-                            $('div.overlay').remove();
-                        },
-                        columnDefs : [
-                            { targets: 0, sortable: false},
-                        ]
-                    });
-                })
-            });
-        },
-        add(){            
-            var newCost = this.newCost;
-            newCost.cost = newCost.cost.replace(/,/g , '');
-            newCost = JSON.stringify(newCost);
-            var url = "{{ route('rap.storeActualCost') }}";
-            window.axios.post(url,newCost)
-            .then((response) => {
-                if(response.data.error != undefined){
-                    iziToast.warning({
-                        displayMode: 'replace',
-                        title: response.data.error,
-                        position: 'topRight',
-                    });
-                }else{
-                    iziToast.success({
-                        displayMode: 'replace',
-                        title: response.data.response,
-                        position: 'topRight',
-                    });
-                }
-                
-                this.getCosts();
-                this.newCost.description = "";
-                this.newCost.cost = "";
-                this.newCost.cost = "";
-                this.newCost.wbs_id = "";                
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
-        },
+        
+        
         update(){            
             var editCost = this.editCost;   
-            editCost.cost = editCost.cost.replace(/,/g , '');        
-            var url = "/rap/updateCost/"+editCost.cost_id;
+            editCost.actual_cost = editCost.actual_cost.replace(/,/g , '');        
+            var url = "/rap/storeActualCost/"+editCost.cost_id;
             editCost = JSON.stringify(editCost);
+            console.log(this.editCost)
             window.axios.patch(url,editCost)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -274,11 +223,6 @@ var vm = new Vue({
                     });
                 }
                 
-                this.getCosts();
-                this.newCost.description = "";
-                this.newCost.cost = "";
-                this.newCost.actual_cost = "";
-                this.newCost.wbs_id = "";
             })
             .catch((error) => {
                 console.log(error);
@@ -288,6 +232,17 @@ var vm = new Vue({
         }
     },
     watch : {
+        modelOtherCost:{
+            handler: function(newValue) {
+                var data = newValue;
+                data.forEach(data => {
+                    data.actual_cost = (data.actual_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                });
+            },
+            deep: true
+        },
+
+
         'newCost.cost': function(newValue) {
             var string_newValue = newValue+"";
             cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -306,8 +261,6 @@ var vm = new Vue({
         },
     },
     created: function() {
-        this.getCosts();
-        this.getWorks();
     },
     
 });
