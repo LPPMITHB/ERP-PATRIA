@@ -331,8 +331,30 @@ class ProjectController extends Controller
         $project = Project::find($id);
         $wbss = $project->wbss;
         $today = date("Y-m-d");
+        //planned
+        $dataPlannedCost = Collection::make();
+        $modelBom = Bom::where('project_id',$id)->get();
+        $wbsChart = $project->wbss->groupBy('planned_deadline');
+        $dataPlannedCost->push([
+            "t" => $project->planned_start_date, 
+            "y" => "0",
+        ]);
 
-        $data = Collection::make();
+        //actual
+        $dataActualCost = Collection::make();
+        $modelMR = MaterialRequisition::where('project_id',$id)->get();
+        $dataPlannedCost->push([
+            "t" => $project->actual_start_date, 
+            "y" => "0",
+        ]);
+
+
+        //Progress
+        $dataActualProgress = Collection::make();
+        $dataPlannedProgress = Collection::make();
+        self::getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $wbss, $dataActualProgress, $dataPlannedProgress);
+
+        $ganttData = Collection::make();
         $links = Collection::make();
         $outstanding_item = Collection::make();
 
@@ -344,13 +366,14 @@ class ProjectController extends Controller
         ]);
 
         self::getOutstandingItem($wbss,$outstanding_item, $project,$today);
-        self::getDataForGantt($project, $wbss, $data, $links, $today);       
+        self::getDataForGantt($project, $wbss, $ganttData, $links, $today);     
 
         $links->jsonSerialize();
-        $data->jsonSerialize();
+        $ganttData->jsonSerialize();
 
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project.show', compact('project','today','data','links','outstanding_item','modelPrO','menu'));
+        return view('project.show', compact('project','today','ganttData','links','outstanding_item','modelPrO','menu',
+        'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress'));
     }
 
     public function showGanttChart($id)
