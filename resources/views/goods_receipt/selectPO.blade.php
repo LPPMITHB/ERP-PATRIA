@@ -24,13 +24,13 @@
                     @verbatim
                     <div id="pod">
                         <div class="box_header">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6 p-l-0">
+                            <div class="col-sm-12 p-r-0">
+                                <div class="col-sm-8 p-l-0">
                                     <div class="row">
                                         <div class="col-sm-3 p-l-0 p-r-0">
                                             PO Number
                                         </div>
-                                        <div class="col-sm-3 p-l-0 p-r-0">
+                                        <div class="col-sm-3 p-l-0">
                                             : <b> {{ modelPO.number }}</b>
                                         </div>
                                     </div>
@@ -43,11 +43,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-2" >
-                                        GR Description  :
-                                </div>
-                                <div class="col-sm-4 p-l-0">
-                                    <textarea class="form-control" rows="3" v-model="description" style="width:376px"></textarea>
+                                <div class="col-sm-4 p-l-0 p-r-0">
+                                    GR Description  : <textarea class="form-control" rows="3" v-model="description" style="width:100%"></textarea>
                                 </div>
                             </div>
                         </div>

@@ -176,7 +176,7 @@ class ProjectController extends Controller
         $projects = Project::all();
         foreach ($projects as $project) {
             if($project->name == $request->name){
-                return redirect()->route('project.create')->with('error',"The Project Name Has Been Taken")->withInput();
+                return redirect()->route('project.create')->with('error','The Project Name Has Been Taken')->withInput();
             }
         }
 
@@ -475,6 +475,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         $planned = Collection::make();
+        $materialEvaluation = Collection::make();
 
         $actual = Collection::make();
         foreach($project->wbss as $wbs){
@@ -496,7 +497,73 @@ class ProjectController extends Controller
             ]);
         }
 
-        return view('project.showPCE', compact('modelWBS','project','actual','planned'));
+        $modelWBS = WBS::where('project_id',$id)->get();
+        foreach($modelWBS as $wbs){
+            foreach($wbs->bom->bomDetails as $bomDetail){
+                if(count($bomDetail->material->materialRequisitionDetails)>0){
+                    $status = 0;
+                    foreach($materialEvaluation as $key => $data){
+                        $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                        if($material == $data['material']){
+                            $status = 1;
+                            $quantity = $bomDetail->quantity + $data['quantity'];
+                            $issued = $data['used'];
+
+                            unset($materialEvaluation[$key]);
+                            $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+
+                            foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                                if ($mrd->wbs_id == $id) {
+                                    $materialEvaluation->push([
+                                        "material" => $material,
+                                        "quantity" => $quantity,
+                                        "used" => $issued + $mrd->issued,
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                    if($status == 0){
+                        foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                            if ($mrd->wbs_id == $id) {
+                                $materialEvaluation->push([
+                                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                    "quantity" => $bomDetail->quantity,
+                                    "used" => $mrd->issued,
+                                ]);
+                            }
+                        }
+                    }
+                }else{
+                    $status = 0;
+                    foreach($materialEvaluation as $key => $data){
+                        $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                        if($material == $data['material']){
+                            $status = 1;
+                            $quantity = $bomDetail->quantity + $data['quantity'];
+                            $issued = $data['used'];
+
+                            unset($materialEvaluation[$key]);
+
+                            $materialEvaluation->push([
+                                "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                "quantity" => $quantity,
+                                "used" => $issued,
+                            ]);
+                        }
+                    }
+                    if($status == 0){
+                        $materialEvaluation->push([
+                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                            "quantity" => $bomDetail->quantity,
+                            "used" => 0,
+                            ]);
+                        }
+                    }
+                }
+            }
+            
+        return view('project.showPCE', compact('modelWBS','project','actual','planned','materialEvaluation'));
     }
 
     // Configuration WBS & Estimator
