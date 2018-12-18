@@ -1042,7 +1042,7 @@ class ProjectController extends Controller
     
     }
 
-    public function getDataJstree($id){
+    public function getDataJstreeAPI($id){
         $project = Project::find($id);
         $wbss = $project->wbss;
         $today = date("Y-m-d");
