@@ -462,7 +462,7 @@
     var costCanvas = $('#cost').get(0).getContext('2d');
     var progressCanvas = $('#progress').get(0).getContext('2d');
 
-    var costChart = new Chart(costCanvas, {
+    var configCost = {
         type: 'line',
         data: {
             datasets: [
@@ -522,8 +522,11 @@
                 }]
             } 
         }
-    });
-    var progress = new Chart(progressCanvas, {
+    };
+
+    var costChart = new Chart(costCanvas, configCost);
+
+    var configProgress = {
         type: 'line',
         data: {
             datasets: [
@@ -570,7 +573,9 @@
                 }]
             } 
         }
-    });
+    };
+
+    var progress = new Chart(progressCanvas, configProgress);
 
     $(document).ready(function(){
         var outstanding_item = @json($outstanding_item);
@@ -908,7 +913,31 @@
 
                         window.axios.get('/api/getProjectActivity/'+this.project_id).then(({ data }) => {
                             this.project = data;
-                        });                        
+                        });                      
+
+                        window.axios.get('/api/getDataChart/'+this.project_id).then(({ data }) => {
+                            var updateChart =[
+                                {
+                                    label: "Planned Progress",
+                                    backgroundColor: "rgba(242, 38, 2, 0.7)",
+                                    data: data.dataPlannedProgress,
+                                },
+                                {
+                                    label: "Actual Progress", 
+                                    backgroundColor: "rgba(0, 0, 255, 0.7)",
+                                    data:data.dataActualProgress,
+                                }
+
+                            ];
+                            progress.config.data.datasets = updateChart;
+                            window.progress.update();
+                        });
+
+                        window.axios.get('/api/getDataJstree/'+this.project_id).then(({ data }) => {
+                            $('#treeview').jstree(true).settings.core.data = data;
+                            $('#treeview').jstree(true).refresh();
+                        });
+      
                         
                         this.confirmActivity.activity_id = "";
                         this.confirmActivity.actual_start_date = "";
