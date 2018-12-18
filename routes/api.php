@@ -23,6 +23,7 @@ Route::get('/getSubMenu/{id}', 'RoleController@getSubMenuAPI')->name('api.role.g
 
 // bom
 Route::get('/getMaterialBOM/{id}', 'BOMController@getMaterialAPI')->name('api.bom.getMaterialAPI');
+Route::get('/getServiceBOM/{id}', 'BOMController@getServiceAPI')->name('api.bom.getServiceAPI');
 Route::get('/getBom/{id}', 'BOMController@getBomAPI')->name('api.bom.getBomAPI');
 Route::get('/getNewBom/{id}', 'BOMController@getNewBomAPI')->name('api.bom.getNewBomAPI');
 Route::get('/getBomDetail/{id}', 'BOMController@getBomDetailAPI')->name('api.bom.getBomDetailAPI');
