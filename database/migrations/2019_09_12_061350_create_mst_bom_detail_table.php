@@ -15,13 +15,15 @@ class CreateMstBomDetailTable extends Migration
     {
         Schema::create('mst_bom_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('bom_id')->nullable();
+            $table->unsignedInteger('bom_id');
             $table->unsignedInteger('material_id')->nullable();
+            $table->unsignedInteger('service_id')->nullable();
             $table->integer('quantity');
             $table->timestamps();
 
             $table->foreign('bom_id')->references('id')->on('mst_bom');
             $table->foreign('material_id')->references('id')->on('mst_material');
+            $table->foreign('service_id')->references('id')->on('mst_service');
         });
     }
 

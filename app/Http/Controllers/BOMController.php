@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Bom;
 use App\Models\BomDetail;
 use App\Models\Material;
+use App\Models\Service;
 use App\Models\Branch;
 use App\Models\WBS;
 use App\Models\User;
@@ -50,8 +51,9 @@ class BOMController extends Controller
         return view('bom.selectProject', compact('projects','menu'));
     }
 
-    public function selectWBS($id)
+    public function selectWBS(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::find($id);
         $wbss = $project->wbss;
         $data = Collection::make();
@@ -62,49 +64,94 @@ class BOMController extends Controller
                 "text" => $project->name,
                 "icon" => "fa fa-ship"
             ]);
-    
-        foreach($wbss as $wbs){
-            $bom_code = "";
-            $bom = Bom::where('wbs_id',$wbs->id)->first();
-            if($bom){
-                $bom_code = " - ".$bom->code;
-                if($wbs->wbs){
-                    $data->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. ''.$bom_code,
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
-                    ]);
+        if($route == '/bom'){
+            foreach($wbss as $wbs){
+                $bom_code = "";
+                $bom = Bom::where('wbs_id',$wbs->id)->first();
+                if($bom){
+                    $bom_code = " - ".$bom->code;
+                    if($wbs->wbs){
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                        ]);
+                    }else{
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $project->number,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                        ]);
+                    } 
                 }else{
-                    $data->push([
-                        "id" => $wbs->code , 
-                        "parent" => $project->number,
-                        "text" => $wbs->name. ''.$bom_code,
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
-                    ]);
+                    if($wbs->wbs){
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
+                        ]);
+                    }else{
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $project->number,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
+                        ]);
+                    } 
                 } 
-            }else{
-                if($wbs->wbs){
-                    $data->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. ''.$bom_code,
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
-                    ]);
+            }
+        }elseif($route == '/bom_repair'){
+            foreach($wbss as $wbs){
+                $bom_code = "";
+                $bom = Bom::where('wbs_id',$wbs->id)->first();
+                if($bom){
+                    $bom_code = " - ".$bom->code;
+                    if($wbs->wbs){
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                        ]);
+                    }else{
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $project->number,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                        ]);
+                    } 
                 }else{
-                    $data->push([
-                        "id" => $wbs->code , 
-                        "parent" => $project->number,
-                        "text" => $wbs->name. ''.$bom_code,
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
-                    ]);
+                    if($wbs->wbs){
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                        ]);
+                    }else{
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $project->number,
+                            "text" => $wbs->name. ''.$bom_code,
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                        ]);
+                    } 
                 } 
-            } 
+            }
         }
+        
         return view('bom.selectWBS', compact('project','data'));
     }
 
@@ -178,13 +225,18 @@ class BOMController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::where('id',$wbs->project_id)->with('ship','customer')->first();
         $materials = Material::orderBy('name')->get()->jsonSerialize();
-
-        return view('bom.create', compact('project','materials','bom_code','wbs'));
+        if($route == '/bom'){
+            return view('bom.create', compact('project','materials','wbs'));
+        }elseif($route == '/bom_repair'){
+            $services = Service::orderBy('name')->get()->jsonSerialize();
+            return view('bom.createRepair', compact('project','materials','wbs','services'));
+        }
     }
 
     /**
@@ -548,6 +600,11 @@ class BOMController extends Controller
     public function getMaterialAPI($id){
 
         return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getServiceAPI($id){
+
+        return response(Service::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getBomAPI($id){
