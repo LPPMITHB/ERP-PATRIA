@@ -103,6 +103,8 @@ Route::get('/getResourcePM/{id}', 'ProjectController@getResourceAPI')->name('api
 Route::get('/getAllResourcePM/{id}', 'ProjectController@getAllResourceAPI')->name('api.yard_plan.getAllResourceAPI');
 Route::get('/getActivity/{id}', 'ProjectController@getActivityAPI')->name('api.project.getActivityAPI');
 Route::get('/getDataGantt/{id}', 'ProjectController@getDataGanttAPI')->name('api.project.getDataGanttAPI');
+Route::get('/getDataChart/{id}', 'ProjectController@getDataChartAPI')->name('api.project.getDataChartAPI');
+Route::get('/getDataJstree/{id}', 'ProjectController@getDataJstreeAPI')->name('api.project.getDataJstreeAPI');
 
 
 // wbs

@@ -378,7 +378,6 @@ class ProjectController extends Controller
 
         $links->jsonSerialize();
         $ganttData->jsonSerialize();
-        $dataPlannedCost->jsonSerialize();
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
         return view('project.show', compact('project','today','ganttData','links','outstanding_item','modelPrO','menu',
         'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress'));
@@ -1040,6 +1039,59 @@ class ProjectController extends Controller
 
 
         return response(['data' => $data, 'links'=> $links], Response::HTTP_OK);
+    
+    }
+
+    public function getDataJstreeAPI($id){
+        $project = Project::find($id);
+        $wbss = $project->wbss;
+        $today = date("Y-m-d");
+
+        $outstanding_item = Collection::make();
+
+        $outstanding_item->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        self::getOutstandingItem($wbss,$outstanding_item, $project,$today);
+
+
+        return response($outstanding_item, Response::HTTP_OK);
+    
+    }
+
+    public function getDataChartAPI($id){
+        $project = Project::find($id);
+        $wbss = $project->Wbss;
+        //planned
+        $dataPlannedCost = Collection::make();
+        $modelBom = Bom::where('project_id',$id)->get();
+        $wbsChart = $project->wbss->groupBy('planned_deadline');
+        $dataPlannedCost->push([
+            "t" => $project->planned_start_date, 
+            "y" => "0",
+        ]);
+        
+        //actual
+        $dataActualCost = Collection::make();
+        $modelMR = MaterialRequisition::where('project_id',$id)->get();
+        if($project->actual_start_date != null){
+            $dataActualCost->push([
+                "t" => $project->actual_start_date, 
+                "y" => "0",
+            ]);
+        }
+        
+        //Progress
+        $dataActualProgress = Collection::make();
+        $dataPlannedProgress = Collection::make();
+        self::getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $wbss, $dataActualProgress, $dataPlannedProgress);
+        
+        return response(['dataPlannedCost' => $dataPlannedCost, 'dataActualCost'=> $dataActualCost,
+        'dataActualProgress'=> $dataActualProgress,'dataPlannedProgress'=> $dataPlannedProgress], Response::HTTP_OK);
     }
     
     public function getActivityAPI($activity_code){
