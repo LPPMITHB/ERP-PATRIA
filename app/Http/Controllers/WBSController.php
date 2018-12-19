@@ -18,8 +18,8 @@ class WBSController extends Controller
 {
     public function createWBS($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $project = Project::find($id);
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('wbs.createWBS', compact('project','menu'));
     }
@@ -65,9 +65,9 @@ class WBSController extends Controller
 
     public function createSubWBS($project_id, $wbs_id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $wbs = WBS::find($wbs_id);
         $project = Project::find($project_id);
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         if($menu=="building"){
             $array = [
@@ -173,8 +173,9 @@ class WBSController extends Controller
 
     public function show($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $wbs = WBS::find($id);
+        $project = $wbs->project;
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('wbs.show', compact('wbs','menu'));
 

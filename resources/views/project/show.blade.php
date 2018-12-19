@@ -613,6 +613,7 @@
                     return text ;
                 }
             },
+            
             {name:"progress", label:"Progress", align: "center",
                 template:function(obj){  
                     if(obj.status != undefined){
@@ -626,10 +627,10 @@
                     }
                 },
                 width:"70px"
-            } 
+            },
         ]; 
 
-        gantt.config.grid_width = 270;
+        gantt.config.grid_width = 290;
 
         gantt.templates.rightside_text = function(start, end, task){
             if(task.status != undefined){
@@ -640,6 +641,7 @@
                 return "Progress: <b>" + task.progress*100+ "%</b>";
             }
         };
+        
         
         var tasks = {
             data:project,
@@ -711,6 +713,7 @@
         gantt.init("ganttChart");
         gantt.parse(tasks);
         gantt.showDate(new Date());
+        gantt.sort("start_date", false);
 
         var els = document.querySelectorAll("input[name='scale']");
         for (var i = 0; i < els.length; i++) {
@@ -781,25 +784,6 @@
                 );
             },
             computed:{
-                alreadyStart: function(){
-                    let isOkAlreadyStart = false;
-                    if(this.confirmActivity.actual_start_date == "")
-                    {
-                        isOkAlreadyStart = true;
-                    }
-                    
-                    let isOkPredecessor = false;
-                    
-                    document.getElementById("actual_start_date").disabled = false;
-                    
-                    this.predecessorActivities.forEach(activity => {
-                        if(activity.status == 1){
-                            isOkPredecessor = true;
-                            document.getElementById("actual_start_date").disabled = true;
-                        }
-                    });
-                    return isOkAlreadyStart || isOkPredecessor;
-                },
                 progressBarColor: function(){
                     let classStyle = "";
                     if(this.project.planned_end_date < this.today){
@@ -823,42 +807,87 @@
                 openConfirmModal(data){
                     window.axios.get('/api/getActivity/'+data).then(({ data }) => {
                         this.activity = data[0];
+                        var isOkPredecessor = true;
                         if(this.activity.predecessor != null){
                             this.havePredecessor = true;
                             window.axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
                                 this.predecessorActivities = data;
+                                this.predecessorActivities.forEach(activity => {
+                                    if(activity.status == 1){
+                                        isOkPredecessor = false;
+                                        this.confirmActivity.actual_start_date = "";
+                                        this.confirmActivity.actual_end_date = "";
+                                        this.confirmActivity.actual_duration = "";
+                                        document.getElementById("actual_start_date").disabled = true;
+                                        document.getElementById("current_progress").disabled = true;
+                                    }
+
+                                    if(isOkPredecessor){
+                                        $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
+                                        $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                                        document.getElementById("actual_start_date").disabled = false;
+                                        document.getElementById("current_progress").disabled = false;
+                                        if(this.confirmActivity.current_progress != 100){
+                                            document.getElementById("actual_end_date").disabled = true;
+                                            document.getElementById("actual_duration").disabled = true;
+                                            this.confirmActivity.actual_end_date = "";
+                                            this.confirmActivity.actual_duration = "";
+                                        }else{
+                                            document.getElementById("actual_end_date").disabled = false;
+                                            document.getElementById("actual_duration").disabled = false;
+                                            if(this.confirmActivity.actual_end_date == ""){
+                                                document.getElementById("btnSave").disabled = true;
+                                            }else{
+                                                document.getElementById("btnSave").disabled = false;
+                                            }
+                                        }
+                                    }else{
+                                        this.confirmActivity.actual_start_date = "";
+                                        this.confirmActivity.actual_end_date = "";
+                                        this.confirmActivity.actual_duration = "";
+                                    }
+                                });
                             });
                         }else{
+                            isOkPredecessor = true;
                             this.havePredecessor = false;
                             this.predecessorActivities = [];
                         }
-
                         this.confirmActivity.current_progress = this.activity.progress;
-                        if(this.confirmActivity.current_progress != 100){
-                            document.getElementById("actual_end_date").disabled = true;
-                            document.getElementById("actual_duration").disabled = true;
+                        
+                        if(isOkPredecessor){
+                            $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
+                            $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                            document.getElementById("actual_start_date").disabled = false;
+                            document.getElementById("current_progress").disabled = false;
+                            if(this.confirmActivity.current_progress != 100){
+                                document.getElementById("actual_end_date").disabled = true;
+                                document.getElementById("actual_duration").disabled = true;
+                                this.confirmActivity.actual_end_date = "";
+                                this.confirmActivity.actual_duration = "";
+                            }else{
+                                document.getElementById("actual_end_date").disabled = false;
+                                document.getElementById("actual_duration").disabled = false;
+                                if(this.confirmActivity.actual_end_date == ""){
+                                    document.getElementById("btnSave").disabled = true;
+                                }else{
+                                    document.getElementById("btnSave").disabled = false;
+                                }
+                            }
+                        }else{
+                            this.confirmActivity.actual_start_date = "";
                             this.confirmActivity.actual_end_date = "";
                             this.confirmActivity.actual_duration = "";
-                        }else{
-                            document.getElementById("actual_end_date").disabled = false;
-                            document.getElementById("actual_duration").disabled = false;
-                            if(this.confirmActivity.actual_end_date == ""){
-                                document.getElementById("btnSave").disabled = true;
-                            }else{
-                                document.getElementById("btnSave").disabled = false;
-                            }
                         }
+                        
                         document.getElementById("confirm_activity_code").innerHTML= this.activity.code;
                         document.getElementById("planned_start_date").innerHTML= this.activity.planned_start_date;
                         document.getElementById("planned_end_date").innerHTML= this.activity.planned_end_date;
                         document.getElementById("planned_duration").innerHTML= this.activity.planned_duration+" Days";
     
                         this.confirmActivity.activity_id = this.activity.id;
-                        $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
-                        $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                        
                     });
-                    
-
                 },
                 setEndDateEdit(){
                     if(this.confirmActivity.actual_duration != "" && this.confirmActivity.actual_start_date != ""){
