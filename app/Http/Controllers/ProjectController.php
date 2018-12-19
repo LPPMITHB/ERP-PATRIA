@@ -80,9 +80,9 @@ class ProjectController extends Controller
     //     return response($rows ,200);
     // }
 
-    public function listWBS($id, $menu, Request $request){
+    public function listWBS($id, $menu){
         $project = Project::find($id);
-        $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = $project->wbss;
         $dataWbs = Collection::make();
 
@@ -93,7 +93,7 @@ class ProjectController extends Controller
             "text" => $project->name. " | Weight : (".$totalWeightProject."% / 100%)",
             "icon" => "fa fa-ship"
         ]);
-        
+
         if($menu == "addAct"){
             if($mainMenu == "building"){
                 $route = "/activity/create/";
