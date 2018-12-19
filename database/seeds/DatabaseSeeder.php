@@ -26,12 +26,12 @@ class DatabaseSeeder extends Seeder
         $this->call(StorageLocationsTableSeeder::class);
         $this->call(StorageLocationDetailsTableSeeder::class);
         $this->call(VendorsTableSeeder::class);
-        $this->call(BusinessUnitsTableSeeder::class);    
-        $this->call(ProjectsTableSeeder::class);
+        $this->call(BusinessUnitsTableSeeder::class);
         $this->call(StructuresTableSeeder::class);
         $this->call(StocksTableSeeder::class);
-        $this->call(ProjectWbsTableSeeder::class);
-        $this->call(ProjectActivityTableSeeder::class);
+        $this->call(ProProjectTableSeeder::class);
+        $this->call(ProWbsTableSeeder::class);
+        $this->call(ProActivityTableSeeder::class);
         $this->call(BOMsTableSeeder::class);
         $this->call(BOMDetailsTableSeeder::class);
         $this->call(RAPTableSeeder::class);        

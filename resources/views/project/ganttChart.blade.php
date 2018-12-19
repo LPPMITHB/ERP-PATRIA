@@ -356,43 +356,60 @@
                 tooltipText: function(text) {
                     return text
                 },
-                openConfirmModal: function(data){
-                    axios.get('/api/getActivity/'+data).then(({ data }) => {
+                openConfirmModal(data){
+                    window.axios.get('/api/getActivity/'+data).then(({ data }) => {
                         this.activity = data[0];
+                        var isOkPredecessor = false;
                         if(this.activity.predecessor != null){
                             this.havePredecessor = true;
-                            axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
+                            window.axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
                                 this.predecessorActivities = data;
+                                this.predecessorActivities.forEach(activity => {
+                                    if(activity.status == 1){
+                                        isOkPredecessor = true;
+                                        document.getElementById("actual_start_date").disabled = true;
+                                        document.getElementById("current_progress").disabled = true;
+                                    }
+                                });
                             });
                         }else{
+                            isOkPredecessor = true;
                             this.havePredecessor = false;
                             this.predecessorActivities = [];
                         }
-
                         this.confirmActivity.current_progress = this.activity.progress;
-                        if(this.confirmActivity.current_progress != 100){
-                            document.getElementById("actual_end_date").disabled = true;
-                            document.getElementById("actual_duration").disabled = true;
-                            this.confirmActivity.actual_end_date = "";
-                            this.confirmActivity.actual_duration = "";
-                        }else{
-                            document.getElementById("actual_end_date").disabled = false;
-                            document.getElementById("actual_duration").disabled = false;
-                            if(this.confirmActivity.actual_end_date == ""){
-                                document.getElementById("btnSave").disabled = true;
+                        
+                        if(isOkPredecessor){
+                            $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
+                            $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                            document.getElementById("actual_start_date").disabled = false;
+                            document.getElementById("current_progress").disabled = false;
+                            if(this.confirmActivity.current_progress != 100){
+                                document.getElementById("actual_end_date").disabled = true;
+                                document.getElementById("actual_duration").disabled = true;
+                                this.confirmActivity.actual_end_date = "";
+                                this.confirmActivity.actual_duration = "";
                             }else{
-                                document.getElementById("btnSave").disabled = false;
+                                document.getElementById("actual_end_date").disabled = false;
+                                document.getElementById("actual_duration").disabled = false;
+                                if(this.confirmActivity.actual_end_date == ""){
+                                    document.getElementById("btnSave").disabled = true;
+                                }else{
+                                    document.getElementById("btnSave").disabled = false;
+                                }
                             }
+                        }else{
+                            $('#actual_start_date').datepicker('setDate', null);
+                            $('#actual_end_date').datepicker('setDate', null);
                         }
+                        
                         document.getElementById("confirm_activity_code").innerHTML= this.activity.code;
                         document.getElementById("planned_start_date").innerHTML= this.activity.planned_start_date;
                         document.getElementById("planned_end_date").innerHTML= this.activity.planned_end_date;
                         document.getElementById("planned_duration").innerHTML= this.activity.planned_duration+" Days";
     
-    
                         this.confirmActivity.activity_id = this.activity.id;
-                        $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
-                        $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                        
                     });
                 },
                 setEndDateEdit(){

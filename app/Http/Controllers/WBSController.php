@@ -18,8 +18,8 @@ class WBSController extends Controller
 {
     public function createWBS($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $project = Project::find($id);
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('wbs.createWBS', compact('project','menu'));
     }
