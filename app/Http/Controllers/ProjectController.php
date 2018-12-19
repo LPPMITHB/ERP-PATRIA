@@ -81,9 +81,8 @@ class ProjectController extends Controller
     // }
 
     public function listWBS($id, $menu, Request $request){
-        $mainMenu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
-
         $project = Project::find($id);
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = $project->wbss;
         $dataWbs = Collection::make();
 
