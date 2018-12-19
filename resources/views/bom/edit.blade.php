@@ -20,67 +20,68 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form class="form-horizontal" method="POST" action="{{ route('bom.update',['id'=>$modelBOM->id]) }}">
-            <input type="hidden" name="_method" value="PATCH">
-            @csrf
-                @verbatim
-                <div id="bom">
-                    <div class="box-header p-b-0">
-                        <div class="col-xs-12 col-md-4">
-                            <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+            <div class="box-body no-padding p-b-10">
+                <form class="form-horizontal" method="POST" action="{{ route('bom.update',['id'=>$modelBOM->id]) }}">
+                <input type="hidden" name="_method" value="PATCH">
+                @csrf
+                    @verbatim
+                    <div id="bom">
+                        <div class="box-header p-b-0">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+            
+                                <div class="col-xs-4 no-padding">Project Code</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.number)"><b>: {{project.number}}</b></div>
+                                
+                                <div class="col-xs-4 no-padding">Ship Name</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.name)"><b>: {{project.name}}</b></div>
         
-                            <div class="col-xs-4 no-padding">Project Code</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.number)"><b>: {{project.number}}</b></div>
-                            
-                            <div class="col-xs-4 no-padding">Ship Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.name)"><b>: {{project.name}}</b></div>
-    
-                            <div class="col-xs-4 no-padding">Ship Type</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.ship.type)"><b>: {{project.ship.type}}</b></div>
-    
-                            <div class="col-xs-4 no-padding">Customer</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.customer.name)"><b>: {{project.customer.name}}</b></div>
-                        </div>
-
-                        <div class="col-xs-12 col-md-4">
-                            <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                            
-                            <div class="col-xs-4 no-padding">Code</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
-                            
-                            <div class="col-xs-4 no-padding">Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
-    
-                            <div class="col-xs-4 no-padding">Description</div>
-                            <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
-                            <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
-    
-                            <div class="col-xs-4 no-padding">Deliverable</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
-    
-                            <div class="col-xs-4 no-padding">Progress</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
-                        </div>
-
-                        <div class="col-xs-12 col-md-3 p-b-10">
-                            <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
-                    
-                            <div class="col-md-5 col-xs-4 no-padding">Code</div>
-                            <div class="col-md-7 col-xs-8 no-padding"><b>: {{bom.code}}</b></div>
-                            
-                            <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                            <div class="col-md-7 col-xs-8 no-padding"><a :href="url" class="text-primary"><b>: {{rap.number}}</b></a></div>
-
- 
-                        </div>
-                    </div> <!-- /.box-header -->
-                    <div>
-                        <div class="col-xs-12 col-md-6">
-                            <div class="col-md-3 col-xs-4 no-padding">BOM Description  <b>:</b></div>
-                            <div class="col-md-9 col-xs-8 no-padding">
-                                <textarea class="form-control" v-model="bom.description" style="width:100%"></textarea>  
+                                <div class="col-xs-4 no-padding">Ship Type</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.ship.type)"><b>: {{project.ship.type}}</b></div>
+        
+                                <div class="col-xs-4 no-padding">Customer</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.customer.name)"><b>: {{project.customer.name}}</b></div>
                             </div>
-                        </div>
+
+                            <div class="col-xs-12 col-md-4">
+                                <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                                
+                                <div class="col-xs-4 no-padding">Code</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
+                                
+                                <div class="col-xs-4 no-padding">Name</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+        
+                                <div class="col-xs-4 no-padding">Description</div>
+                                <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
+                                <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
+        
+                                <div class="col-xs-4 no-padding">Deliverable</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
+        
+                                <div class="col-xs-4 no-padding">Progress</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-4 p-b-10">
+                                <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
+                        
+                                <div class="col-md-5 col-xs-4 no-padding">Code</div>
+                                <div class="col-md-7 col-xs-8 no-padding"><b>: {{bom.code}}</b></div>
+                                
+                                <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
+                                <div class="col-md-7 col-xs-8 no-padding"><a :href="showRapRoute(rap.id)" class="text-primary"><b>: {{rap.number}}</b></a></div>
+
+                                <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                                <div v-if="pr != null" class="col-md-7 col-xs-8 no-padding"><a :href="showPrRoute(pr.id)" class="text-primary"><b>: {{pr.number}}</b></a></div>
+                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
+
+                                <div class="col-md-5 col-xs-4 no-padding">Description</div>
+                                <div class="col-md-7 col-xs-8 no-padding">
+                                    <textarea class="form-control" v-model="bom.description"></textarea>  
+                                </div>
+                            </div>
+                        </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-10">
                             <table class="table table-bordered showTable m-b-0">
                                 <thead>
@@ -149,13 +150,12 @@
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
+                    @endverbatim
+                </form>
+                <div class="overlay">
+                    <i class="fa fa-refresh fa-spin"></i>
                 </div>
-                @endverbatim
-            </form>
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
             </div>
         </div>
     </div>
@@ -176,6 +176,7 @@
         materials : @json($materials),
         wbs : @json($modelBOM->wbs),
         rap : @json($modelRAP),
+        pr : @json($modelPR),
         newIndex : 0, 
         submittedForm :{
             project_id : "",
@@ -203,7 +204,6 @@
             material_name : "",
         },
         material_id:[],
-        url: {{ route('rap.show') }},
     }
 
     Vue.directive('tooltip', function(el, binding){
@@ -236,6 +236,16 @@
             },
         },
         methods: {
+            showRapRoute(id){
+                url = "/rap/"+id;
+
+                return url;
+            },
+            showPrRoute(id){
+                url = "/purchase_requisition/"+id;
+
+                return url;
+            },
             tooltipText: function(text) {
                 return text
             },
