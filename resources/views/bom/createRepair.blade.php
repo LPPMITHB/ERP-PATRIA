@@ -2,13 +2,13 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Manage Bill Of Material',
+        'title' => 'Manage BOM/BOS',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('bom.indexProject'),
             'Select WBS' => route('bom.selectWBS',$project->id),
-            'Manage Bill Of Material' => '',
+            'Manage BOM/BOS' => '',
         ]
     ]
 )
@@ -104,24 +104,25 @@
                                     <tr>
                                         <th width="5%">No</th>
                                         <th width="15%">Type</th>
-                                        <th width="25%">Material / Service</th>
+                                        <th width="30%">Material / Service</th>
                                         <th width="30%">Description</th>
-                                        <th width="15%">Quantity</th>
+                                        <th width="10%">Quantity</th>
                                         <th width="10%" ></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(material, index) in dataTable">
-                                        <td>{{ index + 1 }}</td>
-                                        <td>{{ material.type }}</td>
-                                        <td>{{ material.material_name }}</td>
-                                        <td>{{ material.description }}</td>
-                                        <td>{{ material.quantity }}</td>
-                                        <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                    <tr v-for="(data, index) in dataTable">
+                                        <td class="tdEllipsis">{{ index + 1 }}</td>
+                                        <td class="tdEllipsis">{{ data.type }}</td>
+                                        <td class="tdEllipsis" v-if="data.type == 'Material'">{{ data.material_code }} - {{ data.material_name }}</td>
+                                        <td class="tdEllipsis" v-else-if="data.type == 'Service'">{{ data.service_code }} - {{ data.service_name }}</td>
+                                        <td class="tdEllipsis">{{ data.description }}</td>
+                                        <td class="tdEllipsis">{{ data.quantity }}</td>
+                                        <td class="tdEllipsis p-l-5" align="center">
+                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                                 EDIT
                                             </a>
-                                            <a href="#" @click="removeRow(material.material_id)" class="btn btn-danger btn-xs">
+                                            <a href="#" @click="removeRow(data.material_id,data.type)" class="btn btn-danger btn-xs">
                                                 <div class="btn-group">DELETE</div>
                                             </a>
                                         </td>
@@ -138,12 +139,12 @@
                                         </td>
                                         <td class="no-padding" v-else-if="input.type == 'Material'">
                                             <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.name }}</option>
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                             </selectize>    
                                         </td>
                                         <td class="no-padding" v-else-if="input.type == 'Service'">
-                                            <selectize id="service" v-model="input.material_id" :settings="serviceSettings">
-                                                <option v-for="(service, index) in services" :value="service.id">{{ service.name }}</option>
+                                            <selectize id="service" v-model="input.service_id" :settings="serviceSettings">
+                                                <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
                                             </selectize>    
                                         </td>
                                         <td class="no-padding"><input class="form-control" type="text" :value="input.description" disabled></td>
@@ -167,14 +168,21 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        <h4 class="modal-title">Edit Material</h4>
+                                        <h4 class="modal-title" v-show="editInput.type == 'Material'">Edit Material</h4>
+                                        <h4 class="modal-title" v-show="editInput.type == 'Service'">Edit Service</h4>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12" v-show="editInput.type == 'Material'">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="editInput.type == 'Service'">
+                                                <label for="type" class="control-label">Service</label>
+                                                <selectize id="edit_modal" v-model="editInput.service_id" :settings="serviceSettings">
+                                                    <option v-for="(service, index) in services_modal" :value="service.id">{{ service.code }} - {{ service.name }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
@@ -183,8 +191,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer" v-show="editInput.type == 'Material'">
                                         <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                    </div>
+                                    <div class="modal-footer" v-show="editInput.type == 'Service'">
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_service_id, editInput.service_id)">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -235,10 +246,13 @@
         },
         editInput : {
             old_material_id : "",
+            old_service_id : "",
             service_id : "",
             material_id : "",
             material_code : "",
             material_name : "",
+            service_code : "",
+            service_name : "",
             quantity : "",
             quantityInt : 0,
         },
@@ -255,6 +269,9 @@
         material_id:[],
         material_id_modal:[],
         materials_modal :[],
+        service_id:[],
+        service_id_modal:[],
+        services_modal :[],
     }
 
     var vm = new Vue({
@@ -266,9 +283,18 @@
 
                 var string_newValue = this.input.quantityInt+"";
                 this.input.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                if(this.input.type == ""){
                     isOk = true;
+                }else{
+                    if(this.input.type == "Material"){
+                        if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                            isOk = true;
+                        }
+                    }else if(this.input.type == "Service"){
+                        if(this.input.service_id == "" || this.input.service_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                            isOk = true;
+                        }
+                    }
                 }
                 return isOk;
             },
@@ -285,11 +311,15 @@
 
                 var string_newValue = this.editInput.quantityInt+"";
                 this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
-                    isOk = true;
+                if(this.editInput.type == "Material"){
+                    if(this.editInput.material_id == "" || this.editInput.quantityInt == ""){
+                        isOk = true;
+                    }
+                }else if(this.editInput.type == "Service"){
+                    if(this.editInput.service_id == "" || this.editInput.quantityInt == ""){
+                        isOk = true;
+                    }
                 }
-
                 return isOk;
             }
         },
@@ -297,6 +327,20 @@
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
                     this.materials = data;
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            },
+            getNewServices(jsonServiceId){
+                window.axios.get('/api/getServicesBOM/'+jsonServiceId).then(({ data }) => {
+                    this.services = data;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -322,29 +366,65 @@
                     $('div.overlay').hide();
                 })
             },
+            getNewModalServices(jsonServiceId){
+                window.axios.get('/api/getServicesBOM/'+jsonServiceId).then(({ data }) => {
+                    this.services_modal = data;
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            },
             openEditModal(data,index){
-                this.editInput.material_id = data.material_id;
-                this.editInput.old_material_id = data.material_id;
-                this.editInput.material_code = data.material_code;
-                this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
+                this.editInput.type = data.type;
 
-                var material_id = JSON.stringify(this.material_id);
-                material_id = JSON.parse(material_id);
-                
-                this.material_id_modal = material_id;
-                this.material_id_modal.forEach(id => {
-                    if(id == data.material_id){
-                        var index = this.material_id_modal.indexOf(id);
-                        this.material_id_modal.splice(index, 1);
-                    }
-                });
-                var jsonMaterialId = JSON.stringify(this.material_id_modal);
-                this.getNewModalMaterials(jsonMaterialId);
+                if(data.type == "Material"){
+                    this.editInput.material_id = data.material_id;
+                    this.editInput.old_material_id = data.material_id;
+                    this.editInput.material_code = data.material_code;
+                    this.editInput.material_name = data.material_name;
+
+                    var material_id = JSON.stringify(this.material_id);
+                    material_id = JSON.parse(material_id);
+                    
+                    this.material_id_modal = material_id;
+                    this.material_id_modal.forEach(id => {
+                        if(id == data.material_id){
+                            var index = this.material_id_modal.indexOf(id);
+                            this.material_id_modal.splice(index, 1);
+                        }
+                    });
+                    var jsonMaterialId = JSON.stringify(this.material_id_modal);
+                    this.getNewModalMaterials(jsonMaterialId);
+                }else if(data.type == "Service"){
+                    this.editInput.service_id = data.service_id;
+                    this.editInput.old_service_id = data.service_id;
+                    this.editInput.service_code = data.service_code;
+                    this.editInput.service_name = data.service_name;
+
+                    var service_id = JSON.stringify(this.service_id);
+                    service_id = JSON.parse(service_id);
+                    
+                    this.service_id_modal = service_id;
+                    this.service_id_modal.forEach(id => {
+                        if(id == data.service_id){
+                            var index = this.service_id_modal.indexOf(id);
+                            this.service_id_modal.splice(index, 1);
+                        }
+                    });
+                    var jsonServiceId = JSON.stringify(this.service_id_modal);
+                    this.getNewModalServices(jsonServiceId);
+                }
             },
             submitForm(){
                 this.submit = "";
@@ -358,117 +438,216 @@
                 form.submit();
             },
             submitToTable(){
-                if(this.input.material_id != "" && this.input.material_name != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
-                    var data = JSON.stringify(this.input);
-                    data = JSON.parse(data);
-                    this.dataTable.push(data);
+                if(this.input.type == "Material"){
+                    if(this.input.material_id != "" && this.input.material_name != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                        var data = JSON.stringify(this.input);
+                        data = JSON.parse(data);
+                        this.dataTable.push(data);
 
-                    this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+                        this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
 
-                    var jsonMaterialId = JSON.stringify(this.material_id);
-                    this.getNewMaterials(jsonMaterialId);             
+                        var jsonMaterialId = JSON.stringify(this.material_id);
+                        this.getNewMaterials(jsonMaterialId);             
 
-                    this.newIndex = this.dataTable.length + 1;  
+                        this.newIndex = this.dataTable.length + 1;  
 
-                    this.input.description = "";
-                    this.input.type = "";
-                    this.input.material_id = "";
-                    this.input.material_name = "";
-                    this.input.quantity = "";
-                    this.input.quantityInt = 0;
+                        this.input.description = "";
+                        this.input.type = "";
+                        this.input.material_id = "";
+                        this.input.material_code = "";
+                        this.input.material_name = "";
+                        this.input.quantity = "";
+                        this.input.quantityInt = 0;
+                    }
+                }else if(this.input.type == "Service"){
+                    if(this.input.service_id != "" && this.input.service_name != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                        var data = JSON.stringify(this.input);
+                        data = JSON.parse(data);
+                        this.dataTable.push(data);
+
+                        this.service_id.push(data.service_id); //ini buat nambahin service_id terpilih
+
+                        var jsonServiceId = JSON.stringify(this.service_id);
+                        this.getNewServices(jsonServiceId);             
+
+                        this.newIndex = this.dataTable.length + 1;  
+
+                        this.input.description = "";
+                        this.input.type = "";
+                        this.input.service_id = "";
+                        this.input.service_code = "";
+                        this.input.service_name = "";
+                        this.input.quantity = "";
+                        this.input.quantityInt = 0;
+                    }
                 }
             },
-            removeRow: function(materialId) {
-                var index_materialId = "";
-                var index_dataTable = "";
+            removeRow: function(dataId,type) {
+                if(type == "Material"){
+                    var index_materialId = "";
+                    var index_dataTable = "";
 
-                this.material_id.forEach(id => {
-                    if(id == materialId){
-                        index_materialId = this.material_id.indexOf(id);
+                    this.material_id.forEach(id => {
+                        if(id == dataId){
+                            index_materialId = this.material_id.indexOf(id);
+                        }
+                    });
+                    for (var i in this.dataTable) { 
+                        if(this.dataTable[i].material_id == dataId){
+                            index_dataTable = i;
+                        }
                     }
-                });
-                this.dataTable.forEach(data => {
-                    if(data.material_id == materialId){
-                        index_dataTable = this.dataTable.indexOf(data.material_id);
+
+                    this.dataTable.splice(index_dataTable, 1);
+                    this.material_id.splice(index_materialId, 1);
+                    this.newIndex = this.dataTable.length + 1;
+
+                    var jsonMaterialId = JSON.stringify(this.material_id);
+                    this.getNewMaterials(jsonMaterialId);
+                }else if(type == "Service"){
+                    var index_serviceId = "";
+                    var index_dataTable = "";
+
+                    this.service_id.forEach(id => {
+                        if(id == dataId){
+                            index_serviceId = this.service_id.indexOf(id);
+                        }
+                    });
+                    for (var i in this.dataTable) { 
+                        if(this.dataTable[i].material_id == dataId){
+                            index_dataTable = i;
+                        }
                     }
-                });
 
-                this.dataTable.splice(index_dataTable, 1);
-                this.material_id.splice(index_materialId, 1);
-                this.newIndex = this.dataTable.length + 1;
+                    this.dataTable.splice(index_dataTable, 1);
+                    this.service_id.splice(index_serviceId, 1);
+                    this.newIndex = this.dataTable.length + 1;
 
-                var jsonMaterialId = JSON.stringify(this.material_id);
-                this.getNewMaterials(jsonMaterialId);
+                    var jsonServiceId = JSON.stringify(this.service_id);
+                    this.getNewServices(jsonServiceId);
+                }
             },
-            update(old_material_id, new_material_id){
-                this.dataTable.forEach(material => {
-                    if(material.material_id == old_material_id){
-                        var material = this.dataTable[this.editInput.index];
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                        material.material_id = new_material_id;
-                        material.wbs_id = this.editInput.wbs_id;
+            update(old_data_id, new_data_id){
+                if(this.editInput.type == "Material"){
+                    this.dataTable.forEach(material => {
+                        if(material.material_id == old_data_id){
+                            var material = this.dataTable[this.editInput.index];
+                            material.quantityInt = this.editInput.quantityInt;
+                            material.quantity = this.editInput.quantity;
+                            material.material_id = new_data_id;
+                            material.wbs_id = this.editInput.wbs_id;
 
-                        window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
-                            material.material_name = data.name;
-                            material.material_code = data.code;
+                            window.axios.get('/api/getMaterialBOM/'+new_data_id).then(({ data }) => {
+                                material.material_name = data.name;
+                                material.material_code = data.code;
+                                material.description = data.description;
 
-                            this.material_id.forEach(id => {
-                                if(id == old_material_id){
-                                    var index = this.material_id.indexOf(id);
-                                    this.material_id.splice(index, 1);
-                                }
-                            });
-                            this.material_id.push(new_material_id);
+                                this.material_id.forEach(id => {
+                                    if(id == old_data_id){
+                                        var index = this.material_id.indexOf(id);
+                                        this.material_id.splice(index, 1);
+                                    }
+                                });
+                                this.material_id.push(new_data_id);
 
-                            var jsonMaterialId = JSON.stringify(this.material_id);
-                            this.getNewMaterials(jsonMaterialId);
+                                var jsonMaterialId = JSON.stringify(this.material_id);
+                                this.getNewMaterials(jsonMaterialId);
 
-                            $('div.overlay').hide();
-                        })
-                        .catch((error) => {
-                            iziToast.warning({
-                                title: 'Please Try Again..',
-                                position: 'topRight',
-                                displayMode: 'replace'
-                            });
-                            $('div.overlay').hide();
-                        })
-                    }
-                });
+                                $('div.overlay').hide();
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                            })
+                        }
+                    });
+                    this.editInput.material_id = '';
+                    this.editInput.old_material_id = '';
+                    this.editInput.material_code = '';
+                    this.editInput.material_name = '';
+                }else if(this.editInput.type == "Service"){
+                    this.dataTable.forEach(service => {
+                        if(service.service_id == old_data_id){
+                            var service = this.dataTable[this.editInput.index];
+                            service.quantityInt = this.editInput.quantityInt;
+                            service.quantity = this.editInput.quantity;
+                            service.service_id = new_data_id;
+                            service.wbs_id = this.editInput.wbs_id;
+
+                            window.axios.get('/api/getServiceBOM/'+new_data_id).then(({ data }) => {
+                                service.service_name = data.name;
+                                service.service_code = data.code;
+                                service.description = data.description;
+
+                                this.service_id.forEach(id => {
+                                    if(id == old_data_id){
+                                        var index = this.service_id.indexOf(id);
+                                        this.service_id.splice(index, 1);
+                                    }
+                                });
+                                this.service_id.push(new_data_id);
+
+                                var jsonServiceId = JSON.stringify(this.service_id);
+                                this.getNewServices(jsonServiceId);
+
+                                $('div.overlay').hide();
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                            })
+                        }
+                    });
+                    this.editInput.service_id = '';
+                    this.editInput.old_service_id = '';
+                    this.editInput.service_code = '';
+                    this.editInput.service_name = '';
+                }
             },
         },
         watch: {
             'input.material_id': function(newValue){
                 if(newValue != ""){
-                    if(this.input.type == "Material"){
-                        window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
-                            if(data.description == "" || data.description == null){
-                                this.input.description = '-';
-                            }else{
-                                this.input.description = data.description;
+                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
+                        if(data.description == "" || data.description == null){
+                            this.input.description = '-';
+                        }else{
+                            this.input.description = data.description;
 
-                            }
-                            this.input.material_name = data.name;
-                            this.input.material_code = data.code;
-                        });
-                    }else if(this.input.type == "Service"){
-                        window.axios.get('/api/getServiceBOM/'+newValue).then(({ data }) => {
-                            if(data.description == "" || data.description == null){
-                                this.input.description = '-';
-                            }else{
-                                this.input.description = data.description;
-
-                            }
-                            this.input.material_name = data.name;
-                            this.input.material_code = data.code;
-                        });
-                    }
+                        }
+                        this.input.material_name = data.name;
+                        this.input.material_code = data.code;
+                    });
+                }
+            },
+            'input.service_id': function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getServiceBOM/'+newValue).then(({ data }) => {
+                        if(data.description == "" || data.description == null){
+                            this.input.description = '-';
+                        }else{
+                            this.input.description = data.description;
+                        }
+                        this.input.service_name = data.name;
+                        this.input.service_code = data.code;
+                    });
                 }
             },
             'input.quantity': function(newValue){
                 this.input.quantityInt = newValue;
                 this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            },
+            'editInput.quantity': function(newValue){
+                this.editInput.quantityInt = newValue;
+                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             },
             'input.type' : function(newValue){
                 this.input.material_id = "";

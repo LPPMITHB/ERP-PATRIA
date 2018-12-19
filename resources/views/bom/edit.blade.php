@@ -22,67 +22,59 @@
         <div class="box">
             <form class="form-horizontal" method="POST" action="{{ route('bom.update',['id'=>$modelBOM->id]) }}">
             <input type="hidden" name="_method" value="PATCH">
-                @csrf
-                <div class="box-header p-b-0">
-                    <div class="col-xs-12 col-md-4">
-                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+            @csrf
+                @verbatim
+                <div id="bom">
+                    <div class="box-header p-b-0">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+        
+                            <div class="col-xs-4 no-padding">Project Code</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.number)"><b>: {{project.number}}</b></div>
+                            
+                            <div class="col-xs-4 no-padding">Ship Name</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.name)"><b>: {{project.name}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Ship Type</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.ship.type)"><b>: {{project.ship.type}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Customer</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.customer.name)"><b>: {{project.customer.name}}</b></div>
+                        </div>
 
-                        <div class="col-xs-4 no-padding">Project Code</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->number}}</b></div>
-                        
-                        <div class="col-xs-4 no-padding">Project Name</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->name}}</b></div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                            
+                            <div class="col-xs-4 no-padding">Code</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
+                            
+                            <div class="col-xs-4 no-padding">Name</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Description</div>
+                            <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
+                            <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
+    
+                            <div class="col-xs-4 no-padding">Deliverable</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Progress</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
+                        </div>
 
-                        <div class="col-xs-4 no-padding">Ship Name</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->type}}</b></div>
-
-                        <div class="col-xs-4 no-padding">Ship Type</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->ship->type}}</b></div>
-
-                        <div class="col-xs-4 no-padding">Customer</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->project->customer->name}}</b></div>
-                    </div>
-
-                    <div class="col-xs-12 col-md-4">
-                        <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                        <div class="col-xs-12 col-md-3 p-b-10">
+                            <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
                     
-                        <div class="col-xs-4 no-padding">Code</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->code}}</b></div>
-                        
-                        <div class="col-xs-4 no-padding">Name</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->name}}</b></div>
+                            <div class="col-md-5 col-xs-4 no-padding">Code</div>
+                            <div class="col-md-7 col-xs-8 no-padding"><b>: {{bom.code}}</b></div>
+                            
+                            <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
+                            <div class="col-md-7 col-xs-8 no-padding"><a :href="url" class="text-primary"><b>: {{rap.number}}</b></a></div>
 
-                        <div class="col-xs-4 no-padding">Description</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->description}}</b></div>
-
-                        <div class="col-xs-4 no-padding">Deliverable</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->deliverables}}</b></div>
-
-                        <div class="col-xs-4 no-padding">Progress</div>
-                        <div class="col-xs-8 no-padding"><b>: {{$modelBOM->wbs->progress}}%</b></div>
-                    </div>
-
-                    <div class="col-xs-12 col-md-3 p-b-10">
-                        <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
-                
-                        <div class="col-md-5 col-xs-4 no-padding">Code</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelBOM->code}}</b></div>
-                        
-                        <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$rap_number}}</b></a></div>
-
-                        @if(isset($modelPR))
-                            <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                            <div class="col-md-7 col-xs-8 no-padding"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$pr_number}}</b></a></div>
-                        @else
-                            <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                            <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
-                        @endif
-                    </div>
-                </div> <!-- /.box-header -->
-                <div class="box-body p-t-5">
-                    @verbatim
-                    <div id="bom">
+ 
+                        </div>
+                    </div> <!-- /.box-header -->
+                    <div>
                         <div class="col-xs-12 col-md-6">
                             <div class="col-md-3 col-xs-4 no-padding">BOM Description  <b>:</b></div>
                             <div class="col-md-9 col-xs-8 no-padding">
@@ -159,8 +151,8 @@
                         </div>
                         
                     </div>
-                    @endverbatim
                 </div>
+                @endverbatim
             </form>
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
@@ -183,6 +175,7 @@
         project : @json($project),
         materials : @json($materials),
         wbs : @json($modelBOM->wbs),
+        rap : @json($modelRAP),
         newIndex : 0, 
         submittedForm :{
             project_id : "",
@@ -210,7 +203,16 @@
             material_name : "",
         },
         material_id:[],
+        url: {{ route('rap.show') }},
     }
+
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
 
     var vm = new Vue({
         el : '#bom',
@@ -234,6 +236,9 @@
             },
         },
         methods: {
+            tooltipText: function(text) {
+                return text
+            },
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
                     this.materials = data;
