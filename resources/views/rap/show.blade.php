@@ -6,6 +6,7 @@
         'title' => 'View RAP » '.$modelRap->project->name,
         'items' => [
             'Dashboard' => route('index'),
+            'Select Project' => route('rap.indexSelectProject'),
             'View RAP' => route('rap.show',$modelRap->id),
         ]
     ]
