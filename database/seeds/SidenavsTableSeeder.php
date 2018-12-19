@@ -199,37 +199,6 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project.configWbsEstimator',
         ]);
 
-        $manageBos = Menu::where('route_name','bos.indexProject')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.indexProject',
-        ]);
-
-         DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.selectWBS',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.indexBos',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.index',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.edit',
-        ]);
-
         $manageBom = Menu::where('route_name','bom.indexProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
