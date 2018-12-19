@@ -627,11 +627,11 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
      
     Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost-repair');
 
-    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
+    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap-repair');
     
-    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
+    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap-repair');
     
-    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
+    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap-repair');
 });
 
 //Purchase Requisition Routes
