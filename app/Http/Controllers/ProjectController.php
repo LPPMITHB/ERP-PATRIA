@@ -357,10 +357,19 @@ class ProjectController extends Controller
         }
         
         //Progress
-        $dataActualProgress = Collection::make();
         $dataPlannedProgress = Collection::make();
+        $dataPlannedProgress->push([
+            "t" => $project->planned_start_date, 
+            "y" => "0",
+        ]);
+        $dataActualProgress = Collection::make();
+        if($project->actual_start_date != null){
+            $dataActualProgress->push([
+                "t" => $project->actual_start_date, 
+                "y" => "0",
+            ]);
+        }
         self::getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $project, $dataActualProgress, $dataPlannedProgress);
-        
         $ganttData = Collection::make();
         $links = Collection::make();
         $outstanding_item = Collection::make();
@@ -1022,7 +1031,7 @@ class ProjectController extends Controller
         $plannedProgress = 0;
         $wbss = WBS::where('project_id', $project->id)->pluck('id')->toArray();
         $activities = Activity::whereIn('wbs_id',$wbss)->get();
-        $actualActivities =$activities->groupBy('actual_end_date');
+        $actualActivities =$activities->where('actual_end_date', "!=", "")->groupBy('actual_end_date');
         $plannnedActivities = $activities->groupBy('planned_end_date');
         $actualSorted = $actualActivities->all();
         $plannedSorted = $plannnedActivities->all();
@@ -1124,8 +1133,18 @@ class ProjectController extends Controller
         }
         
         //Progress
-        $dataActualProgress = Collection::make();
         $dataPlannedProgress = Collection::make();
+        $dataPlannedProgress->push([
+            "t" => $project->planned_start_date, 
+            "y" => "0",
+        ]);
+        $dataActualProgress = Collection::make();
+        if($project->actual_start_date != null){
+            $dataActualProgress->push([
+                "t" => $project->actual_start_date, 
+                "y" => "0",
+            ]);
+        }
         self::getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $project, $dataActualProgress, $dataPlannedProgress);
         
         return response(['dataPlannedCost' => $dataPlannedCost, 'dataActualCost'=> $dataActualCost,
@@ -1151,6 +1170,13 @@ class ProjectController extends Controller
     public function getResourceAPI($id){
         $resource = Resource::where('id',$id)->with('category')->first();
         return response($resource->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getActualStartDateAPI($id){
+        $actual_start_date = Project::find($id)->actual_start_date;
+        $originalDate = $actual_start_date;
+        $newDate = date("d-m-Y", strtotime($originalDate));
+        return response($newDate, Response::HTTP_OK);
     }
 
     public function getAllResourceAPI($id){

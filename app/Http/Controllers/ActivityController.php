@@ -205,6 +205,14 @@ class ActivityController extends Controller
             }
             $actualStartDate = DateTime::createFromFormat('m/j/Y', $data['actual_start_date']);
             $activity->actual_start_date = $actualStartDate->format('Y-m-d');
+            $project = $activity->wbs->project;
+            if($project->actual_start_date != null){
+                if($project->actual_start_date > $activity->actual_start_date){
+                    $project->actual_start_date = $activity->actual_start_date;                    
+                }
+            }else{
+                $project->actual_start_date = $activity->actual_start_date;
+            }
             $activity->save();
 
             $wbs = $activity->wbs;
