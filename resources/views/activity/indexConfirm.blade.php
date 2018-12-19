@@ -43,7 +43,11 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->planned_start_date}}</td>
                                 <td>{{ $project->planned_end_date}}</td>
-                                <td><a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'confirmAct']) }}" class="btn btn-primary btn-xs">SELECT</a></td>
+                                @if($menu == "building")
+                                    <td><a href="{{ route('activity.selectWbs',['id'=>$project->id,'menu'=>'confirmAct']) }}" class="btn btn-primary btn-xs">SELECT</a></td>
+                                @else
+                                    <td><a href="{{ route('activity_repair.selectWbs',['id'=>$project->id,'menu'=>'confirmAct']) }}" class="btn btn-primary btn-xs">SELECT</a></td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

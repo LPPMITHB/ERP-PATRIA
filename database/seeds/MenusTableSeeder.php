@@ -709,17 +709,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // DB::table('menus')->insert([
-        //     'level' => 3,
-        //     'name' => 'Confirm Activity',
-        //     'icon' => 'fa-clock-o',
-        //     'route_name'=> 'activity.indexConfirm',
-        //     'is_active' => true,
-        //     'roles' => 'ADMIN',
-        //     'menu_id'=> $projectManagementRepair,
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d')
-        // ]);
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Confirm Activity',
+            'icon' => 'fa-clock-o',
+            'route_name'=> 'activity_repair.indexConfirm',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 2,
@@ -809,7 +809,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Manage RAP',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rap_repair.indexSelectProjectRepair',
+            'route_name'=> 'rap_repair.indexSelectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$costPlan,
@@ -821,7 +821,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Create Other Cost',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rap_repair.selectProjectCostRepair',
+            'route_name'=> 'rap_repair.selectProjectCost',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$costPlan,
@@ -833,7 +833,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Input Actual Other Cost',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rap_repair.selectProjectActualOtherCostRepair',
+            'route_name'=> 'rap_repair.selectProjectActualOtherCost',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$costPlan,
@@ -845,7 +845,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View Planned Cost',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rap_repair.selectProjectViewCostRepair',
+            'route_name'=> 'rap_repair.selectProjectViewCost',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$costPlan,
@@ -857,7 +857,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View Remaining Material',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'rap_repair.selectProjectViewRMRepair',
+            'route_name'=> 'rap_repair.selectProjectViewRM',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$costPlan,

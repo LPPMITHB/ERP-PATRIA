@@ -30,15 +30,27 @@
 
 @section('content')
 <div class="row">
-    <div class="box-tools pull-left m-l-15">
-        <a href="{{ route('project.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
-        <a href="{{ route('wbs.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
-        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'viewWbs']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
-        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
-        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
-        <a href="{{ route('activity.listWBS',['id'=>$project->id,'menu'=>'mngNet']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
-        <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
-    </div>
+    @if ($menu == "building")
+        <div class="box-tools pull-left m-l-15">
+            <a href="{{ route('project.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
+            <a href="{{ route('wbs.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
+            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewWbs']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
+            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
+            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
+            <a href="{{ route('activity.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
+            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
+        </div>
+    @else
+        <div class="box-tools pull-left m-l-15">
+            <a href="{{ route('project_repair.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
+            <a href="{{ route('wbs_repair.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
+            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewWbs']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
+            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
+            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
+            <a href="{{ route('activity_repair.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
+            <a href="{{ route('project_repair.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
+        </div>
+    @endif
 </div>
 <br>
 <div class="row">
@@ -90,7 +102,7 @@
                         <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->planned_duration}}</b></div>
 
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Actual Start Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding" id="project-actual_start_date"><b>: @php
                                 if($project->actual_start_date){
                                     $date = DateTime::createFromFormat('Y-m-d', $project->actual_start_date);
                                     $date = $date->format('d-m-Y');
@@ -147,7 +159,10 @@
                     @can('edit-project')
                         @if($menu == "building")
                             <a href="{{ route('project.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-sm col-xs-12">EDIT</a>
-                        @else
+                        @endif
+                    @endcan
+                    @can('edit-project-repair')
+                        @if($menu == "repair")
                             <a href="{{ route('project_repair.edit',['id'=>$project->id]) }}" class="btn btn-primary btn-sm col-xs-12">EDIT</a>
                         @endif
                     @endcan
@@ -447,7 +462,7 @@
     var costCanvas = $('#cost').get(0).getContext('2d');
     var progressCanvas = $('#progress').get(0).getContext('2d');
 
-    var costChart = new Chart(costCanvas, {
+    var configCost = {
         type: 'line',
         data: {
             datasets: [
@@ -507,8 +522,11 @@
                 }]
             } 
         }
-    });
-    var progress = new Chart(progressCanvas, {
+    };
+
+    var costChart = new Chart(costCanvas, configCost);
+
+    var configProgress = {
         type: 'line',
         data: {
             datasets: [
@@ -555,7 +573,9 @@
                 }]
             } 
         }
-    });
+    };
+
+    var progress = new Chart(progressCanvas, configProgress);
 
     $(document).ready(function(){
         var outstanding_item = @json($outstanding_item);
@@ -593,6 +613,7 @@
                     return text ;
                 }
             },
+            
             {name:"progress", label:"Progress", align: "center",
                 template:function(obj){  
                     if(obj.status != undefined){
@@ -606,10 +627,10 @@
                     }
                 },
                 width:"70px"
-            } 
+            },
         ]; 
 
-        gantt.config.grid_width = 270;
+        gantt.config.grid_width = 290;
 
         gantt.templates.rightside_text = function(start, end, task){
             if(task.status != undefined){
@@ -620,6 +641,7 @@
                 return "Progress: <b>" + task.progress*100+ "%</b>";
             }
         };
+        
         
         var tasks = {
             data:project,
@@ -691,6 +713,7 @@
         gantt.init("ganttChart");
         gantt.parse(tasks);
         gantt.showDate(new Date());
+        gantt.sort("start_date", false);
 
         var els = document.querySelectorAll("input[name='scale']");
         for (var i = 0; i < els.length; i++) {
@@ -714,6 +737,7 @@
         })
 
         var data = {
+            menu : @json($menu),
             project_id : @json($project->id),
             project : @json($project),
             today : @json($today),
@@ -760,25 +784,6 @@
                 );
             },
             computed:{
-                alreadyStart: function(){
-                    let isOkAlreadyStart = false;
-                    if(this.confirmActivity.actual_start_date == "")
-                    {
-                        isOkAlreadyStart = true;
-                    }
-                    
-                    let isOkPredecessor = false;
-                    
-                    document.getElementById("actual_start_date").disabled = false;
-                    
-                    this.predecessorActivities.forEach(activity => {
-                        if(activity.status == 1){
-                            isOkPredecessor = true;
-                            document.getElementById("actual_start_date").disabled = true;
-                        }
-                    });
-                    return isOkAlreadyStart || isOkPredecessor;
-                },
                 progressBarColor: function(){
                     let classStyle = "";
                     if(this.project.planned_end_date < this.today){
@@ -802,42 +807,87 @@
                 openConfirmModal(data){
                     window.axios.get('/api/getActivity/'+data).then(({ data }) => {
                         this.activity = data[0];
+                        var isOkPredecessor = true;
                         if(this.activity.predecessor != null){
                             this.havePredecessor = true;
                             window.axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
                                 this.predecessorActivities = data;
+                                this.predecessorActivities.forEach(activity => {
+                                    if(activity.status == 1){
+                                        isOkPredecessor = false;
+                                        this.confirmActivity.actual_start_date = "";
+                                        this.confirmActivity.actual_end_date = "";
+                                        this.confirmActivity.actual_duration = "";
+                                        document.getElementById("actual_start_date").disabled = true;
+                                        document.getElementById("current_progress").disabled = true;
+                                    }
+
+                                    if(isOkPredecessor){
+                                        $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
+                                        $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                                        document.getElementById("actual_start_date").disabled = false;
+                                        document.getElementById("current_progress").disabled = false;
+                                        if(this.confirmActivity.current_progress != 100){
+                                            document.getElementById("actual_end_date").disabled = true;
+                                            document.getElementById("actual_duration").disabled = true;
+                                            this.confirmActivity.actual_end_date = "";
+                                            this.confirmActivity.actual_duration = "";
+                                        }else{
+                                            document.getElementById("actual_end_date").disabled = false;
+                                            document.getElementById("actual_duration").disabled = false;
+                                            if(this.confirmActivity.actual_end_date == ""){
+                                                document.getElementById("btnSave").disabled = true;
+                                            }else{
+                                                document.getElementById("btnSave").disabled = false;
+                                            }
+                                        }
+                                    }else{
+                                        this.confirmActivity.actual_start_date = "";
+                                        this.confirmActivity.actual_end_date = "";
+                                        this.confirmActivity.actual_duration = "";
+                                    }
+                                });
                             });
                         }else{
+                            isOkPredecessor = true;
                             this.havePredecessor = false;
                             this.predecessorActivities = [];
                         }
-
                         this.confirmActivity.current_progress = this.activity.progress;
-                        if(this.confirmActivity.current_progress != 100){
-                            document.getElementById("actual_end_date").disabled = true;
-                            document.getElementById("actual_duration").disabled = true;
+                        
+                        if(isOkPredecessor){
+                            $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
+                            $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                            document.getElementById("actual_start_date").disabled = false;
+                            document.getElementById("current_progress").disabled = false;
+                            if(this.confirmActivity.current_progress != 100){
+                                document.getElementById("actual_end_date").disabled = true;
+                                document.getElementById("actual_duration").disabled = true;
+                                this.confirmActivity.actual_end_date = "";
+                                this.confirmActivity.actual_duration = "";
+                            }else{
+                                document.getElementById("actual_end_date").disabled = false;
+                                document.getElementById("actual_duration").disabled = false;
+                                if(this.confirmActivity.actual_end_date == ""){
+                                    document.getElementById("btnSave").disabled = true;
+                                }else{
+                                    document.getElementById("btnSave").disabled = false;
+                                }
+                            }
+                        }else{
+                            this.confirmActivity.actual_start_date = "";
                             this.confirmActivity.actual_end_date = "";
                             this.confirmActivity.actual_duration = "";
-                        }else{
-                            document.getElementById("actual_end_date").disabled = false;
-                            document.getElementById("actual_duration").disabled = false;
-                            if(this.confirmActivity.actual_end_date == ""){
-                                document.getElementById("btnSave").disabled = true;
-                            }else{
-                                document.getElementById("btnSave").disabled = false;
-                            }
                         }
+                        
                         document.getElementById("confirm_activity_code").innerHTML= this.activity.code;
                         document.getElementById("planned_start_date").innerHTML= this.activity.planned_start_date;
                         document.getElementById("planned_end_date").innerHTML= this.activity.planned_end_date;
                         document.getElementById("planned_duration").innerHTML= this.activity.planned_duration+" Days";
     
                         this.confirmActivity.activity_id = this.activity.id;
-                        $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
-                        $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
+                        
                     });
-                    
-
                 },
                 setEndDateEdit(){
                     if(this.confirmActivity.actual_duration != "" && this.confirmActivity.actual_start_date != ""){
@@ -853,7 +903,12 @@
                 },
                 confirm(){            
                     var confirmActivity = this.confirmActivity;
-                    var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
+                    var url = "";
+                    if(this.menu == "building"){
+                        url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
+                    }else{
+                        url = "/activity_repair/updateActualActivity/"+confirmActivity.activity_id;
+                    }
                     confirmActivity = JSON.stringify(confirmActivity);
                     window.axios.patch(url,confirmActivity)
                     .then((response) => {
@@ -887,7 +942,35 @@
 
                         window.axios.get('/api/getProjectActivity/'+this.project_id).then(({ data }) => {
                             this.project = data;
-                        });                        
+                        });   
+
+                        window.axios.get('/api/getActualStartDate/'+this.project_id).then(({ data }) => {
+                            document.getElementById('project-actual_start_date').innerHTML = "<b>: "+data+"</b>";
+                        });                   
+
+                        window.axios.get('/api/getDataChart/'+this.project_id).then(({ data }) => {
+                            var updateChart =[
+                                {
+                                    label: "Planned Progress",
+                                    backgroundColor: "rgba(242, 38, 2, 0.7)",
+                                    data: data.dataPlannedProgress,
+                                },
+                                {
+                                    label: "Actual Progress", 
+                                    backgroundColor: "rgba(0, 0, 255, 0.7)",
+                                    data:data.dataActualProgress,
+                                }
+
+                            ];
+                            progress.config.data.datasets = updateChart;
+                            window.progress.update();
+                        });
+
+                        window.axios.get('/api/getDataJstree/'+this.project_id).then(({ data }) => {
+                            $('#treeview').jstree(true).settings.core.data = data;
+                            $('#treeview').jstree(true).refresh();
+                        });
+      
                         
                         this.confirmActivity.activity_id = "";
                         this.confirmActivity.actual_start_date = "";

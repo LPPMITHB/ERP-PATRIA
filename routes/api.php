@@ -23,10 +23,12 @@ Route::get('/getSubMenu/{id}', 'RoleController@getSubMenuAPI')->name('api.role.g
 
 // bom
 Route::get('/getMaterialBOM/{id}', 'BOMController@getMaterialAPI')->name('api.bom.getMaterialAPI');
+Route::get('/getServiceBOM/{id}', 'BOMController@getServiceAPI')->name('api.bom.getServiceAPI');
 Route::get('/getBom/{id}', 'BOMController@getBomAPI')->name('api.bom.getBomAPI');
 Route::get('/getNewBom/{id}', 'BOMController@getNewBomAPI')->name('api.bom.getNewBomAPI');
 Route::get('/getBomDetail/{id}', 'BOMController@getBomDetailAPI')->name('api.bom.getBomDetailAPI');
 Route::get('/getMaterialsBOM/{id}', 'BOMController@getMaterialsAPI')->name('api.bom.getMaterialsAPI');
+Route::get('/getServicesBOM/{id}', 'BOMController@getServicesAPI')->name('api.bom.getServicesAPI');
 
 // bos
 Route::get('/getServiceBOS/{id}', 'BOSController@getServiceAPI')->name('api.bos.getServiceAPI');
@@ -102,6 +104,9 @@ Route::get('/getResourcePM/{id}', 'ProjectController@getResourceAPI')->name('api
 Route::get('/getAllResourcePM/{id}', 'ProjectController@getAllResourceAPI')->name('api.yard_plan.getAllResourceAPI');
 Route::get('/getActivity/{id}', 'ProjectController@getActivityAPI')->name('api.project.getActivityAPI');
 Route::get('/getDataGantt/{id}', 'ProjectController@getDataGanttAPI')->name('api.project.getDataGanttAPI');
+Route::get('/getDataChart/{id}', 'ProjectController@getDataChartAPI')->name('api.project.getDataChartAPI');
+Route::get('/getDataJstree/{id}', 'ProjectController@getDataJstreeAPI')->name('api.project.getDataJstreeAPI');
+Route::get('/getActualStartDate/{id}', 'ProjectController@getActualStartDateAPI')->name('api.project.getActualStartDateAPI');
 
 
 // wbs
@@ -109,6 +114,7 @@ Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI')
 Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('api.wbs.getAllWbsAPI');
 Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('api.wbs.getSubWbsAPI');
 Route::get('/getWeightWbs/{id}', 'WBSController@getWeightWbsAPI')->name('api.wbs.getWeightWbsAPI');
+Route::get('/getWeightProject/{id}', 'WBSController@getWeightProjectAPI')->name('api.wbs.getWeightProjectAPI');
 
 // activity
 Route::get('/getActivities/{id}', 'ActivityController@getActivitiesAPI')->name('api.activity.getActivitiesAPI');

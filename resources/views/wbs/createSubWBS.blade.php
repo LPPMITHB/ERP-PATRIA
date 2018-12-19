@@ -229,6 +229,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    menu : @json($menu),
     wbs : "",
     newIndex : "", 
     parentWbsWeight : @json($wbs->weight),
@@ -336,7 +337,12 @@ var vm = new Vue({
             $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
         },
         createSubWBSRoute(data){
-            var url = "/wbs/createSubWBS/"+this.newSubWBS.project_id+"/"+data.id;
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createSubWBS/"+this.newSubWBS.project_id+"/"+data.id;
+            }else{
+                url = "/wbs_repair/createSubWBS/"+this.newSubWBS.project_id+"/"+data.id;                
+            }
             return url;
         },
         getSubWBS(){
@@ -367,7 +373,12 @@ var vm = new Vue({
         add(){            
             var newSubWBS = this.newSubWBS;
             newSubWBS = JSON.stringify(newSubWBS);
-            var url = "{{ route('wbs.store') }}";
+            var url = "";
+            if(this.menu == "building"){
+                url = "{{ route('wbs.store') }}";
+            }else{
+                url = "{{ route('wbs_repair.store') }}";              
+            }
             $('div.overlay').show();            
             window.axios.post(url,newSubWBS)
             .then((response) => {
@@ -401,7 +412,12 @@ var vm = new Vue({
         },
         update(){            
             var editWbs = this.editWbs;
-            var url = "/wbs/update/"+editWbs.wbs_id;
+            var url = "";
+            if(this.menu == "building"){
+                var url = "/wbs/update/"+editWbs.wbs_id;                
+            }else{
+                var url = "/wbs_repair/update/"+editWbs.wbs_id;                
+            } 
             editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
             window.axios.patch(url,editWbs)
@@ -495,7 +511,7 @@ var vm = new Vue({
             if(roundNumber(newValue,2)>this.maxWeight){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: 'Total weight cannot be more than '+this.parentWbsWeight+'%',
+                    title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
             }
@@ -512,7 +528,7 @@ var vm = new Vue({
             if(this.editWbs.weight>maxWeightEdit){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: 'Total weight cannot be more than '+this.parentWbsWeight+'%',
+                    title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
             }

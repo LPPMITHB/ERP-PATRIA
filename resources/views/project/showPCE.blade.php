@@ -1,16 +1,32 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Project Cost Evaluation » '.$project->name,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Project|'.$project->number => route('project.show',$project->id),
-            'Project Cost Evaluation' => ""
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Project Cost Evaluation » '.$project->name,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$project->number => route('project.show',$project->id),
+                    'Project Cost Evaluation' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Project Cost Evaluation » '.$project->name,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$project->number => route('project_repair.show',$project->id),
+                    'Project Cost Evaluation' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 @section('content')
 <div class="row">

@@ -41,19 +41,29 @@ class RAPController extends Controller
     // view RAP
     public function indexSelectProject(Request $request)
     {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
-        $menu = "view_rap";
         $route = $request->route()->getPrefix();
+        $menu = "view_rap";
 
+        if($route == '/rap'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/rap_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+        
         return view('rap.selectProject', compact('projects','menu','route'));
     }
 
     // create cost
     public function selectProjectCost(Request $request)
     {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "create_cost";
         $route = $request->route()->getPrefix();
+
+        if($route == '/rap'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/rap_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
         return view('rap.selectProject', compact('projects','menu','route'));
     }
@@ -61,9 +71,14 @@ class RAPController extends Controller
     // input actual other cost
     public function selectProjectActualOtherCost(Request $request)
     {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "input_actual_other_cost";
         $route = $request->route()->getPrefix();
+
+        if($route == '/rap'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/rap_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
         return view('rap.selectProject', compact('projects','menu','route'));
     }
@@ -71,9 +86,14 @@ class RAPController extends Controller
     // view planned cost
     public function selectProjectViewCost(Request $request)
     {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_planned_cost";
         $route = $request->route()->getPrefix();
+
+        if($route == '/rap'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/rap_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
         return view('rap.selectProject', compact('projects','menu','route'));
     }
@@ -81,9 +101,14 @@ class RAPController extends Controller
     // view planned cost
     public function selectProjectViewRM(Request $request)
     {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
         $menu = "view_rm";
         $route = $request->route()->getPrefix();
+
+        if($route == '/rap'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/rap_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
         return view('rap.selectProject', compact('projects','menu','route'));
     }

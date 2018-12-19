@@ -1,17 +1,32 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Confirm Activities',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('activity.indexConfirm'),
-            'Select WBS' => route('activity.listWBS',['id'=>$project->id,'menu'=>'confirmAct']),
-            'Confirm Activities' => ""
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Confirm Activities',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('activity.indexConfirm'),
+                    'Select WBS' => route('activity_repair.selectWbs',['id'=>$project->id,'menu'=>'confirmAct']),
+                    'Confirm Activities' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Confirm Activities',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('activity_repair.indexConfirm'),
+                    'Select WBS' => route('activity_repair.selectWbs',['id'=>$project->id,'menu'=>'confirmAct']),
+                    'Confirm Activities' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 @section('content')
 <div class="row">
@@ -155,7 +170,7 @@
                                     </table>
                                     <template v-if="havePredecessor == false"><br></template>
                                     <template v-if="havePredecessor == true">
-                                        <table class="table table-bordered">
+                                        <table class="table table-bordered tableFixed">
                                             <thead>
                                                 <tr>
                                                     <th class="p-l-5" style="width: 5%">No</th>
@@ -169,10 +184,10 @@
                                             <tbody>
                                                 <tr v-for="(data,index) in predecessorActivities">
                                                     <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                    <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                    <td class="p-b-15 p-t-15">{{ data.wbs.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.code)">{{ data.wbs.code }}</td>
                                                     <td class="textCenter">
                                                         <template v-if="data.status == 0">
                                                             <i class='fa fa-check'></i>
@@ -249,6 +264,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    menu : @json($menu),
     wbs_id: @json($wbs->id),
     predecessorActivities : [],
     activities : [],
@@ -434,7 +450,12 @@ var vm = new Vue({
         },
         confirm(){            
             var confirmActivity = this.confirmActivity;
-            var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
+            var url = "";
+            if(this.menu == "building"){
+                var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
+            }else{
+                var url = "/activity_repair/updateActualActivity/"+confirmActivity.activity_id;
+            }
             confirmActivity = JSON.stringify(confirmActivity);
             window.axios.patch(url,confirmActivity)
             .then((response) => {

@@ -419,8 +419,9 @@ Route::name('project.')->prefix('project')->group(function() {
     
     Route::post('/', 'ProjectController@store')->name('store')->middleware('can:create-project');
 
-    Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project');   
+    Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project');
     
+    Route::get('/listWBS/{id}/{menu}', 'ProjectController@listWBS')->name('listWBS')->middleware('can:show-project');
 });
 
 //Project Routes
@@ -432,73 +433,124 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
     Route::get('/ganttChart/{id}', 'ProjectController@showGanttChart')->name('showGanttChart')->middleware('can:show-project-repair');
 
     //Project
-    Route::get('/create', 'ProjectController@createRepair')->name('create')->middleware('can:create-project-repair');
+    Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project-repair');
 
-    Route::get('/', 'ProjectController@indexRepair')->name('index')->middleware('can:list-project-repair');
+    Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project-repair');
 
-    Route::get('/{id}', 'ProjectController@showRepair')->name('show')->middleware('can:show-project-repair');
+    Route::get('/{id}', 'ProjectController@show')->name('show')->middleware('can:show-project-repair');
 
-    Route::get('/{id}/edit', 'ProjectController@editRepair')->name('edit')->middleware('can:edit-project-repair');
+    Route::get('/{id}/edit', 'ProjectController@edit')->name('edit')->middleware('can:edit-project-repair');
 
-    Route::patch('/{id}', 'ProjectController@updateRepair')->name('update')->middleware('can:edit-project-repair');
+    Route::patch('/{id}', 'ProjectController@update')->name('update')->middleware('can:edit-project-repair');
     
-    Route::post('/', 'ProjectController@storeRepair')->name('store')->middleware('can:create-project-repair');
+    Route::post('/', 'ProjectController@store')->name('store')->middleware('can:create-project-repair');
 
     Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project-repair');   
     
+    Route::get('/listWBS/{id}/{menu}', 'ProjectController@listWBS')->name('listWBS')->middleware('can:show-project-repair');
+
 });
 
 // WBS Routes
 Route::name('wbs.')->prefix('wbs')->group(function() {
     // WBS & Estimator Configuration
-    Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project','can:create-project-repair');
+    Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project');
 
-    Route::get('/configWbsEstimator/{id}', 'WBSController@configWbsEstimator')->name('configWbsEstimator')->middleware('can:create-project','can:create-project-repair');
+    Route::get('/configWbsEstimator/{id}', 'WBSController@configWbsEstimator')->name('configWbsEstimator')->middleware('can:create-project');
     
     //WBS
-    Route::get('/listWBS/{id}/{menu}', 'WBSController@listWBS')->name('listWBS')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/listWBS/{id}/{menu}', 'WBSController@listWBS')->name('listWBS')->middleware('can:show-project');
 
-    Route::get('/createWBS/{id}', 'WBSController@createWBS')->name('createWBS')->middleware('can:create-project','can:create-project-repair');
+    Route::get('/createWBS/{id}', 'WBSController@createWBS')->name('createWBS')->middleware('can:create-project');
 
-    Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project','can:create-project-repair');
+    Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project');
     
-    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project','can:edit-project-repair');  
+    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');  
       
-    Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project','can:edit-project-repair');    
+    Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project');    
     
-    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project','can:create-project-repair');
+    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
+        
+    Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');    
+});
+
+// WBS Repair Routes
+Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
+    // WBS & Estimator Configuration
+    Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project-repair');
+
+    Route::get('/configWbsEstimator/{id}', 'WBSController@configWbsEstimator')->name('configWbsEstimator')->middleware('can:create-project-repair');
     
-    Route::get('/index/{id}', 'WBSController@index')->name('index')->middleware('can:show-project','can:show-project-repair');
+    //WBS
+    Route::get('/listWBS/{id}/{menu}', 'WBSController@listWBS')->name('listWBS')->middleware('can:show-project-repair');
+
+    Route::get('/createWBS/{id}', 'WBSController@createWBS')->name('createWBS')->middleware('can:create-project-repair');
+
+    Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
     
-    Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project','can:show-project-repair');    
+    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
+      
+    Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project-repair');    
+    
+    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project-repair');
+        
+    Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project-repair');    
 });
 
 // Activity Routes
 Route::name('activity.')->prefix('activity')->group(function() {
     //Confirm Activity
-    Route::get('/indexConfirm', 'ActivityController@indexConfirm')->name('indexConfirm')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/selectWbs/{id}/{menu}', 'ProjectController@listWBS')->name('selectWbs')->middleware('can:show-project');
 
-    Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/indexConfirm', 'ActivityController@indexConfirm')->name('indexConfirm')->middleware('can:show-project');
 
-    Route::patch('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project','can:edit-project-repair');    
+    Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project');
+
+    Route::patch('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project');    
 
     //Activity 
-    Route::get('/listWBS/{id}/{menu}', 'ActivityController@listWBS')->name('listWBS')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project');
 
-    Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project','can:create-project-repair');
+    Route::patch('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project');    
 
-    Route::patch('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project','can:edit-project-repair');    
-
-    Route::post('/store', 'ActivityController@store')->name('store')->middleware('can:create-project','can:create-project-repair');
+    Route::post('/store', 'ActivityController@store')->name('store')->middleware('can:create-project');
     
-    Route::get('/index/{id}', 'ActivityController@index')->name('index')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/index/{id}', 'ActivityController@index')->name('index')->middleware('can:show-project');
 
-    Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project');
     
     //Network
-    Route::patch('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project','can:edit-project-repair');
+    Route::patch('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
     
-    Route::get('/manageNetwork/{id}', 'ActivityController@manageNetwork')->name('manageNetwork')->middleware('can:show-project','can:show-project-repair');
+    Route::get('/manageNetwork/{id}', 'ActivityController@manageNetwork')->name('manageNetwork')->middleware('can:show-project');
+});
+
+// Activity Repair Routes
+Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
+    //Confirm Activity
+    Route::get('/selectWbs/{id}/{menu}', 'ProjectController@listWBS')->name('selectWbs')->middleware('can:show-project-repair');
+
+    Route::get('/indexConfirm', 'ActivityController@indexConfirm')->name('indexConfirm')->middleware('can:show-project-repair');
+
+    Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project-repair');
+
+    Route::patch('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');    
+
+    //Activity 
+    Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project-repair');
+
+    Route::patch('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project-repair');    
+
+    Route::post('/store', 'ActivityController@store')->name('store')->middleware('can:create-project-repair');
+    
+    Route::get('/index/{id}', 'ActivityController@index')->name('index')->middleware('can:show-project-repair');
+
+    Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project-repair');
+    
+    //Network
+    Route::patch('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project-repair');
+    
+    Route::get('/manageNetwork/{id}', 'ActivityController@manageNetwork')->name('manageNetwork')->middleware('can:show-project-repair');
    
 });
 
@@ -530,13 +582,13 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
 
-    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
+    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
     Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
      
     Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
 
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:create-other-cost');
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     
@@ -549,37 +601,31 @@ Route::name('rap.')->prefix('rap')->group(function() {
 Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:list-rap');
 
-    Route::get('/indexSelectProject', 'RAPController@indexSelectProjectRepair')->name('indexSelectProjectRepair')->middleware('can:list-rap-repair');
+    Route::get('/indexSelectProject', 'RAPController@indexSelectProject')->name('indexSelectProject')->middleware('can:list-rap-repair');
 
-    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:list-rap');
+    Route::get('/index/{id}', 'RAPController@index')->name('index')->middleware('can:list-rap-repair');
     
-    Route::get('/selectProjectCost', 'RAPController@selectProjectCostRepair')->name('selectProjectCostRepair')->middleware('can:create-other-cost-repair');
+    Route::get('/selectProjectCost', 'RAPController@selectProjectCost')->name('selectProjectCost')->middleware('can:create-other-cost-repair');
 
-    Route::get('/selectProjectActualOtherCost', 'RAPController@selectProjectActualOtherCostRepair')->name('selectProjectActualOtherCostRepair')->middleware('can:create-actual-other-cost-repair');
+    Route::get('/selectProjectActualOtherCost', 'RAPController@selectProjectActualOtherCost')->name('selectProjectActualOtherCost')->middleware('can:create-actual-other-cost-repair');
     
-    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCostRepair')->name('selectProjectViewCostRepair')->middleware('can:view-planned-cost-repair');
+    Route::get('/selectProjectViewCost', 'RAPController@selectProjectViewCost')->name('selectProjectViewCost')->middleware('can:view-planned-cost-repair');
 
-    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRMRepair')->name('selectProjectViewRMRepair')->middleware('can:view-remaining-material-repair');
+    Route::get('/selectProjectViewRM', 'RAPController@selectProjectViewRM')->name('selectProjectViewRM')->middleware('can:view-remaining-material-repair');
     
     Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material-repair');
 
     Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material');
 
-    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost');
+    Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost-repair');
 
-    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost-repair');
     
-    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost');
+    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost-repair');
 
-    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
-
-    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
-
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost-repair');  
      
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
-
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts')->middleware('can:create-other-cost');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost-repair');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
     

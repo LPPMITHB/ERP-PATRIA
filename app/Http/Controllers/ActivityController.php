@@ -15,119 +15,14 @@ use Auth;
 
 class ActivityController extends Controller
 {
-    public function listWBS($id, $menu){
-        $project = Project::find($id);
-        $wbss = $project->wbss;
-        $dataWbs = Collection::make();
 
-        $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
-        $dataWbs->push([
-            "id" => $project->number, 
-            "parent" => "#",
-            "text" => $project->name. " | Weight : (".$totalWeightProject."% / 100%)",
-            "icon" => "fa fa-ship"
-        ]);
-        
-        if($menu == "addAct"){
-            $route = "/activity/create/";
-            $menuTitle = "Add Activities » Select WBS";
-        }elseif($menu == "mngNet"){
-            $route = "/activity/manageNetwork/";
-            $menuTitle = "Manage Network » Select WBS";
-        }elseif($menu == "viewAct"){
-            $route = "/activity/index/";
-            $menuTitle = "View Activities » Select WBS";
-        }elseif($menu == "confirmAct"){
-            $route = "/activity/confirmActivity/";
-            $menuTitle = "Confirm Activity » Select WBS";
-        }elseif($menu == "viewWbs"){
-            $route = "/wbs/show/";
-            $menuTitle = "View WBS » Select WBS";
-        }else{
-            $route = "";
-            $menuTitle = "Select WBS";
-        }
-    
-        foreach($wbss as $wbs){
-            if($wbs->wbs){
-                if(count($wbs->activities)>0){
-                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
-                    $dataWbs->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => $route.$wbs->id],
-                    ]);
-                    foreach($wbs->activities as $activity){
-                        if($menu == "viewAct"){
-                            $dataWbs->push([
-                                "id" => $activity->code , 
-                                "parent" => $activity->wbs->code,
-                                "text" => $activity->name. " | Weight : ".$activity->weight."%",
-                                "icon" => "fa fa-clock-o",
-                                "a_attr" =>  ["href" => "/activity/show/".$activity->id],
-                        ]);
-                        }else{
-                            $dataWbs->push([
-                                "id" => $activity->code , 
-                                "parent" => $activity->wbs->code,
-                                "text" => $activity->name. " | Weight : ".$activity->weight."%)",
-                                "icon" => "fa fa-clock-o",
-                            ]);
-                        }
-                    }
-                }else{
-                    $dataWbs->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
-                        "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => $route.$wbs->id],
-                    ]);
-                }
-            }else{
-                if(count($wbs->activities)>0){
-                    foreach($wbs->activities as $activity){
-                        if($menu == "viewAct"){
-                            $dataWbs->push([
-                                "id" => $activity->code , 
-                                "parent" => $activity->wbs->code,
-                                "text" => $activity->name. " | Weight : ".$activity->weight."%",
-                                "icon" => "fa fa-clock-o",
-                                "a_attr" =>  ["href" => "/activity/show/".$activity->id],
-                        ]);
-                        }else{
-                            $dataWbs->push([
-                                "id" => $activity->code , 
-                                "parent" => $activity->wbs->code,
-                                "text" => $activity->name. " | Weight : ".$activity->weight."%)",
-                                "icon" => "fa fa-clock-o",
-                            ]);
-                        }
-                    }
-                }
-                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
-
-                $dataWbs->push([
-                    "id" => $wbs->code , 
-                    "parent" => $project->number,
-                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => $route.$wbs->id],
-                ]);
-            } 
-        } 
-        
-        return view('activity.listWBS', compact('dataWbs','project','menu','menuTitle'));
-    }
-
-    public function create($id)
+    public function create($id, Request $request)
     {
         $wbs = WBS::find($id);
         $project = $wbs->project;
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
-        return view('activity.create', compact('project', 'wbs'));
+        return view('activity.create', compact('project', 'wbs','menu'));
     }
 
     public function store(Request $request)
@@ -210,17 +105,20 @@ class ActivityController extends Controller
         }
     }
     
-    public function index($id)
+    public function index($id, Request $request)
     {
         $wbs = WBS::find($id);
         $project = $wbs->project;
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
-        return view('activity.index', compact('project','wbs'));
+        return view('activity.index', compact('project','wbs','menu'));
     }
 
-    public function show($id)
+    public function show($id,Request $request)
     {
         $activity = Activity::find($id);
+        $project = $activity->wbs->project;
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $activityPredecessor = Collection::make();
         
         if($activity->predecessor != null){
@@ -230,15 +128,15 @@ class ActivityController extends Controller
                 $activityPredecessor->push($refActivity);
             }
         }
-        return view('activity.show', compact('activity','activityPredecessor'));
+        return view('activity.show', compact('activity','activityPredecessor','menu'));
     }    
     
-    public function manageNetwork($id)
+    public function manageNetwork($id,Request $request)
     {
-        $wbs = WBS::find($id);
-        $project = $wbs->project;
+        $project = Project::find($id);
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
-        return view('activity.indexNetwork', compact('project','wbs'));
+        return view('activity.indexNetwork', compact('project','menu'));
     }
 
     public function updatePredecessor(Request $request, $id)
@@ -265,19 +163,25 @@ class ActivityController extends Controller
         }
     }
 
-    public function indexConfirm()
+    public function indexConfirm(Request $request)
     {
-        $projects = Project::all();
+        $menu = $request->route()->getPrefix() == "/activity" ? "building" : "repair";
+        if($menu == "building"){
+            $projects = Project::where('business_unit_id',1)->get();
+        }else{
+            $projects = Project::where('business_unit_id',2)->get();
+        }
 
-        return view('activity.indexConfirm', compact('projects'));
+        return view('activity.indexConfirm', compact('projects','menu'));
     }
-    
-    public function confirmActivity($id)
+
+    public function confirmActivity($id, Request $request)
     {
         $wbs = WBS::find($id);
         $project = $wbs->project;
-
-        return view('activity.confirmActivity', compact('project','wbs'));
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        dd($menu);
+        return view('activity.confirmActivity', compact('project','wbs','menu'));
     }
 
     public function updateActualActivity(Request $request, $id)
@@ -301,11 +205,19 @@ class ActivityController extends Controller
             }
             $actualStartDate = DateTime::createFromFormat('m/j/Y', $data['actual_start_date']);
             $activity->actual_start_date = $actualStartDate->format('Y-m-d');
+            $project = $activity->wbs->project;
+            if($project->actual_start_date != null){
+                if($project->actual_start_date > $activity->actual_start_date){
+                    $project->actual_start_date = $activity->actual_start_date;                    
+                }
+            }else{
+                $project->actual_start_date = $activity->actual_start_date;
+            }
             $activity->save();
 
             $wbs = $activity->wbs;
 
-            self::changeWorkProgress($wbs);
+            self::changeWbsProgress($wbs);
 
             $project = $wbs->project;
             $oldestWorks= $project->wbss->where('wbs_id', null);
@@ -344,15 +256,13 @@ class ActivityController extends Controller
 		return $activity_code;
     }
 
-    function changeWorkProgress($wbs){
+    function changeWbsProgress($wbs){
         if($wbs){
             if($wbs->wbs){
                 $progress = 0;
                 if($wbs->activities){
                     foreach($wbs->activities as $activity){
-                        if($activity->status == 0){
-                            $progress += $activity->progress * ($activity->weight/100);
-                        }
+                        $progress += $activity->progress * ($activity->weight/100);
                     }
                 }
 
@@ -363,14 +273,12 @@ class ActivityController extends Controller
                 }
                 $wbs->progress = ($progress /$wbs->weight) *100;
                 $wbs->save();
-                self::changeWorkProgress($wbs->wbs);
+                self::changeWbsProgress($wbs->wbs);
             }else{
                 $progress = 0;
                 if($wbs->activities){
                     foreach($wbs->activities as $activity){
-                        if($activity->status == 0){
-                            $progress += $activity->progress * ($activity->weight/100);
-                        }
+                        $progress += $activity->progress * ($activity->weight/100);
                     }
                 }
 
@@ -391,9 +299,9 @@ class ActivityController extends Controller
         return response($activities, Response::HTTP_OK);
     }
 
-    public function getActivitiesNetworkAPI($wbs_id){
-        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->get();
-        $project = WBS::find($wbs_id)->project;
+    public function getActivitiesNetworkAPI($project_id){
+        $project = Project::find($project_id);
+        $activities = Activity::whereIn('wbs_id',$project->wbss->pluck('id')->toArray())->orderBy('planned_start_date','asc')->get();
 
         $allActivities = Collection::make();
         foreach ($project->wbss as $wbsData) {

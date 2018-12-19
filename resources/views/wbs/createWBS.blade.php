@@ -1,17 +1,32 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Add Work Breakdown Structures',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('project.index'),
-            'Project|'.$project->number => route('project.show',$project->id),
-            'Add WBS' => ""
-        ]
-    ]
-)
-@endbreadcrumb
+    @if ($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Add Work Breakdown Structures',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project.index'),
+                    'Project|'.$project->number => route('project.show',$project->id),
+                    'Add WBS' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Add Work Breakdown Structures',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View all Projects' => route('project_repair.index'),
+                    'Project|'.$project->number => route('project_repair.show',$project->id),
+                    'Add WBS' => ""
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 @section('content')
 <div class="row">
@@ -175,6 +190,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    menu : @json($menu),
     wbs : "",
     newIndex : "", 
     project_start_date : @json($project->planned_start_date),
@@ -270,7 +286,12 @@ var vm = new Vue({
             $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
         },
         createSubWBS(data){
-            var url = "/wbs/createSubWBS/"+this.newWbs.project_id+"/"+data.id;
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createSubWBS/"+this.newWbs.project_id+"/"+data.id;
+            }else{
+                url = "/wbs_repair/createSubWBS/"+this.newWbs.project_id+"/"+data.id;                
+            }
             return url;
         },
         getWBS(){
@@ -299,7 +320,12 @@ var vm = new Vue({
         add(){            
             var newWbs = this.newWbs;
             newWbs = JSON.stringify(newWbs);
-            var url = "{{ route('wbs.store') }}";
+            var url = "";
+            if(this.menu == "building"){
+                url = "{{ route('wbs.store') }}";
+            }else{
+                url = "{{ route('wbs_repair.store') }}";              
+            }
             $('div.overlay').show();            
             window.axios.post(url,newWbs)
             .then((response) => {
@@ -333,8 +359,13 @@ var vm = new Vue({
 
         },
         update(){            
-            var editWbs = this.editWbs;            
-            var url = "/wbs/update/"+editWbs.wbs_id;
+            var editWbs = this.editWbs;    
+            var url = "";
+            if(this.menu == "building"){
+                var url = "/wbs/update/"+editWbs.wbs_id;                
+            }else{
+                var url = "/wbs_repair/update/"+editWbs.wbs_id;                
+            }        
             editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
             window.axios.patch(url,editWbs)
@@ -424,7 +455,7 @@ var vm = new Vue({
             if(roundNumber(newValue,2)>this.maxWeight){
                 iziToast.warning({
                     displayMode: 'replace',
-                    message: 'Total weight cannot be more than 100%',
+                    message: 'Total weight cannot exceed 100%',
                     position: 'topRight',
                 });
             }
@@ -441,7 +472,7 @@ var vm = new Vue({
             if(this.editWbs.weight>maxWeightEdit){
                 iziToast.warning({
                     displayMode: 'replace',
-                    message: 'Total weight cannot be more than 100%',
+                    message: 'Total weight cannot exceed 100%',
                     position: 'topRight',
                 });
             }
