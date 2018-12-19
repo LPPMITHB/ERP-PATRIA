@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View RAP » Select Project » Select RAP',
+        'title' => 'View RAP » Select RAP',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rap.indexSelectProject'),

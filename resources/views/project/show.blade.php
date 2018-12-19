@@ -102,7 +102,7 @@
                         <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->planned_duration}}</b></div>
 
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Actual Start Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding" id="project-actual_start_date"><b>: @php
                                 if($project->actual_start_date){
                                     $date = DateTime::createFromFormat('Y-m-d', $project->actual_start_date);
                                     $date = $date->format('d-m-Y');
@@ -942,7 +942,11 @@
 
                         window.axios.get('/api/getProjectActivity/'+this.project_id).then(({ data }) => {
                             this.project = data;
-                        });                      
+                        });   
+
+                        window.axios.get('/api/getActualStartDate/'+this.project_id).then(({ data }) => {
+                            document.getElementById('project-actual_start_date').innerHTML = "<b>: "+data+"</b>";
+                        });                   
 
                         window.axios.get('/api/getDataChart/'+this.project_id).then(({ data }) => {
                             var updateChart =[

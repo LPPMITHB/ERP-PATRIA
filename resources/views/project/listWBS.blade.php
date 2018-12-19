@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content-header')
-    @if ($menu == "building")
+    @if ($mainMenu == "building")
         @breadcrumb(
             [   
                 'title' => $menuTitle,

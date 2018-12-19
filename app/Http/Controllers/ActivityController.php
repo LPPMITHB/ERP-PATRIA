@@ -180,7 +180,7 @@ class ActivityController extends Controller
         $wbs = WBS::find($id);
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-
+        dd($menu);
         return view('activity.confirmActivity', compact('project','wbs','menu'));
     }
 
@@ -205,6 +205,14 @@ class ActivityController extends Controller
             }
             $actualStartDate = DateTime::createFromFormat('m/j/Y', $data['actual_start_date']);
             $activity->actual_start_date = $actualStartDate->format('Y-m-d');
+            $project = $activity->wbs->project;
+            if($project->actual_start_date != null){
+                if($project->actual_start_date > $activity->actual_start_date){
+                    $project->actual_start_date = $activity->actual_start_date;                    
+                }
+            }else{
+                $project->actual_start_date = $activity->actual_start_date;
+            }
             $activity->save();
 
             $wbs = $activity->wbs;

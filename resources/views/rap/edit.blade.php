@@ -6,6 +6,7 @@
         'title' => 'Edit RAP » '.$modelRap->number,
         'items' => [
             'Dashboard' => route('index'),
+            'Select Project' => route('rap.indexSelectProject'),
             'View RAP' => route('rap.edit',$modelRap->id),
         ]
     ]
@@ -149,7 +150,7 @@
     });
 
     var data = {
-        modelRAPD : @json($modelRAPD)
+        modelRAPD : @json($modelRAPD)   
     }
 
     var vm = new Vue({
