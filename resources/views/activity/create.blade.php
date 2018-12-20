@@ -500,7 +500,6 @@ var vm = new Vue({
         createOk: function(){
             let isOk = false;
                 if(this.newActivity.name == ""
-                || this.newActivity.description == ""
                 || this.newActivity.weight == ""
                 || this.newActivity.planned_duration == "")
                 {
@@ -511,7 +510,6 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editActivity.name == ""
-                || this.editActivity.description == ""
                 || this.editActivity.weight == ""
                 || this.editActivity.planned_duration == "")
                 {
@@ -652,6 +650,11 @@ var vm = new Vue({
                 }
             })
             .catch((error) => {
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "Please try again.. ",
+                    position: 'topRight',
+                });
                 console.log(error);
                 $('div.overlay').hide();            
             })
@@ -688,6 +691,11 @@ var vm = new Vue({
                 this.getAllActivities(); 
             })
             .catch((error) => {
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "Please try again.. ",
+                    position: 'topRight',
+                });
                 console.log(error);
                 $('div.overlay').hide();            
             })
