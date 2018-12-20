@@ -527,13 +527,12 @@ class BOMController extends Controller
     }
     
     private function generateRapNumber(){
-        $modelRap = Rap::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-
+        $modelRap = Rap::orderBy('created_at','desc')->first();
 		$number = 1;
 		if(isset($modelRap)){
-            $number += intval(substr($modelRap->number, -6));
-		}
-        $year = date('y'.'000000');
+            $number += intval(substr($modelRap->number, -5));
+        }
+        $year = date('y'.'00000');
         $year = intval($year);
 
 		$rap_number = $year+$number;

@@ -670,17 +670,16 @@ class RAPController extends Controller
 
     private function generateRapNumber(){
         $modelRap = Rap::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
-        $branch_code = substr($modelBranch->code,4,2);
 		$number = 1;
 		if(isset($modelRap)){
             $number += intval(substr($modelRap->number, -6));
 		}
-        $year = date('y'.$branch_code.'000000');
+        $year = date('y00000');
         $year = intval($year);
 
-		$rap_number = $year+$number;
+        $rap_number = $year+$number;
+        print_r($rap_number);exit();
         $rap_number = 'RAP-'.$rap_number;
 		return $rap_number;
     }
