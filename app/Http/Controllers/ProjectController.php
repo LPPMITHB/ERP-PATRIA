@@ -273,13 +273,24 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             if($project->name == $request->name){
                 if($menu == "building"){
-                    return redirect()->route('project.create')->with('error','The Project Name Has Been Taken')->withInput();
+                    return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                }
+            }
+            if($project->number == $request->number){
+                if($menu == "building"){
+                    return redirect()->route('project.create')->with('error','The project number has been taken')->withInput();
+                }else{
+                    return redirect()->route('project_repair.create')->with('error','The project number has been taken')->withInput();
                 }
             }
         }
 
         DB::beginTransaction();
-        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
+        if($menu == "building"){
+            $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
+        }else{
+            $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',2)->first();
+        }
         try {
             $project = new Project;
             $project->number =  $request->number;

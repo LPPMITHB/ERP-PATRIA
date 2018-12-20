@@ -274,6 +274,11 @@
                 window.axios.patch(url,data).then((response) => {
                 })
                 .catch((error) => {
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: "Please try again.. ",
+                        position: 'topRight',
+                    });
                     $('div.overlay').hide();
                 })
             },

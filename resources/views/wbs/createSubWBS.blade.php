@@ -289,7 +289,6 @@ var vm = new Vue({
         createOk: function(){
             let isOk = false;
                 if(this.newSubWBS.name == ""
-                || this.newSubWBS.description == ""
                 || this.newSubWBS.deliverables == ""
                 || this.newSubWBS.weight == ""
                 || this.newSubWBS.planned_deadline == "")
@@ -301,7 +300,6 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editWbs.name == ""
-                || this.editWbs.description == ""
                 || this.editWbs.deliverables == ""
                 || this.editWbs.weight == ""
                 || this.editWbs.planned_deadline == "")

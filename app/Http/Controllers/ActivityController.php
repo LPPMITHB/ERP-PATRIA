@@ -180,7 +180,6 @@ class ActivityController extends Controller
         $wbs = WBS::find($id);
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-        dd($menu);
         return view('activity.confirmActivity', compact('project','wbs','menu'));
     }
 
