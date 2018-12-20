@@ -100,6 +100,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
+                @if($route == '/rap')
                     <table class="table table-bordered showTable tableFixed" id="boms-table">
                         <thead>
                             <tr>
@@ -121,7 +122,38 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table>     
+                @elseif($route == '/rap_repair')
+                    <table class="table table-bordered showTable tableFixed" id="boms-table">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="15%">Type</th>
+                                <th width="30%">Material Name</th>
+                                <th width="10%">Quantity</th>
+                                <th width="15%">Cost per pcs</th>
+                                <th width="20%">Sub Total Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($modelRap->rapDetails as $rapDetail)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    @if($rapDetail->material_id != null)
+                                        <td>Material</td>
+                                        <td>{{ $rapDetail->material->name }}</td>
+                                    @elseif($rapDetail->service_id != null)
+                                        <td>Service</td>
+                                        <td>{{ $rapDetail->service->name }}</td>
+                                    @endif
+                                    <td>{{ $rapDetail->quantity }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity) }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>   
+                @endif
                 </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
