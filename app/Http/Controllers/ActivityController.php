@@ -317,7 +317,7 @@ class ActivityController extends Controller
                     foreach($allActivities as $refAct){
                         if($predecessorTo==$refAct->id){
                             if($activity->predecessorText == "-"){
-                                $activity->predecessorText = $refAct->code;
+                                $activity->predecessorText = $refAct->name;
                             }else{
                                 $activity->predecessorText =  $activity->predecessorText.", ".$refAct->code;
                             }
