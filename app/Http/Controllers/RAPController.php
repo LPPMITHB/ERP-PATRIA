@@ -29,15 +29,6 @@ class RAPController extends Controller
         $this->pr = $pr;
     }
 
-    // create RAP
-    // public function selectProject()
-    // {
-    //     $projects = Project::where('status',1)->get();
-    //     $menu = "create_rap";
-
-    //     return view('rap.selectProject', compact('projects','menu'));
-    // }
-
     // view RAP
     public function indexSelectProject(Request $request)
     {
@@ -113,37 +104,60 @@ class RAPController extends Controller
         return view('rap.selectProject', compact('projects','menu','route'));
     }
 
-    public function selectWBS($id)
+    public function selectWBS(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::find($id);
         $wbss = $project->wbss;
         $dataWbs = Collection::make();
 
         $dataWbs->push([
-                "id" => $project->number , 
-                "parent" => "#",
-                "text" => $project->name,
-                "icon" => "fa fa-ship"
-            ]);
-    
-        foreach($wbss as $wbs){
-            if($wbs->wbs){
-                $dataWbs->push([
-                    "id" => $wbs->code , 
-                    "parent" => $wbs->wbs->code,
-                    "text" => $wbs->name,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
-                ]);
-            }else{
-                $dataWbs->push([
-                    "id" => $wbs->code , 
-                    "parent" => $project->number,
-                    "text" => $wbs->name,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
-                ]);
-            }  
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        if($route == '/rap'){
+            foreach($wbss as $wbs){
+                if($wbs->wbs){
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }  
+            }
+        }elseif($route == '/rap_repair'){
+            foreach($wbss as $wbs){
+                if($wbs->wbs){
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }  
+            }
         }
 
         return view('rap.selectWBS', compact('project','dataWbs'));
@@ -179,11 +193,12 @@ class RAPController extends Controller
         return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation'));
     } 
     
-     public function index($id)
+     public function index(Request $request, $id)
     {
         $raps = Rap::where('project_id',$id)->get();
+        $route = $request->route()->getPrefix();
 
-        return view('rap.index', compact('raps'));
+        return view('rap.index', compact('raps','route'));
     }
 
     public function createCost($id)
@@ -207,13 +222,13 @@ class RAPController extends Controller
         $wbss = $project->wbss;
         $costs = Cost::where('project_id', $id)->get();  
         $raps = Rap::where('project_id', $id)->get();  
-
         $totalCost = 0;
+
         foreach($raps as $rap){
             $totalCost += $rap->total_price;
         }
         foreach($costs as $cost){
-            $totalCost += $cost->cost;
+            $totalCost += $cost->plan_cost;
         }
 
         $data = Collection::make();
@@ -226,20 +241,20 @@ class RAPController extends Controller
         ]);
 
         foreach($wbss as $wbs){
-            // $RapCost = 0;
-            // foreach($raps as $rap){
-            //     foreach($rap->RapDetails as $RD){
-            //         if($RD->bom->wbs_id == $wbs->id){
-            //             $RapCost += $RD->quantity * $RD->price;
-            //         }
-            //     }
-            // }
-            // $otherCost = 0;
-            // foreach($costs as $cost){
-            //     if($cost->wbs_id == $wbs->id){
-            //         $otherCost += $cost->cost;
-            //     }
-            // }
+            $RapCost = 0;
+            foreach($raps as $rap){
+                if($rap->bom->wbs_id == $wbs->id){
+                    foreach($rap->RapDetails as $RD){
+                        $RapCost += $RD->quantity * $RD->price;
+                    }
+                }
+            }
+            $otherCost = 0;
+            foreach($costs as $cost){
+                if($cost->wbs_id == $wbs->id){
+                    $otherCost += $cost->plan_cost;
+                }
+            }
             $TempwbsCost = 0;
             $wbsCost = self::getwbsCost($wbs,$TempwbsCost,$raps,$costs);
 
@@ -260,7 +275,6 @@ class RAPController extends Controller
                     "icon" => "fa fa-suitcase"
                 ]);
             }  
-            // print_r($data);exit();
         }
 
         foreach($raps as $rap){
@@ -289,14 +303,14 @@ class RAPController extends Controller
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $project->number,
-                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>',
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }else{
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $cost->wbs->code,
-                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>',
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }
@@ -318,7 +332,7 @@ class RAPController extends Controller
             $otherCost = 0;
             foreach($costs as $cost){
                 if($cost->wbs_id == $wbs->id){
-                    $otherCost += $cost->cost;
+                    $otherCost += $cost->plan_cost;
                 }
             } 
             $wbsCost += $RapCost + $otherCost;
@@ -338,7 +352,7 @@ class RAPController extends Controller
             $otherCost = 0;
             foreach($costs as $cost){
                 if($cost->wbs_id == $wbs->id){
-                    $otherCost += $cost->cost;
+                    $otherCost += $cost->plan_cost;
                 }
             } 
             $wbsCost += $RapCost + $otherCost;
@@ -355,7 +369,9 @@ class RAPController extends Controller
             $cost = new Cost;
             $cost->description = $data['description'];
             $cost->plan_cost = $data['cost'];
-            $cost->wbs_id = $data['wbs_id'];
+            if($data['wbs_id'] != ""){
+                $cost->wbs_id = $data['wbs_id'];
+            }
             $cost->project_id = $data['project_id'];
 
             $cost->user_id = Auth::user()->id;
@@ -627,6 +643,7 @@ class RAPController extends Controller
         foreach($modelRap->RapDetails as $RapDetail){
             $total_price += $RapDetail->price;
         }
+        print_r($total_price);exit();
         return $total_price;
     }
 

@@ -551,9 +551,9 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');  
      
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
 
     Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 
@@ -582,7 +582,7 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     
     Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material-repair');
 
-    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material');
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material-repair');
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost-repair');
 
@@ -590,9 +590,9 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     
     Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost-repair');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost-repair');  
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');  
      
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost-repair');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap-repair');
     
