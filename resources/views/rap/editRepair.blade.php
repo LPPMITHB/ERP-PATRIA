@@ -6,8 +6,8 @@
         'title' => 'Edit RAP » '.$modelRap->number,
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('rap.indexSelectProject'),
-            'View RAP' => route('rap.edit',$modelRap->id),
+            'Select Project' => route('rap_repair.indexSelectProject'),
+            'View RAP' => '',
         ]
     ]
 )
@@ -18,7 +18,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="edit-rap" class="form-horizontal" method="POST" action="{{ route('rap.update',['id'=>$modelRap->id]) }}">
+            <form id="edit-rap" class="form-horizontal" method="POST" action="{{ route('rap_repair.update',['id'=>$modelRap->id]) }}">
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
                 <div class="box_header">
@@ -79,7 +79,8 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material Name</th>
+                                    <th width="15%">Type</th>
+                                    <th width="30%">Material/Service</th>
                                     <th width="15%">Quantity</th>
                                     <th width="25%">Cost per pcs (Rp.)</th>
                                     <th width="25%">Sub Total Cost (Rp.)</th>
@@ -88,7 +89,10 @@
                             <tbody>
                                 <tr v-for="(rapd, index) in modelRAPD">
                                     <td>{{ index+1 }}</td>
-                                    <td>{{ rapd.material.code }} - {{ rapd.material.name }}</td>
+                                    <td class="tdEllipsis" v-if="rapd.material_id != null">Material</td>
+                                    <td class="tdEllipsis" v-else-if="rapd.service_id != null">Service</td>
+                                    <td class="tdEllipsis" v-if="rapd.material_id != null">{{ rapd.material.code }} - {{ rapd.material.name }}</td>
+                                    <td class="tdEllipsis"v-else-if="rapd.service_id != null">{{ rapd.service.code }} - {{ rapd.service.name }}</td>
                                     <td class="">{{ rapd.quantity }}</td>
                                     <td class="no-padding">
                                         <input v-model="rapd.price" class="form-control width100">

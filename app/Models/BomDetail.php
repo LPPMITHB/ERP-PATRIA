@@ -27,4 +27,9 @@ class BomDetail extends Model
     {
         return $this->belongsTo('App\Models\Branch');
     }
+
+    public function service()
+    {
+        return $this->belongsTo('App\Models\Service');
+    }
 }

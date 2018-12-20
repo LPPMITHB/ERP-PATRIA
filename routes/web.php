@@ -365,39 +365,6 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::patch('/destroy', 'BOMController@destroy')->name('destroy')->middleware('can:destroy-bom-repair');
 });
 
-//BOS Routes
-Route::name('bos.')->prefix('bos')->group(function() {
-    Route::patch('/storeAssignBos', 'BOSController@storeAssignBos')->name('storeAssignBos')->middleware('can:create-bos');
-
-    Route::get('/createBosFromProject/{id}', 'BOSController@createBosFromProject')->name('createBosFromProject');
-
-    Route::get('/create/{id}', 'BOSController@create')->name('create')->middleware('can:create-bos');
-
-    Route::get('/indexProject', 'BOSController@indexProject')->name('indexProject')->middleware('can:list-bos');
-
-    Route::get('/selectProject', 'BOSController@selectProject')->name('selectProject')->middleware('can:list-bos');
-    
-    Route::get('/selectWBS/{id}', 'BOSController@selectWBS')->name('selectWBS')->middleware('can:list-bos');
-
-    Route::get('/indexBos/{id}', 'BOSController@indexBos')->name('indexBos')->middleware('can:list-bos');
-
-    Route::get('/assignBos/{id}', 'BOSController@assignBos')->name('assignBos')->middleware('can:list-bos');
-
-    Route::get('/{id}', 'BOSController@show')->name('show')->middleware('can:show-bos');
-
-    Route::get('/{id}/edit', 'BOSController@edit')->name('edit')->middleware('can:edit-bos');
-
-    Route::patch('/', 'BOSController@update')->name('update')->middleware('can:edit-bos');
-
-    Route::patch('/updateDesc', 'BOSController@updateDesc')->name('updateDesc')->middleware('can:edit-bos');
-
-    Route::post('/', 'BOSController@store')->name('store')->middleware('can:create-bos');
-
-    Route::post('/storeBos', 'BOSController@storeBos')->name('storeBos')->middleware('can:create-bos');
-
-    Route::patch('/destroy', 'BOSController@destroy')->name('destroy')->middleware('can:destroy-bos');
-});
-
 //Project Routes
 Route::name('project.')->prefix('project')->group(function() {
     // Project Cost Evaluation
@@ -584,9 +551,9 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');  
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');  
      
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
 
     Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 
@@ -615,7 +582,7 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     
     Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material-repair');
 
-    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material');
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material-repair');
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost-repair');
 
@@ -623,15 +590,15 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     
     Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost-repair');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost-repair');  
+    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');  
      
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost-repair');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
 
-    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
+    Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap-repair');
     
-    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
+    Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap-repair');
     
-    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
+    Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap-repair');
 });
 
 //Purchase Requisition Routes

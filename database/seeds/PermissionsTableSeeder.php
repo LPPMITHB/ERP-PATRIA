@@ -165,40 +165,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        //BOS
-        $manageBOS = Menu::where('name','Manage BOS')->select('id')->first()->id;
-        DB::table('permissions')->insert([
-            'name' => 'List Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'list-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Manage Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'create-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Show Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'show-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Edit Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'edit-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-        
         //RAP
         $viewRAP = Menu::where('name','Manage RAP')->select('id')->first()->id;
         DB::table('permissions')->insert([

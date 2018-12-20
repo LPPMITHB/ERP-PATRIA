@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Material',
+        'title' => 'View Material',
         'subtitle' => 'Show',
         'items' => [
             'Dashboard' => route('index'),

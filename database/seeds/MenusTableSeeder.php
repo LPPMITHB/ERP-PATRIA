@@ -759,42 +759,6 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 2,
-            'name' => 'Bill Of Service',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $repair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        $bos =  Menu::where('name','Bill Of Service')->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Manage BOS',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'bos.indexProject',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $bos,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'View BOS',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'bos.selectProject',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $bos,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 2,
             'name' => 'Cost Plan',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
