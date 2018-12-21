@@ -47,16 +47,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- <tr>
-                            <td>1</td>
-                            <td>Code</td>
-                            <td>{{ $ship->code }}</td>
-                        </tr> --}}
-                        {{-- <tr>
-                            <td>2</td>
-                            <td>Name</td>
-                            <td>{{ $ship->name }}</td>
-                        </tr> --}}
                         <tr>
                             <td>1</td>
                             <td>Type</td>
@@ -64,11 +54,24 @@
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>Description</td>
-                            <td>{{ $ship->description }}</td>
+                            <td>Hull Number</td>
+                            @if($ship->hull_number != '')
+                                <td>{{ $ship->hull_number }}</td>
+                            @else
+                                <td>-</td>
+                            @endif
                         </tr>
                         <tr>
                             <td>3</td>
+                            <td>Description</td>
+                            @if($ship->description != '')
+                                <td>{{ $ship->description }}</td>
+                            @else
+                                <td>-</td>
+                            @endif
+                        </tr>
+                        <tr>
+                            <td>4</td>
                             <td>Status</td>
                             <td class="iconTd">
                                 @if ($ship->status == 1)

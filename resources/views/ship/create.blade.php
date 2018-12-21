@@ -42,20 +42,19 @@
                 @endif
                     @csrf
                     <div class="box-body">
-
-                        {{-- <div class="form-group">
-                            <label for="code" class="col-sm-2 control-label">Code</label>
-
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="code" name="code" required autofocus value="{{ $ship->code == null ? $ship_code: $ship->code }}">
-                            </div>
-                        </div> --}}
-
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Type</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="type" name="type" required autofocus value="{{ $ship->type }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hull_number" class="col-sm-2 control-label">Hull Number</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="hull_number" name="hull_number" value={{ $ship->hull_number }}>
                             </div>
                         </div>
 

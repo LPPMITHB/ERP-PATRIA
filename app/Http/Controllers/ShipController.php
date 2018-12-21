@@ -46,8 +46,6 @@ class ShipController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            // 'code' => 'required|alpha_dash|unique:mst_ship|string|max:255',
-            // 'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
         ]);
 
@@ -62,6 +60,7 @@ class ShipController extends Controller
         try {
             $ship = new Ship;
             $ship->type = ucwords(strtolower($request->input('type')));
+            $ship->hull_number = $request->input('hull_number');
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');
             $ship->user_id = Auth::user()->id;
@@ -112,8 +111,6 @@ class ShipController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            // 'code' => 'required|alpha_dash|unique:mst_ship,code,'.$id.',id|string|max:255',
-            // 'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
         ]);
         
@@ -121,6 +118,7 @@ class ShipController extends Controller
         try {
             $ship = Ship::find($id);
             $ship->type = ucwords(strtolower($request->input('type')));
+            $ship->hull_number = $request->input('hull_number');
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');        
             $ship->update();
