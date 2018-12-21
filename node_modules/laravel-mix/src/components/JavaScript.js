@@ -1,12 +1,13 @@
 let glob = require('glob');
 let Assert = require('../Assert');
-let MockEntryPlugin = require('../webpackPlugins/MockEntryPlugin');
 let Vue = require('./Vue');
 
 class JavaScript {
     constructor() {
         this.vue = new Vue();
         this.toCompile = [];
+
+        JavaScript.vueWebpackConfigApplied = false;
     }
 
     /**
@@ -65,7 +66,7 @@ class JavaScript {
      * webpack rules to be appended to the master config.
      */
     webpackRules() {
-        return [
+        return [].concat([
             {
                 test: /\.jsx?$/,
                 exclude: /(node_modules|bower_components)/,
@@ -76,7 +77,7 @@ class JavaScript {
                     }
                 ]
             }
-        ];
+        ]);
     }
 
     /**
@@ -85,7 +86,11 @@ class JavaScript {
      * @param {Object} webpackConfig
      */
     webpackConfig(webpackConfig) {
-        this.vue.webpackConfig(webpackConfig);
+        if (!JavaScript.vueWebpackConfigApplied) {
+            this.vue.webpackConfig(webpackConfig);
+        }
+
+        JavaScript.vueWebpackConfigApplied = true;
     }
 }
 
