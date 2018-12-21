@@ -56,32 +56,32 @@
                         <tr>
                             <td>4</td>
                             <td>Cost Standard Price</td>
-                            <td>{{ number_format($material->cost_standard_price) }}</td>
+                            <td>Rp.{{ number_format($material->cost_standard_price) }}</td>
                         </tr>
                         <tr>
                             <td>5</td>
                             <td>Weight</td>
-                            <td>{{ $material->weight }}</td>
+                            <td>{{ number_format($material->weight) }} Kg</td>
                         </tr>
                         <tr>
                             <td>6</td>
                             <td>Height</td>
-                            <td>{{ $material->height }}</td>
+                            <td>{{ number_format($material->height) }} M</td>
                         </tr>
                         <tr>
                             <td>7</td>
                             <td>Length</td>
-                            <td>{{ $material->length }}</td>
+                            <td>{{ number_format($material->length) }} M</td>
                         </tr>
                         <tr>
                             <td>8</td>
                             <td>Width</td>
-                            <td>{{ $material->width }}</td>
+                            <td>{{ number_format($material->width) }} M</td>
                         </tr>
                         <tr>
                             <td>9</td>
                             <td>Volume</td>
-                            <td>{{ $material->volume }}</td>
+                            <td>{{ number_format($material->volume) }} M<sup>3</sup></td>
                         </tr>
                         <tr>
                             <td>10</td>

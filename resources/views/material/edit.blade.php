@@ -19,17 +19,6 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <!-- @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif -->
                 <form id="edit-material" class="form-horizontal" method="POST" action="{{ route('material.update',['id'=>$material->id]) }}">
                     @csrf
                     <input type="hidden" name="_method" value="PATCH">
@@ -62,50 +51,50 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price</label>
+                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price (Rp.)</label>
             
                             <div class="col-sm-10">
-                                <input type="text" onkeypress="validate(event)" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
+                                <input type="text" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="weight" class="col-sm-2 control-label">Weight</label>
+                            <label for="weight" class="col-sm-2 control-label">Weight (Kg)</label>
             
                             <div class="col-sm-10">
-                                <input type="text" onkeypress="validate(event)" class="form-control" id="weight" v-model="submittedForm.weight">
+                                <input type="text" class="form-control" id="weight" v-model="submittedForm.weight">
                             </div>
                         </div>
                         
                             <div class="form-group">
-                                <label for="height" class="col-sm-2 control-label">Height</label>
+                                <label for="height" class="col-sm-2 control-label">Height (M)</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" onkeypress="validate(event)" class="form-control" id="height" v-model="submittedForm.height" >
+                                    <input type="text" class="form-control" id="height" v-model="submittedForm.height" >
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="length" class="col-sm-2 control-label">Length</label>
+                                <label for="length" class="col-sm-2 control-label">Length (M)</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" onkeypress="validate(event)" class="form-control" id="lengths" v-model="submittedForm.lengths" >
+                                    <input type="text" class="form-control" id="lengths" v-model="submittedForm.lengths" >
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="width" class="col-sm-2 control-label">Width</label>
+                                <label for="width" class="col-sm-2 control-label">Width (M)</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" onkeypress="validate(event)" class="form-control" id="width" v-model="submittedForm.width"  >
+                                    <input type="text" class="form-control" id="width" v-model="submittedForm.width"  >
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="volume" class="col-sm-2 control-label">Volume</label>
+                                <label for="volume" class="col-sm-2 control-label">Volume (M<sup>3</sup>)</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="number" class="form-control" id="volume" v-model="submittedForm.volume" disabled>
+                                    <input type="text" class="form-control" id="volume" v-model="submittedForm.volume" disabled>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -132,7 +121,7 @@
                                 </div>
                             </div>
                             <!-- /.box-body -->
-                            <div class="box-footer">
+                            <div class="box-footer p-r-0">
                                 <button @click.prevent="submitForm" type="submit" class="btn btn-primary pull-right">SAVE</button>
                             </div>
                         </div>
@@ -179,50 +168,72 @@
         data: data,
         methods : {
             submitForm(){
+                $('div.overlay').show();
                 this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
+                this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
+                this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
+                this.submittedForm.lengths = this.submittedForm.lengths.replace(/,/g , '');
+                this.submittedForm.width = this.submittedForm.width.replace(/,/g , '');
+                this.submittedForm.volume = this.submittedForm.volume.replace(/,/g , '');
+
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
                 form.submit();
+            },
+            calculateVolume(){
+                this.submittedForm.volume = parseInt(this.submittedForm.height.replace(/,/g , '')) * parseInt(this.submittedForm.lengths.replace(/,/g , '')) * parseInt(this.submittedForm.width.replace(/,/g , ''));
+                
+                var volume = this.submittedForm.volume;
+                this.submittedForm.volume = (volume+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         },
         watch:{
-            submittedForm: {
-                handler: function(newValue){
-                    if(this.submittedForm.height == "" || this.submittedForm.lengths == "" || this.submittedForm.width == ""){
-                        this.submittedForm.volume = 0;
-                    }else{
-                        this.submittedForm.volume = this.submittedForm.height * this.submittedForm.lengths * this.submittedForm.width;
-                    }
-                },
-                deep: true
-            },
             'submittedForm.cost_standard_price': function(newValue) {
-                this.submittedForm.cost_standard_price = (this.submittedForm.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");      
+                this.submittedForm.cost_standard_price = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             },
-        
+            'submittedForm.weight': function(newValue) {
+                this.submittedForm.weight = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            },
+            'submittedForm.height': function(newValue) {
+                this.submittedForm.height = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                
+                if(this.submittedForm.height == "" || this.submittedForm.lengths == "" || this.submittedForm.width == ""){
+                    this.submittedForm.volume = 0;
+                }else{
+                    this.calculateVolume();
+                }
+            },
+            'submittedForm.lengths': function(newValue) {
+                this.submittedForm.lengths = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                if(this.submittedForm.height == "" || this.submittedForm.lengths == "" || this.submittedForm.width == ""){
+                    this.submittedForm.volume = 0;
+                }else{
+                    this.calculateVolume();
+                }
+            },
+            'submittedForm.width': function(newValue) {
+                this.submittedForm.width = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                if(this.submittedForm.height == "" || this.submittedForm.lengths == "" || this.submittedForm.width == ""){
+                    this.submittedForm.volume = 0;
+                }else{
+                    this.calculateVolume();
+                }
+            },
         },
+        created: function() {
+            this.submittedForm.cost_standard_price = (this.submittedForm.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            this.submittedForm.weight = (this.submittedForm.weight+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            this.submittedForm.height = (this.submittedForm.height+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            this.submittedForm.lengths = (this.submittedForm.lengths+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            this.submittedForm.width = (this.submittedForm.width+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            this.submittedForm.volume = (this.submittedForm.volume+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
     });
-
-function validate(evt) {
-  var theEvent = evt || window.event;
-
-  // Handle paste
-  if (theEvent.type === 'paste') {
-      key = event.clipboardData.getData('text/plain');
-  } else {
-  // Handle key press
-      var key = theEvent.keyCode || theEvent.which;
-      key = String.fromCharCode(key);
-  }
-  var regex = /[0-9]|\./;
-  if( !regex.test(key) ) {
-    theEvent.returnValue = false;
-    if(theEvent.preventDefault) theEvent.preventDefault();
-  }
-}
 </script>
 
 @endpush
