@@ -158,7 +158,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('script')
@@ -168,7 +167,6 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
-
     var data = {
         submit: "ok",
         project : @json($project),

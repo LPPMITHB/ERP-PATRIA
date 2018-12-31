@@ -22767,7 +22767,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 
 .content-wrapper,
 .main-footer {
-  -webkit-transition: -webkit-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
   -webkit-transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out;
@@ -22938,7 +22938,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   min-height: 100%;
   width: 210px;
   z-index: 810;
-  -webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
   -webkit-transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
@@ -23003,7 +23003,11 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
     border-top-right-radius: 4px;
   }
 
-  .sidebar-mini.sidebar-collapse .sidebar-menu > li:not(.treeview) > a > span {
+  .sidebar-mini.sidebar-collapse
+.sidebar-menu
+> li:not(.treeview)
+> a
+> span {
     border-bottom-right-radius: 4px;
   }
 
@@ -23044,22 +23048,37 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 }
 
 @media (min-width: 768px) {
-  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right),
-  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse
+.sidebar-menu
+> li:hover
+> a
+> span:not(.pull-right),
+  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse
+.sidebar-menu
+> li:hover
+> .treeview-menu {
     display: block !important;
     position: absolute;
     width: 180px;
     left: 50px;
   }
 
-  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > a > span {
+  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse
+.sidebar-menu
+> li:hover
+> a
+> span {
     top: 0;
     margin-left: -3px;
     padding: 12px 5px 12px 20px;
     background-color: inherit;
   }
 
-  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container {
+  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse
+.sidebar-menu
+> li:hover
+> a
+> .pull-right-container {
     position: relative !important;
     float: right;
     width: auto !important;
@@ -23068,11 +23087,19 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
     z-index: 900;
   }
 
-  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container > .label:not(:first-of-type) {
+  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse
+.sidebar-menu
+> li:hover
+> a
+> .pull-right-container
+> .label:not(:first-of-type) {
     display: none;
   }
 
-  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+  .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse
+.sidebar-menu
+> li:hover
+> .treeview-menu {
     top: 44px;
     margin-left: 0;
   }
@@ -23261,11 +23288,11 @@ textarea {
 }
 
 .bg-blue {
-  background-color: #1CCAFF !important;
+  background-color: #1ccaff !important;
 }
 
 .box.box-blue {
-  border-top-color: #1CCAFF;
+  border-top-color: #1ccaff;
 }
 
 .info-box {
@@ -23422,7 +23449,7 @@ textarea {
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-  background-color: #818B99;
+  background-color: #818b99;
   border: 3px solid transparent;
   border-radius: 9px;
   background-clip: content-box;
@@ -23430,6 +23457,10 @@ textarea {
 
 .tablePaging {
   width: 100% !important;
+}
+
+.error-page {
+  margin: 0px auto 0 auto;
 }
 
 /*
