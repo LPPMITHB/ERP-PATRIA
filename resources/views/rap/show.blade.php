@@ -1,17 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View RAP » '.$modelRap->project->name,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('rap.indexSelectProject'),
-            'View RAP' => route('rap.show',$modelRap->id),
+@if($route == "/rap")
+    @breadcrumb(
+        [
+            'title' => 'View RAP » '.$modelRap->project->name,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap.indexSelectProject'),
+                'Select RAP' => route('rap.index',$modelRap->project_id),
+                'View RAP' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/rap_repair")
+    @breadcrumb(
+        [
+            'title' => 'View RAP » '.$modelRap->project->name,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap_repair.indexSelectProject'),
+                'Select RAP' => route('rap_repair.index',$modelRap->project_id),
+                'View RAP' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')

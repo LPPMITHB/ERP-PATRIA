@@ -7,7 +7,8 @@
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rap_repair.indexSelectProject'),
-            'View RAP' => '',
+            'Select RAP' => route('rap_repair.index',$modelRap->project_id),
+            'Edit RAP' => '',
         ]
     ]
 )

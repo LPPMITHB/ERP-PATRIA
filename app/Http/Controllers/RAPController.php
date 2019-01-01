@@ -160,12 +160,13 @@ class RAPController extends Controller
             }
         }
 
-        return view('rap.selectWBS', compact('project','dataWbs'));
+        return view('rap.selectWBS', compact('project','dataWbs','route'));
     }
 
 
-    public function showMaterialEvaluation($id)
+    public function showMaterialEvaluation(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = $wbs->project;
         $materialEvaluation = Collection::make();
@@ -192,7 +193,7 @@ class RAPController extends Controller
                 }
             }
         }
-        return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation'));
+        return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation','route'));
     } 
     
      public function index(Request $request, $id)
@@ -203,23 +204,26 @@ class RAPController extends Controller
         return view('rap.index', compact('raps','route'));
     }
 
-    public function createCost($id)
+    public function createCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);  
         
-        return view('rap.createOtherCost', compact('project'));
+        return view('rap.createOtherCost', compact('project','route'));
     }
 
-    public function inputActualOtherCost($id)
+    public function inputActualOtherCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);       
         $modelOtherCost = Cost::with('project','wbs')->get();   
 
-        return view('rap.inputActualOtherCost', compact('project','modelOtherCost'));
+        return view('rap.inputActualOtherCost', compact('project','modelOtherCost','route'));
     }
 
-    public function viewPlannedCost($id)
+    public function viewPlannedCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);   
         $wbss = $project->wbss;
         $costs = Cost::where('project_id', $id)->get();  
@@ -317,7 +321,7 @@ class RAPController extends Controller
                 ]);
             }
         }
-        return view('rap.viewPlannedCost', compact('project','costs','data'));
+        return view('rap.viewPlannedCost', compact('project','costs','data','route'));
     }
 
     public function getWbsCost($wbs,$wbsCost,$raps,$costs){
