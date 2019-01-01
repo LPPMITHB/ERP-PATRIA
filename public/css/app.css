@@ -23325,6 +23325,13 @@ textarea {
   margin-top: 20px;
 }
 
+.tablePaging,
+.tableNonPaging,
+.tablePagingVue,
+.tableNonPagingVue {
+  width: 100% !important;
+}
+
 @media only screen and (max-device-width: 1024px) {
   .mobile_device_landscape {
     margin-left: 15px;
@@ -23343,8 +23350,12 @@ textarea {
     display: none;
   }
 
-  .tableFixed {
-    width: 180%;
+  .tableFixed,
+  .tablePaging,
+  .tableNonPaging,
+  .tablePagingVue,
+  .tableNonPagingVue {
+    width: 180% !important;
   }
 
   .table {
@@ -23377,8 +23388,12 @@ textarea {
     display: none;
   }
 
-  .tableFixed {
-    width: 300%;
+  .tableFixed,
+  .tablePaging,
+  .tableNonPaging,
+  .tablePagingVue,
+  .tableNonPagingVue {
+    width: 300% !important;
   }
 
   .table {
@@ -23426,13 +23441,6 @@ textarea {
   border: 3px solid transparent;
   border-radius: 9px;
   background-clip: content-box;
-}
-
-.tablePaging,
-.tableNonPaging,
-.tablePagingVue,
-.tableNonPagingVue {
-  width: 100% !important;
 }
 
 .error-page {

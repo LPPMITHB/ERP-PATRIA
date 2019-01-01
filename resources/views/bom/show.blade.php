@@ -81,7 +81,11 @@
                     <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->description}}"><b>: {{$modelBOM->description}}</b></div>
 
                     <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                    <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
+                    @if($route == "/bom")
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
+                    @elseif($route == "/bom_repair")
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap_repair.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
+                    @endif
 
                     @if(isset($modelPR))
                         <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
