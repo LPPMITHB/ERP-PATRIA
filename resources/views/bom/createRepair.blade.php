@@ -2,12 +2,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Manage BOM/BOS',
-        'subtitle' => '',
+        'title' => 'Manage BOM / BOS',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('bom.indexProject'),
-            'Select WBS' => route('bom.selectWBS',$project->id),
+            'Select Project' => route('bom_repair.indexProject'),
+            'Select WBS' => route('bom_repair.selectWBS',$project->id),
             'Manage BOM/BOS' => '',
         ]
     ]

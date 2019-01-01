@@ -68,18 +68,20 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="25%">Project Name</th>
-                            <th width="40%">Customer</th>
-                            <th width="25%">Ship</th>
-                            <th width="5%"></th>
+                            <th width="15%">Project Number</th>
+                            <th width="30%">Customer</th>
+                            <th width="20%">Ship Name</th>
+                            <th width="20%">Ship Type</th>
+                            <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($projects as $project)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $project->name }}</td>
+                                <td>{{ $project->number }}</td>
                                 <td>{{ $project->customer->name }}</td>
+                                <td>{{ $project->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 @if($route == '/rap')
                                     @if($menu == "view_rap")

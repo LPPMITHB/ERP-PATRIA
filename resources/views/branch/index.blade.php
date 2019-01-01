@@ -23,7 +23,6 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body p-b-0 p-t-15">
-            {{-- <div style ="overflow:scroll"> --}}
                 <table class="table table-bordered tableFixed tablePaging">
                     <thead>
                         <tr>

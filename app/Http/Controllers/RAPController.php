@@ -493,9 +493,28 @@ class RAPController extends Controller
     public function show(Request $request,$id)
     {
         $route = $request->route()->getPrefix();
-        $modelRap = Rap::findOrFail($id);
-
-        return view('rap.show', compact('modelRap','route'));
+        $modelRap = Rap::find($id);
+        if($route == "/rap"){
+            if($modelRap){
+                if($modelRap->project->business_unit_id == 1){
+                    return view('rap.show', compact('modelRap','route'));
+                }else{
+                    return redirect()->route('rap.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+                }
+            }else{
+                return redirect()->route('rap.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+            }
+        }elseif($route == "/rap_repair"){
+            if($modelRap){
+                if($modelRap->project->business_unit_id == 2){
+                    return view('rap.show', compact('modelRap','route'));
+                }else{
+                    return redirect()->route('rap_repair.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+                }
+            }else{
+                return redirect()->route('rap_repair.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+            }
+        }
     }
 
     public function edit(Request $request,$id)
