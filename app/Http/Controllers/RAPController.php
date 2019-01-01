@@ -172,22 +172,24 @@ class RAPController extends Controller
         $modelBom = Bom::where('wbs_id',$id)->first();
 
         foreach($modelBom->bomDetails as $bomDetail){
-            if(count($bomDetail->material->materialRequisitionDetails)>0){
-                foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                    if ($mrd->wbs_id == $id) {
-                        $materialEvaluation->push([
-                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                            "quantity" => $bomDetail->quantity,
-                            "used" => $mrd->issued,
-                        ]);
+            if($bomDetail->material){
+                if(count($bomDetail->material->materialRequisitionDetails)>0){
+                    foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                        if ($mrd->wbs_id == $id) {
+                            $materialEvaluation->push([
+                                "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                "quantity" => $bomDetail->quantity,
+                                "used" => $mrd->issued,
+                            ]);
+                        }
                     }
+                }else{
+                    $materialEvaluation->push([
+                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                        "quantity" => $bomDetail->quantity,
+                        "used" => 0,
+                    ]);
                 }
-            }else{
-                $materialEvaluation->push([
-                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                    "quantity" => $bomDetail->quantity,
-                    "used" => 0,
-                ]);
             }
         }
         return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation'));

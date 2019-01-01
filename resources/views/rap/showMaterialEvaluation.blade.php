@@ -57,8 +57,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0">
-                <h4>Material Evaluation</h4>
-                <table class="table table-bordered showTable tablePagingVue scroll" style="border-collapse:collapse;">
+                <table class="table table-bordered showTable tablePagingVue tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -114,7 +113,7 @@
         var tablePagingVue = $('.tablePagingVue').DataTable( {
             orderCellsTop   : true,
             paging          : true,
-            autoWidth       : true,
+            autoWidth       : false,
             lengthChange    : false,
             info            : false,
         });

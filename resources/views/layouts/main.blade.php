@@ -118,7 +118,7 @@
                 orderCellsTop   : true,
                 fixedHeader     : true,
                 paging          : true,
-                autoWidth       : true,
+                autoWidth       : false,
                 lengthChange    : false,
             });
 
@@ -145,7 +145,7 @@
             var tableNonPaging = $('.tableNonPaging').DataTable( {
                 orderCellsTop   : true,
                 paging          : false,
-                autoWidth       : true,
+                autoWidth       : false,
                 lengthChange    : false,
                 info            : false,
             });

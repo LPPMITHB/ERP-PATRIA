@@ -384,7 +384,7 @@ class BOMController extends Controller
 
                     // create PR & Reserve stock
                     self::checkStockEdit($data,$modelRap->project_id);
-                }else{
+                }elseif($route == "/bom_repair"){
                     $rap_detail->material_id = $bom_detail->material_id;
                     $rap_detail->service_id = $bom_detail->service_id;
                     $rap_detail->quantity = $data['quantityInt'];
@@ -394,14 +394,16 @@ class BOMController extends Controller
                         $rap_detail->price = $bom_detail->service->cost_standard_price * $data['quantityInt'];
                     }
                     $rap_detail->save();
-                }
 
+                    // create PR & Reserve stock
+                    self::checkStockEdit($data,$modelRap->project_id);
+                }
                 DB::commit();
                 return response(json_encode($bom_detail),Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('bom_repair.indexProjectRepair')->with('error', $e->getMessage());
+            return redirect()->route('bom_repair.indexProject')->with('error', $e->getMessage());
         }
     }
 
@@ -734,7 +736,7 @@ class BOMController extends Controller
                     $PR->number = $pr_number;
                     $PR->valid_date = $valid_to;
                     $PR->project_id = $project_id;
-                    $PR->bom_id = $bom->id;
+                    $PR->bom_id = $data['bom_id'];
                     $PR->description = 'AUTO PR FOR '.$modelProject->number;
                     $PR->status = 1;
                     $PR->user_id = Auth::user()->id;
@@ -746,7 +748,6 @@ class BOMController extends Controller
             // reservasi & PR Detail
             $modelStock = Stock::where('material_id',$data['material_id'])->first();
             $modelBom = Bom::findOrFail($data['bom_id']);
-            
             if(isset($modelStock)){
                 $remaining = $modelStock->quantity - $modelStock->reserved;
                 if($remaining < $data['quantityInt']){

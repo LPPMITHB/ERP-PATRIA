@@ -188,7 +188,7 @@
         var table = $('.tableNonPagingVue').DataTable( {
             orderCellsTop   : true,
             paging          : false,
-            autoWidth       : true,
+            autoWidth       : false,
             lengthChange    : false,
             info            : false,
         });
