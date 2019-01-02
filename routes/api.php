@@ -42,10 +42,10 @@ Route::get('/getNewCost/{id}', 'RAPController@getNewCostAPI')->name('api.bom.get
 Route::get('/getAllWorks/{id}', 'RAPController@getAllWorksCostAPI')->name('api.bom.getAllWorksCostAPI');
 
 // purchase_requisition
-Route::get('/getProject/{id}', 'PurchaseRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');
+Route::get('/getProjectPR/{id}', 'PurchaseRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');
 Route::get('/getMaterialPR/{id}', 'PurchaseRequisitionController@getMaterialAPI')->name('api.purchase_requisition.getMaterialAPI');
-Route::get('/getMaterials/{id}', 'PurchaseRequisitionController@getMaterialsAPI')->name('api.purchase_requisition.getMaterialsAPI');
-Route::get('/getWork/{id}', 'PurchaseRequisitionController@getWorkAPI')->name('api.purchase_requisition.getWorkAPI');
+// Route::get('/getMaterials/{id}', 'PurchaseRequisitionController@getMaterialsAPI')->name('api.purchase_requisition.getMaterialsAPI');
+Route::get('/getWbsPR/{id}', 'PurchaseRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
 Route::get('/getPRD/{id}', 'PurchaseRequisitionController@getPRDAPI')->name('api.purchase_requisition.getPRDAPI');
 
 // material_requisition
