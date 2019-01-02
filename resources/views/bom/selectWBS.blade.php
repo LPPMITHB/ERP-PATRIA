@@ -1,18 +1,33 @@
 @extends('layouts.main')
+
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Manage Bill Of Materials » Select WBS',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('bom.indexProject'),
-            'Select WBS' => route('bom.indexProject'),
+@if($route == '/bom')
+    @breadcrumb(
+        [
+            'title' => 'Manage Bill Of Materials » Select WBS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('bom.indexProject'),
+                'Select WBS' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == '/bom_repair')
+    @breadcrumb(
+        [
+            'title' => 'Manage BOM / BOS » Select WBS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('bom_repair.indexProject'),
+                'Select WBS' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
+
 @section('content')
 <div class="row">
     <div class="col-md-12">
@@ -63,9 +78,9 @@
     </div>
 </div>
 @endsection
+
 @push('script')
 <script>
-
     $(document).ready(function(){
         var data = @json($data);
 
@@ -87,13 +102,9 @@
                 document.location = data.node.a_attr.href;
             }
         }).bind("loaded.jstree", function (event, data) {
-            // you get two params - event & data - check the core docs for a detailed description
             $(this).jstree("open_all");
         });
-
         $('div.overlay').hide();
     });
-        
-
 </script>
 @endpush

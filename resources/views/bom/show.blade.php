@@ -1,19 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Bill Of Material',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('bom.indexProject'),
-            'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
-            'View Bill Of Material' => route('bom.show', ['id' => $modelBOM->id]),
+@if($route == "/bom")
+    @breadcrumb(
+        [
+            'title' => 'View Bill Of Material',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('bom.indexProject'),
+                'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
+                'View Bill Of Material' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/bom_repair")
+    @breadcrumb(
+        [
+            'title' => 'View BOM / BOS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('bom_repair.indexProject'),
+                'Select BOM / BOS' => route('bom_repair.indexBom', ['id' => $modelBOM->project_id]),
+                'View BOM / BOS' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -21,7 +35,7 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="box ">
-            <div class="box-header">
+            <div class="box-header p-l-0 p-r-0 p-b-0">
                 <div class="col-xs-12 col-md-4">
                     <div class="col-sm-12 no-padding"><b>Project Information</b></div>
 
@@ -67,7 +81,11 @@
                     <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->description}}"><b>: {{$modelBOM->description}}</b></div>
 
                     <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                    <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
+                    @if($route == "/bom")
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
+                    @elseif($route == "/bom_repair")
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap_repair.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
+                    @endif
 
                     @if(isset($modelPR))
                         <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
@@ -88,9 +106,9 @@
                 </div>
             </div>
             @verbatim
-            <div class="box-body" id="show-bom">
+            <div class="box-body p-t-0" id="show-bom">
                 <template v-if="route == '/bom'">
-                    <table id="materials-table" class="table table-bordered">
+                <table class="table table-bordered tablePagingVue">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -111,24 +129,27 @@
                     </table>
                 </template>
                 <template v-else-if="route == '/bom_repair'">
-                    <table id="materials-table" class="table table-bordered">
+                    <table class="table table-bordered tablePagingVue">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
+                                <th width="10%">Type</th>
                                 <th width="35%">Material Name</th>
-                                <th width="45%">Description</th>
-                                <th width="15%">Quantity</th>
+                                <th width="40%">Description</th>
+                                <th width="10%">Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(bomDetail,index) in bomDetail">
                                 <td class="p-t-15 p-b-15">{{ index+1 }}</td>
                                 <template v-if="bomDetail.material_id != null">
+                                    <td >Material</td>
                                     <td >{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
                                     <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
                                     <td v-else>-</td>
                                 </template>
                                 <template v-else-if="bomDetail.service_id != null">
+                                    <td >Service</td>
                                     <td >{{ bomDetail.service.code }} - {{ bomDetail.service.name }}</td>
                                     <td v-if="bomDetail.service.description != null">{{ bomDetail.service.description }}</td>
                                     <td v-else>-</td>
@@ -151,17 +172,33 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#materials-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').hide();
+        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'Status' || title == 'No' || title == ""){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
             }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tablePagingVue.column(i).search() !== this.value ) {
+                    tablePagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
         });
+
+        var tablePagingVue = $('.tablePagingVue').DataTable( {
+            orderCellsTop   : true,
+            fixedHeader     : true,
+            paging          : true,
+            autoWidth       : true,
+            lengthChange    : false,
+        });
+        $('div.overlay').hide();
     });
 
     var data = {

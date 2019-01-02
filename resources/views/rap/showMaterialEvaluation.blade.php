@@ -1,18 +1,35 @@
 @extends('layouts.main')
+
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Remaining Material',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('rap.selectProjectViewRM'),
-            'Select WBS' => route('rap.selectWBS',$project->id),
-            'Show Remaining Material' => ""
+@if($route == "/rap")
+    @breadcrumb(
+        [
+            'title' => 'View Remaining Material',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap.selectProjectViewRM'),
+                'Select WBS' => route('rap.selectWBS',$project->id),
+                'Show Remaining Material' => ""
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/rap_repair")
+    @breadcrumb(
+        [
+            'title' => 'View Remaining Material',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap_repair.selectProjectViewRM'),
+                'Select WBS' => route('rap_repair.selectWBS',$project->id),
+                'Show Remaining Material' => ""
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
+
 @section('content')
 <div class="row">
     <div class="col-md-12">
@@ -57,8 +74,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0">
-                <h4>Material Evaluation</h4>
-                <table class="table table-bordered showTable tablePagingVue scroll" style="border-collapse:collapse;">
+                <table class="table table-bordered showTable tablePagingVue tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -114,7 +130,7 @@
         var tablePagingVue = $('.tablePagingVue').DataTable( {
             orderCellsTop   : true,
             paging          : true,
-            autoWidth       : true,
+            autoWidth       : false,
             lengthChange    : false,
             info            : false,
         });

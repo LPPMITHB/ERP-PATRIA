@@ -30,25 +30,31 @@ class BOMController extends Controller
     {
         $this->pr = $pr;
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function indexProject(Request $request)
     {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
-        $menu = $request->route()->getPrefix();
+        $route = $request->route()->getPrefix();
 
-        return view('bom.indexProject', compact('projects','menu'));
+        if($route == '/bom'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/bom_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+
+        return view('bom.indexProject', compact('projects','route'));
     }
 
     public function selectProject(Request $request)
     {
-        $projects = Project::where('status',1)->where('business_unit_id',1)->get();
-        $menu = $request->route()->getPrefix();
+        $route = $request->route()->getPrefix();
 
-        return view('bom.selectProject', compact('projects','menu'));
+        if($route == '/bom'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/bom_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+
+        return view('bom.selectProject', compact('projects','route'));
     }
 
     public function selectWBS(Request $request, $id)
@@ -59,100 +65,108 @@ class BOMController extends Controller
         $data = Collection::make();
 
         $data->push([
-                "id" => $project->number , 
-                "parent" => "#",
-                "text" => $project->name,
-                "icon" => "fa fa-ship"
-            ]);
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
         if($route == '/bom'){
-            foreach($wbss as $wbs){
-                $bom_code = "";
-                $bom = Bom::where('wbs_id',$wbs->id)->first();
-                if($bom){
-                    $bom_code = " - ".$bom->code;
-                    if($wbs->wbs){
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
-                        ]);
+            if($project->business_unit_id == 1){
+                foreach($wbss as $wbs){
+                    $bom_code = "";
+                    $bom = Bom::where('wbs_id',$wbs->id)->first();
+                    if($bom){
+                        $bom_code = " - ".$bom->code;
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                            ]);
+                        } 
                     }else{
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $project->number,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
-                        ]);
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
+                            ]);
+                        } 
                     } 
-                }else{
-                    if($wbs->wbs){
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
-                        ]);
-                    }else{
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $project->number,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
-                        ]);
-                    } 
-                } 
+                }
+            }else{
+                return redirect()->route('bom.indexProject')->with('error', 'Project isn\'t exist, Please try again !');
             }
         }elseif($route == '/bom_repair'){
-            foreach($wbss as $wbs){
-                $bom_code = "";
-                $bom = Bom::where('wbs_id',$wbs->id)->first();
-                if($bom){
-                    $bom_code = " - ".$bom->code;
-                    if($wbs->wbs){
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
-                        ]);
+            if($project->business_unit_id == 2){
+                foreach($wbss as $wbs){
+                    $bom_code = "";
+                    $bom = Bom::where('wbs_id',$wbs->id)->first();
+                    if($bom){
+                        $bom_code = " - ".$bom->code;
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                            ]);
+                        } 
                     }else{
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $project->number,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
-                        ]);
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->name. ''.$bom_code,
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                            ]);
+                        } 
                     } 
-                }else{
-                    if($wbs->wbs){
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
-                        ]);
-                    }else{
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $project->number,
-                            "text" => $wbs->name. ''.$bom_code,
-                            "icon" => "fa fa-suitcase",
-                            "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
-                        ]);
-                    } 
-                } 
+                }
+            }else{
+                return redirect()->route('bom_repair.indexProject')->with('error', 'Project isn\'t exist, Please try again !');
             }
         }
-        
-        return view('bom.selectWBS', compact('project','data'));
+        return view('bom.selectWBS', compact('project','data','route'));
     }
 
     public function indexBom(Request $request,$id)
@@ -271,10 +285,18 @@ class BOMController extends Controller
         $materials = Material::orderBy('name')->get()->jsonSerialize();
         
         if($route == '/bom'){
-            return view('bom.create', compact('project','materials','wbs'));
+            if($project->business_unit_id == 1){
+                return view('bom.create', compact('project','materials','wbs'));
+            }else{
+                return redirect()->route('bom.indexProject')->with('error', 'WBS isn\'t exist, Please try again !');
+            }
         }elseif($route == '/bom_repair'){
-            $services = Service::orderBy('name')->get()->jsonSerialize();
-            return view('bom.createRepair', compact('project','materials','wbs','services'));
+            if($project->business_unit_id == 2){
+                $services = Service::orderBy('name')->get()->jsonSerialize();
+                return view('bom.createRepair', compact('project','materials','wbs','services'));
+            }else{
+                return redirect()->route('bom_repair.indexProject')->with('error', 'WBS isn\'t exist, Please try again !');
+            }
         }
     }
 
@@ -362,7 +384,7 @@ class BOMController extends Controller
 
                     // create PR & Reserve stock
                     self::checkStockEdit($data,$modelRap->project_id);
-                }else{
+                }elseif($route == "/bom_repair"){
                     $rap_detail->material_id = $bom_detail->material_id;
                     $rap_detail->service_id = $bom_detail->service_id;
                     $rap_detail->quantity = $data['quantityInt'];
@@ -372,14 +394,16 @@ class BOMController extends Controller
                         $rap_detail->price = $bom_detail->service->cost_standard_price * $data['quantityInt'];
                     }
                     $rap_detail->save();
-                }
 
+                    // create PR & Reserve stock
+                    self::checkStockEdit($data,$modelRap->project_id);
+                }
                 DB::commit();
                 return response(json_encode($bom_detail),Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('bom_repair.indexProjectRepair')->with('error', $e->getMessage());
+            return redirect()->route('bom_repair.indexProject')->with('error', $e->getMessage());
         }
     }
 
@@ -406,28 +430,27 @@ class BOMController extends Controller
     public function edit(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $pr_number = '-';
-        $rap_number = '-';
         $modelBOM = Bom::where('id',$id)->with('project')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service')->get();
+        $project = Project::where('id',$modelBOM->project_id)->with('ship','customer')->first();
+        $modelPR = PurchaseRequisition::where('bom_id',$modelBOM->id)->first();
+        $modelRAP = Rap::where('bom_id',$modelBOM->id)->first();
+
         $materials = Material::orderBy('name')->get()->jsonSerialize();
         $services = Service::orderBy('name')->get()->jsonSerialize();
-        $project = $modelBOM->project;
-        $project = Project::find($project->id)->with('ship','customer')->first();
 
-        $modelPR = PurchaseRequisition::where('bom_id',$modelBOM->id)->first();
-        if(isset($modelPR)){
-            $pr_number = $modelPR->number;
-        }
-
-        $modelRAP = Rap::where('bom_id',$modelBOM->id)->first();
-        if(isset($modelRAP)){
-            $rap_number = $modelRAP->number;
-        }
         if($route == '/bom'){
-            return view('bom.edit', compact('modelBOM','materials','modelBOMDetail','project','pr_number','rap_number','modelPR','modelRAP'));
-        }else{
-            return view('bom.editRepair', compact('modelBOM','materials','services','modelBOMDetail','project','pr_number','rap_number','modelPR','modelRAP'));
+            if($project->business_unit_id == 1){
+                return view('bom.edit', compact('modelBOM','materials','modelBOMDetail','project','pr_number','rap_number','modelPR','modelRAP'));
+            }else{
+                return redirect()->route('bom.selectProject')->with('error', 'BOM isn\'t exist, Please try again !');
+            }
+        }elseif($route == '/bom_repair'){
+            if($project->business_unit_id == 2){
+                return view('bom.editRepair', compact('modelBOM','materials','services','modelBOMDetail','project','modelPR','modelRAP'));
+            }else{
+                return redirect()->route('bom_repair.selectProject')->with('error', 'BOM / BOS isn\'t exist, Please try again !');
+            }
         }
     }
 
@@ -713,7 +736,7 @@ class BOMController extends Controller
                     $PR->number = $pr_number;
                     $PR->valid_date = $valid_to;
                     $PR->project_id = $project_id;
-                    $PR->bom_id = $bom->id;
+                    $PR->bom_id = $data['bom_id'];
                     $PR->description = 'AUTO PR FOR '.$modelProject->number;
                     $PR->status = 1;
                     $PR->user_id = Auth::user()->id;
@@ -725,7 +748,6 @@ class BOMController extends Controller
             // reservasi & PR Detail
             $modelStock = Stock::where('material_id',$data['material_id'])->first();
             $modelBom = Bom::findOrFail($data['bom_id']);
-            
             if(isset($modelStock)){
                 $remaining = $modelStock->quantity - $modelStock->reserved;
                 if($remaining < $data['quantityInt']){
@@ -791,22 +813,5 @@ class BOMController extends Controller
         $ids = json_decode($ids);
 
         return response(Service::orderBy('name')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
-    }
-
-    // Untuk Module Ship Repair
-    public function indexProjectRepair(Request $request)
-    {
-        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
-        $menu = $request->route()->getPrefix();
-        
-        return view('bom.indexProject', compact('projects','menu'));
-    }
-
-    public function selectProjectRepair(Request $request)
-    {
-        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
-        $menu = $request->route()->getPrefix();
-
-        return view('bom.selectProject', compact('projects','menu'));
     }
 }

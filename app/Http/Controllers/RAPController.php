@@ -160,37 +160,40 @@ class RAPController extends Controller
             }
         }
 
-        return view('rap.selectWBS', compact('project','dataWbs'));
+        return view('rap.selectWBS', compact('project','dataWbs','route'));
     }
 
 
-    public function showMaterialEvaluation($id)
+    public function showMaterialEvaluation(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = $wbs->project;
         $materialEvaluation = Collection::make();
         $modelBom = Bom::where('wbs_id',$id)->first();
 
         foreach($modelBom->bomDetails as $bomDetail){
-            if(count($bomDetail->material->materialRequisitionDetails)>0){
-                foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                    if ($mrd->wbs_id == $id) {
-                        $materialEvaluation->push([
-                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                            "quantity" => $bomDetail->quantity,
-                            "used" => $mrd->issued,
-                        ]);
+            if($bomDetail->material){
+                if(count($bomDetail->material->materialRequisitionDetails)>0){
+                    foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                        if ($mrd->wbs_id == $id) {
+                            $materialEvaluation->push([
+                                "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                "quantity" => $bomDetail->quantity,
+                                "used" => $mrd->issued,
+                            ]);
+                        }
                     }
+                }else{
+                    $materialEvaluation->push([
+                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                        "quantity" => $bomDetail->quantity,
+                        "used" => 0,
+                    ]);
                 }
-            }else{
-                $materialEvaluation->push([
-                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                    "quantity" => $bomDetail->quantity,
-                    "used" => 0,
-                ]);
             }
         }
-        return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation'));
+        return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation','route'));
     } 
     
      public function index(Request $request, $id)
@@ -201,23 +204,26 @@ class RAPController extends Controller
         return view('rap.index', compact('raps','route'));
     }
 
-    public function createCost($id)
+    public function createCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);  
         
-        return view('rap.createOtherCost', compact('project'));
+        return view('rap.createOtherCost', compact('project','route'));
     }
 
-    public function inputActualOtherCost($id)
+    public function inputActualOtherCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);       
         $modelOtherCost = Cost::with('project','wbs')->get();   
 
-        return view('rap.inputActualOtherCost', compact('project','modelOtherCost'));
+        return view('rap.inputActualOtherCost', compact('project','modelOtherCost','route'));
     }
 
-    public function viewPlannedCost($id)
+    public function viewPlannedCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);   
         $wbss = $project->wbss;
         $costs = Cost::where('project_id', $id)->get();  
@@ -315,7 +321,7 @@ class RAPController extends Controller
                 ]);
             }
         }
-        return view('rap.viewPlannedCost', compact('project','costs','data'));
+        return view('rap.viewPlannedCost', compact('project','costs','data','route'));
     }
 
     public function getWbsCost($wbs,$wbsCost,$raps,$costs){
@@ -493,9 +499,28 @@ class RAPController extends Controller
     public function show(Request $request,$id)
     {
         $route = $request->route()->getPrefix();
-        $modelRap = Rap::findOrFail($id);
-
-        return view('rap.show', compact('modelRap','route'));
+        $modelRap = Rap::find($id);
+        if($route == "/rap"){
+            if($modelRap){
+                if($modelRap->project->business_unit_id == 1){
+                    return view('rap.show', compact('modelRap','route'));
+                }else{
+                    return redirect()->route('rap.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+                }
+            }else{
+                return redirect()->route('rap.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+            }
+        }elseif($route == "/rap_repair"){
+            if($modelRap){
+                if($modelRap->project->business_unit_id == 2){
+                    return view('rap.show', compact('modelRap','route'));
+                }else{
+                    return redirect()->route('rap_repair.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+                }
+            }else{
+                return redirect()->route('rap_repair.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+            }
+        }
     }
 
     public function edit(Request $request,$id)

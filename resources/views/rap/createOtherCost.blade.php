@@ -1,16 +1,30 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Other Cost',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('rap.selectProjectCost'),
-            'Create Cost' => ""
+@if($route == "/rap")
+    @breadcrumb(
+        [
+            'title' => 'Create Other Cost',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap.selectProjectCost'),
+                'Create Cost' => ""
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/rap_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Other Cost',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap_repair.selectProjectCost'),
+                'Create Cost' => ""
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 @section('content')
 <div class="row">

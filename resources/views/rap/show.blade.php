@@ -1,17 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View RAP » '.$modelRap->project->name,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('rap.indexSelectProject'),
-            'View RAP' => route('rap.show',$modelRap->id),
+@if($route == "/rap")
+    @breadcrumb(
+        [
+            'title' => 'View RAP » '.$modelRap->project->name,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap.indexSelectProject'),
+                'Select RAP' => route('rap.index',$modelRap->project_id),
+                'View RAP' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/rap_repair")
+    @breadcrumb(
+        [
+            'title' => 'View RAP » '.$modelRap->project->name,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap_repair.indexSelectProject'),
+                'Select RAP' => route('rap_repair.index',$modelRap->project_id),
+                'View RAP' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -101,7 +117,7 @@
             </div>
             <div class="box-body p-t-0 p-b-0">
                 @if($route == '/rap')
-                    <table class="table table-bordered showTable tableFixed" id="boms-table">
+                    <table class="table table-bordered showTable tableNonPagingVue">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -124,12 +140,12 @@
                         </tbody>
                     </table>     
                 @elseif($route == '/rap_repair')
-                    <table class="table table-bordered showTable tableFixed" id="boms-table">
+                    <table class="table table-bordered showTable tableNonPagingVue tableFixed">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="15%">Type</th>
-                                <th width="30%">Material Name</th>
+                                <th width="10%">Type</th>
+                                <th width="35%">Material Name</th>
                                 <th width="10%">Quantity</th>
                                 <th width="15%">Cost per pcs</th>
                                 <th width="20%">Sub Total Cost</th>
@@ -146,7 +162,7 @@
                                         <td>Service</td>
                                         <td>{{ $rapDetail->service->name }}</td>
                                     @endif
-                                    <td>{{ $rapDetail->quantity }}</td>
+                                    <td>{{ number_format($rapDetail->quantity) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price) }}</td>
                                 </tr>
@@ -166,18 +182,34 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
-
-        $('#boms-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : false,
-            'autoWidth'   : false,
-            'initComplete': function(){
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
             }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( table.column(i).search() !== this.value ) {
+                    table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+                }
+            });
         });
+
+        var table = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
+        });
+
+        $('div.overlay').hide();
     });
 </script>
 @endpush

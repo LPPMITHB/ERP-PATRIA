@@ -7,7 +7,8 @@
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('rap_repair.indexSelectProject'),
-            'View RAP' => '',
+            'Select RAP' => route('rap_repair.index',$modelRap->project_id),
+            'Edit RAP' => '',
         ]
     ]
 )
@@ -26,14 +27,11 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
-                            <div class="col-xs-4 no-padding">Project Code</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->code}}"><b>: {{$modelBOM->project->code}}</b></div>
-                            
-                            <div class="col-xs-4 no-padding">Project Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->name}}"><b>: {{$modelBOM->project->name}}</b></div>
+                            <div class="col-xs-4 no-padding">Project Number</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->number}}"><b>: {{$modelBOM->project->number}}</b></div>
         
                             <div class="col-xs-4 no-padding">Ship Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->ship->type}}"><b>: {{$modelBOM->project->ship->type}}</b></div>
+                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->name}}"><b>: {{$modelBOM->project->name}}</b></div>
         
                             <div class="col-xs-4 no-padding">Ship Type</div>
                             <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->ship->type}}"><b>: {{$modelBOM->project->ship->type}}</b></div>
@@ -80,7 +78,7 @@
                                 <tr>
                                     <th width="5%">No</th>
                                     <th width="15%">Type</th>
-                                    <th width="30%">Material/Service</th>
+                                    <th width="30%">Material / Service</th>
                                     <th width="15%">Quantity</th>
                                     <th width="25%">Cost per pcs (Rp.)</th>
                                     <th width="25%">Sub Total Cost (Rp.)</th>
@@ -128,7 +126,7 @@
         $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
         $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'Material Name'){
+            if(title == 'Material / Service' || title == 'Type'){
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
             }else{
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
@@ -147,7 +145,7 @@
         var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
             orderCellsTop   : true,
             paging          : false,
-            autoWidth       : true,
+            autoWidth       : false,
             lengthChange    : false,
             info            : false,
         });
@@ -176,7 +174,7 @@
                 handler: function(newValue) {
                     this.modelRAPD.forEach(rapDetail => {
                         rapDetail.price = (rapDetail.price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
-                        rapDetail.priceTotal = parseInt((rapDetail.price+"").replace(/,/g , '')) * rapDetail.quantity;
+                        rapDetail.priceTotal = parseInt((rapDetail.price+"").replace(/,/g , '')) * parseInt((rapDetail.quantity+"").replace(/,/g , ''));
                         rapDetail.priceTotal = (rapDetail.priceTotal+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                     });
                 },
@@ -189,6 +187,7 @@
                 rapDetail.price = rapDetail.price / rapDetail.quantity;
                 rapDetail.price = (rapDetail.price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                 rapDetail.priceTotal = (rapDetail.priceTotal+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                rapDetail.quantity = (rapDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             });
         }
     });

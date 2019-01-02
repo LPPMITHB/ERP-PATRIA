@@ -1,16 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Manage Bill Of Materials » Select Project',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => '',
+@if($route == "/bom")
+    @breadcrumb(
+        [
+            'title' => 'Manage Bill Of Materials » Select Project',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/bom_repair")
+    @breadcrumb(
+        [
+            'title' => 'Manage BOM / BOS » Select Project',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -22,10 +35,10 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="15%">Project Name</th>
-                            <th width="40%">Customer</th>
-                            <th width="15%">Ship Name</th>
-                            <th width="15%">Ship Type</th>
+                            <th width="15%">Project Number</th>
+                            <th width="30%">Customer</th>
+                            <th width="20%">Ship Name</th>
+                            <th width="20%">Ship Type</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -33,14 +46,14 @@
                         @foreach($projects as $project)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis">{{ $project->name }}</td>
+                                <td class="tdEllipsis">{{ $project->number }}</td>
                                 <td class="tdEllipsis">{{ $project->customer->name }}</td>
-                                <td class="tdEllipsis">{{ $project->ship->type }}</td>
+                                <td class="tdEllipsis">{{ $project->name }}</td>
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
-                                    @if($menu == '/bom')
+                                    @if($route == '/bom')
                                         <a class="btn btn-primary btn-xs" href="{{ route('bom.selectWBS', ['id'=>$project->id]) }}">CREATE</a>
-                                    @elseif($menu == '/bom_repair')
+                                    @elseif($route == '/bom_repair')
                                         <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.selectWBS', ['id'=>$project->id]) }}">CREATE</a>
                                     @endif
                                 </td>

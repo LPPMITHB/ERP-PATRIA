@@ -1,18 +1,33 @@
 @extends('layouts.main')
+
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Remaining Material » '.$project->name. ' » Select WBS',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('rap.selectProjectViewRM'),
-            'Select WBS' => route('rap.selectWBS',$project->id),
+@if($route == "/rap")
+    @breadcrumb(
+        [
+            'title' => 'View Remaining Material » '.$project->name. ' » Select WBS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap.selectProjectViewRM'),
+                'Select WBS' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/rap_repair")
+    @breadcrumb(
+        [
+            'title' => 'View Remaining Material » '.$project->name. ' » Select WBS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap_repair.selectProjectViewRM'),
+                'Select WBS' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
+
 @section('content')
 <div class="row">
     <div class="col-md-12">

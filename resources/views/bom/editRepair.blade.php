@@ -2,14 +2,13 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Edit Bill Of Material',
-        'subtitle' => '',
+        'title' => 'Edit BOM / BOS',
         'items' => [
             'Dashboard' => route('index'),
-            'Manage Bill Of Materials' => route('bom.indexProject'),
-            'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
-            'View Bill Of Material' => route('bom.show', ['id' => $modelBOM->id]),
-            'Edit Bill Of Material' => '',
+            'Manage BOM / BOS' => route('bom_repair.indexProject'),
+            'Select BOM / BOS' => route('bom_repair.indexBom', ['id' => $modelBOM->project_id]),
+            'View BOM / BOS' => route('bom_repair.show', ['id' => $modelBOM->id]),
+            'Edit BOM / BOS' => '',
         ]
     ]
 )
@@ -26,7 +25,7 @@
                 @csrf
                     @verbatim
                     <div id="bom">
-                        <div class="box-header p-b-0">
+                        <div class="box-header p-b-0 p-l-0 p-r-0">
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
             
@@ -83,7 +82,7 @@
                             </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-10">
-                            <table class="table table-bordered showTable m-b-0 tableFixed" >
+                            <table class="table table-bordered tableFixed tableNonPagingVue">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -96,7 +95,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(bomDetail, index) in materialTable">
-                                        <td>{{ index + 1 }}</td>
+                                        <td class="p-b-13 p-t-13">{{ index + 1 }}</td>
                                         <td v-if="bomDetail.service_id == null">Material</td>
                                         <td v-else>Service</td>
                                         <template v-if="bomDetail.material_id != null">
@@ -114,17 +113,17 @@
                                             
                                         </td>
                                     </tr>
-                                </table>
-                                <table class="table table-bordered tableFixed">
+                                </tbody>
+                                <tfoot>
                                     <tr>
                                         <td width="5%">{{newIndex}}</td>
                                         <td width="10%" class="no-padding">
-                                                <selectize id="type" v-model="input.type" :settings="typeSettings">
-                                                    <option v-for="(type, index) in types" :value="type">{{ type }}</option>
-                                                </selectize>    
+                                            <selectize id="type" v-model="input.type" :settings="typeSettings">
+                                                <option v-for="(type, index) in types" :value="type">{{ type }}</option>
+                                            </selectize>    
                                         </td>
                                         <td width="30%" class="no-padding" v-if="input.type == ''">
-                                            <input class="form-control" type="text" disabled placeholder="Please select type first">  
+                                            <input class="form-control width100" type="text" disabled placeholder="Please select type first">  
                                         </td>
                                         <td width="30%"class="no-padding" v-else-if="input.type == 'Material'">
                                             <selectize id="material" v-model="input.material_id" :settings="materialSettings">
@@ -144,7 +143,7 @@
                                             </div></a>
                                         </td>
                                     </tr>
-                                </tbody>
+                                </tfoot>
                             </table>
                         </div>
 
@@ -176,9 +175,9 @@
                     </div>
                     @endverbatim
                 </form>
-                <div class="overlay">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
+            </div>
+            <div class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
             </div>
         </div>
     </div>
@@ -190,6 +189,33 @@
 <script>
 
     $(document).ready(function(){
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'Status' || title == 'No' || title == "" ){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tableNonPagingVue.column(i).search() !== this.value ) {
+                    tableNonPagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
+        });
+
         $('div.overlay').hide();
     });
 
