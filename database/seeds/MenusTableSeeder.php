@@ -364,7 +364,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create GR without reference',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_receipt.createGrWithoutRef',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$goodsReceipt,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -723,7 +733,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 2,
-            'name' => 'Bill Of Material',
+            'name' => 'BOM / BOS',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
@@ -732,12 +742,12 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $bomRepair =  Menu::where('name','Bill Of Material')->where('menu_id',$repair)->select('id')->first()->id;
+        $bomRepair =  Menu::where('name','BOM / BOS')->where('menu_id',$repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Manage BOM',
+            'name' => 'Manage BOM / BOS',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'bom_repair.indexProjectRepair',
+            'route_name'=> 'bom_repair.indexProject',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bomRepair,
@@ -747,48 +757,12 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View BOM',
+            'name' => 'View BOM / BOS',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'bom_repair.selectProjectRepair',
+            'route_name'=> 'bom_repair.selectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $bomRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 2,
-            'name' => 'Bill Of Service',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $repair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        $bos =  Menu::where('name','Bill Of Service')->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Manage BOS',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'bos.indexProject',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $bos,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'View BOS',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'bos.selectProject',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $bos,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

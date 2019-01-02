@@ -29,15 +29,6 @@ class RAPController extends Controller
         $this->pr = $pr;
     }
 
-    // create RAP
-    // public function selectProject()
-    // {
-    //     $projects = Project::where('status',1)->get();
-    //     $menu = "create_rap";
-
-    //     return view('rap.selectProject', compact('projects','menu'));
-    // }
-
     // view RAP
     public function indexSelectProject(Request $request)
     {
@@ -113,107 +104,137 @@ class RAPController extends Controller
         return view('rap.selectProject', compact('projects','menu','route'));
     }
 
-    public function selectWBS($id)
+    public function selectWBS(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::find($id);
         $wbss = $project->wbss;
         $dataWbs = Collection::make();
 
         $dataWbs->push([
-                "id" => $project->number , 
-                "parent" => "#",
-                "text" => $project->name,
-                "icon" => "fa fa-ship"
-            ]);
-    
-        foreach($wbss as $wbs){
-            if($wbs->wbs){
-                $dataWbs->push([
-                    "id" => $wbs->code , 
-                    "parent" => $wbs->wbs->code,
-                    "text" => $wbs->name,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
-                ]);
-            }else{
-                $dataWbs->push([
-                    "id" => $wbs->code , 
-                    "parent" => $project->number,
-                    "text" => $wbs->name,
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
-                ]);
-            }  
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        if($route == '/rap'){
+            foreach($wbss as $wbs){
+                if($wbs->wbs){
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }  
+            }
+        }elseif($route == '/rap_repair'){
+            foreach($wbss as $wbs){
+                if($wbs->wbs){
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation',$wbs->id)],
+                    ]);
+                }  
+            }
         }
 
-        return view('rap.selectWBS', compact('project','dataWbs'));
+        return view('rap.selectWBS', compact('project','dataWbs','route'));
     }
 
 
-    public function showMaterialEvaluation($id)
+    public function showMaterialEvaluation(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = $wbs->project;
         $materialEvaluation = Collection::make();
         $modelBom = Bom::where('wbs_id',$id)->first();
 
         foreach($modelBom->bomDetails as $bomDetail){
-            if(count($bomDetail->material->materialRequisitionDetails)>0){
-                foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                    if ($mrd->wbs_id == $id) {
-                        $materialEvaluation->push([
-                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                            "quantity" => $bomDetail->quantity,
-                            "used" => $mrd->issued,
-                        ]);
+            if($bomDetail->material){
+                if(count($bomDetail->material->materialRequisitionDetails)>0){
+                    foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                        if ($mrd->wbs_id == $id) {
+                            $materialEvaluation->push([
+                                "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                "quantity" => $bomDetail->quantity,
+                                "used" => $mrd->issued,
+                            ]);
+                        }
                     }
+                }else{
+                    $materialEvaluation->push([
+                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                        "quantity" => $bomDetail->quantity,
+                        "used" => 0,
+                    ]);
                 }
-            }else{
-                $materialEvaluation->push([
-                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                    "quantity" => $bomDetail->quantity,
-                    "used" => 0,
-                ]);
             }
         }
-        return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation'));
+        return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation','route'));
     } 
     
-     public function index($id)
+     public function index(Request $request, $id)
     {
         $raps = Rap::where('project_id',$id)->get();
+        $route = $request->route()->getPrefix();
 
-        return view('rap.index', compact('raps'));
+        return view('rap.index', compact('raps','route'));
     }
 
-    public function createCost($id)
+    public function createCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);  
         
-        return view('rap.createOtherCost', compact('project'));
+        return view('rap.createOtherCost', compact('project','route'));
     }
 
-    public function inputActualOtherCost($id)
+    public function inputActualOtherCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);       
         $modelOtherCost = Cost::with('project','wbs')->get();   
 
-        return view('rap.inputActualOtherCost', compact('project','modelOtherCost'));
+        return view('rap.inputActualOtherCost', compact('project','modelOtherCost','route'));
     }
 
-    public function viewPlannedCost($id)
+    public function viewPlannedCost(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);   
         $wbss = $project->wbss;
         $costs = Cost::where('project_id', $id)->get();  
         $raps = Rap::where('project_id', $id)->get();  
-
         $totalCost = 0;
+
         foreach($raps as $rap){
             $totalCost += $rap->total_price;
         }
         foreach($costs as $cost){
-            $totalCost += $cost->cost;
+            $totalCost += $cost->plan_cost;
         }
 
         $data = Collection::make();
@@ -226,20 +247,20 @@ class RAPController extends Controller
         ]);
 
         foreach($wbss as $wbs){
-            // $RapCost = 0;
-            // foreach($raps as $rap){
-            //     foreach($rap->RapDetails as $RD){
-            //         if($RD->bom->wbs_id == $wbs->id){
-            //             $RapCost += $RD->quantity * $RD->price;
-            //         }
-            //     }
-            // }
-            // $otherCost = 0;
-            // foreach($costs as $cost){
-            //     if($cost->wbs_id == $wbs->id){
-            //         $otherCost += $cost->cost;
-            //     }
-            // }
+            $RapCost = 0;
+            foreach($raps as $rap){
+                if($rap->bom->wbs_id == $wbs->id){
+                    foreach($rap->RapDetails as $RD){
+                        $RapCost += $RD->quantity * $RD->price;
+                    }
+                }
+            }
+            $otherCost = 0;
+            foreach($costs as $cost){
+                if($cost->wbs_id == $wbs->id){
+                    $otherCost += $cost->plan_cost;
+                }
+            }
             $TempwbsCost = 0;
             $wbsCost = self::getwbsCost($wbs,$TempwbsCost,$raps,$costs);
 
@@ -260,7 +281,6 @@ class RAPController extends Controller
                     "icon" => "fa fa-suitcase"
                 ]);
             }  
-            // print_r($data);exit();
         }
 
         foreach($raps as $rap){
@@ -289,19 +309,19 @@ class RAPController extends Controller
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $project->number,
-                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>',
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }else{
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $cost->wbs->code,
-                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->cost).'</b>',
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }
         }
-        return view('rap.viewPlannedCost', compact('project','costs','data'));
+        return view('rap.viewPlannedCost', compact('project','costs','data','route'));
     }
 
     public function getWbsCost($wbs,$wbsCost,$raps,$costs){
@@ -318,7 +338,7 @@ class RAPController extends Controller
             $otherCost = 0;
             foreach($costs as $cost){
                 if($cost->wbs_id == $wbs->id){
-                    $otherCost += $cost->cost;
+                    $otherCost += $cost->plan_cost;
                 }
             } 
             $wbsCost += $RapCost + $otherCost;
@@ -338,7 +358,7 @@ class RAPController extends Controller
             $otherCost = 0;
             foreach($costs as $cost){
                 if($cost->wbs_id == $wbs->id){
-                    $otherCost += $cost->cost;
+                    $otherCost += $cost->plan_cost;
                 }
             } 
             $wbsCost += $RapCost + $otherCost;
@@ -355,7 +375,9 @@ class RAPController extends Controller
             $cost = new Cost;
             $cost->description = $data['description'];
             $cost->plan_cost = $data['cost'];
-            $cost->wbs_id = $data['wbs_id'];
+            if($data['wbs_id'] != ""){
+                $cost->wbs_id = $data['wbs_id'];
+            }
             $cost->project_id = $data['project_id'];
 
             $cost->user_id = Auth::user()->id;
@@ -474,27 +496,52 @@ class RAPController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        $modelRap = Rap::findOrFail($id);
-
-        return view('rap.show', compact('modelRap'));
+        $route = $request->route()->getPrefix();
+        $modelRap = Rap::find($id);
+        if($route == "/rap"){
+            if($modelRap){
+                if($modelRap->project->business_unit_id == 1){
+                    return view('rap.show', compact('modelRap','route'));
+                }else{
+                    return redirect()->route('rap.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+                }
+            }else{
+                return redirect()->route('rap.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+            }
+        }elseif($route == "/rap_repair"){
+            if($modelRap){
+                if($modelRap->project->business_unit_id == 2){
+                    return view('rap.show', compact('modelRap','route'));
+                }else{
+                    return redirect()->route('rap_repair.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+                }
+            }else{
+                return redirect()->route('rap_repair.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
+            }
+        }
     }
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
         $modelRap = Rap::findOrFail($id);
-        $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material')->get();
+        $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material','service')->get();
         $modelBOM = Bom::where('id',$modelRap->bom_id)->first();
         $project = Project::where('id',$modelRap->project_id)->first();
+        $route = $request->route()->getPrefix();
         
-        return view('rap.edit', compact('modelRap','project','modelRAPD','modelBOM'));
+        if($route == "/rap"){
+            return view('rap.edit', compact('modelRap','project','modelRAPD','modelBOM'));
+        }elseif($route == "/rap_repair"){
+            return view('rap.editRepair', compact('modelRap','project','modelRAPD','modelBOM'));
+        }     
     }
 
     public function update(Request $request, $id)
     {
         $datas = json_decode($request->datas);
-        
+        $route = $request->route()->getPrefix();
 
         DB::beginTransaction();
         try {
@@ -510,10 +557,18 @@ class RAPController extends Controller
             $modelRap->update();
 
             DB::commit();
-            return redirect()->route('rap.show', ['id' => $datas[0]->rap_id])->with('success', 'RAP Updated !');
+            if($route == "/rap"){
+                return redirect()->route('rap.show', ['id' => $datas[0]->rap_id])->with('success', 'RAP Updated !');
+            }elseif($route == "/rap_repair"){
+                return redirect()->route('rap_repair.show', ['id' => $datas[0]->rap_id])->with('success', 'RAP Updated !');
+            }   
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('rap.indexSelectProject')->with('error', $e->getMessage());
+            if($route == "/rap"){
+                return redirect()->route('rap.indexSelectProject')->with('error', $e->getMessage());
+            }elseif($route == "/rap_repair"){
+                return redirect()->route('rap_repair.indexSelectProject')->with('error', $e->getMessage());
+            }   
         }
     }
 
@@ -640,17 +695,16 @@ class RAPController extends Controller
 
     private function generateRapNumber(){
         $modelRap = Rap::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
-        $branch_code = substr($modelBranch->code,4,2);
 		$number = 1;
 		if(isset($modelRap)){
             $number += intval(substr($modelRap->number, -6));
 		}
-        $year = date('y'.$branch_code.'000000');
+        $year = date('y00000');
         $year = intval($year);
 
-		$rap_number = $year+$number;
+        $rap_number = $year+$number;
+        print_r($rap_number);exit();
         $rap_number = 'RAP-'.$rap_number;
 		return $rap_number;
     }

@@ -130,12 +130,13 @@ class PermissionsTableSeeder extends Seeder
 
         //BOM Repair
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $bomRepair =  Menu::where('name','Bill Of Material')->where('menu_id',$repair)->select('id')->first()->id;
-        $manageBOMRepair = Menu::where('name','Manage BOM')->where('menu_id',$bomRepair)->select('id')->first()->id;
+        $bomRepair =  Menu::where('name','BOM / BOS')->where('menu_id',$repair)->select('id')->first()->id;
+        $manageBOMRepair = Menu::where('name','Manage BOM / BOS')->where('menu_id',$bomRepair)->select('id')->first()->id;
+        $viewBOMRepair = Menu::where('name','View BOM / BOS')->where('menu_id',$bomRepair)->select('id')->first()->id;
         
         DB::table('permissions')->insert([
             'name' => 'List Bom Repair',
-            'menu_id' => $manageBOMRepair,
+            'menu_id' => $viewBOMRepair,
             'middleware' => 'list-bom-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -151,7 +152,7 @@ class PermissionsTableSeeder extends Seeder
 
         DB::table('permissions')->insert([
             'name' => 'Show Bom Repair',
-            'menu_id' => $manageBOMRepair,
+            'menu_id' => $viewBOMRepair,
             'middleware' => 'show-bom-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -165,40 +166,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        //BOS
-        $manageBOS = Menu::where('name','Manage BOS')->select('id')->first()->id;
-        DB::table('permissions')->insert([
-            'name' => 'List Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'list-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Manage Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'create-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Show Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'show-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'Edit Bos',
-            'menu_id' => $manageBOS,
-            'middleware' => 'edit-bos',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-        
         //RAP
         $viewRAP = Menu::where('name','Manage RAP')->select('id')->first()->id;
         DB::table('permissions')->insert([

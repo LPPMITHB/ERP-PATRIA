@@ -23,4 +23,9 @@ class RapDetail extends Model
     {
         return $this->belongsTo('App\Models\Material');
     }
+
+    public function service()
+    {
+        return $this->belongsTo('App\Models\Service');
+    }
 }

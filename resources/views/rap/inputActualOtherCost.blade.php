@@ -1,16 +1,30 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Input Actual Other Cost',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('rap.selectProjectActualOtherCost'),
-            'Input Actual Cost' => ""
+@if($route == "/rap")
+    @breadcrumb(
+        [
+            'title' => 'Input Actual Other Cost',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap.selectProjectActualOtherCost'),
+                'Input Actual Cost' => ""
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/rap_repair")
+    @breadcrumb(
+        [
+            'title' => 'Input Actual Other Cost',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('rap_repair.selectProjectActualOtherCost'),
+                'Input Actual Cost' => ""
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 @section('content')
 <div class="row">
@@ -181,14 +195,17 @@
                     }
                 return isOk;
             },
-
         }, 
         methods:{
             openEditModal(data){
                 this.editCost.cost_id = data.id;
                 this.editCost.description = data.description;
-                this.editCost.wbs_id = data.wbs_id;
-                this.editCost.wbs = data.wbs.name;
+                if(data.wbs_id != null){
+                    this.editCost.wbs_id = data.wbs_id;
+                    this.editCost.wbs = data.wbs.name;
+                }else{
+                    this.editCost.wbs = '-';
+                }
                 this.editCost.cost = data.plan_cost;
                 this.editCost.actual_cost = data.actual_cost;
             },

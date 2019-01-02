@@ -118,7 +118,7 @@
                                 <td class="p-l-0">
                                     <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight (%)">
                                 </td>
-                                <td>
+                                <td align="center" class="p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
                                 </td>
                             </tr>
@@ -247,7 +247,6 @@ var vm = new Vue({
         createOk: function(){
             let isOk = false;
                 if(this.newWbs.name == ""
-                || this.newWbs.description == ""
                 || this.newWbs.deliverables == ""
                 || this.newWbs.weight == ""
                 || this.newWbs.planned_deadline == "")
@@ -259,7 +258,6 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editWbs.name == ""
-                || this.editWbs.description == ""
                 || this.editWbs.deliverables == ""
                 || this.editWbs.weight == ""
                 || this.editWbs.planned_deadline == "")
@@ -389,6 +387,11 @@ var vm = new Vue({
                 this.getWBS();   
             })
             .catch((error) => {
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "Please try again.. ",
+                    position: 'topRight',
+                });
                 console.log(error);
                 $('div.overlay').hide();            
             })

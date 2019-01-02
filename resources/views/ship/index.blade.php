@@ -27,10 +27,9 @@
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
-                            <th style="width: 35%">Type</th>
-                            <th style="width: 50%">Description</th>
-                            {{-- <th style="width: 15%">Code</th> --}}
-                            {{-- <th style="width: 35%">Name</th> --}}
+                            <th style="width: 25%">Type</th>
+                            <th style="width: 30%">Hull Number</th>
+                            <th style="width: 40%">Description</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
@@ -40,9 +39,16 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->type}}">{{ $ship->type }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->description}}">{{ $ship->description }}</td>
-                                {{-- <td>{{ $ship->code }}</td> --}}
-                                {{-- <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->name}}">{{ $ship->name }}</td> --}}
+                                @if($ship->hull_number != '')
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->hull_number}}">{{ $ship->hull_number }}</td>
+                                @else
+                                    <td>-</td>
+                                @endif
+                                @if($ship->description != '')
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$ship->description}}">{{ $ship->description }}</td>
+                                @else
+                                    <td>-</td>
+                                @endif
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('ship.show', ['id'=>$ship->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('ship.edit', ['id'=>$ship->id]) }}" class="btn btn-primary btn-xs">EDIT</a>

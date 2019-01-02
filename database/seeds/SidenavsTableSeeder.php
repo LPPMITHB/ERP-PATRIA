@@ -199,37 +199,6 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project.configWbsEstimator',
         ]);
 
-        $manageBos = Menu::where('route_name','bos.indexProject')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.indexProject',
-        ]);
-
-         DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.selectWBS',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.indexBos',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.index',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBos,
-            'route_name' => 'bos.edit',
-        ]);
-
         $manageBom = Menu::where('route_name','bom.indexProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
@@ -241,10 +210,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom.selectWBS',
         ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBom,
-            'route_name' => 'bom.indexBom',
-        ]);
+        
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
@@ -261,19 +227,24 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom.edit',
         ]);
 
-        $assignBom = Menu::where('route_name','bom.selectProject')->select('id')->first()->id;
+        $viewBom = Menu::where('route_name','bom.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $assignBom,
+            'menu_id' => $viewBom,
             'route_name' => 'bom.selectProject',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $assignBom,
-            'route_name' => 'bom.assignBom',
+            'menu_id' => $viewBom,
+            'route_name' => 'bom.indexBom',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewBom,
+            'route_name' => 'bom.show',
         ]);
 
         // bom repair
-        $manageBomRepair = Menu::where('route_name','bom_repair.indexProjectRepair')->select('id')->first()->id;
+        $manageBomRepair = Menu::where('route_name','bom_repair.indexProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageBomRepair,
             'route_name' => 'bom_repair.indexProject',
@@ -282,11 +253,6 @@ class SidenavsTableSeeder extends Seeder
          DB::table('sidenav')->insert([
             'menu_id' => $manageBomRepair,
             'route_name' => 'bom_repair.selectWBS',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBomRepair,
-            'route_name' => 'bom_repair.indexBom',
         ]);
 
         DB::table('sidenav')->insert([
@@ -304,15 +270,20 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom_repair.edit',
         ]);
 
-        $assignBom = Menu::where('route_name','bom_repair.selectProjectRepair')->select('id')->first()->id;
+        $viewBom = Menu::where('route_name','bom_repair.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $assignBom,
+            'menu_id' => $viewBom,
             'route_name' => 'bom_repair.selectProject',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $assignBom,
-            'route_name' => 'bom_repair.assignBom',
+            'menu_id' => $viewBom,
+            'route_name' => 'bom_repair.indexBom',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewBom,
+            'route_name' => 'bom_repair.show',
         ]);
 
         $viewRap = Menu::where('route_name','rap.indexSelectProject')->select('id')->first()->id;

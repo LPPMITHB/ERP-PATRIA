@@ -490,6 +490,11 @@ var vm = new Vue({
                 this.getActivities();   
             })
             .catch((error) => {
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "Please try again.. ",
+                    position: 'topRight',
+                });
                 console.log(error);
                 $('div.overlay').hide();            
             })

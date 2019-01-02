@@ -127,9 +127,10 @@ class WBSController extends Controller
 
     public function updateWithForm(Request $request, $id)
     {
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $data = json_decode($request->datas);
         $wbs_ref = WBS::find($id);
+        $project = $wbs_ref->project;
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = WBS::where('project_id',$data->project_id)->get();
         foreach ($wbss as $wbs) {
             if($wbs->name == $data->name && $wbs_ref->name != $data->name ){

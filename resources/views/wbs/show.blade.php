@@ -177,8 +177,10 @@
             @endverbatim
             @if ($menu == "building")
                 <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs.updateWithForm',['id'=>$wbs->id]) }}">
+            @elseif ($menu == "repair")
+                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}"> 
             @else
-                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}">                
+                           
             @endif
                 @csrf
                 <input type="hidden" name="_method" value="PATCH">

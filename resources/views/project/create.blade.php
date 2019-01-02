@@ -83,7 +83,7 @@
                             <div class="form-group">
                                 <label for="number" class="col-sm-2 control-label">Project Number</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="number" name="number"  required autofocus v-model="project.number">
+                                    <input type="text" class="form-control" id="number" name="number"  required v-model="project.number">
                                 </div>
                             </div>
 

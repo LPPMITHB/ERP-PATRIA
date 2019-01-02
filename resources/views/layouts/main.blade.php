@@ -118,12 +118,12 @@
                 orderCellsTop   : true,
                 fixedHeader     : true,
                 paging          : true,
-                autoWidth       : true,
+                autoWidth       : false,
                 lengthChange    : false,
             });
 
             // table searching per coloumn without paging
-            $('.tableNonPaging thead tr').clone(true).appendTo( '.tableNonPaging thead' );
+             $('.tableNonPaging thead tr').clone(true).appendTo( '.tableNonPaging thead' );
             $('.tableNonPaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
                 var title = $(this).text();
                 if(title == 'Status' || title == 'No' || title == ""){
@@ -145,7 +145,7 @@
             var tableNonPaging = $('.tableNonPaging').DataTable( {
                 orderCellsTop   : true,
                 paging          : false,
-                autoWidth       : true,
+                autoWidth       : false,
                 lengthChange    : false,
                 info            : false,
             });

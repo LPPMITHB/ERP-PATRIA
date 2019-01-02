@@ -68,7 +68,7 @@
                             
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-20">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -158,7 +158,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('script')
@@ -168,7 +167,6 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
-
     var data = {
         submit: "ok",
         project : @json($project),

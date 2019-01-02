@@ -2,12 +2,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Manage BOM/BOS',
-        'subtitle' => '',
+        'title' => 'Manage BOM / BOS',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Project' => route('bom.indexProject'),
-            'Select WBS' => route('bom.selectWBS',$project->id),
+            'Select Project' => route('bom_repair.indexProject'),
+            'Select WBS' => route('bom_repair.selectWBS',$project->id),
             'Manage BOM/BOS' => '',
         ]
     ]
@@ -20,86 +19,55 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body no-padding p-b-10">
-                <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.store') }}">
+                <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom_repair.store') }}">
                 @csrf
                     @verbatim
                     <div id="bom">
-                        <div class="box-header">
-                            <div class="col-sm-4">
-                                <table>
-                                    <thead>
-                                        <th colspan="2">Project Information</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="p-r-40">Project Code</td>
-                                            <td class="p-r-5">:</td>
-                                            <td><b>{{project.number}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ship Name</td>
-                                            <td>:</td>
-                                            <td><b>{{project.name}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ship Type</td>
-                                            <td>:</td>
-                                            <td><b>{{project.ship.type}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Customer</td>
-                                            <td>:</td>
-                                            <td><b>{{project.customer.name}}</b></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div class="box-header p-b-0">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+        
+                                <div class="col-xs-4 no-padding">Project Code</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.number)"><b>: {{project.number}}</b></div>
+                                
+                                <div class="col-xs-4 no-padding">Ship Name</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.name)"><b>: {{project.name}}</b></div>
+        
+                                <div class="col-xs-4 no-padding">Ship Type</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.ship.type)"><b>: {{project.ship.type}}</b></div>
+        
+                                <div class="col-xs-4 no-padding">Customer</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.customer.name)"><b>: {{project.customer.name}}</b></div>
                             </div>
-                            <div class="col-sm-4">
-                                <table>
-                                    <thead>
-                                        <th colspan="2">WBS Information</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Code</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{wbs.code}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Name</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{wbs.name}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Description</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{wbs.description}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Deliverable</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{wbs.deliverables}}</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Progress</td>
-                                            <td>:</td>
-                                            <td>&ensp;<b>{{wbs.progress}}%</b>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="col-xs-12 col-md-4">
+                                <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                            
+                                <div class="col-xs-4 no-padding">Code</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
+                                
+                                <div class="col-xs-4 no-padding">Name</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+        
+                                <div class="col-xs-4 no-padding">Description</div>
+                                <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
+                                <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
+        
+                                <div class="col-xs-4 no-padding">Deliverable</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
+        
+                                <div class="col-xs-4 no-padding">Progress</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
                             </div>
-                            <div class="col-sm-4">
-                                <td rowspan="2">BOM Description</td>
-                                <td rowspan="2">:</td>
-                                <td rowspan="2">
-                                    <textarea class="form-control" rows="3" v-model="submittedForm.description" style="width:326px"></textarea>  
-                                </td>
+                            <div class="col-xs-12 col-md-4">
+                                <div class="col-xs-12 no-padding"><b>BOM Description</b></div>
+                                <div class="col-xs-12 no-padding">
+                                    <textarea class="form-control" rows="3" v-model="submittedForm.description"></textarea>  
+                                </div>
                             </div>
                             
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-20">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -274,6 +242,14 @@
         services_modal :[],
     }
 
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
+
     var vm = new Vue({
         el : '#bom',
         data : data,
@@ -324,6 +300,9 @@
             }
         },
         methods: {
+            tooltipText: function(text) {
+                return text
+            },
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
                     this.materials = data;

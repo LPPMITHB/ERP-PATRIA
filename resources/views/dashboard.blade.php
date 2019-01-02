@@ -94,7 +94,12 @@
                                           <div class="icon">
                                               <i class="fa fa-ship"></i>       
                                           </div>
-                                          <a href="{{ route('project.show',['id'=>$project->id]) }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                                          @if($project->business_unit_id == 1)
+                                            <a href="{{ route('project.show',['id'=>$project->id]) }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                                            @elseif($project->business_unit_id == 2)
+                                            <a href="{{ route('project_repair.show',['id'=>$project->id]) }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                                          @else
+                                          @endif
                                       </div>
                                   </div>
                               </div>
