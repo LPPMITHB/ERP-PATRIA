@@ -611,7 +611,7 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::patch('/updatePRD', 'PurchaseRequisitionController@updatePRD')->name('updatePRD')->middleware('can:edit-purchase-requisition');
 
-    Route::get('/', 'PurchaseRequisitionController@index')->name('index')->middleware('can:list-requisition');
+    Route::get('/', 'PurchaseRequisitionController@index')->name('index')->middleware('can:list-purchase-requisition');
 
     Route::get('/create', 'PurchaseRequisitionController@create')->name('create')->middleware('can:create-purchase-requisition');
 
