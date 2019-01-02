@@ -24,7 +24,7 @@
                 </form>
                 @verbatim
                 <div id="mrd">
-                    <div class="box_header">
+                    <div class="box-header">
                         <div class="col-sm-12 p-l-0">
                             <div class="col-sm-4 col-md-4 m-t-10">
                                 <div class="row">

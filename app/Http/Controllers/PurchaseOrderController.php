@@ -45,7 +45,7 @@ class PurchaseOrderController extends Controller
         $datas = json_decode($request->datas);
 
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
-        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','work')->get();
+        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','wbs')->get();
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
                 $modelPRD->forget($key);
@@ -59,7 +59,7 @@ class PurchaseOrderController extends Controller
     public function selectPRD($id)
     {
         $modelPR = PurchaseRequisition::findOrFail($id);
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','work')->get();
+        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs')->get();
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
                 $modelPRD->forget($key);
@@ -181,7 +181,7 @@ class PurchaseOrderController extends Controller
     public function edit($id)
     {
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','work')->get();
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs')->get();
         $modelProject = Project::findOrFail($modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
 
         return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject'));

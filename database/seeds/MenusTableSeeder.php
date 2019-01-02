@@ -463,17 +463,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Create GI without Reference',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_issue.createGiWithoutRef',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id'=>$goodsIssue,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Create GI without Reference',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'goods_issue.createGiWithoutRef',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN',
+        //     'menu_id'=>$goodsIssue,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
         DB::table('menus')->insert([
             'level' => 3,
