@@ -29,13 +29,13 @@
                                         Project Code
                                     </div>
                                     <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].code }}</b>
+                                        : <b>{{ selectedProject[0].number }}</b>
                                     </div>
                                     <div class="col-sm-4">
-                                        Ship
+                                        Ship 
                                     </div>
                                     <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].ship.name }}</b>
+                                        : <b>{{ selectedProject[0].ship.type }}</b>
                                     </div>
                                     <div class="col-sm-4">
                                         Customer
@@ -74,59 +74,57 @@
                                 </div>
                             </template>
                         </div>
-                        <div class="row">
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col sm-12 p-l-10 p-r-10 p-t-10">
-                                    <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 5%">No</th>
-                                                <th style="width: 35%">Material Name</th>
-                                                <th style="width: 20%">Quantity</th>
-                                                <th style="width: 30%">WBS Name</th>
-                                                <th style="width: 10%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(material,index) in dataMaterial">
-                                                <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
-                                                <td class="tdEllipsis">{{ material.quantity }}</td>
-                                                <td class="tdEllipsis">{{ material.wbs_name }}</td>
-                                                <td class="p-l-0 textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material)">
-                                                        EDIT
-                                                    </a>
-                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                        DELETE
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td class="p-l-10">{{newIndex}}</td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
-                                                </td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                        <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0 textCenter">
-                                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </template>
+                        <div class="row" v-show="selectedProject.length > 0">
+                            <div class="col sm-12 p-l-10 p-r-10 p-t-10">
+                                <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 35%">Material Name</th>
+                                            <th style="width: 20%">Quantity</th>
+                                            <th style="width: 30%">WBS Name</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(material,index) in dataMaterial">
+                                            <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
+                                            <td class="p-l-0 textCenter">
+                                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material)">
+                                                    EDIT
+                                                </a>
+                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="p-l-10">{{newIndex}}</td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textCenter">
+                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                         <template v-if="selectedProject.length > 0">
                             <div class="col-md-12">
