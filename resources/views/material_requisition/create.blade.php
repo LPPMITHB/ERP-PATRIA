@@ -22,114 +22,98 @@
                 @csrf
                     @verbatim
                     <div id="mr">
-                        <div class="row">
+                        <div class="box-header no-padding">
                             <template v-if="selectedProject.length > 0">
-                                <div class="col-sm-4">
-                                    <div class="col-sm-4">
-                                        Project Code
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].code }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Ship
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].ship.name }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Customer
-                                    </div>
-                                    <div class="col-sm-8 tdEllipsis" v-tooltip:bottom="tooltip(selectedProject[0].customer.name)">
-                                        : <b>{{ selectedProject[0].customer.name }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Start Date
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].planned_start_date }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        End Date
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].planned_end_date }}</b>
-                                    </div>
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Project Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
+                                    
+                                    <div class="col-xs-5 no-padding">Ship Type</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Customer</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">Start Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">End Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
                                 </div>
                             </template>
-                            <div class="col-sm-4 p-l-20">
+                            <div class="col-xs-12 col-md-4">
                                 <label for="" >Project Name</label>
                                 <selectize id="material" v-model="project_id" :settings="projectSettings" :disabled="dataOk">
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
                             <template v-if="selectedProject.length > 0">
-                                <div class="col-sm-4">
-                                        <div class="col-sm-12">
+                                <div class="col-xs-12 col-md-4 p-r-0">
+                                        <div class="col-sm-12 p-l-0">
                                             <label for="">MR Description</label>
                                         </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-12 p-l-0">
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
                                 </div>
                             </template>
                         </div>
-                        <div class="row">
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col sm-12 p-l-10 p-r-10 p-t-10">
-                                    <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 5%">No</th>
-                                                <th style="width: 35%">Material Name</th>
-                                                <th style="width: 20%">Quantity</th>
-                                                <th style="width: 30%">WBS Name</th>
-                                                <th style="width: 10%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(material,index) in dataMaterial">
-                                                <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
-                                                <td class="tdEllipsis">{{ material.quantity }}</td>
-                                                <td class="tdEllipsis">{{ material.wbs_name }}</td>
-                                                <td class="p-l-0 textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material)">
-                                                        EDIT
-                                                    </a>
-                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                        DELETE
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td class="p-l-10">{{newIndex}}</td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
-                                                </td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                        <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0 textCenter">
-                                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </template>
+                        <div class="row" v-show="selectedProject.length > 0">
+                            <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
+                                <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 35%">Material Name</th>
+                                            <th style="width: 20%">Quantity</th>
+                                            <th style="width: 30%">WBS Name</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(material,index) in dataMaterial">
+                                            <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
+                                            <td class="p-l-0 textCenter">
+                                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material)">
+                                                    EDIT
+                                                </a>
+                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="p-l-10">{{newIndex}}</td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textCenter">
+                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                         <template v-if="selectedProject.length > 0">
-                            <div class="col-md-12">
+                            <div class="col-md-12 p-r-0 p-t-10">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
                             </div>
                         </template>
@@ -397,7 +381,7 @@
             'project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getProject/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getProjectMR/'+newValue).then(({ data }) => {
                         this.selectedProject = [];
                         this.selectedProject.push(data);
                         this.wbss = data.wbss;

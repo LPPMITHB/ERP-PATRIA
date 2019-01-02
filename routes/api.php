@@ -50,6 +50,7 @@ Route::get('/getPRD/{id}', 'PurchaseRequisitionController@getPRDAPI')->name('api
 
 // material_requisition
 Route::get('/getWbsMR/{id}', 'MaterialRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
+Route::get('/getProjectMR/{id}', 'MaterialRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');
 
 
 // goods_receipt
