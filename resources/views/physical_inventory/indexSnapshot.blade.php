@@ -47,7 +47,7 @@
                                         <div class="col-sm-10">
                                             <select id="material" name="material[]" multiple="multiple">
                                                 @foreach ($materials as $material)
-                                                    <option value="{{$material->id}}">{{$material->name}}</option>
+                                                    <option value="{{$material->id}}">{{$material->code}} - {{$material->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>

@@ -17,6 +17,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'admin@pmp.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -26,6 +27,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'gabriellaregina@gmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -35,6 +37,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'asdf2796@gmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -44,6 +47,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'nathanaeltimotius@rocketmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -53,6 +57,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'richieivandik@rocketmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -62,6 +67,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'ben.jere0811@gmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -71,6 +77,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'aldy@gmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -80,6 +87,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'pai@gmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -89,6 +97,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'UB@rocketmail.com',
             'role_id' => 1,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -98,6 +107,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'pmp@pmp.com',
             'role_id' => 4,
             'branch_id' => 2,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -107,6 +117,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'pami@pami.com',
             'role_id' => 5,
             'branch_id' => 1,
+            'business_unit_id' => '[2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -116,6 +127,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'mesakh.tama@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -125,6 +137,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'kparlindungan@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -134,6 +147,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'iwansarm@yahoo.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -143,6 +157,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'esra_lumika@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -152,6 +167,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'barry.perkasa@ymail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -161,6 +177,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'nidyarum@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -170,6 +187,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'ronald_malt@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -179,6 +197,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'petruswandotela@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -188,6 +207,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'santosa_ivan@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     
@@ -197,6 +217,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'loekman_marti@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -206,6 +227,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'winsu.kusuma@yahoo.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
         
@@ -215,6 +237,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'tj_akbarama@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
         
@@ -224,6 +247,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'pirata_ali@yahoo.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -233,6 +257,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'michael.wijaya23@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -242,6 +267,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'arimunthe@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -251,6 +277,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'rudi_zik@ymail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
         
@@ -260,6 +287,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'wahyu.pras@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -269,6 +297,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'tanto_tomo@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -278,6 +307,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'firman.bastian@hotmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -287,6 +317,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'amalaskara@yahoo.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
 
@@ -296,6 +327,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'dnilriyadi@gmail.com',
             'role_id' => 3,
             'branch_id' => 1,
+            'business_unit_id' => '[1,2,3]',
             'password' => bcrypt('patria'),
         ]);
     }

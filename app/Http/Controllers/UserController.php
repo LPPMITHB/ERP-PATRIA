@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Configuration;
 use App\Models\Branch;
+use App\Models\BusinessUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -41,8 +42,9 @@ class UserController extends Controller
         $user = new User;
         $roles = Role::pluck('id','name');
         $branches = Branch::where('status',1)->pluck('id','name');
+        $businessUnits = BusinessUnit::all();
 
-        return view('user.create', compact('user','roles','employee','branches'));
+        return view('user.create', compact('user','roles','branches','businessUnits'));
     }
 
     /**
@@ -62,6 +64,7 @@ class UserController extends Controller
             'branch' => 'required',
         ]);
         
+        $stringBusinessUnit = '['.implode(',', $request->businessUnit).']';
         $configuration = Configuration::get('default-password');
         DB::beginTransaction();
         try {
@@ -73,6 +76,7 @@ class UserController extends Controller
             $user->address = ucfirst($request->address);
             $user->phone_number = $request->phone_number;
             $user->role_id = $request->role;
+            $user->business_unit_id = $stringBusinessUnit;
             $user->branch_id = $request->branch;
             $user->status = $request->status;
             $user->save();
@@ -94,8 +98,9 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-
-        return view('user.show', compact('user'));
+        $businessUnits = BusinessUnit::whereIn('id',json_decode($user->business_unit_id))->pluck('name')->toArray();
+        $stringBusinessUnit = implode(', ', $businessUnits);
+        return view('user.show', compact('user','stringBusinessUnit'));
     }
 
     /**

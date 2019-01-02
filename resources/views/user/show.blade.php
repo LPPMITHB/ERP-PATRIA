@@ -44,6 +44,7 @@
                             <li><a>Email <span class="pull-right">{{ $user->email }}</span></a></li>
                             <li><a>Address <span class="pull-right">{{ $user->address }}</span></a></li>
                             <li><a>Phone Number <span class="pull-right">{{ $user->phone_number }}</span></a></li>
+                            <li><a>Business Unit <span class="pull-right">{{ $stringBusinessUnit }}</span></a></li>
                             <li><a>Status <span class="pull-right"><i class="fa {{ $user->status == 1 ? 'fa-check' : 'fa-times' }}"></i></span></a></li>
                         </ul>
                     </div>
