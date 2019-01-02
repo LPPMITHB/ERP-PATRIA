@@ -48,6 +48,7 @@ class RolesTableSeeder extends Seeder
                 'list-appearence' => true, 'edit-appearence' => true,
                 'list-stock-management' => true, 
                 'create-material-write-off' => true,
+                
 
                 ]),
             'created_at' => date('Y-m-d'),

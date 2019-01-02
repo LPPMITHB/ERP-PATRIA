@@ -27,14 +27,7 @@
                         <a href="{{ route('vendor.edit',['id'=>$vendor->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                     @endcan
 
-                    <!-- @can('destroy-vendor')
-                        <button class="btn btn-danger btn-sm" onclick="event.preventDefault();document.getElementById('delete-form-{{ $vendor->id }}').submit();">DELETE</button>
-                    @endcan
-
-                    <form id="delete-form-{{ $vendor->id }}" action="{{ route('vendor.destroy', ['id' => $vendor->id]) }}" method="POST" style="display: none;">
-                        <input type="hidden" name="_method" value="DELETE">
-                        @csrf
-                    </form> -->
+                    
                 </div>
             </div>
             <div class="box-body">
