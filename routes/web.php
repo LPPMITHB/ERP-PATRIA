@@ -603,7 +603,9 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
-    Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove');
+    Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
+
+    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval');
 
     Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:destroy-purchase-requisition');
 
@@ -615,7 +617,7 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/{id}', 'PurchaseRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition');
 
-    Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove')->middleware('can:show-purchase-requisition');
+    Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove');
 
     Route::get('/edit/{id}', 'PurchaseRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition');
 

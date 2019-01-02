@@ -231,6 +231,21 @@ class PurchaseRequisitionController extends Controller
         }  
     }
 
+    public function approval($pr_id,$status){
+        $modelPR = PurchaseRequisition::findOrFail($pr_id);
+        if($status == "approve"){
+            $modelPR->status = 2;
+            $modelPR->update();
+        }elseif($status == "not-approve"){
+            $modelPR->status = 3;
+            $modelPR->update();
+        }elseif($status == "reject"){
+            $modelPR->status = 4;
+            $modelPR->update();
+        }
+        return redirect()->route('purchase_requisition.show',$pr_id);
+    }
+
     // function
     public function generatePRNumber(){
         $modelPR = PurchaseRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
