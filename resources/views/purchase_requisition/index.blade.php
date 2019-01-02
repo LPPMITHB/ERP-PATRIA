@@ -17,11 +17,6 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header p-b-20">
-                <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('purchase_requisition.create') }}" class="btn btn-primary btn-sm">CREATE</a>
-                </div>
-            </div> <!-- /.box-header -->
             <div class="box-body">
                 <table class="table table-bordered" id="permissions-table">
                     <thead>

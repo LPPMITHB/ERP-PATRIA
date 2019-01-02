@@ -40,6 +40,7 @@ class RolesTableSeeder extends Seeder
                 'create-project' => true,'list-project' => true,'show-project' => true,'edit-project' => true,
                 'create-project-repair' => true,'list-project-repair' => true,'show-project-repair' => true,'edit-project-repair' => true,
                 'create-purchase-requisition' => true,'list-purchase-requisition' => true,'show-purchase-requisition' => true,'edit-purchase-requisition' => true,
+                'create-material-requisition' => true,'list-material-requisition' => true,'show-material-requisition' => true,'edit-material-requisition' => true,
                 'create-purchase-order' => true,'list-purchase-order' => true,'show-purchase-order' => true,'edit-purchase-order' => true,
                 'create-goods-movement' => true,'list-goods-movement' => true,'show-goods-movement' => true,'edit-goods-movement' => true,
                 'create-production-order' => true,'list-production-order' => true,'show-production-order' => true,'edit-production-order' => true,

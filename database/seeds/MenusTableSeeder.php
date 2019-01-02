@@ -428,7 +428,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View MR',
+            'name' => 'View and Edit MR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.index',
             'is_active' => true,

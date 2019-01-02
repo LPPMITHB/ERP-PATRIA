@@ -717,19 +717,19 @@ Route::name('material_requisition.')->prefix('material_requisition')->group(func
 
     Route::get('/', 'MaterialRequisitionController@index')->name('index');
 
-    Route::get('/create', 'MaterialRequisitionController@create')->name('create')->middleware('can:create-purchase-requisition');
+    Route::get('/create', 'MaterialRequisitionController@create')->name('create')->middleware('can:create-material-requisition');
 
-    Route::get('/{id}', 'MaterialRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition');
+    Route::get('/{id}', 'MaterialRequisitionController@show')->name('show')->middleware('can:show-material-requisition');
 
-    Route::get('/showApprove/{id}', 'MaterialRequisitionController@showApprove')->name('showApprove')->middleware('can:show-purchase-requisition');
+    Route::get('/showApprove/{id}', 'MaterialRequisitionController@showApprove')->name('showApprove')->middleware('can:show-material-requisition');
 
-    Route::get('/{id}/edit', 'MaterialRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition');
+    Route::get('/{id}/edit', 'MaterialRequisitionController@edit')->name('edit')->middleware('can:edit-material-requisition');
 
-    Route::patch('/{id}', 'MaterialRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
+    Route::patch('/{id}', 'MaterialRequisitionController@update')->name('update')->middleware('can:edit-material-requisition');
 
-    Route::post('/', 'MaterialRequisitionController@store')->name('store')->middleware('can:create-purchase-requisition');
+    Route::post('/', 'MaterialRequisitionController@store')->name('store')->middleware('can:create-material-requisition');
 
-    Route::delete('/{id}', 'MaterialRequisitionController@destroy')->name('destroy')->middleware('can:destroy-purchase-requisition');
+    Route::delete('/{id}', 'MaterialRequisitionController@destroy')->name('destroy')->middleware('can:destroy-material-requisition');
 });
 
 // Goods Issue Routes

@@ -11,6 +11,7 @@ use App\Models\Material;
 use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Stock;
+use Illuminate\Support\Collection;
 use Auth;
 use DB;
 
@@ -78,6 +79,7 @@ class MaterialRequisitionController extends Controller
     public function show($id)
     {
         $modelMR = MaterialRequisition::findOrFail($id);
+       
 
         return view('material_requisition.show', compact('modelMR'));
     }
@@ -89,11 +91,81 @@ class MaterialRequisitionController extends Controller
         return view('material_requisition.showApprove', compact('modelMR'));
     }
 
+    public function edit($id)
+    {
+        $modelMR = MaterialRequisition::findOrFail($id);
+        $modelMaterial = Material::all()->jsonSerialize();
+        $modelProject = $modelMR->project->with('ship','customer','wbss')->first()->jsonSerialize();
+        $modelWBS = $modelMR->project->wbss; 
+        $modelMRD = Collection::make();
+        foreach($modelMR->MaterialRequisitionDetails as $mrd){
+            $modelMRD->push([
+                "mrd_id" => $mrd->id,
+                "material_id" => $mrd->material_id,
+                "material_code" => $mrd->material->code,
+                "material_name" => $mrd->material->name,
+                "quantity" => number_format($mrd->quantity),
+                "quantityInt" => $mrd->quantity,
+                "wbs_id" => $mrd->wbs_id,
+                "wbs_name" => $mrd->wbs->name,
+            ]);
+        }
+        return view('material_requisition.edit', compact('modelMR','modelMRD','modelMaterial','modelProject','modelWBS'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $datas = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+            $MR = MaterialRequisition::find($id);
+            $MR->description = $datas->description;
+            $MR->update();
+
+
+            foreach($datas->materials as $data){
+                if($data->mrd_id != null){
+                    $MRD = MaterialRequisitionDetail::find($data->mrd_id);
+                    $this->updateReserveStock($data->material_id, $MRD->quantity ,$data->quantityInt);
+                    
+                    $MRD->quantity = $data->quantityInt;
+                    $MRD->wbs_id = $data->wbs_id;
+                    $MRD->update();
+                }else{
+                    $MRD = new MaterialRequisitionDetail;
+                    $MRD->material_requisition_id = $MR->id;
+                    $MRD->quantity = $data->quantityInt;
+                    $MRD->material_id = $data->material_id;
+                    $MRD->wbs_id = $data->wbs_id;
+                    $MRD->save();
+
+                    $this->reserveStock($data->material_id, $data->quantityInt);
+                }
+
+
+            }
+            DB::commit();
+            return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Updated');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('material_requisition.create')->with('error', $e->getMessage());
+        }
+    }
+
     // function
     public function reserveStock($material_id,$quantity){
         $modelStock = Stock::where('material_id',$material_id)->first();
         if($modelStock){
             $modelStock->reserved = $modelStock->reserved + $quantity;
+            $modelStock->save();
+        }
+    }
+
+    public function updateReserveStock($material_id,$oldQty, $newQty){
+        $difference = $newQty - $oldQty;
+        $modelStock = Stock::where('material_id',$material_id)->first();
+        if($modelStock){
+            $modelStock->reserved = $modelStock->reserved + $difference;
             $modelStock->save();
         }
     }
