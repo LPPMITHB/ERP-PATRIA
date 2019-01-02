@@ -64,6 +64,7 @@ class UserController extends Controller
             'branch' => 'required',
         ]);
         
+        $stringBusinessUnit = '['.implode(',', $request->businessUnit).']';
         $configuration = Configuration::get('default-password');
         DB::beginTransaction();
         try {
@@ -75,6 +76,7 @@ class UserController extends Controller
             $user->address = ucfirst($request->address);
             $user->phone_number = $request->phone_number;
             $user->role_id = $request->role;
+            $user->business_unit_id = $stringBusinessUnit;
             $user->branch_id = $request->branch;
             $user->status = $request->status;
             $user->save();
@@ -96,8 +98,9 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-
-        return view('user.show', compact('user'));
+        $businessUnits = BusinessUnit::whereIn('id',json_decode($user->business_unit_id))->pluck('name')->toArray();
+        $stringBusinessUnit = implode(', ', $businessUnits);
+        return view('user.show', compact('user','stringBusinessUnit'));
     }
 
     /**

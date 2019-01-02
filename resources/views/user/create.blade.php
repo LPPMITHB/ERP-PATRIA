@@ -69,7 +69,7 @@
                             <label for="role" class="col-sm-2 control-label">Role</label>
             
                             <div class="col-sm-10">
-                                <select name="role" id="role" required>
+                                <select name="role" id="role" required placeholder="Select Role..">
                                     <option></option>
                                     @foreach($roles as $name => $id)
                                         <option value="{{ $id }}">{{ $name }}</option>
@@ -82,7 +82,7 @@
                             <label for="branch" class="col-sm-2 control-label">Branch</label>
 
                             <div class="col-sm-10">
-                                <select name="branch" id="branch" required>
+                                <select name="branch" id="branch" required placeholder="Select Branch..">
                                     <option></option>
                                     @foreach($branches as $name => $id)
                                         <option value="{{ $id }}">{{ $name }}</option>
@@ -95,9 +95,9 @@
                             <label for="businessUnit" class="col-sm-2 control-label">Business Unit</label>
             
                             <div class="col-sm-10">
-                                <select id="businessUnit" name="businessUnit[]" multiple="multiple">
+                                <select id="businessUnit" name="businessUnit[]" multiple="multiple" placeholder="Select Business Unit..">
                                     @foreach ($businessUnits as $businessUnit)
-                                        <option value="{{$businessUnit->id}}">{{$businessUnit->code}} - {{$businessUnit->name}}</option>
+                                        <option value="{{$businessUnit->id}}">{{$businessUnit->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -139,6 +139,10 @@
         $('#branch').val("{{ old('branch') }}");
         $('.alert').addClass('animated bounce');
         $('#role,#branch').selectize();
+        $('#businessUnit').selectize({
+            maxItems: 3,
+            plugins: ['remove_button'],
+        });
         $('div.overlay').remove();
     });
 
