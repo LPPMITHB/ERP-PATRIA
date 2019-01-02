@@ -18,58 +18,49 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.store') }}">
+                <form id="edit-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.update',['id'=>$modelMR->id]) }}">
+                <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim
                     <div id="mr">
                         <div class="box-header no-padding">
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4">
-                                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
-                                    
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
-
-                                    <div class="col-xs-5 no-padding">Start Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
-
-                                    <div class="col-xs-5 no-padding">End Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
-                                </div>
-                            </template>
                             <div class="col-xs-12 col-md-4">
-                                <label for="" >Project Name</label>
-                                <selectize id="material" v-model="project_id" :settings="projectSettings" :disabled="dataOk">
-                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
-                                </selectize>  
+                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+        
+                                <div class="col-xs-5 no-padding">Project Number</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.number}}</b></div>
+                                
+                                <div class="col-xs-5 no-padding">Ship Type</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.ship.type}}</b></div>
+        
+                                <div class="col-xs-5 no-padding">Customer</div>
+                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject.customer.name)"><b>: {{selectedProject.customer.name}}</b></div>
+
+                                <div class="col-xs-5 no-padding">Start Date</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_start_date}}</b></div>
+
+                                <div class="col-xs-5 no-padding">End Date</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_end_date}}</b></div>
                             </div>
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4 p-r-0">
-                                        <div class="col-sm-12 p-l-0">
-                                            <label for="">MR Description</label>
-                                        </div>
-                                        <div class="col-sm-12 p-l-0">
-                                            <textarea class="form-control" rows="3" v-model="description"></textarea>
-                                        </div>
-                                </div>
-                            </template>
+                            <div class="col-xs-12 col-md-4 p-r-0">
+                                    <div class="col-sm-12 p-l-0">
+                                        <label for="">MR Description</label>
+                                    </div>
+                                    <div class="col-sm-12 p-l-0">
+                                        <textarea class="form-control" rows="3" v-model="description"></textarea>
+                                    </div>
+                            </div>
                         </div>
-                        <div class="row" v-show="selectedProject.length > 0">
+                        <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 35%">Material Name</th>
+                                            <th style="width: 40%">Material Name</th>
                                             <th style="width: 20%">Quantity</th>
                                             <th style="width: 30%">WBS Name</th>
-                                            <th style="width: 10%"></th>
+                                            <th style="width: 5%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -81,9 +72,6 @@
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
-                                                </a>
-                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                    DELETE
                                                 </a>
                                             </td>
                                         </tr>
@@ -112,11 +100,9 @@
                                 </table>
                             </div>
                         </div>
-                        <template v-if="selectedProject.length > 0">
-                            <div class="col-md-12 p-r-0 p-t-10">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
-                            </div>
-                        </template>
+                        <div class="col-md-12 p-r-0 p-t-10">
+                            <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">SAVE</button>
+                        </div>
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -129,10 +115,8 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
-                                                </selectize>
+                                                <label for="material" class="control-label">Material</label>
+                                                <input type="text" id="material" class="form-control" disabled >
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
@@ -167,7 +151,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-mr');
+    const form = document.querySelector('form#edit-mr');
 
     $(document).ready(function(){
         $('div.overlay').hide();
@@ -175,12 +159,10 @@
 
 
     var data = {
-        description : "",
+        description : @json($modelMR->description),
         newIndex : "",
         materials : @json($modelMaterial),
-        projects : @json($modelProject),
-        wbss : [],
-        project_id : "",
+        wbss : @json($modelWBS),
         projectSettings: {
             placeholder: 'Please Select Project'
         },
@@ -190,9 +172,10 @@
         materialSettings: {
             placeholder: 'Please Select Material'
         },
-        selectedProject : [],
-        dataMaterial : [],
+        selectedProject : @json($modelProject),
+        dataMaterial : @json($modelMRD),
         dataInput : {
+            mrd_id :null,
             material_id :"",
             material_code : "",
             material_name : "",
@@ -292,26 +275,10 @@
                 var material = this.dataMaterial[this.editInput.index];
                 material.quantityInt = this.editInput.quantityInt;
                 material.quantity = this.editInput.quantity;
-                material.material_id = new_material_id;
                 material.wbs_id = this.editInput.wbs_id;
 
-                window.axios.get('/api/getMaterial/'+new_material_id).then(({ data }) => {
-                    material.material_name = data.name;
-                    material.material_code = data.code;
-
-                        window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
-                        material.wbs_name = data.name;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-
+                window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
+                    material.wbs_name = data.name;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -321,7 +288,9 @@
                         displayMode: 'replace'
                     });
                     $('div.overlay').hide();
-                });
+                })
+
+                $('div.overlay').hide();
             },
             openEditModal(data,index){
                 this.editInput.material_id = data.material_id;
@@ -334,6 +303,7 @@
                 this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
 
+                document.getElementById('material').value = data.material_code+" - "+data.material_name;
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
                 
@@ -373,34 +343,9 @@
                     });
                     $('div.overlay').hide();
                 })
-            },
-            removeRow(index){
-                this.dataMaterial.splice(index, 1);                
-                this.newIndex = this.dataMaterial.length + 1;
             }
         },
         watch : {
-            'project_id' : function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getProjectMR/'+newValue).then(({ data }) => {
-                        this.selectedProject = [];
-                        this.selectedProject.push(data);
-                        this.wbss = data.wbss;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.selectedProject = [];
-                }
-            },
             'dataInput.quantity': function(newValue){
                 this.dataInput.quantityInt = newValue;
                 var string_newValue = newValue+"";

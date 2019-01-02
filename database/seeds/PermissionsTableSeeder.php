@@ -335,6 +335,41 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Purchase Requisition
+        $createMR = Menu::where('name','Create MR Manually')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Material Requisition',
+            'menu_id' => $createMR,
+            'middleware' => 'create-material-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewMR = Menu::where('name','View and Edit MR')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Material Requisition',
+            'menu_id' => $viewMR,
+            'middleware' => 'list-material-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Material Requisition',
+            'menu_id' => $viewMR,
+            'middleware' => 'show-material-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Material Requisition',
+            'menu_id' => $viewMR,
+            'middleware' => 'edit-material-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Purchase Order
         $createPO = Menu::where('name','Create PO')->select('id')->first()->id;
         DB::table('permissions')->insert([
