@@ -21,7 +21,7 @@
             <form id="edit-rap" class="form-horizontal" method="POST" action="{{ route('rap.update',['id'=>$modelRap->id]) }}">
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
-                <div class="box_header">
+                <div class="box-header">
                     <div class="row p-t-10 p-l-10 p-r-10">
                         <div class="col-xs-12 col-md-4">
                             <div class="col-sm-12 no-padding"><b>Project Information</b></div>

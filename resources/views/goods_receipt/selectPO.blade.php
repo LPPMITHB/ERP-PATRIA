@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Goods Receipt » Create Details',
+        'title' => 'Create Goods Receipt',
         'items' => [
             'Dashboard' => route('index'),
             'Select Purchase Order' => route('goods_receipt.createGrWithRef'),
@@ -16,76 +16,74 @@
 
 @section('content')
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-sm-12">
         <div class="box">
             <div class="box-body">
                 <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt.store') }}">
                 @csrf
                     @verbatim
                     <div id="pod">
-                        <div class="box_header">
-                            <div class="col-sm-12 p-r-0">
-                                <div class="col-sm-8 p-l-0">
-                                    <div class="row">
-                                        <div class="col-sm-3 p-l-0 p-r-0">
-                                            PO Number
-                                        </div>
-                                        <div class="col-sm-3 p-l-0">
-                                            : <b> {{ modelPO.number }}</b>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-3 p-l-0 p-r-0">
-                                            Vendor
-                                        </div>
-                                        <div class="col-sm-3 p-l-0 p-r-0">
-                                            : <b> {{ modelPO.vendor.name }} </b>
-                                        </div>
+                        <div class="col-sm-12 no-padding">
+                            <div class="box-header">
+                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
+                                    <div class="box-body no-padding">
+                                        <div class="col-md-4 col-xs-4 no-padding">PO Number</div>
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.number }}</b></div>
+                                        
+                                        <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.vendor.name }}</b></div>
+                
+                                        <div class="col-md-4 col-xs-4 no-padding">Address</div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{ modelPO.vendor.address }}</b></div>
+
+                                        <div class="col-md-4 col-xs-4 no-padding">Phone Number</div>
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.vendor.phone_number }}</b></div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4 p-l-0 p-r-0">
-                                    GR Description  : <textarea class="form-control" rows="3" v-model="description" style="width:100%"></textarea>
+                                <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
+                                    <div class="box-body no-padding">
+                                            <div class="col-md-4 col-lg-7 col-xs-12 no-padding"> GR Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
+                                            </div>
+                                        </div>
+                            </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <table class="table table-bordered tablePagingVue tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th width="5%">No</th>
+                                                <th width="35%">Material Name</th>
+                                                <th width="15%">Quantity</th>
+                                                <th width="15%">Received</th>
+                                                <th width="30%">Storage Location</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(POD,index) in modelPOD" v-if="POD.quantity > 0">
+                                                <td>{{ index+1 }}</td>
+                                                <td>{{ POD.material.code }} - {{ POD.material.name }}</td>
+                                                <td>{{ POD.quantity }}</td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">
+                                                </td>
+                                                <td class="no-padding">
+                                                    <selectize v-model="POD.sloc_id" :settings="slocSettings">
+                                                        <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
+                                                    </selectize>  
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-sm-12">
                             <div class="row">
-                                <table class="table table-bordered table-hover" id="pod-table">
-                                    <thead>
-                                        <tr>
-                                            <th width="5%">No</th>
-                                            <th width="35%">Material</th>
-                                            <th width="15%">Quantity</th>
-                                            <th width="15%">Received</th>
-                                            <th width="30%">Storage Location</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(POD,index) in modelPOD" v-if="POD.quantity > 0">
-                                            <td>{{ index+1 }}</td>
-                                            <td>{{ POD.material.code }} - {{ POD.material.name }}</td>
-                                            <td>{{ POD.quantity }}</td>
-                                            <td class="tdEllipsis no-padding">
-                                                <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">
-                                            </td>
-                                            <td class="no-padding">
-                                                <selectize v-model="POD.sloc_id" :settings="slocSettings">
-                                                    <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
-                                                </selectize>  
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="col-md-12 p-t-10">
+                                    <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 p-t-10">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
-                            </div>
-                        </div>
 
-                    </div>
+                        </div>
                     @endverbatim
                 </form>
         </div><!-- /.box-body -->
@@ -102,16 +100,33 @@
     const form = document.querySelector('form#create-gr');
 
     $(document).ready(function(){
-        $('#pod-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
+        $('div.overlay').hide();
+
+        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'Material Name' || title == 'Storage Location'){
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }else{
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tablePagingVue.column(i).search() !== this.value ) {
+                    tablePagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tablePagingVue = $('.tablePagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
         });
     });
 
@@ -138,6 +153,14 @@
             },
         },
         methods : {
+            changeText(){
+                if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
+                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelPO.vendor.address ){
+                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelPO.vendor.address;    
+                    }
+                }
+            }, 
+            
             submitForm(){
                 var data = this.modelPOD;
                 data = JSON.stringify(data)

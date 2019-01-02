@@ -102,7 +102,7 @@
                                                 <td class="tdEllipsis">{{ resource.quantity }}</td>
                                                 <td class="tdEllipsis">{{ resource.uom_name }}</td>
                                                 <td class="tdEllipsis">{{ resource.cost }}</td>
-                                                <td class="tdEllipsis">{{ resource.work_name }}</td>
+                                                <td class="tdEllipsis">{{ resource.wbs_name }}</td>
                                                 <td class="p-l-0 textCenter">
                                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(resource,index)">
                                                         EDIT
@@ -129,8 +129,8 @@
                                                     <input class="form-control" v-model="dataInput.cost" placeholder="Please Input Cost">
                                                 </td>
                                                 <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.wbs_id" :settings="workSettings">
-                                                        <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                    <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                        <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
                                                     </selectize>
                                                 </td>
                                                 <td class="p-l-0 textCenter">
@@ -175,14 +175,14 @@
         resources : @json($modelResource),
         projects : @json($modelProject),
         vendors : @json($modelVendor),
-        works : [],
+        wbss : [],
         project_id : "",
         vendor_id : "",
         projectSettings: {
             placeholder: 'Please Select Project'
         },
-        workSettings: {
-            placeholder: 'Please Select Work'
+        wbsSettings: {
+            placeholder: 'Please Select WBS'
         },
         resourceSettings: {
             placeholder: 'Please Select Resource'
@@ -201,7 +201,7 @@
             uom_id : "",
             uom_name : "",
             wbs_id : "",
-            work_name : ""
+            wbs_name : ""
         },
         // editInput : {
         //     old_material_id : "",
@@ -301,8 +301,8 @@
                     material.material_name = data.name;
                     material.material_code = data.code;
 
-                        window.axios.get('/api/getWork/'+this.editInput.wbs_id).then(({ data }) => {
-                        material.work_name = data.name;
+                        window.axios.get('/api/getWBS/'+this.editInput.wbs_id).then(({ data }) => {
+                        material.wbs_name = data.name;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -333,7 +333,7 @@
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.work_name = data.work_name;
+                this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
@@ -360,7 +360,7 @@
                 this.dataInput.uom_id = "";
                 this.dataInput.uom_name = "";
                 this.dataInput.wbs_id = "";
-                this.dataInput.work_name = "";
+                this.dataInput.wbs_name = "";
 
                 this.newIndex = Object.keys(this.dataResource).length+1;
             },
@@ -378,7 +378,7 @@
                         this.selectedProject = [];
                         this.selectedProject.push(data);
 
-                        this.works = data.works;
+                        this.wbss = data.wbss;
                         
                         $('div.overlay').hide();
                     })
@@ -409,8 +409,8 @@
             'dataInput.wbs_id': function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWork/'+newValue).then(({ data }) => {
-                        this.dataInput.work_name = data.name;
+                    window.axios.get('/api/getWBS/'+newValue).then(({ data }) => {
+                        this.dataInput.wbs_name = data.name;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {

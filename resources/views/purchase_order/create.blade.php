@@ -20,7 +20,7 @@
             @csrf
                 @verbatim
                     <div id="po">
-                        <div class="box_header">
+                        <div class="box-header">
                             <div class="row">
                                 <div class="col-sm-4 col-md-4 p-l-25">
                                     <div class="row">
@@ -101,7 +101,7 @@
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
                                                 </td>
-                                                <td class="tdEllipsis">{{ PRD.work.name }}</td>
+                                                <td class="tdEllipsis">{{ PRD.wbs.name }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

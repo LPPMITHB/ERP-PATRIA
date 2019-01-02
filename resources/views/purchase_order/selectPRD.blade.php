@@ -42,7 +42,7 @@
                                     <td>{{ PRD.quantity }}</td>
                                     <td>{{ PRD.reserved }}</td>
                                     <td>{{ PRD.remaining }}</td>
-                                    <td>{{ PRD.work.name }}</td>
+                                    <td>{{ PRD.wbs.name }}</td>
                                     <td class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
                                     </td>
