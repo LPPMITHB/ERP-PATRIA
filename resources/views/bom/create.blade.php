@@ -40,6 +40,7 @@
                                 <div class="col-xs-4 no-padding">Customer</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.customer.name)"><b>: {{project.customer.name}}</b></div>
                             </div>
+                            
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                             

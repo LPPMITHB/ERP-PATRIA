@@ -8,7 +8,7 @@ use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\Branch;
 use App\Models\Material;
-use App\Models\Work;
+use App\Models\WBS;
 use App\Models\Project;
 use Auth;
 use DB;
@@ -267,13 +267,13 @@ class PurchaseRequisitionController extends Controller
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getWorkAPI($id){
+    public function getWbsAPI($id){
 
-        return response(Work::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getPRDAPI($id){
 
-        return response(PurchaseRequisitionDetail::where('purchase_requisition_id',$id)->with('material','work')->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(PurchaseRequisitionDetail::where('purchase_requisition_id',$id)->with('material','wbs')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 }

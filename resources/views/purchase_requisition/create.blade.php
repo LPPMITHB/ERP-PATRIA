@@ -22,68 +22,53 @@
                 @csrf
                     @verbatim
                     <div id="pr">
-                        <div class="row">
+                        <div class="box-header no-padding">
                             <template v-if="selectedProject.length > 0">
-                                <div class="col-sm-4">
-                                    <div class="col-sm-4">
-                                        Project Code
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].code }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Ship
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].ship.name }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Customer
-                                    </div>
-                                    <div class="col-sm-8 tdEllipsis"  data-container="body" v-tooltip:top="tooltipText(selectedProject[0].customer.name)">
-                                        : <b>{{ selectedProject[0].customer.name }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Start Date
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].planned_start_date }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        End Date
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].planned_end_date }}</b>
-                                    </div>
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Project Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
+                                    
+                                    <div class="col-xs-5 no-padding">Ship Type</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Customer</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="selectedProject[0].customer.name" @mouseover="changeText"><b>: {{selectedProject[0].customer.name}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">Start Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">End Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
                                 </div>
                             </template>
-                            <div class="col-sm-4 p-l-20">
+                            <div class="col-xs-12 col-md-4">
                                 <label for="" >Project Name</label>
                                 <selectize id="material" v-model="project_id" :settings="projectSettings" :disabled="dataOk">
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
                             <template v-if="selectedProject.length > 0">
-                                <div class="col-sm-4">
-                                        <div class="col-sm-12">
+                                <div class="col-xs-12 col-md-4 p-r-0">
+                                        <div class="col-sm-12 p-l-0">
                                             <label for="">PR Description</label>
                                         </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-12 p-l-0">
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
                                 </div>
                             </template>
                         </div>
-                        <div class="row">
-                            <template v-if="selectedProject.length > 0">
+                        <div class="row" v-show="selectedProject.length > 0">
                                 <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                    <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                                    <table class="table table-bordered tableFixed" >
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <th style="width: 35%">Material Name</th>
                                                 <th style="width: 20%">Quantity</th>
-                                                <th style="width: 30%">Work Name</th>
+                                                <th style="width: 30%">WBS Name</th>
                                                 <th style="width: 10%"></th>
                                             </tr>
                                         </thead>
@@ -119,17 +104,16 @@
                                                         <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                                     </selectize>
                                                 </td>
-                                                <td class="p-l-0 textCenter">
+                                                <td class="p-l-0  textCenter">
                                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                                 </td>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
-                            </template>
                         </div>
                         <template v-if="selectedProject.length > 0">
-                            <div class="col-md-12">
+                            <div class="col-md-12 p-r-0 p-t-10">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
                             </div>
                         </template>
@@ -190,6 +174,7 @@
     });
 
     var data = {
+        submit: "ok",
         description : "",
         newIndex : "",
         materials : @json($modelMaterial),
@@ -205,7 +190,6 @@
         materialSettings: {
             placeholder: 'Please Select Material'
         },
-        
         selectedProject : [],
         dataMaterial : [],
         dataInput : {
@@ -249,7 +233,7 @@
             allOk: function(){
                 let isOk = false;
                 
-                if(this.dataMaterial.length < 1){
+                if(this.dataMaterial.length < 1 || this.submit == ""){
                     isOk = true;
                 }
 
@@ -281,10 +265,15 @@
             }
         },
         methods : {
-            tooltipText: function(text) {
-                return text
-            },
+            changeText(){
+                if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
+                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != this.selectedProject[0].customer.name ){
+                        document.getElementsByClassName('tooltip-inner')[0].innerHTML=this.selectedProject[0].customer.name;    
+                    }
+                }
+            },  
             submitForm(){
+                this.submit = "";
                 this.submittedForm.description = this.description;
                 this.submittedForm.project_id = this.project_id;     
                 this.submittedForm.materials = this.dataMaterial;    
@@ -306,7 +295,7 @@
                         material.wbs_id = this.editInput.wbs_id;
 
                         window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
-                            console.log(data);
+                            // console.log(data);
                             material.material_name = data.name;
                             material.material_code = data.code;
 
@@ -321,7 +310,7 @@
                             // var jsonMaterialId = JSON.stringify(this.material_id);
                             // this.getNewMaterials(jsonMaterialId);
 
-                             window.axios.get('/api/getWork/'+this.editInput.wbs_id).then(({ data }) => {
+                             window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
                                 material.work_name = data.name;
                                 $('div.overlay').hide();
                             })
@@ -450,12 +439,12 @@
             'project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getProject/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getProjectPR/'+newValue).then(({ data }) => {
                         this.selectedProject = [];
                         this.selectedProject.push(data);
-                        console.log(this.selectedProject)
+                        // console.log(this.selectedProject)
 
-                        this.works = data.works;
+                        this.works = data.wbss;
                         
                         $('div.overlay').hide();
                     })
@@ -470,6 +459,20 @@
                 }else{
                     this.selectedProject = [];
                 }
+
+                function myFunction(x) {
+                    if (x.matches) { // If media query matches
+                        $('.table').wrap('<div class="dataTables_scroll" />');
+                    } 
+                }
+
+                var x = window.matchMedia("(max-width: 500px)")
+                myFunction(x) // Call listener function at run time
+                x.addListener(myFunction) // Attach listener function on state changes
+
+                var x = window.matchMedia("(max-width: 1024px)")
+                myFunction(x) // Call listener function at run time
+                x.addListener(myFunction) // Attach listener function on state changes
             },
             'dataInput.quantity': function(newValue){
                 this.dataInput.quantityInt = newValue;
@@ -486,7 +489,7 @@
         'dataInput.wbs_id': function(newValue){
             if(newValue != ""){
                 $('div.overlay').show();
-                window.axios.get('/api/getWork/'+newValue).then(({ data }) => {
+                window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
                     this.dataInput.work_name = data.name;
                     $('div.overlay').hide();
                 })
