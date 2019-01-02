@@ -22,60 +22,46 @@
                 @csrf
                     @verbatim
                     <div id="mr">
-                        <div class="row">
+                        <div class="box-header no-padding">
                             <template v-if="selectedProject.length > 0">
-                                <div class="col-sm-4">
-                                    <div class="col-sm-4">
-                                        Project Code
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].number }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Ship 
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].ship.type }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Customer
-                                    </div>
-                                    <div class="col-sm-8 tdEllipsis" v-tooltip:bottom="tooltip(selectedProject[0].customer.name)">
-                                        : <b>{{ selectedProject[0].customer.name }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Start Date
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].planned_start_date }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        End Date
-                                    </div>
-                                    <div class="col-sm-8">
-                                        : <b>{{ selectedProject[0].planned_end_date }}</b>
-                                    </div>
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Project Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
+                                    
+                                    <div class="col-xs-5 no-padding">Ship Type</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Customer</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">Start Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">End Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
                                 </div>
                             </template>
-                            <div class="col-sm-4 p-l-20">
+                            <div class="col-xs-12 col-md-4">
                                 <label for="" >Project Name</label>
                                 <selectize id="material" v-model="project_id" :settings="projectSettings" :disabled="dataOk">
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
                             <template v-if="selectedProject.length > 0">
-                                <div class="col-sm-4">
-                                        <div class="col-sm-12">
+                                <div class="col-xs-12 col-md-4 p-r-0">
+                                        <div class="col-sm-12 p-l-0">
                                             <label for="">MR Description</label>
                                         </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-12 p-l-0">
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
                                 </div>
                             </template>
                         </div>
                         <div class="row" v-show="selectedProject.length > 0">
-                            <div class="col sm-12 p-l-10 p-r-10 p-t-10">
+                            <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                     <thead>
                                         <tr>
@@ -127,7 +113,7 @@
                             </div>
                         </div>
                         <template v-if="selectedProject.length > 0">
-                            <div class="col-md-12">
+                            <div class="col-md-12 p-r-0 p-t-10">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
                             </div>
                         </template>
@@ -395,7 +381,7 @@
             'project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getProject/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getProjectMR/'+newValue).then(({ data }) => {
                         this.selectedProject = [];
                         this.selectedProject.push(data);
                         this.wbss = data.wbss;

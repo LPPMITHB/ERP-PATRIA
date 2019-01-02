@@ -119,4 +119,10 @@ class MaterialRequisitionController extends Controller
     public function getWbsAPI($id){
         return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function getProjectApi($id){
+        $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
+
+        return response($project, Response::HTTP_OK);
+    }
 }
