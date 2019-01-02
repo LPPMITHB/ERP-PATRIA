@@ -23,7 +23,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered" id="permissions-table">
+                <table class="table table-bordered tableFixed tablePaging">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -61,17 +61,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#permissions-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush
