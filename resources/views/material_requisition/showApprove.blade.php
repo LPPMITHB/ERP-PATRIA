@@ -106,7 +106,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $MRD->material->name }}</td>
                                 <td>{{ number_format($MRD->quantity) }}</td>
-                                <td>{{ $MRD->work->name }}</td>
+                                <td>{{ $MRD->wbs->name }}</td>
                             </tr>
                         @endforeach
                     </tbody>

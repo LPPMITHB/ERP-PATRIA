@@ -45,6 +45,7 @@
         <li class="dropdown user user-menu">
           <a href="{{ route('user.show', ['id' => Auth::user()->id ]) }}">
             <span class="hidden-xs">{{ auth()->user()->name }}</span>
+            <span class="mobile_view"><i class="fa fa-user"></i></span>
           </a>
         </li>
         <!-- Logout Button -->
