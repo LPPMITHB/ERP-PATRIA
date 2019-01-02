@@ -40,7 +40,7 @@
                                     <div class="col-sm-4">
                                         Customer
                                     </div>
-                                    <div class="col-sm-8 tdEllipsis" v-tooltip:bottom="selectedProject[0].customer.name" @mouseover="changeText">
+                                    <div class="col-sm-8 tdEllipsis" v-tooltip:bottom="tooltip(selectedProject[0].customer.name)">
                                         : <b>{{ selectedProject[0].customer.name }}</b>
                                     </div>
                                     <div class="col-sm-4">
@@ -281,13 +281,17 @@
             },
         },
         methods : {
-            changeText(){
-                if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
-                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != this.selectedProject[0].customer.name ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML=this.selectedProject[0].customer.name;    
-                    }
-                }
-            },  
+            tooltip(text){
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).tooltip('destroy');
+                    $(el).tooltip({
+                        title: text,
+                        placement: binding.arg,
+                        trigger: 'hover'             
+                    })
+                })
+                return text
+            },
             submitForm(){
                 this.submittedForm.description = this.description;
                 this.submittedForm.project_id = this.project_id;     
@@ -445,13 +449,7 @@
         },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
-            Vue.directive('tooltip', function(el, binding){
-                $(el).tooltip({
-                    title: binding.value,
-                    placement: binding.arg,
-                    trigger: 'hover'             
-                })
-            })
+            
         },
     });
 </script>

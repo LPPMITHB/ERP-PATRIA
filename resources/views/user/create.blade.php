@@ -92,6 +92,18 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="businessUnit" class="col-sm-2 control-label">Business Unit</label>
+            
+                            <div class="col-sm-10">
+                                <select id="businessUnit" name="businessUnit[]" multiple="multiple">
+                                    @foreach ($businessUnits as $businessUnit)
+                                        <option value="{{$businessUnit->id}}">{{$businessUnit->code}} - {{$businessUnit->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="status" class="col-sm-2 control-label">Status</label>
             
                             <div class="col-sm-10">

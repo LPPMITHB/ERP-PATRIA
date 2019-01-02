@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Configuration;
 use App\Models\Branch;
+use App\Models\BusinessUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -41,8 +42,9 @@ class UserController extends Controller
         $user = new User;
         $roles = Role::pluck('id','name');
         $branches = Branch::where('status',1)->pluck('id','name');
+        $businessUnits = BusinessUnit::all();
 
-        return view('user.create', compact('user','roles','employee','branches'));
+        return view('user.create', compact('user','roles','branches','businessUnits'));
     }
 
     /**
