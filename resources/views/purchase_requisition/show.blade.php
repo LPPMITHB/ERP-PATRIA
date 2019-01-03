@@ -76,7 +76,7 @@
                             </div>
                         @elseif($modelPR->status == 3)
                             <div class="col-xs-7 col-md-7">
-                                : <b>NOT APPROVE</b>
+                                : <b>NEEDS REVISION</b>
                             </div>
                         @elseif($modelPR->status == 4)
                             <div class="col-xs-7 col-md-7">

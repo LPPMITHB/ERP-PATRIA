@@ -53,7 +53,7 @@
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @elseif($modelPR->status == 3)
-                                    <td>NOT APPROVE</td>
+                                    <td>NEEDS REVISION</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
