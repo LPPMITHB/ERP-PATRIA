@@ -76,7 +76,7 @@
                             </div>
                         @elseif($modelPR->status == 3)
                             <div class="col-xs-7 col-md-7">
-                                : <b>NOT APPROVE</b>
+                                : <b>NEEDS REVISION</b>
                             </div>
                         @elseif($modelPR->status == 4)
                             <div class="col-xs-7 col-md-7">
@@ -126,7 +126,7 @@
                 @if($modelPR->status == 1 || $modelPR->status == 0)
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                         <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'approve']) }}">APPROVE</a>
-                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'not-approve']) }}">REVISE</a>
+                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'not-approve']) }}">NEEDS REVISION</a>
                         <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'reject']) }}">REJECT</a>
                     </div>
                 @endif

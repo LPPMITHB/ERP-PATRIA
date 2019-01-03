@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Purchase Requisition » '.$modelMR->project->name,
+        'title' => 'View Material Requisition » '.$modelMR->project->name,
         'items' => [
             'Dashboard' => route('index'),
             'View Purchase Requisition' => route('purchase_requisition.show',$modelMR->id),
@@ -24,7 +24,7 @@
                             <i class="fa fa-envelope"></i>
                         </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">PR Number</span>
+                            <span class="info-box-text">MR Number</span>
                             <span class="info-box-number">{{ $modelMR->number }}</span>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                             </div>
                         @elseif($modelMR->status == 3)
                             <div class="col-xs-7 col-md-7">
-                                : <b>NOT APPROVE</b>
+                                : <b>NEEDS REVISION</b>
                             </div>
                         @elseif($modelMR->status == 4)
                             <div class="col-xs-7 col-md-7">
@@ -126,7 +126,7 @@
                 @if($modelMR->status == 1 || $modelMR->status == 0)
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                         <a class="btn btn-primary pull-right m-l-10" href="{{ route('material_requisition.approval', ['id'=>$modelMR->id,'status'=>'approve']) }}">APPROVE</a>
-                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('material_requisition.approval', ['id'=>$modelMR->id,'status'=>'not-approve']) }}">NOT APPROVE</a>
+                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('material_requisition.approval', ['id'=>$modelMR->id,'status'=>'not-approve']) }}">REVISE</a>
                         <a class="btn btn-danger pull-right p-r-10" href="{{ route('material_requisition.approval', ['id'=>$modelMR->id,'status'=>'reject']) }}">REJECT</a>
                     </div>
                 @endif

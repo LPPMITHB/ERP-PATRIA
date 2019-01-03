@@ -191,7 +191,7 @@ class MaterialRequisitionController extends Controller
         
 		$number = 1;
         if(isset($modelMR)){
-            $yearDoc = substr($modelMR->number, 4,2);
+            $yearDoc = substr($modelMR->number, 3,2);
             if($yearNow == $yearDoc){
                 $number += intval(substr($modelMR->number, -5));
             }
@@ -202,7 +202,7 @@ class MaterialRequisitionController extends Controller
 
 		$mr_number = $year+$number;
         $mr_number = 'MR-'.$mr_number;
-
+        
         return $mr_number;
     }
 
