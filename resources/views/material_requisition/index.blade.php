@@ -44,7 +44,7 @@
                                     @elseif($modelMR->status == 2)
                                         Approved
                                     @elseif($modelMR->status == 3)
-                                        Not Approved
+                                        Revise
                                     @elseif($modelMR->status == 4)
                                         Rejected
                                     @else

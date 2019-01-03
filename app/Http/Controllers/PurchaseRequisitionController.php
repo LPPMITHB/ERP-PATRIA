@@ -268,7 +268,7 @@ class PurchaseRequisitionController extends Controller
         
 		$number = 1;
         if(isset($modelPR)){
-            $yearDoc = substr($modelPR->number, 4,2);
+            $yearDoc = substr($modelPR->number, 3,2);
             if($yearNow == $yearDoc){
                 $number += intval(substr($modelPR->number, -5));
             }

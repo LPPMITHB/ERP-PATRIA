@@ -72,11 +72,11 @@
                             </div>
                         @elseif($modelMR->status == 2)
                             <div class="col-xs-7 col-md-7">
-                                : <b>APPROVE</b>
+                                : <b>APPROVED</b>
                             </div>
                         @elseif($modelMR->status == 3)
                             <div class="col-xs-7 col-md-7">
-                                : <b>NOT APPROVE</b>
+                                : <b>NEEDS REVISION</b>
                             </div>
                         @elseif($modelMR->status == 4)
                             <div class="col-xs-7 col-md-7">

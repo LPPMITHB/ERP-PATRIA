@@ -151,7 +151,7 @@
                 </table>
                 <div class="col-md-12 p-t-10 p-b-10 p-r-0">
                     <button class="btn btn-primary pull-right m-l-10" >APPROVE</button>
-                    <button class="btn btn-danger pull-right p-r-10" >NOT APPROVE</button>
+                    <button class="btn btn-danger pull-right p-r-10" >NEEDS REVISION</button>
                 </div>
             </div> <!-- /.box-body -->
             <div class="overlay">
