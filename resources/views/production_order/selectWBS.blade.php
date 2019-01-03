@@ -7,7 +7,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('production_order.selectProject'),
-            'Select Work' => ''
+            'Select WBS' => ''
         ]
     ]
 )

@@ -778,6 +778,8 @@ Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
 //Work Order Routes
 Route::name('production_order.')->prefix('production_order')->group(function() {
     Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease');
+
+    Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm');
     
     Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order');
 
@@ -791,11 +793,11 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
     
     Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order');
 
-    Route::get('/selectWO/{id}', 'ProductionOrderController@selectWO')->name('selectWO')->middleware('can:create-production-order');
+    Route::get('/selectPrO/{id}', 'ProductionOrderController@selectPrO')->name('selectPrO')->middleware('can:create-production-order');
 
-    Route::get('/selectWOReport/{id}', 'ProductionOrderController@selectWOReport')->name('selectWOReport')->middleware('can:create-production-order');
+    Route::get('/selectPrOReport/{id}', 'ProductionOrderController@selectPrOReport')->name('selectPrOReport')->middleware('can:create-production-order');
 
-    Route::get('/confirmWO/{id}', 'ProductionOrderController@confirmWO')->name('confirmWO');
+    Route::get('/confirmPrO/{id}', 'ProductionOrderController@confirmPrO')->name('confirmPrO');
 
     Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order');
 

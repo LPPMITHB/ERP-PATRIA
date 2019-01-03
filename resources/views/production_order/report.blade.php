@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'WO Actual Cost Report » '.$modelWO->number,
+        'title' => 'Production Order Actual Cost Report » '.$modelPrO->number,
         'items' => [
             'Dashboard' => route('index'),
-            'WO Actual Cost Report' => '',
+            'Production Order Actual Cost Report' => '',
         ]
     ]
 )
@@ -24,8 +24,8 @@
                             <i class="fa fa-envelope"></i>
                         </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">WO Number</span>
-                            <span class="info-box-number">{{ $modelWO->number }}</span>
+                            <span class="info-box-text">Production Order Number</span>
+                            <span class="info-box-number">{{ $modelPrO->number }}</span>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                             Project Code
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelWO->project->number }} </b>
+                            : <b> {{ $modelPrO->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -43,15 +43,15 @@
                             Project Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelWO->project->name }} </b>
+                            : <b> {{ $modelPrO->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Work Code
+                            WBS Code
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelWO->work->code }} </b>
+                            : <b> {{ $modelPrO->wbs->code }} </b>
                         </div>
                     </div>
                 </div>
@@ -60,11 +60,11 @@
                         <div class="col-md-5">
                             Status
                         </div>
-                        @if($modelWO->status == 1)
+                        @if($modelPrO->status == 1)
                             <div class="col-md-7">
                                 : <b>UNRELEASED</b>
                             </div>
-                        @elseif($modelWO->status == 2)
+                        @elseif($modelPrO->status == 2)
                             <div class="col-md-7">
                                 : <b>RELEASED</b>
                             </div>
@@ -99,14 +99,14 @@
                     </thead>
                     <tbody>
                         @php($counter=1)
-                        @foreach($modelPO->ProductionOrderDetail as $POD)
-                        @if($POD->material_id != "")
+                        @foreach($modelPrO->ProductionOrderDetail as $PrOD)
+                        @if($PrOD->material_id != "")
                             <tr>
                                 <td>{{ $counter }}</td>
-                                <td>{{ $POD->material->name }}</td>
-                                <td>{{ number_format($POD->quantity) }}</td>
-                                <td>{{ number_format($POD->actual) }}</td>
-                                <td>{{ number_format($POD->actual * $POD->material->cost_standard_price) }}</td>
+                                <td>{{ $PrOD->material->name }}</td>
+                                <td>{{ number_format($PrOD->quantity) }}</td>
+                                <td>{{ number_format($PrOD->actual) }}</td>
+                                <td>{{ number_format($PrOD->actual * $PrOD->material->cost_standard_price) }}</td>
                             </tr>
                         @php($counter++)
                         @endif
@@ -128,11 +128,11 @@
                 <h4>Resource</h4>
                         <tbody>
                             @php($counter=1)
-                            @foreach($modelPO->ProductionOrderDetails as $POD)
-                            @if($POD->resource_id != "")
+                            @foreach($modelPrO->ProductionOrderDetails as $PrOD)
+                            @if($PrOD->resource_id != "")
                                 <tr>
                                     <td>{{ $counter }}</td>
-                                    <td>{{ $POD->resource ->name}}</td>
+                                    <td>{{ $PrOD->resource ->name}}</td>
                                     <td>Rp.{{ number_format(1000000)}}</td>
                                 </tr>
                                 @php($counter++)

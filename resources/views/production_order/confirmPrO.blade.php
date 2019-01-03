@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [   
-        'title' => 'Release Work Order » '.$modelProject->name.' » Select WO',
+        'title' => 'Release Production Order » '.$modelProject->name.' » Select Production Order',
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('production_order.selectProjectRelease'),
-            'Select Work Order' => ''
+            'Select Production Order' => ''
         ]
     ]
 )
@@ -67,30 +67,32 @@
                 </div>
             </div>
             <div class="box-body p-t-0">
-                <h4 class="box-title no-padding">Work Orders</h4>
+                <h4 class="box-title no-padding">Production Orders</h4>
                 <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
                             <th style="width: 20%">Number</th>
-                            <th style="width: 30%">Work</th>
+                            <th style="width: 30%">WBS</th>
                             <th style="width: 20%">Created By</th>
                             <th style="width: 15%">Status</th>
                             <th style="width: 10%;"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPO as $po)
+                        @foreach($modelPrO as $pro)
                             <tr>
                                 <td class="p-l-10">{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis p-l-10">{{ $po->number }}</td>
-                                <td class="tdEllipsis p-l-10">{{ $po->work->code }} - {{ $po->work->name }}</td>
-                                <td class="p-l-10">{{ $po->user->name }}</td>
-                                @if($po->status == 1)
-                                    <td class="p-l-10">{{ 'UNRELEASED' }}</td>
+                                <td class="tdEllipsis p-l-10">{{ $pro->number }}</td>
+                                <td class="tdEllipsis p-l-10">{{ $pro->wbs->code }} - {{ $pro->wbs->name }}</td>
+                                <td class="p-l-10">{{ $pro->user->name }}</td>
+                                @if($pro->status == 2)
+                                    <td class="p-l-10">{{ 'RELEASED' }}</td>
+                                @else
+                                    <td class="p-l-10">{{ '' }}</td>
                                 @endif
                                 <td class="textCenter">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('production_order.release', ['id'=>$po->id]) }}">
+                                    <a class="btn btn-primary btn-xs" href="{{ route('production_order.confirm', ['id'=>$pro->id]) }}">
                                         SELECT
                                     </a>
                                 </td>
