@@ -193,20 +193,35 @@ class PurchaseRequisitionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $datas = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('wbs_id',$datas['wbs_id'])->first();
+        $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
-            $modelPRD->quantity = $datas['quantity'];
-            $modelPRD->save();
-            
+            $PR = PurchaseRequisition::find($id);
+            $PR->description = $datas->description;
+            $PR->update();
+            foreach($datas->materials as $data){
+                if($data->prd_id != null){
+                    $PRD = PurchaseRequisitionDetail::find($data->id);
+
+                    $PRD->quantity = $data->quantity;
+                    $PRD->wbs_id = $data->wbs_id;
+                    $PRD->update();
+                }else{
+                    $PRD = new PurchaseRequisitionDetail;
+                    $PRD->purchase_requisition_id = $PR->id;
+                    $PRD->quantity = $data->quantity;
+                    $PRD->material_id = $data->material_id;
+                    $PRD->wbs_id = $data->wbs_id;
+                    $PRD->save();
+                }
+            }
             DB::commit();
-            return response(json_encode($modelPRD),Response::HTTP_OK);
+            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.edit',$datas['pr_id'])->with('error', $e->getMessage());
+            return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
         }
     }
 
