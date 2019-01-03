@@ -43,12 +43,22 @@
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @elseif($modelPR->status == 2)
-                                    <td>CANCELED</td>
+                                    <td>APPROVE</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
-                                @else
+                                @elseif($modelPR->status == 0)
                                     <td>ORDERED</td>
+                                    <td class="textCenter">
+                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    </td>
+                                @elseif($modelPR->status == 3)
+                                    <td>NOT APPROVE</td>
+                                    <td class="textCenter">
+                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    </td>
+                                @elseif($modelPR->status == 4)
+                                    <td>REJECTED</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>

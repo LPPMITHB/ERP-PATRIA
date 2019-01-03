@@ -551,15 +551,21 @@ class BOMController extends Controller
     
     private function generateRapNumber(){
         $modelRap = Rap::orderBy('created_at','desc')->first();
-		$number = 1;
-		if(isset($modelRap)){
-            $number += intval(substr($modelRap->number, -5));
+        $yearNow = date('y');
+        $yearDoc = substr($modelRap->number, 4,2);
+
+        $number = 1;
+        if($yearNow == $yearDoc){
+            if(isset($modelRap)){
+                $number += intval(substr($modelRap->number, -5));
+            }
         }
-        $year = date('y'.'00000');
+        $year = date($yearNow.'00000');
         $year = intval($year);
 
 		$rap_number = $year+$number;
         $rap_number = 'RAP-'.$rap_number;
+        
 		return $rap_number;
     }
     

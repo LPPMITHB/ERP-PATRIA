@@ -72,7 +72,7 @@
                                         <th style="width: 5%">No</th>
                                         <th style="width: 35%">Material Name</th>
                                         <th style="width: 20%">Quantity</th>
-                                        <th style="width: 30%">Work Name</th>
+                                        <th style="width: 30%">WBS Name</th>
                                         <th style="width: 10%"></th>
                                     </tr>
                                 </thead>
@@ -81,7 +81,7 @@
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ PRD.material.code }} - {{ PRD.material.name }}</td>
                                         <td class="tdEllipsis">{{ PRD.quantity }}</td>
-                                        <td class="tdEllipsis">{{ PRD.work.name }}</td>
+                                        <td class="tdEllipsis">{{ PRD.wbs.name }}</td>
                                         <td class="p-l-0 textCenter">
                                             <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(PRD,index)">
                                                 EDIT
@@ -104,8 +104,8 @@
                                             <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                         </td>
                                         <td class="p-l-0 textLeft">
-                                            <selectize v-model="dataInput.wbs_id" :settings="workSettings">
-                                                <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                            <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
                                             </selectize>
                                         </td>
                                         <td class="p-l-0 textCenter">
@@ -140,9 +140,9 @@
                                             <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                         </div>
                                         <div class="col-sm-12">
-                                            <label for="type" class="control-label">Work Name</label>
-                                            <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="workSettings" disabled>
-                                                <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                            <label for="type" class="control-label">WBS Name</label>
+                                            <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings" disabled>
+                                                <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
                                             </selectize>
                                         </div>
                                     </div>
@@ -177,9 +177,9 @@
         project : @json($project),
         modelPRD : @json($modelPRD),
         materials : @json($materials),
-        works : @json($works),
-        workSettings: {
-            placeholder: 'Please Select Work'
+        wbss : @json($wbss),
+        wbsSettings: {
+            placeholder: 'Please Select WBS'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
