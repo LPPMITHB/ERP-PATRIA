@@ -678,11 +678,16 @@ Route::name('physical_inventory.')->prefix('physical_inventory')->group(function
 
     Route::get('/showCountStock/{id}', 'PhysicalInventoryController@showCountStock')->name('showCountStock');
 
+    Route::get('/showPI/{id}', 'PhysicalInventoryController@showPI')->name('showPI');
+
     Route::get('/showConfirmCountStock/{id}', 'PhysicalInventoryController@showConfirmCountStock')->name('showConfirmCountStock');
 
     Route::get('/indexAdjustStock', 'PhysicalInventoryController@indexAdjustStock')->name('indexAdjustStock');
 
     Route::patch('/storeAdjustStock/{id}', 'PhysicalInventoryController@storeAdjustStock')->name('storeAdjustStock');
+
+    Route::get('/viewAdjustmentHistory', 'PhysicalInventoryController@viewAdjustmentHistory')->name('viewAdjustmentHistory');
+
 });
 
 // Good Receipt Routes

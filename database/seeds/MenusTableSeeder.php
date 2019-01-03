@@ -539,6 +539,18 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Adjustment History',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory.viewAdjustmentHistory',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$physicalInventory,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
 
         DB::table('menus')->insert([
             'level' => 3,
