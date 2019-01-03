@@ -540,6 +540,17 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'physical_inventory.showConfirmCountStock',
         ]);
 
+        $viewAdjustmentHistory = Menu::where('route_name','physical_inventory.viewAdjustmentHistory')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewAdjustmentHistory,
+            'route_name' => 'physical_inventory.viewAdjustmentHistory',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewAdjustmentHistory,
+            'route_name' => 'physical_inventory.showPI',
+        ]);
+
         $materialWriteOff = Menu::where('route_name','material_write_off.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $materialWriteOff,
