@@ -217,11 +217,17 @@ class GoodsReceiptController extends Controller
         }
     }
 
-    public function getSlocApi($id){
-        $modelSloc = StorageLocation::find($id)->jsonSerialize();
-
-        return response($modelSloc, Response::HTTP_OK);
+    //API
+    public function getSlocDetailAPI($id){
+    $modelGR = StorageLocationDetail::where('material_id',$id)->with('storageLocation')->get();
+    dd($modelGR);
+    foreach($modelGR as $GR){
+        $GR['received'] = "";
     }
+    
+    return response($modelGI->jsonSerialize(), Response::HTTP_OK);
+}
+
 
     public function getMaterialAPI($id){
         

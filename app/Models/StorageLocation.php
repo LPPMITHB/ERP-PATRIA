@@ -38,7 +38,7 @@ class StorageLocation extends Model
         return $this->hasMany('App\Models\GoodsIssueDetail');
     }
     
-    public function goodsReceiptDetail()
+    public function goodsReceiptDetails()
     {
         return $this->hasMany('App\Models\GoodsReceiptDetail');
     }
