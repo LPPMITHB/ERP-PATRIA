@@ -146,7 +146,7 @@ class GoodsIssueController extends Controller
         
 		$number = 1;
         if(isset($modelGI)){
-            $yearDoc = substr($modelGI->number, 4,2);
+            $yearDoc = substr($modelGI->number, 3,2);
             if($yearNow == $yearDoc){
                 $number += intval(substr($modelGI->number, -5));
             }

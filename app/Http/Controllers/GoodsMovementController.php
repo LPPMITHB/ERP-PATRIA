@@ -175,7 +175,7 @@ class GoodsMovementController extends Controller
     public function generateGMNumber(){
         $modelGM = GoodsMovement::orderBy('created_at','desc')->first();
         $yearNow = date('y');
-        $yearDoc = substr($modelGM->number, 4,2);
+        $yearDoc = substr($modelGM->number, 3,2);
 
         $number = 1;
         if($yearNow == $yearDoc){
