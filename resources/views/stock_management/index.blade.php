@@ -88,9 +88,9 @@
                             </div>
                         </div>
                         <div class="row">
-                            <template v-if="warehouse_id == ''">
+                            <div v-show="warehouse_id == ''">
                                 <div class="col sm-12 p-l-10 p-r-10 p-t-10">
-                                    <table class="table table-bordered showTable" style="border-collapse:collapse;">
+                                    <table class="table table-bordered showTable tablePagingVue tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <th style="width: 5%">No</th>
                                             <th style="width: 45%">Material</th>
@@ -111,10 +111,10 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </template>
-                            <template v-if="warehouse_id > 0">
+                            </div>
+                            <div v-show="warehouse_id > 0">
                                 <div class="col sm-12 p-l-10 p-r-10 p-t-10">
-                                    <table class="table table-bordered showTable" style="border-collapse:collapse;">
+                                    <table class="table table-bordered showTable tablePagingVue2 tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <th style="width: 5%">No</th>
                                             <th style="width: 45%">Material</th>
@@ -133,7 +133,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </template>
+                            </div>
                         </div>
                     </div>
                     @endverbatim
@@ -206,28 +206,38 @@
                 }else{
                     this.selectedSloc = [];
                     $('div.overlay').show();
-                    window.axios.get('/api/getWarehouseStockSM/'+this.warehouse_id).then(({ data }) => {   
-                        this.selectedSlocDetail = data;
+                    if(this.warehouse_id != ""){
+                        window.axios.get('/api/getWarehouseStockSM/'+this.warehouse_id).then(({ data }) => {   
+                            this.selectedSlocDetail = data;
 
-                        var data = this.selectedSlocDetail;
-                        data.forEach(slocDetail => {
-                            slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
-                        });
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again.. '+error,
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
+                            var data = this.selectedSlocDetail;
+                            data.forEach(slocDetail => {
+                                slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                            });
+                            $('div.overlay').hide();
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again.. '+error,
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
+                    }   
+                    $('div.overlay').hide();
                 }
             },
             warehouse_id : function (newValue){
                 this.sloc_id = "";
                 $('div.overlay').show();
+                    
+                var searchField = document.getElementsByClassName("search");
+                var i;
+                for (i = 0; i < searchField.length; i++) {
+                    searchField[i].value = "";
+                    searchField[i].dispatchEvent(new Event('change'));
+                }
                 if(this.sloc_id == "" && this.warehouse_id != ""){
                     window.axios.get('/api/getWarehouseStockSM/'+newValue).then(({ data }) => {   
                         this.selectedSlocDetail = data;
@@ -272,6 +282,36 @@
                     this.stockQuantity = data.stockQuantity;
                     this.reservedStockQuantity = data.reservedStockQuantity;
 
+                    $('.tablePagingVue').DataTable().destroy();
+                    this.$nextTick(function() {
+                        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+                        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+                            var title = $(this).text();
+                            if(title != 'Material'){
+                                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+                            }else{
+                                $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
+                            }
+
+                            $( 'input', this ).on( 'keyup change', function () {
+                                if ( tablePagingVue.column(i).search() !== this.value ) {
+                                    tablePagingVue
+                                        .column(i)
+                                        .search( this.value )
+                                        .draw();
+                                }
+                            });
+                        });
+
+                        var tablePagingVue = $('.tablePagingVue').DataTable( {
+                            orderCellsTop   : true,
+                            fixedHeader     : true,
+                            paging          : true,
+                            autoWidth       : true,
+                            lengthChange    : false,
+                        });
+                    })
+                    
                     $('div.overlay').hide();
             })
             .catch((error) => {
@@ -282,6 +322,7 @@
                 });
                 $('div.overlay').hide();
             })
+            
         }
     });
 </script>
