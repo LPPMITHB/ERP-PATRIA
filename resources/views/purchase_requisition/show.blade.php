@@ -48,7 +48,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
-                            Ship Name
+                            Ship Type
                         </div>
                         <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelPR->project->ship->type }} </b>

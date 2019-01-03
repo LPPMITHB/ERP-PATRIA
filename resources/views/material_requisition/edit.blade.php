@@ -2,11 +2,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Material Requisition',
+        'title' => 'Edit Material Requisition » '.$modelMR->number,
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Create Material Requisition' => route('material_requisition.create'),
+            'Edit Material Requisition' => route('material_requisition.create'),
         ]
     ]
 )
