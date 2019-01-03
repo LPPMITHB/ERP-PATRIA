@@ -141,19 +141,23 @@ class GoodsIssueController extends Controller
     }
 
     public function generateGINumber(){
-        $modelGI = GoodsIssue::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
-
-        $branch_code = substr($modelBranch->code,4,2);
-        $number = 1;
+        $modelGI = GoodsIssue::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
+		$number = 1;
         if(isset($modelGI)){
-            $number += intval(substr($modelGI->number, -6));
+            $yearDoc = substr($modelGI->number, 4,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelGI->number, -5));
+            }
         }
-        $year = date('y'.$branch_code.'000000');
+
+        $year = date($yearNow.'000000');
         $year = intval($year);
 
-        $gi_number = $year+$number;
+		$gi_number = $year+$number;
         $gi_number = 'GI-'.$gi_number;
+
         return $gi_number;
     }
     

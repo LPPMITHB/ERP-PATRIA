@@ -186,20 +186,24 @@ class MaterialRequisitionController extends Controller
     }
 
     public function generateMRNumber(){
-        $modelMR = MaterialRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
-
-        $branch_code = substr($modelBranch->code,4,2);
+        $modelMR = MaterialRequisition::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
 		$number = 1;
-		if(isset($modelMR)){
-            $number += intval(substr($modelMR->number, -6));
-		}
-        $year = date('y'.$branch_code.'000000');
+        if(isset($modelMR)){
+            $yearDoc = substr($modelMR->number, 4,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelMR->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'000000');
         $year = intval($year);
 
 		$mr_number = $year+$number;
         $mr_number = 'MR-'.$mr_number;
-		return $mr_number;
+
+        return $mr_number;
     }
 
     //API

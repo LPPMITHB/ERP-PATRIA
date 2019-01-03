@@ -265,11 +265,11 @@ class PurchaseRequisitionController extends Controller
     public function generatePRNumber(){
         $modelPR = PurchaseRequisition::orderBy('created_at','desc')->first();
         $yearNow = date('y');
-        $yearDoc = substr($modelPR->number, 4,2);
-
+        
 		$number = 1;
-        if($yearNow == $yearDoc){
-            if(isset($modelPR)){
+        if(isset($modelPR)){
+            $yearDoc = substr($modelPR->number, 4,2);
+            if($yearNow == $yearDoc){
                 $number += intval(substr($modelPR->number, -5));
             }
         }
