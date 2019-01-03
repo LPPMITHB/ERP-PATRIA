@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Production Order » '.$modelPO->number,
+        'title' => 'View Production Order » '.$modelPrO->number,
         'items' => [
             'Dashboard' => route('index'),
-            'View Production Order' => route('production_order.show',$modelPO->id),
+            'View Production Order' => route('production_order.show',$modelPrO->id),
         ]
     ]
 )
@@ -25,7 +25,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">Prod. Order Number</span>
-                            <span class="info-box-number">{{ $modelPO->number }}</span>
+                            <span class="info-box-number">{{ $modelPrO->number }}</span>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                             Project Code
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->project->number }} </b>
+                            : <b> {{ $modelPrO->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -43,15 +43,15 @@
                             Project Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->project->name }} </b>
+                            : <b> {{ $modelPrO->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Work Code
+                            WBS Code
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->work->code }} </b>
+                            : <b> {{ $modelPrO->wbs->code }} </b>
                         </div>
                     </div>
                 </div>
@@ -60,11 +60,11 @@
                         <div class="col-md-5">
                             Status
                         </div>
-                        @if($modelPO->status == 1)
+                        @if($modelPrO->status == 1)
                             <div class="col-md-7">
                                 : <b>UNRELEASED</b>
                             </div>
-                        @elseif($modelPO->status == 2)
+                        @elseif($modelPrO->status == 2)
                             <div class="col-md-7">
                                 : <b>RELEASED</b>
                             </div>
@@ -89,12 +89,12 @@
                     </thead>
                     <tbody>
                         @php($counter=1)
-                        @foreach($modelPO->ProductionOrderDetails as $POD)
-                        @if($POD->material_id != "")
+                        @foreach($modelPrO->ProductionOrderDetails as $PrOD)
+                        @if($PrOD->material_id != "")
                             <tr>
                                 <td>{{ $counter }}</td>
-                                <td>{{ $POD->material->name }}</td>
-                                <td>{{ number_format($POD->quantity) }}</td>
+                                <td>{{ $PrOD->material->name }}</td>
+                                <td>{{ number_format($PrOD->quantity) }}</td>
                             </tr>
                         @php($counter++)
                         @endif
@@ -115,11 +115,11 @@
                 <h4>Resource</h4>
                         <tbody>
                             @php($counter=1)
-                            @foreach($modelPO->ProductionOrderDetails as $POD)
-                            @if($POD->resource_id != "")
+                            @foreach($modelPrO->ProductionOrderDetails as $PrOD)
+                            @if($PrOD->resource_id != "")
                                 <tr>
                                     <td>{{ $counter }}</td>
-                                    <td>{{ $POD->resource ->name}}</td>
+                                    <td>{{ $PrOD->resource ->name}}</td>
                                 </tr>
                                 @php($counter++)
                             @endif

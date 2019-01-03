@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Confirm Production Order » '.$modelPO->number,
+        'title' => 'Confirm Production Order » '.$modelPrO->number,
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('production_order.selectProject'),
@@ -76,27 +76,27 @@
                             <tr>
                                 <td>Code</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelPO->work->code}}</b></td>
+                                <td>&ensp;<b>{{$modelPrO->wbs->code}}</b></td>
                             </tr>
                             <tr>
                                 <td>Name</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelPO->work->name}}</b></td>
+                                <td>&ensp;<b>{{$modelPrO->wbs->name}}</b></td>
                             </tr>
                             <tr>
                                 <td>Description</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelPO->work->description}}</b></td>
+                                <td>&ensp;<b>{{$modelPrO->wbs->description}}</b></td>
                             </tr>
                             <tr>
                                 <td>Deliverable</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelPO->work->deliverables}}</b></td>
+                                <td>&ensp;<b>{{$modelPrO->wbs->deliverables}}</b></td>
                             </tr>
                             <tr>
                                 <td>Progress</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelPO->work->progress}}</b>
+                                <td>&ensp;<b>{{$modelPrO->wbs->progress}}</b>
                                 </td>
                             </tr>
                         </tbody>
@@ -127,11 +127,11 @@
                     </table>
                 </div>
             </div>
-            <form id="release-wo" class="form-horizontal" method="POST" action="{{ route('production_order.storeRelease') }}">
+            <form id="confirm-wo" class="form-horizontal" method="POST" action="{{ route('production_order.storeConfirm') }}">
             <input type="hidden" name="_method" value="PATCH">
             @csrf
             @verbatim
-            <div id="work_order">
+            <div id="production_order">
                 <div class="box-body">
                         <div class="row">
                             <div class="col-sm-12">
@@ -245,7 +245,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#release-wo');
+    const form = document.querySelector('form#confirm-wo');
 
     $(document).ready(function(){
         $('.datepicker').datepicker({
@@ -266,10 +266,10 @@
     });
 
     var data = {
-        modelPOD : @json($modelPOD),
+        modelPrOD : @json($modelPrOD),
         boms : @json($boms),
         resourceDetails : @json($resources),
-        activities : @json($modelPO->work->activities),
+        activities : @json($modelPrO->wbs->activities),
         materials : [],
         resources : [],
         checkedActivities : [],
@@ -278,7 +278,7 @@
     };
 
     var vm = new Vue({
-        el: '#work_order',
+        el: '#production_order',
         data: data,
         computed : {
             createOk: function(){
@@ -328,7 +328,7 @@
                 //     PRD.quantity = PRD.quantity.replace(/,/g , '');      
                 // });
 
-                this.submittedForm.modelPOD = this.modelPOD;
+                this.submittedForm.modelPrOD = this.modelPrOD;
                 this.submittedForm.boms = this.boms;
                 this.submittedForm.resourceDetails = this.resourceDetails;
 
@@ -362,7 +362,7 @@
                 this.resources.push(resource);
             });
 
-            this.modelPOD.forEach(POD => {
+            this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null){
                     var status = 0;
                     this.materials.forEach(material => {

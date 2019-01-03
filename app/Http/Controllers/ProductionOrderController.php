@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use App\Models\Branch;
 use App\Models\Project;
-use App\Models\Work;
+use App\Models\WBS;
 use App\Models\ProductionOrder;
 use App\Models\ProductionOrderDetail;
 use App\Models\Bom;
@@ -29,51 +29,51 @@ class ProductionOrderController extends Controller
      */
     public function selectProject(){
         $modelProject = Project::where('status',1)->get();
-        $menu = "create_po";
+        $menu = "create_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu'));
     }
 
     public function selectProjectRelease (){
         $modelProject = Project::where('status',1)->get();
-        $menu = "release_po";
+        $menu = "release_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu'));
     }
 
     public function selectProjectConfirm (){
         $modelProject = Project::where('status',1)->get();
-        $menu = "confirm_po";
+        $menu = "confirm_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu'));
     }
 
     public function selectProjectReport (){
         $modelProject = Project::where('status',1)->get();
-        $menu = "report_po";
+        $menu = "report_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu'));
     }
     
     public function selectWBS($id){
         $modelProject = Project::findOrFail($id);
-        $modelWBS = Work::where('project_id',$id)->get();
+        $modelWBS = WBS::where('project_id',$id)->get();
 
         return view('production_order.selectWBS', compact('modelWBS','modelProject'));
     }
 
-    public function selectWO($id){
+    public function selectPrO($id){
         $modelProject = Project::findOrFail($id);
-        $modelPO = ProductionOrder::where('project_id',$id)->where('status',1)->get();
+        $modelPrO = ProductionOrder::where('project_id',$id)->where('status',1)->get();
 
-        return view('production_order.selectWO', compact('modelPO','modelProject'));
+        return view('production_order.selectPrO', compact('modelPrO','modelProject'));
     }
 
-    public function confirmWO($id){
+    public function confirmPrO($id){
         $modelProject = Project::findOrFail($id);
-        $modelPO = ProductionOrder::where('project_id',$id)->where('status',1)->get();
+        $modelPrO = ProductionOrder::where('project_id',$id)->where('status',2)->get();
 
-        return view('production_order.confirmWO', compact('modelPO','modelProject'));
+        return view('production_order.confirmPrO', compact('modelPrO','modelProject'));
     }
 
     public function index()
@@ -81,32 +81,32 @@ class ProductionOrderController extends Controller
         //
     }
 
-    public function selectWOReport($id){
+    public function selectPrOReport($id){
         $modelProject = Project::findOrFail($id);
-        $modelPO = ProductionOrder::where('project_id',$id)->where('status',1)->get();
+        $modelPrO = ProductionOrder::where('project_id',$id)->where('status',1)->get();
 
-        return view('production_order.selectWOReport', compact('modelPO','modelProject'));
+        return view('production_order.selectPrOReport', compact('modelPrO','modelProject'));
     }
 
     public function report($id){
-        $modelPO = ProductionOrder::findOrFail($id);
-        $modelProject = Project::findOrFail($modelPO->project_id);
+        $modelPrO = ProductionOrder::findOrFail($id);
+        $modelProject = Project::findOrFail($modelPrO->project_id);
         $totalPrice = 0;
-        foreach($modelPO->ProductionOrderDetails as $PO){
-            if($PO->material_id != ""){
-                $totalPrice += $PO->actual * $PO->material->cost_standard_price;
+        foreach($modelPrO->ProductionOrderDetails as $PrO){
+            if($PrO->material_id != ""){
+                $totalPrice += $PrO->actual * $PrO->material->cost_standard_price;
             }
         }
-        return view('production_order.report', compact('modelPO','modelProject','totalPrice'));
+        return view('production_order.report', compact('modelPrO','modelProject','totalPrice'));
     }
 
     public function release($id){
-        $modelPO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPOD = ProductionOrderDetail::where('production_order_id',$modelPO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
-        $project = Project::where('id',$modelPO->project_id)->with('customer','ship')->first();
+        $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
+        $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
 
         // tambahan material dari BOM
-        $modelBOM = Bom::where('wbs_id',$modelPO->wbs_id)->get();
+        $modelBOM = Bom::where('wbs_id',$modelPrO->wbs_id)->get();
 
         $boms = Collection::make();
         foreach($modelBOM as $bom){
@@ -125,7 +125,7 @@ class ProductionOrderController extends Controller
         }
 
         // tambahan resource dari assign resource
-        $modelRD = ResourceDetail::where('wbs_id',$modelPO->wbs_id)->get();
+        $modelRD = ResourceDetail::where('wbs_id',$modelPrO->wbs_id)->get();
 
         $resources = Collection::make();
         foreach($modelRD as $RD){
@@ -139,16 +139,16 @@ class ProductionOrderController extends Controller
                 "resource_id" => $RD->resource_id
             ]);
         }
-        return view('production_order.release', compact('modelPO','project','modelPOD','boms','resources'));
+        return view('production_order.release', compact('modelPrO','project','modelPrOD','boms','resources'));
     }
 
     public function confirm($id){
-        $modelPO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPOD = ProductionOrderDetail::where('production_order_id',$modelPO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
-        $project = Project::where('id',$modelPO->project_id)->with('customer','ship')->first();
+        $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
+        $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
 
         // tambahan material dari BOM
-        $modelBOM = Bom::where('wbs_id',$modelPO->wbs_id)->get();
+        $modelBOM = Bom::where('wbs_id',$modelPrO->wbs_id)->get();
 
         $boms = Collection::make();
         foreach($modelBOM as $bom){
@@ -165,7 +165,7 @@ class ProductionOrderController extends Controller
                 ]);
             }
         }
-        $modelRD = ResourceDetail::where('wbs_id',$modelPO->wbs_id)->get();
+        $modelRD = ResourceDetail::where('wbs_id',$modelPrO->wbs_id)->get();
 
         $resources = Collection::make();
         foreach($modelRD as $RD){
@@ -179,7 +179,7 @@ class ProductionOrderController extends Controller
                 "resource_id" => $RD->resource_id
             ]);
         }
-        return view('production_order.confirm', compact('modelPO','project','modelPOD','boms','resources'));
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','boms','resources'));
     }
 
     /**
@@ -189,15 +189,15 @@ class ProductionOrderController extends Controller
      */
     public function create($id)
     {
-        $work = Work::findOrFail($id);
-        $project = Project::findOrFail($work->project_id);
+        $wbs = WBS::findOrFail($id);
+        $project = Project::findOrFail($wbs->project_id);
         $materials = Material::all()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
 
-        $modelBOM = Bom::where('wbs_id',$work->id)->get();
-        $modelRD = ResourceDetail::where('wbs_id',$work->id)->get();
+        $modelBOM = Bom::where('wbs_id',$wbs->id)->get();
+        $modelRD = ResourceDetail::where('wbs_id',$wbs->id)->get();
 
-        return view('production_order.create', compact('work','project','materials','resources','modelBOM','modelRD'));
+        return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD'));
     }
 
     /**
@@ -211,36 +211,37 @@ class ProductionOrderController extends Controller
         $datas = json_decode($request->datas);
         $arrData = $datas->datas;
 
-        $po_number = $this->generateWONumber();
+        $po_number = $this->generatePrONumber();
 
         DB::beginTransaction();
         try {
-            $PO = new ProductionOrder;
-            $PO->number = $po_number;
-            $PO->project_id = $datas->project_id;
-            $PO->wbs_id = $datas->wbs_id;
-            $PO->status = 1;
-            $PO->user_id = Auth::user()->id;
-            $PO->branch_id = Auth::user()->branch->id;
-            $PO->save();
+            $PrO = new ProductionOrder;
+            $PrO->number = $po_number;
+            $PrO->project_id = $datas->project_id;
+            $PrO->wbs_id = $datas->wbs_id;
+            $PrO->status = 1;
+            $PrO->user_id = Auth::user()->id;
+            $PrO->branch_id = Auth::user()->branch->id;
+            $PrO->save();
 
             $status = 0;
 
             foreach($arrData as $data){
-                $POD = new ProductionOrderDetail;
-                $POD->production_order_id = $PO->id;
+                $PrOD = new ProductionOrderDetail;
+                $PrOD->production_order_id = $PrO->id;
                 if($data->type == "Material"){
-                    $POD->material_id = $data->id;
+                    $PrOD->material_id = $data->id;
+                    $PrOD->quantity = $data->quantity;
                 }
                 else{
-                    $POD->resource_id = $data->id;
+                    $PrOD->resource_id = $data->id;
+                    $PrOD->quantity = 1;
                 }
             
-                $POD->quantity = $data->quantity;
-                $POD->save();
+                $PrOD->save();
             }
             DB::commit();
-            return redirect()->route('production_order.show',$PO->id)->with('success', 'Work Order Created');
+            return redirect()->route('production_order.show',$PrO->id)->with('success', 'Production Order Created');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('production_order.create',$datas->project_id)->with('error', $e->getMessage());
@@ -249,21 +250,39 @@ class ProductionOrderController extends Controller
 
     public function storeRelease(Request $request){
         $datas = json_decode($request->datas);
-        $po_id = $datas->modelPOD[0]->production_order_id;
-        $modelPO = ProductionOrder::findOrFail($po_id);
+        $po_id = $datas->modelPrOD[0]->production_order_id;
+        $modelPrO = ProductionOrder::findOrFail($po_id);
 
         DB::beginTransaction();
         try {
-            $modelPO->status = 2;
-            $modelPO->save();
+            $modelPrO->status = 2;
+            $modelPrO->save();
 
-            $this->createMR($datas->modelPOD);
-            $this->updatePOD($datas->boms, $datas->resourceDetails,$po_id);
+            $this->createMR($datas->modelPrOD);
+            $this->updatePrOD($datas->boms, $datas->resourceDetails,$po_id);
             DB::commit();
-            return redirect()->route('production_order.show',$modelPO->id)->with('success', 'Work Order Created');
+            return redirect()->route('production_order.show',$modelPrO->id)->with('success', 'Production Order Released');
         }catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('production_order.selectProjectRelease')->with('error', $e->getMessage());
+        }
+    }
+
+    public function storeConfirm(Request $request){
+        $datas = json_decode($request->datas);
+        $po_id = $datas->modelPrOD[0]->production_order_id;
+        $modelPrO = ProductionOrder::findOrFail($po_id);
+
+        DB::beginTransaction();
+        try {
+            $modelPrO->status = 0;
+            $modelPrO->save();
+
+            DB::commit();
+            return redirect()->route('production_order.show',$modelPrO->id)->with('success', 'Production Order Released');
+        }catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('production_order.selectProjectConfirm')->with('error', $e->getMessage());
         }
     }
 
@@ -275,9 +294,9 @@ class ProductionOrderController extends Controller
      */
     public function show($id)
     {
-        $modelPO = ProductionOrder::findOrFail($id);    
+        $modelPrO = ProductionOrder::findOrFail($id);    
         
-        return view('production_order.show', compact('modelPO'));
+        return view('production_order.show', compact('modelPrO'));
         
     }
 
@@ -315,56 +334,56 @@ class ProductionOrderController extends Controller
         //
     }
 
-    public function createMR($modelPOD){
+    public function createMR($modelPrOD){
         $mr_number = $this->generateMRNumber();
 
         $MR = new MaterialRequisition;
         $MR->number = $mr_number;
-        $MR->project_id = $modelPOD[0]->production_order->project_id;
-        $MR->description = "AUTO CREATE MR FROM WORK ORDER";
+        $MR->project_id = $modelPrOD[0]->production_order->project_id;
+        $MR->description = "AUTO CREATE MR FROM PRODUCTION ORDER";
         $MR->type = 1;
         $MR->user_id = Auth::user()->id;
         $MR->branch_id = Auth::user()->branch->id;
         $MR->save();
 
-        foreach($modelPOD as $POD){
-            if($POD->material_id != "" || $POD->material_id != null){
+        foreach($modelPrOD as $PrOD){
+            if($PrOD->material_id != "" || $PrOD->material_id != null){
                 $MRD = new MaterialRequisitionDetail;
                 $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $POD->quantity;
+                $MRD->quantity = $PrOD->quantity;
                 $MRD->issued = 0;
-                $MRD->material_id = $POD->material_id;
+                $MRD->material_id = $PrOD->material_id;
                 $MRD->save();
             }
         }
     }
 
-    public function updatePOD($modelMaterial, $modelResource, $po_id){
+    public function updatePrOD($modelMaterial, $modelResource, $po_id){
         foreach($modelMaterial as $material){
-            $modelPOD = new ProductionOrderDetail;
-            $modelPOD->production_order_id = $po_id;
-            $modelPOD->material_id = $material->material_id;
-            $modelPOD->wbs_id = $material->wbs_id;
-            $modelPOD->quantity = $material->sugQuantity;
-            $modelPOD->save();
+            $modelPrOD = new ProductionOrderDetail;
+            $modelPrOD->production_order_id = $po_id;
+            $modelPrOD->material_id = $material->material_id;
+            $modelPrOD->wbs_id = $material->wbs_id;
+            $modelPrOD->quantity = $material->sugQuantity;
+            $modelPrOD->save();
         }
 
         foreach($modelResource as $resource){
-            $modelPOD = new ProductionOrderDetail;
-            $modelPOD->production_order_id = $po_id;
-            $modelPOD->resource_id = $resource->resource_id;
-            $modelPOD->save();
+            $modelPrOD = new ProductionOrderDetail;
+            $modelPrOD->production_order_id = $po_id;
+            $modelPrOD->resource_id = $resource->resource_id;
+            $modelPrOD->save();
         }
     }
 
-    public function generateWONumber(){
-        $modelPO = ProductionOrder::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
+    public function generatePrONumber(){
+        $modelPrO = ProductionOrder::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
         $branch_code = substr($modelBranch->code,4,2);
         $number = 1;
-        if(isset($modelPO)){
-            $number += intval(substr($modelPO->number, -6));
+        if(isset($modelPrO)){
+            $number += intval(substr($modelPrO->number, -6));
         }
         $year = date('y'.$branch_code.'000000');
         $year = intval($year);

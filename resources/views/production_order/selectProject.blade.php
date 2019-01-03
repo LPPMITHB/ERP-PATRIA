@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if($menu == "create_po")
+@if($menu == "create_pro")
     @breadcrumb(
         [
             'title' => 'Create Production Order » Select Project',
@@ -12,7 +12,7 @@
         ]
     )
     @endbreadcrumb
-@elseif($menu == "release_po")
+@elseif($menu == "release_pro")
     @breadcrumb(
         [
             'title' => 'Release Production Order » Select Project',
@@ -23,7 +23,7 @@
         ]
     )
     @endbreadcrumb
-@elseif($menu == "confirm_po")
+@elseif($menu == "confirm_pro")
     @breadcrumb(
         [
             'title' => 'Confirm Production Order » Select Project',
@@ -34,10 +34,10 @@
         ]
     )
     @endbreadcrumb
-@elseif($menu == "report_po")
+@elseif($menu == "report_pro")
     @breadcrumb(
         [
-            'title' => 'PO Actual Cost Report » Select Project',
+            'title' => 'Prod. Order Actual Cost Report » Select Project',
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Project' => route('production_order.selectProjectReport'),
@@ -73,21 +73,21 @@
                                 <td>{{ $project->name }}</td>
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
-                                @if($menu == "create_po")
+                                @if($menu == "create_pro")
                                     <td class="p-l-5 p-r-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="{{ route('production_order.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
-                                @elseif($menu == "release_po")
+                                @elseif($menu == "release_pro")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order.selectWO', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order.selectPrO', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
-                                @elseif($menu == "confirm_po")
+                                @elseif($menu == "confirm_pro")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order.confirmWO', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order.confirmPrO', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
-                                @elseif($menu == "report_po")
+                                @elseif($menu == "report_pro")
                                     <td class="p-l-5 p-r-5" align="center">
-                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order.selectWOReport', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order.selectPrOReport', ['id'=>$project->id]) }}">SELECT</a>
                                     </td>
                                 @endif
                             </tr>
