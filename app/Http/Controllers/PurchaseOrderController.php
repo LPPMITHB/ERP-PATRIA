@@ -19,7 +19,7 @@ class PurchaseOrderController extends Controller
 {
     public function selectPR()
     {
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,7])->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,2])->get();
         
         return view('purchase_order.selectPR', compact('modelPRs'));
     }

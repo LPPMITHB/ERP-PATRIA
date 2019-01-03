@@ -28,7 +28,7 @@ class GoodsReceiptController extends Controller
 
     public function selectPO($id)
     {
-        $modelPO = PurchaseOrder::findOrFail($id)->with('vendor')->first();
+        $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
         $modelSloc = StorageLocation::all();
         $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
         return view('goods_receipt.selectPO', compact('modelPO','modelPODs','modelSloc'));
