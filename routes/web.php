@@ -717,6 +717,8 @@ Route::name('stock_management.')->prefix('stock_management')->group(function() {
 Route::name('material_requisition.')->prefix('material_requisition')->group(function() {
     Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove');
 
+    Route::get('/approval/{id}/{status}', 'MaterialRequisitionController@approval')->name('approval');
+
     Route::get('/', 'MaterialRequisitionController@index')->name('index');
 
     Route::get('/create', 'MaterialRequisitionController@create')->name('create')->middleware('can:create-material-requisition');
