@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
 use App\Models\Project;
-use App\Models\Work;
+use App\Models\WBS;
 use App\Models\Uom;
 use App\Models\Category;
 use App\Models\PurchaseOrderDetail;
@@ -32,7 +32,7 @@ class ResourceController extends Controller
     {
         $resources = Resource::where('status',1)->get();
         $projects = Project::where('status',1)->get();
-        $assignresource = ResourceDetail::with('project','resource','work')->get();
+        $assignresource = ResourceDetail::with('project','resource','wbs')->get();
         return view('resource.assignResource', compact('resources','projects','assignresource'));
     }
 
@@ -89,10 +89,10 @@ class ResourceController extends Controller
         $data = $request->json()->all();
         DB::beginTransaction();
         try {
-            $work = Work::find($wbs_id);
-            $resourceDetailWork = $work->resourceDetails;
-            if(count($resourceDetailWork)>0){
-                foreach ($resourceDetailWork as $resourceDetail) {
+            $wbs = WBS::find($wbs_id);
+            $resourceDetailWbs = $wbs->resourceDetails;
+            if(count($resourceDetailWbs)>0){
+                foreach ($resourceDetailWbs as $resourceDetail) {
                     $resourceDetail->delete();
                 }
             }
@@ -105,8 +105,8 @@ class ResourceController extends Controller
 
                 $resourceDetail = new ResourceDetail;
                 $resourceDetail->resource_id = $detail['resource_id'];
-                $resourceDetail->project_id = $work->project->id;
-                $resourceDetail->wbs_id = $work->id;
+                $resourceDetail->project_id = $wbs->project->id;
+                $resourceDetail->wbs_id = $wbs->id;
                 $resourceDetail->category_id = $resource->category->id;
                 $resourceDetail->quantity = $detail['quantityInt'];
                 $resourceDetail->save();
@@ -117,8 +117,8 @@ class ResourceController extends Controller
             foreach($data['selected_resource_category'] as $category){
                 if(in_array($category, $categoryFromResource) != true){
                     $resourceDetail = new ResourceDetail;
-                    $resourceDetail->project_id = $work->project->id;
-                    $resourceDetail->wbs_id = $work->id;
+                    $resourceDetail->project_id = $wbs->project->id;
+                    $resourceDetail->wbs_id = $wbs->id;
                     $resourceDetail->category_id = $category;
                     $resourceDetail->save();
                 }
@@ -138,17 +138,17 @@ class ResourceController extends Controller
         $data = $request->json()->all();
         DB::beginTransaction();
         try {
-            $work = Work::find($wbs_id);
-            $resourceDetailWork = $work->resourceDetails;
-            if(count($resourceDetailWork)>0){
-                foreach ($resourceDetailWork as $resourceDetail) {
+            $wbs = WBS::find($wbs_id);
+            $resourceDetailWbs = $wbs->resourceDetails;
+            if(count($resourceDetailWbs)>0){
+                foreach ($resourceDetailWbs as $resourceDetail) {
                     $resourceDetail->delete();
                 }
             }
             foreach($data as $category_id){
                 $resourceDetail = new ResourceDetail;
-                $resourceDetail->project_id = $work->project->id;
-                $resourceDetail->wbs_id = $work->id;
+                $resourceDetail->project_id = $wbs->project->id;
+                $resourceDetail->wbs_id = $wbs->id;
                 $resourceDetail->category_id = $category_id;
                 $resourceDetail->save();
             }
@@ -295,15 +295,15 @@ class ResourceController extends Controller
         return response($resource, Response::HTTP_OK);
     }
     
-    public function getWorkAssignResourceApi($id){
-        $work = Work::where('project_id',$id)->get()->jsonSerialize();
+    public function getWbsAssignResourceApi($id){
+        $wbs = WBS::where('project_id',$id)->get()->jsonSerialize();
 
-        return response($work, Response::HTTP_OK);
+        return response($wbs, Response::HTTP_OK);
     }
 
-    public function getWorkNameAssignResourceApi($id){
+    public function getWbsNameAssignResourceApi($id){
 
-        return response(Work::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
 
     }
 
@@ -328,7 +328,7 @@ class ResourceController extends Controller
     
 
     public function getResourceDetailApi(){
-        $resourcedetail = ResourceDetail::with('project','resource','work')->get()->jsonSerialize();
+        $resourcedetail = ResourceDetail::with('project','resource','wbs')->get()->jsonSerialize();
         return response($resourcedetail, Response::HTTP_OK);
     }
 
