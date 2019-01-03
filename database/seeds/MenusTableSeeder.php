@@ -266,7 +266,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View PR',
+            'name' => 'View and Edit PR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition.index',
             'is_active' => true,
@@ -404,7 +404,7 @@ class MenusTableSeeder extends Seeder
         $materialRequisition =  Menu::where('name','Material Requisition')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Create MR Manually',
+            'name' => 'Create MR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.create',
             'is_active' => true,

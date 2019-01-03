@@ -179,11 +179,11 @@ class PurchaseRequisitionController extends Controller
     {
         $modelPR = PurchaseRequisition::findOrFail($id);
         $project = Project::findOrFail($modelPR->project_id)->with('customer','ship')->first();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','work')->get()->jsonSerialize();
+        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs')->get()->jsonSerialize();
         $materials = Material::where('status',1)->get()->jsonSerialize();
-        $works = Work::where('project_id',$project->id)->get()->jsonSerialize();
+        $wbss = WBS::where('project_id',$project->id)->get()->jsonSerialize();
 
-        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','works'));
+        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','wbss'));
     }
 
     /**
@@ -248,21 +248,24 @@ class PurchaseRequisitionController extends Controller
 
     // function
     public function generatePRNumber(){
-        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
+        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        $yearDoc = substr($modelPR->number, 4,2);
 
-        $branch_code = substr($modelBranch->code,4,2);
 		$number = 1;
-		if(isset($modelPR)){
-            $number += intval(substr($modelPR->number, -6));
-		}
-        $year = date('y'.$branch_code.'000000');
+        if($yearNow == $yearDoc){
+            if(isset($modelPR)){
+                $number += intval(substr($modelPR->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'000000');
         $year = intval($year);
 
 		$pr_number = $year+$number;
         $pr_number = 'PR-'.$pr_number;
+
 		return $pr_number;
-        
     }
 
     public function getProjectApi($id){
