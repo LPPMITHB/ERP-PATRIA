@@ -59,7 +59,7 @@
                                             <th style="width: 25%">Resource</th>
                                             <th style="width: 25%">Project Name</th>
                                             <th style="width: 15%">Status</th>
-                                            <th style="width: 18%">Work Name</th>
+                                            <th style="width: 18%">WBS Name</th>
                                             <th style="width: 12%"></th>
                                         </tr>
                                     </thead>
@@ -79,7 +79,7 @@
                                             
                                             </template>     
                                             <td>
-                                                {{ datas.work.name }}
+                                                {{ datas.wbs.name }}
                                             </td>
                                             <td class="p-l-3 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(datas,index)">
@@ -108,8 +108,8 @@
                                             {{ "Not Assign" }}
                                         </td>
                                         <td class="p-l-0 textLeft">
-                                            <selectize v-model="dataInput.wbs_id" :settings="workSettings">
-                                                <option v-for="(work, index) in workDetail" :value="work.id">{{ work.name }}</option>
+                                            <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                <option v-for="(wbs, index) in wbsDetail" :value="wbs.id">{{ wbs.name }}</option>
                                             </selectize>
                                         </td>
                                         <td class="p-l-0 textCenter">
@@ -143,9 +143,9 @@
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
-                                                <label for="work_name" class="control-label">Work Name</label>
-                                                <selectize v-model="editInput.wbs_id" :settings="workSettings">
-                                                    <option v-for="(work, index) in workDetail" :value="work.id">{{ work.name }}</option>
+                                                <label for="wbs_name" class="control-label">WBS Name</label>
+                                                <selectize v-model="editInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(wbs, index) in wbsDetail" :value="wbs.id">{{ wbs.name }}</option>
                                                 </selectize>
                                             </div>
                                         </div>
@@ -183,7 +183,7 @@
         modelProjects : @json($projects),
         modelAssignResource : "",
         newIndex : "",
-        dataWork : "",
+        dataWBS : "",
 
 
         dataInput : {
@@ -211,12 +211,12 @@
             placeholder: 'Please Select Project'
         },
 
-        workSettings: {
-            placeholder: 'Please Select Work'
+        wbsSettings: {
+            placeholder: 'Please Select WBS'
         },
 
         selectedResource : [],
-        workDetail : [],
+        wbsDetail : [],
 
     }
 
@@ -369,7 +369,7 @@
                 this.editInput.resource_id = data.resource_id;
                 this.editInput.resource_name = data.resource_name;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.work_name = data.work_name;
+                this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
             },
 
@@ -412,8 +412,8 @@
             'dataInput.project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWorkAssignResource/'+newValue).then(({ data }) => {
-                        this.workDetail = data;
+                    window.axios.get('/api/getWbsAssignResource/'+newValue).then(({ data }) => {
+                        this.wbsDetail = data;
 
                         
                         $('div.overlay').hide();
@@ -435,8 +435,8 @@
             'editInput.project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWorkAssignResource/'+newValue).then(({ data }) => {
-                        this.workDetail = data;
+                    window.axios.get('/api/getWbsAssignResource/'+newValue).then(({ data }) => {
+                        this.wbsDetail = data;
 
                         
                         $('div.overlay').hide();
