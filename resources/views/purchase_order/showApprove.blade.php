@@ -104,7 +104,7 @@
                             <div class="col-md-7">
                                 : <b>CANCELED</b>
                             </div>
-                        @else
+                        @elseif($modelPO->status == 0)
                             <div class="col-md-7">
                                 : <b>ORDERED</b>
                             </div>
@@ -149,10 +149,12 @@
                         @endforeach
                     </tbody>
                 </table>
+                @if($modelPO->status == 1 || $modelPO->status == 0)
                 <div class="col-md-12 p-t-10 p-b-10 p-r-0">
-                    <button class="btn btn-primary pull-right m-l-10" >APPROVE</button>
-                    <button class="btn btn-danger pull-right p-r-10" >NOT APPROVE</button>
+                        <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
+                        <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
                 </div>
+                @endif
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
