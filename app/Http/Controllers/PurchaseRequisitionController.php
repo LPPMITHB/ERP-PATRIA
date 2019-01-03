@@ -179,11 +179,11 @@ class PurchaseRequisitionController extends Controller
     {
         $modelPR = PurchaseRequisition::findOrFail($id);
         $project = Project::findOrFail($modelPR->project_id)->with('customer','ship')->first();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','work')->get()->jsonSerialize();
+        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs')->get()->jsonSerialize();
         $materials = Material::where('status',1)->get()->jsonSerialize();
-        $works = Work::where('project_id',$project->id)->get()->jsonSerialize();
+        $wbss = WBS::where('project_id',$project->id)->get()->jsonSerialize();
 
-        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','works'));
+        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','wbss'));
     }
 
     /**
@@ -193,20 +193,35 @@ class PurchaseRequisitionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $datas = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('wbs_id',$datas['wbs_id'])->first();
+        $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
-            $modelPRD->quantity = $datas['quantity'];
-            $modelPRD->save();
-            
+            $PR = PurchaseRequisition::find($id);
+            $PR->description = $datas->description;
+            $PR->update();
+            foreach($datas->materials as $data){
+                if($data->prd_id != null){
+                    $PRD = PurchaseRequisitionDetail::find($data->id);
+
+                    $PRD->quantity = $data->quantity;
+                    $PRD->wbs_id = $data->wbs_id;
+                    $PRD->update();
+                }else{
+                    $PRD = new PurchaseRequisitionDetail;
+                    $PRD->purchase_requisition_id = $PR->id;
+                    $PRD->quantity = $data->quantity;
+                    $PRD->material_id = $data->material_id;
+                    $PRD->wbs_id = $data->wbs_id;
+                    $PRD->save();
+                }
+            }
             DB::commit();
-            return response(json_encode($modelPRD),Response::HTTP_OK);
+            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.edit',$datas['pr_id'])->with('error', $e->getMessage());
+            return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
         }
     }
 
@@ -248,21 +263,24 @@ class PurchaseRequisitionController extends Controller
 
     // function
     public function generatePRNumber(){
-        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
+        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        $yearDoc = substr($modelPR->number, 4,2);
 
-        $branch_code = substr($modelBranch->code,4,2);
 		$number = 1;
-		if(isset($modelPR)){
-            $number += intval(substr($modelPR->number, -6));
-		}
-        $year = date('y'.$branch_code.'000000');
+        if($yearNow == $yearDoc){
+            if(isset($modelPR)){
+                $number += intval(substr($modelPR->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'000000');
         $year = intval($year);
 
 		$pr_number = $year+$number;
         $pr_number = 'PR-'.$pr_number;
+
 		return $pr_number;
-        
     }
 
     public function getProjectApi($id){

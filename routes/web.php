@@ -603,6 +603,8 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
+    Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
+
     Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
 
     Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval');
@@ -620,8 +622,6 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
     Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove');
 
     Route::get('/edit/{id}', 'PurchaseRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition');
-
-    Route::patch('/', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
 
     Route::post('/', 'PurchaseRequisitionController@store')->name('store')->middleware('can:create-purchase-requisition');
 
@@ -716,6 +716,8 @@ Route::name('stock_management.')->prefix('stock_management')->group(function() {
 //Material Requisition Routes
 Route::name('material_requisition.')->prefix('material_requisition')->group(function() {
     Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove');
+
+    Route::get('/approval/{id}/{status}', 'MaterialRequisitionController@approval')->name('approval');
 
     Route::get('/', 'MaterialRequisitionController@index')->name('index');
 

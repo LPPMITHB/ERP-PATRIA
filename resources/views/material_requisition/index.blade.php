@@ -38,7 +38,7 @@
                                 <td>{{ $modelMR->project->name }}</td>
                                 <td>
                                     @if($modelMR->status == 0)
-                                        Closed
+                                        Issued
                                     @elseif($modelMR->status == 1)
                                         Open
                                     @elseif($modelMR->status == 2)

@@ -152,6 +152,21 @@ class MaterialRequisitionController extends Controller
         }
     }
 
+
+    public function approval($mr_id,$status){
+        $modelMR = MaterialRequisition::findOrFail($mr_id);
+        if($status == "approve"){
+            $modelMR->status = 2;
+            $modelMR->update();
+        }elseif($status == "not-approve"){
+            $modelMR->status = 3;
+            $modelMR->update();
+        }elseif($status == "reject"){
+            $modelMR->status = 4;
+            $modelMR->update();
+        }
+        return redirect()->route('material_requisition.show',$mr_id);
+    }
     // function
     public function reserveStock($material_id,$quantity){
         $modelStock = Stock::where('material_id',$material_id)->first();

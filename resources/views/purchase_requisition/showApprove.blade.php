@@ -80,13 +80,9 @@
                             </div>
                         @elseif($modelPR->status == 4)
                             <div class="col-xs-7 col-md-7">
-                                : <b>REJECT</b>
+                                : <b>REJECTED</b>
                             </div>
                         @elseif($modelPR->status == 0)
-                            <div class="col-xs-7 col-md-7">
-                                : <b>CLOSED</b>
-                            </div>
-                        @else
                             <div class="col-xs-7 col-md-7">
                                 : <b>ORDERED</b>
                             </div>

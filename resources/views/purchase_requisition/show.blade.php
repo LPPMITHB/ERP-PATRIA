@@ -48,7 +48,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
-                            Ship Name
+                            Ship Type
                         </div>
                         <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelPR->project->ship->type }} </b>
@@ -72,9 +72,17 @@
                             </div>
                         @elseif($modelPR->status == 2)
                             <div class="col-xs-7 col-md-7">
-                                : <b>CANCELED</b>
+                                : <b>APPROVE</b>
                             </div>
-                        @else
+                        @elseif($modelPR->status == 3)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>NOT APPROVE</b>
+                            </div>
+                        @elseif($modelPR->status == 4)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>REJECTED</b>
+                            </div>
+                        @elseif($modelPR->status == 0)
                             <div class="col-xs-7 col-md-7">
                                 : <b>ORDERED</b>
                             </div>

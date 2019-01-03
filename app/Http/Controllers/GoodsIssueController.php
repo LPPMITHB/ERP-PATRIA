@@ -38,7 +38,7 @@ class GoodsIssueController extends Controller
 
     public function createGiWithRef()
     {
-        $modelMRs = MaterialRequisition::where('status',1)->get();
+        $modelMRs = MaterialRequisition::where('status',2)->get();
         
         return view('goods_issue.createGiWithRef', compact('modelMRs'));
     }
