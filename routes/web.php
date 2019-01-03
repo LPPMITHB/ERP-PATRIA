@@ -635,6 +635,8 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
     Route::get('/{id}/showResource', 'PurchaseOrderController@showResource')->name('showResource')->middleware('can:show-purchase-order');
 
+    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval');
+    
     Route::post('/storeResource', 'PurchaseOrderController@storeResource')->name('storeResource')->middleware('can:create-purchase-order');
 
     Route::get('/createPOResource', 'PurchaseOrderController@createPOResource')->name('createPOResource')->middleware('can:list-purchase-requisition');

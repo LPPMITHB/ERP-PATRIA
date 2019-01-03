@@ -237,6 +237,18 @@ class PurchaseOrderController extends Controller
         //
     }
 
+    public function approval($po_id,$status){
+        $modelPO = PurchaseOrder::findOrFail($po_id);
+        if($status == "approve"){
+            $modelPO->status = 0;
+            $modelPO->update();
+        }elseif($status == "reject"){
+            $modelPO->status = 2;
+            $modelPO->update();
+        }
+        return redirect()->route('purchase_order.show',$po_id);
+    }
+
     // function
     public function generatePONumber(){
         $modelPO = PurchaseOrder::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
