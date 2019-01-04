@@ -4,7 +4,7 @@
 @if($company->id)
 @breadcrumb(
     [
-        'title' => 'Companies',
+        'title' => 'Edit Company',
         'items' => [
             'Dashboard' => route('index'),
             'Companies' => route('company.index'),

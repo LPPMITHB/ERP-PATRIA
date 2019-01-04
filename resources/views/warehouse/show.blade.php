@@ -26,15 +26,6 @@
                     @can('edit-warehouse')
                         <a href="{{ route('warehouse.edit',['id'=>$warehouse->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                     @endcan
-
-                    <!-- @can('destroy-warehouse')
-                        <button class="btn btn-danger btn-sm" onclick="event.preventDefault();document.getElementById('delete-form-{{ $warehouse->id }}').submit();">DELETE</button>
-                    @endcan
-
-                    <form id="delete-form-{{ $warehouse->id }}" action="{{ route('warehouse.destroy', ['id' => $warehouse->id]) }}" method="POST" style="display: none;">
-                        <input type="hidden" name="_method" value="DELETE">
-                        @csrf
-                    </form> -->
                 </div>
             </div>
             <div class="box-body">

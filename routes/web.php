@@ -752,11 +752,17 @@ Route::name('goods_issue.')->prefix('goods_issue')->group(function() {
     Route::get('/', 'GoodsIssueController@index')->name('index');
 
     Route::get('/selectMR', 'GoodsIssueController@selectMR')->name('selectMR')->middleware('can:create-purchase-order');
+   
+    Route::get('/approval/{id}/{status}', 'GoodsIssueController@approval')->name('approval');
+
+    Route::get('/createGiWithRef', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-purchase-order');
 
     Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-purchase-order');
 
     Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-purchase-order');
 
+    Route::get('/showApproval/{id}', 'GoodsIssueController@showApprove')->name('showApprove')->middleware('can:show-purchase-order');
+    
     Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-purchase-order');
 
     Route::patch('/{id}', 'GoodsIssueController@update')->name('update')->middleware('can:edit-purchase-order');

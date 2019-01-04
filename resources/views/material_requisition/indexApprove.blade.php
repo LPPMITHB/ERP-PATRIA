@@ -17,8 +17,6 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header p-b-20">
-            </div> <!-- /.box-header -->
             <div class="box-body">
                 <table class="table table-bordered table-hover" id="mr-table">
                     <thead>
