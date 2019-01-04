@@ -29,8 +29,9 @@ class StockManagementController extends Controller
         $storage_locations = StorageLocation::all();
         $warehouses = Warehouse::all();
         $materials = Material::all();
+        $stocks = Stock::with('material')->get();
 
-        return view('stock_management.index', compact('storage_locations','materials','warehouses'));
+        return view('stock_management.index', compact('storage_locations','materials','warehouses','stocks'));
     }
 
     /**
@@ -151,8 +152,7 @@ class StockManagementController extends Controller
     
     public function getStockInfoSM(){
         $data = array();
-        
-        $stocks = Stock::with('material')->get();
+        $stocks = Stock::all();
 
         $inventory_value = 0;
         $inventory_qty = 0;
@@ -171,7 +171,6 @@ class StockManagementController extends Controller
         $data['stockValue'] = $inventory_value;
         $data['stockQuantity'] = $inventory_qty;
         $data['reservedStockQuantity'] = $reserved_inventory_qty;
-        $data['stocks'] = $stocks;
         return response($data, Response::HTTP_OK);
     } 
    

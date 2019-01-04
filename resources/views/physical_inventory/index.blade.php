@@ -40,11 +40,11 @@
                                 <td class="p-l-10">{{ $snapshot->user->name }}</td>
                                 <td class="p-l-10">
                                     @if($snapshot->status == 1)
-                                        Open
+                                        OPEN
                                     @elseif($snapshot->status == 0)
-                                        Closed
+                                        CLOSED
                                     @elseif($snapshot->status == 2)
-                                        Counted
+                                        COUNTED
                                     @endif
                                 </td>
                                 <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>
