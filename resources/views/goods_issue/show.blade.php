@@ -32,7 +32,7 @@
                 <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
                         <div class="col-md-4">
-                            Project Name
+                            Ship Name
                         </div>
                         <div class="col-md-8">
                             : <b> {{ isset($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}} </b>
