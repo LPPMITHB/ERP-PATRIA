@@ -19,7 +19,7 @@ class PurchaseOrderController extends Controller
 {
     public function selectPR()
     {
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,2])->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,2,7])->get();
         
         return view('purchase_order.selectPR', compact('modelPRs'));
     }
@@ -34,7 +34,7 @@ class PurchaseOrderController extends Controller
 
     public function indexApprove()
     {
-        $modelPOs = PurchaseOrder::where('status',1)->get();
+        $modelPOs = PurchaseOrder::whereIn('status',[1,4])->get();
 
         return view('purchase_order.indexApprove', compact('modelPOs'));
     
@@ -43,7 +43,6 @@ class PurchaseOrderController extends Controller
     public function create(Request $request)
     {
         $datas = json_decode($request->datas);
-
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
         $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','wbs')->get();
         foreach($modelPRD as $key=>$PRD){
@@ -51,7 +50,7 @@ class PurchaseOrderController extends Controller
                 $modelPRD->forget($key);
             }
         }
-        $modelProject = Project::findOrFail($modelPR->project_id)->with('ship','customer')->first();
+        $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
 
         return view('purchase_order.create', compact('modelPR','modelPRD','modelProject'));
     }
@@ -182,7 +181,7 @@ class PurchaseOrderController extends Controller
     {
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
         $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs')->get();
-        $modelProject = Project::findOrFail($modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
+        $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
 
         return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject'));
     }
@@ -221,6 +220,9 @@ class PurchaseOrderController extends Controller
             $PO->vendor_id = $datas->modelPO->vendor_id;
             $PO->description = $datas->modelPO->description;
             $PO->total_price = $total_price;
+            if($PO->status == 3){
+                $PO->status = 4;
+            }
             $PO->save();
 
             $this->checkStatusPr($datas->modelPO->purchase_requisition_id,$status);
@@ -240,10 +242,13 @@ class PurchaseOrderController extends Controller
     public function approval($po_id,$status){
         $modelPO = PurchaseOrder::findOrFail($po_id);
         if($status == "approve"){
-            $modelPO->status = 0;
+            $modelPO->status = 2;
+            $modelPO->update();
+        }elseif($status == "need-revision"){
+            $modelPO->status = 3;
             $modelPO->update();
         }elseif($status == "reject"){
-            $modelPO->status = 2;
+            $modelPO->status = 5;
             $modelPO->update();
         }
         return redirect()->route('purchase_order.show',$po_id);
@@ -251,19 +256,23 @@ class PurchaseOrderController extends Controller
 
     // function
     public function generatePONumber(){
-        $modelPO = PurchaseOrder::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
+        $modelPO = PurchaseOrder::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
 
-        $branch_code = substr($modelBranch->code,4,2);
         $number = 1;
         if(isset($modelPO)){
-            $number += intval(substr($modelPO->number, -6));
+            $yearDoc = substr($modelPO->number, 3,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelPO->number, -5));
+            }
         }
-        $year = date('y'.$branch_code.'000000');
+
+        $year = date($yearNow.'00000');
         $year = intval($year);
 
         $po_number = $year+$number;
         $po_number = 'PO-'.$po_number;
+        
         return $po_number;
     }
     

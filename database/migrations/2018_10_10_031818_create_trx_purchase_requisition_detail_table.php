@@ -19,7 +19,8 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
             $table->integer('quantity');
             $table->integer('reserved')->default(0);
             $table->unsignedInteger('material_id');
-            $table->unsignedInteger('wbs_id');
+            $table->unsignedInteger('wbs_id')->nullable();
+            $table->string('alocation')->default('Stock');
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');

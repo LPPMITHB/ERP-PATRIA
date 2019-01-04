@@ -607,7 +607,11 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
 
+    Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation');
+
     Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval');
+
+    Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
     Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:destroy-purchase-requisition');
 
