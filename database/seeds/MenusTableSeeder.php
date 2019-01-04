@@ -464,9 +464,9 @@ class MenusTableSeeder extends Seeder
         $goodsIssue =  Menu::where('name','Goods Issue')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Create GI with Reference',
+            'name' => 'Create GI',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_issue.createGiWithRef',
+            'route_name'=> 'goods_issue.selectMR',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$goodsIssue,

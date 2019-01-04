@@ -751,13 +751,11 @@ Route::name('material_requisition.')->prefix('material_requisition')->group(func
 Route::name('goods_issue.')->prefix('goods_issue')->group(function() {    
     Route::get('/', 'GoodsIssueController@index')->name('index');
 
-    Route::get('/createGiWithRef', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-purchase-order');
+    Route::get('/selectMR', 'GoodsIssueController@selectMR')->name('selectMR')->middleware('can:create-purchase-order');
 
-    Route::get('/createGiWithoutRef', 'GoodsIssueController@createGiWithoutRef')->name('createGiWithoutRef')->middleware('can:create-purchase-order');
+    Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-purchase-order');
 
     Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-purchase-order');
-
-    Route::get('/selectMR/{id}', 'GoodsIssueController@selectMR')->name('selectMR')->middleware('can:create-purchase-order');
 
     Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-purchase-order');
 

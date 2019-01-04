@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered table-hover" id="mr-table">
+                <table class="table table-bordered tableFixed tablePaging" id="mr-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -75,17 +75,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#mr-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();        
     });
 </script>
 @endpush

@@ -24,23 +24,24 @@ class GoodsIssueController extends Controller
         return view ('goods_issue.index', compact('modelGIs'));
     }
 
-    public function selectMR($id)
+    public function createGiWithRef($id)
     {
         $modelMR = MaterialRequisition::findOrFail($id);
+        $modelProject = $modelMR->project->with('ship', 'customer')->first();
         $modelSloc = StorageLocation::all();
         $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$modelMR->id)->whereColumn('issued','!=','quantity')->with('material')->get();
         foreach($modelMRDs as $MRD){
             $MRD['sloc_id'] = "";
             $MRD['modelGI'] = "";
         }
-        return view('goods_issue.selectMR', compact('modelMR','modelMRDs','modelSloc'));
+        return view('goods_issue.createGiWithRef', compact('modelMR','modelMRDs','modelSloc','modelProject'));
     }
 
-    public function createGiWithRef()
+    public function selectMR()
     {
         $modelMRs = MaterialRequisition::where('status',2)->get();
-        
-        return view('goods_issue.createGiWithRef', compact('modelMRs'));
+
+        return view('goods_issue.selectMR', compact('modelMRs'));
     }
 
     public function store(Request $request)
