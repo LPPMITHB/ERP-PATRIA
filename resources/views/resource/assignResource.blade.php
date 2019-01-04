@@ -59,7 +59,7 @@
                                             <th style="width: 25%">Resource</th>
                                             <th style="width: 25%">Project Name</th>
                                             <th style="width: 15%">Status</th>
-                                            <th style="width: 18%">Work Name</th>
+                                            <th style="width: 18%">WBS Name</th>
                                             <th style="width: 12%"></th>
                                         </tr>
                                     </thead>
@@ -143,7 +143,7 @@
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
-                                                <label for="work_name" class="control-label">Work Name</label>
+                                                <label for="work_name" class="control-label">WBS Name</label>
                                                 <selectize v-model="editInput.wbs_id" :settings="workSettings">
                                                     <option v-for="(work, index) in workDetail" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
@@ -183,7 +183,7 @@
         modelProjects : @json($projects),
         modelAssignResource : "",
         newIndex : "",
-        dataWork : "",
+        dataWbs : "",
 
 
         dataInput : {
@@ -212,7 +212,7 @@
         },
 
         workSettings: {
-            placeholder: 'Please Select Work'
+            placeholder: 'Please Select Wbs'
         },
 
         selectedResource : [],
@@ -412,7 +412,7 @@
             'dataInput.project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWorkAssignResource/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getWbsAssignResource/'+newValue).then(({ data }) => {
                         this.workDetail = data;
 
                         
@@ -435,7 +435,7 @@
             'editInput.project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWorkAssignResource/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getWbsAssignResource/'+newValue).then(({ data }) => {
                         this.workDetail = data;
 
                         

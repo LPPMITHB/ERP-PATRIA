@@ -91,8 +91,13 @@
                                               </div>
                                               <br>
                                           </div>
+                                          
                                           <div class="icon">
-                                              <i class="fa fa-ship"></i>       
+                                            @if($project->drawing != null)
+                                              <img style="width : 73px; height: 65px;" src="{{ URL::to('/') }}/app/documents/project/{{$project->drawing}}">
+                                            @else
+                                              <i class="fa fa-ship"></i>
+                                            @endif
                                           </div>
                                           @if($project->business_unit_id == 1)
                                             <a href="{{ route('project.show',['id'=>$project->id]) }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
