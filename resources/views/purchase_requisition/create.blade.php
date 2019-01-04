@@ -49,74 +49,86 @@
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4 p-r-0">
-                                        <div class="col-sm-12 p-l-0">
-                                            <label for="">PR Description</label>
-                                        </div>
-                                        <div class="col-sm-12 p-l-0">
-                                            <textarea class="form-control" rows="3" v-model="description"></textarea>
-                                        </div>
-                                </div>
-                            </template>
-                        </div>
-                        <div class="row" v-show="selectedProject.length > 0">
-                                <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                    <table class="table table-bordered tableFixed" >
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 5%">No</th>
-                                                <th style="width: 35%">Material Name</th>
-                                                <th style="width: 20%">Quantity</th>
-                                                <th style="width: 30%">WBS Name</th>
-                                                <th style="width: 10%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(material,index) in dataMaterial">
-                                                <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
-                                                <td class="tdEllipsis">{{ material.quantity }}</td>
-                                                <td class="tdEllipsis">{{ material.work_name }}</td>
-                                                <td class="p-l-0 textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
-                                                        EDIT
-                                                    </a>
-                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                        DELETE
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td class="p-l-10">{{newIndex}}</td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
-                                                </td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.wbs_id" :settings="workSettings">
-                                                        <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0  textCenter">
-                                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                        </div>
-                        <template v-if="selectedProject.length > 0">
-                            <div class="col-md-12 p-r-0 p-t-10">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
+                            <div class="col-xs-12 col-md-4 p-r-0">
+                                    <div class="col-sm-12 p-l-0">
+                                        <label for="">PR Description</label>
+                                    </div>
+                                    <div class="col-sm-12 p-l-0">
+                                        <textarea class="form-control" rows="3" v-model="description"></textarea>
+                                    </div>
                             </div>
-                        </template>
+                        </div>
+                        <div class="row">
+                            <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
+                                <table class="table table-bordered tableFixed" >
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 30%">Material Name</th>
+                                            <th style="width: 15%">Quantity</th>
+                                            <th style="width: 25%">WBS Name</th>
+                                            <th style="width: 15%">Alocation</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(material,index) in dataMaterial">
+                                            <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td class="tdEllipsis" v-if="material.work_name != ''">{{ material.work_name }}</td>
+                                            <td class="tdEllipsis" v-else>-</td>
+                                            <td class="tdEllipsis">{{ material.alocation }}</td>
+                                            <td class="p-l-0 textCenter">
+                                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                                    EDIT
+                                                </a>
+                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="p-l-10">{{newIndex}}</td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="project_id != ''">
+                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="project_id == ''">
+                                                <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings">
+                                                    <option value="Consumption">Consumption</option>
+                                                    <option value="Stock">Stock</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0  textCenter">
+                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 p-r-0 p-t-10">
+                            <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
+                        </div>
+
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -138,10 +150,23 @@
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
-                                            <div class="col-sm-12">
-                                                <label for="type" class="control-label">Work Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="workSettings">
+                                            <div class="col-sm-12" v-show="project_id != ''"> 
+                                                <label for="type" class="control-label">WBS Name</label>
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="project_id == ''"> 
+                                                <label for="type" class="control-label">WBS Name</label>
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="alocation" class="control-label">Alocation</label>
+                                                <selectize v-model="editInput.alocation" :settings="alocationSettings">
+                                                    <option value="Consumption">Consumption</option>
+                                                    <option value="Stock">Stock</option>
                                                 </selectize>
                                             </div>
                                         </div>
@@ -184,11 +209,17 @@
         projectSettings: {
             placeholder: 'Please Select Project'
         },
-        workSettings: {
-            placeholder: 'Please Select Work'
-        },
         materialSettings: {
             placeholder: 'Please Select Material'
+        },
+        wbsSettings: {
+            placeholder: 'Please Select WBS'
+        },
+        nullSettings:{
+            placeholder: '-'
+        },
+        alocationSettings: {
+            placeholder: 'Please Select Alocation'
         },
         selectedProject : [],
         dataMaterial : [],
@@ -199,7 +230,8 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            work_name : ""
+            work_name : "",
+            alocation : "Stock"
         },
         editInput : {
             old_material_id : "",
@@ -209,7 +241,8 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            work_name : ""
+            work_name : "",
+            alocation : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -289,11 +322,7 @@
                 // this.dataMaterial.forEach(material => {
                     // if(material.material_id == old_material_id){
                         var material = this.dataMaterial[this.editInput.index];
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                        material.material_id = new_material_id;
-                        material.wbs_id = this.editInput.wbs_id;
-
+                       
                         window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
                             // console.log(data);
                             material.material_name = data.name;
@@ -309,20 +338,30 @@
 
                             // var jsonMaterialId = JSON.stringify(this.material_id);
                             // this.getNewMaterials(jsonMaterialId);
+                            if(this.editInput.wbs_id != ''){
+                                window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
+                                    material.work_name = data.name;
+                                    material.quantityInt = this.editInput.quantityInt;
+                                    material.quantity = this.editInput.quantity;
+                                    material.material_id = new_material_id;
+                                    material.wbs_id = this.editInput.wbs_id;
+                                    material.alocation = this.editInput.alocation;
 
-                             window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
-                                material.work_name = data.name;
-                                $('div.overlay').hide();
-                            })
-                            .catch((error) => {
-                                iziToast.warning({
-                                    title: 'Please Try Again..',
-                                    position: 'topRight',
-                                    displayMode: 'replace'
-                                });
-                                $('div.overlay').hide();
-                            })
-
+                                    $('div.overlay').hide();
+                                })
+                                .catch((error) => {
+                                    iziToast.warning({
+                                        title: 'Please Try Again..',
+                                        position: 'topRight',
+                                        displayMode: 'replace'
+                                    });
+                                    $('div.overlay').hide();
+                                })
+                            }else{
+                                material.quantityInt = this.editInput.quantityInt;
+                                material.quantity = this.editInput.quantity;
+                                material.alocation = this.editInput.alocation;
+                            }
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -333,7 +372,7 @@
                             });
                             $('div.overlay').hide();
                         })
-                    // }
+                //     }
                 // });
             },
             // getNewModalMaterials(jsonMaterialId){
@@ -359,6 +398,7 @@
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.work_name = data.work_name;
+                this.editInput.alocation = data.alocation;
                 this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
@@ -407,6 +447,7 @@
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
                     this.dataInput.work_name = "";
+                    this.dataInput.alocation = "Stock";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;
 

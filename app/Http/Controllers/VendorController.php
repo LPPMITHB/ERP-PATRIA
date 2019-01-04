@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vendor;
+use App\Models\PurchaseOrder;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -68,25 +69,14 @@ class VendorController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Vendor  $vendor
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $vendor = Vendor::findOrFail($id);
+        $modelPOs = PurchaseOrder::where('vendor_id',$id)->get();
 
-        return view('vendor.show',compact('vendor'));
+        return view('vendor.show',compact('vendor','modelPOs'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Vendor  $vendor
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $vendor = Vendor::findOrFail($id);
@@ -94,13 +84,6 @@ class VendorController extends Controller
         return view('vendor.create',compact('vendor'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Vendor  $vendor
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -128,22 +111,9 @@ class VendorController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Vendor  $vendor
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        $vendor = Vendor::find($id);
 
-        try {
-            $vendor->delete();
-            return redirect()->route('vendor.index')->with('status', 'Vendor Deleted Succesfully!');
-        } catch(\Illuminate\Database\QueryException $e){
-            return redirect()->route('vendor.index')->with('status', 'Can\'t Delete The Vendor Because It Is Still Being Used');
-        }
     }
 
     public function generateVendorCode(){

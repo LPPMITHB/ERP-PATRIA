@@ -115,7 +115,21 @@ class MaterialWriteOffController extends Controller
        
             
     }
-
+    
+    public function approval($mwo_id,$status){
+        $modelMWO = MaterialRequisition::findOrFail($mw_id);
+        if($status == "approve"){
+            $modelMR->status = 2;
+            $modelMR->update();
+        }elseif($status == "not-approve"){
+            $modelMR->status = 3;
+            $modelMR->update();
+        }elseif($status == "reject"){
+            $modelMR->status = 4;
+            $modelMR->update();
+        }
+        return redirect()->route('material_requisition.show',$mr_id);
+    }
     public function destroy($id)
     {
         

@@ -23,7 +23,7 @@ class GoodsMovementController extends Controller
     {
         $modelWarehouse = Warehouse::where('status',1)->get();
         $modelSloc = StorageLocation::where('status',1)->with('storageLocationDetails')->get();
-
+        
         return view ('goods_movement.index', compact('modelWarehouse','modelSloc'));
     }
 
@@ -162,25 +162,34 @@ class GoodsMovementController extends Controller
     }
 
     public function getSlocDetailAPI($id){
-        $sld = StorageLocationDetail::where('storage_location_id',$id)->with('material')->get()->jsonSerialize();
+        $sld = StorageLocationDetail::where('storage_location_id',$id)->with('material')->get();
+        foreach($sld as $key => $data){
+            if($data->quantity - $data->reserved < 1){
+                unset($data[$key]);
+            }
+        }
 
         return response($sld, Response::HTTP_OK);
     }
 
     public function generateGMNumber(){
-        $modelGM = GoodsMovement::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
+        $modelGM = GoodsMovement::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        $yearDoc = substr($modelGM->number, 3,2);
 
-        $branch_code = substr($modelBranch->code,4,2);
         $number = 1;
-        if(isset($modelGM)){
-            $number += intval(substr($modelGM->number, -6));
+        if($yearNow == $yearDoc){
+            if(isset($modelGM)){
+                $number += intval(substr($modelGM->number, -6));
+            }
         }
-        $year = date('y'.$branch_code.'000000');
+
+        $year = date($yearNow.'000000');
         $year = intval($year);
 
         $gm_number = $year+$number;
         $gm_number = 'GM-'.$gm_number;
+
         return $gm_number;
     }
 }

@@ -607,7 +607,11 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
 
+    Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation');
+
     Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval');
+
+    Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
     Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:destroy-purchase-requisition');
 
@@ -635,6 +639,8 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
     Route::get('/{id}/showResource', 'PurchaseOrderController@showResource')->name('showResource')->middleware('can:show-purchase-order');
 
+    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval');
+    
     Route::post('/storeResource', 'PurchaseOrderController@storeResource')->name('storeResource')->middleware('can:create-purchase-order');
 
     Route::get('/createPOResource', 'PurchaseOrderController@createPOResource')->name('createPOResource')->middleware('can:list-purchase-requisition');

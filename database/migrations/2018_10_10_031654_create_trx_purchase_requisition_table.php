@@ -17,7 +17,7 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->increments('id');
             $table->string('number')->unique();
             $table->date('valid_date');
-            $table->unsignedInteger('project_id');
+            $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('bom_id')->nullable();
             $table->string('description')->nullable();
             $table->integer('status')->default(1);

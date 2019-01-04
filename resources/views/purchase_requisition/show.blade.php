@@ -1,16 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Purchase Requisition » '.$modelPR->project->name,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+@if($modelPR->project)
+    @breadcrumb(
+        [
+            'title' => 'View Purchase Requisition » '.$modelPR->project->name,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'View Purchase Requisition',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -35,7 +48,7 @@
                             Project Number
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelPR->project->number }} </b>
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->number : '-'}} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -43,7 +56,7 @@
                             Ship Name
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelPR->project->name }} </b>
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->name : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -51,7 +64,7 @@
                             Ship Type
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelPR->project->ship->type }} </b>
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->ship->type : '-' }} </b>
                         </div>
                     </div>
                 </div>
@@ -60,8 +73,8 @@
                         <div class="col-xs-5 col-md-5">
                             Customer Name
                         </div>
-                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPR->project->customer->name}}">
-                            : <b> {{ $modelPR->project->customer->name }} </b>
+                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPR->project) ?$modelPR->project->customer->name : ''}}">
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->customer->name : '-'}} </b>
                         </div>
                         <div class="col-xs-5 col-md-5">
                             Status
@@ -72,7 +85,7 @@
                             </div>
                         @elseif($modelPR->status == 2)
                             <div class="col-xs-7 col-md-7">
-                                : <b>APPROVE</b>
+                                : <b>APPROVED</b>
                             </div>
                         @elseif($modelPR->status == 3)
                             <div class="col-xs-7 col-md-7">
@@ -80,9 +93,13 @@
                             </div>
                         @elseif($modelPR->status == 4)
                             <div class="col-xs-7 col-md-7">
+                                : <b>REVISED</b>
+                            </div>
+                        @elseif($modelPR->status == 5)
+                            <div class="col-xs-7 col-md-7">
                                 : <b>REJECTED</b>
                             </div>
-                        @elseif($modelPR->status == 0)
+                        @elseif($modelPR->status == 0 || $modelPR->status == 7)
                             <div class="col-xs-7 col-md-7">
                                 : <b>ORDERED</b>
                             </div>
@@ -107,18 +124,20 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Material Name</th>
-                            <th width="25%">Quantity</th>
+                            <th width="35%">Material Name</th>
+                            <th width="15%">Quantity</th>
                             <th width="30%">Work Name</th>
+                            <th width="15%">Alocation</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($modelPR->PurchaseRequisitionDetails as $PRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $PRD->material->name }}</td>
+                                <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
                                 <td>{{ number_format($PRD->quantity) }}</td>
-                                <td>{{ $PRD->wbs->name }}</td>
+                                <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
+                                <td>{{ $PRD->alocation }}</td>
                             </tr>
                         @endforeach
                     </tbody>

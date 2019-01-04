@@ -310,7 +310,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPR = Menu::where('name','View and Edit PR')->select('id')->first()->id;
+        $viewPR = Menu::where('name','View & Edit PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Purchase Requisition',
             'menu_id' => $viewPR,
@@ -345,7 +345,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewMR = Menu::where('name','View and Edit MR')->select('id')->first()->id;
+        $viewMR = Menu::where('name','View & Edit MR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Material Requisition',
             'menu_id' => $viewMR,
@@ -380,7 +380,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPO = Menu::where('name','View PO')->select('id')->first()->id;
+        $viewPO = Menu::where('name','View & Edit PO')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Purchase Order',
             'menu_id' => $viewPO,

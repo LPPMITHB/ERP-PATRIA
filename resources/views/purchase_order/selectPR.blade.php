@@ -34,8 +34,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPR->number }}</td>
-                                <td>{{ $modelPR->description }}</td>
-                                <td>{{ $modelPR->project->name }}</td>
+                                <td>{{ isset($modelPR->description) ? $modelPR->description : '-'}}</td>
+                                <td>{{ isset($modelPR->project) ? $modelPR->project->name : '-' }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     <a href="{{ route('purchase_order.selectPRD', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                 </td>

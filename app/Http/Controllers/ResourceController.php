@@ -90,9 +90,9 @@ class ResourceController extends Controller
         DB::beginTransaction();
         try {
             $wbs = WBS::find($wbs_id);
-            $resourceDetailWBS = $wbs->resourceDetails;
-            if(count($resourceDetailWBS)>0){
-                foreach ($resourceDetailWBS as $resourceDetail) {
+            $resourceDetailWbs = $wbs->resourceDetails;
+            if(count($resourceDetailWbs)>0){
+                foreach ($resourceDetailWbs as $resourceDetail) {
                     $resourceDetail->delete();
                 }
             }
@@ -139,9 +139,9 @@ class ResourceController extends Controller
         DB::beginTransaction();
         try {
             $wbs = WBS::find($wbs_id);
-            $resourceDetailWBS = $wbs->resourceDetails;
-            if(count($resourceDetailWBS)>0){
-                foreach ($resourceDetailWBS as $resourceDetail) {
+            $resourceDetailWbs = $wbs->resourceDetails;
+            if(count($resourceDetailWbs)>0){
+                foreach ($resourceDetailWbs as $resourceDetail) {
                     $resourceDetail->delete();
                 }
             }
