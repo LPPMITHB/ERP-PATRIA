@@ -266,7 +266,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View and Edit PR',
+            'name' => 'View & Edit PR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition.index',
             'is_active' => true,
@@ -276,6 +276,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'PR Consolidation',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition.indexConsolidation',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -328,7 +339,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View PO',
+            'name' => 'View & Edit PO',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_order.index',
             'is_active' => true,
@@ -428,7 +439,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View and Edit MR',
+            'name' => 'View & Edit MR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.index',
             'is_active' => true,

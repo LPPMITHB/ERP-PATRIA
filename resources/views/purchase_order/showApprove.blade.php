@@ -1,16 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Purchase Order » '.$modelPO->project->name,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View Purchase Order' => route('purchase_order.show',$modelPO->id),
+@if(!$modelPO->project)
+    @breadcrumb(
+        [
+            'title' => 'Approve Purchase Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Approve Purchase Order' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'Approve Purchase Order » '.$modelPO->project->name,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Approve Purchase Order' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -32,18 +45,10 @@
                 <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
                         <div class="col-md-4">
-                            Project Code
+                            Project Number
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->project->number }} </b>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Project Name
-                        </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelPO->project->name }} </b>
+                            : <b> {{ isset($modelPO->project) ? $modelPO->project->number : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -51,7 +56,7 @@
                             Ship Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->project->ship->type }} </b>
+                            : <b> {{ isset($modelPO->project) ? $modelPO->project->name : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -59,7 +64,7 @@
                             Ship Type
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->project->ship->type }} </b>
+                            : <b> {{ isset($modelPO->project) ? $modelPO->project->ship->type : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -84,8 +89,8 @@
                         <div class="col-md-5">
                             Customer Name
                         </div>
-                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPO->project->customer->name}}">
-                            : <b> {{ $modelPO->project->customer->name }} </b>
+                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->customer->name : '-'}}">
+                            : <b> {{ isset($modelPO->project) ? $modelPO->project->customer->name : '-' }} </b>
                         </div>
                         <div class="col-md-5">
                             Vendor Name
@@ -102,11 +107,23 @@
                             </div>
                         @elseif($modelPO->status == 2)
                             <div class="col-md-7">
-                                : <b>CANCELED</b>
+                                : <b>APPROVED</b>
                             </div>
-                        @else
+                        @elseif($modelPO->status == 3)
                             <div class="col-md-7">
-                                : <b>ORDERED</b>
+                                : <b>NEED REVISION</b>
+                            </div>
+                        @elseif($modelPO->status == 4)
+                            <div class="col-md-7">
+                                : <b>REVISED</b>
+                            </div>
+                        @elseif($modelPO->status == 5)
+                            <div class="col-md-7">
+                                : <b>REJECTED</b>
+                            </div>
+                        @elseif($modelPO->status == 0)
+                            <div class="col-md-7">
+                                : <b>RECEIVED</b>
                             </div>
                         @endif
                         <div class="col-md-5">
@@ -149,10 +166,13 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="col-md-12 p-t-10 p-b-10 p-r-0">
-                    <button class="btn btn-primary pull-right m-l-10" >APPROVE</button>
-                    <button class="btn btn-danger pull-right p-r-10" >NEEDS REVISION</button>
-                </div>
+                @if($modelPO->status == 1 || $modelPO->status == 4)
+                    <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                        <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
+                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                        <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
+                    </div>
+                @endif
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>

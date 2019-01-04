@@ -22,17 +22,55 @@
                     <div id="po">
                         <div class="box-header">
                             <div class="row">
-                                <div class="col-sm-4 col-md-4 p-l-25">
+                                <div class="col-xs-12 col-md-4" v-if="modelProject != null">
+                                    <div class="col-xs-5 no-padding">PR Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Project Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.number}}</b></div>
+                                    
+                                    <div class="col-xs-5 no-padding">Ship Type</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.ship.type}}</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Customer</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="modelProject.customer.name"><b>: {{modelProject.customer.name}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">Start Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_start_date}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">End Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
+                                </div>
+                                <div class="col-xs-12 col-md-4" v-else>
+                                    <div class="col-xs-5 no-padding">PR Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
+
+                                    <div class="col-xs-5 no-padding">Project Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+                                    
+                                    <div class="col-xs-5 no-padding">Ship Type</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+            
+                                    <div class="col-xs-5 no-padding">Customer</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+
+                                    <div class="col-xs-5 no-padding">Start Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+
+                                    <div class="col-xs-5 no-padding">End Date</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+                                </div>
+                                <div class="col-sm-4 col-md-4">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <label for="type" class="control-label m-b-10">Vendor Name</label>
+                                            <label for="type">Vendor Name</label>
                                             <selectize v-model="vendor_id" :settings="vendorSettings">
                                                 <option v-for="(vendor, index) in modelVendor" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                             </selectize>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4 col-md-4 m-t-10">
+                                <div class="col-sm-4 col-md-4">
                                     <div class="col-sm-12">
                                         <label for="">PO Description</label>
                                     </div>
@@ -40,54 +78,21 @@
                                         <textarea class="form-control" rows="3" v-model="description"></textarea>
                                     </div>
                                 </div>
-                                <div class="col-sm-4 col-md-4 m-t-10">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            PR Number
-                                        </div>
-                                        <div class="col-md-8">
-                                            : <b> {{ modelPR.number }} </b>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            Project Code
-                                        </div>
-                                        <div class="col-md-8">
-                                            : <b> {{ modelPR.project.code }} </b>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            Ship
-                                        </div>
-                                        <div class="col-md-8">
-                                            : <b> {{ modelProject.ship.name }} </b>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            Customer
-                                        </div>
-                                        <div class="col-md-8">
-                                            : <b> {{ modelProject.customer.name }} </b>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
-                        <div class="box-body">
+                        <div class="box-body p-t-0">
                             <div class="row">
-                                <div class="col sm-12 p-l-15 p-r-15 p-t-10">
-                                    <table class="table table-bordered tableFixed p-t-10" style="border-collapse:collapse;">
+                                <div class="col sm-12 p-l-15 p-r-15 p-t-0">
+                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <th style="width: 30%">Material Name</th>
-                                                <th style="width: 15%">Quantity</th>
-                                                <th style="width: 15%">Order</th>
+                                                <th style="width: 10%">Quantity</th>
+                                                <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
-                                                <th style="width: 35%">Work Name</th>
+                                                <th style="width: 30%">WBS Name</th>
+                                                <th style="width: 15%">Alocation</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -101,13 +106,15 @@
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
                                                 </td>
-                                                <td class="tdEllipsis">{{ PRD.wbs.name }}</td>
+                                                <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
+                                                <td class="tdEllipsis" v-else>-</td>
+                                                <td class="tdEllipsis">{{ PRD.alocation }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 p-r-0">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="dataOk">CREATE</button>
                             </div>
                         </div>
@@ -128,6 +135,34 @@
     const form = document.querySelector('form#create-po');
 
     $(document).ready(function(){
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == "Quantity" || title == "Order" || title == "Price / pcs (Rp.)"){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tableNonPagingVue.column(i).search() !== this.value ) {
+                    tableNonPagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
+            ordering        : false,
+        });
+
         $('div.overlay').hide();
     });
 
@@ -215,8 +250,16 @@
                 PRD.quantity = PRD.quantity - PRD.reserved;
                 PRD.sugQuantity = PRD.quantity;
                 PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             });
+            Vue.directive('tooltip', function(el, binding){
+                $(el).tooltip({
+                    title: binding.value,
+                    placement: binding.arg,
+                    trigger: 'hover'             
+                })
+            })
         },
     });
 </script>

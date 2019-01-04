@@ -21,7 +21,7 @@ class GoodsReceiptController extends Controller
 {
     public function createGrWithRef()
     {
-        $modelPOs = PurchaseOrder::where('status',1)->get();
+        $modelPOs = PurchaseOrder::where('status',2)->get();
         
         return view('goods_receipt.createGrWithRef', compact('modelPOs'));
     }
@@ -80,7 +80,7 @@ class GoodsReceiptController extends Controller
                     $GRD->storage_location_id = $data->sloc_id;
                     $GRD->save();
                 
-                    $this->updatePO($data->id,$data->received);
+                    $this->updatePOD($data->id,$data->received);
                     $this->updateStock($data->material_id, $data->quantity);
                     $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
                 }
@@ -127,14 +127,12 @@ class GoodsReceiptController extends Controller
             return redirect()->route('goods_receipt.createGrWithoutRef')->with('error', $e->getMessage());
         }
     }
-    public function updatePO($pod_id,$received){
+    public function updatePOD($pod_id,$received){
         $modelPOD = PurchaseOrderDetail::findOrFail($pod_id);
         
         if($modelPOD){
             $modelPOD->received = $modelPOD->received + $received;
             $modelPOD->update();
-        }else{
-
         }
     }
 
@@ -157,17 +155,15 @@ class GoodsReceiptController extends Controller
 
     public function updateSlocDetail($material_id,$sloc_id,$received){
         $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->first();
-
         if($modelSlocDetail){
             $modelSlocDetail->quantity += $received;
             $modelSlocDetail->update();
         }else{
-            $modelSlocDetail = new StorageLocationDetail    ;
+            $modelSlocDetail = new StorageLocationDetail;
             $modelSlocDetail->quantity = $received;
             $modelSlocDetail->material_id = $material_id;
             $modelSlocDetail->storage_location_id = $sloc_id;
             $modelSlocDetail->save();
-
         }
     }
     public function checkStatusPO($po_id){
@@ -188,7 +184,7 @@ class GoodsReceiptController extends Controller
         $modelGR = GoodsReceipt::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
-        $branch_code = substr($modelBranch->code,3,2);
+        $branch_code = substr($modelBranch->code,4,2);
 		$number = 1;
 		if(isset($modelGR)){
             $number += intval(substr($modelGR->number, -6));
@@ -223,17 +219,6 @@ class GoodsReceiptController extends Controller
 
         return response($modelSloc, Response::HTTP_OK);
     }
-
-    //API
-    public function getSlocDetailAPI($id){
-    $modelGR = StorageLocationDetail::where('material_id',$id)->with('storageLocation')->get();
-    foreach($modelGR as $GR){
-        $GR['received'] = "";
-    }
-    
-    return response($modelGI->jsonSerialize(), Response::HTTP_OK);
-}
-
 
     public function getMaterialAPI($id){
         

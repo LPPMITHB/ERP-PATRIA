@@ -23,26 +23,29 @@
                 @csrf
                     @verbatim
                     <div id="prd">
-                        <table class="table table-bordered table-hover" id="prd-table">
+                        <table class="table table-bordered tableFixed tablePagingVue">
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="35%">Material</th>
+                                    <th width="30%">Material</th>
                                     <th width="10%">Quantity</th>
                                     <th width="10%">Ordered</th>
                                     <th width="10%">Remaining</th>
-                                    <th width="25%">Work Name</th>
+                                    <th width="20%">WBS Name</th>
+                                    <th width="10%">Alocation</th>
                                     <th width="5%"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(PRD,index) in modelPRD">
                                     <td>{{ index+1 }}</td>
-                                    <td>{{ PRD.material.name }}</td>
+                                    <td>{{ PRD.material.code }} - {{ PRD.material.name }}</td>
                                     <td>{{ PRD.quantity }}</td>
                                     <td>{{ PRD.reserved }}</td>
                                     <td>{{ PRD.remaining }}</td>
-                                    <td>{{ PRD.wbs.name }}</td>
+                                    <td v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
+                                    <td v-else>-</td>
+                                    <td>{{ PRD.alocation }}</td>
                                     <td class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
                                     </td>
@@ -71,17 +74,34 @@
     const form = document.querySelector('form#select-material');
 
     $(document).ready(function(){
-        $('#prd-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : true,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
+        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == '' || title == 'No' || title == "Quantity" || title == "Ordered" || title == "Remaining"){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
             }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tablePagingVue.column(i).search() !== this.value ) {
+                    tablePagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
         });
+
+        var tablePagingVue = $('.tablePagingVue').DataTable( {
+            orderCellsTop   : true,
+            fixedHeader     : true,
+            paging          : true,
+            autoWidth       : false,
+            lengthChange    : false,
+        });
+
+        $('div.overlay').hide();
     });
 
     var data = {

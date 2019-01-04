@@ -24,7 +24,7 @@
                     @verbatim
                     <div id="pr">
                         <div class="box-header no-padding">
-                            <div class="col-xs-12 col-md-4">
+                            <div class="col-xs-12 col-md-4" v-if="selectedProject != null">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
                                 <div class="col-xs-5 no-padding">Project Number</div>
@@ -53,14 +53,15 @@
                         </div>
                         <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                                <table class="table table-bordered tableFixed">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 40%">Material Name</th>
-                                            <th style="width: 20%">Quantity</th>
-                                            <th style="width: 30%">WBS Name</th>
-                                            <th style="width: 5%"></th>
+                                            <th style="width: 30%">Material Name</th>
+                                            <th style="width: 15%">Quantity</th>
+                                            <th style="width: 25%">WBS Name</th>
+                                            <th style="width: 15%">Alocation</th>
+                                            <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -68,35 +69,46 @@
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_name != ''">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis" v-else>-</td>
+                                            <td class="tdEllipsis">{{ material.alocation }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
                                                 </a>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                    <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft">
+                                            <td class="no-padding textLeft">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                            <td class="no-padding ">
+                                                <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
-                                            <td class="p-l-0 textLeft">
+                                            <td class="no-padding  textLeft" v-show="selectedProject != null">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textCenter">
+                                            <td class="no-padding textLeft" v-show="selectedProject == null">
+                                                <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="no-padding textLeft">
+                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings">
+                                                    <option value="Consumption">Consumption</option>
+                                                    <option value="Stock">Stock</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="no-padding textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -122,10 +134,23 @@
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12" v-show="selectedProject != null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="selectedProject == null"> 
+                                                <label for="type" class="control-label">WBS Name</label>
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12"> 
+                                                <label for="type" class="control-label">Alocation</label>
+                                                <selectize id="edit_modal" v-model="editInput.alocation" :settings="alocationSettings">
+                                                    <option value="Consumption">Consumption</option>
+                                                    <option value="Stock">Stock</option>
                                                 </selectize>
                                             </div>
                                         </div>
@@ -154,6 +179,33 @@
     const form = document.querySelector('form#edit-pr');
 
     $(document).ready(function(){
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == 'Quantity' || title == ""){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tableNonPagingVue.column(i).search() !== this.value ) {
+                    tableNonPagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
+        });
+
         $('div.overlay').hide();
     });
 
@@ -170,6 +222,12 @@
         materialSettings: {
             placeholder: 'Please Select Material'
         },
+        nullSettings:{
+            placeholder: '-'
+        },
+        alocationSettings: {
+            placeholder: 'Please Select Alocation'
+        },
         dataInput : {
             prd_id :null,
             material_id :"",
@@ -178,7 +236,8 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : ""
+            wbs_name : "",
+            alocation : "Stock"
         },
         editInput : {
             old_material_id : "",
@@ -188,7 +247,8 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : ""
+            wbs_name : "",
+            alocation : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -275,23 +335,31 @@
             },
             update(old_material_id, new_material_id){
                 var material = this.dataMaterial[this.editInput.index];
+                if(this.editInput.wbs_id != null){
+                    window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
+                        $('div.overlay').show();
+                        material.wbs_name = data.name;
+                        material.quantityInt = this.editInput.quantityInt;
+                        material.quantity = this.editInput.quantity;
+                        material.wbs_id = this.editInput.wbs_id;
+                        material.alocation = this.editInput.alocation;
 
-                window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
-                    material.wbs_name = data.name;
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else{
                     material.quantityInt = this.editInput.quantityInt;
                     material.quantity = this.editInput.quantity;
-                    material.wbs_id = this.editInput.wbs_id;
-
-                    $('div.overlay').hide();
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
+                    material.alocation = this.editInput.alocation;
+                }
+                
                 $('div.overlay').hide();
             },
             openEditModal(data,index){
@@ -303,6 +371,7 @@
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_name = data.wbs_name;
+                this.editInput.alocation = data.alocation;
                 this.editInput.index = index;
 
                 document.getElementById('material').value = data.material_code+" - "+data.material_name;
@@ -333,6 +402,8 @@
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
                     this.dataInput.wbs_name = "";
+                    this.dataInput.alocation = "Stock";
+
                     this.newIndex = Object.keys(this.dataMaterial).length+1;    
 
                     $('div.overlay').hide();
@@ -385,10 +456,15 @@
 
             var data = this.dataMaterial;
             data.forEach(prd => {
+                prd.quantity = (prd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 prd.material_name = prd.material.name;
                 prd.material_code = prd.material.code;
-                prd.wbs_name = prd.wbs.name;
                 prd.prd_id = prd.id;
+                if(this.selectedProject){
+                    prd.wbs_name = prd.wbs.name;
+                }else{
+                    prd.wbs_name = "-";
+                }
             });
         },
     });
