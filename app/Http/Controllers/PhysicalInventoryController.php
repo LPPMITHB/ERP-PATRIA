@@ -59,7 +59,7 @@ class PhysicalInventoryController extends Controller
 
     public function viewAdjustmentHistory()
     {
-        $snapshots = Snapshot::all();
+        $snapshots = Snapshot::where('status',0)->get();
 
         return view('physical_inventory.index', compact('snapshots'));
     }

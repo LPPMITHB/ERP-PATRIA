@@ -39,7 +39,7 @@ Route::get('/getServicesBOS/{id}', 'BOSController@getServicesAPI')->name('api.bo
 
 // rap
 Route::get('/getNewCost/{id}', 'RAPController@getNewCostAPI')->name('api.bom.getNewCostAPI');
-Route::get('/getAllWorks/{id}', 'RAPController@getAllWorksCostAPI')->name('api.bom.getAllWorksCostAPI');
+Route::get('/getAllWbss/{id}', 'RAPController@getAllWbssCostAPI')->name('api.bom.getAllWbssCostAPI');
 
 // purchase_requisition
 Route::get('/getProjectPR/{id}', 'PurchaseRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');

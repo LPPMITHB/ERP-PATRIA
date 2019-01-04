@@ -7,7 +7,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'Select Material Requisition' => route('goods_issue.createGiWithRef'),
-            'Create Details' => route('goods_issue.selectMR',$modelMR->id),
+            'Create Goods Issue' => route('goods_issue.selectMR',$modelMR->id),
         ]
     ]
 )

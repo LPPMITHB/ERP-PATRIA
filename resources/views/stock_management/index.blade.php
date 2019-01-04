@@ -114,7 +114,7 @@
                             </div>
                             <div v-show="warehouse_id > 0">
                                 <div class="col sm-12 p-l-10 p-r-10 p-t-10">
-                                    <table class="table table-bordered showTable tablePagingVue2 tableFixed" style="border-collapse:collapse;">
+                                    <table id="tablePagingVue2" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <th style="width: 5%">No</th>
                                             <th style="width: 45%">Material</th>
@@ -152,6 +152,36 @@
 <script>
     const form = document.querySelector('form#view-stock');
 
+    $(document).ready(function(){        
+        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title != 'Material'){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tablePagingVue.column(i).search() !== this.value ) {
+                    tablePagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tablePagingVue = $('.tablePagingVue').DataTable( {
+            orderCellsTop   : true,
+            fixedHeader     : true,
+            paging          : true,
+            autoWidth       : true,
+            lengthChange    : false,
+        });
+
+    });
+    
     var data = {
         materials : @json($materials),
         warehouses : @json($warehouses),
@@ -166,7 +196,7 @@
         warehouseSettings: {
             placeholder: 'Please Select Warehouse'
         },
-        stocks: "",
+        stocks: @json($stocks),
         stockValue : "",
         stockQuantity : "",
         reservedStockQuantity : "",
@@ -193,6 +223,40 @@
                         data.forEach(slocDetail => {
                             slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                         });
+
+                        $('#tablePagingVue2').DataTable().destroy();
+                        var elements = document.getElementsByClassName("indexTable2");
+
+                        elements[0].parentNode.parentNode.removeChild(elements[0].parentNode);
+                        this.$nextTick(function() {
+                            $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
+                            $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
+                                var title = $(this).text();
+                                if(title != 'Material'){
+                                    $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+                                }else{
+                                    $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
+                                }
+
+                                $( 'input', this ).on( 'keyup change', function () {
+                                    if ( tablePagingVue2.column(i).search() !== this.value ) {
+                                        tablePagingVue2
+                                            .column(i)
+                                            .search( this.value )
+                                            .draw();
+                                    }
+                                });
+                            });
+
+                            var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
+                                orderCellsTop   : true,
+                                fixedHeader     : true,
+                                paging          : true,
+                                autoWidth       : true,
+                                lengthChange    : false,
+                            });
+                        })
+
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -214,6 +278,39 @@
                             data.forEach(slocDetail => {
                                 slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                             });
+
+                            $('#tablePagingVue2').DataTable().destroy();
+                            var elements = document.getElementsByClassName("indexTable2");
+
+                            elements[0].parentNode.parentNode.removeChild(elements[0].parentNode);
+                            this.$nextTick(function() {
+                                $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
+                                $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
+                                    var title = $(this).text();
+                                    if(title != 'Material'){
+                                        $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+                                    }else{
+                                        $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
+                                    }
+
+                                    $( 'input', this ).on( 'keyup change', function () {
+                                        if ( tablePagingVue2.column(i).search() !== this.value ) {
+                                            tablePagingVue2
+                                                .column(i)
+                                                .search( this.value )
+                                                .draw();
+                                        }
+                                    });
+                                });
+
+                                var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
+                                    orderCellsTop   : true,
+                                    fixedHeader     : true,
+                                    paging          : true,
+                                    autoWidth       : true,
+                                    lengthChange    : false,
+                                });
+                            })
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -246,6 +343,70 @@
                         data.forEach(slocDetail => {
                             slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                         });
+
+                        $('#tablePagingVue2').DataTable().destroy();
+                        var elements = document.getElementsByClassName("indexTable2");
+                        if(elements.length == 0){
+                            this.$nextTick(function() {
+                                $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
+                                $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
+                                    var title = $(this).text();
+                                    if(title != 'Material'){
+                                        $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+                                    }else{
+                                        $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
+                                    }
+    
+                                    $( 'input', this ).on( 'keyup change', function () {
+                                        if ( tablePagingVue2.column(i).search() !== this.value ) {
+                                            tablePagingVue2
+                                                .column(i)
+                                                .search( this.value )
+                                                .draw();
+                                        }
+                                    });
+                                });
+    
+                                var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
+                                    orderCellsTop   : true,
+                                    fixedHeader     : true,
+                                    paging          : true,
+                                    autoWidth       : true,
+                                    lengthChange    : false,
+                                });
+                            })
+                        }else{
+                            elements[0].parentNode.parentNode.removeChild(elements[0].parentNode);
+                            this.$nextTick(function() {
+                                $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
+                                $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
+                                    var title = $(this).text();
+                                    if(title != 'Material'){
+                                        $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+                                    }else{
+                                        $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
+                                    }
+    
+                                    $( 'input', this ).on( 'keyup change', function () {
+                                        if ( tablePagingVue2.column(i).search() !== this.value ) {
+                                            tablePagingVue2
+                                                .column(i)
+                                                .search( this.value )
+                                                .draw();
+                                        }
+                                    });
+                                });
+
+                                var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
+                                    orderCellsTop   : true,
+                                    fixedHeader     : true,
+                                    paging          : true,
+                                    autoWidth       : true,
+                                    lengthChange    : false,
+                                });
+                            })
+                        }
+
                     })
                     .catch((error) => {
                         iziToast.warning({
@@ -269,6 +430,7 @@
                         });
                         $('div.overlay').hide();
                     })
+                    
                 }else{
                     this.storageLocations = "";
                     $('div.overlay').hide();
@@ -277,40 +439,9 @@
         },
         created: function(){
             window.axios.get('/api/getStockInfoSM/').then(({ data }) => {
-                    this.stocks = data.stocks;
                     this.stockValue = "Rp "+data.stockValue;
                     this.stockQuantity = data.stockQuantity;
                     this.reservedStockQuantity = data.reservedStockQuantity;
-
-                    $('.tablePagingVue').DataTable().destroy();
-                    this.$nextTick(function() {
-                        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
-                        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-                            var title = $(this).text();
-                            if(title != 'Material'){
-                                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-                            }else{
-                                $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
-                            }
-
-                            $( 'input', this ).on( 'keyup change', function () {
-                                if ( tablePagingVue.column(i).search() !== this.value ) {
-                                    tablePagingVue
-                                        .column(i)
-                                        .search( this.value )
-                                        .draw();
-                                }
-                            });
-                        });
-
-                        var tablePagingVue = $('.tablePagingVue').DataTable( {
-                            orderCellsTop   : true,
-                            fixedHeader     : true,
-                            paging          : true,
-                            autoWidth       : true,
-                            lengthChange    : false,
-                        });
-                    })
                     
                     $('div.overlay').hide();
             })
