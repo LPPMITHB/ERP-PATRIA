@@ -150,14 +150,14 @@ class GoodsReceiptController extends Controller
             $modelStock->quantity = $received;
             $modelStock->branch_id = Auth::user()->branch->id;;
             $modelStock->material_id = $material_id;
-            $modelStock->update();
+            $modelStock->save();
                 
         }
     }
 
     public function updateSlocDetail($material_id,$sloc_id,$received){
         $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->first();
-        
+
         if($modelSlocDetail){
             $modelSlocDetail->quantity += $received;
             $modelSlocDetail->update();
@@ -166,7 +166,8 @@ class GoodsReceiptController extends Controller
             $modelSlocDetail->quantity = $received;
             $modelSlocDetail->material_id = $material_id;
             $modelSlocDetail->storage_location_id = $sloc_id;
-            $modelSlocDetail->update();
+            $modelSlocDetail->save();
+
         }
     }
     public function checkStatusPO($po_id){
@@ -187,7 +188,7 @@ class GoodsReceiptController extends Controller
         $modelGR = GoodsReceipt::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
-        $branch_code = substr($modelBranch->code,4,2);
+        $branch_code = substr($modelBranch->code,3,2);
 		$number = 1;
 		if(isset($modelGR)){
             $number += intval(substr($modelGR->number, -6));
@@ -217,10 +218,15 @@ class GoodsReceiptController extends Controller
         }
     }
 
+    public function getSlocApi($id){
+        $modelSloc = StorageLocation::find($id)->jsonSerialize();
+
+        return response($modelSloc, Response::HTTP_OK);
+    }
+
     //API
     public function getSlocDetailAPI($id){
     $modelGR = StorageLocationDetail::where('material_id',$id)->with('storageLocation')->get();
-    dd($modelGR);
     foreach($modelGR as $GR){
         $GR['received'] = "";
     }
