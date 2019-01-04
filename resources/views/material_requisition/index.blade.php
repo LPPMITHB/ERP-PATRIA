@@ -38,15 +38,17 @@
                                 <td>{{ $modelMR->project->name }}</td>
                                 <td>
                                     @if($modelMR->status == 0)
-                                        Issued
+                                        ISSUED
                                     @elseif($modelMR->status == 1)
-                                        Open
+                                        OPEN
                                     @elseif($modelMR->status == 2)
-                                        Approved
+                                        APPROVED
                                     @elseif($modelMR->status == 3)
-                                        Revise
+                                        NEED REVISION
                                     @elseif($modelMR->status == 4)
-                                        Rejected
+                                        REVISED
+                                    @elseif($modelMR->status == 4)
+                                        REJECTED
                                     @else
 
                                     @endif

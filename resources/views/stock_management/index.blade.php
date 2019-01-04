@@ -452,8 +452,7 @@
                     displayMode: 'replace'
                 });
                 $('div.overlay').hide();
-            })
-            
+            }) 
         }
     });
 </script>

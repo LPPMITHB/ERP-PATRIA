@@ -80,11 +80,15 @@
                             </div>
                         @elseif($modelMR->status == 4)
                             <div class="col-xs-7 col-md-7">
+                                : <b>REVISED</b>
+                            </div>
+                        @elseif($modelMR->status == 5)
+                            <div class="col-xs-7 col-md-7">
                                 : <b>REJECTED</b>
                             </div>
                         @elseif($modelMR->status == 0)
                             <div class="col-xs-7 col-md-7">
-                                : <b>ORDERED</b>
+                                : <b>ISSUED</b>
                             </div>
                         @endif
                         <div class="col-xs-5 col-md-5">

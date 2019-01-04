@@ -27,7 +27,7 @@ class MaterialRequisitionController extends Controller
 
     public function indexApprove()
     {
-        $modelMRs = MaterialRequisition::where('status',1)->get();
+        $modelMRs = MaterialRequisition::whereIn('status',[1,4])->get();
 
         return view('material_requisition.indexApprove', compact('modelMRs'));
     }
@@ -119,6 +119,9 @@ class MaterialRequisitionController extends Controller
         try {
             $MR = MaterialRequisition::find($id);
             $MR->description = $datas->description;
+            if($MR->status == 3){
+                $MR->status = 4;
+            }
             $MR->update();
 
 
@@ -164,7 +167,7 @@ class MaterialRequisitionController extends Controller
             $modelMR->status = 5;
             $modelMR->update();
         }
-        return redirect()->route('material_requisition.show',$mr_id);
+        return redirect()->route('material_requisition.show',$mr_id)->with('success', 'Material Requisition Updated');
     }
     // function
     public function reserveStock($material_id,$quantity){
