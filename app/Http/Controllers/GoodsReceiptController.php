@@ -184,7 +184,7 @@ class GoodsReceiptController extends Controller
         $modelGR = GoodsReceipt::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
-        $branch_code = substr($modelBranch->code,4,2);
+        $branch_code = substr($modelBranch->code,3,2);
 		$number = 1;
 		if(isset($modelGR)){
             $number += intval(substr($modelGR->number, -6));
@@ -219,6 +219,17 @@ class GoodsReceiptController extends Controller
 
         return response($modelSloc, Response::HTTP_OK);
     }
+
+    //API
+    public function getSlocDetailAPI($id){
+    $modelGR = StorageLocationDetail::where('material_id',$id)->with('storageLocation')->get();
+    foreach($modelGR as $GR){
+        $GR['received'] = "";
+    }
+    
+    return response($modelGI->jsonSerialize(), Response::HTTP_OK);
+}
+
 
     public function getMaterialAPI($id){
         

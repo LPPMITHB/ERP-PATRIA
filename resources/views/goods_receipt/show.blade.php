@@ -69,7 +69,7 @@
                             @foreach ($modelGRD as $GRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $GRD->material->name }}</td>
+                                <td>{{ $GRD->material->code }} - {{ $GRD->material->name }}</td>
                                 <td>{{ number_format($GRD->quantity) }}</td>
                                 <td>{{ $GRD->storageLocation->name }} </td>
                             </tr>
