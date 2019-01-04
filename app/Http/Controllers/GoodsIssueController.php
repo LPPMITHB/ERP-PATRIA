@@ -24,6 +24,31 @@ class GoodsIssueController extends Controller
         return view ('goods_issue.index', compact('modelGIs'));
     }
 
+    // public function indexApprove(){
+    //     $modelGIs = GoodsIssue::where('type',2)->get();
+
+    //     return view ('goods_issue.index', compact('modelGIs'));
+    // }
+
+    public function approval($gi_id,$status){
+        $modelGI = GoodsIssue::findOrFail($gi_id);
+        
+        if($status == "approve"){
+            $modelGI->status = 2;
+            foreach($modelGI->goodsIssueDetails as $data){
+                $this->updateSlocDetailApproved($data);
+                $this->updateStockApproved($data);
+            }
+            $modelGI->update();
+        }elseif($status == "need-revision"){
+            $modelGI->status = 3;
+            $modelGI->update();
+        }elseif($status == "reject"){
+            $modelGI->status = 4;
+            $modelGI->update();
+        }
+        return redirect()->route('goods_issue.show',$gi_id);
+    }
     public function selectMR($id)
     {
         $modelMR = MaterialRequisition::findOrFail($id);
@@ -85,9 +110,19 @@ class GoodsIssueController extends Controller
     public function show($id)
     {
         $modelGI = GoodsIssue::findOrFail($id);
-        $modelGID = $modelGI->GoodsIssueDetails ;
-        
-        return view('goods_issue.show', compact('modelGI','modelGID'));
+        $modelGID = $modelGI->GoodsIssueDetails;
+        $approve = FALSE;
+
+        return view('goods_issue.show', compact('modelGI','modelGID','approve'));
+    }
+
+    public function showApprove($id)
+    {
+        $modelGI = GoodsIssue::where('id', $id)->first();
+        $modelGID = $modelGI->GoodsIssueDetails;
+        $approve = TRUE;
+
+        return view('goods_issue.show', compact('modelGI','modelGID','approve'));
     }
     
     // function
@@ -124,6 +159,18 @@ class GoodsIssueController extends Controller
         }else{
 
         }
+    }
+
+    public function updateStockApproved($data){
+        $modelStock = Stock::where('material_id',$data->material_id)->first();
+        $modelStock->quantity -= $data->quantity;
+        $modelStock->save();
+    }
+
+    public function updateSlocDetailApproved($data){
+        $modelSlocDetail = StorageLocationDetail::where('material_id',$data->material_id)->where('storage_location_id',$data->storage_location_id)->first();
+        $modelSlocDetail->quantity -= $data->quantity;
+        $modelSlocDetail->save();
     }
 
     public function checkStatusMR($mr_id){

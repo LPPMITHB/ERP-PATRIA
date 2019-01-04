@@ -28,7 +28,6 @@ class MaterialRequisitionController extends Controller
     public function indexApprove()
     {
         $modelMRs = MaterialRequisition::where('status',1)->get();
-
         return view('material_requisition.indexApprove', compact('modelMRs'));
     }
     

@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Goods Receipt » Create Details',
+        'title' => 'Create Goods Issue',
         'items' => [
             'Dashboard' => route('index'),
             'Select Material Requisition' => route('goods_issue.createGiWithRef'),

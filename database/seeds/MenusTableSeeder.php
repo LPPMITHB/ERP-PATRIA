@@ -579,37 +579,13 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Material Write Off',
             'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off.create',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]);
-
-        $materialWriteOff =  Menu::where('name','Material Write Off')->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Create Material Write Off',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'material_write_off.create',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id'=>$materialWriteOff,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-            
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Approve Material Write Off',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'material_write_off.create',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id'=>$materialWriteOff,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        ]); 
 
         DB::table('menus')->insert([
             'level' => 3,
