@@ -34,10 +34,9 @@ class MaterialRequisitionController extends Controller
     
     public function create()
     {
-        $modelMaterial = Material::all()->jsonSerialize();
         $modelProject = Project::where('status',1)->get();
 
-        return view('material_requisition.create', compact('modelMaterial','modelProject'));
+        return view('material_requisition.create', compact('modelProject'));
     }
 
     public function store(Request $request)
@@ -208,7 +207,19 @@ class MaterialRequisitionController extends Controller
 
     //API
     public function getWbsAPI($id){
-        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        $data = array();
+
+        $wbs = WBS::findOrFail($id);
+        if($wbs->bom != null){
+            $material_ids = $wbs->bom->bomDetails->pluck('material_id')->toArray();
+            $data['materials'] = Material::whereIn('id',$material_ids)->get();
+        }else{
+            $data['materials'] = [];
+        }
+
+        $data['wbs'] = $wbs->jsonSerialize();
+
+        return response($data, Response::HTTP_OK);
     }
 
     public function getProjectApi($id){
