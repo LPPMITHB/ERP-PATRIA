@@ -42,14 +42,16 @@ class RolesTableSeeder extends Seeder
                 'create-purchase-requisition' => true,'list-purchase-requisition' => true,'show-purchase-requisition' => true,'edit-purchase-requisition' => true,
                 'create-material-requisition' => true,'list-material-requisition' => true,'show-material-requisition' => true,'edit-material-requisition' => true,
                 'create-purchase-order' => true,'list-purchase-order' => true,'show-purchase-order' => true,'edit-purchase-order' => true,
+                'create-goods-issue' => true,'list-goods-issue' => true,'show-goods-issue' => true,'edit-goods-issue' => true,
                 'create-goods-movement' => true,'list-goods-movement' => true,'show-goods-movement' => true,'edit-goods-movement' => true,
+                'create-snapshot' => true,'count-stock' => true,'adjust-stock' => true,'list-adjustment-history' => true,'show-adjustment-history' => true,'show-snapshot' => true, 
                 'create-production-order' => true,'list-production-order' => true,'show-production-order' => true,'edit-production-order' => true,
                 'create-warehouse' => true,'list-warehouse' => true,'show-warehouse' => true,'edit-warehouse' => true,
                 'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
                 'list-appearence' => true, 'edit-appearence' => true,
                 'list-stock-management' => true, 
                 'create-material-write-off' => true,
-                
+                'approve-material-requisition' => true,
 
                 ]),
             'created_at' => date('Y-m-d'),

@@ -33,13 +33,9 @@
                             <tr>
                                 <td>Status</td>
                                 <td>:</td>
-                                <td>&ensp;<b>
-                                    @if($snapshot->status == 1)
-                                        Open
-                                    @elseif($snapshot->status == 0)
-                                        Closed
-                                    @elseif($snapshot->status == 2)
-                                        Counted
+                                <td>&ensp;<b>@if($snapshot->status == 1)Open
+                                    @elseif($snapshot->status == 0)Closed
+                                    @elseif($snapshot->status == 2)Counted
                                     @endif</b>
                                 </td>
                             </tr>
