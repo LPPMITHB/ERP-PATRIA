@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ProjectActivity;
 use App\Http\Controllers\Controller;
 use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
+use App\Models\User;
 use DB;
 use DateTime;
 use Auth;
@@ -56,6 +59,9 @@ class ActivityController extends Controller
             $activity->weight = $data['weight']; 
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
+
+            $users = User::whereIn('role_id',[1])->get();
+            Notification::send($users, new ProjectActivity($activity));
 
             if(!$activity->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
