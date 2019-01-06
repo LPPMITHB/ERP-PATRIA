@@ -35,8 +35,29 @@ class ConfigurationsTableSeeder extends Seeder
         DB::table('mst_configuration')->insert([
             'slug' => 'default-password',
             'title' => 'Default Password',
-            'value' => '{
-                "password" : "patria"}',
+            'value' => '{"password" : "patria"}',
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        $currencies = array(
+            0 => array(
+                'name' => 'Rupiah',
+                'unit' => 'Rp',
+                'value' => 1
+            ),
+            1 => array(
+                'name' => 'Singapore Dollar',
+                'unit' => 'S$',
+                'value' => 10552.3
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'currencies',
+            'title' => 'Currencies',
+            'value' => json_encode($currencies),
             'is_active' => true,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

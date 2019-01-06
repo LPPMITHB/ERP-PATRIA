@@ -21,6 +21,13 @@ Route::name('appearance.')->prefix('appearance')->group(function() {
     Route::post('/', 'ConfigurationController@appearanceSave')->name('save');
 });
 
+// Currencies Routes
+Route::name('currencies.')->prefix('currencies')->group(function() {
+    Route::get('/', 'ConfigurationController@currenciesIndex')->name('index');
+
+    Route::patch('/add', 'ConfigurationController@currenciesAdd')->name('add');
+});
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');
@@ -236,21 +243,6 @@ Route::name('company.')->prefix('company')->group(function() {
     Route::patch('/{id}', 'CompanyController@update')->name('update')->middleware('can:edit-company');
 
     Route::post('/', 'CompanyController@store')->name('store')->middleware('can:create-company');
-});
-
-//Currencies Routes
-Route::name('currencies.')->prefix('currencies')->group(function() {
-    Route::get('/create', 'CurrenciesController@create')->name('create');
-
-    Route::get('/', 'CurrenciesController@index')->name('index');
-
-    Route::get('/{id}', 'CurrenciesController@show')->name('show');
-
-    Route::get('/{id}/edit', 'CurrenciesController@edit')->name('edit');
-
-    Route::patch('/{id}', 'CurrenciesController@update')->name('update');
-
-    Route::post('/', 'CurrenciesController@store')->name('store');
 });
 
 //Service Routes
