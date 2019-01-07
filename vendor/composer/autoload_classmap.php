@@ -7,7 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
-    'App\\Currency' => $baseDir . '/app/Models/Currency.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\ActivityController' => $baseDir . '/app/Http/Controllers/ActivityController.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -69,7 +68,6 @@ return array(
     'App\\Models\\Company' => $baseDir . '/app/Models/Company.php',
     'App\\Models\\Configuration' => $baseDir . '/app/Models/Configuration.php',
     'App\\Models\\Cost' => $baseDir . '/app/Models/Cost.php',
-    'App\\Models\\Currencies' => $baseDir . '/app/Models/Currencies.php',
     'App\\Models\\Customer' => $baseDir . '/app/Models/Customer.php',
     'App\\Models\\GoodsIssue' => $baseDir . '/app/Models/GoodsIssue.php',
     'App\\Models\\GoodsIssueDetail' => $baseDir . '/app/Models/GoodsIssueDetail.php',

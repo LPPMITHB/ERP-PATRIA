@@ -54,21 +54,31 @@
                                     </tr>
                                     <tr>
                                         <td>3</td>
+                                        <td>Type</td>
+                                        <td>{{ $vendor->type }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
                                         <td>Address</td>
                                         <td class="tdEllipsis" data-toggle="tooltip" data-container="body" title="{{ $vendor->address }}">{{ $vendor->address }}</td>
                                     </tr>
                                     <tr>
-                                        <td>4</td>
+                                        <td>5</td>
                                         <td>Phone Number</td>
                                         <td>{{ $vendor->phone_number }}</td>
                                     </tr>
                                     <tr>
-                                        <td>5</td>
+                                        <td>6</td>
                                         <td>Email</td>
                                         <td>{{ $vendor->email }}</td>
                                     </tr>
                                     <tr>
-                                        <td>6</td>
+                                        <td>7</td>
+                                        <td>Competence</td>
+                                        <td>{{ $vendor->competence }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
                                         <td>Status</td>
                                         <td class="iconTd">
                                             @if ($vendor->status == 1)

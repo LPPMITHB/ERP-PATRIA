@@ -72,6 +72,14 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="type" class="col-sm-2 control-label">Type</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="type" name="type" required autofocus value="{{ $vendor->type }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="address" class="col-sm-2 control-label">Address</label>
             
                             <div class="col-sm-10">
@@ -92,6 +100,14 @@
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="email" name="email" required value="{{ $vendor->email }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="competence" class="col-sm-2 control-label">Competence</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="competence" name="competence" required value="{{ $vendor->competence }}">
                             </div>
                         </div>
 
