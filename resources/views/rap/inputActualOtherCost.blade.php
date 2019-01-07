@@ -239,7 +239,6 @@
                 });
             },
             
-            
             update(){            
                 var editCost = this.editCost;   
                 editCost.actual_cost = editCost.actual_cost.replace(/,/g , '');
