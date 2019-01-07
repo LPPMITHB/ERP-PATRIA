@@ -37,9 +37,9 @@ class PurchaseRequisitionController extends Controller
 
     public function indexConsolidation()
     {
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->with('project')->get();
 
-        return view('purchase_requisition.indexApprove', compact('modelPRs'));
+        return view('purchase_requisition.indexConsolidation', compact('modelPRs'));
     }
 
     /**
