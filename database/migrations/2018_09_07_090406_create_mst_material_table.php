@@ -18,6 +18,7 @@ class CreateMstMaterialTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->longText('description')->nullable();
+            $table->string('currency');
             $table->integer('cost_standard_price');
             $table->float('weight', 10, 2)->nullable();
             $table->float('height', 7, 2)->nullable();
