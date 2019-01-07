@@ -1,8 +1,13 @@
 @extends('layouts.main')
 @section('content-header')
+@if($modelPR->type == 1)
+    @php($type = "Material")
+@else
+    @php($type = "Resource")
+@endif
 @breadcrumb(
     [
-        'title' => 'Edit Purchase Requisition » '.$modelPR->number,
+        'title' => 'Edit Purchase Requisition » '.$modelPR->number.' - '.$type,
         'items' => [
             'Dashboard' => route('index'),
             'View All Purchase Requisitions' => route('purchase_requisition.index'),
@@ -57,7 +62,8 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 30%">Material Name</th>
+                                            <th v-if="modelPR.type == 1" style="width: 30%">Material Name</th>
+                                            <th v-else style="width: 30%">Resource Name</th>
                                             <th style="width: 15%">Quantity</th>
                                             <th style="width: 25%">WBS Name</th>
                                             <th style="width: 15%">Alocation</th>
@@ -67,11 +73,14 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
-                                            <td class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td v-else class="tdEllipsis">{{ material.resource_code }} - {{ material.resource_name }}</td>
+                                            <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis" v-if="material.wbs_name != ''">{{ material.wbs_name }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
-                                            <td class="tdEllipsis">{{ material.alocation }}</td>
+                                            <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.alocation }}</td>
+                                            <td v-else class="tdEllipsis">-</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -80,9 +89,14 @@
                                         </tr>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="no-padding textLeft">
+                                            <td v-show="modelPR.type == 1" class="no-padding textLeft">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td v-show="modelPR.type == 2" class="no-padding textLeft">
+                                                <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="no-padding ">
@@ -211,16 +225,21 @@
 
     var data = {
         newIndex : "",
+        resource : "",
         modelPR : @json($modelPR),
         selectedProject : @json($project),
         dataMaterial : @json($modelPRD),
         materials : @json($materials),
+        resources : @json($resources),
         wbss : @json($wbss),
         wbsSettings: {
             placeholder: 'Please Select WBS'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
+        },
+        resourceSettings: {
+            placeholder: 'Please Select Resource'
         },
         nullSettings:{
             placeholder: '-'
@@ -231,8 +250,11 @@
         dataInput : {
             prd_id :null,
             material_id :"",
+            resource_id : "",
             material_code : "",
             material_name : "",
+            resource_code : "",
+            resource_name : "",
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
@@ -457,8 +479,13 @@
             var data = this.dataMaterial;
             data.forEach(prd => {
                 prd.quantity = (prd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                prd.material_name = prd.material.name;
-                prd.material_code = prd.material.code;
+                if(prd.material_id != null){
+                    prd.material_name = prd.material.name;
+                    prd.material_code = prd.material.code;
+                }else{
+                    prd.resource_name = prd.resource.name;
+                    prd.resource_code = prd.resource.code;
+                }
                 prd.prd_id = prd.id;
                 if(this.selectedProject){
                     prd.wbs_name = prd.wbs.name;
@@ -466,6 +493,12 @@
                     prd.wbs_name = "-";
                 }
             });
+
+            if(this.modelPR.type == 'Material'){
+                this.resource = "";
+            }else if(this.modelPR.type == 'Resource'){
+                this.resource = "ok";
+            }
         },
     });
 </script>

@@ -22,8 +22,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="15%">Number</th>
-                            <th width="40%">Description</th>
+                            <th width="10%">Type</th>
+                            <th width="10%">Number</th>
+                            <th width="35%">Description</th>
                             <th width="20%">Project Name</th>
                             <th width="10%">Status</th>
                             <th width="10%"></th>
@@ -33,6 +34,11 @@
                         @foreach($modelPRs as $modelPR)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                @if($modelPR->type == 1)
+                                    <td>Material</td>
+                                @else
+                                    <td>Resource</td>
+                                @endif
                                 <td>{{ $modelPR->number }}</td>
                                 <td>{{ isset($modelPR->description) ? $modelPR->description : '-' }}</td>
                                 <td>{{ isset($modelPR->project) ? $modelPR->project->name : '-'}}</td>

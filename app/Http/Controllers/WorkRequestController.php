@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\PurchaseRequisition;
-use App\Models\PurchaseRequisitionDetail;
+use App\Models\WorkRequest;
+use App\Models\WorkRequestDetail;
 use App\Models\Branch;
 use App\Models\Material;
-use App\Models\Resource;
+use App\Models\Stock;
 use App\Models\WBS;
 use App\Models\Project;
 use Auth;
 use DB;
 
-class PurchaseRequisitionController extends Controller
+class WorkRequestController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -49,11 +49,10 @@ class PurchaseRequisitionController extends Controller
      */
     public function create()
     {
-        $modelMaterial = Material::all()->jsonSerialize();
-        $modelResource = Resource::all()->jsonSerialize();
+        $modelMaterial = Stock::all()->jsonSerialize();
         $modelProject = Project::where('status',1)->get();
 
-        return view('purchase_requisition.create', compact('modelMaterial','modelProject','modelResource'));
+        return view('purchase_requisition.create', compact('modelMaterial','modelProject'));
     }
 
     /**

@@ -53,10 +53,12 @@ class VendorController extends Controller
         $vendor = new Vendor;
         $vendor->code = strtoupper($request->input('code'));
         $vendor->name = ucwords($request->input('name'));
+        $vendor->type = ucwords($request->input('type'));
         $vendor->address = ucfirst($request->input('address'));
         $vendor->phone_number = $request->input('phone_number');
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
+        $vendor->competence = $request->input('competence');
         $vendor->user_id = Auth::user()->id;
         $vendor->branch_id = Auth::user()->branch->id;
         $vendor->save();
@@ -97,10 +99,12 @@ class VendorController extends Controller
         $vendor = Vendor::find($id);
         $vendor->code = strtoupper($request->input('code'));
         $vendor->name = ucwords($request->input('name'));
+        $vendor->type = ucwords($request->input('type'));
         $vendor->address = ucfirst($request->input('address'));
         $vendor->phone_number = $request->input('phone_number');
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
+        $vendor->competence = $request->input('competence');
         $vendor->update();
 
         DB::commit();

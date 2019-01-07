@@ -169,7 +169,6 @@
             placeholder: 'Please Select Storage Location'
         },
         description:"",
-        submittedForm :{},
         dataMaterial : [],
         dataInput : {
             material_id :"",
@@ -272,11 +271,9 @@
         methods : {
             
             submitForm(){
-
-                var string_quantity = this.dataInput.quantity;
-                print_r(this.dataInput.quantity);
-                this.dataMaterial.quantity = parseInt(string_quantity.replace(/,/g , ''));
-                
+                this.dataMaterial.forEach(material => {
+                    material.quantity = parseInt((material.quantity+"").replace(/,/g , ''));
+                });
                 this.submittedForm.materials = this.dataMaterial;
                 this.submittedForm.description = this.description;
 

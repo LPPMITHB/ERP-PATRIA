@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTrxPurchaseRequisitionDetailTable extends Migration
+class CreateTrxWorkRequestDetailTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,18 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
      */
     public function up()
     {
-        Schema::create('trx_purchase_requisition_detail', function (Blueprint $table) {
+        Schema::create('trx_work_request_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('purchase_requisition_id');
+            $table->unsignedInteger('work_request_id');
             $table->integer('quantity');
-            $table->integer('reserved')->default(0);
+            $table->string('description')->nullable();
             $table->unsignedInteger('material_id')->nullable();
-            $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
-            $table->string('alocation')->nullable();
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');
-            $table->foreign('resource_id')->references('id')->on('mst_resource');
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');
-            $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
+            $table->foreign('work_request_id')->references('id')->on('trx_work_request');
         });
     }
 
@@ -38,6 +35,6 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('trx_purchase_requisition_detail');
+        Schema::dropIfExists('trx_work_request_detail');
     }
 }

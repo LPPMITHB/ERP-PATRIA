@@ -47,7 +47,7 @@
                             </div>
                             <div class="col-sm-4 col-md-4">
                                 <div class="col-sm-12">
-                                    <label for="">MR Description</label>
+                                    <label for="">GI Description</label>
                                 </div>
                                 <div class="col-sm-12">
                                     <textarea class="form-control" rows="3" v-model="description"></textarea>

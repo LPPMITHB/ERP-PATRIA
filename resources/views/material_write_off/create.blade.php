@@ -34,11 +34,11 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 5%">No</th>
-                                        <th style="width: 35%">Storage Location</th>
+                                        <th style="width: 30%">Storage Location</th>
                                         <th style="width: 30%">Material</th>
                                         <th style="width: 10%">Available</th>
                                         <th style="width: 10%">Quantity</th>
-                                        <th style="width: 10%"></th>
+                                        <th style="width: 15%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -247,7 +247,6 @@ var vm = new Vue({
                         temp_data = JSON.parse(temp_data);
 
                         this.dataMaterial.push(temp_data);
-                        console.log(this.dataMaterial)
 
                         this.dataInput.material_id = "";
                         this.dataInput.material_name = "",
@@ -286,11 +285,11 @@ var vm = new Vue({
             material.quantityInt = this.editInput.quantityInt;
             material.quantity = this.editInput.quantity;
             material.material_id = this.editInput.material_id;
+            material.available = this.editInput.available;
 
             window.axios.get('/api/getMaterials/'+this.editInput.material_id).then(({ data }) => {
                 material.material_name = data.name;
                 material.material_code = data.code;
-                console.log(material.material_name)
 
                     window.axios.get('/api/getSloc/'+this.editInput.sloc_id).then(({ data }) => {
                     material.sloc_name = data.name;
@@ -362,7 +361,6 @@ var vm = new Vue({
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterial/'+newValue).then(({ data }) => {
                     this.slocDetails = data;
-                    console.log(this.slocDetails);
 
                     var $material = $(document.getElementById('material')).selectize();
                     $material[0].selectize.focus();
@@ -391,7 +389,6 @@ var vm = new Vue({
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterial/'+newValue).then(({ data }) => {
                     this.slocDetails = data;
-                    console.log(this.slocDetails);
 
                     var $material = $(document.getElementById('materialedit')).selectize();
                     $material[0].selectize.focus();

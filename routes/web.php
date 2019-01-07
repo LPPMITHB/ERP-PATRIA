@@ -593,6 +593,36 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap-repair');
 });
 
+//Work Request Routes
+Route::name('work_request.')->prefix('work_request')->group(function() {
+    Route::patch('/{id}', 'WorkRequestController@update')->name('update')->middleware('can:edit-work-request');
+
+    Route::get('/indexApprove', 'WorkRequestController@indexApprove')->name('indexApprove');
+
+    Route::get('/approval/{id}/{status}', 'WorkRequestController@approval')->name('approval');
+
+    Route::delete('/{id}', 'WorkRequestController@destroy')->name('destroy')->middleware('can:edit-work-request');
+
+    Route::delete('/', 'WorkRequestController@destroyWRD')->name('destroyWRD')->middleware('can:destroy-work-request');
+
+    Route::patch('/updateWRD', 'WorkRequestController@updateWRD')->name('updateWRD')->middleware('can:edit-work-request');
+
+    Route::get('/', 'WorkRequestController@index')->name('index')->middleware('can:list-work-request');
+
+    Route::get('/create', 'WorkRequestController@create')->name('create')->middleware('can:create-work-request');
+
+    Route::get('/{id}', 'WorkRequestController@show')->name('show')->middleware('can:show-work-request');
+
+    Route::get('/showApprove/{id}', 'WorkRequestController@showApprove')->name('showApprove');
+
+    Route::get('/edit/{id}', 'WorkRequestController@edit')->name('edit')->middleware('can:edit-work-request');
+
+    Route::post('/', 'WorkRequestController@store')->name('store')->middleware('can:create-work-request');
+
+    Route::post('/storeWRD', 'WorkRequestController@storeWRD')->name('storeWRD')->middleware('can:edit-work-request');
+
+});
+
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
