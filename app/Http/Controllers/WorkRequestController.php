@@ -23,9 +23,9 @@ class WorkRequestController extends Controller
      */
     public function index()
     {
-        $modelPRs = PurchaseRequisition::all();
+        $modelWRs = WorkRequest::all();
 
-        return view('purchase_requisition.index', compact('modelPRs'));
+        return view('work_request.index', compact('modelWRs'));
     }
 
     public function indexApprove()
@@ -49,10 +49,10 @@ class WorkRequestController extends Controller
      */
     public function create()
     {
-        $modelMaterial = Stock::all()->jsonSerialize();
+        $modelMaterial = Stock::with('material')->get()->jsonSerialize();
         $modelProject = Project::where('status',1)->get();
 
-        return view('purchase_requisition.create', compact('modelMaterial','modelProject'));
+        return view('work_request.create', compact('modelMaterial','modelProject'));
     }
 
     /**
@@ -65,90 +65,44 @@ class WorkRequestController extends Controller
     {
         $datas = json_decode($request->datas);
 
-        $pr_number = $this->generatePRNumber();
+        $wr_number = $this->generateWRNumber();
         $current_date = today();
         $valid_to = $current_date->addDays(7);
         $valid_to = $valid_to->toDateString();
 
         DB::beginTransaction();
         try {
-            if($datas->resource == ""){
-                $PR = new PurchaseRequisition;
-                $PR->number = $pr_number;
-                $PR->valid_date = $valid_to;
-                if($datas->project_id != null){
-                    $PR->project_id = $datas->project_id;
-                }
-                $PR->status = 1;
-                $PR->type = 1;
-                $PR->user_id = Auth::user()->id;
-                $PR->branch_id = Auth::user()->branch->id;
-                $PR->save();
 
-                foreach($datas->materials as $data){
-                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
-                    if(count($modelPRD)>0){
-                        $status = 0;
-                        foreach($modelPRD as $PurchaseRD){
-                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation){
-                                $PurchaseRD->quantity +=$data->quantityInt;
-                                $PurchaseRD->update();
-
-                                $status = 1;
-                            }
-                        }
-                        if($status == 0){
-                            $PRD = new PurchaseRequisitionDetail;
-                            $PRD->purchase_requisition_id = $PR->id;
-                            $PRD->quantity = $data->quantityInt;
-                            $PRD->material_id = $data->material_id;
-                            $PRD->alocation = $data->alocation;
-                            if($data->wbs_id != null){
-                                $PRD->wbs_id = $data->wbs_id;
-                            }
-                            $PRD->save();
-                        }
-                    }else{
-                        $PRD = new PurchaseRequisitionDetail;
-                        $PRD->purchase_requisition_id = $PR->id;
-                        $PRD->quantity = $data->quantityInt;
-                        $PRD->material_id = $data->material_id;
-                        $PRD->alocation = $data->alocation;
-                        if($data->wbs_id != null){
-                            $PRD->wbs_id = $data->wbs_id;
-                        }
-                        $PRD->save();
-                    }
-                }
-            }else{
-                $PR = new PurchaseRequisition;
-                $PR->number = $pr_number;
-                $PR->valid_date = $valid_to;
-                if($datas->project_id != null){
-                    $PR->project_id = $datas->project_id;
-                }
-                $PR->status = 1;
-                $PR->type = 2;
-                $PR->user_id = Auth::user()->id;
-                $PR->branch_id = Auth::user()->branch->id;
-                $PR->save();
-
-                foreach($datas->materials as $data){
-                    $PRD = new PurchaseRequisitionDetail;
-                    $PRD->purchase_requisition_id = $PR->id;
-                    $PRD->resource_id = $data->resource_id;
-                    $PRD->quantity = 1;
-                    if($data->wbs_id != null){
-                        $PRD->wbs_id = $data->wbs_id;
-                    }
-                    $PRD->save();
-                }
+            $WR = new WorkRequest;
+            $WR->number = $wr_number;
+            $WR->valid_date = $valid_to;
+            $WR->description = $datas->description;
+            if($datas->project_id != null){
+                $WR->project_id = $datas->project_id;
             }
+            $WR->status = 1;
+            $WR->user_id = Auth::user()->id;
+            $WR->branch_id = Auth::user()->branch->id;
+            $WR->save();
+
+
+            foreach($datas->materials as $data){
+                $WRD = new WorkRequestDetail;
+                $WRD->work_request_id = $WR->id;
+                $WRD->quantity = $data->quantity;
+                $WRD->description = $data->description;
+                $WRD->material_id = $data->material_id;
+                if($data->wbs_id != null){
+                    $WRD->wbs_id = $data->wbs_id;
+                }
+                $WRD->save();
+            }
+            
             DB::commit();
-            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Created');
+            return redirect()->route('work_request.show',$WR->id)->with('success', 'Work Request Created');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
+            return redirect()->route('work_request.create')->with('error', $e->getMessage());
         }
     }
 
@@ -200,9 +154,9 @@ class WorkRequestController extends Controller
      */
     public function show($id)
     {
-        $modelPR = PurchaseRequisition::findOrFail($id);
+        $modelWR = WorkRequest::findOrFail($id);
 
-        return view('purchase_requisition.show', compact('modelPR'));
+        return view('work_request.show', compact('modelWR'));
     }
 
     public function showApprove($id)
@@ -383,25 +337,31 @@ class WorkRequestController extends Controller
     }
 
     // function
-    public function generatePRNumber(){
-        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->first();
+    public function generateWRNumber(){
+        $modelWR = WorkRequest::orderBy('created_at','desc')->first();
         $yearNow = date('y');
         
 		$number = 1;
-        if(isset($modelPR)){
-            $yearDoc = substr($modelPR->number, 3,2);
+        if(isset($modelWR)){
+            $yearDoc = substr($modelWR->number, 3,2);
             if($yearNow == $yearDoc){
-                $number += intval(substr($modelPR->number, -5));
+                $number += intval(substr($modelWR->number, -5));
             }
         }
 
         $year = date($yearNow.'00000');
         $year = intval($year);
 
-		$pr_number = $year+$number;
-        $pr_number = 'PR-'.$pr_number;
+		$wr_number = $year+$number;
+        $wr_number = 'WR-'.$wr_number;
 
-		return $pr_number;
+		return $wr_number;
+    }
+
+    public function getQuantityReservedApi($id){
+        $materials = Stock::where('material_id',$id)->get();
+        
+        return response($materials, Response::HTTP_OK);
     }
 
     public function getProjectApi($id){
@@ -410,7 +370,7 @@ class WorkRequestController extends Controller
         return response($project, Response::HTTP_OK);
     }
 
-    public function getMaterialAPI($id){
+    public function getMaterialWrAPI($id){
         
         return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
