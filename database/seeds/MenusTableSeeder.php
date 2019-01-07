@@ -599,6 +599,103 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Work Request',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_request.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $workRequest =  Menu::where('name','Work Request')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create WR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_request.create',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workRequest,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Approve WR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_request.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workRequest,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit WR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_request.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workRequest,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Work Order',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $workOrder =  Menu::where('name','Work Order')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create WO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_order.selectWR',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workOrder,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Approve WO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_order.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workOrder,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit WO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_order.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workOrder,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Resource Management',
             'icon' => 'fa-database',

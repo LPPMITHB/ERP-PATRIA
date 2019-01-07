@@ -407,6 +407,24 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap_repair.showMaterialEvaluation',
         ]);
 
+        $createWr = Menu::where('route_name','work_request.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createWr,
+            'route_name' => 'work_request.create',
+        ]);
+
+        $indexApproveWR = Menu::where('route_name','work_request.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveWR,
+            'route_name' => 'work_request.indexApprove',
+        ]);
+
+        $viewWr = Menu::where('route_name','work_request.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewWr,
+            'route_name' => 'work_request.index',
+        ]);
+
         $createPr = Menu::where('route_name','purchase_requisition.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createPr,
@@ -566,6 +584,19 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $goodsMovementIndex,
             'route_name' => 'goods_movement.index',
         ]);
+
+        $goodsMovementIndex = Menu::where('route_name','goods_movement.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $goodsMovementIndex,
+            'route_name' => 'goods_movement.index',
+        ]);
+
+        $selectWR = Menu::where('route_name','work_order.selectWR')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectWR,
+            'route_name' => 'work_order.selectWR',
+        ]);
+
 
         $createProductionOrder = Menu::where('route_name','production_order.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([

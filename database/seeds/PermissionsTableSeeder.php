@@ -300,6 +300,41 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Work Request
+        $createWR = Menu::where('name','Create WR')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Request',
+            'menu_id' => $createWR,
+            'middleware' => 'create-work-request',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewWR = Menu::where('name','View & Edit WR')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Request',
+            'menu_id' => $viewWR,
+            'middleware' => 'list-work-request',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Request',
+            'menu_id' => $viewWR,
+            'middleware' => 'show-work-request',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Request',
+            'menu_id' => $viewWR,
+            'middleware' => 'edit-work-request',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Purchase Requisition
         $createPR = Menu::where('name','Create PR')->select('id')->first()->id;
         DB::table('permissions')->insert([

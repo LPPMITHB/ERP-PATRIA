@@ -593,6 +593,36 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap-repair');
 });
 
+//Work Request Routes
+Route::name('work_request.')->prefix('work_request')->group(function() {
+    Route::patch('/{id}', 'WorkRequestController@update')->name('update')->middleware('can:edit-work-request');
+
+    Route::get('/indexApprove', 'WorkRequestController@indexApprove')->name('indexApprove');
+
+    Route::get('/approval/{id}/{status}', 'WorkRequestController@approval')->name('approval');
+
+    Route::delete('/{id}', 'WorkRequestController@destroy')->name('destroy')->middleware('can:edit-work-request');
+
+    Route::delete('/', 'WorkRequestController@destroyWRD')->name('destroyWRD')->middleware('can:destroy-work-request');
+
+    Route::patch('/updateWRD', 'WorkRequestController@updateWRD')->name('updateWRD')->middleware('can:edit-work-request');
+
+    Route::get('/', 'WorkRequestController@index')->name('index')->middleware('can:list-work-request');
+
+    Route::get('/create', 'WorkRequestController@create')->name('create')->middleware('can:create-work-request');
+
+    Route::get('/{id}', 'WorkRequestController@show')->name('show')->middleware('can:show-work-request');
+
+    Route::get('/showApprove/{id}', 'WorkRequestController@showApprove')->name('showApprove');
+
+    Route::get('/edit/{id}', 'WorkRequestController@edit')->name('edit')->middleware('can:edit-work-request');
+
+    Route::post('/', 'WorkRequestController@store')->name('store')->middleware('can:create-work-request');
+
+    Route::post('/storeWRD', 'WorkRequestController@storeWRD')->name('storeWRD')->middleware('can:edit-work-request');
+
+});
+
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation');
@@ -658,6 +688,33 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
     Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order');
 
     Route::delete('/{id}', 'PurchaseOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+});
+
+//Work Order Routes
+Route::name('work_order.')->prefix('work_order')->group(function() {
+    Route::get('/indexApprove', 'WorkOrderController@indexApprove')->name('indexApprove');
+
+    Route::get('/approval/{id}/{status}', 'WorkOrderController@approval')->name('approval');
+    
+    Route::get('/selectWR', 'WorkOrderController@selectWR')->name('selectWR')->middleware('can:list-purchase-requisition');
+    
+    Route::get('/', 'WorkOrderController@index')->name('index');
+
+    Route::get('/create', 'WorkOrderController@create')->name('create')->middleware('can:create-purchase-order');
+
+    Route::get('/selectWRD/{id}', 'WorkOrderController@selectWRD')->name('selectWRD')->middleware('can:create-purchase-order');
+
+    Route::get('/{id}', 'WorkOrderController@show')->name('show')->middleware('can:show-purchase-order');
+
+    Route::get('/showApprove/{id}', 'WorkOrderController@showApprove')->name('showApprove')->middleware('can:show-purchase-order');
+
+    Route::get('/{id}/edit', 'WorkOrderController@edit')->name('edit')->middleware('can:edit-purchase-order');
+
+    Route::patch('/', 'WorkOrderController@update')->name('update')->middleware('can:edit-purchase-order');
+
+    Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-purchase-order');
+
+    Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
 });
 
 //Physical Inventory Routes
