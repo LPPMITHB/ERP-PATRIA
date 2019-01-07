@@ -100,7 +100,7 @@
                                                 <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
                                                 </selectize>  
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && .length == 0">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
                                                 </selectize>
                                             </td>
@@ -441,7 +441,7 @@
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
                         this.dataInput.wbs_name = data.wbs.name;
-                        this.materials = data.materials;
+                        this. = data.;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
