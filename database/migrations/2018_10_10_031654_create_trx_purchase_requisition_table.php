@@ -16,6 +16,7 @@ class CreateTrxPurchaseRequisitionTable extends Migration
         Schema::create('trx_purchase_requisition', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number')->unique();
+            $table->unsignedInteger('type');
             $table->date('valid_date');
             $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('bom_id')->nullable();

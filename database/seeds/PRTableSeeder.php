@@ -21,6 +21,7 @@ class PRTableSeeder extends Seeder
             'project_id' => 1,
             'description' => 'purchase requisition pertama',
             'status' => 0,
+            'type' => 1,
             'branch_id' => 1,
             'user_id' => 4,
             'created_at' => date('Y-m-d'),
@@ -30,6 +31,7 @@ class PRTableSeeder extends Seeder
         DB::table('trx_purchase_requisition')->insert([
             'number' => 'PR-1800002',
             'valid_date' => $valid_to,
+            'type' => 1,
             'project_id' => 1,
             'description' => 'purchase requisition kedua',
             'status' => 1,

@@ -44,8 +44,12 @@
                                 </div>
                             </template>
                             <div class="col-xs-12 col-md-4">
+                                <label for="" >PR Type</label>
+                                <selectize v-model="pr_type" :settings="typeSettings" :disabled="dataOk">
+                                    <option v-for="(type, index) in types" :value="type">{{ type }}</option>
+                                </selectize>  
                                 <label for="" >Project Name</label>
-                                <selectize id="material" v-model="project_id" :settings="projectSettings" :disabled="dataOk">
+                                <selectize v-model="project_id" :settings="projectSettings" :disabled="dataOk">
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
@@ -54,7 +58,7 @@
                                         <label for="">PR Description</label>
                                     </div>
                                     <div class="col-sm-12 p-l-0">
-                                        <textarea class="form-control" rows="3" v-model="description"></textarea>
+                                        <textarea class="form-control" rows="4" v-model="description"></textarea>
                                     </div>
                             </div>
                         </div>
@@ -64,7 +68,8 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 30%">Material Name</th>
+                                            <th v-if="pr_type == 'Material'" style="width: 30%">Material Name</th>
+                                            <th v-else-if="pr_type == 'Resource'" style="width: 30%">Resource Name</th>
                                             <th style="width: 15%">Quantity</th>
                                             <th style="width: 25%">WBS Name</th>
                                             <th style="width: 15%">Alocation</th>
@@ -74,13 +79,19 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
-                                            <td class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td v-if="material.material_code != ''" class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td v-else-if="material.resource_code != ''" class="tdEllipsis">{{ material.resource_code }} - {{ material.resource_name }}</td>
+                                            <td v-if="material.quantity == null" class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis" v-if="material.work_name != ''">{{ material.work_name }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
-                                            <td class="tdEllipsis">{{ material.alocation }}</td>
+                                            <td v-if="material.alocation != ''"class="tdEllipsis">{{ material.alocation }}</td>
+                                            <td v-else class="tdEllipsis">-</td>
                                             <td class="p-l-0 textCenter">
-                                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                                <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                                    EDIT
+                                                </a>
+                                                <a v-if="pr_type == 'Resource'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(material,index)">
                                                     EDIT
                                                 </a>
                                                 <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
@@ -92,13 +103,18 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft">
+                                            <td v-show="pr_type == 'Material'" class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                                 </selectize>
                                             </td>
+                                            <td v-show="pr_type == 'Resource'" class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
+                                            </td>
                                             <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="resourceOk">
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="project_id != ''">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
@@ -111,7 +127,7 @@
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft">
-                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings">
+                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
                                                     <option value="Consumption">Consumption</option>
                                                     <option value="Stock">Stock</option>
                                                 </selectize>
@@ -177,6 +193,44 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="edit_resource">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Edit Resource</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Resource</label>
+                                                <selectize id="edit_modal" v-model="editInput.resource_id" :settings="resourceSettings">
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="project_id != ''"> 
+                                                <label for="type" class="control-label">WBS Name</label>
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="project_id == ''"> 
+                                                <label for="type" class="control-label">WBS Name</label>
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.resource_id)">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     @endverbatim
                 </form>
@@ -199,10 +253,14 @@
     });
 
     var data = {
+        types : ['Material','Resource'],
+        pr_type : "Material",
         submit: "ok",
+        resource : "",
         description : "",
         newIndex : "",
         materials : @json($modelMaterial),
+        resources : @json($modelResource),
         projects : @json($modelProject),
         works : [],
         project_id : "",
@@ -211,6 +269,9 @@
         },
         materialSettings: {
             placeholder: 'Please Select Material'
+        },
+        resourceSettings: {
+            placeholder: 'Please Select Resource'
         },
         wbsSettings: {
             placeholder: 'Please Select WBS'
@@ -221,12 +282,18 @@
         alocationSettings: {
             placeholder: 'Please Select Alocation'
         },
+        typeSettings: {
+            placeholder: 'Please Select Type'
+        },
         selectedProject : [],
         dataMaterial : [],
         dataInput : {
             material_id :"",
+            resource_id :"",
             material_code : "",
             material_name : "",
+            resource_code : "",
+            resource_name : "",
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
@@ -236,8 +303,11 @@
         editInput : {
             old_material_id : "",
             material_id : "",
+            resource_id :"",
             material_code : "",
             material_name : "",
+            resource_code : "",
+            resource_name : "",
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
@@ -254,6 +324,18 @@
         el : '#pr',
         data : data,
         computed : {
+            resourceOk: function(){
+                let isOk = false;
+                
+                if(this.resource == "ok"){
+                    isOk = true;
+                    this.dataInput.quantity = "";
+                    this.dataInput.quantityInt = 0;
+                    this.dataInput.alocation = "";
+                }
+
+                return isOk;
+            },
             dataOk: function(){
                 let isOk = false;
                 
@@ -274,24 +356,33 @@
             },
             createOk: function(){
                 let isOk = false;
+                if(this.pr_type == 'Material'){
+                    var string_newValue = this.dataInput.quantityInt+"";
+                    this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                var string_newValue = this.dataInput.quantityInt+"";
-                this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt)){
-                    isOk = true;
+                    if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt)){
+                        isOk = true;
+                    }
+                }else if(this.pr_type == 'Resource'){
+                    if(this.dataInput.resource_id == ""){
+                        isOk = true;
+                    }
                 }
-
                 return isOk;
             },
             updateOk: function(){
                 let isOk = false;
+                if(this.pr_type == 'Material'){
+                    var string_newValue = this.editInput.quantityInt+"";
+                    this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
-                    isOk = true;
+                    if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
+                        isOk = true;
+                    }
+                }else if(this.pr_type == 'Resource'){
+                    if(this.editInput.resource_id == ""){
+                        isOk = true;
+                    }
                 }
 
                 return isOk;
@@ -307,6 +398,7 @@
             },  
             submitForm(){
                 this.submit = "";
+                this.submittedForm.resource = this.resource;
                 this.submittedForm.description = this.description;
                 this.submittedForm.project_id = this.project_id;     
                 this.submittedForm.materials = this.dataMaterial;    
@@ -321,57 +413,103 @@
             update(old_material_id, new_material_id){
                 // this.dataMaterial.forEach(material => {
                     // if(material.material_id == old_material_id){
-                        var material = this.dataMaterial[this.editInput.index];
+                        if(this.pr_type == 'Material'){
+                            var material = this.dataMaterial[this.editInput.index];
                        
-                        window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
-                            // console.log(data);
-                            material.material_name = data.name;
-                            material.material_code = data.code;
+                            window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
+                                // console.log(data);
+                                material.material_name = data.name;
+                                material.material_code = data.code;
 
-                            // this.material_id.forEach(id => {
-                            //     if(id == old_material_id){
-                            //         var index = this.material_id.indexOf(id);
-                            //         this.material_id.splice(index, 1);
-                            //     }
-                            // });
-                            // this.material_id.push(new_material_id);
+                                // this.material_id.forEach(id => {
+                                //     if(id == old_material_id){
+                                //         var index = this.material_id.indexOf(id);
+                                //         this.material_id.splice(index, 1);
+                                //     }
+                                // });
+                                // this.material_id.push(new_material_id);
 
-                            // var jsonMaterialId = JSON.stringify(this.material_id);
-                            // this.getNewMaterials(jsonMaterialId);
-                            if(this.editInput.wbs_id != ''){
-                                window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
-                                    material.work_name = data.name;
+                                // var jsonMaterialId = JSON.stringify(this.material_id);
+                                // this.getNewMaterials(jsonMaterialId);
+                                if(this.editInput.wbs_id != ''){
+                                    window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
+                                        material.work_name = data.name;
+                                        material.quantityInt = this.editInput.quantityInt;
+                                        material.quantity = this.editInput.quantity;
+                                        material.material_id = new_material_id;
+                                        material.wbs_id = this.editInput.wbs_id;
+                                        material.alocation = this.editInput.alocation;
+
+                                        $('div.overlay').hide();
+                                    })
+                                    .catch((error) => {
+                                        iziToast.warning({
+                                            title: 'Please Try Again..',
+                                            position: 'topRight',
+                                            displayMode: 'replace'
+                                        });
+                                        $('div.overlay').hide();
+                                    })
+                                }else{
                                     material.quantityInt = this.editInput.quantityInt;
                                     material.quantity = this.editInput.quantity;
-                                    material.material_id = new_material_id;
-                                    material.wbs_id = this.editInput.wbs_id;
                                     material.alocation = this.editInput.alocation;
+                                }
+                                $('div.overlay').hide();
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                            })
+                        }else if(this.pr_type == 'Resource'){
+                            var material = this.dataMaterial[this.editInput.index];
+                            
+                            window.axios.get('/api/getResourcePR/'+new_material_id).then(({ data }) => {
+                                material.resource_name = data.name;
+                                material.resource_code = data.code;
 
-                                    $('div.overlay').hide();
-                                })
-                                .catch((error) => {
-                                    iziToast.warning({
-                                        title: 'Please Try Again..',
-                                        position: 'topRight',
-                                        displayMode: 'replace'
-                                    });
-                                    $('div.overlay').hide();
-                                })
-                            }else{
-                                material.quantityInt = this.editInput.quantityInt;
-                                material.quantity = this.editInput.quantity;
-                                material.alocation = this.editInput.alocation;
-                            }
-                            $('div.overlay').hide();
-                        })
-                        .catch((error) => {
-                            iziToast.warning({
-                                title: 'Please Try Again..',
-                                position: 'topRight',
-                                displayMode: 'replace'
-                            });
-                            $('div.overlay').hide();
-                        })
+                                // this.material_id.forEach(id => {
+                                //     if(id == old_material_id){
+                                //         var index = this.material_id.indexOf(id);
+                                //         this.material_id.splice(index, 1);
+                                //     }
+                                // });
+                                // this.material_id.push(new_material_id);
+
+                                // var jsonMaterialId = JSON.stringify(this.material_id);
+                                // this.getNewMaterials(jsonMaterialId);
+                                if(this.editInput.wbs_id != ''){
+                                    window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
+                                        material.work_name = data.name;
+                                        material.resource_id = new_material_id;
+                                        material.wbs_id = this.editInput.wbs_id;
+
+                                        $('div.overlay').hide();
+                                    })
+                                    .catch((error) => {
+                                        iziToast.warning({
+                                            title: 'Please Try Again..',
+                                            position: 'topRight',
+                                            displayMode: 'replace'
+                                        });
+                                        $('div.overlay').hide();
+                                    })
+                                }
+                                $('div.overlay').hide();
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                            })
+                        }
                 //     }
                 // });
             },
@@ -391,9 +529,12 @@
             // },
             openEditModal(data,index){
                 this.editInput.material_id = data.material_id;
+                this.editInput.resource_id = data.resource_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
+                this.editInput.resource_code = data.resource_code;
                 this.editInput.material_name = data.material_name;
+                this.editInput.resource_name = data.resource_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
@@ -429,42 +570,75 @@
             //     })
             // },
             add(){
-                var material_id = this.dataInput.material_id;
-                $('div.overlay').show();
-                window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
-                    this.dataInput.material_name = data.name;
-                    this.dataInput.material_code = data.code;
+                if(this.dataInput.material_id != ""){
+                    var material_id = this.dataInput.material_id;
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
+                        this.dataInput.material_name = data.name;
+                        this.dataInput.material_code = data.code;
 
-                    var temp_data = JSON.stringify(this.dataInput);
-                    temp_data = JSON.parse(temp_data);
+                        var temp_data = JSON.stringify(this.dataInput);
+                        temp_data = JSON.parse(temp_data);
 
-                    this.dataMaterial.push(temp_data);
-                    // this.material_id.push(temp_data.material_id);
+                        this.dataMaterial.push(temp_data);
+                        // this.material_id.push(temp_data.material_id);
 
-                    this.dataInput.material_name = "";
-                    this.dataInput.material_code = "";
-                    this.dataInput.quantity = "";
-                    this.dataInput.material_id = "";
-                    this.dataInput.wbs_id = "";
-                    this.dataInput.work_name = "";
-                    this.dataInput.alocation = "Stock";
-                    
-                    this.newIndex = Object.keys(this.dataMaterial).length+1;
+                        this.dataInput.material_name = "";
+                        this.dataInput.material_code = "";
+                        this.dataInput.quantity = "";
+                        this.dataInput.material_id = "";
+                        this.dataInput.wbs_id = "";
+                        this.dataInput.work_name = "";
+                        this.dataInput.alocation = "Stock";
+                        
+                        this.newIndex = Object.keys(this.dataMaterial).length+1;
 
-                    // var jsonMaterialId = JSON.stringify(this.material_id);
+                        // var jsonMaterialId = JSON.stringify(this.material_id);
 
-                    // this.getNewMaterials(jsonMaterialId);
-                    
-                    $('div.overlay').hide();
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
+                        // this.getNewMaterials(jsonMaterialId);
+                        
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else if(this.dataInput.resource_id != ""){
+                    var resource_id = this.dataInput.resource_id;
+                    $('div.overlay').show();
+                    window.axios.get('/api/getResourcePR/'+resource_id).then(({ data }) => {
+                        this.dataInput.resource_name = data.name;
+                        this.dataInput.resource_code = data.code;
+
+                        var temp_data = JSON.stringify(this.dataInput);
+                        temp_data = JSON.parse(temp_data);
+
+                        this.dataMaterial.push(temp_data);
+
+                        this.dataInput.resource_name = "";
+                        this.dataInput.resource_code = "";
+                        this.dataInput.quantity = "";
+                        this.dataInput.resource_id = "";
+                        this.dataInput.wbs_id = "";
+                        this.dataInput.work_name = "";
+                        
+                        this.newIndex = Object.keys(this.dataMaterial).length+1;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }
             },
             removeRow(index){
                 this.dataMaterial.splice(index, 1);
@@ -483,7 +657,6 @@
                     window.axios.get('/api/getProjectPR/'+newValue).then(({ data }) => {
                         this.selectedProject = [];
                         this.selectedProject.push(data);
-                        // console.log(this.selectedProject)
 
                         this.works = data.wbss;
                         
@@ -527,25 +700,32 @@
                 quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 Vue.nextTick(() => this.editInput.quantity = quantity_string);
             },
-        'dataInput.wbs_id': function(newValue){
-            if(newValue != ""){
-                $('div.overlay').show();
-                window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
-                    this.dataInput.work_name = data.name;
-                    $('div.overlay').hide();
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
-            }else{
-                this.dataInput.wbs_id = "";
+            'dataInput.wbs_id': function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
+                        this.dataInput.work_name = data.name;
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else{
+                    this.dataInput.wbs_id = "";
+                }
+            },
+            pr_type : function(newValue){
+                if(newValue == 'Material'){
+                    this.resource = "";
+                }else if(newValue == 'Resource'){
+                    this.resource = "ok";
+                }
             }
-        },
         },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
