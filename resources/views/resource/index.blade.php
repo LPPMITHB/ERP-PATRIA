@@ -28,9 +28,14 @@
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
-                            <th style="width: 15%">Code</th>
-                            <th style="width: 25%">Name</th>
-                            <th style="width: 45%">Description</th>
+                            <th style="width: 10%">Code</th>
+                            <th style="width: 10%">Name</th>
+                            <th style="width: 9%">Category</th>
+                            <th style="width: 9%">Type</th>
+                            <th style="width: 10%">Utilization</th>
+                            <th style="width: 12%">Performance</th>
+                            <th style="width: 11%">Productivity</th>
+                            <th style="width: 13%">Description</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
@@ -41,6 +46,11 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis">{{ $resource->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->name}}">{{ $resource->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->category}}">{{ $resource->category }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->type}}">{{ $resource->type }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->utilizatio}}">{{ $resource->utilization }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->performance}}">{{ $resource->performance }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->productivity}}">{{ $resource->productivity }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->description}}">{{ $resource->description }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('resource.show', ['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">VIEW</a>

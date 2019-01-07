@@ -100,7 +100,7 @@
                                                 <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
                                                 </selectize>  
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && .length == 0">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
                                                 </selectize>
                                             </td>
@@ -110,7 +110,7 @@
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                                <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
                                             <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -142,15 +142,25 @@
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12" v-show="editInput.wbs_id != '' && materialsEdit.length > 0">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materialsEdit" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                                 </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="editInput.wbs_id != '' && materialsEdit.length == 0">
+                                                <label for="type" class="control-label">Material</label>
+                                                <selectize disabled :settings="materialNullSettings" >
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="editInput.wbs_id == ''">
+                                                <label for="type" class="control-label">Material</label>
+                                                <selectize disabled :settings="nullSettings" disabled >
+                                                </selectize>  
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                         </div>
                                     </div>
@@ -186,6 +196,7 @@
         description : "",
         newIndex : "",
         materials : [],
+        materialsEdit : [],
         projects : @json($modelProject),
         wbss : [],
         project_id : "",
@@ -223,6 +234,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
+            old_wbs_id : "",
             wbs_name : ""
         },
         material_id:[],
@@ -235,12 +247,22 @@
         el : '#mr',
         data : data,
         computed : {
-            wbsOk: function(){
+            materialOk: function(){
                 let isOk = false;
-                
-                if(this.dataInput.wbs_id != ""){
+
+                if(this.dataInput.material_id == ""){
                     isOk = true;
                 }
+
+                return isOk;
+            },
+            materialEditOk: function(){
+                let isOk = false;
+
+                if(this.editInput.material_id == ""){
+                    isOk = true;
+                }
+
                 return isOk;
             },
             dataOk: function(){
@@ -311,18 +333,19 @@
                 form.submit();
             },
             update(old_material_id, new_material_id){
+                $('div.overlay').show();
                 var material = this.dataMaterial[this.editInput.index];
                 material.quantityInt = this.editInput.quantityInt;
                 material.quantity = this.editInput.quantity;
                 material.material_id = new_material_id;
                 material.wbs_id = this.editInput.wbs_id;
 
-                window.axios.get('/api/getMaterial/'+new_material_id).then(({ data }) => {
+                window.axios.get('/api/getMaterialMR/'+new_material_id).then(({ data }) => {
                     material.material_name = data.name;
                     material.material_code = data.code;
 
                         window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
-                        material.wbs_name = data.name;
+                        material.wbs_name = data.wbs.name;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -352,6 +375,7 @@
                 this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
+                this.editInput.old_wbs_id = data.wbs_id;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
@@ -437,11 +461,37 @@
                 Vue.nextTick(() => this.editInput.quantity = quantity_string);
             },
             'dataInput.wbs_id': function(newValue){
+                this.dataInput.material_id = "";
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
                         this.dataInput.wbs_name = data.wbs.name;
-                        this. = data.;
+                        this.materials = data.materials;
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else{
+                    this.dataInput.wbs_id = "";
+                }
+            },
+            'editInput.wbs_id': function(newValue){
+                if(this.editInput.old_wbs_id != newValue){
+                    this.editInput.material_id = "";
+                    this.editInput.quantity = "";
+                    this.editInput.quantityInt = 0;
+                }
+
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
+                        this.materialsEdit = data.materials;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {

@@ -55,7 +55,9 @@ Route::get('/getPRD/{id}', 'PurchaseRequisitionController@getPRDAPI')->name('api
 
 // material_requisition
 Route::get('/getWbsMR/{id}', 'MaterialRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
+Route::get('/getWbsMREdit/{id}/{mr_id}', 'MaterialRequisitionController@getWbsEditAPI')->name('api.purchase_requisition.getWbsEditAPI');
 Route::get('/getProjectMR/{id}', 'MaterialRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');
+Route::get('/getMaterialMR/{id}', 'MaterialRequisitionController@getMaterialAPI')->name('api.purchase_requisition.getMaterialAPI');
 
 
 // goods_receipt

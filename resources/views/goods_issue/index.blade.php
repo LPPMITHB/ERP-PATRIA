@@ -27,7 +27,7 @@
                             <th width="25%">Description</th>
                             <th width="20%">Project Name</th>
                             <th width="12%">Type</th>
-                            <th width="8%">Status</th>
+                            <th width="8%">Status MR</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -40,9 +40,9 @@
                                 <td>{{ isset ($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}}</td>
                                 <td>
                                     @if($modelGI->materialRequisition)
-                                        {{ $modelGI->materialRequisition->type == 1 ? 'Manual' : 'Automatic' }}
+                                        {{ $modelGI->materialRequisition->type == 0 ? 'Manual' : 'Automatic' }}
                                     @else
-                                        {{ 'Material Write Off' }}
+                                        Material Write Off
                                     @endif
                                 </td>
                                 <td>
