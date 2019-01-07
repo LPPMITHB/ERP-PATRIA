@@ -104,9 +104,13 @@
                             <div class="col-xs-7 col-md-7">
                                 : <b>REJECTED</b>
                             </div>
-                        @elseif($modelPR->status == 0)
+                        @elseif($modelPR->status == 0 || $modelPR->status == 7)
                             <div class="col-xs-7 col-md-7">
                                 : <b>ORDERED</b>
+                            </div>
+                        @elseif($modelPR->status == 6)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>CONSOLIDATED</b>
                             </div>
                         @endif
                         <div class="col-xs-5 col-md-5">

@@ -37,7 +37,7 @@ class PurchaseRequisitionController extends Controller
 
     public function indexConsolidation()
     {
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->with('project')->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1])->with('project')->get();
 
         return view('purchase_requisition.indexConsolidation', compact('modelPRs'));
     }
@@ -150,6 +150,79 @@ class PurchaseRequisitionController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
+        }
+    }
+
+    public function storeConsolidation(Request $request)
+    {
+        $datas = json_decode($request->datas);
+        $pr_number = $this->generatePRNumber();
+        $current_date = today();
+        $valid_to = $current_date->addDays(7);
+        $valid_to = $valid_to->toDateString();
+
+        DB::beginTransaction();
+        try {
+            $PR = new PurchaseRequisition;
+            $PR->number = $pr_number;
+            $PR->valid_date = $valid_to;
+            $PR->status = 1;
+            $PR->type = $datas->type;
+            $PR->description = 'PR Consolidation';
+            $PR->user_id = Auth::user()->id;
+            $PR->branch_id = Auth::user()->branch->id;
+            $PR->save();
+
+            foreach($datas->checkedPR as $pr_id){
+                $modelPR = PurchaseRequisition::findOrFail($pr_id);
+                $modelPR->status = 6;
+                $modelPR->purchase_requisition_id = $PR->id;
+                $modelPR->update();
+                if($datas->type == 1){
+                    foreach($modelPR->purchaseRequisitionDetails as $PRD){
+
+                        $status = 0;
+                        $modelPRDs = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
+                        if(count($modelPRDs) > 0){
+                            foreach($modelPRDs as $modelPRD){
+                                if($modelPRD->material_id == $PRD->material_id && $modelPRD->alocation == $PRD->alocation && $modelPRD->wbs_id == $PRD->wbs_id){
+                                    $modelPRD->quantity += $PRD->quantity;
+                                    $modelPRD->update();
+
+                                    $status = 1;
+                                }
+                            }
+                        }
+                        
+                        if($status == 0){
+                            $modelPRD = new PurchaseRequisitionDetail;
+                            $modelPRD->purchase_requisition_id = $PR->id;
+                            $modelPRD->material_id = $PRD->material_id;
+                            $modelPRD->quantity = $PRD->quantity;
+                            $modelPRD->reserved = $PRD->reserved;
+                            $modelPRD->wbs_id = $PRD->wbs_id;
+                            $modelPRD->alocation = $PRD->alocation;
+                            $modelPRD->save();
+                        }
+                    }
+                }else{
+                    foreach($modelPR->purchaseRequisitionDetails as $PRD){
+                        $modelPRD = new PurchaseRequisitionDetail;
+                        $modelPRD->purchase_requisition_id = $PR->id;
+                        $modelPRD->resource_id = $PRD->resource_id;
+                        $modelPRD->quantity = $PRD->quantity;
+                        $modelPRD->reserved = $PRD->reserved;
+                        $modelPRD->wbs_id = $PRD->wbs_id;
+                        $modelPRD->alocation = $PRD->alocation;
+                        $modelPRD->save();
+                    }
+                }
+            }
+            DB::commit();
+            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Consolidation Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('purchase_requisition.indexConsolidation')->with('error', $e->getMessage());
         }
     }
 

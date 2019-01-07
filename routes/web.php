@@ -595,6 +595,8 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
+    Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation');
+
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
 
     Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
