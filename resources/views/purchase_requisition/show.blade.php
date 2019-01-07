@@ -1,10 +1,15 @@
 @extends('layouts.main')
 
 @section('content-header')
+@if($modelPR->type == 1)
+    @php($type = 'Material')
+@else  
+    @php($type = 'Resource')
+@endif
 @if($modelPR->project)
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition » '.$modelPR->project->name,
+            'title' => 'View Purchase Requisition - '.$type.' » '.$modelPR->project->name,
             'items' => [
                 'Dashboard' => route('index'),
                 'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
@@ -15,7 +20,7 @@
 @else
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition',
+            'title' => 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
                 'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
@@ -124,7 +129,11 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
+                            @if($modelPR->type == 1)
+                                <th width="35%">Material Name</th>
+                            @else
+                                <th width="35%">Resource Name</th>
+                            @endif
                             <th width="15%">Quantity</th>
                             <th width="30%">Work Name</th>
                             <th width="15%">Alocation</th>
@@ -134,10 +143,14 @@
                         @foreach($modelPR->PurchaseRequisitionDetails as $PRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
+                                @if($modelPR->type == 1)
+                                    <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
+                                @else
+                                    <td>{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
+                                @endif
                                 <td>{{ number_format($PRD->quantity) }}</td>
                                 <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
-                                <td>{{ $PRD->alocation }}</td>
+                                <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
