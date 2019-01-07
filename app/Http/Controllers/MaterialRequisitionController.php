@@ -58,15 +58,41 @@ class MaterialRequisitionController extends Controller
             $MR->save();
 
             foreach($datas->materials as $data){
-                $MRD = new MaterialRequisitionDetail;
-                $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $data->quantityInt;
-                $MRD->material_id = $data->material_id;
-                $MRD->wbs_id = $data->wbs_id;
-                $MRD->save();
+                $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$MR->id)->get();
+                if(count($modelMRDs)>0){
+                    $status = 0;
+                    foreach($modelMRDs as $MRD){
+                        if($MRD->material_id == $data->material_id && $MRD->wbs_id == $data->wbs_id){
+                            $updatedQty = $MRD->quantity + $data->quantityInt;
+                            $this->updateReserveStock($data->material_id, $MRD->quantity ,$updatedQty);
+                            $MRD->quantity = $updatedQty;
+                            $MRD->update();
 
-                $this->reserveStock($data->material_id, $data->quantityInt);
+                            $status = 1;
+                        }
+                    }
+                    if($status == 0){
+                        $MRD = new MaterialRequisitionDetail;
+                        $MRD->material_requisition_id = $MR->id;
+                        $MRD->quantity = $data->quantityInt;
+                        $MRD->material_id = $data->material_id;
+                        $MRD->wbs_id = $data->wbs_id;
+                        $MRD->save();
+
+                        $this->reserveStock($data->material_id, $data->quantityInt);
+                    }
+                }else{
+                    $MRD = new MaterialRequisitionDetail;
+                    $MRD->material_requisition_id = $MR->id;
+                    $MRD->quantity = $data->quantityInt;
+                    $MRD->material_id = $data->material_id;
+                    $MRD->wbs_id = $data->wbs_id;
+                    $MRD->save();
+
+                    $this->reserveStock($data->material_id, $data->quantityInt);
+                }
             }
+            
             DB::commit();
             return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Created');
         } catch (\Exception $e) {
@@ -124,7 +150,6 @@ class MaterialRequisitionController extends Controller
             }
             $MR->update();
 
-
             foreach($datas->materials as $data){
                 if($data->mrd_id != null){
                     $MRD = MaterialRequisitionDetail::find($data->mrd_id);
@@ -134,14 +159,39 @@ class MaterialRequisitionController extends Controller
                     $MRD->wbs_id = $data->wbs_id;
                     $MRD->update();
                 }else{
-                    $MRD = new MaterialRequisitionDetail;
-                    $MRD->material_requisition_id = $MR->id;
-                    $MRD->quantity = $data->quantityInt;
-                    $MRD->material_id = $data->material_id;
-                    $MRD->wbs_id = $data->wbs_id;
-                    $MRD->save();
-
-                    $this->reserveStock($data->material_id, $data->quantityInt);
+                    $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$MR->id)->get();
+                    if(count($modelMRDs)>0){
+                        $status = 0;
+                        foreach($modelMRDs as $MRD){
+                            if($MRD->material_id == $data->material_id && $MRD->wbs_id == $data->wbs_id){
+                                $updatedQty = $MRD->quantity + $data->quantityInt;
+                                $this->updateReserveStock($data->material_id, $MRD->quantity ,$updatedQty);
+                                $MRD->quantity = $updatedQty;
+                                $MRD->update();
+    
+                                $status = 1;
+                            }
+                        }
+                        if($status == 0){
+                            $MRD = new MaterialRequisitionDetail;
+                            $MRD->material_requisition_id = $MR->id;
+                            $MRD->quantity = $data->quantityInt;
+                            $MRD->material_id = $data->material_id;
+                            $MRD->wbs_id = $data->wbs_id;
+                            $MRD->save();
+    
+                            $this->reserveStock($data->material_id, $data->quantityInt);
+                        }
+                    }else{
+                        $MRD = new MaterialRequisitionDetail;
+                        $MRD->material_requisition_id = $MR->id;
+                        $MRD->quantity = $data->quantityInt;
+                        $MRD->material_id = $data->material_id;
+                        $MRD->wbs_id = $data->wbs_id;
+                        $MRD->save();
+    
+                        $this->reserveStock($data->material_id, $data->quantityInt);
+                    }
                 }
 
 
@@ -225,9 +275,32 @@ class MaterialRequisitionController extends Controller
         return response($data, Response::HTTP_OK);
     }
 
+    public function getWbsEditAPI($id, $mr_id){
+        $data = array();
+        $mrds = MaterialRequisition::find($mr_id)->MaterialRequisitionDetails;
+        $exisiting_material = $mrds->where('wbs_id',$id)->pluck('material_id')->toArray();
+
+        $wbs = WBS::findOrFail($id);
+        if($wbs->bom != null){
+            $material_ids = $wbs->bom->bomDetails->pluck('material_id')->toArray();
+            $data['materials'] = Material::whereIn('id',$material_ids)->whereNotIn('id', $exisiting_material)->get();
+        }else{
+            $data['materials'] = [];
+        }
+
+        $data['wbs'] = $wbs->jsonSerialize();
+
+        return response($data, Response::HTTP_OK);
+    }
+
     public function getProjectApi($id){
         $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
 
         return response($project, Response::HTTP_OK);
+    }
+
+    public function getMaterialAPI($id){
+        
+        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 }
