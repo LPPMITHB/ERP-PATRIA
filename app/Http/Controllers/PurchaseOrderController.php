@@ -239,19 +239,31 @@ class PurchaseOrderController extends Controller
         //
     }
 
-    public function approval($po_id,$status){
-        $modelPO = PurchaseOrder::findOrFail($po_id);
-        if($status == "approve"){
-            $modelPO->status = 2;
-            $modelPO->update();
-        }elseif($status == "need-revision"){
-            $modelPO->status = 3;
-            $modelPO->update();
-        }elseif($status == "reject"){
-            $modelPO->status = 5;
-            $modelPO->update();
+    public function approval($po_id,$status)
+    {
+        DB::beginTransaction();
+        try{
+            $modelPO = PurchaseOrder::findOrFail($po_id);
+            if($status == "approve"){
+                $modelPO->status = 2;
+                $modelPO->update();
+                DB::commit();
+                return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Approved');
+            }elseif($status == "need-revision"){
+                $modelPO->status = 3;
+                $modelPO->update();
+                DB::commit();
+                return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Need Revision');
+            }elseif($status == "reject"){
+                $modelPO->status = 5;
+                $modelPO->update();
+                DB::commit();
+                return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Rejected');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('purchase_order.show',$po_id);
         }
-        return redirect()->route('purchase_order.show',$po_id);
     }
 
     // function

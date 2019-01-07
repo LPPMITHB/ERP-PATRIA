@@ -169,9 +169,6 @@
             placeholder: 'Please Select Storage Location'
         },
         description:"",
-        submittedForm :{},
-        dataMaterial : [],  
-
         dataMaterial : [],
         dataInput : {
             material_id :"",
@@ -218,7 +215,7 @@
                 var string_newValue = this.dataInput.quantityInt+"";
                 this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt)){
+                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.sloc_id ==""){
                     isOk = true;
                 }
 
@@ -274,7 +271,9 @@
         methods : {
             
             submitForm(){
-
+                this.dataMaterial.forEach(material => {
+                    material.quantity = parseInt((material.quantity+"").replace(/,/g , ''));
+                });
                 this.submittedForm.materials = this.dataMaterial;
                 this.submittedForm.description = this.description;
 
@@ -352,10 +351,12 @@
                     this.dataInput.material_name = data.name;
                     this.dataInput.material_code = data.code;
 
+
                     var temp_data = JSON.stringify(this.dataInput);
                     temp_data = JSON.parse(temp_data);
 
                     this.dataMaterial.push(temp_data);
+
                     // this.material_id.push(temp_data.material_id);
 
                     this.dataInput.material_name = "";

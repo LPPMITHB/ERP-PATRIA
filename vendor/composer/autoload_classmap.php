@@ -7,7 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
-    'App\\Currency' => $baseDir . '/app/Models/Currency.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\ActivityController' => $baseDir . '/app/Http/Controllers/ActivityController.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -69,7 +68,6 @@ return array(
     'App\\Models\\Company' => $baseDir . '/app/Models/Company.php',
     'App\\Models\\Configuration' => $baseDir . '/app/Models/Configuration.php',
     'App\\Models\\Cost' => $baseDir . '/app/Models/Cost.php',
-    'App\\Models\\Currencies' => $baseDir . '/app/Models/Currencies.php',
     'App\\Models\\Customer' => $baseDir . '/app/Models/Customer.php',
     'App\\Models\\GoodsIssue' => $baseDir . '/app/Models/GoodsIssue.php',
     'App\\Models\\GoodsIssueDetail' => $baseDir . '/app/Models/GoodsIssueDetail.php',
@@ -111,6 +109,7 @@ return array(
     'App\\Models\\Yard' => $baseDir . '/app/Models/Yard.php',
     'App\\Models\\YardPlan' => $baseDir . '/app/Models/YardPlan.php',
     'App\\Notifications\\MailResetPasswordToken' => $baseDir . '/app/Notifications/MailResetPasswordToken.php',
+    'App\\Notifications\\ProjectActivity' => $baseDir . '/app/Notifications/ProjectActivity.php',
     'App\\Notifications\\SampleNotification' => $baseDir . '/app/Notifications/SampleNotification.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',

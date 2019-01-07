@@ -334,7 +334,6 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
 
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
-        'App\\Currency' => __DIR__ . '/../..' . '/app/Models/Currency.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\ActivityController' => __DIR__ . '/../..' . '/app/Http/Controllers/ActivityController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -396,7 +395,6 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\Company' => __DIR__ . '/../..' . '/app/Models/Company.php',
         'App\\Models\\Configuration' => __DIR__ . '/../..' . '/app/Models/Configuration.php',
         'App\\Models\\Cost' => __DIR__ . '/../..' . '/app/Models/Cost.php',
-        'App\\Models\\Currencies' => __DIR__ . '/../..' . '/app/Models/Currencies.php',
         'App\\Models\\Customer' => __DIR__ . '/../..' . '/app/Models/Customer.php',
         'App\\Models\\GoodsIssue' => __DIR__ . '/../..' . '/app/Models/GoodsIssue.php',
         'App\\Models\\GoodsIssueDetail' => __DIR__ . '/../..' . '/app/Models/GoodsIssueDetail.php',
@@ -438,6 +436,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\Yard' => __DIR__ . '/../..' . '/app/Models/Yard.php',
         'App\\Models\\YardPlan' => __DIR__ . '/../..' . '/app/Models/YardPlan.php',
         'App\\Notifications\\MailResetPasswordToken' => __DIR__ . '/../..' . '/app/Notifications/MailResetPasswordToken.php',
+        'App\\Notifications\\ProjectActivity' => __DIR__ . '/../..' . '/app/Notifications/ProjectActivity.php',
         'App\\Notifications\\SampleNotification' => __DIR__ . '/../..' . '/app/Notifications/SampleNotification.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

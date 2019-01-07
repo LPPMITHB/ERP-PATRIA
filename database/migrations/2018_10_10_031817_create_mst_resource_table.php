@@ -17,22 +17,34 @@ class CreateMstResourceTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->unsignedInteger('category_id')->nullable();
+            $table->string('brand')->nullable();
             $table->integer('quantity')->default(0);
-            $table->integer('used')->default(0);
-            $table->integer('usage')->default(0);
             $table->string('description')->nullable();
-            $table->unsignedInteger('uom_id');
-            $table->integer('status')->default(1);
-            $table->integer('type');
+            // $table->integer('category_id');
+            $table->string('machine_type')->nullable();
+            $table->date('manufactured_date')->nullable();
+            $table->date('purchasing_date')->nullable();
+            $table->unsignedInteger('purchasing_price')->nullable();
+            $table->unsignedInteger('lifetime')->nullable();
+            $table->unsignedInteger('depreciation_method')->nullable();
+            $table->float('accumulated_depreciation')->nullable();
+            $table->date('running_hours')->nullable();
+            $table->unsignedInteger('cost/hour')->nullable();
+            $table->unsignedInteger('utilization');
+            $table->unsignedInteger('performance')->nullable();
+            $table->unsignedInteger('productivity');
+            $table->unsignedInteger('status')->default(1);
+            $table->unsignedInteger('vendor_id')->nullable();            
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
             $table->foreign('branch_id')->references('id')->on('mst_branch'); 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('uom_id')->references('id')->on('mst_uom');
-            $table->foreign('category_id')->references('id')->on('mst_category');
+            $table->foreign('vendor_id')->references('id')->on('mst_vendor');
+            // $table->foreign('category_id')->references('id')->on('mst_configuration');
+
+            // $table->foreign('uom_id')->references('id')->on('mst_uom');
         });
     }
 

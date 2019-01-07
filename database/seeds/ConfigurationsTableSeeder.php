@@ -53,14 +53,5 @@ class ConfigurationsTableSeeder extends Seeder
                 'value' => 10552.3
             ),
         );
-
-        DB::table('mst_configuration')->insert([
-            'slug' => 'currencies',
-            'title' => 'Currencies',
-            'value' => json_encode($currencies),
-            'is_active' => true,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
     }
 }
