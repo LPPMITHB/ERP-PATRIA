@@ -468,6 +468,8 @@
 
                         this.availableQuantity.forEach(element => {
                             this.dataInput.available = element.quantity - element.reserved;
+                            this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
                         });
 
                         $('div.overlay').hide();
@@ -495,7 +497,7 @@
                     this.dataInput.quantityInt = newValue;
                     this.dataInput.quantityInt = parseInt(this.dataInput.quantityInt+"".replace(/,/g , ''));
 
-                    if(this.dataInput.quantityInt > this.dataInput.available){
+                    if(this.dataInput.quantityInt > parseInt(this.dataInput.available.replace(/,/g , ''))){
 
                         iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
