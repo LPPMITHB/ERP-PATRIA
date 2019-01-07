@@ -17,6 +17,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// currencies
+Route::get('/getCurrenciesConfig', 'ConfigurationController@getCurrenciesAPI')->name('api.configuration.getCurrenciesAPI');
+
+
 // role
 Route::get('/getPermission/{id}', 'RoleController@getPermissionAPI')->name('api.role.getPermissionAPI');
 Route::get('/getSubMenu/{id}', 'RoleController@getSubMenuAPI')->name('api.role.getSubMenuAPI');
@@ -110,7 +114,6 @@ Route::get('/getDataGantt/{id}', 'ProjectController@getDataGanttAPI')->name('api
 Route::get('/getDataChart/{id}', 'ProjectController@getDataChartAPI')->name('api.project.getDataChartAPI');
 Route::get('/getDataJstree/{id}', 'ProjectController@getDataJstreeAPI')->name('api.project.getDataJstreeAPI');
 Route::get('/getActualStartDate/{id}', 'ProjectController@getActualStartDateAPI')->name('api.project.getActualStartDateAPI');
-
 
 // wbs
 Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI');

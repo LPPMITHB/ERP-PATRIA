@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Configuration;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use DB;
+use Auth;
+
 
 class ConfigurationController extends Controller
 {
@@ -28,5 +32,35 @@ class ConfigurationController extends Controller
         $model->save();
         
         return redirect()->back();
+    }
+
+    public function currenciesIndex()
+    {
+        $currencies = Configuration::get('currencies');
+
+        return view('currencies.index', compact('currencies'));
+    }
+
+    public function currenciesAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $currencies = Configuration::where('slug','currencies')->first();
+            $currencies->value = $data;
+            $currencies->update();
+
+            DB::commit();
+            return response(json_encode($currencies),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('currencies.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function getCurrenciesAPI(){
+        return response(Configuration::get('currencies')->jsonSerialize(), Response::HTTP_OK);
     }
 }

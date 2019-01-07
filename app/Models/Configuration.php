@@ -10,7 +10,7 @@ class Configuration extends Model
 
     public static function get($slug){
         $configuration = Configuration::where('slug', $slug)->firstOrFail();
-
+        
         return json_decode($configuration->value);
     }
 }
