@@ -3,10 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'PR Consolidation » Select Purchase Requisition',
+        'title' => 'Create Work Order » Select Material',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Requisition' => route('purchase_requisition.indexConsolidation'),
+            'Select Work Requisition' => route('work_order.selectWR'),
+            'Select Material' => route('work_order.selectWRD',$modelWR->id),
         ]
     ]
 )
@@ -18,7 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="select-pr" class="form-horizontal" method="POST" action="{{ route('purchase_requisition.storeConsolidation') }}">
+                <form id="select-material" class="form-horizontal" action="{{ route('work_order.create') }}">
                 @csrf
                     @verbatim
                     <div id="prd">
@@ -26,34 +27,25 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="10%">Type</th>
-                                    <th width="10%">Number</th>
-                                    <th width="35%">Description</th>
-                                    <th width="20%">Project Name</th>
-                                    <th width="10%">Status</th>
-                                    <th width="10%"></th>
+                                    <th width="30%">Material</th>
+                                    <th width="10%">Quantity</th>
+                                    <th width="10%">Ordered</th>
+                                    <th width="10%">Remaining</th>
+                                    <th width="20%">WBS Name</th>
+                                    <th width="5%"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(PRs,index) in modelPRs">
+                                <tr v-for="(PRD,index) in modelWRD">
                                     <td>{{ index+1 }}</td>
-                                    <td v-if="PRs.type == 1">Material</td>
-                                    <td v-else>Resource</td>
-                                    <td>{{ PRs.number }}</td>
-                                    <td>{{ PRs.description }}</td>
-                                    <td v-if="PRs.project != null">{{ PRs.project.name }}</td>
+                                    <td>{{ PRD.material.code }} - {{ PRD.material.name }}</td>
+                                    <td>{{ PRD.quantity }}</td>
+                                    <td>{{ PRD.reserved }}</td>
+                                    <td>{{ PRD.remaining }}</td>
+                                    <td v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
                                     <td v-else>-</td>
-                                    <td v-if="PRs.status == 0">ORDERED</td>
-                                    <td v-else-if="PRs.status == 1">OPEN</td>
-                                    <td v-else-if="PRs.status == 2">APPROVED</td>
-                                    <td v-else-if="PRs.status == 3">NEED REVISION</td>
-                                    <td v-else-if="PRs.status == 4">REVISED</td>
-                                    <td v-else-if="PRs.status == 5">REJECTED</td>
-                                    <td v-if="PRs.type == 2" class="no-padding p-t-2 p-b-2" align="center">
-                                        <input type="checkbox" v-icheck="" v-model="checkedPR" :value="PRs.id" :disabled="materialOk">
-                                    </td>
-                                    <td v-else-if="PRs.type == 1" class="no-padding p-t-2 p-b-2" align="center">
-                                        <input type="checkbox" v-icheck="" v-model="checkedPR" :value="PRs.id" :disabled="resourceOk">
+                                    <td class="no-padding p-t-2 p-b-2" align="center">
+                                        <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
                                     </td>
                                 </tr>
                             </tbody>
@@ -77,7 +69,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#select-pr');
+    const form = document.querySelector('form#select-material');
 
     $(document).ready(function(){
         $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
@@ -111,10 +103,10 @@
     });
 
     var data = {
-        modelPRs : @json($modelPRs),
-        checkedPR : [],
+        modelWRD : @json($modelWRD),
+        modelWR : @json($modelWR),
+        checkedPRD : [],
         submittedForm : {},
-        type : "",
     }
 
     var app = new Vue({
@@ -123,44 +115,19 @@
         computed:{
             createOk: function(){
                 let isOk = false;
-                if(this.checkedPR.length == 0){
+                if(this.checkedPRD.length == 0){
                     isOk = true;
                 }
                 return isOk;
             },
-            resourceOk: function(){
-                let isOk = false;
-
-                this.modelPRs.forEach(data => {
-                    if(data.id == this.checkedPR[0] && data.type == 2){
-                        isOk = true;
-                        this.type = "2";
-                    }
-                });
-
-                return isOk;
-            },
-            materialOk: function(){
-                let isOk = false;
-
-                this.modelPRs.forEach(data => {
-                    if(data.id == this.checkedPR[0] && data.type == 1){
-                        isOk = true;
-                        this.type = "1";
-                    }
-                });
-
-                return isOk;
-            }
         },
         methods: {
             submitForm(){
-                var prd = this.checkedPR;
+                var prd = this.checkedPRD;
                 var jsonPrd = JSON.stringify(prd);
                 jsonPrd = JSON.parse(jsonPrd);
-
-                this.submittedForm.checkedPR = jsonPrd;
-                this.submittedForm.type = this.type;
+                this.submittedForm.checkedPRD = jsonPrd;            
+                this.submittedForm.id = this.modelWR.id;            
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -201,6 +168,15 @@
                 }
             }
         },
+        created: function() {
+            var data = this.modelWRD;
+            data.forEach(PRD => {
+                PRD.remaining = PRD.quantity - PRD.reserved;
+                PRD.remaining = (PRD.remaining+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                PRD.reserved = (PRD.reserved+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+            });
+        }
     });
 </script>
 @endpush

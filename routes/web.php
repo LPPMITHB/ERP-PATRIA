@@ -625,6 +625,8 @@ Route::name('work_request.')->prefix('work_request')->group(function() {
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
+    Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation');
+
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
 
     Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
@@ -686,6 +688,33 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
     Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order');
 
     Route::delete('/{id}', 'PurchaseOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+});
+
+//Work Order Routes
+Route::name('work_order.')->prefix('work_order')->group(function() {
+    Route::get('/indexApprove', 'WorkOrderController@indexApprove')->name('indexApprove');
+
+    Route::get('/approval/{id}/{status}', 'WorkOrderController@approval')->name('approval');
+    
+    Route::get('/selectWR', 'WorkOrderController@selectWR')->name('selectWR')->middleware('can:list-purchase-requisition');
+    
+    Route::get('/', 'WorkOrderController@index')->name('index');
+
+    Route::get('/create', 'WorkOrderController@create')->name('create')->middleware('can:create-purchase-order');
+
+    Route::get('/selectWRD/{id}', 'WorkOrderController@selectWRD')->name('selectWRD')->middleware('can:create-purchase-order');
+
+    Route::get('/{id}', 'WorkOrderController@show')->name('show')->middleware('can:show-purchase-order');
+
+    Route::get('/showApprove/{id}', 'WorkOrderController@showApprove')->name('showApprove')->middleware('can:show-purchase-order');
+
+    Route::get('/{id}/edit', 'WorkOrderController@edit')->name('edit')->middleware('can:edit-purchase-order');
+
+    Route::patch('/', 'WorkOrderController@update')->name('update')->middleware('can:edit-purchase-order');
+
+    Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-purchase-order');
+
+    Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
 });
 
 //Physical Inventory Routes

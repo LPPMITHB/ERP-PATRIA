@@ -221,11 +221,11 @@
             submitForm(){
                 $('div.overlay').show();
                 this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
-                this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
-                this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
-                this.submittedForm.lengths = this.submittedForm.lengths.replace(/,/g , '');
-                this.submittedForm.width = this.submittedForm.width.replace(/,/g , '');
-                this.submittedForm.volume = this.submittedForm.volume.replace(/,/g , '');
+                this.submittedForm.weight = (this.submittedForm.weight+"").replace(/,/g , '');
+                this.submittedForm.height = (this.submittedForm.height+"").replace(/,/g , '');
+                this.submittedForm.lengths = (this.submittedForm.lengths+"").replace(/,/g , '');
+                this.submittedForm.width = (this.submittedForm.width+"").replace(/,/g , '');
+                this.submittedForm.volume = (this.submittedForm.volume+"").replace(/,/g , '');
                 console.log(this.submittedForm);
 
                 let struturesElem = document.createElement('input');

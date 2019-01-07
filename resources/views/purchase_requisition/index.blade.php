@@ -25,8 +25,8 @@
                             <th width="10%">Type</th>
                             <th width="10%">Number</th>
                             <th width="35%">Description</th>
-                            <th width="20%">Project Name</th>
-                            <th width="10%">Status</th>
+                            <th width="17%">Project Name</th>
+                            <th width="13%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -72,6 +72,11 @@
                                     </td>
                                 @elseif($modelPR->status == 5)
                                     <td>REJECTED</td>
+                                    <td class="textCenter">
+                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    </td>
+                                @elseif($modelPR->status == 6)
+                                    <td>CONSOLIDATED</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
