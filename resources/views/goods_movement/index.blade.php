@@ -117,6 +117,7 @@
     const form = document.querySelector('form#create-gm');
 
     var data = {
+        number : 0,
         modelWarehouseFrom : @json($modelWarehouse),
         modelWarehouseTo : [],
         modelSlocFrom : [],

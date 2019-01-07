@@ -17,13 +17,8 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header p-b-20">
-                <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('purchase_requisition.create') }}" class="btn btn-primary btn-sm">CREATE</a>
-                </div>
-            </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered" id="permissions-table">
+                <table class="table table-bordered tableFixed tablePaging">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -39,8 +34,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPR->number }}</td>
-                                <td>{{ $modelPR->description }}</td>
-                                <td>{{ $modelPR->project->name }}</td>
+                                <td>{{ isset($modelPR->description) ? $modelPR->description : '-' }}</td>
+                                <td>{{ isset($modelPR->project) ? $modelPR->project->name : '-'}}</td>
                                 @if($modelPR->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
@@ -48,12 +43,29 @@
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @elseif($modelPR->status == 2)
-                                    <td>CANCELED</td>
+                                    <td>APPROVED</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
-                                @else
+                                @elseif($modelPR->status == 0 || $modelPR->status == 7)
                                     <td>ORDERED</td>
+                                    <td class="textCenter">
+                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    </td>
+                                @elseif($modelPR->status == 3)
+                                    <td>NEEDS REVISION</td>
+                                    <td class="textCenter">
+                                        <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    </td>
+                                @elseif($modelPR->status == 4)
+                                    <td>REVISED</td>
+                                    <td class="textCenter">
+                                        <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    </td>
+                                @elseif($modelPR->status == 5)
+                                    <td>REJECTED</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
@@ -74,17 +86,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#permissions-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

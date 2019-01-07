@@ -57,6 +57,13 @@ class PhysicalInventoryController extends Controller
         return view('physical_inventory.indexAdjustStock', compact('snapshots'));
     }
 
+    public function viewAdjustmentHistory()
+    {
+        $snapshots = Snapshot::where('status',0)->get();
+
+        return view('physical_inventory.index', compact('snapshots'));
+    }
+
 
     public function displaySnapshot(Request $request)
     {
@@ -139,6 +146,13 @@ class PhysicalInventoryController extends Controller
         $confirm = true;
 
         return view('physical_inventory.showCountStock', compact('snapshot','confirm'));
+    }
+
+    public function showPI($id)
+    {
+        $snapshot = Snapshot::where('id', $id)->first();
+
+        return view('physical_inventory.showPI', compact('snapshot'));
     }
 
     public function storeCountStock(Request $request, $id)

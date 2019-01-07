@@ -2,11 +2,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Edit Purchase Requisition » '.$modelPR->number,
+        'title' => 'Edit Material Requisition » '.$modelMR->number,
+        'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Purchase Requisitions' => route('purchase_requisition.index'),
-            'Edit Purchase Requisition' => route('purchase_requisition.edit',$modelPR->id),
+            'Edit Material Requisition' => route('material_requisition.create'),
         ]
     ]
 )
@@ -18,13 +18,13 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="edit-pr" class="form-horizontal" method="POST" action="{{ route('purchase_requisition.update',['id'=>$modelPR->id]) }}">
+                <form id="edit-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.update',['id'=>$modelMR->id]) }}">
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim
-                    <div id="pr">
+                    <div id="mr">
                         <div class="box-header no-padding">
-                            <div class="col-xs-12 col-md-4" v-if="selectedProject != null">
+                            <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
                                 <div class="col-xs-5 no-padding">Project Number</div>
@@ -43,25 +43,24 @@
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_end_date}}</b></div>
                             </div>
                             <div class="col-xs-12 col-md-4 p-r-0">
-                                <div class="col-sm-12 p-l-0">
-                                    <label for="">PR Description</label>
-                                </div>
-                                <div class="col-sm-12 p-l-0">
-                                    <textarea class="form-control" rows="3" v-model="modelPR.description"></textarea>
-                                </div>
+                                    <div class="col-sm-12 p-l-0">
+                                        <label for="">MR Description</label>
+                                    </div>
+                                    <div class="col-sm-12 p-l-0">
+                                        <textarea class="form-control" rows="3" v-model="description"></textarea>
+                                    </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                <table class="table table-bordered tableFixed">
+                                <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 30%">Material Name</th>
-                                            <th style="width: 15%">Quantity</th>
-                                            <th style="width: 25%">WBS Name</th>
-                                            <th style="width: 15%">Alocation</th>
-                                            <th style="width: 10%"></th>
+                                            <th style="width: 40%">Material Name</th>
+                                            <th style="width: 20%">Quantity</th>
+                                            <th style="width: 30%">WBS Name</th>
+                                            <th style="width: 5%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,46 +68,35 @@
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_name != ''">{{ material.wbs_name }}</td>
-                                            <td class="tdEllipsis" v-else>-</td>
-                                            <td class="tdEllipsis">{{ material.alocation }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
                                                 </a>
                                             </td>
                                         </tr>
+                                    </tbody>
+                                    <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="no-padding textLeft">
+                                            <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="no-padding ">
-                                                <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                            <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
-                                            <td class="no-padding  textLeft" v-show="selectedProject != null">
+                                            <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="no-padding textLeft" v-show="selectedProject == null">
-                                                <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="no-padding textLeft">
-                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings">
-                                                    <option value="Consumption">Consumption</option>
-                                                    <option value="Stock">Stock</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="no-padding textCenter">
+                                            <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
-                                    </tbody>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -134,23 +122,10 @@
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
-                                            <div class="col-sm-12" v-show="selectedProject != null"> 
+                                            <div class="col-sm-12">
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12" v-show="selectedProject == null"> 
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12"> 
-                                                <label for="type" class="control-label">Alocation</label>
-                                                <selectize id="edit_modal" v-model="editInput.alocation" :settings="alocationSettings">
-                                                    <option value="Consumption">Consumption</option>
-                                                    <option value="Stock">Stock</option>
                                                 </selectize>
                                             </div>
                                         </div>
@@ -176,68 +151,38 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#edit-pr');
+    const form = document.querySelector('form#edit-mr');
 
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == 'Quantity' || title == ""){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-            }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tableNonPagingVue.column(i).search() !== this.value ) {
-                    tableNonPagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
-        });
-
-        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-        });
-
         $('div.overlay').hide();
     });
 
+
     var data = {
+        description : @json($modelMR->description),
         newIndex : "",
-        modelPR : @json($modelPR),
-        selectedProject : @json($project),
-        dataMaterial : @json($modelPRD),
-        materials : @json($materials),
-        wbss : @json($wbss),
+        materials : @json($modelMaterial),
+        wbss : @json($modelWBS),
+        projectSettings: {
+            placeholder: 'Please Select Project'
+        },
         wbsSettings: {
             placeholder: 'Please Select WBS'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
         },
-        nullSettings:{
-            placeholder: '-'
-        },
-        alocationSettings: {
-            placeholder: 'Please Select Alocation'
-        },
+        selectedProject : @json($modelProject),
+        dataMaterial : @json($modelMRD),
         dataInput : {
-            prd_id :null,
+            mrd_id :null,
             material_id :"",
             material_code : "",
             material_name : "",
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
-            alocation : "Stock"
+            wbs_name : ""
         },
         editInput : {
             old_material_id : "",
@@ -247,8 +192,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
-            alocation : ""
+            wbs_name : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -257,7 +201,7 @@
     }
 
     var vm = new Vue({
-        el : '#pr',
+        el : '#mr',
         data : data,
         computed : {
             dataOk: function(){
@@ -316,14 +260,8 @@
                 return text
             },
             submitForm(){
-                this.submittedForm.description = this.modelPR.description;
-                this.submittedForm.project_id = this.project_id;    
-                
-                var data = this.dataMaterial;
-                data.forEach(prd => {
-                    prd.quantity = parseInt((prd.quantity+"").replace(/,/g , ''));
-                });
-
+                this.submittedForm.description = this.description;
+                this.submittedForm.project_id = this.project_id;     
                 this.submittedForm.materials = this.dataMaterial;    
 
                 let struturesElem = document.createElement('input');
@@ -335,31 +273,23 @@
             },
             update(old_material_id, new_material_id){
                 var material = this.dataMaterial[this.editInput.index];
-                if(this.editInput.wbs_id != null){
-                    window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
-                        $('div.overlay').show();
-                        material.wbs_name = data.name;
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                        material.wbs_id = this.editInput.wbs_id;
-                        material.alocation = this.editInput.alocation;
+                material.quantityInt = this.editInput.quantityInt;
+                material.quantity = this.editInput.quantity;
+                material.wbs_id = this.editInput.wbs_id;
 
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    material.quantityInt = this.editInput.quantityInt;
-                    material.quantity = this.editInput.quantity;
-                    material.alocation = this.editInput.alocation;
-                }
-                
+                window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
+                    material.wbs_name = data.name;
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+
                 $('div.overlay').hide();
             },
             openEditModal(data,index){
@@ -371,7 +301,6 @@
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_name = data.wbs_name;
-                this.editInput.alocation = data.alocation;
                 this.editInput.index = index;
 
                 document.getElementById('material').value = data.material_code+" - "+data.material_name;
@@ -402,10 +331,8 @@
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
                     this.dataInput.wbs_name = "";
-                    this.dataInput.alocation = "Stock";
-
-                    this.newIndex = Object.keys(this.dataMaterial).length+1;    
-
+                    
+                    this.newIndex = Object.keys(this.dataMaterial).length+1;                    
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -434,7 +361,7 @@
             'dataInput.wbs_id': function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
                         this.dataInput.wbs_name = data.name;
                         $('div.overlay').hide();
                     })
@@ -453,19 +380,7 @@
         },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
-
-            var data = this.dataMaterial;
-            data.forEach(prd => {
-                prd.quantity = (prd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                prd.material_name = prd.material.name;
-                prd.material_code = prd.material.code;
-                prd.prd_id = prd.id;
-                if(this.selectedProject){
-                    prd.wbs_name = prd.wbs.name;
-                }else{
-                    prd.wbs_name = "-";
-                }
-            });
+            
         },
     });
 </script>

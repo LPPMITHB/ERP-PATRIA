@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [   
-        'title' => 'WO Actual Cost Report » '.$modelProject->name.' » Select WO',
+        'title' => 'Prod. Order Actual Cost Report » '.$modelProject->name.' » Select Prod. Order',
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('production_order.selectProjectReport'),
-            'Select Work Order' => ''
+            'Select Prod. Order' => ''
         ]
     ]
 )
@@ -67,30 +67,30 @@
                 </div>
             </div>
             <div class="box-body p-t-0">
-                <h4 class="box-title no-padding">Work Orders</h4>
+                <h4 class="box-title no-padding">Production Orders</h4>
                 <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
                             <th style="width: 20%">Number</th>
-                            <th style="width: 30%">Work</th>
+                            <th style="width: 30%">WBS</th>
                             <th style="width: 20%">Created By</th>
                             <th style="width: 15%">Status</th>
                             <th style="width: 10%;"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelWO as $wo)
+                        @foreach($modelPrO as $pro)
                             <tr>
                                 <td class="p-l-10">{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis p-l-10">{{ $wo->number }}</td>
-                                <td class="tdEllipsis p-l-10">{{ $wo->work->code }} - {{ $wo->work->name }}</td>
-                                <td class="p-l-10">{{ $wo->user->name }}</td>
-                                @if($wo->status == 1)
+                                <td class="tdEllipsis p-l-10">{{ $pro->number }}</td>
+                                <td class="tdEllipsis p-l-10">{{ $pro->wbs->code }} - {{ $pro->wbs->name }}</td>
+                                <td class="p-l-10">{{ $pro->user->name }}</td>
+                                @if($pro->status == 1)
                                     <td class="p-l-10">{{ 'UNRELEASED' }}</td>
                                 @endif
                                 <td class="textCenter">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('production_order.report', ['id'=>$wo->id]) }}">
+                                    <a class="btn btn-primary btn-xs" href="{{ route('production_order.report', ['id'=>$pro->id]) }}">
                                         SELECT
                                     </a>
                                 </td>

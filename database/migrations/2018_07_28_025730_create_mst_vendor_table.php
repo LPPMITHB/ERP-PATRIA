@@ -17,10 +17,12 @@ class CreateMstVendorTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
+            $table->string('type')->default(1);
             $table->longText('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('email')->nullable();
             $table->string('status')->default(1);
+            $table->string('competence')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();

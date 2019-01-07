@@ -24,23 +24,49 @@ class GoodsIssueController extends Controller
         return view ('goods_issue.index', compact('modelGIs'));
     }
 
-    public function selectMR($id)
+    // public function indexApprove(){
+    //     $modelGIs = GoodsIssue::where('type',2)->get();
+
+    //     return view ('goods_issue.index', compact('modelGIs'));
+    // }
+    public function createGiWithRef($id)
     {
         $modelMR = MaterialRequisition::findOrFail($id);
+        $modelProject = $modelMR->project->with('ship', 'customer')->first();
         $modelSloc = StorageLocation::all();
         $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$modelMR->id)->whereColumn('issued','!=','quantity')->with('material')->get();
         foreach($modelMRDs as $MRD){
             $MRD['sloc_id'] = "";
             $MRD['modelGI'] = "";
         }
-        return view('goods_issue.selectMR', compact('modelMR','modelMRDs','modelSloc'));
+        return view('goods_issue.createGiWithRef', compact('modelMR','modelMRDs','modelSloc','modelProject'));
     }
 
-    public function createGiWithRef()
+    public function selectMR()
     {
-        $modelMRs = MaterialRequisition::where('status',1)->get();
+        $modelMRs = MaterialRequisition::where('status',2)->get();
+
+        return view('goods_issue.selectMR', compact('modelMRs'));
+    }
+
+    public function approval($gi_id,$status){
+        $modelGI = GoodsIssue::findOrFail($gi_id);
         
-        return view('goods_issue.createGiWithRef', compact('modelMRs'));
+        if($status == "approve"){
+            $modelGI->status = 2;
+            foreach($modelGI->goodsIssueDetails as $data){
+                $this->updateSlocDetailApproved($data);
+                $this->updateStockApproved($data);
+            }
+            $modelGI->update();
+        }elseif($status == "need-revision"){
+            $modelGI->status = 3;
+            $modelGI->update();
+        }elseif($status == "reject"){
+            $modelGI->status = 4;
+            $modelGI->update();
+        }
+        return redirect()->route('goods_issue.show',$gi_id);
     }
 
     public function store(Request $request)
@@ -85,9 +111,19 @@ class GoodsIssueController extends Controller
     public function show($id)
     {
         $modelGI = GoodsIssue::findOrFail($id);
-        $modelGID = $modelGI->GoodsIssueDetails ;
-        
-        return view('goods_issue.show', compact('modelGI','modelGID'));
+        $modelGID = $modelGI->GoodsIssueDetails;
+        $approve = FALSE;
+
+        return view('goods_issue.show', compact('modelGI','modelGID','approve'));
+    }
+
+    public function showApprove($id)
+    {
+        $modelGI = GoodsIssue::where('id', $id)->first();
+        $modelGID = $modelGI->GoodsIssueDetails;
+        $approve = TRUE;
+
+        return view('goods_issue.show', compact('modelGI','modelGID','approve'));
     }
     
     // function
@@ -126,6 +162,18 @@ class GoodsIssueController extends Controller
         }
     }
 
+    public function updateStockApproved($data){
+        $modelStock = Stock::where('material_id',$data->material_id)->first();
+        $modelStock->quantity -= $data->quantity;
+        $modelStock->save();
+    }
+
+    public function updateSlocDetailApproved($data){
+        $modelSlocDetail = StorageLocationDetail::where('material_id',$data->material_id)->where('storage_location_id',$data->storage_location_id)->first();
+        $modelSlocDetail->quantity -= $data->quantity;
+        $modelSlocDetail->save();
+    }
+
     public function checkStatusMR($mr_id){
         $modelMR = MaterialRequisition::findOrFail($mr_id);
         $status = 0;
@@ -141,19 +189,23 @@ class GoodsIssueController extends Controller
     }
 
     public function generateGINumber(){
-        $modelGI = GoodsIssue::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
-
-        $branch_code = substr($modelBranch->code,4,2);
-        $number = 1;
+        $modelGI = GoodsIssue::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
+		$number = 1;
         if(isset($modelGI)){
-            $number += intval(substr($modelGI->number, -6));
+            $yearDoc = substr($modelGI->number, 3,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelGI->number, -5));
+            }
         }
-        $year = date('y'.$branch_code.'000000');
+
+        $year = date($yearNow.'000000');
         $year = intval($year);
 
-        $gi_number = $year+$number;
+		$gi_number = $year+$number;
         $gi_number = 'GI-'.$gi_number;
+
         return $gi_number;
     }
     

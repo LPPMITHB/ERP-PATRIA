@@ -18,11 +18,11 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header p-b-20">
+            {{-- <div class="box-header p-b-20">
                 <div class="box-tools pull-right p-t-5">
                     <a href="{{ route('purchase_order.selectPR') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
-            </div> <!-- /.box-header -->
+            </div> <!-- /.box-header --> --}}
             <div class="box-body">
                 <table class="table table-bordered" id="po-table">
                     <thead>
@@ -41,8 +41,20 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
                                 <td>{{ $modelPO->description }}</td>
-                                <td>{{ $modelPO->project->name }}</td>
-                                <td>OPEN</td>
+                                <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
+                                @if($modelPO->status == 1)
+                                    <td>OPEN</td>
+                                @elseif($modelPO->status == 2)
+                                    <td>APPROVED</td>
+                                @elseif($modelPO->status == 0)
+                                    <td>RECEIVED</td>
+                                @elseif($modelPO->status == 3)
+                                    <td>NEEDS REVISION</td>
+                                @elseif($modelPO->status == 4)
+                                    <td>REVISED</td>
+                                @elseif($modelPO->status == 5)
+                                    <td>REJECTED</td>
+                                @endif
                                 <td class="textCenter">
                                     <a href="{{ route('purchase_order.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                 </td>

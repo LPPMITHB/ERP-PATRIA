@@ -484,6 +484,13 @@
             ]
         },
         options: {
+            elements: { 
+                point: { 
+                    radius: 4, 
+                    hitRadius: 4, 
+                    hoverRadius: 6 
+                } 
+            },
             tooltips: {
                 callbacks: {
                     label: function(tooltipItem, data) {
@@ -543,6 +550,13 @@
             ]
         },
         options: {
+            elements: { 
+                point: { 
+                    radius: 4, 
+                    hitRadius: 4, 
+                    hoverRadius: 6 
+                } 
+            },
             tooltips: {
                 callbacks: {
                     label: function(tooltipItem, data) {

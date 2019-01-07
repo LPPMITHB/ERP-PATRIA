@@ -266,7 +266,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View PR',
+            'name' => 'View & Edit PR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition.index',
             'is_active' => true,
@@ -276,6 +276,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'PR Consolidation',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition.indexConsolidation',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -328,7 +339,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View PO',
+            'name' => 'View & Edit PO',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_order.index',
             'is_active' => true,
@@ -364,7 +375,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create GR without reference',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_receipt.createGrWithoutRef',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$goodsReceipt,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -394,7 +415,7 @@ class MenusTableSeeder extends Seeder
         $materialRequisition =  Menu::where('name','Material Requisition')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Create MR Manually',
+            'name' => 'Create MR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.create',
             'is_active' => true,
@@ -418,7 +439,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View MR',
+            'name' => 'View & Edit MR',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.index',
             'is_active' => true,
@@ -443,9 +464,9 @@ class MenusTableSeeder extends Seeder
         $goodsIssue =  Menu::where('name','Goods Issue')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Create GI with Reference',
+            'name' => 'Create GI',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_issue.createGiWithRef',
+            'route_name'=> 'goods_issue.selectMR',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$goodsIssue,
@@ -453,17 +474,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        /* DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Create GI without Reference',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_issue.createGiWithoutRef',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id'=>$goodsIssue,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]); */
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Create GI without Reference',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'goods_issue.createGiWithoutRef',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN',
+        //     'menu_id'=>$goodsIssue,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -491,6 +512,18 @@ class MenusTableSeeder extends Seeder
 
 
         $physicalInventory =  Menu::where('name','Physical Inventory')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Adjustment History',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory.viewAdjustmentHistory',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$physicalInventory,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Snapshot',
@@ -529,7 +562,6 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Stock Management',
@@ -552,7 +584,7 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]);
+        ]); 
 
         DB::table('menus')->insert([
             'level' => 3,

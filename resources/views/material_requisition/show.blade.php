@@ -29,67 +29,83 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-6 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-4">
-                            Project Code
+                        <div class="col-xs-5 col-md-5">
+                            Project Number
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelMR->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            Project Name
+                        <div class="col-xs-5 col-md-5">
+                            Ship Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelMR->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            Customer Name
+                        <div class="col-xs-5 col-md-5">
+                            Ship Type
                         </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelMR->project->customer->name }} </b>
+                        <div class="col-xs-7 col-md-7">
+                            : <b> {{ $modelMR->project->ship->type }} </b>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-4">
-                            Ship Name
+                        <div class="col-xs-5 col-md-5">
+                            Customer Name
                         </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelMR->project->ship->type }} </b>
+                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelMR->project->customer->name}}">
+                            : <b> {{ $modelMR->project->customer->name }} </b>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Ship Type
+                        <div class="col-xs-5 col-md-5">
+                            Status
                         </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelMR->project->ship->type }} </b>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
+                        @if($modelMR->status == 1)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>OPEN</b>
+                            </div>
+                        @elseif($modelMR->status == 2)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>APPROVED</b>
+                            </div>
+                        @elseif($modelMR->status == 3)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>NEEDS REVISION</b>
+                            </div>
+                        @elseif($modelMR->status == 4)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>REVISED</b>
+                            </div>
+                        @elseif($modelMR->status == 5)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>REJECTED</b>
+                            </div>
+                        @elseif($modelMR->status == 0)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>ISSUED</b>
+                            </div>
+                        @endif
+                        <div class="col-xs-5 col-md-5">
                             Created By
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelMR->user->name }} </b>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-5">
                             Created At
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelMR->created_at }} </b>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
             <div class="box-body p-t-0 p-b-0">
                 <table class="table table-bordered showTable" id="details-table">
                     <thead>
@@ -104,9 +120,9 @@
                         @foreach($modelMR->MaterialRequisitionDetails as $MRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $MRD->material->name }}</td>
+                                <td> {{ $MRD->material->code }} - {{ $MRD->material->name }}</td>
                                 <td>{{ number_format($MRD->quantity) }}</td>
-                                <td>{{ $MRD->wbs->name }}</td>
+                                <td>{{ $MRD->wbs != null ? $MRD->wbs->name : "-" }}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -21,6 +21,13 @@ Route::name('appearance.')->prefix('appearance')->group(function() {
     Route::post('/', 'ConfigurationController@appearanceSave')->name('save');
 });
 
+// Currencies Routes
+Route::name('currencies.')->prefix('currencies')->group(function() {
+    Route::get('/', 'ConfigurationController@currenciesIndex')->name('index');
+
+    Route::patch('/add', 'ConfigurationController@currenciesAdd')->name('add');
+});
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');
@@ -236,21 +243,6 @@ Route::name('company.')->prefix('company')->group(function() {
     Route::patch('/{id}', 'CompanyController@update')->name('update')->middleware('can:edit-company');
 
     Route::post('/', 'CompanyController@store')->name('store')->middleware('can:create-company');
-});
-
-//Currencies Routes
-Route::name('currencies.')->prefix('currencies')->group(function() {
-    Route::get('/create', 'CurrenciesController@create')->name('create');
-
-    Route::get('/', 'CurrenciesController@index')->name('index');
-
-    Route::get('/{id}', 'CurrenciesController@show')->name('show');
-
-    Route::get('/{id}/edit', 'CurrenciesController@edit')->name('edit');
-
-    Route::patch('/{id}', 'CurrenciesController@update')->name('update');
-
-    Route::post('/', 'CurrenciesController@store')->name('store');
 });
 
 //Service Routes
@@ -603,23 +595,29 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
-    Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove');
+    Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
+
+    Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
+
+    Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation');
+
+    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval');
+
+    Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
     Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:destroy-purchase-requisition');
 
     Route::patch('/updatePRD', 'PurchaseRequisitionController@updatePRD')->name('updatePRD')->middleware('can:edit-purchase-requisition');
 
-    Route::get('/', 'PurchaseRequisitionController@index')->name('index')->middleware('can:list-requisition');
+    Route::get('/', 'PurchaseRequisitionController@index')->name('index')->middleware('can:list-purchase-requisition');
 
     Route::get('/create', 'PurchaseRequisitionController@create')->name('create')->middleware('can:create-purchase-requisition');
 
     Route::get('/{id}', 'PurchaseRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition');
 
-    Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove')->middleware('can:show-purchase-requisition');
+    Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove');
 
     Route::get('/edit/{id}', 'PurchaseRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition');
-
-    Route::patch('/', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
 
     Route::post('/', 'PurchaseRequisitionController@store')->name('store')->middleware('can:create-purchase-requisition');
 
@@ -633,6 +631,8 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
     Route::get('/{id}/showResource', 'PurchaseOrderController@showResource')->name('showResource')->middleware('can:show-purchase-order');
 
+    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval');
+    
     Route::post('/storeResource', 'PurchaseOrderController@storeResource')->name('storeResource')->middleware('can:create-purchase-order');
 
     Route::get('/createPOResource', 'PurchaseOrderController@createPOResource')->name('createPOResource')->middleware('can:list-purchase-requisition');
@@ -660,27 +660,32 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
 //Physical Inventory Routes
 Route::name('physical_inventory.')->prefix('physical_inventory')->group(function() {
-    Route::get('/indexSnapshot', 'PhysicalInventoryController@indexSnapshot')->name('indexSnapshot');
+    Route::get('/indexSnapshot', 'PhysicalInventoryController@indexSnapshot')->name('indexSnapshot')->middleware('can:create-snapshot');
 
-    Route::post('/displaySnapshot', 'PhysicalInventoryController@displaySnapshot')->name('displaySnapshot');
+    Route::post('/displaySnapshot', 'PhysicalInventoryController@displaySnapshot')->name('displaySnapshot')->middleware('can:create-snapshot');
     
-    Route::post('/storeSnapshot', 'PhysicalInventoryController@storeSnapshot')->name('storeSnapshot');
+    Route::post('/storeSnapshot', 'PhysicalInventoryController@storeSnapshot')->name('storeSnapshot')->middleware('can:create-snapshot');
 
-    Route::get('/showSnapshot/{id}', 'PhysicalInventoryController@showSnapshot')->name('showSnapshot');
+    Route::get('/showSnapshot/{id}', 'PhysicalInventoryController@showSnapshot')->name('showSnapshot')->middleware('can:show-snapshot');
 
-    Route::get('/indexCountStock', 'PhysicalInventoryController@indexCountStock')->name('indexCountStock');
+    Route::get('/indexCountStock', 'PhysicalInventoryController@indexCountStock')->name('indexCountStock')->middleware('can:count-stock');
 
-    Route::get('/countStock/{id}', 'PhysicalInventoryController@countStock')->name('countStock');
+    Route::get('/countStock/{id}', 'PhysicalInventoryController@countStock')->name('countStock')->middleware('can:count-stock');
 
-    Route::patch('/storeCountStock/{id}', 'PhysicalInventoryController@storeCountStock')->name('storeCountStock');
+    Route::patch('/storeCountStock/{id}', 'PhysicalInventoryController@storeCountStock')->name('storeCountStock')->middleware('can:count-stock');
 
-    Route::get('/showCountStock/{id}', 'PhysicalInventoryController@showCountStock')->name('showCountStock');
+    Route::get('/showCountStock/{id}', 'PhysicalInventoryController@showCountStock')->name('showCountStock')->middleware('can:count-stock');
 
-    Route::get('/showConfirmCountStock/{id}', 'PhysicalInventoryController@showConfirmCountStock')->name('showConfirmCountStock');
+    Route::get('/showPI/{id}', 'PhysicalInventoryController@showPI')->name('showPI')->middleware('can:show-adjustment-history');
 
-    Route::get('/indexAdjustStock', 'PhysicalInventoryController@indexAdjustStock')->name('indexAdjustStock');
+    Route::get('/showConfirmCountStock/{id}', 'PhysicalInventoryController@showConfirmCountStock')->name('showConfirmCountStock')->middleware('can:adjust-stock');
 
-    Route::patch('/storeAdjustStock/{id}', 'PhysicalInventoryController@storeAdjustStock')->name('storeAdjustStock');
+    Route::get('/indexAdjustStock', 'PhysicalInventoryController@indexAdjustStock')->name('indexAdjustStock')->middleware('can:adjust-stock');
+
+    Route::patch('/storeAdjustStock/{id}', 'PhysicalInventoryController@storeAdjustStock')->name('storeAdjustStock')->middleware('can:adjust-stock');
+
+    Route::get('/viewAdjustmentHistory', 'PhysicalInventoryController@viewAdjustmentHistory')->name('viewAdjustmentHistory')->middleware('can:list-adjustment-history');
+
 });
 
 // Good Receipt Routes
@@ -713,44 +718,50 @@ Route::name('stock_management.')->prefix('stock_management')->group(function() {
 
 //Material Requisition Routes
 Route::name('material_requisition.')->prefix('material_requisition')->group(function() {
-    Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove');
+    Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-material-requisition');
 
-    Route::get('/', 'MaterialRequisitionController@index')->name('index');
+    Route::get('/approval/{id}/{status}', 'MaterialRequisitionController@approval')->name('approval')->middleware('can:approve-material-requisition');
 
-    Route::get('/create', 'MaterialRequisitionController@create')->name('create')->middleware('can:create-purchase-requisition');
+    Route::get('/', 'MaterialRequisitionController@index')->name('index')->middleware('can:list-material-requisition');
 
-    Route::get('/{id}', 'MaterialRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition');
+    Route::get('/create', 'MaterialRequisitionController@create')->name('create')->middleware('can:create-material-requisition');
 
-    Route::get('/showApprove/{id}', 'MaterialRequisitionController@showApprove')->name('showApprove')->middleware('can:show-purchase-requisition');
+    Route::get('/{id}', 'MaterialRequisitionController@show')->name('show')->middleware('can:show-material-requisition');
 
-    Route::get('/{id}/edit', 'MaterialRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition');
+    Route::get('/showApprove/{id}', 'MaterialRequisitionController@showApprove')->name('showApprove')->middleware('can:show-material-requisition');
 
-    Route::patch('/{id}', 'MaterialRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
+    Route::get('/{id}/edit', 'MaterialRequisitionController@edit')->name('edit')->middleware('can:edit-material-requisition');
 
-    Route::post('/', 'MaterialRequisitionController@store')->name('store')->middleware('can:create-purchase-requisition');
+    Route::patch('/{id}', 'MaterialRequisitionController@update')->name('update')->middleware('can:edit-material-requisition');
 
-    Route::delete('/{id}', 'MaterialRequisitionController@destroy')->name('destroy')->middleware('can:destroy-purchase-requisition');
+    Route::post('/', 'MaterialRequisitionController@store')->name('store')->middleware('can:create-material-requisition');
+
+    Route::delete('/{id}', 'MaterialRequisitionController@destroy')->name('destroy')->middleware('can:destroy-material-requisition');
 });
 
 // Goods Issue Routes
 Route::name('goods_issue.')->prefix('goods_issue')->group(function() {    
-    Route::get('/', 'GoodsIssueController@index')->name('index');
+    Route::get('/', 'GoodsIssueController@index')->name('index')->middleware('can:list-goods-issue');
 
-    Route::get('/createGiWithRef', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-purchase-order');
+    Route::get('/selectMR', 'GoodsIssueController@selectMR')->name('selectMR')->middleware('can:create-goods-issue');
+   
+    Route::get('/approval/{id}/{status}', 'GoodsIssueController@approval')->name('approval');
 
-    Route::get('/createGiWithoutRef', 'GoodsIssueController@createGiWithoutRef')->name('createGiWithoutRef')->middleware('can:create-purchase-order');
+    Route::get('/createGiWithRef', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue');
 
-    Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-purchase-order');
+    Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue');
 
-    Route::get('/selectMR/{id}', 'GoodsIssueController@selectMR')->name('selectMR')->middleware('can:create-purchase-order');
+    Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue');
 
-    Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-purchase-order');
+    Route::get('/showApproval/{id}', 'GoodsIssueController@showApprove')->name('showApprove')->middleware('can:show-goods-issue');
+    
+    Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-goods-issue');
 
-    Route::patch('/{id}', 'GoodsIssueController@update')->name('update')->middleware('can:edit-purchase-order');
+    Route::patch('/{id}', 'GoodsIssueController@update')->name('update')->middleware('can:edit-goods-issue');
 
-    Route::post('/', 'GoodsIssueController@store')->name('store')->middleware('can:create-purchase-order');
+    Route::post('/', 'GoodsIssueController@store')->name('store')->middleware('can:create-goods-issue');
 
-    Route::delete('/{id}', 'GoodsIssueController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+    Route::delete('/{id}', 'GoodsIssueController@destroy')->name('destroy')->middleware('can:destroy-goods-issue');
 });
 
 
@@ -774,6 +785,8 @@ Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
 //Work Order Routes
 Route::name('production_order.')->prefix('production_order')->group(function() {
     Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease');
+
+    Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm');
     
     Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order');
 
@@ -787,11 +800,11 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
     
     Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order');
 
-    Route::get('/selectWO/{id}', 'ProductionOrderController@selectWO')->name('selectWO')->middleware('can:create-production-order');
+    Route::get('/selectPrO/{id}', 'ProductionOrderController@selectPrO')->name('selectPrO')->middleware('can:create-production-order');
 
-    Route::get('/selectWOReport/{id}', 'ProductionOrderController@selectWOReport')->name('selectWOReport')->middleware('can:create-production-order');
+    Route::get('/selectPrOReport/{id}', 'ProductionOrderController@selectPrOReport')->name('selectPrOReport')->middleware('can:create-production-order');
 
-    Route::get('/confirmWO/{id}', 'ProductionOrderController@confirmWO')->name('confirmWO');
+    Route::get('/confirmPrO/{id}', 'ProductionOrderController@confirmPrO')->name('confirmPrO');
 
     Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order');
 

@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Release Production Order » '.$modelPO->number,
+        'title' => 'Release Production Order » '.$modelPrO->number,
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('production_order.selectProject'),
@@ -67,11 +67,11 @@
                     </table>
                 </div>
             </div>
-            <form id="release-wo" class="form-horizontal" method="POST" action="{{ route('production_order.storeRelease') }}">
+            <form id="release-pro" class="form-horizontal" method="POST" action="{{ route('production_order.storeRelease') }}">
             <input type="hidden" name="_method" value="PATCH">
             @csrf
             @verbatim
-            <div id="work_order">
+            <div id="production_order">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-sm-12">
@@ -161,7 +161,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#release-wo');
+    const form = document.querySelector('form#release-pro');
 
     $(document).ready(function(){
         $('#material-table,#resource-table').DataTable({
@@ -178,7 +178,7 @@
     });
 
     var data = {
-        modelPOD : @json($modelPOD),
+        modelPrOD : @json($modelPrOD),
         boms : @json($boms),
         resourceDetails : @json($resources),
         materials : [],
@@ -187,7 +187,7 @@
     };
 
     var vm = new Vue({
-        el: '#work_order',
+        el: '#production_order',
         data: data,
         computed : {
             createOk: function(){
@@ -206,7 +206,7 @@
                 //     PRD.quantity = PRD.quantity.replace(/,/g , '');      
                 // });
 
-                this.submittedForm.modelPOD = this.modelPOD;
+                this.submittedForm.modelPrOD = this.modelPrOD;
                 this.submittedForm.boms = this.boms;
                 this.submittedForm.resourceDetails = this.resourceDetails;
 
@@ -228,7 +228,7 @@
                 this.resources.push(resource);
             });
 
-            this.modelPOD.forEach(WOD => {
+            this.modelPrOD.forEach(WOD => {
                 if(WOD.material_id != null){
                     var status = 0;
                     this.materials.forEach(material => {

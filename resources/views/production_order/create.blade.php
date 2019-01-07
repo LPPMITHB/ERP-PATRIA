@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Work Order',
+        'title' => 'Create Production Order',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => route('production_order.selectProject'),
@@ -70,7 +70,7 @@
                 <div class="col-sm-6">
                     <table class="tableFixed width100">
                         <thead>
-                            <th style="width: 25%">Work Information</th>
+                            <th style="width: 25%">WBS Information</th>
                             <th style="width: 3%"></th>
                             <th></th>
                         </thead>
@@ -78,23 +78,23 @@
                             <tr>
                                 <td style="">Name</td>
                                 <td>:</td>
-                                <td><b>{{$work->name}}</b></td>
+                                <td><b>{{$wbs->name}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Description</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->description}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->description}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Deliverables</td>
                                 <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$work->deliverables}}</b></td>
+                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->deliverables}}</b></td>
                             </tr>
                             <tr>
                                 <td>Deadline</td>
                                 <td>:</td>
                                 <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $work->planned_deadline);
+                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
                                             $date = $date->format('d-m-Y');
                                             echo $date;
                                         @endphp
@@ -104,7 +104,7 @@
                             <tr>
                                 <td>Progress</td>
                                 <td>:</td>
-                                <td><b>{{$work->progress}} %</b></td>
+                                <td><b>{{$wbs->progress}} %</b></td>
                             </tr>
                         </tbody>
                     </table>
@@ -273,7 +273,7 @@
         },
         datas : [],
         project_id :@json($project->id),
-        wbs_id :@json($work->id),
+        wbs_id :@json($wbs->id),
         materials : @json($materials),
         resources : @json($resources),
         newIndex : "",

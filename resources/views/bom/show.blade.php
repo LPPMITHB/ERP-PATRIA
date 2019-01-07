@@ -97,12 +97,11 @@
                 </div>
                 
                 <div class="col-md-1 col-xs-12">
-                    @can('edit-bom')
+                    @if($route == '/bom')
                         <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bom.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
-                    @endcan
-                    @can('edit-bom-repair')
-                    <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bom_repair.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
-                @endcan
+                    @elseif($route == '/bom_repair')
+                        <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bom_repair.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
+                    @endif
                 </div>
             </div>
             @verbatim

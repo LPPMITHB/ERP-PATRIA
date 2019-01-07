@@ -56,6 +56,7 @@
                             <label for="code" class="col-sm-2 control-label">Code</label>
             
                             <div class="col-sm-10">
+                                <input type="text" class="form-control" data-inputmask="'mask': '(999) 999-9999'" data-mask="">
                                 <input type="text" class="form-control" id="code" name="code" required autofocus disabled v-model="submittedForm.code">
                             </div>
                         </div>

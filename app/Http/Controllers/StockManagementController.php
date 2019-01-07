@@ -6,6 +6,7 @@ use App\Models\StorageLocation;
 use App\Models\StorageLocationDetail;
 use App\Models\Material;
 use App\Models\Warehouse;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -28,7 +29,9 @@ class StockManagementController extends Controller
         $storage_locations = StorageLocation::all();
         $warehouses = Warehouse::all();
         $materials = Material::all();
-        return view('stock_management.index', compact('storage_locations','materials','warehouses'));
+        $stocks = Stock::with('material')->get();
+
+        return view('stock_management.index', compact('storage_locations','materials','warehouses','stocks'));
     }
 
     /**
@@ -109,17 +112,24 @@ class StockManagementController extends Controller
         
         $warehouse = Warehouse::where('id',$id)->first();
         $slocs = $warehouse->storageLocations;
+        $sloc_ids = $slocs->pluck('id')->toArray();
 
-        $inventory_value = 0;
-        $inventory_qty = 0;
+        $sloc_details = StorageLocationDetail::whereIn('storage_location_id',$sloc_ids);
+        $inventory_value = DB::table('mst_storage_location_detail')
+        ->join('mst_material', 'mst_material.id', '=', 'mst_storage_location_detail.material_id')
+        ->select(DB::raw('sum(mst_storage_location_detail.quantity*mst_material.cost_standard_price) AS sum'))
+        ->whereIn('mst_storage_location_detail.storage_location_id', $sloc_ids)
+        ->first()->sum;
+        // $inventory_value = 0;
+        $inventory_qty = $sloc_details->sum('quantity');
 
-        foreach($slocs as $sloc){
-            $slocDetails = $sloc->storageLocationDetails;
-            foreach($slocDetails as $slocDetail){
-                $inventory_value += $slocDetail->material->cost_standard_price * $slocDetail->quantity;
-                $inventory_qty += $slocDetail->quantity;
-            }
-        }
+        // foreach($slocs as $sloc){
+        //     $slocDetails = $sloc->storageLocationDetails;
+        //     foreach($slocDetails as $slocDetail){
+        //         $inventory_value += $slocDetail->material->cost_standard_price * $slocDetail->quantity;
+        //         $inventory_qty += $slocDetail->quantity;
+        //     }
+        // }
 
         $inventory_value = number_format($inventory_value);
         $inventory_qty = number_format($inventory_qty);
@@ -128,6 +138,40 @@ class StockManagementController extends Controller
         $data['warehouseValue'] = $inventory_value;
         $data['warehouseQuantity'] = $inventory_qty;
         return response($data, Response::HTTP_OK);
-    }    
+    } 
+
+    public function getWarehouseStockSM($id){
+        $warehouse = Warehouse::where('id',$id)->first();
+        $slocs = $warehouse->storageLocations;
+        $sloc_ids = $slocs->pluck('id')->toArray();
+
+        $sloc_details = StorageLocationDetail::whereIn('storage_location_id',$sloc_ids)->with('material')->get();
+
+        return response($sloc_details, Response::HTTP_OK);
+    } 
+    
+    public function getStockInfoSM(){
+        $data = array();
+        $stocks = Stock::all();
+
+        $inventory_value = 0;
+        $inventory_qty = 0;
+        $reserved_inventory_qty = 0;
+
+        foreach($stocks as $stock){
+            $inventory_value += $stock->material->cost_standard_price * $stock->quantity;
+            $inventory_qty += $stock->quantity;
+            $reserved_inventory_qty += $stock->reserved;
+        }
+
+        $inventory_value = number_format($inventory_value);
+        $inventory_qty = number_format($inventory_qty);
+        $reserved_inventory_qty = number_format($reserved_inventory_qty);
+
+        $data['stockValue'] = $inventory_value;
+        $data['stockQuantity'] = $inventory_qty;
+        $data['reservedStockQuantity'] = $reserved_inventory_qty;
+        return response($data, Response::HTTP_OK);
+    } 
    
 }

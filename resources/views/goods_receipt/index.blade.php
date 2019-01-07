@@ -18,13 +18,8 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header p-b-20">
-                {{-- <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('goods_receipt.create') }}" class="btn btn-primary btn-sm">CREATE</a>
-                </div> --}}
-            </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered table-hover" id="po-table">
+                <table class="table table-bordered tableFixed tablePaging">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -58,17 +53,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#po-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

@@ -13,17 +13,17 @@
     </head>
     <body class="{{ $defaultSkin->default ?? 'skin-blue' }} sidebar-mini fixed">
         <div class="wrapper">
-            <header class="main-header">
+            <header class="main-header" id="header">
                 @include('includes.header')
             </header>
 
             <!-- Left side column. contains the logo and sidebar -->
-            <aside class="main-sidebar">
+            <aside class="main-sidebar" id="sidebar">
                 @include('includes.sidenav')
             </aside>
 
             <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper">
+            <div class="content-wrapper" id="content">
 
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
@@ -83,6 +83,18 @@
             function myFunction(x) {
                 if (x.matches) { // If media query matches
                     $('.table').wrap('<div class="dataTables_scroll" />');
+                    var prevScrollpos = window.pageYOffset;
+                    window.onscroll = function() {
+                    var currentScrollPos = window.pageYOffset;
+                    if (prevScrollpos > currentScrollPos) {
+                        document.getElementById("header").style.top = "0";
+                        document.getElementById("sidebar").style.top = "0";
+                    } else {
+                        document.getElementById("header").style.top = "-100px";
+                        document.getElementById("sidebar").style.top = "-100px";
+                    }
+                    prevScrollpos = currentScrollPos;
+                    }
                 } 
             }
 
@@ -123,7 +135,7 @@
             });
 
             // table searching per coloumn without paging
-             $('.tableNonPaging thead tr').clone(true).appendTo( '.tableNonPaging thead' );
+            $('.tableNonPaging thead tr').clone(true).appendTo( '.tableNonPaging thead' );
             $('.tableNonPaging thead tr:eq(1) th').addClass('indexTable').each( function (i) {
                 var title = $(this).text();
                 if(title == 'Status' || title == 'No' || title == ""){

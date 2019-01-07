@@ -443,17 +443,16 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'purchase_order.index',
         ]);
 
-        $createGiWithRef = Menu::where('route_name','goods_issue.createGiWithRef')->select('id')->first()->id;
+        $selectMR = Menu::where('route_name','goods_issue.selectMR')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $createGiWithRef,
-            'route_name' => 'goods_issue.createGiWithRef',
+            'menu_id' => $selectMR,
+            'route_name' => 'goods_issue.selectMR',
         ]);
 
-        /* $createGiWithoutRef = Menu::where('route_name','goods_issue.createGiWithoutRef')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $createGiWithoutRef,
+            'menu_id' => $selectMR,
             'route_name' => 'goods_issue.createGiWithoutRef',
-        ]); */
+        ]); 
 
         $viewGi = Menu::where('route_name','goods_issue.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
@@ -477,6 +476,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $indexApproveMR,
             'route_name' => 'material_requisition.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveMR,
+            'route_name' => 'material_requisition.showApprove',
         ]);
 
         $viewMr = Menu::where('route_name','material_requisition.index')->select('id')->first()->id;
@@ -538,6 +542,17 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $adjustStock,
             'route_name' => 'physical_inventory.showConfirmCountStock',
+        ]);
+
+        $viewAdjustmentHistory = Menu::where('route_name','physical_inventory.viewAdjustmentHistory')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewAdjustmentHistory,
+            'route_name' => 'physical_inventory.viewAdjustmentHistory',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewAdjustmentHistory,
+            'route_name' => 'physical_inventory.showPI',
         ]);
 
         $materialWriteOff = Menu::where('route_name','material_write_off.create')->select('id')->first()->id;

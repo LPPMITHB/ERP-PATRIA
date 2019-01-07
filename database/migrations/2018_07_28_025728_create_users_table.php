@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('role_id')->nullable(); 
             $table->unsignedInteger('branch_id')->nullable();
             $table->integer('status')->default(1);
+            $table->longText('business_unit_id');
             $table->rememberToken();
             $table->timestamps();
 

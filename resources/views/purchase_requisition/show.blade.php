@@ -1,16 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Purchase Requisition » '.$modelPR->project->name,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+@if($modelPR->project)
+    @breadcrumb(
+        [
+            'title' => 'View Purchase Requisition » '.$modelPR->project->name,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'View Purchase Requisition',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -18,7 +31,7 @@
     <div class="col-xs-12">
         <div class="box box-blue">
             <div class="row">
-                <div class="col-sm-3 col-md-3">
+                <div class="col-sm-12 col-md-3">
                     <div class="info-box">
                         <span class="info-box-icon bg-blue">
                             <i class="fa fa-envelope"></i>
@@ -29,96 +42,102 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-6 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-4">
-                            Project Code
+                        <div class="col-xs-5 col-md-5">
+                            Project Number
                         </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelPR->project->number }} </b>
+                        <div class="col-xs-7 col-md-7">
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->number : '-'}} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            Project Name
-                        </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelPR->project->name }} </b>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-5">
                             Ship Name
                         </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelPR->project->ship->type }} </b>
+                        <div class="col-xs-7 col-md-7">
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->name : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-5 col-md-5">
                             Ship Type
                         </div>
-                        <div class="col-md-8">
-                            : <b> {{ $modelPR->project->ship->type }} </b>
+                        <div class="col-xs-7 col-md-7">
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->ship->type : '-' }} </b>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-xs-5 col-md-5">
                             Customer Name
                         </div>
-                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPR->project->customer->name}}">
-                            : <b> {{ $modelPR->project->customer->name }} </b>
+                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPR->project) ?$modelPR->project->customer->name : ''}}">
+                            : <b> {{ isset($modelPR->project) ? $modelPR->project->customer->name : '-'}} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-xs-5 col-md-5">
                             Status
                         </div>
                         @if($modelPR->status == 1)
-                            <div class="col-md-7">
+                            <div class="col-xs-7 col-md-7">
                                 : <b>OPEN</b>
                             </div>
                         @elseif($modelPR->status == 2)
-                            <div class="col-md-7">
-                                : <b>CANCELED</b>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>APPROVED</b>
                             </div>
-                        @else
-                            <div class="col-md-7">
+                        @elseif($modelPR->status == 3)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>NEEDS REVISION</b>
+                            </div>
+                        @elseif($modelPR->status == 4)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>REVISED</b>
+                            </div>
+                        @elseif($modelPR->status == 5)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>REJECTED</b>
+                            </div>
+                        @elseif($modelPR->status == 0 || $modelPR->status == 7)
+                            <div class="col-xs-7 col-md-7">
                                 : <b>ORDERED</b>
                             </div>
                         @endif
-                        <div class="col-md-5">
+                        <div class="col-xs-5 col-md-5">
                             Created By
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelPR->user->name }} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-xs-5 col-md-5">
                             Created At
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelPR->created_at }} </b>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable" id="boms-table">
+                <table class="table table-bordered showTable tableFixed tableNonPagingVue">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Material Name</th>
-                            <th width="25%">Quantity</th>
+                            <th width="35%">Material Name</th>
+                            <th width="15%">Quantity</th>
                             <th width="30%">Work Name</th>
+                            <th width="15%">Alocation</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($modelPR->PurchaseRequisitionDetails as $PRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $PRD->material->name }}</td>
+                                <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
                                 <td>{{ number_format($PRD->quantity) }}</td>
-                                <td>{{ $PRD->wbs->name }}</td>
+                                <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
+                                <td>{{ $PRD->alocation }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -135,17 +154,34 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#boms-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
             }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( table.column(i).search() !== this.value ) {
+                    table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+                }
+            });
         });
+
+        var table = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
+        });
+        
+        $('div.overlay').hide();
     });
 </script>
 @endpush

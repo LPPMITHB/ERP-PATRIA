@@ -8,7 +8,7 @@ use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\Branch;
 use App\Models\Material;
-use App\Models\Work;
+use App\Models\WBS;
 use App\Models\Project;
 use Auth;
 use DB;
@@ -29,7 +29,14 @@ class PurchaseRequisitionController extends Controller
 
     public function indexApprove()
     {
-        $modelPRs = PurchaseRequisition::where('status',1)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->get();
+
+        return view('purchase_requisition.indexApprove', compact('modelPRs'));
+    }
+
+    public function indexConsolidation()
+    {
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->get();
 
         return view('purchase_requisition.indexApprove', compact('modelPRs'));
     }
@@ -67,7 +74,9 @@ class PurchaseRequisitionController extends Controller
             $PR = new PurchaseRequisition;
             $PR->number = $pr_number;
             $PR->valid_date = $valid_to;
-            $PR->project_id = $datas->project_id;
+            if($datas->project_id != null){
+                $PR->project_id = $datas->project_id;
+            }
             $PR->status = 1;
             $PR->user_id = Auth::user()->id;
             $PR->branch_id = Auth::user()->branch->id;
@@ -78,9 +87,9 @@ class PurchaseRequisitionController extends Controller
                 if(count($modelPRD)>0){
                     $status = 0;
                     foreach($modelPRD as $PurchaseRD){
-                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id){
+                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation){
                             $PurchaseRD->quantity +=$data->quantityInt;
-                            $PurchaseRD->save();
+                            $PurchaseRD->update();
 
                             $status = 1;
                         }
@@ -90,7 +99,10 @@ class PurchaseRequisitionController extends Controller
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = $data->quantityInt;
                         $PRD->material_id = $data->material_id;
-                        $PRD->wbs_id = $data->wbs_id;
+                        $PRD->alocation = $data->alocation;
+                        if($data->wbs_id != null){
+                            $PRD->wbs_id = $data->wbs_id;
+                        }
                         $PRD->save();
                     }
                 }else{
@@ -98,7 +110,10 @@ class PurchaseRequisitionController extends Controller
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->quantity = $data->quantityInt;
                     $PRD->material_id = $data->material_id;
-                    $PRD->wbs_id = $data->wbs_id;
+                    $PRD->alocation = $data->alocation;
+                    if($data->wbs_id != null){
+                        $PRD->wbs_id = $data->wbs_id;
+                    }
                     $PRD->save();
                 }
             }
@@ -178,12 +193,15 @@ class PurchaseRequisitionController extends Controller
     public function edit($id)
     {
         $modelPR = PurchaseRequisition::findOrFail($id);
-        $project = Project::findOrFail($modelPR->project_id)->with('customer','ship')->first();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','work')->get()->jsonSerialize();
+        $project = Project::where('id',$modelPR->project_id)->with('customer','ship')->first();
+        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs')->get()->jsonSerialize();
         $materials = Material::where('status',1)->get()->jsonSerialize();
-        $works = Work::where('project_id',$project->id)->get()->jsonSerialize();
+        $wbss = [];
+        if($project){
+            $wbss = WBS::where('project_id',$project->id)->get()->jsonSerialize();
+        }
 
-        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','works'));
+        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','wbss'));
     }
 
     /**
@@ -193,20 +211,80 @@ class PurchaseRequisitionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $datas = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('wbs_id',$datas['wbs_id'])->first();
+        $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
-            $modelPRD->quantity = $datas['quantity'];
-            $modelPRD->save();
-            
+            $prd_id = [];
+            $PR = PurchaseRequisition::find($id);
+            $PR->description = $datas->description;
+            if($PR->status == 3){
+                $PR->status = 4;
+            }
+            $PR->update();
+            foreach($datas->materials as $data){
+                if($data->prd_id != null){
+                    $status = 0;
+                    foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
+                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->id != $data->id){
+                            $quantity = $PurchaseRD->quantity + $data->quantity;
+
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->quantity = $quantity;
+                            $PRD->material_id = $data->material_id;
+                            $PRD->alocation = $data->alocation;
+                            if($PR->project_id != ""){
+                                $PRD->wbs_id = $data->wbs_id;
+                            }
+                            $PRD->save();
+                            array_push($prd_id,$PurchaseRD->id,$data->id);
+ 
+                            $status = 1;
+                        }
+                    }
+                    // print_r($PR->purchaseRequisitionDetails);exit();
+                    if($status == 0){
+                        $PRD = PurchaseRequisitionDetail::find($data->id);
+
+                        $PRD->quantity = $data->quantity;
+                        $PRD->alocation = $data->alocation;
+                        if($PR->project_id != ""){
+                            $PRD->wbs_id = $data->wbs_id;
+                        }
+                        $PRD->update();
+                    }
+                }else{
+                    $status = 0;
+                    foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
+                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation){
+                            $PurchaseRD->quantity +=$data->quantity;
+                            $PurchaseRD->update();
+
+                            $status = 1;
+                        }
+                    }
+                    if($status == 0){
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $PR->id;
+                        $PRD->quantity = $data->quantity;
+                        $PRD->material_id = $data->material_id;
+                        $PRD->alocation = $data->alocation;
+                        if($PR->project_id != ""){
+                            $PRD->wbs_id = $data->wbs_id;
+                        }
+                        $PRD->save();
+                    }
+                }
+            }
+            // print_r($PR->purchaseRequisitionDetails);exit();
+            $this->destroy(json_encode($prd_id));
             DB::commit();
-            return response(json_encode($modelPRD),Response::HTTP_OK);
+            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.edit',$datas['pr_id'])->with('error', $e->getMessage());
+            return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
         }
     }
 
@@ -231,23 +309,71 @@ class PurchaseRequisitionController extends Controller
         }  
     }
 
+    public function destroy($id){
+        $prd_id = json_decode($id);
+
+        DB::beginTransaction();
+        try {
+            foreach($prd_id as $id){
+                $modelPRD = PurchaseRequisitionDetail::findOrFail($id);
+                $modelPRD->delete();
+            }
+            DB::commit();
+            return true;
+        } catch(\Illuminate\Database\QueryException $e){
+            DB::rollback();
+            return redirect()->route('purchase_requisition.create')->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
+        }  
+    }
+    public function approval($pr_id,$status)
+    {
+        DB::beginTransaction();
+        try{
+            $modelPR = PurchaseRequisition::findOrFail($pr_id);
+            if($status == "approve"){
+                $modelPR->status = 2;
+                $modelPR->update();
+                DB::commit();
+                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Approved');
+            }elseif($status == "need-revision"){
+                $modelPR->status = 3;
+                $modelPR->update();
+                DB::commit();
+                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Need Revision');
+            }elseif($status == "reject"){
+                $modelPR->status = 5;
+                $modelPR->update();
+                DB::commit();
+                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Rejected');
+            }
+        } catch (\Exception $e){
+            DB::rollback();
+            return redirect()->route('purchase_requisition.show',$pr_id);
+        }
+
+        
+    }
+
     // function
     public function generatePRNumber(){
-        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
-
-        $branch_code = substr($modelBranch->code,4,2);
+        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
 		$number = 1;
-		if(isset($modelPR)){
-            $number += intval(substr($modelPR->number, -6));
-		}
-        $year = date('y'.$branch_code.'000000');
+        if(isset($modelPR)){
+            $yearDoc = substr($modelPR->number, 3,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelPR->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'00000');
         $year = intval($year);
 
 		$pr_number = $year+$number;
         $pr_number = 'PR-'.$pr_number;
+
 		return $pr_number;
-        
     }
 
     public function getProjectApi($id){
@@ -267,13 +393,13 @@ class PurchaseRequisitionController extends Controller
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getWorkAPI($id){
+    public function getWbsAPI($id){
 
-        return response(Work::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getPRDAPI($id){
 
-        return response(PurchaseRequisitionDetail::where('purchase_requisition_id',$id)->with('material','work')->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(PurchaseRequisitionDetail::where('purchase_requisition_id',$id)->with('material','wbs')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 }

@@ -23332,10 +23332,18 @@ textarea {
   width: 100% !important;
 }
 
+.mobile_view {
+  display: none;
+}
+
 @media only screen and (max-device-width: 1024px) {
   .mobile_device_landscape {
     margin-left: 15px;
     margin-top: 5px;
+  }
+
+  .mobile_view {
+    display: block;
   }
 
   .mobile_button_view {
@@ -23371,9 +23379,13 @@ textarea {
   }
 }
 
-@media only screen and (max-device-width: 500px) {
+@media only screen and (max-device-width: 400px) {
   .mobile_device_potrait {
     margin-top: 5px;
+  }
+
+  .mobile_view {
+    display: block;
   }
 
   .gantt_chart_mobile {
@@ -23417,6 +23429,10 @@ textarea {
   padding: 1px !important;
 }
 
+.indexTable2 {
+  padding: 1px !important;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -23445,6 +23461,21 @@ textarea {
 
 .error-page {
   margin: 0px auto 0 auto;
+}
+
+.main-header {
+  -webkit-transition: top 0.3s;
+  transition: top 0.3s;
+}
+
+#sidebar {
+  -webkit-transition: top 0.3s;
+  transition: top 0.3s;
+}
+
+#content {
+  -webkit-transition: top 0.3s;
+  transition: top 0.3s;
 }
 
 /*
