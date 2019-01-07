@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Material;
+use App\Models\Configuration;
 use Auth;
 use DB;
 
@@ -29,8 +30,9 @@ class MaterialController extends Controller
     public function create()
     {
         $material = new Material;
-        $material_code = self::generateMaterialCode();
-        return view('material.create', compact('material', 'material_code'));
+        $currencies = Configuration::get('Currencies');
+
+        return view('material.create', compact('material','currencies'));
     }
 
     /**
@@ -66,13 +68,27 @@ class MaterialController extends Controller
             'width' => 'nullable|numeric',
         ]);
 
+        $currencies = collect(Configuration::get('Currencies'));
+        
+        $selectedCurrency = null;
+        foreach($currencies as $currency){
+            if($currency->unit == $data->currency){
+                $selectedCurrency = $currency;
+            }
+        }
+
         DB::beginTransaction();
         try {
             $material = new Material;
             $material->code = $data->code;
             $material->name = $data->name;
             $material->description = $data->description;
-            $material->cost_standard_price = $data->cost_standard_price;
+            $material->currency = $data->currency;
+            if($selectedCurrency->unit == "Rp"){
+                $material->cost_standard_price = $data->cost_standard_price;
+            }else{
+                $material->cost_standard_price = $data->cost_standard_price*$selectedCurrency->value;                
+            }
             $material->weight = $data->weight;
             $material->height = $data->height;
             $material->length = $data->lengths;
@@ -101,6 +117,15 @@ class MaterialController extends Controller
     public function show($id)
     {
         $material = Material::findOrFail($id);
+        $currencies = collect(Configuration::get('Currencies'));
+        
+        $selectedCurrency = null;
+        foreach($currencies as $currency){
+            if($currency->unit == $material->currency){
+                $selectedCurrency = $currency;
+            }
+        }
+        $material->cost_standard_price = $material->cost_standard_price / $selectedCurrency->value;
         
         return view('material.show', compact('material'));
     }
@@ -114,8 +139,17 @@ class MaterialController extends Controller
     public function edit($id)
     {
         $material = Material::findOrFail($id);
+        $currencies = collect(Configuration::get('Currencies'));
         
-        return view('material.edit', compact('material'));
+        $selectedCurrency = null;
+        foreach($currencies as $currency){
+            if($currency->unit == $material->currency){
+                $selectedCurrency = $currency;
+            }
+        }
+        $material->cost_standard_price = $material->cost_standard_price / $selectedCurrency->value;
+        
+        return view('material.edit', compact('material','currencies'));
     }
 
     /**
@@ -153,13 +187,26 @@ class MaterialController extends Controller
             'volume' => 'nullable|numeric'
 
         ]);
+
+        $currencies = collect(Configuration::get('Currencies'));
+        
+        $selectedCurrency = null;
+        foreach($currencies as $currency){
+            if($currency->unit == $data->currency){
+                $selectedCurrency = $currency;
+            }
+        }
         DB::beginTransaction();
         try {
         $material = Material::find($id);
         $material->code = $data->code;
         $material->name = $data->name;
         $material->description = $data->description;
-        $material->cost_standard_price = $data->cost_standard_price;
+        if($selectedCurrency->unit == "Rp"){
+            $material->cost_standard_price = $data->cost_standard_price;
+        }else{
+            $material->cost_standard_price = $data->cost_standard_price*$selectedCurrency->value;                
+        }
         $material->weight = $data->weight;
         $material->height = $data->height;
         $material->length = $data->lengths;
