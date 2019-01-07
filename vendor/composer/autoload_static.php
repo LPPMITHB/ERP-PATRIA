@@ -438,6 +438,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\Yard' => __DIR__ . '/../..' . '/app/Models/Yard.php',
         'App\\Models\\YardPlan' => __DIR__ . '/../..' . '/app/Models/YardPlan.php',
         'App\\Notifications\\MailResetPasswordToken' => __DIR__ . '/../..' . '/app/Notifications/MailResetPasswordToken.php',
+        'App\\Notifications\\ProjectActivity' => __DIR__ . '/../..' . '/app/Notifications/ProjectActivity.php',
         'App\\Notifications\\SampleNotification' => __DIR__ . '/../..' . '/app/Notifications/SampleNotification.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

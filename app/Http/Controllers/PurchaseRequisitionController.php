@@ -325,19 +325,33 @@ class PurchaseRequisitionController extends Controller
             return redirect()->route('purchase_requisition.create')->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
         }  
     }
-    public function approval($pr_id,$status){
-        $modelPR = PurchaseRequisition::findOrFail($pr_id);
-        if($status == "approve"){
-            $modelPR->status = 2;
-            $modelPR->update();
-        }elseif($status == "need-revision"){
-            $modelPR->status = 3;
-            $modelPR->update();
-        }elseif($status == "reject"){
-            $modelPR->status = 5;
-            $modelPR->update();
+    public function approval($pr_id,$status)
+    {
+        DB::beginTransaction();
+        try{
+            $modelPR = PurchaseRequisition::findOrFail($pr_id);
+            if($status == "approve"){
+                $modelPR->status = 2;
+                $modelPR->update();
+                DB::commit();
+                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Approved');
+            }elseif($status == "need-revision"){
+                $modelPR->status = 3;
+                $modelPR->update();
+                DB::commit();
+                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Need Revision');
+            }elseif($status == "reject"){
+                $modelPR->status = 5;
+                $modelPR->update();
+                DB::commit();
+                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Rejected');
+            }
+        } catch (\Exception $e){
+            DB::rollback();
+            return redirect()->route('purchase_requisition.show',$pr_id);
         }
-        return redirect()->route('purchase_requisition.show',$pr_id);
+
+        
     }
 
     // function

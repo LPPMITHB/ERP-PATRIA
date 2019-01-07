@@ -111,6 +111,7 @@ return array(
     'App\\Models\\Yard' => $baseDir . '/app/Models/Yard.php',
     'App\\Models\\YardPlan' => $baseDir . '/app/Models/YardPlan.php',
     'App\\Notifications\\MailResetPasswordToken' => $baseDir . '/app/Notifications/MailResetPasswordToken.php',
+    'App\\Notifications\\ProjectActivity' => $baseDir . '/app/Notifications/ProjectActivity.php',
     'App\\Notifications\\SampleNotification' => $baseDir . '/app/Notifications/SampleNotification.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
