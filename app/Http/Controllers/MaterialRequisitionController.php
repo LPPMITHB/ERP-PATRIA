@@ -52,7 +52,7 @@ class MaterialRequisitionController extends Controller
             $MR->project_id = $datas->project_id;
             $MR->description = $datas->description;
             $MR->status = 1;
-            $MR->type = 1;
+            $MR->type = 0;
             $MR->user_id = Auth::user()->id;
             $MR->branch_id = Auth::user()->branch->id;
             $MR->save();
