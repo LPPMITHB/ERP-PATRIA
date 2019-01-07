@@ -1,10 +1,15 @@
 @extends('layouts.main')
 
 @section('content-header')
+@if($modelPR->type == 1)
+    @php($type = 'Material')
+@else  
+    @php($type = 'Resource')
+@endif
 @if($modelPR->project)
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition » '.$modelPR->project->name,
+            'title' => 'View Purchase Requisition - '.$type.' » '.$modelPR->project->name,
             'items' => [
                 'Dashboard' => route('index'),
                 'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
@@ -15,7 +20,7 @@
 @else
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition',
+            'title' => 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
                 'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
@@ -134,10 +139,15 @@
                         @foreach($modelPR->PurchaseRequisitionDetails as $PRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $PRD->material->name }}</td>
-                                <td>{{ number_format($PRD->quantity) }}</td>
+                                @if($modelPR->type == 1)
+                                    <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
+                                    <td>{{ number_format($PRD->quantity) }}</td>
+                                @else
+                                    <td>{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
+                                    <td>1</td>
+                                @endif
                                 <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
-                                <td>{{ $PRD->alocation }}</td>
+                                <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -252,54 +252,78 @@ class PurchaseRequisitionController extends Controller
                 $PR->status = 4;
             }
             $PR->update();
-            foreach($datas->materials as $data){
-                if($data->prd_id != null){
-                    $status = 0;
-                    foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->id != $data->id){
-                            $quantity = $PurchaseRD->quantity + $data->quantity;
+            if($PR->type == 1){
+                foreach($datas->materials as $data){
+                    if($data->prd_id != null){
+                        $status = 0;
+                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
+                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->id != $data->id){
+                                $quantity = $PurchaseRD->quantity + $data->quantity;
 
+                                $PRD = new PurchaseRequisitionDetail;
+                                $PRD->purchase_requisition_id = $PR->id;
+                                $PRD->quantity = $quantity;
+                                $PRD->material_id = $data->material_id;
+                                $PRD->alocation = $data->alocation;
+                                if($PR->project_id != ""){
+                                    $PRD->wbs_id = $data->wbs_id;
+                                }
+                                $PRD->save();
+                                array_push($prd_id,$PurchaseRD->id,$data->id);
+    
+                                $status = 1;
+                            }
+                        }
+                        // print_r($PR->purchaseRequisitionDetails);exit();
+                        if($status == 0){
+                            $PRD = PurchaseRequisitionDetail::find($data->id);
+
+                            $PRD->quantity = $data->quantity;
+                            $PRD->alocation = $data->alocation;
+                            if($PR->project_id != ""){
+                                $PRD->wbs_id = $data->wbs_id;
+                            }
+                            $PRD->update();
+                        }
+                    }else{
+                        $status = 0;
+                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
+                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation){
+                                $PurchaseRD->quantity +=$data->quantity;
+                                $PurchaseRD->update();
+
+                                $status = 1;
+                            }
+                        }
+                        if($status == 0){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
-                            $PRD->quantity = $quantity;
+                            $PRD->quantity = $data->quantity;
                             $PRD->material_id = $data->material_id;
                             $PRD->alocation = $data->alocation;
                             if($PR->project_id != ""){
                                 $PRD->wbs_id = $data->wbs_id;
                             }
                             $PRD->save();
-                            array_push($prd_id,$PurchaseRD->id,$data->id);
- 
-                            $status = 1;
                         }
                     }
-                    // print_r($PR->purchaseRequisitionDetails);exit();
-                    if($status == 0){
+                }
+                // print_r($PR->purchaseRequisitionDetails);exit();
+                $this->destroy(json_encode($prd_id));
+            }else{
+                foreach($datas->materials as $data){
+                    if($data->prd_id != null){
                         $PRD = PurchaseRequisitionDetail::find($data->id);
 
-                        $PRD->quantity = $data->quantity;
-                        $PRD->alocation = $data->alocation;
                         if($PR->project_id != ""){
                             $PRD->wbs_id = $data->wbs_id;
+                            $PRD->update();
                         }
-                        $PRD->update();
-                    }
-                }else{
-                    $status = 0;
-                    foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation){
-                            $PurchaseRD->quantity +=$data->quantity;
-                            $PurchaseRD->update();
-
-                            $status = 1;
-                        }
-                    }
-                    if($status == 0){
+                    }else{
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
-                        $PRD->quantity = $data->quantity;
-                        $PRD->material_id = $data->material_id;
-                        $PRD->alocation = $data->alocation;
+                        $PRD->quantity = 1;
+                        $PRD->resource_id = $data->resource_id;
                         if($PR->project_id != ""){
                             $PRD->wbs_id = $data->wbs_id;
                         }
@@ -307,8 +331,6 @@ class PurchaseRequisitionController extends Controller
                     }
                 }
             }
-            // print_r($PR->purchaseRequisitionDetails);exit();
-            $this->destroy(json_encode($prd_id));
             DB::commit();
             return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
         } catch (\Exception $e) {
