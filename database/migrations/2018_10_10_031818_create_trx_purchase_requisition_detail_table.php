@@ -18,12 +18,14 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
             $table->unsignedInteger('purchase_requisition_id');
             $table->integer('quantity');
             $table->integer('reserved')->default(0);
-            $table->unsignedInteger('material_id');
+            $table->unsignedInteger('material_id')->nullable();
+            $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
-            $table->string('alocation')->default('Stock');
+            $table->string('alocation')->nullable();
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');
+            $table->foreign('resource_id')->references('id')->on('mst_resource');
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');
             $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
         });
