@@ -875,6 +875,10 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
 
     Route::get('/{id}', 'ProductionOrderController@show')->name('show')->middleware('can:show-production-order');
 
+    Route::get('/showRelease/{id}', 'ProductionOrderController@show')->name('showRelease')->middleware('can:show-production-order');
+
+    Route::get('/showConfirm/{id}', 'ProductionOrderController@show')->name('showConfirm')->middleware('can:show-production-order');
+
     Route::get('/{id}/edit', 'ProductionOrderController@edit')->name('edit')->middleware('can:edit-production-order');
 
     Route::patch('/{id}', 'ProductionOrderController@update')->name('update')->middleware('can:edit-production-order');

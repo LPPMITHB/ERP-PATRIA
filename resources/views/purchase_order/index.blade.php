@@ -46,49 +46,29 @@
                                     <td>OPEN</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @elseif($modelPO->status == 2)
                                     <td>APPROVED</td>
                                     <td class="textCenter">
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @elseif($modelPO->status == 3)
                                     <td>NEED REVISION</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @elseif($modelPO->status == 4)
                                     <td>REVISED</td>
                                     <td class="textCenter">
                                         <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @elseif($modelPO->status == 5)
                                     <td>REJECTED</td>
                                     <td class="textCenter">
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @else
                                     <td>RECEIVED</td>
