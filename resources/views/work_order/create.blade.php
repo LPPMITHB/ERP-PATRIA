@@ -2,10 +2,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Purchase Order',
+        'title' => 'Create Work Order',
         'items' => [
             'Dashboard' => route('index'),
-            'Create Purchase Order' => route('purchase_order.create',$modelPR->id),
+            'Create Work Order' => route('work_order.create',$modelWR->id),
         ]
     ]
 )
@@ -16,15 +16,15 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="create-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.store') }}">
+            <form id="create-po" class="form-horizontal" method="POST" action="{{ route('work_order.store') }}">
             @csrf
                 @verbatim
                     <div id="po">
                         <div class="box-header">
                             <div class="row">
                                 <div class="col-xs-12 col-md-4" v-if="modelProject != null">
-                                    <div class="col-xs-5 no-padding">PR Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
+                                    <div class="col-xs-5 no-padding">WR Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelWR.number}}</b></div>
             
                                     <div class="col-xs-5 no-padding">Project Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.number}}</b></div>
@@ -42,8 +42,8 @@
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
                                 </div>
                                 <div class="col-xs-12 col-md-4" v-else>
-                                    <div class="col-xs-5 no-padding">PR Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
+                                    <div class="col-xs-5 no-padding">WR Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelWR.number}}</b></div>
 
                                     <div class="col-xs-5 no-padding">Project Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="col-sm-12">
-                                        <label for="">PO Description</label>
+                                        <label for="">WO Description</label>
                                     </div>
                                     <div class="col-sm-12">
                                         <textarea class="form-control" rows="3" v-model="description"></textarea>
@@ -92,23 +92,21 @@
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
                                                 <th style="width: 30%">WBS Name</th>
-                                                <th style="width: 15%">Alocation</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(PRD,index) in PRDetail">
+                                            <tr v-for="(WRD,index) in WRDetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ PRD.material.code }} - {{ PRD.material.name }}</td>
-                                                <td class="tdEllipsis">{{ PRD.sugQuantity }}</td>
+                                                <td class="tdEllipsis">{{ WRD.material.code }} - {{ WRD.material.name }}</td>
+                                                <td class="tdEllipsis">{{ WRD.sugQuantity }}</td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="PRD.quantity" placeholder="Please Input Quantity">
+                                                    <input class="form-control" v-model="WRD.quantity" placeholder="Please Input Quantity">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
+                                                    <input class="form-control" v-model="WRD.material.cost_standard_price" placeholder="Please Input Total Price">
                                                 </td>
-                                                <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
+                                                <td class="tdEllipsis" v-if="WRD.wbs != null">{{ WRD.wbs.name }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
-                                                <td class="tdEllipsis">{{ PRD.alocation }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -167,8 +165,8 @@
     });
 
     var data = {
-        modelPR : @json($modelPR),
-        PRDetail : @json($modelPRD),
+        modelWR : @json($modelWR),
+        WRDetail : @json($modelWRD),
         modelProject : @json($modelProject),
         modelVendor : [],
         vendorSettings: {
@@ -208,20 +206,20 @@
                 })
             },
             submitForm(){
-                var data = this.PRDetail;
+                var data = this.WRDetail;
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
 
-                data.forEach(PRD => {
-                    PRD.quantity = PRD.quantity.replace(/,/g , '');      
-                    PRD.material.cost_standard_price = PRD.material.cost_standard_price.replace(/,/g , '');      
+                data.forEach(WRD => {
+                    WRD.quantity = WRD.quantity.replace(/,/g , '');      
+                    WRD.material.cost_standard_price = WRD.material.cost_standard_price.replace(/,/g , '');      
                 });
 
-                this.submittedForm.PRD = data;
+                this.submittedForm.WRD = data;
                 this.submittedForm.vendor_id = this.vendor_id;
                 this.submittedForm.description = this.description;
-                this.submittedForm.pr_id = this.modelPR.id;
-                this.submittedForm.project_id = this.modelPR.project_id;
+                this.submittedForm.wr_id = this.modelWR.id;
+                this.submittedForm.project_id = this.modelWR.project_id;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -232,12 +230,12 @@
             }
         },
         watch : {
-            PRDetail:{
+            WRDetail:{
                 handler: function(newValue) {
                     var data = newValue;
-                    data.forEach(PRD => {
-                        PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                        PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
+                    data.forEach(WRD => {
+                        WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+                        WRD.material.cost_standard_price = (WRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
                     });
                 },
                 deep: true
@@ -245,13 +243,13 @@
         },
         created: function() {
             this.getVendor();
-            var data = this.PRDetail;
-            data.forEach(PRD => {
-                PRD.quantity = PRD.quantity - PRD.reserved;
-                PRD.sugQuantity = PRD.quantity;
-                PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            var data = this.WRDetail;
+            data.forEach(WRD => {
+                WRD.quantity = WRD.quantity - WRD.reserved;
+                WRD.sugQuantity = WRD.quantity;
+                WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                WRD.sugQuantity = (WRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                WRD.material.cost_standard_price = (WRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             });
             Vue.directive('tooltip', function(el, binding){
                 $(el).tooltip({

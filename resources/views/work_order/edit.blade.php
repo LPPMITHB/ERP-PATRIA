@@ -2,10 +2,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Edit Purchase Order',
+        'title' => 'Edit Work Order',
         'items' => [
             'Dashboard' => route('index'),
-            'Edit Purchase Order' => '',
+            'Edit Work Order' => '',
         ]
     ]
 )
@@ -16,7 +16,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.update') }}">
+            <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('work_order.update') }}">
             <input type="hidden" name="_method" value="PATCH">
             @csrf
                 @verbatim
@@ -25,10 +25,10 @@
                             <div class="row">
                                 <div class="col-xs-12 col-md-4" v-if="modelProject != null">
                                     <div class="col-xs-5 no-padding">PO Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.number}}</b></div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelWO.number}}</b></div>
 
-                                    <div class="col-xs-5 no-padding">PR Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.purchase_requisition.number}}</b></div>
+                                    <div class="col-xs-5 no-padding">WR Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelWO.work_request.number}}</b></div>
             
                                     <div class="col-xs-5 no-padding">Project Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.number}}</b></div>
@@ -40,11 +40,11 @@
                                     <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(modelProject.customer.name)"><b>: {{modelProject.customer.name}}</b></div>
                                 </div>
                                 <div class="col-xs-12 col-md-4" v-else>
-                                    <div class="col-xs-5 no-padding">PO Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.number}}</b></div>
+                                    <div class="col-xs-5 no-padding">WO Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelWO.number}}</b></div>
 
-                                    <div class="col-xs-5 no-padding">PR Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.purchase_requisition.number}}</b></div>
+                                    <div class="col-xs-5 no-padding">WR Number</div>
+                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelWO.work_request.number}}</b></div>
             
                                     <div class="col-xs-5 no-padding">Project Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
@@ -59,7 +59,7 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <label for="type">Vendor Name</label>
-                                            <selectize v-model="modelPO.vendor_id" :settings="vendorSettings">
+                                            <selectize v-model="modelWO.vendor_id" :settings="vendorSettings">
                                                 <option v-for="(vendor, index) in modelVendor" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                             </selectize>
                                         </div>
@@ -67,10 +67,10 @@
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="col-sm-12">
-                                        <label for="">PO Description</label>
+                                        <label for="">WO Description</label>
                                     </div>
                                     <div class="col-sm-12">
-                                        <textarea class="form-control" rows="3" v-model="modelPO.description"></textarea>
+                                        <textarea class="form-control" rows="3" v-model="modelWO.description"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -87,23 +87,21 @@
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
                                                 <th style="width: 30%">WBS Name</th>
-                                                <th style="width: 15%">Alocation</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(POD,index) in PODetail">
+                                            <tr v-for="(WOD,index) in WODetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ POD.material.code }} - {{ POD.material.name }}</td>
-                                                <td class="tdEllipsis">{{ POD.purchase_requisition_detail.quantity }}</td>
+                                                <td class="tdEllipsis">{{ WOD.material.code }} - {{ WOD.material.name }}</td>
+                                                <td class="tdEllipsis">{{ WOD.work_request_detail.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="POD.quantity" placeholder="Please Input Quantity">
+                                                    <input class="form-control" v-model="WOD.quantity" placeholder="Please Input Quantity">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="POD.total_price" placeholder="Please Input Price / pcs">
+                                                    <input class="form-control" v-model="WOD.total_price" placeholder="Please Input Price / pcs">
                                                 </td>
-                                                <td v-if="POD.wbs != null" class="tdEllipsis">{{ POD.wbs.name }}</td>
+                                                <td v-if="WOD.wbs != null" class="tdEllipsis">{{ WOD.wbs.name }}</td>
                                                 <td v-else class="tdEllipsis">-</td>
-                                                <td class="tdEllipsis">{{ POD.purchase_requisition_detail.alocation }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -134,8 +132,8 @@
     });
 
     var data = {
-        modelPO : @json($modelPO),
-        PODetail : @json($modelPOD),
+        modelWO : @json($modelWO),
+        WODetail : @json($modelWOD),
         modelProject : @json($modelProject),
         modelVendor : [],
         vendorSettings: {
@@ -184,17 +182,17 @@
                 })
             },
             submitForm(){
-                var data = this.PODetail;
+                var data = this.WODetail;
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
 
-                data.forEach(POD => {
-                    POD.quantity = POD.quantity.replace(/,/g , '');      
-                    POD.total_price = POD.total_price.replace(/,/g , '');      
+                data.forEach(WOD => {
+                    WOD.quantity = WOD.quantity.replace(/,/g , '');      
+                    WOD.total_price = WOD.total_price.replace(/,/g , '');      
                 });
 
-                this.submittedForm.modelPO = this.modelPO;
-                this.submittedForm.PODetail = data;
+                this.submittedForm.modelWO = this.modelWO;
+                this.submittedForm.WODetail = data;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -205,12 +203,12 @@
             }
         },
         watch : {
-            PODetail:{
+            WODetail:{
                 handler: function(newValue) {
                     var data = newValue;
-                    data.forEach(POD => {
-                        POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");     
-                        POD.total_price = (POD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                    data.forEach(WOD => {
+                        WOD.quantity = (WOD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");     
+                        WOD.total_price = (WOD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                     });
                 },
                 deep: true
@@ -218,11 +216,11 @@
         },
         created: function() {
             this.getVendor();
-            var data = this.PODetail;
-            data.forEach(POD => {
-                POD.total_price = POD.total_price / POD.quantity;        
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                POD.total_price = (POD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+            var data = this.WODetail;
+            data.forEach(WOD => {
+                WOD.total_price = WOD.total_price / WOD.quantity;        
+                WOD.quantity = (WOD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+                WOD.total_price = (WOD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             });
         },
     });

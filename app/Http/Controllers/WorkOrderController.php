@@ -19,48 +19,48 @@ class WorkOrderController extends Controller
 {
     public function selectWR()
     {
-        $modelWRs = WorkRequest::where('status',2)->get();
+        $modelWRs = WorkRequest::whereIn('status',[2,7])->get();
         
         return view('work_order.selectWR', compact('modelWRs'));
     }
     
     public function index()
     {
-        $modelPOs = WorkOrder::all();
+        $modelWOs = WorkOrder::all();
 
-        return view('work_order.index', compact('modelPOs'));
+        return view('work_order.index', compact('modelWOs'));
     
     }
 
     public function indexApprove()
     {
-        $modelPOs = WorkOrder::whereIn('status',[1,4])->get();
+        $modelWOs = WorkOrder::whereIn('status',[1,4])->get();
 
-        return view('work_order.indexApprove', compact('modelPOs'));
+        return view('work_order.indexApprove', compact('modelWOs'));
     
     }
 
     public function create(Request $request)
     {
         $datas = json_decode($request->datas);
-        $modelPR = WorkRequest::where('id',$datas->id)->with('project')->first();
-        $modelPRD = WorkRequestDetail::whereIn('id',$datas->checkedPRD)->with('material','wbs')->get();
-        foreach($modelPRD as $key=>$PRD){
-            if($PRD->reserved >= $PRD->quantity){
-                $modelPRD->forget($key);
+        $modelWR = WorkRequest::where('id',$datas->id)->with('project')->first();
+        $modelWRD = WorkRequestDetail::whereIn('id',$datas->checkedWRD)->with('material','wbs')->get();
+        foreach($modelWRD as $key=>$WRD){
+            if($WRD->reserved >= $WRD->quantity){
+                $modelWRD->forget($key);
             }
         }
-        $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
+        $modelProject = Project::where('id',$modelWR->project_id)->with('ship','customer')->first();
 
-        return view('work_order.create', compact('modelPR','modelPRD','modelProject'));
+        return view('work_order.create', compact('modelWR','modelWRD','modelProject'));
     }
 
     public function selectWRD($id)
     {
         $modelWR = WorkRequest::findOrFail($id);
         $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get();
-        foreach($modelWRD as $key=>$PRD){
-            if($PRD->received == $PRD->quantity){
+        foreach($modelWRD as $key=>$WRD){
+            if($WRD->received == $WRD->quantity){
                 $modelWRD->forget($key);
             }
         }
@@ -69,129 +69,76 @@ class WorkOrderController extends Controller
         return view('work_order.selectWRD', compact('modelWR','modelWRD'));
     }
 
-    public function storeResource(Request $request){
-        $datas = json_decode($request->datas);
-        $po_number = $this->generatePONumber();
-
-        DB::beginTransaction();
-        try {
-            $PO = new WorkOrder;
-            $PO->number = $po_number;
-            $PO->vendor_id = $datas->vendor_id;
-            $PO->project_id = $datas->project_id;
-            $PO->description = $datas->description;
-            $PO->status = 1;
-            $PO->user_id = Auth::user()->id;
-            $PO->branch_id = Auth::user()->branch->id;
-            $PO->save();
-
-            $total_price = 0;
-            foreach($datas->resources as $data){
-                $POD = new WorkOrderDetail;
-                $POD->work_order_id = $PO->id;
-                $POD->quantity = $data->quantity;
-                $POD->resource_id = $data->resource_id;
-                $POD->wbs_id = $data->wbs_id;
-                $POD->total_price = $data->cost;
-                $POD->save();
-
-                $total_price += $POD->total_price;
-            }
-
-            $PO->total_price = $total_price;
-            $PO->save(); 
-            DB::commit();
-            return redirect()->route('work_order.showResource',$PO->id)->with('success', 'Purchase Order Created');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('work_order.createPOResource')->with('error', $e->getMessage());
-        }
-    }
 
     public function store(Request $request)
     {
         $datas = json_decode($request->datas);
-        $po_number = $this->generatePONumber();
+        $wo_number = $this->generateWONumber();
 
         DB::beginTransaction();
         try {
-            $PO = new WorkOrder;
-            $PO->number = $po_number;
-            $PO->purchase_requisition_id = $datas->pr_id;
-            $PO->vendor_id = $datas->vendor_id;
-            $PO->project_id = $datas->project_id;
-            $PO->description = $datas->description;
-            $PO->status = 1;
-            $PO->user_id = Auth::user()->id;
-            $PO->branch_id = Auth::user()->branch->id;
-            $PO->save();
+            $WO = new WorkOrder;
+            $WO->number = $wo_number;
+            $WO->work_request_id = $datas->wr_id;
+            $WO->vendor_id = $datas->vendor_id;
+            $WO->project_id = $datas->project_id;
+            $WO->description = $datas->description;
+            $WO->status = 1;
+            $WO->user_id = Auth::user()->id;
+            $WO->branch_id = Auth::user()->branch->id;
+            $WO->save();
 
             $status = 0;
             $total_price = 0;
-            foreach($datas->PRD as $data){
-                $POD = new WorkOrderDetail;
-                $POD->work_order_id = $PO->id;
-                $POD->quantity = $data->quantity;
-                $POD->material_id = $data->material_id;
-                $POD->purchase_requisition_detail_id = $data->id;
-                $POD->wbs_id = $data->wbs_id;
-                $POD->total_price = $data->material->cost_standard_price * $data->quantity;
-                $POD->save();
+            foreach($datas->WRD as $data){
+                $WOD = new WorkOrderDetail;
+                $WOD->work_order_id = $WO->id;
+                $WOD->quantity = $data->quantity;
+                $WOD->material_id = $data->material_id;
+                $WOD->work_request_detail_id = $data->id;
+                $WOD->wbs_id = $data->wbs_id;
+                $WOD->total_price = $data->material->cost_standard_price * $data->quantity;
+                $WOD->save();
 
-                $statusPR = $this->updatePR($data->id,$data->quantity);
+                $statusPR = $this->updateWR($data->id,$data->quantity);
                 if($statusPR === true){
                     $status = 1;
                 }
-                $total_price += $POD->total_price;
+                $total_price += $WOD->total_price;
             }
 
-            $PO->total_price = $total_price;
-            $PO->save(); 
-            $this->checkStatusPr($datas->pr_id,$status);
+            $WO->total_price = $total_price;
+            $WO->save(); 
+            $this->checkStatusWr($datas->wr_id,$status);
             DB::commit();
-            return redirect()->route('work_order.show',$PO->id)->with('success', 'Purchase Order Created');
+            return redirect()->route('work_order.show',$WO->id)->with('success', 'Work Order Created');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('work_order.selectWRD',$datas->pr_id)->with('error', $e->getMessage());
+            return redirect()->route('work_order.selectWRD',$datas->wr_id)->with('error', $e->getMessage());
         }
     }
 
     public function show($id)
     {
-        $modelPO = WorkOrder::findOrFail($id);
+        $modelWO = WorkOrder::findOrFail($id);
 
-        return view('work_order.show', compact('modelPO'));
+        return view('work_order.show', compact('modelWO'));
     }
 
     public function showApprove($id)
     {
-        $modelPO = WorkOrder::findOrFail($id);
+        $modelWO = WorkOrder::findOrFail($id);
 
-        return view('work_order.showApprove', compact('modelPO'));
-    }
-
-    public function showResource($id)
-    {
-        $modelPO = WorkOrder::findOrFail($id);
-
-        return view('work_order.showResource', compact('modelPO'));
+        return view('work_order.showApprove', compact('modelWO'));
     }
 
     public function edit($id)
     {
-        $modelPO = WorkOrder::where('id',$id)->with('purchaseRequisition')->first();
-        $modelPOD = WorkOrderDetail::where('work_order_id',$id)->with('material','purchaseRequisitionDetail','wbs')->get();
-        $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
+        $modelWO = WorkOrder::where('id',$id)->with('workRequest')->first();
+        $modelWOD = WorkOrderDetail::where('work_order_id',$id)->with('material','workRequestDetail','wbs')->get();
+        $modelProject = Project::where('id',$modelWO->workRequest->project_id)->with('ship','customer')->first();
 
-        return view('work_order.edit', compact('modelPO','modelPOD','modelProject'));
-    }
-
-    public function createPOResource(){
-        $modelProject = Project::where('status',1)->get();
-        $modelVendor = Vendor::where('status',1)->get();
-        $modelResource = Resource::all();
-
-        return view('work_order.createPOResource', compact('modelResource','modelProject','modelVendor'));
+        return view('work_order.edit', compact('modelWO','modelWOD','modelProject'));
     }
 
     public function update(Request $request)
@@ -200,34 +147,34 @@ class WorkOrderController extends Controller
 
         DB::beginTransaction();
         try {
-            $PO = WorkOrder::findOrFail($datas->modelPO->id);
+            $WO = WorkOrder::findOrFail($datas->modelWO->id);
             
             $status = 0;
             $total_price = 0;
-            foreach($datas->PODetail as $data){
-                $POD = WorkOrderDetail::findOrFail($data->id);
-                $diff = $data->quantity - $POD->quantity;
-                $POD->quantity = $data->quantity;
-                $POD->total_price = $data->quantity * $data->total_price;
-                $POD->save();
+            foreach($datas->WODetail as $data){
+                $WOD = WorkOrderDetail::findOrFail($data->id);
+                $diff = $data->quantity - $WOD->quantity;
+                $WOD->quantity = $data->quantity;
+                $WOD->total_price = $data->quantity * $data->total_price;
+                $WOD->save();
 
-                $statusPR = $this->updatePR($data->purchase_requisition_detail_id,$diff);
+                $statusPR = $this->updateWR($data->work_request_detail_id,$diff);
                 if($statusPR === true){
                     $status = 1;
                 }
-                $total_price += $POD->total_price;
+                $total_price += $WOD->total_price;
             }
-            $PO->vendor_id = $datas->modelPO->vendor_id;
-            $PO->description = $datas->modelPO->description;
-            $PO->total_price = $total_price;
-            if($PO->status == 3){
-                $PO->status = 4;
+            $WO->vendor_id = $datas->modelWO->vendor_id;
+            $WO->description = $datas->modelWO->description;
+            $WO->total_price = $total_price;
+            if($WO->status == 3){
+                $WO->status = 4;
             }
-            $PO->save();
+            $WO->save();
 
-            $this->checkStatusPr($datas->modelPO->purchase_requisition_id,$status);
+            $this->checkStatusWr($datas->modelWO->work_request_id,$status);
             DB::commit();
-            return redirect()->route('work_order.show',$PO->id)->with('success', 'Purchase Order Updated');
+            return redirect()->route('work_order.show',$WO->id)->with('success', 'Work Order Updated');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('work_order.index')->with('error', $e->getMessage());
@@ -239,86 +186,80 @@ class WorkOrderController extends Controller
         //
     }
 
-    public function approval($po_id,$status)
+    public function approval($wo_id,$status)
     {
         DB::beginTransaction();
         try{
-            $modelPO = WorkOrder::findOrFail($po_id);
+            $modelWO = WorkOrder::findOrFail($wo_id);
             if($status == "approve"){
-                $modelPO->status = 2;
-                $modelPO->update();
+                $modelWO->status = 2;
+                $modelWO->update();
                 DB::commit();
-                return redirect()->route('work_order.showApprove',$po_id)->with('success', 'Purchase Order Approved');
+                return redirect()->route('work_order.showApprove',$wo_id)->with('success', 'Work Order Approved');
             }elseif($status == "need-revision"){
-                $modelPO->status = 3;
-                $modelPO->update();
+                $modelWO->status = 3;
+                $modelWO->update();
                 DB::commit();
-                return redirect()->route('work_order.showApprove',$po_id)->with('success', 'Purchase Order Need Revision');
+                return redirect()->route('work_order.showApprove',$wo_id)->with('success', 'Work Order Updated');
             }elseif($status == "reject"){
-                $modelPO->status = 5;
-                $modelPO->update();
+                $modelWO->status = 5;
+                $modelWO->update();
                 DB::commit();
-                return redirect()->route('work_order.showApprove',$po_id)->with('success', 'Purchase Order Rejected');
+                return redirect()->route('work_order.showApprove',$wo_id)->with('success', 'Work Order Rejected');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('work_order.show',$po_id);
+            return redirect()->route('work_order.show',$wo_id);
         }
     }
 
     // function
-    public function generatePONumber(){
-        $modelPO = WorkOrder::orderBy('created_at','desc')->first();
+    public function generateWONumber(){
+        $modelWO = WorkOrder::orderBy('created_at','desc')->first();
         $yearNow = date('y');
 
         $number = 1;
-        if(isset($modelPO)){
-            $yearDoc = substr($modelPO->number, 3,2);
+        if(isset($modelWO)){
+            $yearDoc = substr($modelWO->number, 3,2);
             if($yearNow == $yearDoc){
-                $number += intval(substr($modelPO->number, -5));
+                $number += intval(substr($modelWO->number, -5));
             }
         }
 
         $year = date($yearNow.'00000');
         $year = intval($year);
 
-        $po_number = $year+$number;
-        $po_number = 'PO-'.$po_number;
+        $wo_number = $year+$number;
+        $wo_number = 'WO-'.$wo_number;
         
-        return $po_number;
+        return $wo_number;
     }
     
-    public function updatePR($prd_id,$quantity){
-        $modelPRD = WorkRequestDetail::findOrFail($prd_id);
+    public function updateWR($prd_id,$quantity){
+        $modelWRD = WorkRequestDetail::findOrFail($prd_id);
 
-        if($modelPRD){
-            $modelPRD->reserved += $quantity;
-            $modelPRD->save();
+        if($modelWRD){
+            $modelWRD->reserved += $quantity;
+            $modelWRD->save();
         }
-        if($modelPRD->reserved < $modelPRD->quantity){
+        if($modelWRD->reserved < $modelWRD->quantity){
             return true;
         }
     }
 
-    public function checkStatusPr($pr_id,$status){
-        $modelPR = WorkRequest::findOrFail($pr_id);
+    public function checkStatusWr($wr_id,$status){
+        $modelWR = WorkRequest::findOrFail($wr_id);
         if($status == 0){
-            $modelPR->status = 0;
+            $modelWR->status = 0;
         }else{
-            $modelPR->status = 7;
+            $modelWR->status = 7;
         }
-        $modelPR->save();
+        $modelWR->save();
     }
 
     public function getVendorAPI(){
         $vendor = Vendor::where('status',1)->select('id','name','code')->get()->jsonSerialize();
 
         return response($vendor, Response::HTTP_OK);
-    }
-
-    public function getResourceAPI($id){
-        $resource = Resource::where('id',$id)->with('uom')->first()->jsonSerialize();
-
-        return response($resource, Response::HTTP_OK);
     }
 }

@@ -25,7 +25,7 @@ class WorkOrder extends Model
 
     public function workOrderDetails()
     {
-        return $this->hasMany('App\Models\PurchaseOrderDetail');
+        return $this->hasMany('App\Models\WorkOrderDetail');
     }
 
     public function user()

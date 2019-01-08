@@ -94,6 +94,18 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="businessUnit" class="col-sm-2 control-label">Business Unit</label>
+            
+                            <div class="col-sm-10">
+                                <select id="businessUnit" name="businessUnit" placeholder="Select Business Unit..">
+                                    @foreach ($businessUnits as $businessUnit)
+                                        <option value="{{$businessUnit->id}}">{{$businessUnit->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="status" class="col-sm-2 control-label">Customer Status</label>
             
                             <div class="col-sm-10">
@@ -135,6 +147,7 @@
         });
         $('div.overlay').remove();
         $('.alert').addClass('animated bounce');
+        $('#businessUnit').selectize();
     });
     document.getElementById("code").readOnly = true;
     

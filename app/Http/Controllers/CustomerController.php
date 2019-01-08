@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\BusinessUnit;
 use App\Models\Configuration;
 use Illuminate\Support\Facades\Hash;
 use Auth;
@@ -35,7 +36,9 @@ class CustomerController extends Controller
         $customer = new Customer;
         $user = new User;
         $customer_code = self::generateCustomerCode();
-        return view('customer.create', compact('customer', 'customer_code','user'));
+        $businessUnits = BusinessUnit::all();
+
+        return view('customer.create', compact('customer', 'customer_code','user','businessUnits'));
     }
 
     /**
@@ -72,7 +75,8 @@ class CustomerController extends Controller
             $customer->save();
 
             $modelRole = Role::where('name','CUSTOMER')->first();
-
+            $stringBusinessUnit = '['.$request->input('businessUnit').']';
+            
             $user = new User;
             $user->username = $request->input('code');
             $user->name = $request->input('name');
@@ -81,6 +85,7 @@ class CustomerController extends Controller
             $user->address = $request->input('address');
             $user->phone_number = $request->input('contact_person_phone');
             $user->role_id = $modelRole->id;
+            $user->business_unit_id = $stringBusinessUnit;
             $user->branch_id = Auth::user()->branch->id;
             $user->save();
 

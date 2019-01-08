@@ -27,7 +27,7 @@ class CreateTrxWorkOrderDetailTable extends Migration
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');
-            $table->foreign('work_order_id')->references('id')->on('trx_purchase_order');
+            $table->foreign('work_order_id')->references('id')->on('trx_work_order');
             $table->foreign('work_request_detail_id')->references('id')->on('trx_work_request_detail');
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');
         });

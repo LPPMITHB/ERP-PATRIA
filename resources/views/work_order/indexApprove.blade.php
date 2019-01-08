@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Approve Purchase Order » Select Purchase Order',
+        'title' => 'Approve Work Order » Select Work Order',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Order' => route('purchase_order.indexApprove'),
+            'Select Work Order' => route('work_order.indexApprove'),
         ]
     ]
 )
@@ -20,11 +20,11 @@
         <div class="box">
             {{-- <div class="box-header p-b-20">
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('purchase_order.selectPR') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    <a href="{{ route('work_order.selectPR') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header --> --}}
             <div class="box-body">
-                <table class="table table-bordered" id="po-table">
+                <table class="table table-bordered" id="wo-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -36,27 +36,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPOs as $modelPO)
+                        @foreach($modelWOs as $modelWO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelPO->number }}</td>
-                                <td>{{ $modelPO->description }}</td>
-                                <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
-                                @if($modelPO->status == 1)
+                                <td>{{ $modelWO->number }}</td>
+                                <td>{{ $modelWO->description }}</td>
+                                <td>{{ isset($modelWO->project) ? $modelWO->project->name : '-'}}</td>
+                                @if($modelWO->status == 1)
                                     <td>OPEN</td>
-                                @elseif($modelPO->status == 2)
+                                @elseif($modelWO->status == 2)
                                     <td>APPROVED</td>
-                                @elseif($modelPO->status == 0)
+                                @elseif($modelWO->status == 0)
                                     <td>RECEIVED</td>
-                                @elseif($modelPO->status == 3)
+                                @elseif($modelWO->status == 3)
                                     <td>NEEDS REVISION</td>
-                                @elseif($modelPO->status == 4)
+                                @elseif($modelWO->status == 4)
                                     <td>REVISED</td>
-                                @elseif($modelPO->status == 5)
+                                @elseif($modelWO->status == 5)
                                     <td>REJECTED</td>
                                 @endif
                                 <td class="textCenter">
-                                    <a href="{{ route('purchase_order.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    <a href="{{ route('work_order.showApprove', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -74,7 +74,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#po-table').DataTable({
+        $('#wo-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : false,
