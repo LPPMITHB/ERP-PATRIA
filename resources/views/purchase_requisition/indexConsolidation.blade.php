@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="select-pr" class="form-horizontal">
+                <form id="select-pr" class="form-horizontal" method="POST" action="{{ route('purchase_requisition.storeConsolidation') }}">
                 @csrf
                     @verbatim
                     <div id="prd">
@@ -26,23 +26,34 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Number</th>
                                     <th width="10%">Type</th>
-                                    <th width="25%">Description</th>
-                                    <th width="25%">Project Name</th>
-                                    <th width="5%"></th>
+                                    <th width="10%">Number</th>
+                                    <th width="35%">Description</th>
+                                    <th width="20%">Project Name</th>
+                                    <th width="10%">Status</th>
+                                    <th width="10%"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(PRs,index) in modelPRs">
                                     <td>{{ index+1 }}</td>
-                                    <td>{{ PRs.number }}</td>
                                     <td v-if="PRs.type == 1">Material</td>
                                     <td v-else>Resource</td>
+                                    <td>{{ PRs.number }}</td>
                                     <td>{{ PRs.description }}</td>
-                                    <td>{{ PRs.project.name }}</td>
-                                    <td class="no-padding p-t-2 p-b-2" align="center">
-                                        <input type="checkbox" v-icheck="" v-model="checkedPR" :value="PRs.id">
+                                    <td v-if="PRs.project != null">{{ PRs.project.name }}</td>
+                                    <td v-else>-</td>
+                                    <td v-if="PRs.status == 0">ORDERED</td>
+                                    <td v-else-if="PRs.status == 1">OPEN</td>
+                                    <td v-else-if="PRs.status == 2">APPROVED</td>
+                                    <td v-else-if="PRs.status == 3">NEED REVISION</td>
+                                    <td v-else-if="PRs.status == 4">REVISED</td>
+                                    <td v-else-if="PRs.status == 5">REJECTED</td>
+                                    <td v-if="PRs.type == 2" class="no-padding p-t-2 p-b-2" align="center">
+                                        <input type="checkbox" v-icheck="" v-model="checkedPR" :value="PRs.id" :disabled="materialOk">
+                                    </td>
+                                    <td v-else-if="PRs.type == 1" class="no-padding p-t-2 p-b-2" align="center">
+                                        <input type="checkbox" v-icheck="" v-model="checkedPR" :value="PRs.id" :disabled="resourceOk">
                                     </td>
                                 </tr>
                             </tbody>
@@ -103,6 +114,7 @@
         modelPRs : @json($modelPRs),
         checkedPR : [],
         submittedForm : {},
+        type : "",
     }
 
     var app = new Vue({
@@ -116,13 +128,45 @@
                 }
                 return isOk;
             },
+            resourceOk: function(){
+                let isOk = false;
+
+                this.modelPRs.forEach(data => {
+                    if(data.id == this.checkedPR[0] && data.type == 2){
+                        isOk = true;
+                    }
+                });
+
+                return isOk;
+            },
+            materialOk: function(){
+                let isOk = false;
+
+                this.modelPRs.forEach(data => {
+                    if(data.id == this.checkedPR[0] && data.type == 1){
+                        isOk = true;
+                    }
+                });
+
+                return isOk;
+            }
         },
         methods: {
             submitForm(){
                 var prd = this.checkedPR;
                 var jsonPrd = JSON.stringify(prd);
                 jsonPrd = JSON.parse(jsonPrd);
+
+                this.modelPRs.forEach(data => {
+                    if(data.id == this.checkedPR[0] && data.type == 1){
+                        this.type = "1";
+                    }else if(data.id == this.checkedPR[0] && data.type == 2){
+                        this.type = "2";
+                    }
+                });
+
                 this.submittedForm.checkedPR = jsonPrd;
+                this.submittedForm.type = this.type;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -163,9 +207,6 @@
                 }
             }
         },
-        created: function() {
-
-        }
     });
 </script>
 @endpush
