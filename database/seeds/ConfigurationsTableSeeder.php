@@ -64,10 +64,23 @@ class ConfigurationsTableSeeder extends Seeder
         ]);
 
         $currencies = array(
-            0 => 'Internal Equipment',
-            1 => 'External Equipment',
-            2 => 'Subcon',
-            3 => 'Others',
+            
+            0 => array(
+                'id' => 0,
+                'name' => 'Subcon',
+            ),
+            1 => array(
+                'id' => 1,
+                'name' => 'Others',
+            ),
+            2 => array(
+                'id' => 2,
+                'name' => 'External Equipment',
+            ),
+            3 => array(
+                'id' => 3,
+                'name' => 'Internal Equipment',
+            ),
         );
 
         DB::table('mst_configuration')->insert([

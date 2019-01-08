@@ -628,8 +628,8 @@
                     if(POD.actual == null){
                         POD.actual = 0;
                     }
-                    POD.sugQuantity = POD.actual-POD.quantity;
-                    POD.used = POD.actual-POD.quantity;
+                    POD.sugQuantity = POD.quantity-POD.actual;
+                    POD.used = POD.quantity-POD.actual;
                     this.materials.push(POD);
                 }else if(POD.resource_id != null){
                     this.resources.push(POD);

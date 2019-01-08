@@ -246,7 +246,7 @@
             });
             
             this.materials.forEach(material => {
-                window.axios.get('/api/getStockWO/'+material.material_id).then(({ data }) => {
+                window.axios.get('/api/getStockPrO/'+material.material_id).then(({ data }) => {
                     if(data.length == 0){
                         material.sugQuantity = material.quantity;
                         material.quantity = 0;
