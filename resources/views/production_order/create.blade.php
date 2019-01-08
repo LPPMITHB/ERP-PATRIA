@@ -350,7 +350,7 @@
             'dataInput.id': function(newValue){
                 if(newValue != ""){
                     if(this.dataInput.type == "Resource"){
-                        window.axios.get('/api/getResourceWO/'+newValue).then(({ data }) => {
+                        window.axios.get('/api/getResourcePrO/'+newValue).then(({ data }) => {
                             if(data.description == "" || data.description == null){
                                 this.dataInput.description = '-';
                             }else{
@@ -360,7 +360,7 @@
                             this.dataInput.code = data.code;
                         });
                     }else if(this.dataInput.type == "Material"){
-                        window.axios.get('/api/getMaterialWO/'+newValue).then(({ data }) => {
+                        window.axios.get('/api/getMaterialPrO/'+newValue).then(({ data }) => {
                             if(data.description == "" || data.description == null){
                                 this.dataInput.description = '-';
                             }else{

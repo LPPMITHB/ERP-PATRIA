@@ -147,39 +147,7 @@ class ProductionOrderController extends Controller
         $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
 
-        // tambahan material dari BOM
-        $modelBOM = Bom::where('wbs_id',$modelPrO->wbs_id)->get();
-
-        $boms = Collection::make();
-        foreach($modelBOM as $bom){
-            foreach($bom->bomDetails as $bomDetail){
-                $boms->push([
-                    "id" => $bomDetail->id , 
-                    "material" => [
-                        "code" => $bomDetail->material->code,
-                        "name" => $bomDetail->material->name,
-                    ],
-                    "quantity" => $bomDetail->quantity,
-                    "material_id" => $bomDetail->material_id,
-                    "wbs_id" => $bomDetail->bom->wbs_id
-                ]);
-            }
-        }
-        $modelRD = ResourceDetail::where('wbs_id',$modelPrO->wbs_id)->get();
-
-        $resources = Collection::make();
-        foreach($modelRD as $RD){
-            $resources->push([
-                "id" => $RD->id , 
-                "resource" => [
-                    "code" => $RD->resource->code,
-                    "name" => $RD->resource->name,
-                    "status" => $RD->resource->status,
-                ],
-                "resource_id" => $RD->resource_id
-            ]);
-        }
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','boms','resources'));
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD'));
     }
 
     /**
@@ -270,8 +238,8 @@ class ProductionOrderController extends Controller
 
     public function storeRelease(Request $request){
         $datas = json_decode($request->datas);
-        $po_id = $datas->modelPrOD[0]->production_order_id;
-        $modelPrO = ProductionOrder::findOrFail($po_id);
+        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $modelPrO = ProductionOrder::findOrFail($pro_id);
 
         DB::beginTransaction();
         try {
@@ -289,16 +257,35 @@ class ProductionOrderController extends Controller
 
     public function storeConfirm(Request $request){
         $datas = json_decode($request->datas);
-        $po_id = $datas->modelPrOD[0]->production_order_id;
-        $modelPrO = ProductionOrder::findOrFail($po_id);
+        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $modelPrO = ProductionOrder::findOrFail($pro_id);
 
         DB::beginTransaction();
         try {
-            $modelPrO->status = 0;
-            $modelPrO->save();
+            $statusAll = $modelPrO->wbs->activities->groupBy('status');
+            $notDone = true;
+            foreach($statusAll as $key => $status){
+                if($key == 1){
+                    $notDone = false;
+                }
+            }
+            if($notDone){
+                $modelPrO->status = 0;
+                $modelPrO->save();
+            }else{
+                $modelPrO->status = 2;
+                $modelPrO->save();
+            }
+
+            foreach ($datas->materials as  $material) {
+                $prod = ProductionOrderDetail::find($material->id);
+                $prod->actual = $material->used;
+                $prod->update();
+            }
+
 
             DB::commit();
-            return redirect()->route('production_order.show',$modelPrO->id)->with('success', 'Production Order Released');
+            return redirect()->route('production_order.showConfirm',$modelPrO->id)->with('success', 'Production Order Confirmed');
         }catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('production_order.selectProjectConfirm')->with('error', $e->getMessage());

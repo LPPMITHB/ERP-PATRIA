@@ -268,6 +268,8 @@
                                         <th style="width: 25%">Code</th>
                                         <th style="width: 25%">Name</th>
                                         <th style="width: 15%">Quantity</th>
+                                        <th style="width: 15%">Actual</th>
+                                        <th style="width: 15%">Remaining</th>
                                         <th style="width: 15%">Used</th>
                                     </tr>
                                 </thead>
@@ -276,9 +278,11 @@
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.material.code }}</td>
                                         <td class="tdEllipsis">{{ data.material.name }}</td>
+                                        <td class="tdEllipsis">{{ data.quantity }}</td>
+                                        <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
                                         <td class="tdEllipsis no-padding ">
-                                            <input class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
+                                            <input class="form-control width100" v-model="data.used" placeholder="Please Input Quantity">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -371,8 +375,6 @@
 
     var data = {
         modelPrOD : @json($modelPrOD),
-        boms : @json($boms),
-        resourceDetails : @json($resources),
         activities : @json($modelPrO->wbs->activities),
         materials : [],
         resources : [],
@@ -442,8 +444,7 @@
                 // });
 
                 this.submittedForm.modelPrOD = this.modelPrOD;
-                this.submittedForm.boms = this.boms;
-                this.submittedForm.resourceDetails = this.resourceDetails;
+                this.submittedForm.materials = this.materials;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -622,46 +623,17 @@
         created: function() {
             $('div.overlay').show();
             this.getActivities();
-            this.boms.forEach(bom => {
-                this.materials.push(bom);
-            });
-
-            this.resourceDetails.forEach(resource=> {
-                this.resources.push(resource);
-            });
-
             this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null){
-                    var status = 0;
-                    this.materials.forEach(material => {
-                        if(material.material_id == POD.material_id){
-                            material.quantity += POD.quantity;
-                            status = 1;
-                        }
-                    });
-                    if(status == 0){
-                        this.materials.push(POD);
+                    if(POD.actual == null){
+                        POD.actual = 0;
                     }
+                    POD.sugQuantity = POD.actual-POD.quantity;
+                    POD.used = POD.actual-POD.quantity;
+                    this.materials.push(POD);
                 }else if(POD.resource_id != null){
                     this.resources.push(POD);
                 }
-            });
-            
-            this.materials.forEach(material => {
-                window.axios.get('/api/getStockWO/'+material.material_id).then(({ data }) => {
-                    if(data.length == 0){
-                        material.sugQuantity = material.quantity;
-                        material.quantity = 0;
-                    }else{
-                        if(data.reserved > data.quantity){
-                            material.sugQuantity = material.quantity;
-                            material.quantity = 0;
-                        }else{
-                            material.sugQuantity = material.quantity;
-                            material.quantity = data.quantity;
-                        }
-                    }
-                });
             });
         },
     });
