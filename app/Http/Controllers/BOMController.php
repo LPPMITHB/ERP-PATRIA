@@ -668,6 +668,7 @@ class BOMController extends Controller
             $PR = new PurchaseRequisition;
             $PR->number = $pr_number;
             $PR->valid_date = $valid_to;
+            $PR->type = 1;
             $PR->project_id = $project_id;
             $PR->bom_id = $bom->id;
             $PR->description = 'AUTO PR FOR '.$modelProject->number;
