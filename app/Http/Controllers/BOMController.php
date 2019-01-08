@@ -526,7 +526,7 @@ class BOMController extends Controller
 
     // General Function
     private function generateBomCode($project_id){
-        $modelBOM = Bom::orderBy('code','desc')->where('branch_id',Auth::user()->branch_id)->first();
+        $modelBOM = Bom::orderBy('code','desc')->first();
         $modelProject = Project::where('id',$project_id)->first();
 
         $seqProject = $modelProject->project_sequence;
@@ -534,7 +534,8 @@ class BOMController extends Controller
 		$number = 1;
 		if(isset($modelBOM)){
             $number += intval(substr($modelBOM->code, -4));
-		}
+        }
+        print_r(intval(substr($modelBOM->code, -4)));exit();
 
         $code = $seqProject.'00000';
         $code = intval($code);
