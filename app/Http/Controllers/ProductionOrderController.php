@@ -194,7 +194,7 @@ class ProductionOrderController extends Controller
         $materials = Material::all()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
 
-        $modelBOM = Bom::where('wbs_id',$wbs->id)->get();
+        $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
         $modelRD = ResourceDetail::where('wbs_id',$wbs->id)->get();
 
         return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD'));
@@ -240,6 +240,26 @@ class ProductionOrderController extends Controller
             
                 $PrOD->save();
             }
+
+            if(count($datas->materials) > 0){
+                foreach($datas->materials as $material){
+                    $PrOD = new ProductionOrderDetail;
+                    $PrOD->production_order_id = $PrO->id;
+                    $PrOD->material_id = $material->material_id;
+                    $PrOD->quantity = $material->quantity;
+                    $PrOD->save();
+                }
+            }
+
+            if(count($datas->resources) > 0){
+                foreach($datas->resources as $resource){
+                    $PrOD = new ProductionOrderDetail;
+                    $PrOD->production_order_id = $PrO->id;
+                    $PrOD->resource_id = $resource->resource_id;
+                    $PrOD->save();
+                }
+            }
+
             DB::commit();
             return redirect()->route('production_order.show',$PrO->id)->with('success', 'Production Order Created');
         } catch (\Exception $e) {
@@ -259,9 +279,8 @@ class ProductionOrderController extends Controller
             $modelPrO->save();
 
             $this->createMR($datas->modelPrOD);
-            $this->updatePrOD($datas->boms, $datas->resourceDetails,$po_id);
             DB::commit();
-            return redirect()->route('production_order.show',$modelPrO->id)->with('success', 'Production Order Released');
+            return redirect()->route('production_order.showRelease',$modelPrO->id)->with('success', 'Production Order Released');
         }catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('production_order.selectProjectRelease')->with('error', $e->getMessage());
@@ -355,24 +374,6 @@ class ProductionOrderController extends Controller
                 $MRD->material_id = $PrOD->material_id;
                 $MRD->save();
             }
-        }
-    }
-
-    public function updatePrOD($modelMaterial, $modelResource, $po_id){
-        foreach($modelMaterial as $material){
-            $modelPrOD = new ProductionOrderDetail;
-            $modelPrOD->production_order_id = $po_id;
-            $modelPrOD->material_id = $material->material_id;
-            $modelPrOD->wbs_id = $material->wbs_id;
-            $modelPrOD->quantity = $material->sugQuantity;
-            $modelPrOD->save();
-        }
-
-        foreach($modelResource as $resource){
-            $modelPrOD = new ProductionOrderDetail;
-            $modelPrOD->production_order_id = $po_id;
-            $modelPrOD->resource_id = $resource->resource_id;
-            $modelPrOD->save();
         }
     }
 

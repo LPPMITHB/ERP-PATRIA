@@ -243,7 +243,6 @@
                         </div>
                         <!-- /.modal-dialog -->
                     </div>
-
                 </div>
             </div>
             @endverbatim

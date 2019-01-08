@@ -640,6 +640,11 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'production_order.create',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $createProductionOrder,
+            'route_name' => 'production_order.index',
+        ]);
+
         $releaseProductionOrder = Menu::where('route_name','production_order.selectProjectRelease')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $releaseProductionOrder,
@@ -648,12 +653,17 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $releaseProductionOrder,
-            'route_name' => 'production_order.selectWO',
+            'route_name' => 'production_order.selectPrO',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $releaseProductionOrder,
             'route_name' => 'production_order.release',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $releaseProductionOrder,
+            'route_name' => 'production_order.showRelease',
         ]);
 
         $confirmProductionOrder = Menu::where('route_name','production_order.selectProjectConfirm')->select('id')->first()->id;
@@ -664,12 +674,17 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $confirmProductionOrder,
-            'route_name' => 'production_order.confirmWO',
+            'route_name' => 'production_order.confirmPrO',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $confirmProductionOrder,
             'route_name' => 'production_order.confirm',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $confirmProductionOrder,
+            'route_name' => 'production_order.showConfirm',
         ]);
 
         $reportProductionOrder = Menu::where('route_name','production_order.selectProjectReport')->select('id')->first()->id;
@@ -681,12 +696,6 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $reportProductionOrder,
             'route_name' => 'production_order.selectWOReport',
-        ]);
-
-        $show = Menu::where('name','Production Planning & Execution')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $show,
-            'route_name' => 'production_order.index',
         ]);
 
         $yardPlan = Menu::where('route_name','yard_plan.index')->select('id')->first()->id;
