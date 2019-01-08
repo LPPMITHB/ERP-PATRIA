@@ -526,7 +526,7 @@ class BOMController extends Controller
 
     // General Function
     private function generateBomCode($project_id){
-        $modelBOM = Bom::orderBy('code','desc')->first();
+        $modelBOM = Bom::orderBy('created_at','desc')->first();
         $modelProject = Project::where('id',$project_id)->first();
 
         $seqProject = $modelProject->project_sequence;
