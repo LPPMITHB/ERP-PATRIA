@@ -134,7 +134,6 @@
                 this.modelPRs.forEach(data => {
                     if(data.id == this.checkedPR[0] && data.type == 2){
                         isOk = true;
-                        this.type = "2";
                     }
                 });
 
@@ -146,7 +145,6 @@
                 this.modelPRs.forEach(data => {
                     if(data.id == this.checkedPR[0] && data.type == 1){
                         isOk = true;
-                        this.type = "1";
                     }
                 });
 
@@ -158,6 +156,14 @@
                 var prd = this.checkedPR;
                 var jsonPrd = JSON.stringify(prd);
                 jsonPrd = JSON.parse(jsonPrd);
+
+                this.modelPRs.forEach(data => {
+                    if(data.id == this.checkedPR[0] && data.type == 1){
+                        this.type = "1";
+                    }else if(data.id == this.checkedPR[0] && data.type == 2){
+                        this.type = "2";
+                    }
+                });
 
                 this.submittedForm.checkedPR = jsonPrd;
                 this.submittedForm.type = this.type;

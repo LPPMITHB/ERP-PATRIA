@@ -351,7 +351,7 @@ class BOMController extends Controller
     {
         $route = $request->route()->getPrefix();
         $data = $request->json()->all();
-        // $material = Material::findOrFail($data['material_id']);
+        
         DB::beginTransaction();
         try {
             if($route == "/bom"){
@@ -359,6 +359,7 @@ class BOMController extends Controller
                 $bom_detail->bom_id = $data['bom_id'];
                 $bom_detail->material_id = $data['material_id'];
                 $bom_detail->quantity = $data['quantityInt'];
+                $bom_detail->save();
             }else{
                 $bom_detail = new BomDetail;
                 $bom_detail->bom_id = $data['bom_id'];
@@ -368,39 +369,37 @@ class BOMController extends Controller
                     $bom_detail->service_id = $data['service_id'];
                 }
                 $bom_detail->quantity = $data['quantityInt'];
+                $bom_detail->save();
             }
-            if(!$bom_detail->save()){
-                return back()->with('error','Failed to save, please try again !');
-            }else{
-                // Update RAP Detail
-                $modelRap = Rap::where('bom_id',$data['bom_id'])->first();
-                $rap_detail = new RapDetail;
-                $rap_detail->rap_id = $modelRap->id;
-                if($route == "/bom"){
-                    $rap_detail->material_id = $data['material_id'];
-                    $rap_detail->quantity = $data['quantityInt'];
-                    $rap_detail->price = $material->cost_standard_price * $data['quantityInt'];
-                    $rap_detail->save();
+            // Update RAP Detail
+            $modelRap = Rap::where('bom_id',$data['bom_id'])->first();
+            $rap_id = $modelRap->id;
+            $rap_detail = new RapDetail;
+            $rap_detail->rap_id = $rap_id;
+            if($route == "/bom"){
+                $rap_detail->material_id = $data['material_id'];
+                $rap_detail->quantity = $data['quantityInt'];
+                $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                $rap_detail->save();
 
-                    // create PR & Reserve stock
-                    self::checkStockEdit($data,$modelRap->project_id);
-                }elseif($route == "/bom_repair"){
-                    $rap_detail->material_id = $bom_detail->material_id;
-                    $rap_detail->service_id = $bom_detail->service_id;
-                    $rap_detail->quantity = $data['quantityInt'];
-                    if($bom_detail->material_id != null){
-                        $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
-                    }elseif($bom_detail->service_id != null){
-                        $rap_detail->price = $bom_detail->service->cost_standard_price * $data['quantityInt'];
-                    }
-                    $rap_detail->save();
-
-                    // create PR & Reserve stock
-                    self::checkStockEdit($data,$modelRap->project_id);
+                // create PR & Reserve stock
+                self::checkStockEdit($data,$modelRap->project_id);
+            }elseif($route == "/bom_repair"){
+                $rap_detail->material_id = $bom_detail->material_id;
+                $rap_detail->service_id = $bom_detail->service_id;
+                $rap_detail->quantity = $data['quantityInt'];
+                if($bom_detail->material_id != null){
+                    $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                }elseif($bom_detail->service_id != null){
+                    $rap_detail->price = $bom_detail->service->cost_standard_price * $data['quantityInt'];
                 }
-                DB::commit();
-                return response(json_encode($bom_detail),Response::HTTP_OK);
+                $rap_detail->save();
+
+                // create PR & Reserve stock
+                self::checkStockEdit($data,$modelRap->project_id);
             }
+            DB::commit();
+            return response(json_encode($rap_detail),Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('bom_repair.indexProject')->with('error', $e->getMessage());
