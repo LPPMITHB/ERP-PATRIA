@@ -533,9 +533,8 @@ class BOMController extends Controller
 
 		$number = 1;
 		if(isset($modelBOM)){
-            $number += intval(substr($modelBOM->code, -4));
+            $number += intval(substr($modelBOM->code, -4))+10;
         }
-        print_r(intval(substr($modelBOM->code, -4)));exit();
 
         $code = $seqProject.'00000';
         $code = intval($code);
