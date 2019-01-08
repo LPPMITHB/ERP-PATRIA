@@ -22,7 +22,7 @@
                     <div id="po">
                         <div class="box-header">
                             <div class="row">
-                                <div class="col-xs-12 col-md-4" v-if="modelProject != null">
+                                <div class="col-xs-12 col-md-4" v-if="modelProject.length > 0 && modelProject != null">
                                     <div class="col-xs-5 no-padding">PR Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
             
@@ -87,7 +87,8 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th style="width: 30%">Material Name</th>
+                                                <th v-if="modelPR.type == 1" style="width: 30%">Material Name</th>
+                                                <th v-else style="width: 30%">Resource Name</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
@@ -98,17 +99,20 @@
                                         <tbody>
                                             <tr v-for="(PRD,index) in PRDetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ PRD.material.code }} - {{ PRD.material.name }}</td>
+                                                <td v-if="modelPR.type == 1" class="tdEllipsis">{{ PRD.material.code }} - {{ PRD.material.name }}</td>
+                                                <td v-else class="tdEllipsis">{{ PRD.resource.code }} - {{ PRD.resource.name }}</td>
                                                 <td class="tdEllipsis">{{ PRD.sugQuantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="PRD.quantity" placeholder="Please Input Quantity">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
+                                                    <input v-if="modelPR.type == 1" class="form-control" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
+                                                    <input v-else class="form-control" v-model="PRD.resource.cost_standard_price" placeholder="Please Input Total Price">
                                                 </td>
                                                 <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
-                                                <td class="tdEllipsis">{{ PRD.alocation }}</td>
+                                                <td class="tdEllipsis" v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
+                                                <td class="tdEllipsis" v-else>-</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -211,13 +215,20 @@
                 var data = this.PRDetail;
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
-
-                data.forEach(PRD => {
-                    PRD.quantity = PRD.quantity.replace(/,/g , '');      
-                    PRD.material.cost_standard_price = PRD.material.cost_standard_price.replace(/,/g , '');      
-                });
+                if(this.modelPR.type == 1){
+                    data.forEach(PRD => {
+                        PRD.quantity = PRD.quantity.replace(/,/g , '');      
+                        PRD.material.cost_standard_price = PRD.material.cost_standard_price.replace(/,/g , '');      
+                    });
+                }else{
+                    data.forEach(PRD => {
+                        PRD.quantity = PRD.quantity.replace(/,/g , '');      
+                        PRD.resource.cost_standard_price = PRD.resource.cost_standard_price.replace(/,/g , '');      
+                    });
+                }
 
                 this.submittedForm.PRD = data;
+                this.submittedForm.type = this.modelPR.type;
                 this.submittedForm.vendor_id = this.vendor_id;
                 this.submittedForm.description = this.description;
                 this.submittedForm.pr_id = this.modelPR.id;
@@ -235,10 +246,17 @@
             PRDetail:{
                 handler: function(newValue) {
                     var data = newValue;
-                    data.forEach(PRD => {
-                        PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                        PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
-                    });
+                    if(this.modelPR.type == 1){
+                        data.forEach(PRD => {
+                            PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+                            PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
+                        });
+                    }else{
+                        data.forEach(PRD => {
+                            PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+                            PRD.resource.cost_standard_price = (PRD.resource.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
+                        });
+                    }
                 },
                 deep: true
             },
@@ -246,13 +264,23 @@
         created: function() {
             this.getVendor();
             var data = this.PRDetail;
-            data.forEach(PRD => {
-                PRD.quantity = PRD.quantity - PRD.reserved;
-                PRD.sugQuantity = PRD.quantity;
-                PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-            });
+            if(this.modelPR.type == 1){
+                data.forEach(PRD => {
+                    PRD.quantity = PRD.quantity - PRD.reserved;
+                    PRD.sugQuantity = PRD.quantity;
+                    PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                });
+            }else{
+                data.forEach(PRD => {
+                    PRD.quantity = PRD.quantity - PRD.reserved;
+                    PRD.sugQuantity = PRD.quantity;
+                    PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    PRD.resource.cost_standard_price = (PRD.resource.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                });
+            }
             Vue.directive('tooltip', function(el, binding){
                 $(el).tooltip({
                     title: binding.value,

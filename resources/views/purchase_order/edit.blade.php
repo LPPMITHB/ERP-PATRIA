@@ -82,7 +82,8 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th style="width: 30%">Material Name</th>
+                                                <th v-if="type == 1" style="width: 30%">Material Name</th>
+                                                <th v-else style="width: 30%">Resource Name</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
@@ -93,7 +94,8 @@
                                         <tbody>
                                             <tr v-for="(POD,index) in PODetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ POD.material.code }} - {{ POD.material.name }}</td>
+                                                <td v-if="type == 1" class="tdEllipsis">{{ POD.material.code }} - {{ POD.material.name }}</td>
+                                                <td v-else class="tdEllipsis">{{ POD.resource.code }} - {{ POD.resource.name }}</td>
                                                 <td class="tdEllipsis">{{ POD.purchase_requisition_detail.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="POD.quantity" placeholder="Please Input Quantity">
@@ -195,6 +197,7 @@
 
                 this.submittedForm.modelPO = this.modelPO;
                 this.submittedForm.PODetail = data;
+                this.submittedForm.type = this.type;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -224,6 +227,7 @@
                 POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
                 POD.total_price = (POD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             });
+            this.type = this.modelPO.purchase_requisition.type;
         },
     });
 </script>
