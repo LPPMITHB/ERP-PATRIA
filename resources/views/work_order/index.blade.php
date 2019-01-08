@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View All Purchase Order',
+        'title' => 'View All Work Order',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Purchase Order' => route('purchase_order.index'),
+            'View All Work Order' => route('work_order.index'),
         ]
     ]
 )
@@ -20,7 +20,7 @@
         <div class="box">
             {{-- <div class="box-header p-b-20">
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('purchase_order.selectPR') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    <a href="{{ route('work_order.selectPR') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header --> --}}
             <div class="box-body">
@@ -36,68 +36,44 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPOs as $modelPO)
+                        @foreach($modelWOs as $modelWO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelPO->number }}</td>
-                                <td>{{ $modelPO->description }}</td>
-                                <td>{{ isset($modelPO->project) ? $modelPO->project->number : '-' }}</td>
-                                @if($modelPO->status == 1)
+                                <td>{{ $modelWO->number }}</td>
+                                <td>{{ $modelWO->description }}</td>
+                                <td>{{ isset($modelWO->project) ? $modelWO->project->number : '-' }}</td>
+                                @if($modelWO->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
-                                @elseif($modelPO->status == 2)
+                                @elseif($modelWO->status == 2)
                                     <td>APPROVED</td>
                                     <td class="textCenter">
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
-                                @elseif($modelPO->status == 3)
+                                @elseif($modelWO->status == 3)
                                     <td>NEED REVISION</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
-                                @elseif($modelPO->status == 4)
+                                @elseif($modelWO->status == 4)
                                     <td>REVISED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
-                                @elseif($modelPO->status == 5)
+                                @elseif($modelWO->status == 5)
                                     <td>REJECTED</td>
                                     <td class="textCenter">
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @else
                                     <td>RECEIVED</td>
                                     <td class="textCenter">
-                                        @if($modelPO->purchase_requisition_id == "")
-                                            <a href="{{ route('purchase_order.showResource', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @else
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
+                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     </td>
                                 @endif
                             </tr>

@@ -591,12 +591,38 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_movement.index',
         ]);
 
-        $selectWR = Menu::where('route_name','work_order.selectWR')->select('id')->first()->id;
+        $createWO = Menu::where('route_name','work_order.selectWR')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $selectWR,
+            'menu_id' => $createWO,
             'route_name' => 'work_order.selectWR',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $createWO,
+            'route_name' => 'work_order.selectWRD',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createWO,
+            'route_name' => 'work_order.create',
+        ]);
+
+        $approveWO = Menu::where('route_name','work_order.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveWO,
+            'route_name' => 'work_order.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveWO,
+            'route_name' => 'work_order.showApprove',
+        ]);
+        
+        $viewWO = Menu::where('route_name','work_order.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewWO,
+            'route_name' => 'work_order.index',
+        ]);
 
         $createProductionOrder = Menu::where('route_name','production_order.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([

@@ -27,25 +27,27 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material</th>
-                                    <th width="10%">Quantity</th>
-                                    <th width="10%">Ordered</th>
-                                    <th width="10%">Remaining</th>
+                                    <th width="17%">Material</th>
+                                    <th width="17%">Description</th>
+                                    <th width="7%">Quantity</th>
+                                    <th width="7%">Ordered</th>
+                                    <th width="8%">Remaining</th>
                                     <th width="20%">WBS Name</th>
                                     <th width="5%"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(PRD,index) in modelWRD">
+                                <tr v-for="(WRD,index) in modelWRD">
                                     <td>{{ index+1 }}</td>
-                                    <td>{{ PRD.material.code }} - {{ PRD.material.name }}</td>
-                                    <td>{{ PRD.quantity }}</td>
-                                    <td>{{ PRD.reserved }}</td>
-                                    <td>{{ PRD.remaining }}</td>
-                                    <td v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.material.code+' - '+WRD.material.name)">{{ WRD.material.code }} - {{ WRD.material.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.description)">{{ WRD.description }}</td>
+                                    <td>{{ WRD.quantity }}</td>
+                                    <td>{{ WRD.reserved }}</td>
+                                    <td>{{ WRD.remaining }}</td>
+                                    <td v-if="WRD.wbs != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.wbs.name)">{{ WRD.wbs.name }}</td>
                                     <td v-else>-</td>
                                     <td class="no-padding p-t-2 p-b-2" align="center">
-                                        <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
+                                        <input type="checkbox" v-icheck="" v-model="checkedWRD" :value="WRD.id">
                                     </td>
                                 </tr>
                             </tbody>
@@ -102,10 +104,18 @@
         $('div.overlay').hide();
     });
 
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
+
     var data = {
         modelWRD : @json($modelWRD),
         modelWR : @json($modelWR),
-        checkedPRD : [],
+        checkedWRD : [],
         submittedForm : {},
     }
 
@@ -115,7 +125,7 @@
         computed:{
             createOk: function(){
                 let isOk = false;
-                if(this.checkedPRD.length == 0){
+                if(this.checkedWRD.length == 0){
                     isOk = true;
                 }
                 return isOk;
@@ -123,10 +133,10 @@
         },
         methods: {
             submitForm(){
-                var prd = this.checkedPRD;
+                var prd = this.checkedWRD;
                 var jsonPrd = JSON.stringify(prd);
                 jsonPrd = JSON.parse(jsonPrd);
-                this.submittedForm.checkedPRD = jsonPrd;            
+                this.submittedForm.checkedWRD = jsonPrd;            
                 this.submittedForm.id = this.modelWR.id;            
 
                 let struturesElem = document.createElement('input');
@@ -135,7 +145,10 @@
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
                 form.submit();
-            }
+            },
+            tooltipText: function(text) {
+                return text
+            },
         },
         directives: {
             icheck: {
@@ -170,11 +183,11 @@
         },
         created: function() {
             var data = this.modelWRD;
-            data.forEach(PRD => {
-                PRD.remaining = PRD.quantity - PRD.reserved;
-                PRD.remaining = (PRD.remaining+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                PRD.reserved = (PRD.reserved+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+            data.forEach(WRD => {
+                WRD.remaining = WRD.quantity - WRD.reserved;
+                WRD.remaining = (WRD.remaining+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                WRD.reserved = (WRD.reserved+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             });
         }
     });

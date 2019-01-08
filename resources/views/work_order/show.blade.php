@@ -1,13 +1,13 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if(!$modelPO->project)
+@if(!$modelWO->project)
     @breadcrumb(
         [
-            'title' => 'View Purchase Order',
+            'title' => 'View Work Order',
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Order' => route('purchase_order.show',$modelPO->id),
+                'View Work Order' => route('purchase_order.show',$modelWO->id),
             ]
         ]
     )
@@ -15,10 +15,10 @@
 @else
     @breadcrumb(
         [
-            'title' => 'View Purchase Order » '.$modelPO->project->name,
+            'title' => 'View Work Order » '.$modelWO->project->name,
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Order' => route('purchase_order.show',$modelPO->id),
+                'View Work Order' => route('purchase_order.show',$modelWO->id),
             ]
         ]
     )
@@ -38,7 +38,7 @@
                         </span>
                         <div class="info-box-content">
                             <span class="info-box-text">PO Number</span>
-                            <span class="info-box-number">{{ $modelPO->number }}</span>
+                            <span class="info-box-number">{{ $modelWO->number }}</span>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                             Project Number
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ isset($modelPO->project) ? $modelPO->project->number : '-' }} </b>
+                            : <b> {{ isset($modelWO->project) ? $modelWO->project->number : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -56,7 +56,7 @@
                             Ship Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ isset($modelPO->project) ? $modelPO->project->name : '-' }} </b>
+                            : <b> {{ isset($modelWO->project) ? $modelWO->project->name : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -64,7 +64,7 @@
                             Ship Type
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ isset($modelPO->project) ? $modelPO->project->ship->type : '-' }} </b>
+                            : <b> {{ isset($modelWO->project) ? $modelWO->project->ship->type : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -72,7 +72,7 @@
                             Ref Number
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ $modelPO->purchaseRequisition->number }} </b>
+                            : <b> {{ $modelWO->workRequest->number }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -80,7 +80,7 @@
                             Total Price
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ number_format($modelPO->total_price) }} </b>
+                            : <b> {{ number_format($modelWO->total_price) }} </b>
                         </div>
                     </div>
                 </div>
@@ -89,39 +89,39 @@
                         <div class="col-md-5">
                             Customer Name
                         </div>
-                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->customer->name : '-'}}">
-                            : <b> {{ isset($modelPO->project) ? $modelPO->project->customer->name : '-' }} </b>
+                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelWO->project) ? $modelWO->project->customer->name : '-'}}">
+                            : <b> {{ isset($modelWO->project) ? $modelWO->project->customer->name : '-' }} </b>
                         </div>
                         <div class="col-md-5">
                             Vendor Name
                         </div>
                         <div class="col-md-7">
-                            : <b> {{ $modelPO->vendor->code }} - {{ $modelPO->vendor->name }} </b>
+                            : <b> {{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }} </b>
                         </div>
                         <div class="col-md-5">
                             Status
                         </div>
-                        @if($modelPO->status == 1)
+                        @if($modelWO->status == 1)
                             <div class="col-md-7">
                                 : <b>OPEN</b>
                             </div>
-                        @elseif($modelPO->status == 2)
+                        @elseif($modelWO->status == 2)
                             <div class="col-md-7">
                                 : <b>APPROVED</b>
                             </div>
-                        @elseif($modelPO->status == 3)
+                        @elseif($modelWO->status == 3)
                             <div class="col-md-7">
                                 : <b>NEED REVISION</b>
                             </div>
-                        @elseif($modelPO->status == 4)
+                        @elseif($modelWO->status == 4)
                             <div class="col-md-7">
                                 : <b>REVISED</b>
                             </div>
-                        @elseif($modelPO->status == 5)
+                        @elseif($modelWO->status == 5)
                             <div class="col-md-7">
                                 : <b>REJECTED</b>
                             </div>
-                        @elseif($modelPO->status == 0)
+                        @elseif($modelWO->status == 0)
                             <div class="col-md-7">
                                 : <b>RECEIVED</b>
                             </div>
@@ -130,13 +130,13 @@
                             Created By
                         </div>
                         <div class="col-md-7">
-                            : <b> {{ $modelPO->user->name }} </b>
+                            : <b> {{ $modelWO->user->name }} </b>
                         </div>
                         <div class="col-md-5">
                             Created At
                         </div>
                         <div class="col-md-7">
-                            : <b> {{ $modelPO->created_at }} </b>
+                            : <b> {{ $modelWO->created_at }} </b>
                         </div>
                     </div>
                 </div>
@@ -153,7 +153,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPO->purchaseOrderDetails as $POD)
+                        @foreach($modelWO->workOrderDetails as $POD)
                             @if($POD->quantity > 0)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
