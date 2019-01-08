@@ -44,21 +44,24 @@ class PurchaseOrderController extends Controller
     {
         $datas = json_decode($request->datas);
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
-        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','wbs')->get();
+        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','wbs','resource')->get();
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
                 $modelPRD->forget($key);
             }
         }
-        $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
-
+        if($modelPR->project_id){
+            $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
+        }else{
+            $modelProject = [];
+        }
         return view('purchase_order.create', compact('modelPR','modelPRD','modelProject'));
     }
 
     public function selectPRD($id)
     {
         $modelPR = PurchaseRequisition::findOrFail($id);
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs')->get();
+        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs','resource')->get();
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
                 $modelPRD->forget($key);
@@ -112,7 +115,6 @@ class PurchaseOrderController extends Controller
     {
         $datas = json_decode($request->datas);
         $po_number = $this->generatePONumber();
-
         DB::beginTransaction();
         try {
             $PO = new PurchaseOrder;
@@ -132,10 +134,15 @@ class PurchaseOrderController extends Controller
                 $POD = new PurchaseOrderDetail;
                 $POD->purchase_order_id = $PO->id;
                 $POD->quantity = $data->quantity;
-                $POD->material_id = $data->material_id;
+                if($datas->type == 1){
+                    $POD->material_id = $data->material_id;
+                    $POD->total_price = $data->material->cost_standard_price * $data->quantity;
+                }elseif($datas->type == 2){
+                    $POD->resource_id = $data->resource_id;
+                    $POD->total_price = $data->resource->cost_standard_price * $data->quantity;
+                }
                 $POD->purchase_requisition_detail_id = $data->id;
                 $POD->wbs_id = $data->wbs_id;
-                $POD->total_price = $data->material->cost_standard_price * $data->quantity;
                 $POD->save();
 
                 $statusPR = $this->updatePR($data->id,$data->quantity);
@@ -180,7 +187,7 @@ class PurchaseOrderController extends Controller
     public function edit($id)
     {
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs')->get();
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource')->get();
         $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
 
         return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject'));
@@ -197,7 +204,6 @@ class PurchaseOrderController extends Controller
     public function update(Request $request)
     {
         $datas = json_decode($request->datas);
-
         DB::beginTransaction();
         try {
             $PO = PurchaseOrder::findOrFail($datas->modelPO->id);

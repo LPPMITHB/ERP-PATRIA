@@ -18,6 +18,7 @@ class PRDetailsTableSeeder extends Seeder
             'reserved' => 10,
             'material_id' => 3,
             'wbs_id' => 1,
+            'alocation' => 'Stock'
         ]);
 
         DB::table('trx_purchase_requisition_detail')->insert([
@@ -26,6 +27,7 @@ class PRDetailsTableSeeder extends Seeder
             'reserved' => 12,
             'material_id' => 6,
             'wbs_id' => 2,
+            'alocation' => 'Stock'
         ]);
 
         DB::table('trx_purchase_requisition_detail')->insert([
@@ -34,6 +36,7 @@ class PRDetailsTableSeeder extends Seeder
             'reserved' => 0,
             'material_id' => 3,
             'wbs_id' => 1,
+            'alocation' => 'Stock'
         ]);
 
         DB::table('trx_purchase_requisition_detail')->insert([
@@ -41,6 +44,7 @@ class PRDetailsTableSeeder extends Seeder
             'quantity' => 22,
             'reserved' => 0,
             'material_id' => 6,
+            'alocation' => 'Stock',
             'wbs_id' => 2,
         ]);
 
@@ -49,6 +53,7 @@ class PRDetailsTableSeeder extends Seeder
             'quantity' => 10,
             'reserved' => 0,
             'material_id' => 1,
+            'alocation' => 'Stock',
             'wbs_id' => 3,
         ]);
 
@@ -57,6 +62,7 @@ class PRDetailsTableSeeder extends Seeder
             'quantity' => 12,
             'reserved' => 0,
             'material_id' => 2,
+            'alocation' => 'Stock',
             'wbs_id' => 4,
         ]);
     }

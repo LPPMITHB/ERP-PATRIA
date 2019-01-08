@@ -42,7 +42,7 @@
                                 <td class="tdEllipsis">{{ $service->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->name}}">{{ $service->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->description}}">{{ $service->description }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->cost_standard_price}}">{{ $service->cost_standard_price }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->cost_standard_price}}">{{ number_format($service->cost_standard_price) }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('service.show', ['id'=>$service->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('service.edit',['id'=>$service->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
