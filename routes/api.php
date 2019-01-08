@@ -79,6 +79,8 @@ Route::get('/getStockInfoSM', 'StockManagementController@getStockInfoSM')->name(
 // work request
 Route::get('/getQuantityReserved/{id}', 'WorkRequestController@getQuantityReservedApi')->name('api.work_request.getQuantityReservedApi');
 Route::get('/getMaterialWr/{id}', 'WorkRequestController@getMaterialWrAPI')->name('api.work_request.getMaterialWrAPI');
+Route::get('/getWbsWr/{id}', 'WorkRequestController@getWbsWrAPI')->name('api.work_request.getWbsWrAPI');
+Route::get('/getProjectWR/{id}', 'WorkRequestController@getProjectApi')->name('api.work_request.getProjectApi');
 
 // material write off
 Route::get('/getMaterial/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');
