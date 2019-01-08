@@ -337,6 +337,7 @@
                     var url = "{{ route('bom.storeBom') }}";
 
                     window.axios.post(url,newMaterial).then((response) => {
+                        console.log(response)
                         iziToast.success({
                             title: 'Success Add Material',
                             position: 'topRight',

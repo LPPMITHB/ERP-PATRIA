@@ -55,7 +55,9 @@ Route::get('/getPRD/{id}', 'PurchaseRequisitionController@getPRDAPI')->name('api
 
 // material_requisition
 Route::get('/getWbsMR/{id}', 'MaterialRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
+Route::get('/getWbsMREdit/{id}/{mr_id}', 'MaterialRequisitionController@getWbsEditAPI')->name('api.purchase_requisition.getWbsEditAPI');
 Route::get('/getProjectMR/{id}', 'MaterialRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');
+Route::get('/getMaterialMR/{id}', 'MaterialRequisitionController@getMaterialAPI')->name('api.purchase_requisition.getMaterialAPI');
 
 
 // goods_receipt
@@ -73,6 +75,10 @@ Route::get('/getSlocSM/{id}', 'StockManagementController@getSlocApi')->name('api
 Route::get('/getWarehouseInfoSM/{id}', 'StockManagementController@getWarehouseInfoSM')->name('api.stock_management.getWarehouseInfoSM');
 Route::get('/getWarehouseStockSM/{id}', 'StockManagementController@getWarehouseStockSM')->name('api.stock_management.getWarehouseStockSM');
 Route::get('/getStockInfoSM', 'StockManagementController@getStockInfoSM')->name('api.stock_management.getStockInfoSM');
+
+// work request
+Route::get('/getQuantityReserved/{id}', 'WorkRequestController@getQuantityReservedApi')->name('api.work_request.getQuantityReservedApi');
+Route::get('/getMaterialWr/{id}', 'WorkRequestController@getMaterialWrAPI')->name('api.work_request.getMaterialWrAPI');
 
 // material write off
 Route::get('/getMaterial/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');

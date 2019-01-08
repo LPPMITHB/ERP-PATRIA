@@ -1,9 +1,13 @@
 @extends('layouts.main')
-
+@if($modelPR->type == 1)
+    @php($type = 'Material')
+@else  
+    @php($type = 'Resource')
+@endif
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Purchase Order » Select Material',
+        'title' => 'Create Purchase Order » Select '.$type,
         'items' => [
             'Dashboard' => route('index'),
             'Select Purchase Requisition' => route('purchase_order.selectPR'),

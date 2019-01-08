@@ -81,7 +81,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td v-if="material.material_code != ''" class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td v-else-if="material.resource_code != ''" class="tdEllipsis">{{ material.resource_code }} - {{ material.resource_name }}</td>
-                                            <td v-if="material.quantity == null" class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td v-if="material.quantity != ''" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis" v-if="material.work_name != ''">{{ material.work_name }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
@@ -91,7 +91,7 @@
                                                 <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
                                                 </a>
-                                                <a v-if="pr_type == 'Resource'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(material,index)">
+                                                <a v-else-if="pr_type == 'Resource'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(material,index)">
                                                     EDIT
                                                 </a>
                                                 <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">

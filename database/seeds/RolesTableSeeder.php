@@ -46,6 +46,7 @@ class RolesTableSeeder extends Seeder
                 'create-goods-movement' => true,'list-goods-movement' => true,'show-goods-movement' => true,'edit-goods-movement' => true,
                 'create-snapshot' => true,'count-stock' => true,'adjust-stock' => true,'list-adjustment-history' => true,'show-adjustment-history' => true,'show-snapshot' => true, 
                 'create-production-order' => true,'list-production-order' => true,'show-production-order' => true,'edit-production-order' => true,
+                'create-work-request' => true,'list-work-request' => true,'show-work-request' => true,'edit-work-request' => true,
                 'create-warehouse' => true,'list-warehouse' => true,'show-warehouse' => true,'edit-warehouse' => true,
                 'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
                 'list-appearence' => true, 'edit-appearence' => true,

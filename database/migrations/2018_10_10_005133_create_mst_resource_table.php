@@ -22,7 +22,7 @@ class CreateMstResourceTable extends Migration
             $table->string('description')->nullable();
             $table->string('machine_type')->nullable();
             $table->string('category')->nullable();
-            $table->integer('cost_standard_price')->nullable();
+            $table->integer('cost_standard_price');
             $table->date('manufactured_date')->nullable();
             $table->date('purchasing_date')->nullable();
             $table->unsignedInteger('purchasing_price')->nullable();

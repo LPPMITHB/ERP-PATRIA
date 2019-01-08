@@ -3,10 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Approve Purchase Requisition » Select Purchase Requisition',
+        'title' => 'Approve Work Order » Select Work Order',
+        'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Requisition' => route('purchase_requisition.indexApprove'),
+            'Select Work Order' => route('work_order.indexApprove'),
         ]
     ]
 )
@@ -19,49 +20,43 @@
         <div class="box">
             {{-- <div class="box-header p-b-20">
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('purchase_requisition.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    <a href="{{ route('work_order.selectPR') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
             </div> <!-- /.box-header --> --}}
             <div class="box-body">
-                <table class="table table-bordered tableFixed tablePaging">
+                <table class="table table-bordered" id="wo-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="10%">Type</th>
-                            <th width="10%">Number</th>
-                            <th width="35%">Description</th>
+                            <th width="15%">Number</th>
+                            <th width="40%">Description</th>
                             <th width="20%">Project Name</th>
                             <th width="10%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPRs as $modelPR)
+                        @foreach($modelWOs as $modelWO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                @if($modelPR->type == 1)
-                                    <td>Material</td>
-                                @else
-                                    <td>Resource</td>
-                                @endif
-                                <td>{{ $modelPR->number }}</td>
-                                <td>{{ $modelPR->description }}</td>
-                                <td>{{ isset($modelPR->project) ? $modelPR->project->name : '-'}}</td>
-                                @if($modelPR->status == 1)
+                                <td>{{ $modelWO->number }}</td>
+                                <td>{{ $modelWO->description }}</td>
+                                <td>{{ isset($modelWO->project) ? $modelWO->project->name : '-'}}</td>
+                                @if($modelWO->status == 1)
                                     <td>OPEN</td>
-                                @elseif($modelPR->status == 2)
+                                @elseif($modelWO->status == 2)
                                     <td>APPROVED</td>
-                                @elseif($modelPR->status == 0)
-                                    <td>ORDERED</td>
-                                @elseif($modelPR->status == 3)
+                                @elseif($modelWO->status == 0)
+                                    <td>RECEIVED</td>
+                                @elseif($modelWO->status == 3)
                                     <td>NEEDS REVISION</td>
-                                @elseif($modelPR->status == 4)
+                                @elseif($modelWO->status == 4)
                                     <td>REVISED</td>
-                                @elseif($modelPR->status == 5)
+                                @elseif($modelWO->status == 5)
                                     <td>REJECTED</td>
                                 @endif
                                 <td class="textCenter">
-                                    <a href="{{ route('purchase_requisition.showApprove', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    <a href="{{ route('work_order.showApprove', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -79,7 +74,17 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#wo-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').remove();
+            }
+        });
     });
 </script>
 @endpush

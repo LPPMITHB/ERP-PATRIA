@@ -57,18 +57,18 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
+                                            <th style="width: 30%">WBS Name</th>
                                             <th style="width: 40%">Material Name</th>
                                             <th style="width: 20%">Quantity</th>
-                                            <th style="width: 30%">WBS Name</th>
                                             <th style="width: 5%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -80,17 +80,25 @@
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
+                                                <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
+                                                </selectize>  
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0">
+                                                <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length > 0">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
-                                            </td>
-                                            <td class="p-l-0 textLeft">
-                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
-                                                </selectize>
+                                                <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
                                             <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -115,18 +123,16 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
+                                                <label for="wbs" class="control-label">WBS Name</label>
+                                                <input type="text" id="wbs" class="form-control" disabled>  
+                                            </div>
+                                            <div class="col-sm-12">
                                                 <label for="material" class="control-label">Material</label>
-                                                <input type="text" id="material" class="form-control" disabled >
+                                                <input type="text" id="material" class="form-control" disabled>                                                
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
-                                                </selectize>
+                                                <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                         </div>
                                     </div>
@@ -160,8 +166,10 @@
 
     var data = {
         description : @json($modelMR->description),
+        mr_id : @json($modelMR->id),
         newIndex : "",
-        materials : @json($modelMaterial),
+        materials : [],
+        materialsEdit : [],
         wbss : @json($modelWBS),
         projectSettings: {
             placeholder: 'Please Select Project'
@@ -171,6 +179,12 @@
         },
         materialSettings: {
             placeholder: 'Please Select Material'
+        },
+        nullSettings:{
+            placeholder: 'Please Select WBS First !'
+        },
+        materialNullSettings:{
+            placeholder: "WBS doesn't have BOM ! / Material already inputted"
         },
         selectedProject : @json($modelProject),
         dataMaterial : @json($modelMRD),
@@ -185,6 +199,7 @@
             wbs_name : ""
         },
         editInput : {
+            mrd_id :"",
             old_material_id : "",
             material_id : "",
             material_code : "",
@@ -204,6 +219,24 @@
         el : '#mr',
         data : data,
         computed : {
+            materialOk: function(){
+                let isOk = false;
+
+                if(this.dataInput.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
+            materialEditOk: function(){
+                let isOk = false;
+
+                if(this.editInput.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
             dataOk: function(){
                 let isOk = false;
                 
@@ -293,6 +326,7 @@
                 $('div.overlay').hide();
             },
             openEditModal(data,index){
+                this.editInput.mrd_id = data.mrd_id;
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
@@ -304,6 +338,7 @@
                 this.editInput.index = index;
 
                 document.getElementById('material').value = data.material_code+" - "+data.material_name;
+                document.getElementById('wbs').value = data.wbs_name;
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
                 
@@ -359,10 +394,12 @@
                 Vue.nextTick(() => this.editInput.quantity = quantity_string);
             },
             'dataInput.wbs_id': function(newValue){
+                this.dataInput.material_id = "";
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
-                        this.dataInput.wbs_name = data.name;
+                    window.axios.get('/api/getWbsMREdit/'+newValue+'/'+this.mr_id).then(({ data }) => {
+                        this.dataInput.wbs_name = data.wbs.name;
+                        this.materials = data.materials;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {

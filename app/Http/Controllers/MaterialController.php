@@ -30,7 +30,7 @@ class MaterialController extends Controller
     public function create()
     {
         $material = new Material;
-        $currencies = Configuration::get('Currencies');
+        $currencies = Configuration::get('currencies');
 
         return view('material.create', compact('material','currencies'));
     }
