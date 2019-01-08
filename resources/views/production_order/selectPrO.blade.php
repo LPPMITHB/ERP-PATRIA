@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [   
-        'title' => 'Release Production Order » '.$modelProject->name.' » Select WO',
+        'title' => 'Release Production Order » '.$modelProject->name.' » Select PrO',
         'items' => [
             'Dashboard' => route('index'),
             'View all Projects' => route('production_order.selectProjectRelease'),
@@ -26,9 +26,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Code</td>
+                                <td>Number</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->code}}</b></td>
+                                <td>&ensp;<b>{{$modelProject->number}}</b></td>
                             </tr>
                             <tr>
                                 <td>Ship</td>
