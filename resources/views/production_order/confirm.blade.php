@@ -115,7 +115,7 @@
                             <tr>
                                 <th style="width: 10px">No</th>
                                 <th style="width: 20%">Name</th>
-                                <th style="width: 35%">Description</th>
+                                <th style="width: 30%">Description</th>
                                 <th style="width: 8%">Status</th>
                                 <th style="width: 8%">Progress</th>
                                 <th style="width: 8%">Weight</th>
