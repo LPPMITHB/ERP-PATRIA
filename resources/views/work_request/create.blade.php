@@ -49,26 +49,28 @@
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
-                            <div class="col-xs-12 col-md-4 p-r-0">
+                            <template v-if="selectedProject.length > 0">
+                                <div class="col-xs-12 col-md-4 p-r-0">
                                     <div class="col-sm-12 p-l-0">
                                         <label for="">WR Description</label>
                                     </div>
                                     <div class="col-sm-12 p-l-0">
                                         <textarea class="form-control" rows="4" v-model="description"></textarea>
                                     </div>
-                            </div>
+                                </div>
+                            </template>
                         </div>
-                        <div class="row">
+                        <div class="row" v-show="selectedProject.length > 0">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <table class="table table-bordered tableFixed" >
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 30%">Material Name</th>
+                                            <th style="width: 25%">Material Name</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 10%">Available</th>
-                                            <th style="width: 10%">Description</th>
-                                            <th style="width: 25%">WBS Name</th>
+                                            <th style="width: 20%">Description</th>
+                                            <th style="width: 20%">WBS Name</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -275,7 +277,7 @@
             createOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.dataInput.quantityInt+"";
+                var string_newValue = this.dataInput.quantity+"";
                 this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
                 if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.wbs_id == ""){
@@ -445,19 +447,19 @@
                     this.selectedProject = [];
                 }
 
-                function myFunction(x) {
-                    if (x.matches) { // If media query matches
-                        $('.table').wrap('<div class="dataTables_scroll" />');
-                    } 
-                }
+                // function myFunction(x) {
+                //     if (x.matches) { // If media query matches
+                //         $('.table').wrap('<div class="dataTables_scroll" />');
+                //     } 
+                // }
 
-                var x = window.matchMedia("(max-width: 500px)")
-                myFunction(x) // Call listener function at run time
-                x.addListener(myFunction) // Attach listener function on state changes
+                // var x = window.matchMedia("(max-width: 500px)")
+                // myFunction(x) // Call listener function at run time
+                // x.addListener(myFunction) // Attach listener function on state changes
 
-                var x = window.matchMedia("(max-width: 1024px)")
-                myFunction(x) // Call listener function at run time
-                x.addListener(myFunction) // Attach listener function on state changes
+                // var x = window.matchMedia("(max-width: 1024px)")
+                // myFunction(x) // Call listener function at run time
+                // x.addListener(myFunction) // Attach listener function on state changes
             },
 
             'dataInput.material_id' : function(newValue){
@@ -494,10 +496,8 @@
                 if(newValue != ""){
 
                     this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    this.dataInput.quantityInt = newValue;
-                    this.dataInput.quantityInt = parseInt(this.dataInput.quantityInt+"".replace(/,/g , ''));
 
-                    if(this.dataInput.quantityInt > parseInt(this.dataInput.available.replace(/,/g , ''))){
+                    if(parseInt((this.dataInput.quantity+"").replace(/,/g , '')) > parseInt((this.dataInput.available+"").replace(/,/g , ''))){
 
                         iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
@@ -507,11 +507,7 @@
                         });
 
                         this.dataInput.quantity = this.dataInput.available;
-
                     }
-                
-                }else{
-
                 }
             },
 
