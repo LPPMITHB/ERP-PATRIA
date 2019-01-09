@@ -19,6 +19,7 @@ class CreateMstBomDetailTable extends Migration
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
             $table->integer('quantity');
+            $table->string('source')->nullable();
             $table->timestamps();
 
             $table->foreign('bom_id')->references('id')->on('mst_bom');

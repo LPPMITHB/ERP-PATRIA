@@ -294,8 +294,8 @@
                     window.axios.get('/api/getSlocDetailGM/'+newValue).then(({ data }) => {
                         this.dataSLD = data;
                         this.dataSLD.forEach(sld => {
-                            sld.available = sld.quantity - sld.reserved;
-                            sld.quantity_rn = sld.quantity - sld.reserved;
+                            sld.available = sld.quantity;
+                            sld.quantity_rn = sld.quantity;
                             sld.quantity_rn = (sld.quantity_rn+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             sld.quantity = "";
                         });
