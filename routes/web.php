@@ -470,7 +470,7 @@ Route::name('activity.')->prefix('activity')->group(function() {
     //Activity 
     Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project');
 
-    Route::patch('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project');    
+    Route::put('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project');    
 
     Route::post('/store', 'ActivityController@store')->name('store')->middleware('can:create-project');
     
