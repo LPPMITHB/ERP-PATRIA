@@ -526,25 +526,19 @@ class BOMController extends Controller
 
     // General Function
     private function generateBomCode($project_id){
-        $modelBOM = Bom::orderBy('created_at','desc')->first();
-        $modelProject = Project::where('id',$project_id)->first();
+        $code = 'BOM';
+        $project = Project::find($project_id);
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
 
-        $seqProject = $modelProject->project_sequence;
+        $modelBom = Bom::orderBy('code', 'desc')->where('project_id', $project_id)->first();
+        
+        $number = 1;
+		if(isset($modelBom)){
+            $number += intval(substr($modelBom->code, -4));
+		}
 
-		$number = 1;
-		if(isset($modelBOM)){
-            $number += intval(substr($modelBOM->code, -4))+10;
-        }
-
-        $code = $seqProject.'00000';
-        $code = intval($code);
-        $code = $code+$number;
-
-        if($seqProject < 10){
-            $code = '0'.$code;
-        }
-
-        $bom_code = 'BOM'.$code;
+        $bom_code = $code.sprintf('%02d', $year).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $bom_code;
     }
     
