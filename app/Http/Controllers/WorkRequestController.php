@@ -10,6 +10,8 @@ use App\Models\Branch;
 use App\Models\Material;
 use App\Models\Stock;
 use App\Models\WBS;
+use App\Models\Bom;
+use App\Models\BomDetail;
 use App\Models\Project;
 use Auth;
 use DB;
@@ -30,17 +32,11 @@ class WorkRequestController extends Controller
 
     public function indexApprove()
     {
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->get();
+        $modelWRs = WorkRequest::whereIn('status',[1,4])->get();
 
-        return view('purchase_requisition.indexApprove', compact('modelPRs'));
+        return view('work_request.indexApprove', compact('modelWRs'));
     }
 
-    public function indexConsolidation()
-    {
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->with('project')->get();
-
-        return view('purchase_requisition.indexConsolidation', compact('modelPRs'));
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -49,10 +45,9 @@ class WorkRequestController extends Controller
      */
     public function create()
     {
-        $modelMaterial = Stock::with('material')->get()->jsonSerialize();
         $modelProject = Project::where('status',1)->get();
 
-        return view('work_request.create', compact('modelMaterial','modelProject'));
+        return view('work_request.create', compact('modelProject'));
     }
 
     /**
@@ -87,15 +82,41 @@ class WorkRequestController extends Controller
 
 
             foreach($datas->materials as $data){
-                $WRD = new WorkRequestDetail;
-                $WRD->work_request_id = $WR->id;
-                $WRD->quantity = $data->quantity;
-                $WRD->description = $data->description;
-                $WRD->material_id = $data->material_id;
-                if($data->wbs_id != null){
+                $modelWRDs = WorkRequestDetail::where('work_request_id',$WR->id)->get();
+                if(count($modelWRDs)>0){
+                    $status = 0;
+                    foreach($modelWRDs as $WRD){
+                        if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id){
+                            $updatedQty = $WRD->quantity + $data->quantityInt;
+                            // $this->updateReserveStock($data->material_id, $WRD->quantity ,$updatedQty);
+                            $WRD->quantity = $updatedQty;
+                            $WRD->update();
+
+                            $status = 1;
+                        }
+                    }
+                    if($status == 0){
+                        $WRD = new WorkRequestDetail;
+                        $WRD->work_request_id = $WR->id;
+                        $WRD->quantity = $data->quantityInt;
+                        $WRD->description = $data->description;
+                        $WRD->material_id = $data->material_id;
+                        $WRD->wbs_id = $data->wbs_id;
+                        $WRD->save();
+
+                        // $this->reserveStock($data->material_id, $data->quantityInt);
+                    }
+                }else{
+                    $WRD = new WorkRequestDetail;
+                    $WRD->work_request_id = $WR->id;
+                    $WRD->quantity = $data->quantityInt;
+                    $WRD->description = $data->description;
+                    $WRD->material_id = $data->material_id;
                     $WRD->wbs_id = $data->wbs_id;
+                    $WRD->save();
+
+                    // $this->reserveStock($data->material_id, $data->quantityInt);
                 }
-                $WRD->save();
             }
             
             DB::commit();
@@ -103,46 +124,6 @@ class WorkRequestController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('work_request.create')->with('error', $e->getMessage());
-        }
-    }
-
-    public function storePRD(Request $request)
-    {
-        $datas = $request->json()->all();
-
-        $modelPR = PurchaseRequisition::findOrFail($datas['pr_id']);
-        DB::beginTransaction();
-        try {
-            $PRD = new PurchaseRequisitionDetail;
-            $PRD->purchase_requisition_id = $datas['pr_id'];
-            $PRD->quantity = $datas['quantity'];
-            $PRD->material_id = $datas['material_id'];
-            $PRD->wbs_id = $datas['wbs_id'];
-            if(!$PRD->save()){
-                return back()->with('error','Failed to save, please try again !');
-            }
-            DB::commit();
-            return response(json_encode($PRD),Response::HTTP_OK);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('purchase_requisition.edit',$datas['pr_id'])->with('error', $e->getMessage());
-        }
-    }
-
-    public function updatePRD(Request $request)
-    {
-        $datas = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('wbs_id',$datas['wbs_id'])->first();
-        DB::beginTransaction();
-        try {
-            $modelPRD->quantity += $datas['quantity'];
-            $modelPRD->save();
-            
-            DB::commit();
-            return response(json_encode($modelPRD),Response::HTTP_OK);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('purchase_requisition.edit',$datas['pr_id'])->with('error', $e->getMessage());
         }
     }
 
@@ -161,9 +142,9 @@ class WorkRequestController extends Controller
 
     public function showApprove($id)
     {
-        $modelPR = PurchaseRequisition::findOrFail($id);
+        $modelWR = WorkRequest::findOrFail($id);
 
-        return view('purchase_requisition.showApprove', compact('modelPR'));
+        return view('work_request.showApprove', compact('modelWR'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -175,14 +156,15 @@ class WorkRequestController extends Controller
     {
         $modelWR = WorkRequest::findOrFail($id);
         $project = Project::where('id',$modelWR->project_id)->with('customer','ship')->first();
-        $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get()->jsonSerialize();
-        $materials = Stock::with('material')->get()->jsonSerialize();
-        $wbss = [];
-        if($project){
-            $wbss = WBS::where('project_id',$project->id)->get()->jsonSerialize();
+        $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get();
+        foreach($modelWRD as $wrd){
+            $material = Stock::where('material_id',$wrd->material_id)->first();
+            $wrd['available'] = $material->quantity-$material->reserved;
         }
-
-        return view('work_request.edit', compact('modelWR','project','modelWRD','materials','wbss'));
+        $modelWRD->jsonSerialize();
+        $wbss = [];
+        $wbss = WBS::where('project_id',$modelWR->project_id)->get()->jsonSerialize();
+        return view('work_request.edit', compact('modelWR','project','modelWRD','wbss'));
     }
 
     /**
@@ -195,7 +177,6 @@ class WorkRequestController extends Controller
     public function update(Request $request, $id)
     {
         $datas = json_decode($request->datas);
-        print_r($datas);exit();
         DB::beginTransaction();
         try {
             $wrd_id = [];
@@ -205,68 +186,64 @@ class WorkRequestController extends Controller
                 $WR->status = 4;
             }
             $WR->update();
+            
             foreach($datas->materials as $data){
                 if($data->wrd_id != null){
-                    $status = 0;
-                    foreach($WR->workRequestDetails as $WorkRD){
-                        if($WorkRD->material_id == $data->material_id && $WorkRD->wbs_id == $data->wbs_id && $WorkRD->available == $data->available && $WorkRD->id != $data->id){
-                            $quantity = $WorkRD->quantity + $data->quantity;
-
+                    $WRD = WorkRequestDetail::find($data->wrd_id);
+                    // $this->updateReserveStock($data->material_id, $WRD->quantity ,$data->quantityInt);
+                    
+                    $WRD->quantity = $data->quantityInt;
+                    $WRD->description = $data->description;
+                    $WRD->material_id = $data->material_id;
+                    $WRD->wbs_id = $data->wbs_id;
+                    $WRD->update();
+                }else{
+                    $modelWRDs = WorkRequestDetail::where('work_request_id',$WR->id)->get();
+                    if(count($modelWRDs)>0){
+                        $status = 0;
+                        foreach($modelWRDs as $WRD){
+                            if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id){
+                                $updatedQty = $WRD->quantity + $data->quantityInt;
+                                // $this->updateReserveStock($data->material_id, $WRD->quantity ,$updatedQty);
+                                $WRD->quantity = $updatedQty;
+                                $WRD->update();
+    
+                                $status = 1;
+                            }
+                        }
+                        if($status == 0){
                             $WRD = new WorkRequestDetail;
                             $WRD->work_request_id = $WR->id;
-                            $WRD->quantity = $quantity;
+                            $WRD->quantity = $data->quantityInt;
+                            $WRD->description = $data->description;
                             $WRD->material_id = $data->material_id;
-                            $WRD->available = $data->available;
-                            if($WR->project_id != ""){
-                                $WRD->wbs_id = $data->wbs_id;
-                            }
+                            $WRD->wbs_id = $data->wbs_id;
                             $WRD->save();
-                            array_push($wrd_id,$WorkRD->id,$data->id);
- 
-                            $status = 1;
+    
+                            // $this->reserveStock($data->material_id, $data->quantityInt);
                         }
-                    }
-
-                    if($status == 0){
-                        $PRD = WorkRequestDetail::find($data->id);
-
-                        $PRD->quantity = $data->quantity;
-                        $PRD->alocation = $data->alocation;
-                        if($PR->project_id != ""){
-                            $PRD->wbs_id = $data->wbs_id;
-                        }
-                        $PRD->update();
-                    }
-                }else{
-                    $status = 0;
-                    foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation){
-                            $PurchaseRD->quantity +=$data->quantity;
-                            $PurchaseRD->update();
-
-                            $status = 1;
-                        }
-                    }
-                    if($status == 0){
-                        $PRD = new PurchaseRequisitionDetail;
-                        $PRD->purchase_requisition_id = $PR->id;
-                        $PRD->quantity = $data->quantity;
-                        $PRD->material_id = $data->material_id;
-                        $PRD->alocation = $data->alocation;
-                        if($PR->project_id != ""){
-                            $PRD->wbs_id = $data->wbs_id;
-                        }
-                        $PRD->save();
+                    }else{
+                        $WRD = new WorkRequestDetail;
+                        $WRD->work_request_id = $WR->id;
+                        $WRD->quantity = $data->quantityInt;
+                        $WRD->description = $data->description;
+                        $WRD->material_id = $data->material_id;
+                        $WRD->wbs_id = $data->wbs_id;
+                        $WRD->save();
+    
+                        // $this->reserveStock($data->material_id, $data->quantityInt);
                     }
                 }
+
+
             }
 
-            $this->destroy(json_encode($wrd_id));
             DB::commit();
-            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
+            return redirect()->route('work_request.show',$WR->id)->with('success', 'Work Request Updated');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
+
+            return redirect()->route('work_request.create')->with('error', $e->getMessage());
         }
     }
 
@@ -276,19 +253,22 @@ class WorkRequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroyPRD(Request $request)
-    {
-        $data = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::findOrFail($data[0]);
-        DB::beginTransaction();
-        try {
-            $modelPRD->delete();
-            DB::commit();
-            return response('ok',Response::HTTP_OK);
-        } catch(\Illuminate\Database\QueryException $e){
-            DB::rollback();
-            return redirect()->route('bom.edit',$bom->id)->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
-        }  
+
+    public function reserveStock($material_id,$quantity){
+        $modelStock = Stock::where('material_id',$material_id)->first();
+        if($modelStock){
+            $modelStock->reserved = $modelStock->reserved + $quantity;
+            $modelStock->save();
+        }
+    }
+
+    public function updateReserveStock($material_id,$oldQty, $newQty){
+        $difference = $newQty - $oldQty;
+        $modelStock = Stock::where('material_id',$material_id)->first();
+        if($modelStock){
+            $modelStock->reserved = $modelStock->reserved + $difference;
+            $modelStock->save();
+        }
     }
 
     public function destroy($id){
@@ -307,30 +287,30 @@ class WorkRequestController extends Controller
             return redirect()->route('purchase_requisition.create')->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
         }  
     }
-    public function approval($pr_id,$status)
+    public function approval($wr_id,$status)
     {
         DB::beginTransaction();
         try{
-            $modelPR = PurchaseRequisition::findOrFail($pr_id);
+            $modelWR = WorkRequest::findOrFail($wr_id);
             if($status == "approve"){
-                $modelPR->status = 2;
-                $modelPR->update();
+                $modelWR->status = 2;
+                $modelWR->update();
                 DB::commit();
-                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Approved');
+                return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Approved');
             }elseif($status == "need-revision"){
-                $modelPR->status = 3;
-                $modelPR->update();
+                $modelWR->status = 3;
+                $modelWR->update();
                 DB::commit();
-                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Need Revision');
+                return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Need Revision');
             }elseif($status == "reject"){
-                $modelPR->status = 5;
-                $modelPR->update();
+                $modelWR->status = 5;
+                $modelWR->update();
                 DB::commit();
-                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Rejected');
+                return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Rejected');
             }
         } catch (\Exception $e){
             DB::rollback();
-            return redirect()->route('purchase_requisition.show',$pr_id);
+            return redirect()->route('work_request.show',$wr_id);
         }
 
         
@@ -358,8 +338,26 @@ class WorkRequestController extends Controller
 		return $wr_number;
     }
 
+    public function getWbsEditAPI($id, $wr_id){
+        $data = array();
+        $wrds = WorkRequest::find($wr_id)->workRequestDetails;
+        $exisiting_material = $wrds->where('wbs_id',$id)->pluck('material_id')->toArray();
+
+        $wbs = WBS::findOrFail($id);
+        if($wbs->bom != null){
+            $material_ids = $wbs->bom->bomDetails->pluck('material_id')->toArray();
+            $data['materials'] = Material::whereIn('id',$material_ids)->whereNotIn('id', $exisiting_material)->get();
+        }else{
+            $data['materials'] = [];
+        }
+
+        $data['wbs'] = $wbs->jsonSerialize();
+
+        return response($data, Response::HTTP_OK);
+    }
+
     public function getQuantityReservedApi($id){
-        $materials = Stock::where('material_id',$id)->get();
+        $materials = Stock::where('material_id',$id)->first();
         
         return response($materials, Response::HTTP_OK);
     }
@@ -376,13 +374,21 @@ class WorkRequestController extends Controller
     }
 
     public function getWbsWrAPI($id){
+        $wbs = WBS::findOrFail($id)->jsonSerialize();
 
-        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response($wbs, Response::HTTP_OK);
     }
 
-    public function getResourceAPI($id){
-        
-        return response(Resource::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+    public function getBomWrAPI($id){
+        $bom = Bom::where('wbs_id',$id)->first()->jsonSerialize();
+
+        return response($bom, Response::HTTP_OK);
+    }
+
+    public function getBomDetailWrAPI($id){
+        $bomDetail = BomDetail::where('bom_id',$id)->with('material')->get()->jsonSerialize();
+
+        return response($bomDetail, Response::HTTP_OK);
     }
 
     public function getMaterialsAPI($ids){
@@ -391,9 +397,4 @@ class WorkRequestController extends Controller
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-
-    public function getPRDAPI($id){
-
-        return response(PurchaseRequisitionDetail::where('purchase_requisition_id',$id)->with('material','wbs')->get()->jsonSerialize(), Response::HTTP_OK);
-    }
 }

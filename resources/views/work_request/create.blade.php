@@ -66,25 +66,25 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
+                                            <th style="width: 20%">WBS Name</th>
                                             <th style="width: 25%">Material Name</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 10%">Available</th>
                                             <th style="width: 20%">Description</th>
-                                            <th style="width: 20%">WBS Name</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis" v-if="material.work_name != ''">{{ material.work_name }}</td>
+                                            <td class="tdEllipsis" v-else>-</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td v-if="material.available != ''"class="tdEllipsis">{{ material.available }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis">{{ material.description}}</td>
-                                            <td class="tdEllipsis" v-if="material.work_name != ''">{{ material.work_name }}</td>
-                                            <td class="tdEllipsis" v-else>-</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -98,8 +98,18 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
+                                            <td class="p-l-0 textLeft" v-show="project_id != ''">
+                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="project_id == ''">
+                                                <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </td>
                                             <td class="p-l-0 textLeft">
-                                                <selectize v-model="dataInput.material_id" :settings="materialSettings">
+                                                <selectize v-model="dataInput.material_id" :settings="materialSettings" id="material">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.material.code }} - {{ material.material.name }}</option>
                                                 </selectize>
                                             </td>
@@ -111,16 +121,6 @@
                                             </td>
                                             <td class="p-l-0">
                                                 <input class="form-control" v-model="dataInput.description">
-                                            </td>
-                                            <td class="p-l-0 textLeft" v-show="project_id != ''">
-                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="p-l-0 textLeft" v-show="project_id == ''">
-                                                <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
-                                                </selectize>
                                             </td>
                                             <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -146,9 +146,21 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
+                                            <div class="col-sm-12" v-show="project_id != ''"> 
+                                                <label for="type" class="control-label">WBS Name</label>
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="project_id == ''"> 
+                                                <label for="type" class="control-label">WBS Name</label>
+                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
+                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                </selectize>
+                                            </div>
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Material</label>
-                                                <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
+                                                <selectize id="materialedit" v-model="editInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.material.code }} - {{ material.material.name }}</option>
                                                 </selectize>
                                             </div>
@@ -163,18 +175,6 @@
                                             <div class="col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
                                                 <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input description">
-                                            </div>
-                                            <div class="col-sm-12" v-show="project_id != ''"> 
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12" v-show="project_id == ''"> 
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
-                                                </selectize>
                                             </div>
                                         </div>
                                     </div>
@@ -209,7 +209,8 @@
         description : "",
         availableQuantity : [],
         newIndex : "",
-        materials : @json($modelMaterial),
+        boms : [],
+        materials : [],
         projects : @json($modelProject),
         works : [],
         project_id : "",
@@ -315,7 +316,7 @@
                 this.submit = "";
                 this.submittedForm.description = this.description;
                 this.submittedForm.project_id = this.project_id;     
-                this.submittedForm.materials = this.dataMaterial;    
+                this.submittedForm.materials = this.dataMaterial;   
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -339,6 +340,7 @@
                             material.material_id = new_material_id;
                             material.wbs_id = this.editInput.wbs_id;
                             material.description = this.editInput.description;
+                            material.available = this.editInput.available;
 
                             $('div.overlay').hide();
                         })
@@ -448,6 +450,8 @@
                         });
                         $('div.overlay').hide();
                     })
+                    
+                    this.dataInput.material_id = "";
                 }else{
                     this.selectedProject = [];
                 }
@@ -473,11 +477,9 @@
                     window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
                         this.availableQuantity = data;
 
-                        this.availableQuantity.forEach(element => {
-                            this.dataInput.available = element.quantity - element.reserved;
-                            this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.dataInput.available = data.quantity - data.reserved;
+                        this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-                        });
 
                         $('div.overlay').hide();
                     })
@@ -503,11 +505,8 @@
                     window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
                         this.availableQuantity = data;
 
-                        this.availableQuantity.forEach(element => {
-                            this.editInput.available = element.quantity - element.reserved;
-                            this.editInput.available = (this.editInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-                        });
+                        this.editInput.available = data.quantity - data.reserved;
+                        this.editInput.available = (this.editInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
                         $('div.overlay').hide();
                     })
@@ -570,7 +569,35 @@
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsWr/'+newValue).then(({ data }) => {
                         this.dataInput.work_name = data.name;
-                        $('div.overlay').hide();
+
+                        window.axios.get('/api/getBomWr/'+this.dataInput.wbs_id).then(({ data }) => {
+                            this.boms = data;
+
+                            window.axios.get('/api/getBomDetailWr/'+this.boms.id).then(({ data }) => {
+                                this.materials = data;
+
+                                var $material = $(document.getElementById('material')).selectize();
+                                $material[0].selectize.focus();
+
+                                $('div.overlay').hide();
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                            })
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
                     })
                     .catch((error) => {
                         iziToast.warning({
@@ -580,6 +607,9 @@
                         });
                         $('div.overlay').hide();
                     })
+
+                    this.dataInput.quantity = "";
+                    this.dataInput.available = "";
                 }else{
                     this.dataInput.wbs_id = "";
                 }
@@ -590,7 +620,35 @@
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsWr/'+newValue).then(({ data }) => {
                         this.editInput.work_name = data.name;
-                        $('div.overlay').hide();
+
+                        window.axios.get('/api/getBomWr/'+this.editInput.wbs_id).then(({ data }) => {
+                            this.boms = data;
+
+                            window.axios.get('/api/getBomDetailWr/'+this.boms.id).then(({ data }) => {
+                                this.materials = data;
+
+                                var $material = $(document.getElementById('materialedit')).selectize();
+                                $material[0].selectize.focus();
+
+                                $('div.overlay').hide();
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                            })
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
                     })
                     .catch((error) => {
                         iziToast.warning({
@@ -600,6 +658,9 @@
                         });
                         $('div.overlay').hide();
                     })
+
+                    this.editInput.quantity = "";
+                    this.editInput.available = "";
                 }else{
                     this.editInput.wbs_id = "";
                 }
