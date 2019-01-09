@@ -598,6 +598,19 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'WIP',
+            'icon' => 'fa-database',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=> $building,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        $wip = Menu::where('name','WIP')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Work Request',
@@ -605,7 +618,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'work_request.index',
             'is_active' => true,
             'roles' => 'ADMIN',
-            'menu_id'=>$materialManagement,
+            'menu_id'=>$wip,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -653,7 +666,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN',
-            'menu_id'=>$materialManagement,
+            'menu_id'=>$wip,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

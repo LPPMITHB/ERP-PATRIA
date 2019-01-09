@@ -196,6 +196,7 @@
             name : "",
             description : "",
             cost_standard_price : "",
+            cost_standard_service : "",
             weight : 0,
             weight_uom_id : "",
             height :0,
