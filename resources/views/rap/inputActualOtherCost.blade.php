@@ -246,7 +246,7 @@
                 var url = "{{ route('rap.storeActualCost') }}";
                 editCost = JSON.stringify(editCost);
 
-                window.axios.patch(url,editCost).then((response) => {
+                window.axios.put(url,editCost).then((response) => {
                     if(response.data.error != undefined){
                         iziToast.warning({
                             displayMode: 'replace',

@@ -27,7 +27,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Code</td>
+                                <td>Number</td>
                                 <td>:</td>
                                 <td>&ensp;<b>{{$project->number}}</b></td>
                             </tr>
@@ -122,14 +122,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelBOM as $BOM)
-                        @foreach($BOM->bomDetails as $BOMD)
+                        @foreach($modelBOM->bomDetails as $BOMD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $BOMD->material->name }}</td>
                                 <td>{{ number_format($BOMD->quantity) }}</td>
                             </tr>
-                        @endforeach
                         @endforeach
                     </tbody>
                 </table>
@@ -276,6 +274,8 @@
         wbs_id :@json($wbs->id),
         materials : @json($materials),
         resources : @json($resources),
+        bom : @json($modelBOM->bomDetails),
+        assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
     };
@@ -299,7 +299,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.datas.length < 1){
+                if(this.materials.length < 1 && this.resources.length < 1){
                     isOk = true;
                 }
                 return isOk;
@@ -333,6 +333,8 @@
                 });
 
                 this.submittedForm.datas = datas;
+                this.submittedForm.materials = this.bom;
+                this.submittedForm.resources = this.assignedResource;
                 this.submittedForm.project_id = this.project_id;
                 this.submittedForm.wbs_id = this.wbs_id;
 
@@ -348,7 +350,7 @@
             'dataInput.id': function(newValue){
                 if(newValue != ""){
                     if(this.dataInput.type == "Resource"){
-                        window.axios.get('/api/getResourceWO/'+newValue).then(({ data }) => {
+                        window.axios.get('/api/getResourcePrO/'+newValue).then(({ data }) => {
                             if(data.description == "" || data.description == null){
                                 this.dataInput.description = '-';
                             }else{
@@ -358,7 +360,7 @@
                             this.dataInput.code = data.code;
                         });
                     }else if(this.dataInput.type == "Material"){
-                        window.axios.get('/api/getMaterialWO/'+newValue).then(({ data }) => {
+                        window.axios.get('/api/getMaterialPrO/'+newValue).then(({ data }) => {
                             if(data.description == "" || data.description == null){
                                 this.dataInput.description = '-';
                             }else{

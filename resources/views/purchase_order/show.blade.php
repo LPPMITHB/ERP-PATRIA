@@ -146,7 +146,11 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
+                            @if($modelPO->purchaseRequisition->type == 1)
+                                <th width="35%">Material Name</th>
+                            @elseif($modelPO->purchaseRequisition->type == 2)
+                                <th width="35%">Resource Name</th>
+                            @endif
                             <th width="20%">Quantity</th>
                             <th width="20%">Price / pcs</th>
                             <th width="20%">Sub Total Price</th>
@@ -157,7 +161,11 @@
                             @if($POD->quantity > 0)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $POD->material->code }} - {{ $POD->material->name }}</td>
+                                    @if($modelPO->purchaseRequisition->type == 1)
+                                        <td>{{ $POD->material->code }} - {{ $POD->material->name }}</td>
+                                    @elseif($modelPO->purchaseRequisition->type == 2)
+                                        <td>{{ $POD->resource->code }} - {{ $POD->resource->name }}</td>
+                                    @endif
                                     <td>{{ number_format($POD->quantity) }}</td>
                                     <td>{{ number_format($POD->total_price / $POD->quantity) }}</td>
                                     <td>{{ number_format($POD->total_price) }}</td>

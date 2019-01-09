@@ -356,7 +356,7 @@
                 }
                 data = JSON.stringify(data);
                 var url = "{{ route('bom_repair.updateDesc') }}";
-                window.axios.patch(url,data).then((response) => {
+                window.axios.put(url,data).then((response) => {
                     
                 })
                 .catch((error) => {
@@ -373,7 +373,7 @@
 
                 var url = "{{ route('bom_repair.update') }}";
 
-                window.axios.patch(url,data).then((response) => {
+                window.axios.put(url,data).then((response) => {
                     iziToast.success({
                         title: 'Edit Success',
                         position: 'topRight',

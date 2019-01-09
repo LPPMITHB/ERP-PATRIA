@@ -26,9 +26,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Code</td>
+                                <td>Number</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->code}}</b></td>
+                                <td>&ensp;<b>{{$modelProject->number}}</b></td>
                             </tr>
                             <tr>
                                 <td>Ship</td>
@@ -67,35 +67,10 @@
                 </div>
             </div>
             <div class="box-body">
-                <h4 class="box-title no-padding">Work Breakdown Structures</h4>
-                <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%">No</th>
-                            <th style="width: 17%">Name</th>
-                            <th style="width: 17%">Description</th>
-                            <th style="width: 15%">Deliverables</th>
-                            <th style="width: 15%">Deadline</th>
-                            <th style="width: 9%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($modelWBS as $wbs)
-                        <tr>
-                            <td class="p-l-10">{{ $loop->iteration }}</td>
-                            <td class="tdEllipsis p-l-10">{{ $wbs->name }}</td>
-                            <td class="tdEllipsis p-l-10">{{ $wbs->description }}</td>
-                            <td class="p-l-10">{{ $wbs->deliverables }}</td>
-                            <td class="p-l-10">{{ $wbs->planned_deadline }}</td>
-                            <td class="textCenter">
-                                <a class="btn btn-primary btn-xs" href="{{ route('production_order.create', ['id'=>$wbs->id]) }}">
-                                    SELECT
-                                </a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <h4 class="box-title">Work Breakdown Structures</h4>
+                <div id="treeview">
+                
+                </div>
             </div>
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
@@ -108,17 +83,31 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#wbs-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
+        var data = @json($dataWbs);
+        
+        $('#treeview').jstree({
+            "core": {
+                'data': data,
+                "check_callback": true,
+                "animation": 200,
+                "dblclick_toggle": false,
+                "keep_selected_style": false
+            },
+            "plugins": ["dnd", "contextmenu"],
+            "contextmenu": {
+                "select_node": false, 
+                "show_at_node": false,
             }
+        }).bind("changed.jstree", function (e, data) {
+            if(data.node) {
+            document.location = data.node.a_attr.href;
+            }
+        }).bind("loaded.jstree", function (event, data) {
+            // you get two params - event & data - check the core docs for a detailed description
+            $(this).jstree("open_all");
         });
+
+        $('div.overlay').hide();
     });
 </script>
 @endpush

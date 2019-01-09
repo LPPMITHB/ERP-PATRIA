@@ -12,6 +12,8 @@ use App\Models\Project;
 use App\Models\Resource;
 use App\Models\WorkRequest;
 use App\Models\WorkRequestDetail;
+use App\Models\MaterialRequisition;
+use App\Models\MaterialRequisitionDetail;
 use Auth;
 use DB;
 
@@ -100,8 +102,8 @@ class WorkOrderController extends Controller
                 $WOD->total_price = $data->material->cost_standard_price * $data->quantity;
                 $WOD->save();
 
-                $statusPR = $this->updateWR($data->id,$data->quantity);
-                if($statusPR === true){
+                $statusWR = $this->updateWR($data->id,$data->quantity);
+                if($statusWR === true){
                     $status = 1;
                 }
                 $total_price += $WOD->total_price;
@@ -158,8 +160,8 @@ class WorkOrderController extends Controller
                 $WOD->total_price = $data->quantity * $data->total_price;
                 $WOD->save();
 
-                $statusPR = $this->updateWR($data->work_request_detail_id,$diff);
-                if($statusPR === true){
+                $statusWR = $this->updateWR($data->work_request_detail_id,$diff);
+                if($statusWR === true){
                     $status = 1;
                 }
                 $total_price += $WOD->total_price;
@@ -194,6 +196,26 @@ class WorkOrderController extends Controller
             if($status == "approve"){
                 $modelWO->status = 2;
                 $modelWO->update();
+                
+                $mr_number = $this->generateMRNumber();
+                $MR = new MaterialRequisition;
+                $MR->number = $mr_number;
+                $MR->project_id = $modelWO->project_id;
+                $MR->description = "AUTO CREATE MR FROM WORK ORDER";
+                $MR->type = 1;
+                $MR->user_id = Auth::user()->id;
+                $MR->branch_id = Auth::user()->branch->id;
+                $MR->save();
+
+                foreach($modelWO->workOrderDetails as $WOD){
+                    $MRD = new MaterialRequisitionDetail;
+                    $MRD->material_requisition_id = $MR->id;
+                    $MRD->quantity = $WOD->quantity;
+                    $MRD->issued = 0;
+                    $MRD->material_id = $WOD->material_id;
+                    $MRD->wbs_id = $WOD->wbs_id;
+                    $MRD->save();
+                }
                 DB::commit();
                 return redirect()->route('work_order.showApprove',$wo_id)->with('success', 'Work Order Approved');
             }elseif($status == "need-revision"){
@@ -261,5 +283,22 @@ class WorkOrderController extends Controller
         $vendor = Vendor::where('status',1)->select('id','name','code')->get()->jsonSerialize();
 
         return response($vendor, Response::HTTP_OK);
+    }
+
+    public function generateMRNumber(){
+        $modelMR = MaterialRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
+        $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
+
+        $branch_code = substr($modelBranch->code,4,2);
+		$number = 1;
+		if(isset($modelMR)){
+            $number += intval(substr($modelMR->number, -6));
+		}
+        $year = date('y'.$branch_code.'000000');
+        $year = intval($year);
+
+		$mr_number = $year+$number;
+        $mr_number = 'MR-'.$mr_number;
+		return $mr_number;
     }
 }

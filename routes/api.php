@@ -33,6 +33,7 @@ Route::get('/getNewBom/{id}', 'BOMController@getNewBomAPI')->name('api.bom.getNe
 Route::get('/getBomDetail/{id}', 'BOMController@getBomDetailAPI')->name('api.bom.getBomDetailAPI');
 Route::get('/getMaterialsBOM/{id}', 'BOMController@getMaterialsAPI')->name('api.bom.getMaterialsAPI');
 Route::get('/getServicesBOM/{id}', 'BOMController@getServicesAPI')->name('api.bom.getServicesAPI');
+Route::get('/getPRBom/{id}', 'BOMController@getPRAPI')->name('api.bom.getPRAPI');
 
 // bos
 Route::get('/getServiceBOS/{id}', 'BOSController@getServiceAPI')->name('api.bos.getServiceAPI');
@@ -99,9 +100,9 @@ Route::get('/getSlocDetailGM/{id}', 'GoodsMovementController@getSlocDetailAPI')-
 Route::get('/getSlocDetail/{id}', 'GoodsIssueController@getSlocDetailAPI')->name('api.goods_issue.getSlocDetailAPI');
 
 // production order
-Route::get('/getMaterialWO/{id}', 'ProductionOrderController@getMaterialAPI')->name('api.production_order.getMaterialAPI');
-Route::get('/getResourceWO/{id}', 'ProductionOrderController@getResourceAPI')->name('api.production_order.getResourceAPI');
-Route::get('/getStockWO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
+Route::get('/getMaterialPrO/{id}', 'ProductionOrderController@getMaterialAPI')->name('api.production_order.getMaterialAPI');
+Route::get('/getResourcePrO/{id}', 'ProductionOrderController@getResourceAPI')->name('api.production_order.getResourceAPI');
+Route::get('/getStockPrO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
 
 // assign Resource
 Route::get('/getResourceAssign/{id}', 'ResourceController@getResourceAssignApi')->name('api.resource.getResourceAssignApi');

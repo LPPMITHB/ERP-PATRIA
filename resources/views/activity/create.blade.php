@@ -670,7 +670,7 @@ var vm = new Vue({
             }
             editActivity = JSON.stringify(editActivity);
             $('div.overlay').show();            
-            window.axios.patch(url,editActivity)
+            window.axios.put(url,editActivity)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({

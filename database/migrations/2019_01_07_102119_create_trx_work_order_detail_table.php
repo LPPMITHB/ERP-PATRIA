@@ -18,7 +18,6 @@ class CreateTrxWorkOrderDetailTable extends Migration
             $table->unsignedInteger('work_order_id');
             $table->unsignedInteger('work_request_detail_id')->nullable();
             $table->integer('quantity');
-            $table->integer('received')->default(0);
             $table->float('discount')->default(0);
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();

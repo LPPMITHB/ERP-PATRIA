@@ -31,7 +31,8 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material</th>
+                                    <th v-if="modelPR.type == 1" width="30%">Material</th>
+                                    <th v-else width="30%">Resource</th>
                                     <th width="10%">Quantity</th>
                                     <th width="10%">Ordered</th>
                                     <th width="10%">Remaining</th>
@@ -43,13 +44,15 @@
                             <tbody>
                                 <tr v-for="(PRD,index) in modelPRD">
                                     <td>{{ index+1 }}</td>
-                                    <td>{{ PRD.material.code }} - {{ PRD.material.name }}</td>
+                                    <td v-if="PRD.material != null">{{ PRD.material.code }} - {{ PRD.material.name }}</td>
+                                    <td v-else>{{ PRD.resource.code }} - {{ PRD.resource.name }}</td>
                                     <td>{{ PRD.quantity }}</td>
                                     <td>{{ PRD.reserved }}</td>
                                     <td>{{ PRD.remaining }}</td>
                                     <td v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
                                     <td v-else>-</td>
-                                    <td>{{ PRD.alocation }}</td>
+                                    <td v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
+                                    <td v-else>-</td>
                                     <td class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
                                     </td>
@@ -132,6 +135,8 @@
                 var prd = this.checkedPRD;
                 var jsonPrd = JSON.stringify(prd);
                 jsonPrd = JSON.parse(jsonPrd);
+
+                this.submittedForm.type = this.modelPR.type;
                 this.submittedForm.checkedPRD = jsonPrd;            
                 this.submittedForm.id = this.modelPR.id;            
 

@@ -62,5 +62,34 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $currencies = array(
+            
+            0 => array(
+                'id' => 0,
+                'name' => 'Subcon',
+            ),
+            1 => array(
+                'id' => 1,
+                'name' => 'Others',
+            ),
+            2 => array(
+                'id' => 2,
+                'name' => 'External Equipment',
+            ),
+            3 => array(
+                'id' => 3,
+                'name' => 'Internal Equipment',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'resource_category',
+            'title' => 'Resource Categories',
+            'value' => json_encode($currencies),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

@@ -139,7 +139,6 @@ class GoodsMovementController extends Controller
                     $modelSLDTo = new StorageLocationDetail;
                     $modelSLDTo->material_id = $data->material_id;
                     $modelSLDTo->quantity = $data->quantity;
-                    $modelSLDTo->reserved = 0;
                     $modelSLDTo->storage_location_id = $sloc_to_id;
                     $modelSLDTo->save();
                 }
@@ -164,7 +163,7 @@ class GoodsMovementController extends Controller
     public function getSlocDetailAPI($id){
         $sld = StorageLocationDetail::where('storage_location_id',$id)->with('material')->get();
         foreach($sld as $key => $data){
-            if($data->quantity - $data->reserved < 1){
+            if($data->quantity < 1){
                 unset($data[$key]);
             }
         }
@@ -175,11 +174,11 @@ class GoodsMovementController extends Controller
     public function generateGMNumber(){
         $modelGM = GoodsMovement::orderBy('created_at','desc')->first();
         $yearNow = date('y');
-        $yearDoc = substr($modelGM->number, 3,2);
 
         $number = 1;
-        if($yearNow == $yearDoc){
-            if(isset($modelGM)){
+        if(isset($modelGM)){
+            $yearDoc = substr($modelGM->number, 3,2);
+            if($yearNow == $yearDoc){
                 $number += intval(substr($modelGM->number, -6));
             }
         }

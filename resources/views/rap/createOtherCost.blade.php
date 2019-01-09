@@ -288,7 +288,7 @@ var vm = new Vue({
             editCost.cost = editCost.cost.replace(/,/g , '');        
             var url = "/rap/updateCost/"+editCost.cost_id;
             editCost = JSON.stringify(editCost);
-            window.axios.patch(url,editCost)
+            window.axios.put(url,editCost)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
