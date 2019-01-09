@@ -93,7 +93,7 @@
                     </table>
                     <template v-if="havePredecessor == false"><br></template>
                     <template v-if="havePredecessor == true">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered tableFixed">
                             <thead>
                                 <tr>
                                     <th class="p-l-5" style="width: 5%">No</th>
@@ -107,10 +107,10 @@
                             <tbody>
                                 <tr v-for="(data,index) in predecessorActivities">
                                     <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                    <td class="p-b-15 p-t-15">{{ data.code }}</td>
+                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                    <td class="p-b-15 p-t-15">{{ data.wbs.code }}</td>
+                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.code)">{{ data.wbs.code }}</td>
                                     <td class="textCenter">
                                         <template v-if="data.status == 0">
                                             <i class='fa fa-check'></i>
@@ -428,7 +428,7 @@
                     var confirmActivity = this.confirmActivity;
                     var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
                     confirmActivity = JSON.stringify(confirmActivity);
-                    window.axios.patch(url,confirmActivity)
+                    window.axios.put(url,confirmActivity)
                     .then((response) => {
                         if(response.data.error != undefined){
                             iziToast.warning({

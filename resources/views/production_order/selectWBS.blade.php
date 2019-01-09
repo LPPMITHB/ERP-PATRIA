@@ -26,9 +26,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Code</td>
+                                <td>Number</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->code}}</b></td>
+                                <td>&ensp;<b>{{$modelProject->number}}</b></td>
                             </tr>
                             <tr>
                                 <td>Ship</td>

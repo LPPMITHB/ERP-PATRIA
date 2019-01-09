@@ -194,21 +194,6 @@ class ProductionOrderController extends Controller
 
             $status = 0;
 
-            foreach($arrData as $data){
-                $PrOD = new ProductionOrderDetail;
-                $PrOD->production_order_id = $PrO->id;
-                if($data->type == "Material"){
-                    $PrOD->material_id = $data->id;
-                    $PrOD->quantity = $data->quantity;
-                }
-                else{
-                    $PrOD->resource_id = $data->id;
-                    $PrOD->quantity = 1;
-                }
-            
-                $PrOD->save();
-            }
-
             if(count($datas->materials) > 0){
                 foreach($datas->materials as $material){
                     $PrOD = new ProductionOrderDetail;
@@ -226,6 +211,27 @@ class ProductionOrderController extends Controller
                     $PrOD->resource_id = $resource->resource_id;
                     $PrOD->save();
                 }
+            }
+
+            foreach($arrData as $data){
+                if($data->type == "Material"){
+                    $existing = ProductionOrderDetail::where('material_id' , $data->id)->first();
+                    if($existing != null){
+                        $existing->quantity += $data->quantity;
+                        $existing->update();
+                    }else{
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->material_id = $data->id;
+                        $PrOD->quantity = $data->quantity;
+                    }
+                }
+                else{
+                    $PrOD->resource_id = $data->id;
+                    $PrOD->quantity = 1;
+                }
+            
+                $PrOD->save();
             }
 
             DB::commit();
@@ -397,7 +403,6 @@ class ProductionOrderController extends Controller
             $stock = json_encode($stock);
         }else{
             $stock = [];
-            $stock = json_encode($stock);
         }
 
         return response($stock, Response::HTTP_OK);

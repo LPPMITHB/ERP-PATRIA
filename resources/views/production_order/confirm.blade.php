@@ -459,11 +459,30 @@
                     this.havePredecessor = true;
                     window.axios.get('/api/getPredecessor/'+data.id).then(({ data }) => {
                         this.predecessorActivities = data;
+                        if(this.predecessorActivities.length>0){
+                            this.predecessorActivities.forEach(activity => {
+                                if(activity.status == 1){
+                                    $('#actual_start_date').datepicker('setDate', null);
+                                    document.getElementById("actual_start_date").disabled = true;
+                                    document.getElementById("actual_start_date").value = null;
+                                    document.getElementById("actual_end_date").disabled = true;
+                                    document.getElementById("actual_duration").disabled = true;
+                                    document.getElementById("btnSave").disabled = true;
+                                    document.getElementById("current_progress").disabled = true;
+                                }else{
+                                    document.getElementById("actual_start_date").disabled = false;
+                                }
+                            });
+                        }else{
+                            document.getElementById("actual_start_date").disabled = false;
+                        }
                     });
                 }else{
+                    document.getElementById("actual_start_date").disabled = false;
                     this.havePredecessor = false;
                     this.predecessorActivities = [];
                 }
+                
                 this.confirmActivity.current_progress = data.progress;
                 if(this.confirmActivity.current_progress != 100){
                     document.getElementById("actual_end_date").disabled = true;
@@ -531,7 +550,7 @@
                     var url = "/activity_repair/updateActualActivity/"+confirmActivity.activity_id;
                 }
                 confirmActivity = JSON.stringify(confirmActivity);
-                window.axios.patch(url,confirmActivity)
+                window.axios.put(url,confirmActivity)
                 .then((response) => {
                     if(response.data.error != undefined){
                         iziToast.warning({
@@ -572,17 +591,7 @@
                         document.getElementById("actual_duration").disabled = false;
                         document.getElementById("btnSave").disabled = false;
                         document.getElementById("current_progress").disabled = false;
-                    }         
-                    
-                    this.predecessorActivities.forEach(activity => {
-                        if(activity.status == 1){
-                            document.getElementById("actual_start_date").disabled = true;
-                            document.getElementById("actual_end_date").disabled = true;
-                            document.getElementById("actual_duration").disabled = true;
-                            document.getElementById("btnSave").disabled = true;
-                            document.getElementById("current_progress").disabled = true;
-                        }
-                    });
+                    }     
 
                     if(this.confirmActivity.current_progress != 100){
                         document.getElementById("actual_end_date").disabled = true;

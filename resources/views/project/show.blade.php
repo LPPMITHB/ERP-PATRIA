@@ -330,66 +330,32 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-12" style="margin-top: -5px;">
+    <div class="col-sm-6" style="margin-top: -5px;">
         <div class="box box-solid">
-            <div class="box-header with-border"><h4><b>Actual Cost Vs. Planned Cost</b></h4></div>
-                <div class="box-body" style="">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="chart">
-                                <canvas id="cost" width="703" height="350"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="chart">
-                                <canvas id="progress" width="703" height="350"></canvas>
-                            </div>
+            <div class="box-header with-border"><h4><b>Planned Cost Vs. Actual Cost</b></h4></div>
+            <div class="box-body" style="">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="chart">
+                            <canvas id="cost" width="703" height="350"></canvas>
                         </div>
                     </div>
                 </div>
-
-        <!-- ./box-body -->
-        {{-- <div class="box-footer" style="">
-            <div class="row">
-            <div class="col-sm-3 col-xs-6">
-                <div class="description-block border-right">
-                <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                <h5 class="description-header">$35,210.43</h5>
-                <span class="description-text">TOTAL REVENUE</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6" style="margin-top: -5px;">
+        <div class="box box-solid">
+            <div class="box-header with-border"><h4><b>Planned Progress Vs. Actual Progress</b></h4></div>
+            <div class="box-body" style="">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="chart">
+                            <canvas id="progress" width="703" height="350"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <!-- /.description-block -->
             </div>
-            <!-- /.col -->
-            <div class="col-sm-3 col-xs-6">
-                <div class="description-block border-right">
-                <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                <h5 class="description-header">$10,390.90</h5>
-                <span class="description-text">TOTAL COST</span>
-                </div>
-                <!-- /.description-block -->
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-3 col-xs-6">
-                <div class="description-block border-right">
-                <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                <h5 class="description-header">$24,813.53</h5>
-                <span class="description-text">TOTAL PROFIT</span>
-                </div>
-                <!-- /.description-block -->
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-3 col-xs-6">
-                <div class="description-block">
-                <span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
-                <h5 class="description-header">1200</h5>
-                <span class="description-text">GOAL COMPLETIONS</span>
-                </div>
-                <!-- /.description-block -->
-            </div>
-            </div>
-            <!-- /.row -->
-        </div> --}}
-        <!-- /.box-footer -->
         </div>
     </div>
 </div>
@@ -924,7 +890,7 @@
                         url = "/activity_repair/updateActualActivity/"+confirmActivity.activity_id;
                     }
                     confirmActivity = JSON.stringify(confirmActivity);
-                    window.axios.patch(url,confirmActivity)
+                    window.axios.put(url,confirmActivity)
                     .then((response) => {
                         if(response.data.error != undefined){
                             iziToast.warning({

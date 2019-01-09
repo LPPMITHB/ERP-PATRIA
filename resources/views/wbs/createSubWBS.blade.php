@@ -404,7 +404,7 @@ var vm = new Vue({
             } 
             editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
-            window.axios.patch(url,editWbs)
+            window.axios.put(url,editWbs)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
