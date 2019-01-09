@@ -173,17 +173,16 @@ class WorkRequestController extends Controller
      */
     public function edit($id)
     {
-        $modelPR = PurchaseRequisition::findOrFail($id);
-        $project = Project::where('id',$modelPR->project_id)->with('customer','ship')->first();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs','resource')->get()->jsonSerialize();
-        $materials = Material::where('status',1)->get()->jsonSerialize();
-        $resources = Resource::where('status',1)->get()->jsonSerialize();
+        $modelWR = WorkRequest::findOrFail($id);
+        $project = Project::where('id',$modelWR->project_id)->with('customer','ship')->first();
+        $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get()->jsonSerialize();
+        $materials = Stock::with('material')->get()->jsonSerialize();
         $wbss = [];
         if($project){
             $wbss = WBS::where('project_id',$project->id)->get()->jsonSerialize();
         }
 
-        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','wbss','resources'));
+        return view('work_request.edit', compact('modelWR','project','modelWRD','materials','wbss'));
     }
 
     /**
@@ -196,39 +195,40 @@ class WorkRequestController extends Controller
     public function update(Request $request, $id)
     {
         $datas = json_decode($request->datas);
+        print_r($datas);exit();
         DB::beginTransaction();
         try {
-            $prd_id = [];
-            $PR = PurchaseRequisition::find($id);
-            $PR->description = $datas->description;
-            if($PR->status == 3){
-                $PR->status = 4;
+            $wrd_id = [];
+            $WR = WorkRequest::find($id);
+            $WR->description = $datas->description;
+            if($WR->status == 3){
+                $WR->status = 4;
             }
-            $PR->update();
+            $WR->update();
             foreach($datas->materials as $data){
-                if($data->prd_id != null){
+                if($data->wrd_id != null){
                     $status = 0;
-                    foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                        if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->id != $data->id){
-                            $quantity = $PurchaseRD->quantity + $data->quantity;
+                    foreach($WR->workRequestDetails as $WorkRD){
+                        if($WorkRD->material_id == $data->material_id && $WorkRD->wbs_id == $data->wbs_id && $WorkRD->available == $data->available && $WorkRD->id != $data->id){
+                            $quantity = $WorkRD->quantity + $data->quantity;
 
-                            $PRD = new PurchaseRequisitionDetail;
-                            $PRD->purchase_requisition_id = $PR->id;
-                            $PRD->quantity = $quantity;
-                            $PRD->material_id = $data->material_id;
-                            $PRD->alocation = $data->alocation;
-                            if($PR->project_id != ""){
-                                $PRD->wbs_id = $data->wbs_id;
+                            $WRD = new WorkRequestDetail;
+                            $WRD->work_request_id = $WR->id;
+                            $WRD->quantity = $quantity;
+                            $WRD->material_id = $data->material_id;
+                            $WRD->available = $data->available;
+                            if($WR->project_id != ""){
+                                $WRD->wbs_id = $data->wbs_id;
                             }
-                            $PRD->save();
-                            array_push($prd_id,$PurchaseRD->id,$data->id);
+                            $WRD->save();
+                            array_push($wrd_id,$WorkRD->id,$data->id);
  
                             $status = 1;
                         }
                     }
-                    // print_r($PR->purchaseRequisitionDetails);exit();
+
                     if($status == 0){
-                        $PRD = PurchaseRequisitionDetail::find($data->id);
+                        $PRD = WorkRequestDetail::find($data->id);
 
                         $PRD->quantity = $data->quantity;
                         $PRD->alocation = $data->alocation;
@@ -260,8 +260,8 @@ class WorkRequestController extends Controller
                     }
                 }
             }
-            // print_r($PR->purchaseRequisitionDetails);exit();
-            $this->destroy(json_encode($prd_id));
+
+            $this->destroy(json_encode($wrd_id));
             DB::commit();
             return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
         } catch (\Exception $e) {
@@ -375,6 +375,11 @@ class WorkRequestController extends Controller
         return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
+    public function getWbsWrAPI($id){
+
+        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+    }
+
     public function getResourceAPI($id){
         
         return response(Resource::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
@@ -386,10 +391,6 @@ class WorkRequestController extends Controller
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getWbsAPI($id){
-
-        return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
-    }
 
     public function getPRDAPI($id){
 

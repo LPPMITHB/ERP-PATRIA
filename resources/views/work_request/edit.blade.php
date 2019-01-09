@@ -2,11 +2,12 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Work Request',
+        'title' => 'Edit Work Request',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Create Work Request' => route('work_request.create'),
+            'View All Work Request' => route('work_request.index'),
+            'Edit Work Request' => route('work_request.edit',$modelWR->id),
         ]
     ]
 )
@@ -18,49 +19,40 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-wr" class="form-horizontal" method="POST" action="{{ route('work_request.store') }}">
+                <form id="edit-wr" class="form-horizontal" method="POST" action="{{ route('work_request.update',['id'=>$modelWR->id]) }}">
+                <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim
                     <div id="wr">
                         <div class="box-header no-padding">
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4">
-                                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
-                                    
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="selectedProject[0].customer.name" @mouseover="changeText"><b>: {{selectedProject[0].customer.name}}</b></div>
+                            <div class="col-xs-12 col-md-4" v-if="selectedProject != null">
+                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+        
+                                <div class="col-xs-5 no-padding">Project Number</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.number}}</b></div>
+                                
+                                <div class="col-xs-5 no-padding">Ship Type</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.ship.type}}</b></div>
+        
+                                <div class="col-xs-5 no-padding">Customer</div>
+                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject.customer.name)"><b>: {{selectedProject.customer.name}}</b></div>
 
-                                    <div class="col-xs-5 no-padding">Start Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
+                                <div class="col-xs-5 no-padding">Start Date</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_start_date}}</b></div>
 
-                                    <div class="col-xs-5 no-padding">End Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
-                                </div>
-                            </template>
-                            <div class="col-xs-12 col-md-4">
-                                <label for="" >Project Name</label>
-                                <selectize v-model="project_id" :settings="projectSettings" :disabled="dataOk">
-                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
-                                </selectize>  
+                                <div class="col-xs-5 no-padding">End Date</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_end_date}}</b></div>
                             </div>
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4 p-r-0">
-                                    <div class="col-sm-12 p-l-0">
-                                        <label for="">WR Description</label>
-                                    </div>
-                                    <div class="col-sm-12 p-l-0">
-                                        <textarea class="form-control" rows="4" v-model="description"></textarea>
-                                    </div>
+                            <div class="col-xs-12 col-md-4 p-r-0">
+                                <div class="col-sm-12 p-l-0">
+                                    <label for="">WR Description</label>
                                 </div>
-                            </template>
+                                <div class="col-sm-12 p-l-0">
+                                    <textarea class="form-control" rows="4" v-model="description"></textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row" v-show="selectedProject.length > 0">
+                        <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <table class="table table-bordered tableFixed" >
                                     <thead>
@@ -94,8 +86,6 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                    <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft">
@@ -114,27 +104,25 @@
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="project_id != ''">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                    <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="project_id == ''">
                                                 <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                    <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
-
                         <div class="col-md-12 p-r-0 p-t-10">
-                            <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
+                            <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">SAVE</button>
                         </div>
-
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -164,16 +152,16 @@
                                                 <label for="description" class="control-label">Description</label>
                                                 <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input description">
                                             </div>
-                                            <div class="col-sm-12" v-show="project_id != ''"> 
+                                            <div class="col-sm-12" v-show="selectedProject != null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                    <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12" v-show="project_id == ''"> 
+                                            <div class="col-sm-12" v-show="selectedProject == null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                    <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
                                             </div>
                                         </div>
@@ -199,9 +187,36 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-wr');
+    const form = document.querySelector('form#edit-wr');
 
     $(document).ready(function(){
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == 'Quantity' || title == ""){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tableNonPagingVue.column(i).search() !== this.value ) {
+                    tableNonPagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
+        });
+
         $('div.overlay').hide();
     });
 
@@ -209,9 +224,11 @@
         description : "",
         availableQuantity : [],
         newIndex : "",
-        materials : @json($modelMaterial),
-        projects : @json($modelProject),
-        works : [],
+        modelWR : @json($modelWR),
+        selectedProject : @json($project),
+        dataMaterial : @json($modelWRD),
+        materials : @json($materials),
+        wbss : @json($wbss),
         project_id : "",
         projectSettings: {
             placeholder: 'Please Select Project'
@@ -225,8 +242,6 @@
         nullSettings:{
             placeholder: '-'
         },
-        selectedProject : [],
-        dataMaterial : [],
         dataInput : {
             material_id :"",
             material_code : "",
@@ -304,17 +319,27 @@
             }
         },
         methods : {
-            changeText(){
-                if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
-                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != this.selectedProject[0].customer.name ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML=this.selectedProject[0].customer.name;    
-                    }
-                }
-            },  
+            tooltip(text){
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).tooltip('destroy');
+                    $(el).tooltip({
+                        title: text,
+                        placement: binding.arg,
+                        trigger: 'hover'             
+                    })
+                })
+                return text
+            }, 
             submitForm(){
                 this.submit = "";
                 this.submittedForm.description = this.description;
-                this.submittedForm.project_id = this.project_id;     
+                this.submittedForm.project_id = this.project_id;    
+
+                var data = this.dataMaterial;
+                data.forEach(wrd => {
+                    wrd.quantity = parseInt((wrd.quantity+"").replace(/,/g , ''));
+                });
+
                 this.submittedForm.materials = this.dataMaterial;    
 
                 let struturesElem = document.createElement('input');
@@ -429,44 +454,6 @@
             }
         },
         watch : {
-            'project_id' : function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getProjectWR/'+newValue).then(({ data }) => {
-                        this.selectedProject = [];
-                        this.selectedProject.push(data);
-
-                        this.works = data.wbss;
-                        
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.selectedProject = [];
-                }
-
-                // function myFunction(x) {
-                //     if (x.matches) { // If media query matches
-                //         $('.table').wrap('<div class="dataTables_scroll" />');
-                //     } 
-                // }
-
-                // var x = window.matchMedia("(max-width: 500px)")
-                // myFunction(x) // Call listener function at run time
-                // x.addListener(myFunction) // Attach listener function on state changes
-
-                // var x = window.matchMedia("(max-width: 1024px)")
-                // myFunction(x) // Call listener function at run time
-                // x.addListener(myFunction) // Attach listener function on state changes
-            },
-
             'dataInput.material_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
@@ -607,6 +594,26 @@
         },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
+
+            var data = this.dataMaterial;
+            data.forEach(wrd => {
+                wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                wrd.material_name = wrd.material.name;
+                wrd.material_code = wrd.material.code;
+                
+                wrd.wrd_id = wrd.id;
+                if(this.selectedProject){
+                    if(wrd.wbs == null){
+                        wrd.wbs_name = "-";
+                    }else{
+                        wrd.wbs_name = wrd.wbs.name;
+                    }
+                }else{
+                    wrd.wbs_name = "-";
+                }
+            });
+
             Vue.directive('tooltip', function(el, binding){
                 $(el).tooltip({
                     title: binding.value,
