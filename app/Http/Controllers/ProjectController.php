@@ -206,7 +206,7 @@ class ProjectController extends Controller
                     "a_attr" =>  ["href" => $route.$wbs->id],
                 ]);
             } 
-        } 
+        }
         
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
