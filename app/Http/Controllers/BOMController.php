@@ -380,7 +380,11 @@ class BOMController extends Controller
             if($route == "/bom"){
                 $rap_detail->material_id = $data['material_id'];
                 $rap_detail->quantity = $data['quantityInt'];
-                $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                if($data['source'] == "WIP"){
+                    $rap_detail->price = $bom_detail->material->cost_standard_price_service * $data['quantityInt'];
+                }else{
+                    $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                }
                 $rap_detail->save();
 
                 // create PR & Reserve stock
@@ -391,7 +395,11 @@ class BOMController extends Controller
                 $rap_detail->service_id = $bom_detail->service_id;
                 $rap_detail->quantity = $data['quantityInt'];
                 if($bom_detail->material_id != null){
-                    $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                    if($data['source'] == "WIP"){
+                        $rap_detail->price = $bom_detail->material->cost_standard_price_service * $data['quantityInt'];
+                    }else{
+                        $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                    }
                 }elseif($bom_detail->service_id != null){
                     $rap_detail->price = $bom_detail->service->cost_standard_price * $data['quantityInt'];
                 }
@@ -621,7 +629,11 @@ class BOMController extends Controller
             $rap_detail->service_id = $bomDetail->service_id;
             $rap_detail->quantity = $bomDetail->quantity;
             if($bomDetail->material_id != null){
-                $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+                if($bomDetail->source == 'WIP'){
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price_service;
+                }else{
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+                }
             }else{
                 $rap_detail->price = $bomDetail->quantity * $bomDetail->service->cost_standard_price;
             }
