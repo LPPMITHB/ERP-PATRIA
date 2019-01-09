@@ -132,7 +132,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $rapDetail->material->name }}</td>
-                                    <td>{{ $rapDetail->quantity }}</td>
+                                    <td>{{ number_format($rapDetail->quantity) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price) }}</td>
                                 </tr>

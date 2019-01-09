@@ -60,7 +60,7 @@
                         <div class="col-xs-5 col-md-5">
                             Ship Name
                         </div>
-                        <div class="col-xs-7 col-md-7">
+                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPR->project) ?$modelPR->project->name : ''}}">
                             : <b> {{ isset($modelPR->project) ? $modelPR->project->name : '-' }} </b>
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                                 <th width="35%">Resource Name</th>
                             @endif
                             <th width="15%">Quantity</th>
-                            <th width="30%">Work Name</th>
+                            <th width="30%">WBS Name</th>
                             <th width="15%">Alocation</th>
                         </tr>
                     </thead>
