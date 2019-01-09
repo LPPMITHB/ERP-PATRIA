@@ -77,10 +77,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price (Rp)</label>
+                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
                             
                             <div class="col-sm-10">
-                                <input type="text" :disabled="costOk" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
+                                <input type="text" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
+                            
+                            <div class="col-sm-10">
+                                <input type="text"  class="form-control" id="cost_standard_service" required v-model="submittedForm.cost_standard_service">
                             </div>
                         </div>
 
@@ -234,14 +242,6 @@
                 }
                 return isOk;
             },
-            costOk :function(){
-                let isOk = false;
-
-                if(this.submittedForm.currency == ""){
-                    isOk = true;
-                }
-                return isOk;
-            },
             weightOk :function(){
                 let isOk = false;
 
@@ -279,6 +279,7 @@
             submitForm(){
                 $('div.overlay').show();
                 this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
+                this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.weight = (this.submittedForm.weight+"").replace(/,/g , '');
                 this.submittedForm.height = (this.submittedForm.height+"").replace(/,/g , '');
                 this.submittedForm.lengths = (this.submittedForm.lengths+"").replace(/,/g , '');
@@ -305,6 +306,19 @@
                     }
                 }else{
                     this.submittedForm.cost_standard_price = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'submittedForm.cost_standard_service': function(newValue) {
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.submittedForm.cost_standard_service = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.submittedForm.cost_standard_service = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.submittedForm.cost_standard_service = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
             'submittedForm.weight': function(newValue) {

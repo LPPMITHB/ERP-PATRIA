@@ -55,28 +55,34 @@
                         </tr>
                         <tr>
                             <td>4</td>
-                            <td>Cost Standard Price</td>
-                            <td>{{$material->currency}} {{ number_format($material->cost_standard_price,2) }}</td>
+                            <td>Cost Standard Price Material</td>
+                            <td>Rp {{ number_format($material->cost_standard_price,2) }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>4</td>
+                            <td>Cost Standard Price Service</td>
+                            <td>Rp {{ number_format($material->cost_standard_price,2) }}</td>
                         </tr>
                         <tr>
                             <td>5</td>
                             <td>Weight</td>
-                            <td>{{ number_format($material->weight) }} {{$uoms->where('id',$material->weight_uom_id)->first()->unit}}</td>
+                            <td>{{ number_format($material->weight) }} {{$uoms->where('id',$material->weight_uom_id)->first() != null ? $uoms->where('id',$material->weight_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>6</td>
                             <td>Height</td>
-                            <td>{{ number_format($material->height) }} {{$uoms->where('id',$material->height_uom_id)->first()->unit}}</td>
+                            <td>{{ number_format($material->height) }} {{$uoms->where('id',$material->height_uom_id)->first() != null ? $uoms->where('id',$material->height_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>7</td>
                             <td>Length</td>
-                            <td>{{ number_format($material->length) }} {{$uoms->where('id',$material->length_uom_id)->first()->unit}}</td>
+                            <td>{{ number_format($material->length) }} {{$uoms->where('id',$material->length_uom_id)->first() != null ? $uoms->where('id',$material->length_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>8</td>
                             <td>Width</td>
-                            <td>{{ number_format($material->width) }} {{$uoms->where('id',$material->width_uom_id)->first()->unit}}</td>
+                            <td>{{ number_format($material->width) }} {{$uoms->where('id',$material->width_uom_id)->first() != null ? $uoms->where('id',$material->width_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>9</td>
