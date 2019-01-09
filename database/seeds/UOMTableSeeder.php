@@ -14,8 +14,8 @@ class UOMTableSeeder extends Seeder
         //
         DB::table('mst_uom')->insert([
             'code' => 'UOM0001',
-            'name' => 'panjang',
-            'unit' => 'meter',
+            'name' => 'meter',
+            'unit' => 'm',
             'status' => 1,
             'branch_id' => 1,
             'user_id' => 4,
@@ -23,8 +23,8 @@ class UOMTableSeeder extends Seeder
 
         DB::table('mst_uom')->insert([
             'code' => 'UOM0002',
-            'name' => 'berat',
-            'unit' => 'kilogram',
+            'name' => 'kilogram',
+            'unit' => 'kg',
             'status' => 1,
             'branch_id' => 1,
             'user_id' => 4,
@@ -32,8 +32,8 @@ class UOMTableSeeder extends Seeder
 
         DB::table('mst_uom')->insert([
             'code' => 'UOM0003',
-            'name' => 'kecepatan',
-            'unit' => 'mile per hour',
+            'name' => 'mile per hour',
+            'unit' => 'mph',
             'status' => 1,
             'branch_id' => 1,
             'user_id' => 4,
@@ -41,8 +41,8 @@ class UOMTableSeeder extends Seeder
 
         DB::table('mst_uom')->insert([
             'code' => 'UOM0004',
-            'name' => 'Man Hours',
-            'unit' => 'hour',
+            'name' => 'hour',
+            'unit' => 'hr',
             'status' => 1,
             'branch_id' => 1,
             'user_id' => 4,
@@ -50,8 +50,8 @@ class UOMTableSeeder extends Seeder
 
         DB::table('mst_uom')->insert([
             'code' => 'UOM0005',
-            'name' => 'usage time',
-            'unit' => 'hour',
+            'name' => 'gram',
+            'unit' => 'g',
             'status' => 1,
             'branch_id' => 1,
             'user_id' => 4,
