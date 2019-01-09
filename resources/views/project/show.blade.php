@@ -890,7 +890,7 @@
                         url = "/activity_repair/updateActualActivity/"+confirmActivity.activity_id;
                     }
                     confirmActivity = JSON.stringify(confirmActivity);
-                    window.axios.patch(url,confirmActivity)
+                    window.axios.put(url,confirmActivity)
                     .then((response) => {
                         if(response.data.error != undefined){
                             iziToast.warning({

@@ -25,7 +25,7 @@ Route::name('appearance.')->prefix('appearance')->group(function() {
 Route::name('currencies.')->prefix('currencies')->group(function() {
     Route::get('/', 'ConfigurationController@currenciesIndex')->name('index');
 
-    Route::patch('/add', 'ConfigurationController@currenciesAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@currenciesAdd')->name('add');
 });
 
 // Menu Routes
@@ -309,7 +309,7 @@ Route::name('yard.')->prefix('yard')->group(function() {
 Route::name('bom.')->prefix('bom')->group(function() {
     Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
 
-    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
+    Route::put('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
 
@@ -325,7 +325,7 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom');
 
-    Route::patch('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom');
+    Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom');
 });
@@ -334,7 +334,7 @@ Route::name('bom.')->prefix('bom')->group(function() {
 Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
 
-    Route::patch('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
+    Route::put('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
 
@@ -350,7 +350,7 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom-repair');
 
-    Route::patch('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
+    Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
 
@@ -424,7 +424,7 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project');
     
-    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');  
+    Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');  
       
     Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project');    
     
@@ -447,7 +447,7 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
 
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
     
-    Route::patch('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
+    Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
       
     Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project-repair');    
     
@@ -465,7 +465,7 @@ Route::name('activity.')->prefix('activity')->group(function() {
 
     Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project');
 
-    Route::patch('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project');    
+    Route::put('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project');    
 
     //Activity 
     Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project');
@@ -479,7 +479,7 @@ Route::name('activity.')->prefix('activity')->group(function() {
     Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project');
     
     //Network
-    Route::patch('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
+    Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
     
     Route::get('/manageNetwork/{id}', 'ActivityController@manageNetwork')->name('manageNetwork')->middleware('can:show-project');
 });
@@ -493,12 +493,12 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
 
     Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project-repair');
 
-    Route::patch('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');    
+    Route::put('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');    
 
     //Activity 
     Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project-repair');
 
-    Route::patch('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project-repair');    
+    Route::put('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project-repair');    
 
     Route::post('/store', 'ActivityController@store')->name('store')->middleware('can:create-project-repair');
     
@@ -507,7 +507,7 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
     Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project-repair');
     
     //Network
-    Route::patch('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project-repair');
+    Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project-repair');
     
     Route::get('/manageNetwork/{id}', 'ActivityController@manageNetwork')->name('manageNetwork')->middleware('can:show-project-repair');
    
@@ -543,9 +543,9 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
-    Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');  
+    Route::put('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');  
      
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
+    Route::put('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
 
     Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 

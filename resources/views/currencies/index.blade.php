@@ -139,7 +139,7 @@
                 currencies = JSON.stringify(currencies);
                 var url = "{{ route('currencies.add') }}";
 
-                window.axios.patch(url,currencies).then((response) => {
+                window.axios.put(url,currencies).then((response) => {
                     iziToast.success({
                         title: 'Success Save Currencies',
                         position: 'topRight',
@@ -166,7 +166,7 @@
                 currencies = JSON.stringify(currencies);
                 var url = "{{ route('currencies.add') }}";
 
-                window.axios.patch(url,currencies).then((response) => {
+                window.axios.put(url,currencies).then((response) => {
                     iziToast.success({
                         title: 'Success Save Currencies',
                         position: 'topRight',
