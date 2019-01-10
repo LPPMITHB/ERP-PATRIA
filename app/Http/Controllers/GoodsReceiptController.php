@@ -10,6 +10,7 @@ use App\Models\PurchaseOrder;
 use App\Models\WorkOrder;
 use App\Models\PurchaseOrderDetail;
 use App\Models\WorkOrderDetail;
+use App\Models\ProjectInventory;
 use App\Models\StorageLocation;
 use App\Models\Material;
 use App\Models\Branch;
@@ -127,7 +128,7 @@ class GoodsReceiptController extends Controller
                 $GRD->material_id = $data->material_id;
                 $GRD->save();
 
-                $PI - new ProjectInventory;
+                $PI = new ProjectInventory;
                 $PI->project_id = $datas->project_id;
                 $PI->material_id = $data->material_id;
                 $PI->quantity = $data->received;
