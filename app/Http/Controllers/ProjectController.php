@@ -1043,7 +1043,7 @@ class ProjectController extends Controller
                         $plannedCost += $wbs->bom->rap->total_price;
                         $dataPlannedCost->push([
                             "t" => $date, 
-                            "y" => ($plannedCost/100000000)."",
+                            "y" => ($plannedCost/1000000)."",
                         ]);
                     }
                 }
@@ -1067,7 +1067,7 @@ class ProjectController extends Controller
                 }
                 $dataActualCost->push([
                     "t" => $date, 
-                    "y" => $actualCost."",
+                    "y" => ($actualCost/1000000)."",
                 ]);
             }
         }
