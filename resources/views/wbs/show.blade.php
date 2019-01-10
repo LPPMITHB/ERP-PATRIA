@@ -88,7 +88,7 @@
                                 <tr>
                                     <td>6</td>
                                     <td>Parent WBS</td>
-                                    <td v-if="wbsDisplay.wbs != null">{{ wbsDisplay.parent_wbs.code+" - "+wbsDisplay.parent_wbs.name }}</td>
+                                    <td v-if="wbsDisplay.parent_wbs != null">[{{ wbsDisplay.parent_wbs.code+"] - "+wbsDisplay.parent_wbs.name }}</td>
                                     <td v-else>-</td>
                                 </tr>
                                 <tr>
@@ -343,6 +343,7 @@ var vm = new Vue({
         },
     },
     created: function(){
+        console.log(this.wbsDisplay.parent_wbs);
         if(this.editWbs.parent_wbs != null){
             window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
                 this.totalWeight = data;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Material;
-use App\Models\UOM;
+use App\Models\Uom;
 use Auth;
 use DB;
 
@@ -30,7 +30,7 @@ class MaterialController extends Controller
     public function create()
     {
         $material = new Material;
-        $uoms = UOM::all();
+        $uoms = Uom::all();
 
         return view('material.create', compact('material','uoms'));
     }
@@ -107,7 +107,7 @@ class MaterialController extends Controller
     public function show($id)
     {
         $material = Material::findOrFail($id);
-        $uoms = UOM::all();
+        $uoms = Uom::all();
 
         return view('material.show', compact('material','uoms'));
     }
@@ -121,7 +121,7 @@ class MaterialController extends Controller
     public function edit($id)
     {
         $material = Material::findOrFail($id);
-        $uoms = UOM::all();
+        $uoms = Uom::all();
         
         return view('material.edit', compact('material','uoms'));
     }

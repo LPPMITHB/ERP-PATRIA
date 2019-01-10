@@ -18,10 +18,10 @@ class CreateMstResourceTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('brand')->nullable();
-            $table->integer('quantity')->default(0);
+            $table->integer('quantity')->default(1)->nullable();
             $table->string('description')->nullable();
-            // $table->integer('category_id');
-            $table->string('machine_type')->nullable();
+            // $table->string('machine_type');
+            $table->string('category_id')->default(0);
             $table->integer('cost_standard_price');
             $table->date('manufactured_date')->nullable();
             $table->date('purchasing_date')->nullable();
@@ -29,13 +29,14 @@ class CreateMstResourceTable extends Migration
             $table->unsignedInteger('lifetime')->nullable();
             $table->unsignedInteger('depreciation_method')->nullable();
             $table->float('accumulated_depreciation')->nullable();
-            $table->date('running_hours')->nullable();
-            $table->unsignedInteger('cost/hour')->nullable();
-            $table->unsignedInteger('utilization');
+            $table->integer('running_hours')->nullable();
+            $table->unsignedInteger('cost_per_hour')->nullable();
+            $table->float('utilization')->default(0);
             $table->unsignedInteger('performance')->nullable();
-            $table->unsignedInteger('productivity');
-            $table->unsignedInteger('status')->default(1);
-            $table->unsignedInteger('vendor_id')->nullable();            
+            $table->float('productivity')->default(0);
+            $table->unsignedInteger('status')->default(0);
+            $table->unsignedInteger('vendor_id')->nullable(); 
+            $table->unsignedInteger('uom_id')->nullable(); 
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
@@ -43,9 +44,8 @@ class CreateMstResourceTable extends Migration
             $table->foreign('branch_id')->references('id')->on('mst_branch'); 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('vendor_id')->references('id')->on('mst_vendor');
-            // $table->foreign('category_id')->references('id')->on('mst_configuration');
 
-            // $table->foreign('uom_id')->references('id')->on('mst_uom');
+            $table->foreign('uom_id')->references('id')->on('mst_uom');
         });
     }
 

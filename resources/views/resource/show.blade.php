@@ -20,7 +20,7 @@
     <div class="col-sm-12">
         <div class="box">
             <div class="box-header">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <table>
                         <thead>
                             <th colspan="2">Resource Information</th>
@@ -39,93 +39,44 @@
                             <tr>
                                 <td>Brand</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$resource->brand}}</b></td>
+                                <td class="tdEllipsis" data-toggle="tooltip" title="{{ $resource->brand }}">&ensp;<b>{{ $resource->brand }}</b></td>
                             </tr>
-                            @if($resource->category == 0 || $resource->category == 1 ||$resource->category == 3)
+                            <tr>
+                                <td>Unit Of Measurement</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$resource->uom->name}}</b></td>
+                            </tr>
+
+                            {{-- <tr>
+                                <td>Type</td>
+                                <td>:</td>
+                                @if($resource->machine_type == 2)
+                                    <td>&ensp;<b>{{ 'MATERIAL' }}</b></td>
+                                @elseif($resource->machine_type == 1)
+                                    <td>&ensp;<b>{{ 'RESOURCE' }}</b></td>
+                                @else
+                                    <td>&ensp;<b>{{ 'OTHERS' }}</b></td>
+                                @endif
+                            </tr> --}}
+
                             <tr>
                                 <td>Quantity</td>
                                 <td>:</td>
                                 <td>&ensp;<b>{{$resource->quantity}}</b></td>
                             </tr>
-                            @endif
+                                
                             <tr>
                                 <td>Category</td>
                                 <td>:</td>
-                                @if($resource->category_id == 0)
-                                    <td>&ensp;<b>{{ 'EXTERNAL' }}</b></td>
-                                @else
-                                    <td>&ensp;<b>{{ 'INTERNAL' }}</b></td>
-                                @endif
-                            </tr>
-                            <tr>
-                                <td>Machine Type</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->type}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Manufactured Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->manufactured_date}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Purchasing Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->purchasing_date}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Purchasing Price</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->purchasing_price}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Lifetime</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->lifetime}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Depreciation Method</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->depreciation_method}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Accumulated Depreciation</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->accumulated_depreciation}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Running Hours</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->running_hours}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Cost / Hours</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->cost/hour}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Performance</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->performance}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Productivity</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->productivity}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                                <td>:</td>
-                                <td class="tdEllipsis" data-toggle="tooltip" title="{{ $resource->description }}">&ensp;<b>{{ $resource->description }}</b></td>
-                            </tr>
-                            {{-- <tr>
-                                <td>Unit Of Measurement</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->uom->name}}</b></td>
-                            </tr> --}}
-                            <tr>
-                                <td>Category</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->category->name}}</b></td>
+                                @if($resource->category_id == 3)
+                                <td>&ensp;<b>{{ 'INTERNAL EQUIPMENT' }}</b></td>
+                                    @elseif($resource->category_id == 2)
+                                <td>&ensp;<b>{{ 'EXTERNAL EQUIPMENT' }}</b></td>
+                                    @elseif($resource->category_id == 1)
+                                <td>&ensp;<b>{{ 'OTHERS' }}</b></td>
+                                    @else
+                                <td>&ensp;<b>{{ 'SUBCON' }}</b></td>
+                                    @endif
                             </tr>
                             <tr>
                                 <td>Status</td>
@@ -139,8 +90,66 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="col-sm-4 m-t-20">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Manufactured Date</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$resource->manufactured_date}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Purchasing Date</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$resource->purchasing_date}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Cost Standard Price</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{number_format($resource->cost_standard_price)}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Purchasing Price</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{number_format($resource->purchasing_price)}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Lifetime</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$resource->lifetime}} day(s)</b></td>
+                            </tr>
+                            <tr>
+                                <td>Depreciation Method</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{$resource->depreciation_method}}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Accumulated Depreciation</td>
+                                <td>:</td>
+                                <td>&ensp;<b>{{ number_format($resource->accumulated_depreciation) }}</b></td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+                    <div class="col-sm-4 m-t-20">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Vendor</td>
+                                    <td>:</td>
+                                    <td>&ensp;<b>{{$resource->vendor->name}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td>Description</td>
+                                    <td>:</td>
+                                    <td class="tdEllipsis" data-toggle="tooltip" title="{{ $resource->description }}">&ensp;<b>{{ $resource->description }}</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </div>
             </div>
-            {{-- <div class="box-body">
+            <div class="box-body">
                 <h4 class="m-t-0">Resource Utilization</h4>
                 <table class="table table-bordered width100 showTable tableFixed">
                     <thead>
@@ -166,7 +175,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div> --}}
+            </div>
         </div>
     </div>
 </div>

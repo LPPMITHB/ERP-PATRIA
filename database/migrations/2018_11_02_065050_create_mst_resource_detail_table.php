@@ -25,7 +25,6 @@ class CreateMstResourceDetailTable extends Migration
             $table->foreign('resource_id')->references('id')->on('mst_resource');
             $table->foreign('project_id')->references('id')->on('pro_project');          
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');
-            $table->foreign('category_id')->references('id')->on('mst_category');
         });
     }
 

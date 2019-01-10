@@ -262,7 +262,7 @@ class ProductionOrderController extends Controller
 
             foreach($arrData as $data){
                 if($data->type == "Material"){
-                    $existing = ProductionOrderDetail::where('material_id' , $data->id)->first();
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('material_id' , $data->id)->first();
                     if($existing != null){
                         $existing->quantity += $data->quantity;
                         $existing->update();
@@ -271,14 +271,15 @@ class ProductionOrderController extends Controller
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->material_id = $data->id;
                         $PrOD->quantity = $data->quantity;
+                        $PrOD->save();
                     }
                 }
                 else{
+                    $PrOD = new ProductionOrderDetail;
                     $PrOD->resource_id = $data->id;
                     $PrOD->quantity = 1;
+                    $PrOD->save();
                 }
-            
-                $PrOD->save();
             }
 
             DB::commit();

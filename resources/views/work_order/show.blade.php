@@ -80,7 +80,7 @@
                             Total Price
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ number_format($modelWO->total_price) }} </b>
+                            : <b> {{ number_format($modelWO->total_price,2) }} </b>
                         </div>
                     </div>
                 </div>
@@ -159,8 +159,8 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $POD->material->code }} - {{ $POD->material->name }}</td>
                                     <td>{{ number_format($POD->quantity) }}</td>
-                                    <td>{{ number_format($POD->total_price / $POD->quantity) }}</td>
-                                    <td>{{ number_format($POD->total_price) }}</td>
+                                    <td>{{ number_format($POD->total_price / $POD->quantity,2) }}</td>
+                                    <td>{{ number_format($POD->total_price,2) }}</td>
                                 </tr>
                             @endif
                         @endforeach

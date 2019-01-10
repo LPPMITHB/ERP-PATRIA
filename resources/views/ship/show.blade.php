@@ -26,15 +26,7 @@
                 @can('edit-ship')
                     <a href="{{ route('ship.edit',['id'=>$ship->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                 @endcan
-
-                {{-- @can('destroy-ship')
-                    <button class="btn btn-danger btn-sm" onclick="event.preventDefault();document.getElementById('delete-form-{{ $ship->id }}').submit();">DELETE</button>
-                @endcan
-
-                <form id="delete-form-{{ $ship->id }}" action="{{ route('ship.destroy', ['id' => $ship->id]) }}" method="POST" style="display: none;">
-                    <input type="hidden" name="_method" value="DELETE">
-                    @csrf
-                </form> --}}
+                
             </div>
             </div>
             <div class="box-body">
