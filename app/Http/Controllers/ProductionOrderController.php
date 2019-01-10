@@ -277,7 +277,6 @@ class ProductionOrderController extends Controller
                     $PrOD->resource_id = $data->id;
                     $PrOD->quantity = 1;
                 }
-            
                 $PrOD->save();
             }
 
