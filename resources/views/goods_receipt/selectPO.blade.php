@@ -35,7 +35,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
                                 <td>{{ $modelPO->description }}</td>
-                                <td>{{ $modelPO->project->name }}</td>
+                                <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     <a href="{{ route('goods_receipt.createGrWithRef', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                 </td>
