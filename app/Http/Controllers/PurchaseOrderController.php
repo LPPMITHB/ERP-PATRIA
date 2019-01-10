@@ -166,7 +166,7 @@ class PurchaseOrderController extends Controller
     public function show($id)
     {
         $modelPO = PurchaseOrder::findOrFail($id);
-
+        
         return view('purchase_order.show', compact('modelPO'));
     }
 
