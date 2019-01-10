@@ -95,7 +95,7 @@ class ServiceController extends Controller
     {
         $service = Service::findOrFail($id);
         
-        return view('service.create', compact('service','companies'));
+        return view('service.create', compact('service'));
 
     }
 
