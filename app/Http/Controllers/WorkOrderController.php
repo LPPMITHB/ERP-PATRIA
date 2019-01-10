@@ -50,8 +50,11 @@ class WorkOrderController extends Controller
         foreach($modelWRD as $key=>$WRD){
             if($WRD->reserved >= $WRD->quantity){
                 $modelWRD->forget($key);
+            }else{
+                $WRD['cost'] =0;
             }
         }
+
         $modelProject = Project::where('id',$modelWR->project_id)->with('ship','customer')->first();
 
         return view('work_order.create', compact('modelWR','modelWRD','modelProject'));
@@ -99,7 +102,9 @@ class WorkOrderController extends Controller
                 $WOD->material_id = $data->material_id;
                 $WOD->work_request_detail_id = $data->id;
                 $WOD->wbs_id = $data->wbs_id;
-                $WOD->total_price = $data->material->cost_standard_price * $data->quantity;
+
+                $WOD->total_price = $data->cost * $data->quantity;
+                
                 $WOD->save();
 
                 $statusWR = $this->updateWR($data->id,$data->quantity);

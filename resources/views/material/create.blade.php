@@ -295,19 +295,6 @@
             },
         },
         watch:{
-            'submittedForm.cost_standard_price': function(newValue) {
-                var decimal = newValue.replace(/,/g, '').split('.');
-                if(decimal[1] != undefined){
-                    var maxDecimal = 2;
-                    if((decimal[1]+"").length > maxDecimal){
-                        this.submittedForm.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
-                    }else{
-                        this.submittedForm.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
-                    }
-                }else{
-                    this.submittedForm.cost_standard_price = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
-            },
             'submittedForm.cost_standard_service': function(newValue) {
                 var decimal = newValue.replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
