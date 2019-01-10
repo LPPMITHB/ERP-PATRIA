@@ -280,11 +280,6 @@ class ProductionOrderController extends Controller
                     $PrOD->quantity = 1;
                     $PrOD->save();
                 }
-<<<<<<< HEAD
-                $PrOD->save();
-=======
-            
->>>>>>> 169e98609f61b1e404cb3ceac42974586307d282
             }
 
             DB::commit();
