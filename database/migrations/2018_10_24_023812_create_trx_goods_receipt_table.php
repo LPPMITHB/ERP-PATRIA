@@ -17,6 +17,7 @@ class CreateTrxGoodsReceiptTable extends Migration
             $table->increments('id');
             $table->string('number')->unique();
             $table->unsignedInteger('purchase_order_id')->nullable();
+            $table->unsignedInteger('work_order_id')->nullable();
             $table->string('description');
             // $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
@@ -24,7 +25,7 @@ class CreateTrxGoodsReceiptTable extends Migration
             $table->timestamps();
 
             $table->foreign('purchase_order_id')->references('id')->on('trx_purchase_order');
-
+            $table->foreign('work_order_id')->references('id')->on('trx_work_order');
         });
     }
 

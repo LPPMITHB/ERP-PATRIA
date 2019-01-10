@@ -751,11 +751,13 @@ Route::name('physical_inventory.')->prefix('physical_inventory')->group(function
 Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {    
     Route::get('/', 'GoodsReceiptController@index')->name('index');
 
-    Route::get('/createGrWithRef', 'GoodsReceiptController@createGrWithRef')->name('createGrWithRef')->middleware('can:create-purchase-order');
+    Route::get('/createGrWithRef/{id}', 'GoodsReceiptController@createGrWithRef')->name('createGrWithRef')->middleware('can:create-purchase-order');
+
+    Route::get('/createGrFromWo/{id}', 'GoodsReceiptController@createGrFromWo')->name('createGrFromWo')->middleware('can:create-purchase-order');
 
     Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-purchase-order');
 
-    Route::get('/selectPO/{id}', 'GoodsReceiptController@selectPO')->name('selectPO')->middleware('can:create-purchase-order');
+    Route::get('/selectPO', 'GoodsReceiptController@selectPO')->name('selectPO')->middleware('can:create-purchase-order');
 
     Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-purchase-order');
 
@@ -766,6 +768,8 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
     Route::post('/', 'GoodsReceiptController@store')->name('store')->middleware('can:create-purchase-order');
 
     Route::post('/storeWOR', 'GoodsReceiptController@storeWOR')->name('storeWOR')->middleware('can:create-purchase-order');
+
+    Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-purchase-order');
 
     Route::delete('/{id}', 'GoodsReceiptController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
 });
