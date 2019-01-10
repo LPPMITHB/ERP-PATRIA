@@ -507,10 +507,10 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'material_requisition.index',
         ]);
         
-        $createGrWithRef = Menu::where('route_name','goods_receipt.createGrWithRef')->select('id')->first()->id;
+        $createGrWithRef = Menu::where('route_name','goods_receipt.selectPO')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createGrWithRef,
-            'route_name' => 'goods_receipt.createGrWithRef',
+            'route_name' => 'goods_receipt.selectPO',
         ]);
 
         // $createGrWithoutRef = Menu::where('route_name','goods_receipt.createGrWithoutRef')->select('id')->first()->id;

@@ -7,7 +7,9 @@ use Illuminate\Http\Response;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
 use App\Models\PurchaseOrder;
+use App\Models\WorkOrder;
 use App\Models\PurchaseOrderDetail;
+use App\Models\WorkOrderDetail;
 use App\Models\StorageLocation;
 use App\Models\Material;
 use App\Models\Branch;
@@ -19,19 +21,30 @@ use Auth;
 
 class GoodsReceiptController extends Controller
 {
-    public function createGrWithRef()
-    {
-        $modelPOs = PurchaseOrder::where('status',2)->get();
-        
-        return view('goods_receipt.createGrWithRef', compact('modelPOs'));
-    }
-
-    public function selectPO($id)
+    public function createGrWithRef($id)
     {
         $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
         $modelSloc = StorageLocation::all();
         $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
-        return view('goods_receipt.selectPO', compact('modelPO','modelPODs','modelSloc'));
+        
+        return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc'));
+    }
+
+    public function createGrFromWo($id)
+    {
+        $modelWO = WorkOrder::where('id',$id)->with('vendor')->first();
+        $modelSloc = StorageLocation::all();
+        $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material')->get();
+        
+        return view('goods_receipt.createGrFromWo', compact('modelWO','modelWODs','modelSloc'));
+    }
+
+    public function selectPO()
+    {
+        $modelPOs = PurchaseOrder::where('status',2)->get();
+        $modelWOs = WorkOrder::where('status',2)->get();
+        
+        return view('goods_receipt.selectPO', compact('modelPOs','modelWOs'));
     }
 
     public function show($id)
@@ -91,6 +104,40 @@ class GoodsReceiptController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('goods_receipt.selectPO',$datas->po_id)->with('error', $e->getMessage());
+        }
+    }
+
+    public function storeWo(Request $request)
+    {
+        $datas = json_decode($request->datas);
+        $gr_number = $this->generateGRNumber();
+        DB::beginTransaction();
+        try {
+            $GR = new GoodsReceipt;
+            $GR->number = $gr_number;
+            $GR->work_order_id = $datas->wo_id;
+            $GR->description = $datas->description;
+            $GR->branch_id = Auth::user()->branch->id;
+            $GR->user_id = Auth::user()->id;
+            $GR->save();
+            foreach($datas->POD as $data){
+                $GRD = new GoodsReceiptDetail;
+                $GRD->goods_receipt_id = $GR->id;
+                $GRD->quantity = $data->received;
+                $GRD->material_id = $data->material_id;
+                $GRD->save();
+
+                $PI - new ProjectInventory;
+                $PI->project_id = $datas->project_id;
+                $PI->material_id = $data->material_id;
+                $PI->quantity = $data->received;
+                $PI->save();
+            }
+            DB::commit();
+            return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('goods_receipt.selectPO',$datas->wo_id)->with('error', $e->getMessage());
         }
     }
 

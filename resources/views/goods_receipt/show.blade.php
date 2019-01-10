@@ -33,7 +33,7 @@
                             <div class="box-header no-padding">
                                 <div class="box-body">
                                     <div class="col-md-4 col-xs-4 no-padding"> Project Name</div>
-                                    <div class="col-md-6 no-padding"> : <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->project->name :  '-'}} </b></div>
+                                    <div class="col-md-6 no-padding"> : <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->project->name :  '-'}} </b></div>
                                 
                                     <div class="col-md-4 col-xs-4 no-padding">PO Code</div>
                                     <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
