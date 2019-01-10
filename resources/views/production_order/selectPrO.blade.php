@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0">
-                <h4 class="box-title no-padding">Work Orders</h4>
+                <h4 class="box-title no-padding">Production Orders</h4>
                 <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                     <thead>
                         <tr>
