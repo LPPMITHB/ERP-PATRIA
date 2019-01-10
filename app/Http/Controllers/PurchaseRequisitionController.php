@@ -275,7 +275,6 @@ class PurchaseRequisitionController extends Controller
     public function show($id)
     {
         $modelPR = PurchaseRequisition::findOrFail($id);
-        print_r($modelPR);exit();
 
         return view('purchase_requisition.show', compact('modelPR'));
     }
