@@ -103,7 +103,7 @@
                                                     <input class="form-control" v-model="WRD.quantity" placeholder="Please Input Quantity">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="WRD.material.cost_standard_price" placeholder="Please Input Total Price">
+                                                    <input class="form-control" v-model="WRD.cost" placeholder="Please Input Price / pcs">
                                                 </td>
                                                 <td class="tdEllipsis" v-if="WRD.wbs != null">{{ WRD.wbs.name }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
@@ -186,6 +186,11 @@
                 if(this.vendor_id == ""){
                     isOk = true;
                 }
+                this.WRDetail.forEach(wrd => {
+                    if(wrd.cost == 0 || wrd.cost == ""){
+                        isOk = true;
+                    }
+                });
                 return isOk;
             },
         },
@@ -212,7 +217,7 @@
 
                 data.forEach(WRD => {
                     WRD.quantity = WRD.quantity.replace(/,/g , '');      
-                    WRD.material.cost_standard_price = WRD.material.cost_standard_price.replace(/,/g , '');      
+                    WRD.cost = (WRD.cost).replace(/,/g , '');      
                 });
 
                 this.submittedForm.WRD = data;
@@ -234,8 +239,18 @@
                 handler: function(newValue) {
                     var data = newValue;
                     data.forEach(WRD => {
-                        WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                        WRD.material.cost_standard_price = (WRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
+                        WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                        var decimal = (WRD.cost+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                WRD.cost = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                WRD.cost = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            WRD.cost = (WRD.cost+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }  
                     });
                 },
                 deep: true
@@ -249,7 +264,6 @@
                 WRD.sugQuantity = WRD.quantity;
                 WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 WRD.sugQuantity = (WRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                WRD.material.cost_standard_price = (WRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             });
             Vue.directive('tooltip', function(el, binding){
                 $(el).tooltip({

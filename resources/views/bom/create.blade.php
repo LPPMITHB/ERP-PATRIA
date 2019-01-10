@@ -66,17 +66,17 @@
                                     <textarea class="form-control" rows="3" v-model="submittedForm.description"></textarea>  
                                 </div>
                             </div>
-                            
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-20">
                             <table class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="35%">Material</th>
-                                        <th width="40%">Description</th>
+                                        <th width="30%">Material</th>
+                                        <th width="33%">Description</th>
                                         <th width="10%">Quantity</th>
-                                        <th width="10%" ></th>
+                                        <th width="10%">Source</th>
+                                        <th width="12%" ></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -86,6 +86,7 @@
                                         <td v-if="material.description != null">{{ material.description }}</td>
                                         <td v-else>-</td>
                                         <td>{{ material.quantity }}</td>
+                                        <td>{{ material.source }}</td>
                                         <td class="p-l-5" align="center">
                                             <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
@@ -104,6 +105,11 @@
                                         </td>
                                         <td class="no-padding"><input class="form-control" type="text" :value="input.description" disabled></td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding">
+                                            <selectize v-model="input.source" :settings="sourceSettings">
+                                                <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
+                                            </selectize>    
+                                        </td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
@@ -141,6 +147,12 @@
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Source</label>
+                                                <selectize v-model="editInput.source" :settings="sourceSettings">
+                                                    <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
+                                                </selectize>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -170,6 +182,7 @@
     });
     var data = {
         submit: "ok",
+        sources : ['Stock','WIP'],
         project : @json($project),
         materials : @json($materials),
         wbs : @json($wbs),
@@ -185,7 +198,8 @@
             material_code : "",
             description : "",
             quantity : "",
-            quantityInt : 0
+            quantityInt : 0,
+            source : "Stock"
         },
         editInput : {
             old_material_id : "",
@@ -195,10 +209,14 @@
             quantity : "",
             quantityInt : 0,
             description : "",
+            source : ""
         },
         materialTable : [],
         materialSettings: {
             placeholder: 'Please Select Material'
+        },
+        sourceSettings: {
+            placeholder: 'Please Select Source'
         },
         material_id:[],
         material_id_modal:[],
@@ -223,7 +241,7 @@
                 var string_newValue = this.input.quantityInt+"";
                 this.input.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1 || this.input.source == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -242,7 +260,7 @@
                 var string_newValue = this.editInput.quantityInt+"";
                 this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
+                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || this.editInput.source == "" || isNaN(this.editInput.quantityInt)){
                     isOk = true;
                 }
 
@@ -292,6 +310,7 @@
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_name = data.wbs_name;
                 this.editInput.index = index;
+                this.editInput.source = data.source;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -334,6 +353,7 @@
                     this.input.material_id = "";
                     this.input.material_name = "";
                     this.input.quantity = "";
+                    this.input.source = "Stock";
                     this.input.quantityInt = 0;
                 }
             },
@@ -367,6 +387,7 @@
                         material.quantity = this.editInput.quantity;
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
+                        material.source = this.editInput.source;
 
                         window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
                             material.material_name = data.name;

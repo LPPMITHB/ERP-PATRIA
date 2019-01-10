@@ -264,7 +264,7 @@
                     url = "/activity_repair/updatePredecessor/"+idUpd;
                 }
                 $('div.overlay').show();
-                window.axios.patch(url,activityUpdate)
+                window.axios.put(url,activityUpdate)
                 .then((response) => {
                     iziToast.success({
                         displayMode: 'replace',

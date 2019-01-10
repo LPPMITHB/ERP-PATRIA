@@ -77,55 +77,74 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price (<b>{{submittedForm.currency}}</b>)</label>
+                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
                             
-                            <div class="col-sm-2">
-                                <selectize id="currency" v-model="submittedForm.currency">
-                                    <option v-for="(currency, index) in currencies" :value="currency.unit">{{ currency.name }}</option>
-                                </selectize>    
-                            </div>
-                            <div class="col-sm-8">
-                                <input type="text" :disabled="costOk" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="weight" class="col-sm-2 control-label">Weight (Kg)</label>
-            
+                            <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
+                            
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="weight" v-model="submittedForm.weight">
+                                <input type="text"  class="form-control" id="cost_standard_service" required v-model="submittedForm.cost_standard_service">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight" class="col-sm-2 control-label">Weight</label>
+            
+                            <div class="col-sm-8">
+                                <input type="text" :disabled="weightOk" class="form-control" id="weight" v-model="submittedForm.weight">
+                            </div>
+
+                            <div class="col-sm-2">
+                                <selectize id="uom" v-model="submittedForm.weight_uom_id" :settings="weight_uom_settings">
+                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                </selectize>    
                             </div>
                         </div>
                         
                             <div class="form-group">
-                                <label for="height" class="col-sm-2 control-label">Height (M)</label>
+                                <label for="height" class="col-sm-2 control-label">Height</label>
                 
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="height" v-model="submittedForm.height" >
+                                <div class="col-sm-8">
+                                    <input type="text" :disabled="heightOk" class="form-control" id="height" v-model="submittedForm.height" >
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <selectize id="uom" v-model="submittedForm.height_uom_id" :settings="height_uom_settings">
+                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                    </selectize>    
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="length" class="col-sm-2 control-label">Length (M)</label>
+                                <label for="length" class="col-sm-2 control-label">Length</label>
                 
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="lengths" v-model="submittedForm.lengths" >
+                                <div class="col-sm-8">
+                                    <input type="text" :disabled="lengthOk" class="form-control" id="lengths" v-model="submittedForm.lengths" >
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <selectize id="uom" v-model="submittedForm.length_uom_id" :settings="length_uom_settings">
+                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                    </selectize>    
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="width" class="col-sm-2 control-label">Width (M)</label>
+                                <label for="width" class="col-sm-2 control-label">Width</label>
                 
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="width" v-model="submittedForm.width"  >
+                                <div class="col-sm-8">
+                                    <input type="text" :disabled="widthOk" class="form-control" id="width" v-model="submittedForm.width"  >
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label for="volume" class="col-sm-2 control-label">Volume (M<sup>3</sup>)</label>
-                
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="volume" v-model="submittedForm.volume" disabled>
+                                <div class="col-sm-2">
+                                    <selectize id="uom" v-model="submittedForm.width_uom_id" :settings="width_uom_settings">
+                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                    </selectize>    
                                 </div>
                             </div>
 
@@ -179,21 +198,36 @@
     });
 
     var data = {
-        currencies : @json($currencies),
+        uoms : @json($uoms),
         submittedForm :{
             code : "",
             name : "",
             description : "",
             cost_standard_price : "",
+            cost_standard_service : "",
             weight : 0,
+            weight_uom_id : "",
             height :0,
+            height_uom_id : "",
             lengths :0,
+            length_uom_id : "",
             width :0,
-            volume :0,
-            currency: '',
+            width_uom_id : "",
             status : 1,
             type : 1,
-        }
+        },
+        weight_uom_settings: {
+            placeholder: 'Select weight UOM!'
+        },
+        height_uom_settings: {
+            placeholder: 'Select height UOM!'
+        },
+        length_uom_settings: {
+            placeholder: 'Select length UOM!'
+        },
+        width_uom_settings: {
+            placeholder: 'Select width UOM!'
+        },
     }
 
     var vm = new Vue({
@@ -208,10 +242,34 @@
                 }
                 return isOk;
             },
-            costOk :function(){
+            weightOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.currency == ""){
+                if(this.submittedForm.weight_uom_id == ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
+            heightOk :function(){
+                let isOk = false;
+
+                if(this.submittedForm.height_uom_id == ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
+            lengthOk :function(){
+                let isOk = false;
+
+                if(this.submittedForm.length_uom_id == ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
+            widthOk :function(){
+                let isOk = false;
+
+                if(this.submittedForm.width_uom_id == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -221,12 +279,12 @@
             submitForm(){
                 $('div.overlay').show();
                 this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
+                this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.weight = (this.submittedForm.weight+"").replace(/,/g , '');
                 this.submittedForm.height = (this.submittedForm.height+"").replace(/,/g , '');
                 this.submittedForm.lengths = (this.submittedForm.lengths+"").replace(/,/g , '');
                 this.submittedForm.width = (this.submittedForm.width+"").replace(/,/g , '');
                 this.submittedForm.volume = (this.submittedForm.volume+"").replace(/,/g , '');
-                console.log(this.submittedForm);
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -235,25 +293,19 @@
                 form.appendChild(struturesElem);
                 form.submit();
             },
-            calculateVolume(){
-                this.submittedForm.volume = parseInt(this.submittedForm.height.replace(/,/g , '')) * parseInt(this.submittedForm.lengths.replace(/,/g , '')) * parseInt(this.submittedForm.width.replace(/,/g , ''));
-                
-                var volume = this.submittedForm.volume;
-                this.submittedForm.volume = (volume+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
         },
         watch:{
-            'submittedForm.cost_standard_price': function(newValue) {
+            'submittedForm.cost_standard_service': function(newValue) {
                 var decimal = newValue.replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
                     var maxDecimal = 2;
                     if((decimal[1]+"").length > maxDecimal){
-                        this.submittedForm.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        this.submittedForm.cost_standard_service = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                     }else{
-                        this.submittedForm.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        this.submittedForm.cost_standard_service = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                     }
                 }else{
-                    this.submittedForm.cost_standard_price = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    this.submittedForm.cost_standard_service = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
             'submittedForm.weight': function(newValue) {
@@ -281,12 +333,6 @@
                 }else{
                     this.submittedForm.height = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
-                
-                if(this.submittedForm.height == "" || this.submittedForm.lengths == "" || this.submittedForm.width == ""){
-                    this.submittedForm.volume = 0;
-                }else{
-                    this.calculateVolume();
-                }
             },
             'submittedForm.lengths': function(newValue) {
                 var decimal = newValue.replace(/,/g, '').split('.');
@@ -300,12 +346,6 @@
                 }else{
                     this.submittedForm.lengths = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
-
-                if(this.submittedForm.height == "" || this.submittedForm.lengths == "" || this.submittedForm.width == ""){
-                    this.submittedForm.volume = 0;
-                }else{
-                    this.calculateVolume();
-                }
             },
             'submittedForm.width': function(newValue) {
                 var decimal = newValue.replace(/,/g, '').split('.');
@@ -318,12 +358,6 @@
                     }
                 }else{
                     this.submittedForm.width = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
-
-                if(this.submittedForm.height == "" || this.submittedForm.lengths == "" || this.submittedForm.width == ""){
-                    this.submittedForm.volume = 0;
-                }else{
-                    this.calculateVolume();
                 }
             },
         },

@@ -469,7 +469,7 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $selectMR,
-            'route_name' => 'goods_issue.createGiWithoutRef',
+            'route_name' => 'goods_issue.createGiWithRef',
         ]); 
 
         $viewGi = Menu::where('route_name','goods_issue.index')->select('id')->first()->id;

@@ -57,9 +57,53 @@ class ProductionOrderController extends Controller
     
     public function selectWBS($id){
         $modelProject = Project::findOrFail($id);
-        $modelWBS = WBS::where('project_id',$id)->get();
+        $wbss = $modelProject->wbss;
+        $dataWbs = Collection::make();
 
-        return view('production_order.selectWBS', compact('modelWBS','modelProject'));
+        $totalWeightProject = $modelProject->wbss->where('wbs_id',null)->sum('weight');
+        $dataWbs->push([
+            "id" => $modelProject->number, 
+            "parent" => "#",
+            "text" => $modelProject->name. " | Weight : (".$totalWeightProject."% / 100%)",
+            "icon" => "fa fa-ship"
+        ]);
+
+        $route = '/production_order/create/';
+    
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                if(count($wbs->activities)>0){
+                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $route.$wbs->id],
+                    ]);
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $route.$wbs->id],
+                    ]);
+                }
+            }else{
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+
+                $dataWbs->push([
+                    "id" => $wbs->code , 
+                    "parent" => $modelProject->number,
+                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                    "icon" => "fa fa-suitcase",
+                    "a_attr" =>  ["href" => $route.$wbs->id],
+                ]);
+            } 
+        }
+
+        return view('production_order.selectWBS', compact('dataWbs','modelProject'));
     }
 
     public function selectPrO($id){
@@ -164,8 +208,11 @@ class ProductionOrderController extends Controller
 
         $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
         $modelRD = ResourceDetail::where('wbs_id',$wbs->id)->get();
-
-        return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD'));
+        if($modelBOM != null){
+            return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD'));
+        }else{
+            return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+        }
     }
 
     /**

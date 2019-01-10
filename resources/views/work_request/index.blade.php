@@ -22,10 +22,10 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Number</th>
-                            <th width="35%">Description</th>
+                            <th width="17%">Number</th>
+                            <th width="33%">Description</th>
                             <th width="20%">Project Name</th>
-                            <th width="10%">Status</th>
+                            <th width="15%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -34,8 +34,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelWR->number }}</td>
-                                <td>{{ isset($modelWR->description) ? $modelWR->description : '-' }}</td>
-                                <td>{{ isset($modelWR->project) ? $modelWR->project->name : '-'}}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip">{{ isset($modelWR->description) ? $modelWR->description : '-' }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip">{{ isset($modelWR->project) ? $modelWR->project->name : '-'}}</td>
                                 @if($modelWR->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
