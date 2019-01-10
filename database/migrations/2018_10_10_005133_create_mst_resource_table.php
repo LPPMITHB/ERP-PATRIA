@@ -18,10 +18,10 @@ class CreateMstResourceTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('brand')->nullable();
-            $table->integer('quantity')->default(0)->nullable();
+            $table->integer('quantity')->default(1)->nullable();
             $table->string('description')->nullable();
-            $table->string('machine_type')->nullable();
-            $table->string('category')->nullable();
+            // $table->string('machine_type');
+            $table->string('category_id')->default(0);
             $table->integer('cost_standard_price');
             $table->date('manufactured_date')->nullable();
             $table->date('purchasing_date')->nullable();
@@ -29,12 +29,12 @@ class CreateMstResourceTable extends Migration
             $table->unsignedInteger('lifetime')->nullable();
             $table->unsignedInteger('depreciation_method')->nullable();
             $table->float('accumulated_depreciation')->nullable();
-            $table->date('running_hours')->nullable();
+            $table->integer('running_hours')->nullable();
             $table->unsignedInteger('cost_per_hour')->nullable();
             $table->float('utilization')->default(0);
             $table->unsignedInteger('performance')->nullable();
             $table->float('productivity')->default(0);
-            $table->unsignedInteger('status')->default(1);
+            $table->unsignedInteger('status')->default(0);
             $table->unsignedInteger('vendor_id')->nullable(); 
             $table->unsignedInteger('uom_id')->nullable(); 
             $table->unsignedInteger('branch_id');
