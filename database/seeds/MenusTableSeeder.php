@@ -367,7 +367,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Create GR',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_receipt.createGrWithRef',
+            'route_name'=> 'goods_receipt.selectPO',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$goodsReceipt,

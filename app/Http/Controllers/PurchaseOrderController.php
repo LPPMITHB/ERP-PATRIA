@@ -151,7 +151,12 @@ class PurchaseOrderController extends Controller
                 }
                 $total_price += $POD->total_price;
             }
-
+            $modelPR = PurchaseRequisition::where('id',$datas->pr_id)->with('purchaseRequisitionDetails')->first();
+            foreach($modelPR->purchaseRequisitionDetails as $modelPRD){
+                if($modelPRD->reserved < $modelPRD->quantity){
+                    $status = 1;
+                }
+            }
             $PO->total_price = $total_price;
             $PO->save(); 
             $this->checkStatusPr($datas->pr_id,$status);

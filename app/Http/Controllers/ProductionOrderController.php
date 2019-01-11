@@ -410,7 +410,7 @@ class ProductionOrderController extends Controller
             if($PrOD->material_id != "" || $PrOD->material_id != null){
                 $MRD = new MaterialRequisitionDetail;
                 $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $PrOD->quantity;
+                $MRD->quantity = $PrOD->sugQuantity;
                 $MRD->issued = 0;
                 $MRD->material_id = $PrOD->material_id;
                 $MRD->save();

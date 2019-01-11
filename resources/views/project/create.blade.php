@@ -193,7 +193,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="planned_duration" class="col-sm-2 control-label">Duration</label>
+                                <label for="planned_duration" class="col-sm-2 control-label">Duration (Days)</label>
                                 <div class="col-sm-5">
                                     <input required type="number" class="form-control" id="planned_duration" name="planned_duration" placeholder="Duration" >                                        
                                 </div>

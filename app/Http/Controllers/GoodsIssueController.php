@@ -36,9 +36,11 @@ class GoodsIssueController extends Controller
         $modelSloc = StorageLocation::all();
         $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$modelMR->id)->whereColumn('issued','!=','quantity')->with('material')->get();
         foreach($modelMRDs as $MRD){
+            $MRD['already_issued'] = $MRD->issued;
             $MRD['sloc_id'] = "";
             $MRD['modelGI'] = "";
         }
+
         return view('goods_issue.createGiWithRef', compact('modelMR','modelMRDs','modelSloc','modelProject'));
     }
 
@@ -85,7 +87,7 @@ class GoodsIssueController extends Controller
             $GI->save();
             foreach($datas->MRD as $MRD){
                 foreach($MRD->modelGI as $data){
-                    if($data->issued >0){
+                    if($data->issued > 0){
                         $GID = new GoodsIssueDetail;
                         $GID->goods_issue_id = $GI->id;
                         $GID->quantity = $data->issued;
@@ -129,11 +131,9 @@ class GoodsIssueController extends Controller
     // function
     public function updateMR($mr_id,$issued){
         $modelMRD = MaterialRequisitionDetail::findOrFail($mr_id);
-        
         if($modelMRD){
-            $modelMRD->quantity = $modelMRD->quantity - $issued;
             $modelMRD->issued = $modelMRD->issued + $issued;
-            $modelMRD->save();
+            $modelMRD->update();
         }else{
 
         }
