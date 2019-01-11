@@ -683,19 +683,13 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 
 //Purchase Order Routes
 Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
-    Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove');
+    Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order');
 
-    Route::get('/{id}/showResource', 'PurchaseOrderController@showResource')->name('showResource')->middleware('can:show-purchase-order');
-
-    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval');
+    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order');
     
-    Route::post('/storeResource', 'PurchaseOrderController@storeResource')->name('storeResource')->middleware('can:create-purchase-order');
-
-    Route::get('/createPOResource', 'PurchaseOrderController@createPOResource')->name('createPOResource')->middleware('can:list-purchase-requisition');
-
-    Route::get('/selectPR', 'PurchaseOrderController@selectPR')->name('selectPR')->middleware('can:list-purchase-requisition');
+    Route::get('/selectPR', 'PurchaseOrderController@selectPR')->name('selectPR')->middleware('can:create-purchase-order');
     
-    Route::get('/', 'PurchaseOrderController@index')->name('index');
+    Route::get('/', 'PurchaseOrderController@index')->name('index')->middleware('can:list-purchase-order');
 
     Route::get('/create', 'PurchaseOrderController@create')->name('create')->middleware('can:create-purchase-order');
 
@@ -703,15 +697,38 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
     Route::get('/{id}', 'PurchaseOrderController@show')->name('show')->middleware('can:show-purchase-order');
 
-    Route::get('/showApprove/{id}', 'PurchaseOrderController@showApprove')->name('showApprove')->middleware('can:show-purchase-order');
+    Route::get('/showApprove/{id}', 'PurchaseOrderController@showApprove')->name('showApprove')->middleware('can:approve-purchase-order');
 
     Route::get('/{id}/edit', 'PurchaseOrderController@edit')->name('edit')->middleware('can:edit-purchase-order');
 
     Route::patch('/', 'PurchaseOrderController@update')->name('update')->middleware('can:edit-purchase-order');
 
     Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order');
+});
 
-    Route::delete('/{id}', 'PurchaseOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+//Purchase Order Repair Routes
+Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(function() {
+    Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order-repair');
+
+    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order-repair');
+    
+    Route::get('/selectPR', 'PurchaseOrderController@selectPR')->name('selectPR')->middleware('can:create-purchase-order-repair');
+    
+    Route::get('/', 'PurchaseOrderController@index')->name('index')->middleware('can:list-purchase-order-repair');
+
+    Route::get('/create', 'PurchaseOrderController@create')->name('create')->middleware('can:create-purchase-order-repair');
+
+    Route::get('/selectPRD/{id}', 'PurchaseOrderController@selectPRD')->name('selectPRD')->middleware('can:create-purchase-order-repair');
+
+    Route::get('/{id}', 'PurchaseOrderController@show')->name('show')->middleware('can:show-purchase-order-repair');
+
+    Route::get('/showApprove/{id}', 'PurchaseOrderController@showApprove')->name('showApprove')->middleware('can:approve-purchase-order-repair');
+
+    Route::get('/{id}/edit', 'PurchaseOrderController@edit')->name('edit')->middleware('can:edit-purchase-order-repair');
+
+    Route::patch('/', 'PurchaseOrderController@update')->name('update')->middleware('can:edit-purchase-order-repair');
+
+    Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order-repair');
 });
 
 //Work Order Routes

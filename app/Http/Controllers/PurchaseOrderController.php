@@ -72,45 +72,6 @@ class PurchaseOrderController extends Controller
         return view('purchase_order.selectPRD', compact('modelPR','modelPRD'));
     }
 
-    public function storeResource(Request $request){
-        $datas = json_decode($request->datas);
-        $po_number = $this->generatePONumber();
-
-        DB::beginTransaction();
-        try {
-            $PO = new PurchaseOrder;
-            $PO->number = $po_number;
-            $PO->vendor_id = $datas->vendor_id;
-            $PO->project_id = $datas->project_id;
-            $PO->description = $datas->description;
-            $PO->status = 1;
-            $PO->user_id = Auth::user()->id;
-            $PO->branch_id = Auth::user()->branch->id;
-            $PO->save();
-
-            $total_price = 0;
-            foreach($datas->resources as $data){
-                $POD = new PurchaseOrderDetail;
-                $POD->purchase_order_id = $PO->id;
-                $POD->quantity = $data->quantity;
-                $POD->resource_id = $data->resource_id;
-                $POD->wbs_id = $data->wbs_id;
-                $POD->total_price = $data->cost;
-                $POD->save();
-
-                $total_price += $POD->total_price;
-            }
-
-            $PO->total_price = $total_price;
-            $PO->save(); 
-            DB::commit();
-            return redirect()->route('purchase_order.showResource',$PO->id)->with('success', 'Purchase Order Created');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('purchase_order.createPOResource')->with('error', $e->getMessage());
-        }
-    }
-
     public function store(Request $request)
     {
         $datas = json_decode($request->datas);
@@ -182,13 +143,6 @@ class PurchaseOrderController extends Controller
         return view('purchase_order.showApprove', compact('modelPO'));
     }
 
-    public function showResource($id)
-    {
-        $modelPO = PurchaseOrder::findOrFail($id);
-
-        return view('purchase_order.showResource', compact('modelPO'));
-    }
-
     public function edit($id)
     {
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
@@ -196,14 +150,6 @@ class PurchaseOrderController extends Controller
         $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
 
         return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject'));
-    }
-
-    public function createPOResource(){
-        $modelProject = Project::where('status',1)->get();
-        $modelVendor = Vendor::where('status',1)->get();
-        $modelResource = Resource::all();
-
-        return view('purchase_order.createPOResource', compact('modelResource','modelProject','modelVendor'));
     }
 
     public function update(Request $request)

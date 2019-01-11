@@ -389,10 +389,10 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Purchase Requisition Repair
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first();
-        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first();
-        $prRepair = Menu::where('name','Purchase Requisition')->where('menu_id',$materialManagementRepair)->select('id')->first();
-        $createPrRepair = Menu::where('name','Create PR')->where('menu_id',$prRepair)->select('id')->first();
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
+        $prRepair = Menu::where('name','Purchase Requisition')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createPrRepair = Menu::where('name','Create PR')->where('menu_id',$prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Purchase Requisition Repair',
             'menu_id' => $createPrRepair,
@@ -401,7 +401,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPrRepair = Menu::where('name','View & Edit PR')->where('menu_id',$prRepair)->select('id')->first();
+        $viewPrRepair = Menu::where('name','View & Edit PR')->where('menu_id',$prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Purchase Requisition Repair',
             'menu_id' => $viewPrRepair,
@@ -426,7 +426,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approvePrRepair = Menu::where('name','Approve PR')->where('menu_id',$prRepair)->select('id')->first();
+        $approvePrRepair = Menu::where('name','Approve PR')->where('menu_id',$prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Requisition Repair',
             'menu_id' => $approvePrRepair,
@@ -435,7 +435,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $consolidationPrRepair = Menu::where('name','PR Consolidation')->where('menu_id',$prRepair)->select('id')->first();
+        $consolidationPrRepair = Menu::where('name','PR Consolidation')->where('menu_id',$prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Consolidation Purchase Requisition Repair',
             'menu_id' => $consolidationPrRepair,
@@ -519,6 +519,59 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Purchase Order',
             'menu_id' => $viewPO,
             'middleware' => 'edit-purchase-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Approve Purchase Order',
+            'menu_id' => $viewPO,
+            'middleware' => 'approve-purchase-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Purchase Order Repair
+        $poRepair = Menu::where('name','Purchase Order')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createPO = Menu::where('name','Create PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Purchase Order Repair',
+            'menu_id' => $createPO,
+            'middleware' => 'create-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewPO = Menu::where('name','View & Edit PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'list-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'show-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'edit-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewPO = Menu::where('name','Approve PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'approve-purchase-order-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
