@@ -226,46 +226,6 @@ class PurchaseRequisitionController extends Controller
         }
     }
 
-    public function storePRD(Request $request)
-    {
-        $datas = $request->json()->all();
-
-        $modelPR = PurchaseRequisition::findOrFail($datas['pr_id']);
-        DB::beginTransaction();
-        try {
-            $PRD = new PurchaseRequisitionDetail;
-            $PRD->purchase_requisition_id = $datas['pr_id'];
-            $PRD->quantity = $datas['quantity'];
-            $PRD->material_id = $datas['material_id'];
-            $PRD->wbs_id = $datas['wbs_id'];
-            if(!$PRD->save()){
-                return back()->with('error','Failed to save, please try again !');
-            }
-            DB::commit();
-            return response(json_encode($PRD),Response::HTTP_OK);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('purchase_requisition.edit',$datas['pr_id'])->with('error', $e->getMessage());
-        }
-    }
-
-    public function updatePRD(Request $request)
-    {
-        $datas = $request->json()->all();
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$datas['pr_id'])->where('material_id',$datas['material_id'])->where('wbs_id',$datas['wbs_id'])->first();
-        DB::beginTransaction();
-        try {
-            $modelPRD->quantity += $datas['quantity'];
-            $modelPRD->save();
-            
-            DB::commit();
-            return response(json_encode($modelPRD),Response::HTTP_OK);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('purchase_requisition.edit',$datas['pr_id'])->with('error', $e->getMessage());
-        }
-    }
-
     /**
      * Display the specified resource.
      *

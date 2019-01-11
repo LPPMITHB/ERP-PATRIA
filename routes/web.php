@@ -625,21 +625,19 @@ Route::name('work_request.')->prefix('work_request')->group(function() {
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
-    Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation');
+    Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition');
 
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
 
-    Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove');
+    Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-requisition');
 
-    Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation');
+    Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition');
 
-    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval');
+    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
-    Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:destroy-purchase-requisition');
-
-    Route::patch('/updatePRD', 'PurchaseRequisitionController@updatePRD')->name('updatePRD')->middleware('can:edit-purchase-requisition');
+    Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:consolidation-purchase-requisition');
 
     Route::get('/', 'PurchaseRequisitionController@index')->name('index')->middleware('can:list-purchase-requisition');
 
@@ -647,14 +645,40 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/{id}', 'PurchaseRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition');
 
-    Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove');
+    Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove')->middleware('can:approve-purchase-requisition');
 
     Route::get('/edit/{id}', 'PurchaseRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition');
 
     Route::post('/', 'PurchaseRequisitionController@store')->name('store')->middleware('can:create-purchase-requisition');
+});
 
-    Route::post('/storePRD', 'PurchaseRequisitionController@storePRD')->name('storePRD')->middleware('can:edit-purchase-requisition');
+//Purchase Requisition Repair Routes
+Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair')->group(function() {
+    Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
+    Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition-repair');
+
+    Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-requisition-repair');
+
+    Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
+
+    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
+
+    Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition-repair');
+
+    Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:consolidation-purchase-requisition-repair');
+
+    Route::get('/', 'PurchaseRequisitionController@index')->name('index')->middleware('can:list-purchase-requisition-repair');
+
+    Route::get('/create', 'PurchaseRequisitionController@create')->name('create')->middleware('can:create-purchase-requisition-repair');
+
+    Route::get('/{id}', 'PurchaseRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition-repair');
+
+    Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove')->middleware('can:approve-purchase-requisition-repair');
+
+    Route::get('/edit/{id}', 'PurchaseRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition-repair');
+
+    Route::post('/', 'PurchaseRequisitionController@store')->name('store')->middleware('can:create-purchase-requisition-repair');
 });
 
 //Purchase Order Routes

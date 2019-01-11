@@ -425,6 +425,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'work_request.index',
         ]);
 
+        // Purchase Requisition
         $createPr = Menu::where('route_name','purchase_requisition.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createPr,
@@ -437,10 +438,61 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'purchase_requisition.indexApprove',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApprovePR,
+            'route_name' => 'purchase_requisition.showApprove',
+        ]);
+
         $viewPr = Menu::where('route_name','purchase_requisition.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewPr,
             'route_name' => 'purchase_requisition.index',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewPr,
+            'route_name' => 'purchase_requisition.edit',
+        ]);
+
+        $indexConsolidation = Menu::where('route_name','purchase_requisition.indexConsolidation')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexConsolidation,
+            'route_name' => 'purchase_requisition.indexConsolidation',
+        ]);
+
+        // Purchase Requisition Repair
+        $createPr = Menu::where('route_name','purchase_requisition_repair.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createPr,
+            'route_name' => 'purchase_requisition_repair.create',
+        ]);
+
+        $indexApprovePR = Menu::where('route_name','purchase_requisition_repair.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApprovePR,
+            'route_name' => 'purchase_requisition_repair.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApprovePR,
+            'route_name' => 'purchase_requisition_repair.showApprove',
+        ]);
+
+        $viewPr = Menu::where('route_name','purchase_requisition_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewPr,
+            'route_name' => 'purchase_requisition_repair.index',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewPr,
+            'route_name' => 'purchase_requisition_repair.edit',
+        ]);
+
+        $indexConsolidation = Menu::where('route_name','purchase_requisition_repair.indexConsolidation')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexConsolidation,
+            'route_name' => 'purchase_requisition_repair.indexConsolidation',
         ]);
 
         $createPo = Menu::where('route_name','purchase_order.selectPR')->select('id')->first()->id;

@@ -970,6 +970,78 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+        
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Material Management',
+            'icon' => 'fa-calendar',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $repair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        $materialManagement =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Purchase Requisition',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $purchaseRequisition =  Menu::where('name','Purchase Requisition')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create PR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition_repair.create',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Approve PR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit PR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'PR Consolidation',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition_repair.indexConsolidation',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 1,
