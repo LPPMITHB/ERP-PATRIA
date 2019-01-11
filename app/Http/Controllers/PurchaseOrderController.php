@@ -17,31 +17,35 @@ use DB;
 
 class PurchaseOrderController extends Controller
 {
-    public function selectPR()
+    public function selectPR(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->get();
         
-        return view('purchase_order.selectPR', compact('modelPRs'));
+        return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
     
-    public function index()
+    public function index(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelPOs = PurchaseOrder::all();
 
-        return view('purchase_order.index', compact('modelPOs'));
+        return view('purchase_order.index', compact('modelPOs','route'));
     
     }
 
-    public function indexApprove()
+    public function indexApprove(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelPOs = PurchaseOrder::whereIn('status',[1,4])->get();
 
-        return view('purchase_order.indexApprove', compact('modelPOs'));
+        return view('purchase_order.indexApprove', compact('modelPOs','route'));
     
     }
 
     public function create(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
         $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','wbs','resource')->get();
@@ -55,11 +59,12 @@ class PurchaseOrderController extends Controller
         }else{
             $modelProject = [];
         }
-        return view('purchase_order.create', compact('modelPR','modelPRD','modelProject'));
+        return view('purchase_order.create', compact('modelPR','modelPRD','modelProject','route'));
     }
 
-    public function selectPRD($id)
+    public function selectPRD(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
         $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs','resource')->get();
         foreach($modelPRD as $key=>$PRD){
@@ -69,50 +74,12 @@ class PurchaseOrderController extends Controller
         }
         $modelPRD = $modelPRD->values();
         $modelPRD->all();
-        return view('purchase_order.selectPRD', compact('modelPR','modelPRD'));
-    }
-
-    public function storeResource(Request $request){
-        $datas = json_decode($request->datas);
-        $po_number = $this->generatePONumber();
-
-        DB::beginTransaction();
-        try {
-            $PO = new PurchaseOrder;
-            $PO->number = $po_number;
-            $PO->vendor_id = $datas->vendor_id;
-            $PO->project_id = $datas->project_id;
-            $PO->description = $datas->description;
-            $PO->status = 1;
-            $PO->user_id = Auth::user()->id;
-            $PO->branch_id = Auth::user()->branch->id;
-            $PO->save();
-
-            $total_price = 0;
-            foreach($datas->resources as $data){
-                $POD = new PurchaseOrderDetail;
-                $POD->purchase_order_id = $PO->id;
-                $POD->quantity = $data->quantity;
-                $POD->resource_id = $data->resource_id;
-                $POD->wbs_id = $data->wbs_id;
-                $POD->total_price = $data->cost;
-                $POD->save();
-
-                $total_price += $POD->total_price;
-            }
-
-            $PO->total_price = $total_price;
-            $PO->save(); 
-            DB::commit();
-            return redirect()->route('purchase_order.showResource',$PO->id)->with('success', 'Purchase Order Created');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('purchase_order.createPOResource')->with('error', $e->getMessage());
-        }
+        return view('purchase_order.selectPRD', compact('modelPR','modelPRD','route'));
     }
 
     public function store(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $po_number = $this->generatePONumber();
         DB::beginTransaction();
@@ -151,58 +118,60 @@ class PurchaseOrderController extends Controller
                 }
                 $total_price += $POD->total_price;
             }
-
+            $modelPR = PurchaseRequisition::where('id',$datas->pr_id)->with('purchaseRequisitionDetails')->first();
+            foreach($modelPR->purchaseRequisitionDetails as $modelPRD){
+                if($modelPRD->reserved < $modelPRD->quantity){
+                    $status = 1;
+                }
+            }
             $PO->total_price = $total_price;
             $PO->save(); 
             $this->checkStatusPr($datas->pr_id,$status);
             DB::commit();
-            return redirect()->route('purchase_order.show',$PO->id)->with('success', 'Purchase Order Created');
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.show',$PO->id)->with('success', 'Purchase Order Created');
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.show',$PO->id)->with('success', 'Purchase Order Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_order.selectPRD',$datas->pr_id)->with('error', $e->getMessage());
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.selectPRD',$datas->pr_id)->with('error', $e->getMessage());
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.selectPRD',$datas->pr_id)->with('error', $e->getMessage());
+            }
         }
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::findOrFail($id);
 
-        return view('purchase_order.show', compact('modelPO'));
+        return view('purchase_order.show', compact('modelPO','route'));
     }
 
-    public function showApprove($id)
+    public function showApprove(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::findOrFail($id);
 
-        return view('purchase_order.showApprove', compact('modelPO'));
+        return view('purchase_order.showApprove', compact('modelPO','route'));
     }
 
-    public function showResource($id)
+    public function edit(Request $request, $id)
     {
-        $modelPO = PurchaseOrder::findOrFail($id);
-
-        return view('purchase_order.showResource', compact('modelPO'));
-    }
-
-    public function edit($id)
-    {
+        $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
         $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource')->get();
         $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
 
-        return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject'));
-    }
-
-    public function createPOResource(){
-        $modelProject = Project::where('status',1)->get();
-        $modelVendor = Vendor::where('status',1)->get();
-        $modelResource = Resource::all();
-
-        return view('purchase_order.createPOResource', compact('modelResource','modelProject','modelVendor'));
+        return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject','route'));
     }
 
     public function update(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
@@ -233,10 +202,18 @@ class PurchaseOrderController extends Controller
 
             $this->checkStatusPr($datas->modelPO->purchase_requisition_id,$status);
             DB::commit();
-            return redirect()->route('purchase_order.show',$PO->id)->with('success', 'Purchase Order Updated');
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.show',$PO->id)->with('success', 'Purchase Order Updated');
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.show',$PO->id)->with('success', 'Purchase Order Updated');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_order.index')->with('error', $e->getMessage());
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.index')->with('error', $e->getMessage());
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.index')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -245,8 +222,9 @@ class PurchaseOrderController extends Controller
         //
     }
 
-    public function approval($po_id,$status)
+    public function approval(Request $request, $po_id, $status)
     {
+        $route = $request->route()->getPrefix();
         DB::beginTransaction();
         try{
             $modelPO = PurchaseOrder::findOrFail($po_id);
@@ -254,17 +232,29 @@ class PurchaseOrderController extends Controller
                 $modelPO->status = 2;
                 $modelPO->update();
                 DB::commit();
-                return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Approved');
+                if($route == "/purchase_order"){
+                    return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Approved');
+                }elseif($route == "/purchase_order_repair"){
+                    return redirect()->route('purchase_order_repair.showApprove',$po_id)->with('success', 'Purchase Order Approved');
+                }
             }elseif($status == "need-revision"){
                 $modelPO->status = 3;
                 $modelPO->update();
                 DB::commit();
-                return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Need Revision');
+                if($route == "/purchase_order"){
+                    return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Need Revision');
+                }elseif($route == "/purchase_order_repair"){
+                    return redirect()->route('purchase_order_repair.showApprove',$po_id)->with('success', 'Purchase Order Need Revision');
+                }
             }elseif($status == "reject"){
                 $modelPO->status = 5;
                 $modelPO->update();
                 DB::commit();
-                return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Rejected');
+                if($route == "/purchase_order"){
+                    return redirect()->route('purchase_order.showApprove',$po_id)->with('success', 'Purchase Order Rejected');
+                }elseif($route == "/purchase_order_repair"){
+                    return redirect()->route('purchase_order_repair.showApprove',$po_id)->with('success', 'Purchase Order Rejected');
+                }
             }
         } catch (\Exception $e) {
             DB::rollback();

@@ -122,7 +122,9 @@ class ProductionOrderController extends Controller
 
     public function index()
     {
-        //
+        $modelPOs = ProductionOrder::all();
+
+        return view('production_order.index',compact('modelPOs'));
     }
 
     public function selectPrOReport($id){
@@ -262,7 +264,7 @@ class ProductionOrderController extends Controller
 
             foreach($arrData as $data){
                 if($data->type == "Material"){
-                    $existing = ProductionOrderDetail::where('material_id' , $data->id)->first();
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('material_id' , $data->id)->first();
                     if($existing != null){
                         $existing->quantity += $data->quantity;
                         $existing->update();
@@ -271,14 +273,15 @@ class ProductionOrderController extends Controller
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->material_id = $data->id;
                         $PrOD->quantity = $data->quantity;
+                        $PrOD->save();
                     }
                 }
                 else{
+                    $PrOD = new ProductionOrderDetail;
                     $PrOD->resource_id = $data->id;
                     $PrOD->quantity = 1;
+                    $PrOD->save();
                 }
-            
-                $PrOD->save();
             }
 
             DB::commit();
@@ -409,7 +412,7 @@ class ProductionOrderController extends Controller
             if($PrOD->material_id != "" || $PrOD->material_id != null){
                 $MRD = new MaterialRequisitionDetail;
                 $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $PrOD->quantity;
+                $MRD->quantity = $PrOD->sugQuantity;
                 $MRD->issued = 0;
                 $MRD->material_id = $PrOD->material_id;
                 $MRD->save();

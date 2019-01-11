@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View All Goods Movements',
+        'title' => 'View All Production Orders',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Goods Movements' => route('goods_movement.index'),
+            'View All Production Orders' => route('production_order.index'),
         ]
     ]
 )
@@ -23,23 +23,21 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Number</th>
-                            <th width="25%">Description</th>
-                            <th width="20%">Storage Location From</th>
-                            <th width="20%">Storage Location To</th>
+                            <th width="35%">Number</th>
+                            <th width="25%">Project Name</th>
+                            <th width="25%">Work Name</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelGMs as $modelGM)
+                        @foreach($modelPOs as $modelPO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelGM->number }}</td>
-                                <td>{{ $modelGM->description }}</td>
-                                <td>{{ $modelGM->storageLocationFrom->name}}</td>
-                                <td>{{ $modelGM->storageLocationTo->name}}</td>
+                                <td>{{ $modelPO->number }}</td>
+                                <td>{{ $modelPO->project->name }}</td>
+                                <td>{{ $modelPO->wbs->name}}</td>
                                 <td align="center">
-                                    <a href="{{ route('goods_movement.show', ['id'=>$modelGM->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    <a href="{{ route('production_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                 </td>
                             </tr>
                         @endforeach

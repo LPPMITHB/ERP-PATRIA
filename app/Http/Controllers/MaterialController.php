@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Material;
-use App\Models\UOM;
+use App\Models\Uom;
 use Auth;
 use DB;
 
@@ -30,7 +30,7 @@ class MaterialController extends Controller
     public function create()
     {
         $material = new Material;
-        $uoms = UOM::all();
+        $uoms = Uom::all();
 
         return view('material.create', compact('material','uoms'));
     }
@@ -76,6 +76,8 @@ class MaterialController extends Controller
             $material->description = $data->description;
             $material->cost_standard_price = $data->cost_standard_price;
             $material->cost_standard_price_service = $data->cost_standard_service;
+            $material->min = $data->min;
+            $material->max = $data->max;
             $material->weight = $data->weight;
             $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
             $material->height = $data->height;
@@ -107,7 +109,7 @@ class MaterialController extends Controller
     public function show($id)
     {
         $material = Material::findOrFail($id);
-        $uoms = UOM::all();
+        $uoms = Uom::all();
 
         return view('material.show', compact('material','uoms'));
     }
@@ -121,7 +123,7 @@ class MaterialController extends Controller
     public function edit($id)
     {
         $material = Material::findOrFail($id);
-        $uoms = UOM::all();
+        $uoms = Uom::all();
         
         return view('material.edit', compact('material','uoms'));
     }
@@ -170,6 +172,8 @@ class MaterialController extends Controller
         $material->description = $data->description;
         $material->cost_standard_price = $data->cost_standard_price;
         $material->cost_standard_price_service = $data->cost_standard_service;
+        $material->min = $data->min;
+        $material->max = $data->max;
         $material->weight = $data->weight;
         $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
         $material->height = $data->height;

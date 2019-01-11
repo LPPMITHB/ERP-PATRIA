@@ -1,22 +1,43 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Purchase Order',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Create Purchase Order' => route('purchase_order.create',$modelPR->id),
+@if($route == "/purchase_order")
+    @breadcrumb(
+        [
+            'title' => 'Create Purchase Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Requisition' => route('purchase_order.selectPR'),
+                'Select Material' => route('purchase_order.selectPRD',$modelPR->id),
+                'Create Purchase Order' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/purchase_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Purchase Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Requisition' => route('purchase_order_repair.selectPR'),
+                'Select Material' => route('purchase_order_repair.selectPRD',$modelPR->id),
+                'Create Purchase Order' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="create-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.store') }}">
+            @if($route == "/purchase_order")
+                <form id="create-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.store') }}">
+            @elseif($route == "/purchase_order_repair")
+                <form id="create-po" class="form-horizontal" method="POST" action="{{ route('purchase_order_repair.store') }}">
+            @endif
             @csrf
                 @verbatim
                     <div id="po">
