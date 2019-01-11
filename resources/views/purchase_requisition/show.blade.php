@@ -6,24 +6,26 @@
 @else  
     @php($type = 'Resource')
 @endif
-@if($modelPR->project)
+@if($route == "/purchase_requisition")
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition - '.$type.' » '.$modelPR->project->name,
+            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+                'View All Purchase Requisition' => route('purchase_requisition.index'),
+                'View Purchase Requisition' => '',
             ]
         ]
     )
     @endbreadcrumb
-@else
+@elseif($route == "/purchase_requisition_repair")
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition - '.$type,
+            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+                'View All Purchase Requisition' => route('purchase_requisition_repair.index'),
+                'View Purchase Requisition' => '',
             ]
         ]
     )
