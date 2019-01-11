@@ -255,8 +255,7 @@
     var vm = new Vue({
         el : '#resource',
         data : data,
-        computed : {
-            mounted() {
+        mounted() {
             $('.datepicker').datepicker({
                 autoclose : true,
             });
@@ -271,6 +270,7 @@
                 }
             );
         },
+        computed : {
             dataOk: function(){
                 let isOk = false;
                 
