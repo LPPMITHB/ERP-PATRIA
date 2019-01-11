@@ -5,17 +5,31 @@
 @else
     @php($type = "Resource")
 @endif
-@breadcrumb(
-    [
-        'title' => 'Edit Purchase Requisition » '.$modelPR->number.' - '.$type,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Purchase Requisitions' => route('purchase_requisition.index'),
-            'Edit Purchase Requisition' => '',
+@if($route == "/purchase_requisition")
+    @breadcrumb(
+        [
+            'title' => 'Edit Purchase Requisition » '.$modelPR->number.' - '.$type,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Purchase Requisitions' => route('purchase_requisition.index'),
+                'Edit Purchase Requisition' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/purchase_requisition_repair")
+    @breadcrumb(
+        [
+            'title' => 'Edit Purchase Requisition » '.$modelPR->number.' - '.$type,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Purchase Requisitions' => route('purchase_requisition_repair.index'),
+                'Edit Purchase Requisition' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')

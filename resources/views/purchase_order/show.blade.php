@@ -1,24 +1,26 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if(!$modelPO->project)
+@if($route == "/purchase_order")
     @breadcrumb(
         [
-            'title' => 'View Purchase Order',
+            'title' => isset($modelPO->project) ? 'View Purchase Order » '.$modelPO->project->number : 'View Purchase Order',
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Order' => route('purchase_order.show',$modelPO->id),
+                'View All Purchase Order' => route('purchase_order.index'),
+                'View Purchase Order' => '',
             ]
         ]
     )
     @endbreadcrumb
-@else
+@elseif($route == "/purchase_order_repair")
     @breadcrumb(
         [
-            'title' => 'View Purchase Order » '.$modelPO->project->name,
+            'title' => isset($modelPO->project) ? 'View Purchase Order » '.$modelPO->project->number : 'View Purchase Order',
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Order' => route('purchase_order.show',$modelPO->id),
+                'View All Purchase Order' => route('purchase_order_repair.index'),
+                'View Purchase Order' => '',
             ]
         ]
     )

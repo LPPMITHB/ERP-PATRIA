@@ -5,17 +5,32 @@
     @php($type = 'Resource')
 @endif
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Purchase Order » Select '.$type,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Purchase Requisition' => route('purchase_order.selectPR'),
-            'Select Material' => route('purchase_order.selectPRD',$modelPR->id),
+@if($route == "/purchase_order")
+    @breadcrumb(
+        [
+            'title' => 'Create Purchase Order » Select '.$type,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Requisition' => route('purchase_order.selectPR'),
+                'Select Material' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/purchase_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Purchase Order » Select '.$type,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Requisition' => route('purchase_order_repair.selectPR'),
+                'Select Material' => ''
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
+
 @endsection
 
 @section('content')
@@ -23,7 +38,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="select-material" class="form-horizontal" action="{{ route('purchase_order.create') }}">
+                @if($route == "/purchase_order")
+                    <form id="select-material" class="form-horizontal" action="{{ route('purchase_order.create') }}">
+                @elseif($route == "/purchase_order_repair")
+                    <form id="select-material" class="form-horizontal" action="{{ route('purchase_order_repair.create') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="prd">

@@ -7,7 +7,7 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Order' => route('purchase_order.indexApprove'),
+            'Select Purchase Order' => '',
         ]
     ]
 )
@@ -56,7 +56,11 @@
                                     <td>REJECTED</td>
                                 @endif
                                 <td class="textCenter">
-                                    <a href="{{ route('purchase_order.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($route == "/purchase_order")
+                                        <a href="{{ route('purchase_order.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @elseif($route == "/purchase_order_repair")
+                                        <a href="{{ route('purchase_order_repair.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
