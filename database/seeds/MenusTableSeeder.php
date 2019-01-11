@@ -590,10 +590,34 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Goods Movement',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_movement.index',
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $goodsMovement =  Menu::where('name','Goods Movement')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create GM',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_movement.create',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$goodsMovement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View GM',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_movement.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$goodsMovement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

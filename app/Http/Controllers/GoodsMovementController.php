@@ -21,10 +21,10 @@ class GoodsMovementController extends Controller
      */
     public function index()
     {
-        $modelWarehouse = Warehouse::where('status',1)->get();
-        $modelSloc = StorageLocation::where('status',1)->with('storageLocationDetails')->get();
-        
-        return view ('goods_movement.index', compact('modelWarehouse','modelSloc'));
+        $modelGMs = GoodsMovement::all();
+
+        return view('goods_movement.index', compact('modelGMs'));
+
     }
 
     /**
@@ -34,7 +34,10 @@ class GoodsMovementController extends Controller
      */
     public function create()
     {
-        //
+        $modelWarehouse = Warehouse::where('status',1)->get();
+        $modelSloc = StorageLocation::where('status',1)->with('storageLocationDetails')->get();
+        
+        return view ('goods_movement.create', compact('modelWarehouse','modelSloc'));
     }
 
     /**

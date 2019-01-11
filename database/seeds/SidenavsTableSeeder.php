@@ -637,10 +637,10 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_movement.index',
         ]);
 
-        $goodsMovementIndex = Menu::where('route_name','goods_movement.index')->select('id')->first()->id;
+        $goodsMovementCreate = Menu::where('route_name','goods_movement.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $goodsMovementIndex,
-            'route_name' => 'goods_movement.index',
+            'menu_id' => $goodsMovementCreate,
+            'route_name' => 'goods_movement.create',
         ]);
 
         $createWO = Menu::where('route_name','work_order.selectWR')->select('id')->first()->id;

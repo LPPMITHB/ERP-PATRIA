@@ -864,6 +864,8 @@ Route::name('material_write_off.')->prefix('material_write_off')->group(function
 Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
     Route::get('/', 'GoodsMovementController@index')->name('index')->middleware('can:list-goods-movement');
 
+    Route::get('/create', 'GoodsMovementController@create')->name('create')->middleware('can:create-goods-movement');
+
     Route::get('/{id}', 'GoodsMovementController@show')->name('show')->middleware('can:show-goods-movement');
 
     Route::post('/', 'GoodsMovementController@store')->name('store')->middleware('can:create-goods-movement');
