@@ -11,7 +11,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View All Purchase Requisitions' => route('purchase_requisition.index'),
-            'Edit Purchase Requisition' => route('purchase_requisition.edit',$modelPR->id),
+            'Edit Purchase Requisition' => '',
         ]
     ]
 )
@@ -23,7 +23,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="edit-pr" class="form-horizontal" method="POST" action="{{ route('purchase_requisition.update',['id'=>$modelPR->id]) }}">
+                @if($route == "/purchase_requisition")
+                    <form id="edit-pr" class="form-horizontal" method="POST" action="{{ route('purchase_requisition.update',['id'=>$modelPR->id]) }}">
+                @elseif($route == "/purchase_requisition_repair")
+                    <form id="edit-pr" class="form-horizontal" method="POST" action="{{ route('purchase_requisition_repair.update',['id'=>$modelPR->id]) }}">
+                @endif
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim

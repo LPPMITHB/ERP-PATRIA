@@ -21,25 +21,28 @@ class PurchaseRequisitionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelPRs = PurchaseRequisition::all();
 
-        return view('purchase_requisition.index', compact('modelPRs'));
+        return view('purchase_requisition.index', compact('modelPRs','route'));
     }
 
-    public function indexApprove()
+    public function indexApprove(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->get();
 
-        return view('purchase_requisition.indexApprove', compact('modelPRs'));
+        return view('purchase_requisition.indexApprove', compact('modelPRs','route'));
     }
 
-    public function indexConsolidation()
+    public function indexConsolidation(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelPRs = PurchaseRequisition::whereIn('status',[1])->with('project')->get();
 
-        return view('purchase_requisition.indexConsolidation', compact('modelPRs'));
+        return view('purchase_requisition.indexConsolidation', compact('modelPRs','route'));
     }
 
     /**
@@ -47,13 +50,14 @@ class PurchaseRequisitionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelMaterial = Material::all()->jsonSerialize();
         $modelResource = Resource::all()->jsonSerialize();
         $modelProject = Project::where('status',1)->get();
 
-        return view('purchase_requisition.create', compact('modelMaterial','modelProject','modelResource'));
+        return view('purchase_requisition.create', compact('modelMaterial','modelProject','modelResource','route'));
     }
 
     /**
@@ -64,6 +68,7 @@ class PurchaseRequisitionController extends Controller
      */
     public function store(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
 
         $pr_number = $this->generatePRNumber();
@@ -146,15 +151,24 @@ class PurchaseRequisitionController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Created');
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Created');
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.show',$PR->id)->with('success', 'Purchase Requisition Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.create')->with('error', $e->getMessage());
+            }
         }
     }
 
     public function storeConsolidation(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $pr_number = $this->generatePRNumber();
         $current_date = today();
@@ -219,10 +233,18 @@ class PurchaseRequisitionController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Consolidation Created');
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Consolidation Created');
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.show',$PR->id)->with('success', 'Purchase Requisition Consolidation Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.indexConsolidation')->with('error', $e->getMessage());
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.indexConsolidation')->with('error', $e->getMessage());
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.indexConsolidation')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -232,18 +254,20 @@ class PurchaseRequisitionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
 
-        return view('purchase_requisition.show', compact('modelPR'));
+        return view('purchase_requisition.show', compact('modelPR','route'));
     }
 
-    public function showApprove($id)
+    public function showApprove(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
 
-        return view('purchase_requisition.showApprove', compact('modelPR'));
+        return view('purchase_requisition.showApprove', compact('modelPR','route'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -251,8 +275,9 @@ class PurchaseRequisitionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
         $project = Project::where('id',$modelPR->project_id)->with('customer','ship')->first();
         $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs','resource')->get()->jsonSerialize();
@@ -263,7 +288,7 @@ class PurchaseRequisitionController extends Controller
             $wbss = WBS::where('project_id',$project->id)->get()->jsonSerialize();
         }
 
-        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','wbss','resources'));
+        return view('purchase_requisition.edit', compact('modelPR','project','modelPRD','materials','wbss','resources','route'));
     }
 
     /**
@@ -275,6 +300,7 @@ class PurchaseRequisitionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
@@ -365,10 +391,18 @@ class PurchaseRequisitionController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.show',$PR->id)->with('success', 'Purchase Requisition Updated');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.create')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -409,8 +443,9 @@ class PurchaseRequisitionController extends Controller
             return redirect()->route('purchase_requisition.create')->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
         }  
     }
-    public function approval($pr_id,$status)
+    public function approval(Request $request, $pr_id,$status)
     {
+        $route = $request->route()->getPrefix();
         DB::beginTransaction();
         try{
             $modelPR = PurchaseRequisition::findOrFail($pr_id);
@@ -418,17 +453,29 @@ class PurchaseRequisitionController extends Controller
                 $modelPR->status = 2;
                 $modelPR->update();
                 DB::commit();
-                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Approved');
+                if($route == "/purchase_requisition"){
+                    return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Approved');
+                }elseif($route == "/purchase_requisition_repair"){
+                    return redirect()->route('purchase_requisition_repair.showApprove',$pr_id)->with('success', 'Purchase Requisition Approved');
+                }
             }elseif($status == "need-revision"){
                 $modelPR->status = 3;
                 $modelPR->update();
                 DB::commit();
-                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Need Revision');
+                if($route == "/purchase_requisition"){
+                    return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Need Revision');
+                }elseif($route == "/purchase_requisition_repair"){
+                    return redirect()->route('purchase_requisition_repair.showApprove',$pr_id)->with('success', 'Purchase Requisition Need Revision');
+                }
             }elseif($status == "reject"){
                 $modelPR->status = 5;
                 $modelPR->update();
                 DB::commit();
-                return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Rejected');
+                if($route == "/purchase_requisition"){
+                    return redirect()->route('purchase_requisition.showApprove',$pr_id)->with('success', 'Purchase Requisition Rejected');
+                }elseif($route == "/purchase_requisition_repair"){
+                    return redirect()->route('purchase_requisition_repair.showApprove',$pr_id)->with('success', 'Purchase Requisition Rejected');
+                }
             }
         } catch (\Exception $e){
             DB::rollback();

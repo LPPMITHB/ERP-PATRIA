@@ -40,45 +40,76 @@
                                     <td>Resource</td>
                                 @endif
                                 <td>{{ $modelPR->number }}</td>
-                                <td>{{ isset($modelPR->description) ? $modelPR->description : '-' }}</td>
-                                <td>{{ isset($modelPR->project) ? $modelPR->project->name : '-'}}</td>
+                                <td class="tdEllipsis">{{ isset($modelPR->description) ? $modelPR->description : '-' }}</td>
+                                <td class="tdEllipsis">{{ isset($modelPR->project) ? $modelPR->project->name : '-'}}</td>
                                 @if($modelPR->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/purchase_requisition")
+                                            <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a href="{{ route('purchase_requisition_repair.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelPR->status == 2)
                                     <td>APPROVED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/purchase_requisition")
+                                            <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelPR->status == 0 || $modelPR->status == 7)
                                     <td>ORDERED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/purchase_requisition")
+                                            <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelPR->status == 3)
                                     <td>NEEDS REVISION</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/purchase_requisition")
+                                            <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a href="{{ route('purchase_requisition_repair.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelPR->status == 4)
                                     <td>REVISED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/purchase_requisition")
+                                            <a href="{{ route('purchase_requisition.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a href="{{ route('purchase_requisition_repair.edit', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelPR->status == 5)
                                     <td>REJECTED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/purchase_requisition")
+                                            <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelPR->status == 6)
                                     <td>CONSOLIDATED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/purchase_requisition")
+                                            <a href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @endif
                             </tr>
