@@ -122,7 +122,9 @@ class ProductionOrderController extends Controller
 
     public function index()
     {
-        //
+        $modelPOs = ProductionOrder::all();
+
+        return view('production_order.index',compact('modelPOs'));
     }
 
     public function selectPrOReport($id){

@@ -830,6 +830,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'View Production Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'production_order.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Yard Plan',
             'icon' => 'fa-wrench',
             'route_name'=> 'yard_plan.index',

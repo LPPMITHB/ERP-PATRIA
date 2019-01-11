@@ -871,7 +871,7 @@ Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
     Route::post('/', 'GoodsMovementController@store')->name('store')->middleware('can:create-goods-movement');
 });
 
-//Work Order Routes
+//Production Order Routes
 Route::name('production_order.')->prefix('production_order')->group(function() {
     Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease');
 
