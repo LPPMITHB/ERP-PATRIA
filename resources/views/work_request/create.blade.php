@@ -55,7 +55,7 @@
                                         <label for="">WR Description</label>
                                     </div>
                                     <div class="col-sm-12 p-l-0">
-                                        <textarea class="form-control" rows="4" v-model="description"></textarea>
+                                        <textarea class="form-control" rows="4" v-model="description" ></textarea>
                                     </div>
                                 </div>
                             </template>
@@ -127,7 +127,7 @@
                                                 <input class="form-control" v-model="dataInput.available" disabled>
                                             </td>
                                             <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.description">
+                                                <input class="form-control" v-model="dataInput.description" placeholder="Please Fill in this Field">
                                             </td>
                                             <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -303,7 +303,7 @@
                 var string_newValue = this.dataInput.quantity+"";
                 this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.wbs_id == ""){
+                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.wbs_id == "" || this.dataInput.description == ""){
                     isOk = true;
                 }
                 
