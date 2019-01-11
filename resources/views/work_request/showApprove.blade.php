@@ -129,8 +129,9 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="35%">Material Name</th>
-                            <th width="15%">Quantity</th>
-                            <th width="30%">Work Name</th>
+                            <th width="10%">Quantity</th>
+                            <th width="20%">Work Name</th>
+                            <th width="30%">Description</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -140,6 +141,7 @@
                                 <td>{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
                                 <td>{{ number_format($WRD->quantity) }}</td>
                                 <td>{{ isset($WRD->wbs) ? $WRD->wbs->name : '-' }}</td>
+                                <td>{{$WRD->description}}</td>
                             </tr>
                         @endforeach
                     </tbody>
