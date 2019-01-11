@@ -93,6 +93,22 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="min" class="col-sm-2 control-label">Min</label>
+                            
+                            <div class="col-sm-10">
+                                <input type="text"  class="form-control" id="min" required v-model="submittedForm.min">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="max" class="col-sm-2 control-label">Max</label>
+                            
+                            <div class="col-sm-10">
+                                <input type="text"  class="form-control" id="max" required v-model="submittedForm.max">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="weight" class="col-sm-2 control-label">Weight</label>
             
                             <div class="col-sm-8">
@@ -205,6 +221,8 @@
             description : "",
             cost_standard_price : "",
             cost_standard_service : "",
+            min : 0,
+            max : 0,
             weight : 0,
             weight_uom_id : "",
             height :0,
@@ -279,7 +297,10 @@
             submitForm(){
                 $('div.overlay').show();
                 this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
+                this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
                 this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
+                this.submittedForm.min = (this.submittedForm.min+"").replace(/,/g , '');
+                this.submittedForm.max = (this.submittedForm.max+"").replace(/,/g , '');
                 this.submittedForm.weight = (this.submittedForm.weight+"").replace(/,/g , '');
                 this.submittedForm.height = (this.submittedForm.height+"").replace(/,/g , '');
                 this.submittedForm.lengths = (this.submittedForm.lengths+"").replace(/,/g , '');
@@ -358,6 +379,50 @@
                     }
                 }else{
                     this.submittedForm.width = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+
+            'submittedForm.cost_standard_price': function(newValue) {
+                if(newValue != ""){
+                    
+                    this.submittedForm.cost_standard_price = (this.submittedForm.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                }
+            },
+
+            'submittedForm.min': function(newValue) {
+                if(newValue != ""){
+                    
+                    this.submittedForm.min = (this.submittedForm.min+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                    this.submittedForm.max = this.submittedForm.min;
+                }else{
+                    this.submittedForm.max = 0;
+                }
+            },
+
+            'submittedForm.max': function(newValue) {
+                if(newValue != ""){
+
+                    this.submittedForm.max = (this.submittedForm.max+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                    if(parseInt((this.submittedForm.max+"").replace(/,/g , '')) < parseInt((this.submittedForm.min+"").replace(/,/g , ''))){
+                        iziToast.warning({
+                            title: 'Cannot insert less than min !',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        this.submittedForm.max = this.submittedForm.min;
+                    }
+                }else{
+                    this.submittedForm.max = this.submittedForm.min;
+                    if(this.submittedForm.max != this.submittedForm.min){
+                        iziToast.warning({
+                            title: 'Cannot insert less than min !',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                    }
                 }
             },
         },
