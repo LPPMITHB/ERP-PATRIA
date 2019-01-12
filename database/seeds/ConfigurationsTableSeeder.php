@@ -63,7 +63,7 @@ class ConfigurationsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $currencies = array(
+        $resource_category = array(
             
             0 => array(
                 'id' => 0,
@@ -86,7 +86,31 @@ class ConfigurationsTableSeeder extends Seeder
         DB::table('mst_configuration')->insert([
             'slug' => 'resource_category',
             'title' => 'Resource Categories',
-            'value' => json_encode($currencies),
+            'value' => json_encode($resource_category),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $depreciation_methods = array(
+            0 => array(
+                'id' => 0,
+                'name' => 'Straight Line Method',
+            ),
+            1 => array(
+                'id' => 1,
+                'name' => 'Double Declining Balance Method',
+            ),
+            2 => array(
+                'id' => 2,
+                'name' => 'Sum of The Year Digit Method',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'depreciation_methods',
+            'title' => 'Depreciation Methods',
+            'value' => json_encode($depreciation_methods),
             'is_active' => true,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

@@ -16,18 +16,18 @@ class CreateMstResourceDetailTable extends Migration
         Schema::create('mst_resource_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('resource_id')->nullable();  
+            $table->string('code')->unique();
             $table->string('brand')->nullable();
             $table->integer('quantity')->default(1);
             $table->string('description')->nullable();
             $table->string('category_id')->default(0);
-            $table->integer('cost_standard_price');
             $table->date('manufactured_date')->nullable();
             $table->date('purchasing_date')->nullable();
             $table->unsignedInteger('purchasing_price')->nullable();
             $table->unsignedInteger('lifetime')->nullable();
             $table->unsignedInteger('depreciation_method')->nullable();
             $table->float('accumulated_depreciation')->nullable();
-            $table->integer('running_hours')->nullable();
+            $table->integer('running_hours')->nullable()->default(0);
             $table->unsignedInteger('cost_per_hour')->nullable();
             $table->float('utilization')->default(0);
             $table->unsignedInteger('performance')->nullable();
