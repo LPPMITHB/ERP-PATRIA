@@ -883,9 +883,20 @@ Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
 
     Route::get('/create', 'GoodsMovementController@create')->name('create')->middleware('can:create-goods-movement');
 
-    Route::get('/{id}', 'GoodsMovementController@show')->name('show')->middleware('can:show-goods-movement');
+    Route::get('/{id}', 'GoodsMovementController@show')->name('show')->middleware('can:view-goods-movement');
 
     Route::post('/', 'GoodsMovementController@store')->name('store')->middleware('can:create-goods-movement');
+});
+
+//Goods Movement Repair Routes
+Route::name('goods_movement_repair.')->prefix('goods_movement_repair')->group(function() {
+    Route::get('/', 'GoodsMovementController@index')->name('index')->middleware('can:list-goods-movement-repair');
+
+    Route::get('/create', 'GoodsMovementController@create')->name('create')->middleware('can:create-goods-movement-repair');
+
+    Route::get('/{id}', 'GoodsMovementController@show')->name('show')->middleware('can:view-goods-movement-repair');
+
+    Route::post('/', 'GoodsMovementController@store')->name('store')->middleware('can:create-goods-movement-repair');
 });
 
 //Production Order Routes

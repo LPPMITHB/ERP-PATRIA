@@ -713,6 +713,18 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_movement.create',
         ]);
 
+        $GMIndexRepair = Menu::where('route_name','goods_movement_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $GMIndexRepair,
+            'route_name' => 'goods_movement_repair.index',
+        ]);
+
+        $GMCreateRepair = Menu::where('route_name','goods_movement_repair.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $GMCreateRepair,
+            'route_name' => 'goods_movement_repair.create',
+        ]);
+
         $createWO = Menu::where('route_name','work_order.selectWR')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createWO,

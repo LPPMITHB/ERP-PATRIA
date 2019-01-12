@@ -39,7 +39,11 @@
                                 <td>{{ $modelGM->storageLocationFrom->name}}</td>
                                 <td>{{ $modelGM->storageLocationTo->name}}</td>
                                 <td align="center">
-                                    <a href="{{ route('goods_movement.show', ['id'=>$modelGM->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($route == "/goods_movement")
+                                        <a href="{{ route('goods_movement.show', ['id'=>$modelGM->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @elseif($route == "/goods_movement_repair")
+                                        <a href="{{ route('goods_movement_repair.show', ['id'=>$modelGM->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

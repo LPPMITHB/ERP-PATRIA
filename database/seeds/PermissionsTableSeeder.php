@@ -1356,36 +1356,62 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
             ]);
 
-        //Master Data Permission
-        $goodsMovement = Menu::where('name','Goods Movement')->select('id')->first()->id;
+        //Goods Movement Permission
+        $building =  Menu::where('name','Ship Building')->select('id')->first()->id;
+        $materialManagement =  Menu::where('name','Material Management')->where('menu_id',$building)->select('id')->first()->id;
+        $goodsMovement = Menu::where('name','Goods Movement')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        $createGm = Menu::where('name','Create GM')->where('menu_id',$goodsMovement)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Movement',
+            'menu_id' => $createGm,
+            'middleware' => 'create-goods-movement',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGm = Menu::where('name','View GM')->where('menu_id',$goodsMovement)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Movement',
-            'menu_id' => $goodsMovement,
+            'menu_id' => $viewGm,
             'middleware' => 'list-goods-movement',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Create Goods Movement',
-            'menu_id' => $goodsMovement,
-            'middleware' => 'create-goods-movement',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
             'name' => 'Show Goods Movement',
-            'menu_id' => $goodsMovement,
-            'middleware' => 'show-goods-movement',
+            'menu_id' => $viewGm,
+            'middleware' => 'view-goods-movement',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Goods Movement Permission
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
+        $goodsMovementRepair = Menu::where('name','Goods Movement')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createGmRepair = Menu::where('name','Create GM')->where('menu_id',$goodsMovementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Movement Repair',
+            'menu_id' => $createGmRepair,
+            'middleware' => 'create-goods-movement-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGmRepair = Menu::where('name','View GM')->where('menu_id',$goodsMovementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Movement Repair',
+            'menu_id' => $viewGmRepair,
+            'middleware' => 'list-goods-movement-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Edit Goods Movement',
-            'menu_id' => $goodsMovement,
-            'middleware' => 'edit-goods-movement',
+            'name' => 'View Goods Movement Repair',
+            'menu_id' => $viewGmRepair,
+            'middleware' => 'view-goods-movement-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
