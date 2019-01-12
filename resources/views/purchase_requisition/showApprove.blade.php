@@ -147,11 +147,10 @@
                                 <td>{{ $loop->iteration }}</td>
                                 @if($modelPR->type == 1)
                                     <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
-                                    <td>{{ number_format($PRD->quantity) }}</td>
                                 @else
                                     <td>{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
-                                    <td>1</td>
                                 @endif
+                                <td>{{ number_format($PRD->quantity) }}</td>
                                 <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
                                 <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
                             </tr>

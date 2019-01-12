@@ -93,9 +93,8 @@
                                             <td>{{ index + 1 }}</td>
                                             <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td v-else class="tdEllipsis">{{ material.resource_code }} - {{ material.resource_name }}</td>
-                                            <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.quantity }}</td>
-                                            <td v-else class="tdEllipsis">-</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_name != ''">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_name != null">{{ material.wbs_name }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.alocation }}</td>
                                             <td v-else class="tdEllipsis">-</td>
@@ -124,7 +123,7 @@
                                                 </selectize>
                                             </td>
                                             <td class="no-padding ">
-                                                <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="resourceOk">
+                                                <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
                                             <td class="no-padding  textLeft" v-show="selectedProject != null">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
@@ -214,6 +213,10 @@
                                             <div class="col-sm-12">
                                                 <label for="resource" class="control-label">Resource</label>
                                                 <input type="text" id="resource" class="form-control" disabled >
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-12" v-show="selectedProject != null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
@@ -347,8 +350,6 @@
                 
                 if(this.resource == "ok"){
                     isOk = true;
-                    this.dataInput.quantity = "";
-                    this.dataInput.quantityInt = 0;
                     this.dataInput.alocation = "";
                 }
 
@@ -438,36 +439,23 @@
                 form.submit();
             },
             update(old_material_id, new_material_id){
+                $('div.overlay').show();
                 var material = this.dataMaterial[this.editInput.index];
                 if(this.editInput.wbs_id != null){
-                    window.axios.get('/api/getWbsPR/'+this.editInput.wbs_id).then(({ data }) => {
-                        $('div.overlay').show();
-                        material.wbs_name = data.name;
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                        material.wbs_id = this.editInput.wbs_id;
-                        material.alocation = this.editInput.alocation;
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
+                    material.wbs_name = this.editInput.wbs_name;
+                    material.quantityInt = this.editInput.quantityInt;
+                    material.quantity = this.editInput.quantity;
+                    material.wbs_id = this.editInput.wbs_id;
+                    material.alocation = this.editInput.alocation;
                 }else{
                     material.quantityInt = this.editInput.quantityInt;
                     material.quantity = this.editInput.quantity;
                     material.alocation = this.editInput.alocation;
                 }
-                
                 $('div.overlay').hide();
             },
             openEditModal(data,index){
-                if(data.material_id != null){
+                if(data.material_id != null && data.material_id != ''){
                     this.editInput.material_id = data.material_id;
                     this.editInput.old_material_id = data.material_id;
                     this.editInput.material_code = data.material_code;
@@ -492,10 +480,12 @@
                     this.editInput.resource_id = data.resource_id;
                     this.editInput.resource_code = data.resource_code;
                     this.editInput.resource_name = data.resource_name;
+                    this.editInput.quantity = data.quantity;
+                    this.editInput.quantityInt = data.quantityInt;
                     this.editInput.wbs_id = data.wbs_id;
                     this.editInput.wbs_name = data.wbs_name;
                     this.editInput.index = index;
-
+                    console.log(data.resource_code)
                     document.getElementById('resource').value = data.resource_code+" - "+data.resource_name;
                 }
                 
@@ -549,6 +539,7 @@
                         this.dataInput.resource_id = "";
                         this.dataInput.wbs_id = "";
                         this.dataInput.wbs_name = "";
+                        this.dataInput.quantity = "";
 
                         this.newIndex = Object.keys(this.dataMaterial).length+1;    
 
@@ -598,10 +589,23 @@
                         });
                         $('div.overlay').hide();
                     })
-                }else{
-                    this.dataInput.wbs_id = "";
                 }
             },
+            'editInput.wbs_id': function(newValue){
+                if(newValue != '' && newValue != null){
+                    window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
+                        this.editInput.wbs_name = data.name;
+                        this.editInput.wbs_id = data.id;
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                    })
+                }
+            }
         },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
@@ -619,12 +623,12 @@
                 prd.prd_id = prd.id;
                 if(this.selectedProject){
                     if(prd.wbs == null){
-                        prd.wbs_name = "-";
+
                     }else{
                         prd.wbs_name = prd.wbs.name;
                     }
                 }else{
-                    prd.wbs_name = "-";
+
                 }
             });
 

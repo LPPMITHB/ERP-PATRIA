@@ -140,14 +140,37 @@ class PurchaseRequisitionController extends Controller
                 $PR->save();
 
                 foreach($datas->materials as $data){
-                    $PRD = new PurchaseRequisitionDetail;
-                    $PRD->purchase_requisition_id = $PR->id;
-                    $PRD->resource_id = $data->resource_id;
-                    $PRD->quantity = 1;
-                    if($data->wbs_id != null){
-                        $PRD->wbs_id = $data->wbs_id;
+                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
+                    if(count($modelPRD)>0){
+                        $status = 0;
+                        foreach($modelPRD as $PurchaseRD){
+                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->wbs_id == $data->wbs_id){
+                                $PurchaseRD->quantity +=$data->quantityInt;
+                                $PurchaseRD->update();
+
+                                $status = 1;
+                            }
+                        }
+                        if($status == 0){
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->quantity = $data->quantityInt;
+                            $PRD->resource_id = $data->resource_id;
+                            if($data->wbs_id != null){
+                                $PRD->wbs_id = $data->wbs_id;
+                            }
+                            $PRD->save();
+                        }
+                    }else{
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $PR->id;
+                        $PRD->quantity = $data->quantityInt;
+                        $PRD->resource_id = $data->resource_id;
+                        if($data->wbs_id != null){
+                            $PRD->wbs_id = $data->wbs_id;
+                        }
+                        $PRD->save();
                     }
-                    $PRD->save();
                 }
             }
             DB::commit();
@@ -199,7 +222,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPRDs = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
                         if(count($modelPRDs) > 0){
                             foreach($modelPRDs as $modelPRD){
-                                if($modelPRD->material_id == $PRD->material_id && $modelPRD->alocation == $PRD->alocation && $modelPRD->wbs_id == $PRD->wbs_id){
+                                if($modelPRD->material_id == $PRD->material_id && $modelPRD->alocation == $PRD->alocation){
                                     $modelPRD->quantity += $PRD->quantity;
                                     $modelPRD->update();
 
@@ -221,14 +244,27 @@ class PurchaseRequisitionController extends Controller
                     }
                 }else{
                     foreach($modelPR->purchaseRequisitionDetails as $PRD){
-                        $modelPRD = new PurchaseRequisitionDetail;
-                        $modelPRD->purchase_requisition_id = $PR->id;
-                        $modelPRD->resource_id = $PRD->resource_id;
-                        $modelPRD->quantity = $PRD->quantity;
-                        $modelPRD->reserved = $PRD->reserved;
-                        $modelPRD->wbs_id = $PRD->wbs_id;
-                        $modelPRD->alocation = $PRD->alocation;
-                        $modelPRD->save();
+                        $status = 0;
+                        $modelPRDs = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
+                        if(count($modelPRDs) > 0){
+                            foreach($modelPRDs as $modelPRD){
+                                if($modelPRD->resource_id == $PRD->resource_id){
+                                    $modelPRD->quantity += $PRD->quantity;
+                                    $modelPRD->update();
+
+                                    $status = 1;
+                                }
+                            }
+                        }
+                        
+                        if($status == 0){
+                            $modelPRD = new PurchaseRequisitionDetail;
+                            $modelPRD->purchase_requisition_id = $PR->id;
+                            $modelPRD->resource_id = $PRD->resource_id;
+                            $modelPRD->quantity = $PRD->quantity;
+                            $modelPRD->reserved = $PRD->reserved;
+                            $modelPRD->save();
+                        }
                     }
                 }
             }
@@ -282,7 +318,7 @@ class PurchaseRequisitionController extends Controller
         $project = Project::where('id',$modelPR->project_id)->with('customer','ship')->first();
         $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs','resource')->get()->jsonSerialize();
         $materials = Material::where('status',1)->get()->jsonSerialize();
-        $resources = Resource::where('status',1)->get()->jsonSerialize();
+        $resources = Resource::all()->jsonSerialize();
         $wbss = [];
         if($project){
             $wbss = WBS::where('project_id',$project->id)->get()->jsonSerialize();
@@ -316,7 +352,7 @@ class PurchaseRequisitionController extends Controller
                     if($data->prd_id != null){
                         $status = 0;
                         foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->id != $data->id){
+                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->id != $data->id){
                                 $quantity = $PurchaseRD->quantity + $data->quantity;
 
                                 $PRD = new PurchaseRequisitionDetail;
@@ -324,7 +360,7 @@ class PurchaseRequisitionController extends Controller
                                 $PRD->quantity = $quantity;
                                 $PRD->material_id = $data->material_id;
                                 $PRD->alocation = $data->alocation;
-                                if($PR->project_id != ""){
+                                if($data->wbs_id != null){
                                     $PRD->wbs_id = $data->wbs_id;
                                 }
                                 $PRD->save();
@@ -338,10 +374,6 @@ class PurchaseRequisitionController extends Controller
                             $PRD = PurchaseRequisitionDetail::find($data->id);
 
                             $PRD->quantity = $data->quantity;
-                            $PRD->alocation = $data->alocation;
-                            if($PR->project_id != ""){
-                                $PRD->wbs_id = $data->wbs_id;
-                            }
                             $PRD->update();
                         }
                     }else{
@@ -360,35 +392,64 @@ class PurchaseRequisitionController extends Controller
                             $PRD->quantity = $data->quantity;
                             $PRD->material_id = $data->material_id;
                             $PRD->alocation = $data->alocation;
-                            if($PR->project_id != ""){
+                            if($data->wbs_id != null){
                                 $PRD->wbs_id = $data->wbs_id;
                             }
                             $PRD->save();
                         }
                     }
                 }
-                // print_r($PR->purchaseRequisitionDetails);exit();
                 $this->destroy(json_encode($prd_id));
             }else{
                 foreach($datas->materials as $data){
                     if($data->prd_id != null){
-                        $PRD = PurchaseRequisitionDetail::find($data->id);
+                        $status = 0;
+                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
+                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->id != $data->id){
+                                $quantity = $PurchaseRD->quantity + $data->quantity;
 
-                        if($PR->project_id != ""){
-                            $PRD->wbs_id = $data->wbs_id;
+                                $PRD = new PurchaseRequisitionDetail;
+                                $PRD->purchase_requisition_id = $PR->id;
+                                $PRD->quantity = $quantity;
+                                $PRD->resource_id = $data->resource_id;
+                                if($data->wbs_id != null){
+                                    $PRD->wbs_id = $data->wbs_id;
+                                }
+                                $PRD->save();
+                                array_push($prd_id,$PurchaseRD->id,$data->id);
+    
+                                $status = 1;
+                            }
+                        }
+                        if($status == 0){
+                            $PRD = PurchaseRequisitionDetail::find($data->id);
+
+                            $PRD->quantity = $data->quantity;
                             $PRD->update();
                         }
                     }else{
-                        $PRD = new PurchaseRequisitionDetail;
-                        $PRD->purchase_requisition_id = $PR->id;
-                        $PRD->quantity = 1;
-                        $PRD->resource_id = $data->resource_id;
-                        if($PR->project_id != ""){
-                            $PRD->wbs_id = $data->wbs_id;
+                        $status = 0;
+                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
+                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->wbs_id == $data->wbs_id){
+                                $PurchaseRD->quantity +=$data->quantity;
+                                $PurchaseRD->update();
+
+                                $status = 1;
+                            }
                         }
-                        $PRD->save();
+                        if($status == 0){
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->quantity = $data->quantity;
+                            $PRD->resource_id = $data->resource_id;
+                            if($data->wbs_id != null){
+                                $PRD->wbs_id = $data->wbs_id;
+                            }
+                            $PRD->save();
+                        }
                     }
                 }
+                $this->destroy(json_encode($prd_id));
             }
             DB::commit();
             if($route == "/purchase_requisition"){

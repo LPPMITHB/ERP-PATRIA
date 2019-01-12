@@ -60,14 +60,8 @@ class ResourceController extends Controller
     {
         $resource = new Resource;
         $resource_code = self::generateResourceCode();
-        // $categories = Category::all();
-        $uoms = Uom::all();
-        $vendors = Vendor::all();
-        $resource_category = Configuration::get('resource_category');
-        // print_r($resource_category);
 
         return view('resource.create', compact('resource', 'resource_code','uoms','vendors','resource_category'));
-
     }
 
     /**
@@ -79,48 +73,15 @@ class ResourceController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
-        // print_r($data);exit();
-    
 
-    
         DB::beginTransaction();
         try {
             $resource = new Resource;
             $resource->code = strtoupper($data->code);
             $resource->name = ucwords($data->name);
-            $resource->brand = $data->brand;
-            if($data->quantity != ''){
-                $resource->quantity = $data->quantity;
-            }
             $resource->description = $data->description;
-            if($data->category_id != ''){
-                $resource->category_id = $data->category_id;
-            }
-            $resource->cost_standard_price = $data->cost_standard_price;
-
-            $manufacturedDate = DateTime::createFromFormat('m/d/Y', $data->manufactured_date);
-            $purchasingDate = DateTime::createFromFormat('m/d/Y', $data->purchasing_date);
-            $resource->manufactured_date = $manufacturedDate->format('Y-m-d');
-            $resource->purchasing_date = $purchasingDate->format('Y-m-d');
-            // dd( $resource->purchasing_date);
-            
-            // if($data->manufactured_date != ''){
-            //     $resource->manufactured_date = $data->manufactured_date;
-            // }
-            // if($data->purchasing_date != ''){
-            //     $resource->purchasing_date = $data->purchasing_date;
-            // }
-            $resource->purchasing_price = $data->purchasing_price;
-            $resource->lifetime = $data->lifetime;
-            $resource->depreciation_method = $data->depreciation_method;
-            $resource->accumulated_depreciation = $data->accumulated_depreciation;
-            // $resource->running_hours = $data->running_hours;
-            $resource->cost_per_hour = $data->cost_per_hour;
-            $resource->status = $data->status;
-            $resource->vendor_id = $data->vendor;
-            $resource->uom_id = $data->uom;
-            $resource->branch_id = Auth::user()->branch->id;
             $resource->user_id = Auth::user()->id;
+            $resource->branch_id = Auth::user()->branch->id;
             $resource->save();
 
             DB::commit();
@@ -233,13 +194,6 @@ class ResourceController extends Controller
     public function edit($id)
     {
         $resource = Resource::findOrFail($id);
-        // print_r($resource); exit();
-        $resource_code = $resource->code;
-        // $categories = Category::all();
-        $uoms = Uom::all();
-        $vendors = Vendor::all();
-        $resource_category = Configuration::get('resource_category');
-        
 
         return view('resource.edit', compact('resource','uoms','resource_code','vendors','resource_category'));
     }
@@ -254,32 +208,13 @@ class ResourceController extends Controller
     public function update(Request $request, $id)
     {
         $data = json_decode($request->datas);
+
         DB::beginTransaction();
         try {
             $resource = Resource::find($id);
             $resource->code = strtoupper($data->code);
             $resource->name = ucwords($data->name);
-            $resource->brand = $data->brand;
-            $resource->quantity = $data->quantity;
             $resource->description = $data->description;
-            // $resource->machine_type = $data->machine_type;
-            $resource->cost_standard_price = $data->cost_standard_price;
-            
-            $manufacturedDate = DateTime::createFromFormat('m/j/Y', $data->manufactured_date);
-            $purchasingDate = DateTime::createFromFormat('m/j/Y', $data->purchasing_date);
-
-            $resource->manufactured_date = $manufacturedDate->format('Y-m-d');
-            $resource->purchasing_date = $purchasingDate->format('Y-m-d');
-            
-            $resource->purchasing_price = $data->purchasing_price;
-            $resource->lifetime = $data->lifetime;
-            $resource->depreciation_method = $data->depreciation_method;
-            $resource->accumulated_depreciation = $data->accumulated_depreciation;
-            // $resource->running_hours = $data->running_hours;
-            $resource->cost_per_hour = $data->cost_per_hour;
-            $resource->status = $data->status;
-            $resource->vendor_id = $data->vendor;
-            $resource->uom_id = $data->uom;
             $resource->update();
 
             DB::commit();
