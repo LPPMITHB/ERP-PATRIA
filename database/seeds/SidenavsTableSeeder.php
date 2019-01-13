@@ -628,6 +628,29 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $viewMr,
             'route_name' => 'material_requisition.index',
         ]);
+
+        $createMrRepairManually = Menu::where('route_name','material_requisition_repair.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createMrRepairManually,
+            'route_name' => 'material_requisition_repair.create',
+        ]);
+
+        $indexApproveMRRepair = Menu::where('route_name','material_requisition_repair.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveMRRepair,
+            'route_name' => 'material_requisition_repair.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveMRRepair,
+            'route_name' => 'material_requisition_repair.showApprove',
+        ]);
+
+        $viewMrRepair = Menu::where('route_name','material_requisition_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewMrRepair,
+            'route_name' => 'material_requisition_repair.index',
+        ]);
         
         $createGrWithRef = Menu::where('route_name','goods_receipt.selectPO')->select('id')->first()->id;
         DB::table('sidenav')->insert([

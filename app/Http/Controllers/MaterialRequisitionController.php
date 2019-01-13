@@ -18,23 +18,42 @@ use DB;
 class MaterialRequisitionController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $modelMRs = MaterialRequisition::all();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
+
+        $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->get();
 
         return view('material_requisition.index', compact('modelMRs'));
     }
 
-    public function indexApprove()
+    public function indexApprove(Request $request)
     {
-        $modelMRs = MaterialRequisition::whereIn('status',[1,4])->get();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
+
+        $modelMRs = MaterialRequisition::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
 
         return view('material_requisition.indexApprove', compact('modelMRs'));
     }
     
-    public function create()
+    public function create(Request $request)
     {
-        $modelProject = Project::where('status',1)->get();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }    
 
         return view('material_requisition.create', compact('modelProject'));
     }
@@ -120,7 +139,12 @@ class MaterialRequisitionController extends Controller
     {
         $modelMR = MaterialRequisition::findOrFail($id);
         $modelMaterial = Material::all()->jsonSerialize();
-        $modelProject = $modelMR->project->with('ship','customer','wbss')->first()->jsonSerialize();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',2)->first()->jsonSerialize();
+        }else{
+            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',1)->first()->jsonSerialize();
+        }
         $modelWBS = $modelMR->project->wbss; 
         $modelMRD = Collection::make();
         foreach($modelMR->MaterialRequisitionDetails as $mrd){
