@@ -119,6 +119,7 @@ class PurchaseOrderController extends Controller
                 }
                 $total_price += $POD->total_price;
             }
+
             $modelPR = PurchaseRequisition::where('id',$datas->pr_id)->with('purchaseRequisitionDetails')->first();
             foreach($modelPR->purchaseRequisitionDetails as $modelPRD){
                 if($modelPRD->reserved < $modelPRD->quantity){
@@ -153,6 +154,7 @@ class PurchaseOrderController extends Controller
         if($modelPO->purchaseRequisition->type == 1){
             foreach($modelPO->purchaseOrderDetails as $POD){
                 if(count($datas) > 0){
+                    $status = 0;
                     foreach($datas as $data){
                          if($data['material_code'] == $POD->material->code){
                             $quantity = $data['quantity'] + $POD->quantity;
@@ -165,17 +167,18 @@ class PurchaseOrderController extends Controller
                                 "price" => $POD->total_price / $POD->quantity,
                                 "sub_total" => $sub_total
                             ]);
-
+                            $status = 1;
                             $datas->forget($key);
-                        }else{
-                            $datas->push([
-                                "material_code" => $POD->material->code , 
-                                "material_name" => $POD->material->name,
-                                "quantity" => $POD->quantity,
-                                "price" => $POD->total_price / $POD->quantity,
-                                "sub_total" => $POD->total_price
-                            ]);
                         }
+                    }
+                    if($status == 0){
+                        $datas->push([
+                            "material_code" => $POD->material->code , 
+                            "material_name" => $POD->material->name,
+                            "quantity" => $POD->quantity,
+                            "price" => $POD->total_price / $POD->quantity,
+                            "sub_total" => $POD->total_price
+                        ]);
                     }
                 }else{
                     $datas->push([
@@ -190,6 +193,7 @@ class PurchaseOrderController extends Controller
         }elseif($modelPO->purchaseRequisition->type == 2){
             foreach($modelPO->purchaseOrderDetails as $POD){
                 if(count($datas) > 0){
+                    $status = 0;
                     foreach($datas as $key => $data){
                         if($data['resource_code'] == $POD->resource->code){
                             $quantity = $data['quantity'] + $POD->quantity;
@@ -202,17 +206,18 @@ class PurchaseOrderController extends Controller
                                 "price" => $POD->total_price / $POD->quantity,
                                 "sub_total" => $sub_total
                             ]);
-
+                            $status = 1;
                             $datas->forget($key);
-                        }else{
-                            $datas->push([
-                                "resource_code" => $POD->resource->code , 
-                                "resource_name" => $POD->resource->name,
-                                "quantity" => $POD->quantity,
-                                "price" => $POD->total_price / $POD->quantity,
-                                "sub_total" => $POD->total_price
-                            ]);
                         }
+                    }
+                    if($status == 0){
+                        $datas->push([
+                            "resource_code" => $POD->resource->code , 
+                            "resource_name" => $POD->resource->name,
+                            "quantity" => $POD->quantity,
+                            "price" => $POD->total_price / $POD->quantity,
+                            "sub_total" => $POD->total_price
+                        ]);
                     }
                 }else{
                     $datas->push([
@@ -222,6 +227,7 @@ class PurchaseOrderController extends Controller
                         "price" => $POD->total_price / $POD->quantity,
                         "sub_total" => $POD->total_price
                     ]);
+
                 }
             }
         }
