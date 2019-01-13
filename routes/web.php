@@ -925,6 +925,14 @@ Route::name('material_write_off.')->prefix('material_write_off')->group(function
     Route::post('/', 'MaterialWriteOffController@store')->name('store')->middleware('can:create-material-write-off');
 });
 
+//Material Write Off Routes
+Route::name('material_write_off_repair.')->prefix('material_write_off_repair')->group(function() {
+
+    Route::get('/create', 'MaterialWriteOffController@create')->name('create')->middleware('can:create-material-write-off');
+
+    Route::post('/', 'MaterialWriteOffController@store')->name('store')->middleware('can:create-material-write-off');
+});
+
 //Goods Movement Routes
 Route::name('goods_movement.')->prefix('goods_movement')->group(function() {
     Route::get('/', 'GoodsMovementController@index')->name('index')->middleware('can:list-goods-movement');

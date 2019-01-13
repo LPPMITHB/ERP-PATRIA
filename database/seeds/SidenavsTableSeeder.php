@@ -741,6 +741,12 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'material_write_off.create',
         ]);
 
+        $materialWriteOffRepair = Menu::where('route_name','material_write_off_repair.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $materialWriteOffRepair,
+            'route_name' => 'material_write_off_repair.create',
+        ]);
+
         $goodsMovementIndex = Menu::where('route_name','goods_movement.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $goodsMovementIndex,

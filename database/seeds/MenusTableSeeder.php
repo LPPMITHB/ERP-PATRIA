@@ -1225,6 +1225,18 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off_repair.create',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]); 
+
+        DB::table('menus')->insert([
             'level' => 1,
             'name' => 'Trading',
             'icon' => 'fa-archive',
