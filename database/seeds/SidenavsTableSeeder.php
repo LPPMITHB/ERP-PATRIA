@@ -735,6 +735,60 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'physical_inventory.showPI',
         ]);
 
+        $snapshot_repair = Menu::where('route_name','physical_inventory_repair.indexSnapshot')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $snapshot_repair,
+            'route_name' => 'physical_inventory_repair.indexSnapshot',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $snapshot_repair,
+            'route_name' => 'physical_inventory_repair.displaySnapshot',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $snapshot_repair,
+            'route_name' => 'physical_inventory_repair.showSnapshot',
+        ]);
+
+        $countStockRepair = Menu::where('route_name','physical_inventory_repair.indexCountStock')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $countStockRepair,
+            'route_name' => 'physical_inventory_repair.indexCountStock',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $countStockRepair,
+            'route_name' => 'physical_inventory_repair.countStock',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $countStockRepair,
+            'route_name' => 'physical_inventory_repair.showCountStock',
+        ]);
+
+        $adjustStockRepair = Menu::where('route_name','physical_inventory_repair.indexAdjustStock')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $adjustStockRepair,
+            'route_name' => 'physical_inventory_repair.indexAdjustStock',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $adjustStockRepair,
+            'route_name' => 'physical_inventory_repair.showConfirmCountStock',
+        ]);
+
+        $viewAdjustmentHistoryRepair = Menu::where('route_name','physical_inventory_repair.viewAdjustmentHistory')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewAdjustmentHistoryRepair,
+            'route_name' => 'physical_inventory_repair.viewAdjustmentHistory',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewAdjustmentHistoryRepair,
+            'route_name' => 'physical_inventory_repair.showPI',
+        ]);
+
         $materialWriteOff = Menu::where('route_name','material_write_off.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $materialWriteOff,

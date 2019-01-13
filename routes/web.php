@@ -788,6 +788,36 @@ Route::name('physical_inventory.')->prefix('physical_inventory')->group(function
 
 });
 
+//Physical Inventory Routes
+Route::name('physical_inventory_repair.')->prefix('physical_inventory_repair')->group(function() {
+    Route::get('/indexSnapshot', 'PhysicalInventoryController@indexSnapshot')->name('indexSnapshot')->middleware('can:create-snapshot');
+
+    Route::post('/displaySnapshot', 'PhysicalInventoryController@displaySnapshot')->name('displaySnapshot')->middleware('can:create-snapshot');
+    
+    Route::post('/storeSnapshot', 'PhysicalInventoryController@storeSnapshot')->name('storeSnapshot')->middleware('can:create-snapshot');
+
+    Route::get('/showSnapshot/{id}', 'PhysicalInventoryController@showSnapshot')->name('showSnapshot')->middleware('can:show-snapshot');
+
+    Route::get('/indexCountStock', 'PhysicalInventoryController@indexCountStock')->name('indexCountStock')->middleware('can:count-stock');
+
+    Route::get('/countStock/{id}', 'PhysicalInventoryController@countStock')->name('countStock')->middleware('can:count-stock');
+
+    Route::patch('/storeCountStock/{id}', 'PhysicalInventoryController@storeCountStock')->name('storeCountStock')->middleware('can:count-stock');
+
+    Route::get('/showCountStock/{id}', 'PhysicalInventoryController@showCountStock')->name('showCountStock')->middleware('can:count-stock');
+
+    Route::get('/showPI/{id}', 'PhysicalInventoryController@showPI')->name('showPI')->middleware('can:show-adjustment-history');
+
+    Route::get('/showConfirmCountStock/{id}', 'PhysicalInventoryController@showConfirmCountStock')->name('showConfirmCountStock')->middleware('can:adjust-stock');
+
+    Route::get('/indexAdjustStock', 'PhysicalInventoryController@indexAdjustStock')->name('indexAdjustStock')->middleware('can:adjust-stock');
+
+    Route::patch('/storeAdjustStock/{id}', 'PhysicalInventoryController@storeAdjustStock')->name('storeAdjustStock')->middleware('can:adjust-stock');
+
+    Route::get('/viewAdjustmentHistory', 'PhysicalInventoryController@viewAdjustmentHistory')->name('viewAdjustmentHistory')->middleware('can:list-adjustment-history');
+
+});
+
 // Good Receipt Routes
 Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {    
     Route::get('/', 'GoodsReceiptController@index')->name('index');

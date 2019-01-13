@@ -25,7 +25,11 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="create_snapshot">
-                            <form class="form-horizontal" method="POST" action="{{ route('physical_inventory.displaySnapshot') }}">
+                            @if($menu == "building")
+                                <form class="form-horizontal" method="POST" action="{{ route('physical_inventory.displaySnapshot') }}">
+                            @else
+                                <form class="form-horizontal" method="POST" action="{{ route('physical_inventory_repair.displaySnapshot') }}">
+                            @endif
                                 @csrf
                                 <div class="box-body">
                 

@@ -474,7 +474,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
 
-         DB::table('menus')->insert([
+        DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Physical Inventory',
             'icon' => 'fa-file-text-o',
@@ -1220,6 +1220,69 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsMovement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Physical Inventory',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+
+        $physicalInventory =  Menu::where('name','Physical Inventory')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Adjustment History',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory_repair.viewAdjustmentHistory',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$physicalInventory,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Snapshot',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory_repair.indexSnapshot',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$physicalInventory,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Count Stock',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory_repair.indexCountStock',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$physicalInventory,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Adjust Stock',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory_repair.indexAdjustStock',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
