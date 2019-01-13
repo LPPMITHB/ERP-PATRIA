@@ -96,11 +96,15 @@
                                             </td>
                                             <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>
                                             <td class="p-l-0 textCenter">
-                                                <button class="btn btn-primary btn-xs">
-                                                    <a  href="{{route('physical_inventory.showSnapshot', ['id' => $snapshot->id])}}">
+                                                @if($menu == "building")
+                                                    <a class="btn btn-primary btn-xs" href="{{route('physical_inventory.showSnapshot', ['id' => $snapshot->id])}}">
                                                         VIEW
                                                     </a>
-                                                </button>
+                                                @else
+                                                    <a class="btn btn-primary btn-xs" href="{{route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])}}">
+                                                        VIEW
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
