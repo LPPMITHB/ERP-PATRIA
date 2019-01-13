@@ -1373,6 +1373,54 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Work Order',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$wipRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $workOrderRepair =  Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create WO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_order_repair.selectWR',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workOrderRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Approve WO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_order_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workOrderRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit WO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'work_order_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$workOrderRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 1,
             'name' => 'Trading',
             'icon' => 'fa-archive',

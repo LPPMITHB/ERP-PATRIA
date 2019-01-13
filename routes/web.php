@@ -788,6 +788,33 @@ Route::name('work_order.')->prefix('work_order')->group(function() {
     Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
 });
 
+//Work Order Routes
+Route::name('work_order_repair.')->prefix('work_order_repair')->group(function() {
+    Route::get('/indexApprove', 'WorkOrderController@indexApprove')->name('indexApprove');
+
+    Route::get('/approval/{id}/{status}', 'WorkOrderController@approval')->name('approval');
+    
+    Route::get('/selectWR', 'WorkOrderController@selectWR')->name('selectWR')->middleware('can:list-purchase-requisition');
+    
+    Route::get('/', 'WorkOrderController@index')->name('index');
+
+    Route::get('/create', 'WorkOrderController@create')->name('create')->middleware('can:create-purchase-order');
+
+    Route::get('/selectWRD/{id}', 'WorkOrderController@selectWRD')->name('selectWRD')->middleware('can:create-purchase-order');
+
+    Route::get('/{id}', 'WorkOrderController@show')->name('show')->middleware('can:show-purchase-order');
+
+    Route::get('/showApprove/{id}', 'WorkOrderController@showApprove')->name('showApprove')->middleware('can:show-purchase-order');
+
+    Route::get('/{id}/edit', 'WorkOrderController@edit')->name('edit')->middleware('can:edit-purchase-order');
+
+    Route::patch('/', 'WorkOrderController@update')->name('update')->middleware('can:edit-purchase-order');
+
+    Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-purchase-order');
+
+    Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+});
+
 //Physical Inventory Routes
 Route::name('physical_inventory.')->prefix('physical_inventory')->group(function() {
     Route::get('/indexSnapshot', 'PhysicalInventoryController@indexSnapshot')->name('indexSnapshot')->middleware('can:create-snapshot');
