@@ -1148,6 +1148,12 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'stock_management.index',
         ]);
 
+        $stockManagementRepair = Menu::where('route_name','stock_management_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $stockManagementRepair,
+            'route_name' => 'stock_management_repair.index',
+        ]);
+
         $manageResource = Menu::where('route_name','resource.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageResource,

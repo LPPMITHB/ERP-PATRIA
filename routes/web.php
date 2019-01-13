@@ -820,6 +820,11 @@ Route::name('stock_management.')->prefix('stock_management')->group(function() {
     Route::get('/', 'StockManagementController@index')->name('index');
 });
 
+//Stock Management Routes
+Route::name('stock_management_repair.')->prefix('stock_management_repair')->group(function() {
+    Route::get('/', 'StockManagementController@index')->name('index');
+});
+
 //Material Requisition Routes
 Route::name('material_requisition.')->prefix('material_requisition')->group(function() {
     Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-material-requisition');
