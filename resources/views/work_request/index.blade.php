@@ -39,35 +39,62 @@
                                 @if($modelWR->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_request.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_request.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_request_repair.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_request_repair.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWR->status == 2)
                                     <td>APPROVED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_request_repair.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWR->status == 0 || $modelWR->status == 7)
                                     <td>ORDERED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_request_repair.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWR->status == 3)
                                     <td>NEEDS REVISION</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_request.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_request.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_request_repair.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_request_repair.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWR->status == 4)
                                     <td>REVISED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_request.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_request.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_request_repair.edit', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_request_repair.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWR->status == 5)
                                     <td>REJECTED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_request.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_request_repair.show', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @endif
                             </tr>
