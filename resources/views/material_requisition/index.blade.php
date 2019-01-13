@@ -54,9 +54,17 @@
                                     @endif
                                 </td>
                                 <td class="textCenter">
-                                    <a href="{{ route('material_requisition.show', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($menu == "building")
+                                        <a href="{{ route('material_requisition.show', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @else
+                                        <a href="{{ route('material_requisition_repair.show', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
                                     @if($modelMR->status == 1 || $modelMR->status == 3 )
-                                        <a href="{{ route('material_requisition.edit', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('material_requisition.edit', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        @else
+                                            <a href="{{ route('material_requisition_repair.edit', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>

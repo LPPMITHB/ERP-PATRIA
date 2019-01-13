@@ -600,6 +600,23 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_issue.index',
         ]);
 
+        $selectMRRepair = Menu::where('route_name','goods_issue_repair.selectMR')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectMRRepair,
+            'route_name' => 'goods_issue_repair.selectMR',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectMRRepair,
+            'route_name' => 'goods_issue_repair.createGiWithRef',
+        ]); 
+
+        $viewGiRepair = Menu::where('route_name','goods_issue_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewGiRepair,
+            'route_name' => 'goods_issue_repair.index',
+        ]);
+
         $viewGr = Menu::where('route_name','goods_receipt.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewGr,

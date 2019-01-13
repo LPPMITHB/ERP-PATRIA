@@ -891,6 +891,31 @@ Route::name('goods_issue.')->prefix('goods_issue')->group(function() {
     Route::delete('/{id}', 'GoodsIssueController@destroy')->name('destroy')->middleware('can:destroy-goods-issue');
 });
 
+// Goods Issue Repair Routes
+Route::name('goods_issue_repair.')->prefix('goods_issue_repair')->group(function() {    
+    Route::get('/', 'GoodsIssueController@index')->name('index')->middleware('can:list-goods-issue');
+
+    Route::get('/selectMR', 'GoodsIssueController@selectMR')->name('selectMR')->middleware('can:create-goods-issue');
+   
+    Route::get('/approval/{id}/{status}', 'GoodsIssueController@approval')->name('approval');
+
+    Route::get('/createGiWithRef', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue');
+
+    Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue');
+
+    Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue');
+
+    Route::get('/showApproval/{id}', 'GoodsIssueController@showApprove')->name('showApprove')->middleware('can:show-goods-issue');
+    
+    Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-goods-issue');
+
+    Route::patch('/{id}', 'GoodsIssueController@update')->name('update')->middleware('can:edit-goods-issue');
+
+    Route::post('/', 'GoodsIssueController@store')->name('store')->middleware('can:create-goods-issue');
+
+    Route::delete('/{id}', 'GoodsIssueController@destroy')->name('destroy')->middleware('can:destroy-goods-issue');
+});
+
 
 //Material Write Off Routes
 Route::name('material_write_off.')->prefix('material_write_off')->group(function() {

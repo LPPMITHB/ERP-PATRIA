@@ -461,18 +461,6 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // DB::table('menus')->insert([
-        //     'level' => 3,
-        //     'name' => 'Create GI without Reference',
-        //     'icon' => 'fa-file-text-o',
-        //     'route_name'=> 'goods_issue.createGiWithoutRef',
-        //     'is_active' => true,
-        //     'roles' => 'ADMIN',
-        //     'menu_id'=>$goodsIssue,
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d')
-        // ]);
-
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'View GI',
@@ -1160,6 +1148,42 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN',
             'menu_id'=>$materialRequisitionRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Goods Issue',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $goodsIssue =  Menu::where('name','Goods Issue')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create GI',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_issue_repair.selectMR',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$goodsIssue,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View GI',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_issue_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN',
+            'menu_id'=>$goodsIssue,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
