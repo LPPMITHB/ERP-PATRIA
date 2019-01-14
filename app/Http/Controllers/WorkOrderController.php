@@ -21,14 +21,13 @@ class WorkOrderController extends Controller
 {
     public function selectWR(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }else{
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
         $modelWRs = WorkRequest::whereIn('status',[2,7])->whereIn('project_id',$modelProject)->get();
-        
         return view('work_order.selectWR', compact('modelWRs','menu'));
     }
     
