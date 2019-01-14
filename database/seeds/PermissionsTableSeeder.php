@@ -1796,33 +1796,90 @@ class PermissionsTableSeeder extends Seeder
         //Production Order
         $createProductionOrder = Menu::where('name','Create Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'List Production Order',
-            'menu_id' => $createProductionOrder,
-            'middleware' => 'list-production-order',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('permissions')->insert([
             'name' => 'Create Production Order',
             'menu_id' => $createProductionOrder,
             'middleware' => 'create-production-order',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-
+        
+        $viewProductionOrder = Menu::where('name','View Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Show Production Order',
-            'menu_id' => $createProductionOrder,
-            'middleware' => 'show-production-order',
+            'name' => 'List Production Order',
+            'menu_id' => $viewProductionOrder,
+            'middleware' => 'list-production-order',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Edit Production Order',
+            'name' => 'Show Production Order',
+            'menu_id' => $viewProductionOrder,
+            'middleware' => 'show-production-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $releaseProductionOrder = Menu::where('name','Release Production Order')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Release Production Order',
+            'menu_id' => $releaseProductionOrder,
+            'middleware' => 'release-production-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $confirmProductionOrder = Menu::where('name','Confirm Production Order')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Confirm Production Order',
+            'menu_id' => $confirmProductionOrder,
+            'middleware' => 'confirm-production-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Production Order Repair
+        $prodOrderRepair = Menu::where('name','Production Planning & Execution')->where('menu_id',$repair)->select('id')->first()->id;
+        $createProductionOrderRepair = Menu::where('name','Create Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Production Order Repair',
             'menu_id' => $createProductionOrder,
-            'middleware' => 'edit-production-order',
+            'middleware' => 'create-production-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewProductionOrderRepair = Menu::where('name','View Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Production Order Repair',
+            'menu_id' => $viewProductionOrderRepair,
+            'middleware' => 'list-production-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Production Order Repair',
+            'menu_id' => $viewProductionOrderRepair,
+            'middleware' => 'show-production-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $releaseProductionOrderRepair = Menu::where('name','Release Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Release Production Order Repair',
+            'menu_id' => $releaseProductionOrderRepair,
+            'middleware' => 'release-production-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $confirmProductionOrderRepair= Menu::where('name','Confirm Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Confirm Production Order Repair',
+            'menu_id' => $confirmProductionOrderRepair,
+            'middleware' => 'confirm-production-order-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

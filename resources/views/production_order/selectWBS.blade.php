@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [   
-        'title' => 'Create Production Order » '.$modelProject->name.' » Select WBS',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('production_order.selectProject'),
-            'Select WBS' => ''
+@if($route == "/production_order")
+    @breadcrumb(
+        [   
+            'title' => 'Create Production Order » '.$modelProject->name.' » Select WBS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View all Projects' => route('production_order.selectProject'),
+                'Select WBS' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+        [   
+            'title' => 'Create Production Order » '.$modelProject->name.' » Select WBS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View all Projects' => route('production_order_repair.selectProject'),
+                'Select WBS' => ''
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')

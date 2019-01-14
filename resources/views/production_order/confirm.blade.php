@@ -1,18 +1,34 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Confirm Production Order » '.$modelPrO->number,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('production_order.selectProject'),
-            'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
-            'Add Additional Material & Resource' => ''
+
+@if($route == "/production_order")
+    @breadcrumb(
+        [
+            'title' => 'Confirm Production Order » '.$modelPrO->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('production_order.selectProject'),
+                'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
+                'Add Additional Material & Resource' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'Confirm Production Order » '.$modelPrO->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('production_order_repair.selectProject'),
+                'Select WBS' => route('production_order_repair.selectWBS', ['id' => $project->id]),
+                'Add Additional Material & Resource' => ''
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -103,7 +119,11 @@
                     </table>
                 </div>
             </div>
-            <form id="confirm-wo" class="form-horizontal" method="POST" action="{{ route('production_order.storeConfirm') }}">
+            @if($route == "/production_order")
+                <form id="confirm-wo" class="form-horizontal" method="POST" action="{{ route('production_order.storeConfirm') }}">
+            @elseif($route == "/production_order_repair")
+                <form id="confirm-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.storeConfirm') }}">
+            @endif
             <input type="hidden" name="_method" value="PATCH">
             @csrf
             @verbatim

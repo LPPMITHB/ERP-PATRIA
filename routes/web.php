@@ -1064,96 +1064,84 @@ Route::name('goods_movement_repair.')->prefix('goods_movement_repair')->group(fu
 
 //Production Order Routes
 Route::name('production_order.')->prefix('production_order')->group(function() {
-    Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease');
+    Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order');
 
-    Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm');
-    
-    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order');
-
-    Route::get('/report/{id}', 'ProductionOrderController@report')->name('report')->middleware('can:list-production-order');
+    Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order');
 
     Route::get('/create/{id}', 'ProductionOrderController@create')->name('create')->middleware('can:create-production-order');
 
-    Route::get('/release/{id}', 'ProductionOrderController@release')->name('release')->middleware('can:create-production-order');
+    Route::post('/', 'ProductionOrderController@store')->name('store')->middleware('can:create-production-order');
 
-    Route::get('/confirm/{id}', 'ProductionOrderController@confirm')->name('confirm')->middleware('can:create-production-order');
+    Route::get('/selectProjectRelease', 'ProductionOrderController@selectProjectRelease')->name('selectProjectRelease')->middleware('can:release-production-order');
+
+    Route::get('/selectPrO/{id}', 'ProductionOrderController@selectPrO')->name('selectPrO')->middleware('can:release-production-order');
+
+    Route::get('/release/{id}', 'ProductionOrderController@release')->name('release')->middleware('can:release-production-order');
+
+    Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease')->middleware('can:release-production-order');
+
+    Route::get('/selectProjectConfirm', 'ProductionOrderController@selectProjectConfirm')->name('selectProjectConfirm')->middleware('can:confirm-production-order');
     
-    Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order');
+    Route::get('/confirmPrO/{id}', 'ProductionOrderController@confirmPrO')->name('confirmPrO')->middleware('can:confirm-production-order');
 
-    Route::get('/selectPrO/{id}', 'ProductionOrderController@selectPrO')->name('selectPrO')->middleware('can:create-production-order');
+    Route::get('/confirm/{id}', 'ProductionOrderController@confirm')->name('confirm')->middleware('can:confirm-production-order');
 
-    Route::get('/selectPrOReport/{id}', 'ProductionOrderController@selectPrOReport')->name('selectPrOReport')->middleware('can:create-production-order');
+    Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-production-order');
 
-    Route::get('/confirmPrO/{id}', 'ProductionOrderController@confirmPrO')->name('confirmPrO');
+    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order');
 
-    Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order');
-
-    Route::get('/selectProjectRelease', 'ProductionOrderController@selectProjectRelease')->name('selectProjectRelease')->middleware('can:create-production-order');
-
-    Route::get('/selectProjectConfirm', 'ProductionOrderController@selectProjectConfirm')->name('selectProjectConfirm')->middleware('can:create-production-order');
-
-    Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:create-production-order');
-
-    Route::get('/{id}', 'ProductionOrderController@show')->name('show')->middleware('can:show-production-order');
+    Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:list-production-order');
 
     Route::get('/showRelease/{id}', 'ProductionOrderController@show')->name('showRelease')->middleware('can:show-production-order');
 
+    Route::get('/report/{id}', 'ProductionOrderController@report')->name('report')->middleware('can:list-production-order');
+
+    Route::get('/selectPrOReport/{id}', 'ProductionOrderController@selectPrOReport')->name('selectPrOReport')->middleware('can:show-production-order');
+
+    Route::get('/{id}', 'ProductionOrderController@show')->name('show')->middleware('can:show-production-order');
+
     Route::get('/showConfirm/{id}', 'ProductionOrderController@show')->name('showConfirm')->middleware('can:show-production-order');
-
-    Route::get('/{id}/edit', 'ProductionOrderController@edit')->name('edit')->middleware('can:edit-production-order');
-
-    Route::patch('/{id}', 'ProductionOrderController@update')->name('update')->middleware('can:edit-production-order');
-
-    Route::post('/', 'ProductionOrderController@store')->name('store')->middleware('can:create-production-order');
-
-    Route::delete('/{id}', 'ProductionOrderController@destroy')->name('destroy')->middleware('can:destroy-production-order');
 });
 
 //Production Order Repair Routes
 Route::name('production_order_repair.')->prefix('production_order_repair')->group(function() {
-    Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease');
+    Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order-repair');
 
-    Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm');
+    Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order-repair');
+
+    Route::get('/create/{id}', 'ProductionOrderController@create')->name('create')->middleware('can:create-production-order-repair');
+
+    Route::post('/', 'ProductionOrderController@store')->name('store')->middleware('can:create-production-order-repair');
+
+    Route::get('/selectProjectRelease', 'ProductionOrderController@selectProjectRelease')->name('selectProjectRelease')->middleware('can:release-production-order-repair');
+
+    Route::get('/selectPrO/{id}', 'ProductionOrderController@selectPrO')->name('selectPrO')->middleware('can:release-production-order-repair');
+
+    Route::get('/release/{id}', 'ProductionOrderController@release')->name('release')->middleware('can:release-production-order-repair');
+
+    Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease')->middleware('can:release-production-order-repair');
+
+    Route::get('/selectProjectConfirm', 'ProductionOrderController@selectProjectConfirm')->name('selectProjectConfirm')->middleware('can:confirm-production-order-repair');
     
-    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order');
+    Route::get('/confirmPrO/{id}', 'ProductionOrderController@confirmPrO')->name('confirmPrO')->middleware('can:confirm-production-order-repair');
 
-    Route::get('/report/{id}', 'ProductionOrderController@report')->name('report')->middleware('can:list-production-order');
+    Route::get('/confirm/{id}', 'ProductionOrderController@confirm')->name('confirm')->middleware('can:confirm-production-order-repair');
 
-    Route::get('/create/{id}', 'ProductionOrderController@create')->name('create')->middleware('can:create-production-order');
+    Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-production-order-repair');
 
-    Route::get('/release/{id}', 'ProductionOrderController@release')->name('release')->middleware('can:create-production-order');
+    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order-repair');
 
-    Route::get('/confirm/{id}', 'ProductionOrderController@confirm')->name('confirm')->middleware('can:create-production-order');
-    
-    Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order');
+    Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:list-production-order-repair');
 
-    Route::get('/selectPrO/{id}', 'ProductionOrderController@selectPrO')->name('selectPrO')->middleware('can:create-production-order');
+    Route::get('/showRelease/{id}', 'ProductionOrderController@show')->name('showRelease')->middleware('can:show-production-order-repair');
 
-    Route::get('/selectPrOReport/{id}', 'ProductionOrderController@selectPrOReport')->name('selectPrOReport')->middleware('can:create-production-order');
+    Route::get('/report/{id}', 'ProductionOrderController@report')->name('report')->middleware('can:list-production-order-repair');
 
-    Route::get('/confirmPrO/{id}', 'ProductionOrderController@confirmPrO')->name('confirmPrO');
+    Route::get('/selectPrOReport/{id}', 'ProductionOrderController@selectPrOReport')->name('selectPrOReport')->middleware('can:show-production-order-repair');
 
-    Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order');
+    Route::get('/{id}', 'ProductionOrderController@show')->name('show')->middleware('can:show-production-order-repair');
 
-    Route::get('/selectProjectRelease', 'ProductionOrderController@selectProjectRelease')->name('selectProjectRelease')->middleware('can:create-production-order');
-
-    Route::get('/selectProjectConfirm', 'ProductionOrderController@selectProjectConfirm')->name('selectProjectConfirm')->middleware('can:create-production-order');
-
-    Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:create-production-order');
-
-    Route::get('/{id}', 'ProductionOrderController@show')->name('show')->middleware('can:show-production-order');
-
-    Route::get('/showRelease/{id}', 'ProductionOrderController@show')->name('showRelease')->middleware('can:show-production-order');
-
-    Route::get('/showConfirm/{id}', 'ProductionOrderController@show')->name('showConfirm')->middleware('can:show-production-order');
-
-    Route::get('/{id}/edit', 'ProductionOrderController@edit')->name('edit')->middleware('can:edit-production-order');
-
-    Route::patch('/{id}', 'ProductionOrderController@update')->name('update')->middleware('can:edit-production-order');
-
-    Route::post('/', 'ProductionOrderController@store')->name('store')->middleware('can:create-production-order');
-
-    Route::delete('/{id}', 'ProductionOrderController@destroy')->name('destroy')->middleware('can:destroy-production-order');
+    Route::get('/showConfirm/{id}', 'ProductionOrderController@show')->name('showConfirm')->middleware('can:show-production-order-repair');
 });
 
 //Yard Plan Routes

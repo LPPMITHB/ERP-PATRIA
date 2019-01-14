@@ -1,18 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Production Order',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('production_order.selectProject'),
-            'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
-            'Add Additional Material & Resource' => ''
+@if($route == "/production_order")
+    @breadcrumb(
+        [
+            'title' => 'Create Production Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('production_order.selectProject'),
+                'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
+                'Add Additional Material & Resource' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Production Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('production_order_repair.selectProject'),
+                'Select WBS' => route('production_order_repair.selectWBS', ['id' => $project->id]),
+                'Add Additional Material & Resource' => ''
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -152,8 +167,11 @@
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->
-
-            <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.store') }}">
+            @if($route == "/production_order")
+                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.store') }}">
+            @elseif($route == "/production_order_repair")
+                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.store') }}">
+            @endif
                 @csrf
             @verbatim
             <div id="production_order">
