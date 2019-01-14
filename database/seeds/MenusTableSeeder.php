@@ -390,7 +390,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Material Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -404,7 +404,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.create',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -416,7 +416,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.indexApprove',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -428,7 +428,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -439,7 +439,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Goods Issue',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -453,7 +453,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_issue.selectMR',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$goodsIssue,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -465,7 +465,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_issue.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$goodsIssue,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -477,7 +477,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Physical Inventory',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -491,7 +491,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory.viewAdjustmentHistory',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -503,7 +503,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory.indexSnapshot',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -516,7 +516,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory.indexCountStock',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -529,7 +529,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory.indexAdjustStock',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -541,7 +541,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'stock_management.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -553,7 +553,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_write_off.create',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -601,7 +601,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'WIP',
             'icon' => 'fa-database',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -614,7 +614,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$wip,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -627,7 +627,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request.create',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$workRequest,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -639,7 +639,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request.indexApprove',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$workRequest,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -651,7 +651,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$workRequest,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -662,7 +662,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Work Order',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$wip,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -675,7 +675,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_order.selectWR',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$workOrder,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -687,7 +687,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_order.indexApprove',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$workOrder,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -699,7 +699,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_order.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$workOrder,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -746,7 +746,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Production Planning & Execution',
             'icon' => 'fa-database',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -759,7 +759,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.selectProject',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$PPE,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -771,7 +771,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.selectProjectRelease',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$PPE,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -783,7 +783,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.selectProjectConfirm',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$PPE,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -807,7 +807,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'production_order.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$PPE,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1466,6 +1466,66 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Production Planning & Execution',
+            'icon' => 'fa-database',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $repair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $PPE =  Menu::where('name','Production Planning & Execution')->where('menu_id',$repair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create Production Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'production_order_repair.selectProject',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Release Production Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'production_order_repair.selectProjectRelease',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Confirm Production Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'production_order_repair.selectProjectConfirm',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Production Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'production_order_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 1,
             'name' => 'Trading',
             'icon' => 'fa-archive',
@@ -1577,7 +1637,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'storage_location.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1589,7 +1649,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'unit_of_measurement.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -1601,7 +1661,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'vendor.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -1614,7 +1674,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'warehouse.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -1673,7 +1733,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'currencies.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$configuration,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1725,4 +1785,3 @@ class MenusTableSeeder extends Seeder
         ]);
     }
 }
-
