@@ -18,7 +18,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.store') }}">
+                @if($menu == 'building')
+                    <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.store') }}">
+                @else       
+                    <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition_repair.store') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="mr">

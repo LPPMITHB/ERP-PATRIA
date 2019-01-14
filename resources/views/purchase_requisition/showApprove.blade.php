@@ -6,24 +6,26 @@
 @else  
     @php($type = 'Resource')
 @endif
-@if($modelPR->project)
+@if($route == "/purchase_requisition")
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition - '.$type.' » '.$modelPR->project->name,
+            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+                'Select Purchase Requisition' => route('purchase_requisition.indexApprove'),
+                'View Purchase Requisition' => '',
             ]
         ]
     )
     @endbreadcrumb
-@else
+@elseif($route == "/purchase_requisition_repair")
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition - '.$type,
+            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+                'Select Purchase Requisition' => route('purchase_requisition_repair.indexApprove'),
+                'View Purchase Requisition' => '',
             ]
         ]
     )
@@ -145,11 +147,10 @@
                                 <td>{{ $loop->iteration }}</td>
                                 @if($modelPR->type == 1)
                                     <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
-                                    <td>{{ number_format($PRD->quantity) }}</td>
                                 @else
                                     <td>{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
-                                    <td>1</td>
                                 @endif
+                                <td>{{ number_format($PRD->quantity) }}</td>
                                 <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
                                 <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
                             </tr>
@@ -158,9 +159,15 @@
                 </table>
                 @if($modelPR->status == 1 || $modelPR->status == 4)
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                        <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'approve']) }}">APPROVE</a>
-                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
-                        <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'reject']) }}">REJECT</a>
+                        @if($route == "/purchase_requisition")
+                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_requisition.approval', ['id'=>$modelPR->id,'status'=>'reject']) }}">REJECT</a>
+                        @elseif($route == "/purchase_requisition_repair")
+                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_requisition_repair.approval', ['id'=>$modelPR->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_requisition_repair.approval', ['id'=>$modelPR->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_requisition_repair.approval', ['id'=>$modelPR->id,'status'=>'reject']) }}">REJECT</a>
+                        @endif
                     </div>
                 @endif
             </div> <!-- /.box-body -->

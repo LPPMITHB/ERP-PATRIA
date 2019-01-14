@@ -61,9 +61,17 @@
                                 </td>
                                 <td align="center">
                                 @if($modelGI->type == 2 && $modelGI->status == 1 || $modelGI->status == 3)
-                                    <a href="{{ route('goods_issue.showApprove', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($menu == "building")
+                                        <a href="{{ route('goods_issue.showApprove', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @else
+                                        <a href="{{ route('goods_issue_repair.showApprove', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
                                 @else
-                                    <a href="{{ route('goods_issue.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($menu == "building")
+                                        <a href="{{ route('goods_issue.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @else
+                                        <a href="{{ route('goods_issue_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
                                 @endif
                                 </td>
                             </tr>

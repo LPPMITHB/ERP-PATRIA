@@ -19,11 +19,12 @@ class GoodsMovementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelGMs = GoodsMovement::all();
 
-        return view('goods_movement.index', compact('modelGMs'));
+        return view('goods_movement.index', compact('modelGMs','route'));
 
     }
 
@@ -32,12 +33,13 @@ class GoodsMovementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelWarehouse = Warehouse::where('status',1)->get();
         $modelSloc = StorageLocation::where('status',1)->with('storageLocationDetails')->get();
         
-        return view ('goods_movement.create', compact('modelWarehouse','modelSloc'));
+        return view ('goods_movement.create', compact('modelWarehouse','modelSloc','route'));
     }
 
     /**
@@ -48,6 +50,7 @@ class GoodsMovementController extends Controller
      */
     public function store(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gm_number = $this->generateGMNumber();
         DB::beginTransaction();
@@ -72,10 +75,18 @@ class GoodsMovementController extends Controller
             }
             $this->updateSloc($datas->dataSLD,$datas->dataHeader->sloc_to_id);
             DB::commit();
-            return redirect()->route('goods_movement.show',$GM->id)->with('success', 'Goods Movement Success');
+            if($route == "/goods_movement"){
+                return redirect()->route('goods_movement.show',$GM->id)->with('success', 'Goods Movement Success');
+            }elseif($route == "/goods_movement_repair"){
+                return redirect()->route('goods_movement_repair.show',$GM->id)->with('success', 'Goods Movement Success');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('goods_movement.index')->with('error', $e->getMessage());
+            if($route == "/goods_movement"){
+                return redirect()->route('goods_movement.index')->with('error', $e->getMessage());
+            }elseif($route == "/goods_movement_repair"){
+                return redirect()->route('goods_movement_repair.index')->with('error', $e->getMessage());
+            }
         }
     }
 

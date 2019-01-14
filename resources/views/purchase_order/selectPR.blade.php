@@ -7,7 +7,7 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Requisition' => route('purchase_order.selectPR'),
+            'Select Purchase Requisition' => '',
         ]
     ]
 )
@@ -59,7 +59,11 @@
                                     <td>CONSOLIDATED</td>
                                 @endif
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    <a href="{{ route('purchase_order.selectPRD', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($route == "/purchase_order")
+                                        <a href="{{ route('purchase_order.selectPRD', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @elseif($route == "/purchase_order_repair")
+                                        <a href="{{ route('purchase_order_repair.selectPRD', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\GoodsIssue;
+use App\Models\Project;
 use App\Models\GoodsIssueDetail;
 use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
@@ -18,19 +19,23 @@ use Auth;
 class GoodsIssueController extends Controller
 {
 
-    public function index(){
-        $modelGIs = GoodsIssue::all();
+    public function index(Request $request){
+        $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
 
-        return view ('goods_issue.index', compact('modelGIs'));
+        $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->pluck('id')->toArray();
+        $modelGIs = GoodsIssue::whereIn('material_requisition_id',$modelMRs)->get();
+
+        return view ('goods_issue.index', compact('modelGIs','menu'));
     }
-
-    // public function indexApprove(){
-    //     $modelGIs = GoodsIssue::where('type',2)->get();
-
-    //     return view ('goods_issue.index', compact('modelGIs'));
-    // }
-    public function createGiWithRef($id)
+    
+    public function createGiWithRef($id,Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
         $modelMR = MaterialRequisition::findOrFail($id);
         $modelProject = $modelMR->project->with('ship', 'customer')->first();
         $modelSloc = StorageLocation::all();
@@ -41,14 +46,20 @@ class GoodsIssueController extends Controller
             $MRD['modelGI'] = "";
         }
 
-        return view('goods_issue.createGiWithRef', compact('modelMR','modelMRDs','modelSloc','modelProject'));
+        return view('goods_issue.createGiWithRef', compact('modelMR','modelMRDs','modelSloc','modelProject','menu'));
     }
 
-    public function selectMR()
+    public function selectMR(Request $request)
     {
         $modelMRs = MaterialRequisition::where('status',2)->get();
+        $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
 
-        return view('goods_issue.selectMR', compact('modelMRs'));
+        return view('goods_issue.selectMR', compact('modelMRs','menu'));
     }
 
     public function approval($gi_id,$status){
@@ -73,6 +84,7 @@ class GoodsIssueController extends Controller
 
     public function store(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         $gi_number = $this->generateGINumber();
 
@@ -103,10 +115,18 @@ class GoodsIssueController extends Controller
             }
             $this->checkStatusMR($datas->mr_id);
             DB::commit();
-            return redirect()->route('goods_issue.show',$GI->id)->with('success', 'Goods Issue Created');
+            if($menu == "building"){
+                return redirect()->route('goods_issue.show',$GI->id)->with('success', 'Goods Issue Created');
+            }else{
+                return redirect()->route('goods_issue_repair.show',$GI->id)->with('success', 'Goods Issue Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('goods_issue.selectMR',$datas->mr_id)->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('goods_issue.selectMR',$datas->mr_id)->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('goods_issue_repair.selectMR',$datas->mr_id)->with('error', $e->getMessage());
+            }
         }
     }
     

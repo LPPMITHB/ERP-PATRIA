@@ -19,7 +19,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('goods_issue.store') }}">
+                @if($menu=="building")
+                    <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('goods_issue.store') }}">
+                @else
+                    <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('goods_issue_repair.store') }}">
+                @endif
                 @csrf
                 </form>
                 @verbatim

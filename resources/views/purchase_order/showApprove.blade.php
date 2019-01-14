@@ -1,23 +1,25 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if(!$modelPO->project)
+@if($route == "/purchase_order")
     @breadcrumb(
         [
-            'title' => 'Approve Purchase Order',
+            'title' => isset($modelPO->project) ? 'Approve Purchase Order » '.$modelPO->project->number : 'Approve Purchase Order',
             'items' => [
                 'Dashboard' => route('index'),
+                'Select Purchase Order' => route('purchase_order.indexApprove'),
                 'Approve Purchase Order' => '',
             ]
         ]
     )
     @endbreadcrumb
-@else
-    @breadcrumb(
+@elseif($route == "/purchase_order_repair")
+     @breadcrumb(
         [
-            'title' => 'Approve Purchase Order » '.$modelPO->project->name,
+            'title' => isset($modelPO->project) ? 'Approve Purchase Order » '.$modelPO->project->number : 'Approve Purchase Order',
             'items' => [
                 'Dashboard' => route('index'),
+                'Select Purchase Order' => route('purchase_order_repair.indexApprove'),
                 'Approve Purchase Order' => '',
             ]
         ]
@@ -157,29 +159,37 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPO->purchaseOrderDetails as $POD)
-                            @if($POD->quantity > 0)
+                       @foreach($datas as $POD)
+                            @if($POD['quantity'] > 0)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     @if($modelPO->purchaseRequisition->type == 1)
-                                        <td>{{ $POD->material->code }} - {{ $POD->material->name }}</td>
+                                        <td>{{ $POD['material_code'] }} - {{ $POD['material_name'] }}</td>
                                     @elseif($modelPO->purchaseRequisition->type == 2)
-                                        <td>{{ $POD->resource->code }} - {{ $POD->resource->name }}</td>
+                                        <td>{{ $POD['resource_code'] }} - {{ $POD['resource_name'] }}</td>
                                     @endif
-                                    <td>{{ number_format($POD->quantity) }}</td>
-                                    <td>{{ number_format($POD->total_price / $POD->quantity) }}</td>
-                                    <td>{{ number_format($POD->total_price) }}</td>
+                                    <td>{{ number_format($POD['quantity']) }}</td>
+                                    <td>{{ number_format($POD['price']) }}</td>
+                                    <td>{{ number_format($POD['sub_total']) }}</td>
                                 </tr>
                             @endif
                         @endforeach
                     </tbody>
                 </table>
                 @if($modelPO->status == 1 || $modelPO->status == 4)
-                    <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                        <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
-                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
-                        <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
-                    </div>
+                    @if($route == "/purchase_order")
+                        <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
+                        </div>
+                    @elseif($route == "/purchase_order_repair")
+                        <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
+                        </div>
+                    @endif
                 @endif
             </div> <!-- /.box-body -->
             <div class="overlay">

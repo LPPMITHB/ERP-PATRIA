@@ -1,22 +1,43 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Purchase Order',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Create Purchase Order' => route('purchase_order.create',$modelPR->id),
+@if($route == "/purchase_order")
+    @breadcrumb(
+        [
+            'title' => 'Create Purchase Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Requisition' => route('purchase_order.selectPR'),
+                'Select Material' => route('purchase_order.selectPRD',$modelPR->id),
+                'Create Purchase Order' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/purchase_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Purchase Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Requisition' => route('purchase_order_repair.selectPR'),
+                'Select Material' => route('purchase_order_repair.selectPRD',$modelPR->id),
+                'Create Purchase Order' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="create-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.store') }}">
+            @if($route == "/purchase_order")
+                <form id="create-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.store') }}">
+            @elseif($route == "/purchase_order_repair")
+                <form id="create-po" class="form-horizontal" method="POST" action="{{ route('purchase_order_repair.store') }}">
+            @endif
             @csrf
                 @verbatim
                     <div id="po">
@@ -87,12 +108,12 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th v-if="modelPR.type == 1" style="width: 30%">Material Name</th>
-                                                <th v-else style="width: 30%">Resource Name</th>
-                                                <th style="width: 10%">Quantity</th>
-                                                <th style="width: 10%">Order</th>
+                                                <th v-if="modelPR.type == 1" style="width: 25%">Material Name</th>
+                                                <th v-else style="width: 25%">Resource Name</th>
+                                                <th style="width: 7%">Qty</th>
+                                                <th style="width: 8%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
-                                                <th style="width: 30%">WBS Name</th>
+                                                <th style="width: 25%">WBS Name</th>
                                                 <th style="width: 15%">Alocation</th>
                                             </tr>
                                         </thead>
@@ -103,11 +124,11 @@
                                                 <td v-else class="tdEllipsis">{{ PRD.resource.code }} - {{ PRD.resource.name }}</td>
                                                 <td class="tdEllipsis">{{ PRD.sugQuantity }}</td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="PRD.quantity" placeholder="Please Input Quantity">
+                                                    <input class="form-control width100" v-model="PRD.quantity" placeholder="Please Input Quantity">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input v-if="modelPR.type == 1" class="form-control" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
-                                                    <input v-else class="form-control" v-model="PRD.resource.cost_standard_price" placeholder="Please Input Total Price">
+                                                    <input v-if="modelPR.type == 1" class="form-control width100" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
+                                                    <input v-else class="form-control width100" v-model="PRD.resource.cost_standard_price" placeholder="Please Input Total Price">
                                                 </td>
                                                 <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>

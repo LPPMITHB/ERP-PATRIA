@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Physical Inventory » Count Stock for '.$snapshot->code,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Begin Count Stock' => route('physical_inventory.indexCountStock'),
-            'Count Stock' => "",
+@if($menu == "building")
+    @breadcrumb(
+        [
+            'title' => 'Physical Inventory » Count Stock for '.$snapshot->code,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Begin Count Stock' => route('physical_inventory.indexCountStock'),
+                'Count Stock' => "",
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'Physical Inventory » Count Stock for '.$snapshot->code,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Begin Count Stock' => route('physical_inventory_repair.indexCountStock'),
+                'Count Stock' => "",
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -80,7 +94,11 @@
                 </div>
             </div>
             @endverbatim
-            <form id="countStock" method="POST" action="{{route('physical_inventory.storeCountStock', ['id' => $snapshot->id])}}">
+            @if($menu == "building")
+                <form id="countStock" method="POST" action="{{route('physical_inventory.storeCountStock', ['id' => $snapshot->id])}}">
+            @else
+                <form id="countStock" method="POST" action="{{route('physical_inventory_repair.storeCountStock', ['id' => $snapshot->id])}}">
+            @endif
                 @csrf
                 <input type="hidden" name="_method" value="PATCH">
             </form>

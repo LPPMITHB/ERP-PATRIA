@@ -47,9 +47,15 @@
                                 </td>
                                 <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>
                                 <td class="p-l-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" href="{{route('physical_inventory.showConfirmCountStock', ['id' => $snapshot->id])}}">
-                                        SELECT
-                                    </a>
+                                    @if($menu == "building")
+                                        <a class="btn btn-primary btn-xs" href="{{route('physical_inventory.showConfirmCountStock', ['id' => $snapshot->id])}}">
+                                            SELECT
+                                        </a>
+                                    @else
+                                        <a class="btn btn-primary btn-xs" href="{{route('physical_inventory_repair.showConfirmCountStock', ['id' => $snapshot->id])}}">
+                                            SELECT
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

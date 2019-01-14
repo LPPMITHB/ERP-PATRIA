@@ -1,22 +1,41 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Edit Purchase Order',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Edit Purchase Order' => '',
+@if($route == "/purchase_order")
+    @breadcrumb(
+        [
+            'title' => 'Edit Purchase Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Purchase Order' => route('purchase_order.index'),
+                'Edit Purchase Order' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/purchase_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'Edit Purchase Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Purchase Order' => route('purchase_order_repair.index'),
+                'Edit Purchase Order' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.update') }}">
+            @if($route == "/purchase_order")
+                <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('purchase_order.update') }}">
+            @elseif($route == "/purchase_order_repair")
+                <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('purchase_order_repair.update') }}">
+            @endif
             <input type="hidden" name="_method" value="PATCH">
             @csrf
                 @verbatim

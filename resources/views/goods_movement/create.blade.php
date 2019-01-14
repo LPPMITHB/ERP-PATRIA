@@ -18,7 +18,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header">
-                <form id="create-gm" class="form-horizontal" method="POST" action="{{ route('goods_movement.store') }}">
+                @if($route == "/goods_movement")
+                    <form id="create-gm" class="form-horizontal" method="POST" action="{{ route('goods_movement.store') }}">
+                @elseif($route == "/goods_movement_repair")
+                    <form id="create-gm" class="form-horizontal" method="POST" action="{{ route('goods_movement_repair.store') }}">
+                @endif
                 @csrf
                     @verbatim
                         <div id="stock-transfer">
