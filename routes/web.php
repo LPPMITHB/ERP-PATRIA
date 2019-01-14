@@ -763,56 +763,56 @@ Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(fu
 
 //Work Order Routes
 Route::name('work_order.')->prefix('work_order')->group(function() {
-    Route::get('/indexApprove', 'WorkOrderController@indexApprove')->name('indexApprove');
+    Route::get('/indexApprove', 'WorkOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-work-order');
 
-    Route::get('/approval/{id}/{status}', 'WorkOrderController@approval')->name('approval');
+    Route::get('/approval/{id}/{status}', 'WorkOrderController@approval')->name('approval')->middleware('can:approve-work-order');
     
-    Route::get('/selectWR', 'WorkOrderController@selectWR')->name('selectWR')->middleware('can:list-purchase-requisition');
+    Route::get('/selectWR', 'WorkOrderController@selectWR')->name('selectWR')->middleware('can:create-work-order');
     
-    Route::get('/', 'WorkOrderController@index')->name('index');
+    Route::get('/', 'WorkOrderController@index')->name('index')->middleware('can:list-work-order');
 
-    Route::get('/create', 'WorkOrderController@create')->name('create')->middleware('can:create-purchase-order');
+    Route::get('/create', 'WorkOrderController@create')->name('create')->middleware('can:create-work-order');
 
-    Route::get('/selectWRD/{id}', 'WorkOrderController@selectWRD')->name('selectWRD')->middleware('can:create-purchase-order');
+    Route::get('/selectWRD/{id}', 'WorkOrderController@selectWRD')->name('selectWRD')->middleware('can:create-work-order');
 
-    Route::get('/{id}', 'WorkOrderController@show')->name('show')->middleware('can:show-purchase-order');
+    Route::get('/{id}', 'WorkOrderController@show')->name('show')->middleware('can:show-work-order');
 
-    Route::get('/showApprove/{id}', 'WorkOrderController@showApprove')->name('showApprove')->middleware('can:show-purchase-order');
+    Route::get('/showApprove/{id}', 'WorkOrderController@showApprove')->name('showApprove')->middleware('can:approve-work-order');
 
-    Route::get('/{id}/edit', 'WorkOrderController@edit')->name('edit')->middleware('can:edit-purchase-order');
+    Route::get('/{id}/edit', 'WorkOrderController@edit')->name('edit')->middleware('can:edit-work-order');
 
-    Route::patch('/', 'WorkOrderController@update')->name('update')->middleware('can:edit-purchase-order');
+    Route::patch('/', 'WorkOrderController@update')->name('update')->middleware('can:edit-work-order');
 
-    Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-purchase-order');
+    Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-work-order');
 
-    Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+    Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-work-order');
 });
 
 //Work Order Routes
 Route::name('work_order_repair.')->prefix('work_order_repair')->group(function() {
-    Route::get('/indexApprove', 'WorkOrderController@indexApprove')->name('indexApprove');
+    Route::get('/indexApprove', 'WorkOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-work-order-repair');
 
-    Route::get('/approval/{id}/{status}', 'WorkOrderController@approval')->name('approval');
+    Route::get('/approval/{id}/{status}', 'WorkOrderController@approval')->name('approval')->middleware('can:approve-work-order-repair');
     
-    Route::get('/selectWR', 'WorkOrderController@selectWR')->name('selectWR')->middleware('can:list-purchase-requisition');
+    Route::get('/selectWR', 'WorkOrderController@selectWR')->name('selectWR')->middleware('can:create-work-order-repair');
     
-    Route::get('/', 'WorkOrderController@index')->name('index');
+    Route::get('/', 'WorkOrderController@index')->name('index')->middleware('can:list-work-order-repair');
 
-    Route::get('/create', 'WorkOrderController@create')->name('create')->middleware('can:create-purchase-order');
+    Route::get('/create', 'WorkOrderController@create')->name('create')->middleware('can:create-work-order-repair');
 
-    Route::get('/selectWRD/{id}', 'WorkOrderController@selectWRD')->name('selectWRD')->middleware('can:create-purchase-order');
+    Route::get('/selectWRD/{id}', 'WorkOrderController@selectWRD')->name('selectWRD')->middleware('can:create-work-order-repair');
 
-    Route::get('/{id}', 'WorkOrderController@show')->name('show')->middleware('can:show-purchase-order');
+    Route::get('/{id}', 'WorkOrderController@show')->name('show')->middleware('can:show-work-order-repair');
 
-    Route::get('/showApprove/{id}', 'WorkOrderController@showApprove')->name('showApprove')->middleware('can:show-purchase-order');
+    Route::get('/showApprove/{id}', 'WorkOrderController@showApprove')->name('showApprove')->middleware('can:show-work-order-repair');
 
-    Route::get('/{id}/edit', 'WorkOrderController@edit')->name('edit')->middleware('can:edit-purchase-order');
+    Route::get('/{id}/edit', 'WorkOrderController@edit')->name('edit')->middleware('can:edit-work-order-repair');
 
-    Route::patch('/', 'WorkOrderController@update')->name('update')->middleware('can:edit-purchase-order');
+    Route::patch('/', 'WorkOrderController@update')->name('update')->middleware('can:edit-work-order-repair');
 
-    Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-purchase-order');
+    Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-work-order-repair');
 
-    Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+    Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-work-order-repair');
 });
 
 //Physical Inventory Routes

@@ -344,6 +344,96 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Work Order
+        $createWO = Menu::where('name','Create WO')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Order',
+            'menu_id' => $createWO,
+            'middleware' => 'create-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveWO = Menu::where('name','View & Edit WO')->select('id')->first()->id;        
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Order',
+            'menu_id' => $approveWO,
+            'middleware' => 'approve-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewWO = Menu::where('name','View & Edit WO')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'list-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'show-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'edit-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Work Order Repair
+        $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
+        $woRepair = Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        $createWO = Menu::where('name','Create WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Order',
+            'menu_id' => $createWO,
+            'middleware' => 'create-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;        
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Order',
+            'menu_id' => $approveWO,
+            'middleware' => 'approve-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'list-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'show-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'edit-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Work Request Repair
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
