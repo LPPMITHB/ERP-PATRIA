@@ -315,7 +315,7 @@
                 material.wbs_id = this.editInput.wbs_id;
 
                 window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
-                    material.wbs_name = data.name;
+                    material.wbs_name = data.wbs.name;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
