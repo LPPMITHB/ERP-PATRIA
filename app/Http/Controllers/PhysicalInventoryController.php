@@ -34,39 +34,44 @@ class PhysicalInventoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexSnapshot()
+    public function indexSnapshot(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $snapshots = Snapshot::whereIn('status',[1,2])->get();
         $materials = Material::all();
         $storage_locations = StorageLocation::all();
 
-        return view('physical_inventory.indexSnapshot', compact('snapshots','materials','storage_locations'));
+        return view('physical_inventory.indexSnapshot', compact('snapshots','materials','storage_locations','menu'));
     }
 
-    public function indexCountStock()
+    public function indexCountStock(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $snapshots = Snapshot::whereIn('status',[1,2])->get();
 
-        return view('physical_inventory.indexCountStock', compact('snapshots'));
+        return view('physical_inventory.indexCountStock', compact('snapshots','menu'));
     }
 
-    public function indexAdjustStock()
+    public function indexAdjustStock(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $snapshots = Snapshot::where('status',2)->get();
 
-        return view('physical_inventory.indexAdjustStock', compact('snapshots'));
+        return view('physical_inventory.indexAdjustStock', compact('snapshots','menu'));
     }
 
-    public function viewAdjustmentHistory()
+    public function viewAdjustmentHistory(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $snapshots = Snapshot::where('status',0)->get();
 
-        return view('physical_inventory.index', compact('snapshots'));
+        return view('physical_inventory.index', compact('snapshots','menu'));
     }
 
 
     public function displaySnapshot(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $sloc = $request->sloc;
         $material = $request->material;
         $stocks = StorageLocationDetail::whereIn('storage_location_id',$sloc)->
@@ -74,11 +79,12 @@ class PhysicalInventoryController extends Controller
         $piCode = self::generatePICode();
 
 
-        return view('physical_inventory.displaySnapshot', compact('piCode','stocks','sloc','material'));
+        return view('physical_inventory.displaySnapshot', compact('piCode','stocks','sloc','material','menu'));
     }
 
     public function storeSnapshot(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $stringSloc = "[".$request->sloc."]";
         $sloc = json_decode($stringSloc);
 
@@ -106,10 +112,18 @@ class PhysicalInventoryController extends Controller
             }
             
             DB::commit();
-            return redirect()->route('physical_inventory.showSnapshot', ['id' => $snapshot->id])->with('success', 'Snapshot Created');
+            if($menu == "building"){
+                return redirect()->route('physical_inventory.showSnapshot', ['id' => $snapshot->id])->with('success', 'Snapshot Created');
+            }else{
+                return redirect()->route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])->with('success', 'Snapshot Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('physical_inventory.indexSnapshot')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('physical_inventory.indexSnapshot')->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('physical_inventory_repair.indexSnapshot')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -119,8 +133,9 @@ class PhysicalInventoryController extends Controller
         return view('physical_inventory.showSnapshot', compact('snapshot'));
     }
 
-    public function countStock($id)
+    public function countStock($id, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $snapshot = Snapshot::whereIn('status',[1,2])->where('id', $id)->first();
         $snapshotDetails = SnapshotDetail::where('snapshot_id',$id)
         ->with(array('material'=>function($query){
@@ -129,7 +144,7 @@ class PhysicalInventoryController extends Controller
         ->with(array('storageLocation'=>function($query){
             $query->select('id','name');
         }))->get();
-        return view('physical_inventory.countStock', compact('snapshot','snapshotDetails'));
+        return view('physical_inventory.countStock', compact('snapshot','snapshotDetails','menu'));
     }
 
     public function showCountStock($id)
@@ -140,12 +155,13 @@ class PhysicalInventoryController extends Controller
         return view('physical_inventory.showCountStock', compact('snapshot','confirm'));
     }
 
-    public function showConfirmCountStock($id)
+    public function showConfirmCountStock($id, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $snapshot = Snapshot::where('status',2)->where('id', $id)->first();
         $confirm = true;
 
-        return view('physical_inventory.showCountStock', compact('snapshot','confirm'));
+        return view('physical_inventory.showCountStock', compact('snapshot','confirm','menu'));
     }
 
     public function showPI($id)
@@ -157,6 +173,7 @@ class PhysicalInventoryController extends Controller
 
     public function storeCountStock(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $data = json_decode($request->datas);
 
         DB::beginTransaction();
@@ -173,15 +190,24 @@ class PhysicalInventoryController extends Controller
             }
             
             DB::commit();
-            return redirect()->route('physical_inventory.showCountStock', ['id' => $id])->with('success', 'Stock Adjusted');
+            if($menu == "building"){
+                return redirect()->route('physical_inventory.showCountStock', ['id' => $id])->with('success', 'Stock Adjusted');
+            }else{
+                return redirect()->route('physical_inventory_repair.showCountStock', ['id' => $id])->with('success', 'Stock Adjusted');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('physical_inventory.indexCountStock')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('physical_inventory.indexCountStock')->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('physical_inventory_repair.indexCountStock')->with('error', $e->getMessage());
+            }
         }
     }
 
     public function storeAdjustStock(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
         $data = json_decode($request->datas);
 
         DB::beginTransaction();
@@ -253,10 +279,18 @@ class PhysicalInventoryController extends Controller
             }        
             
             DB::commit();
-            return redirect()->route('physical_inventory.indexSnapshot')->with('success', 'Stock Adjustment Approved');
+            if($menu == "building"){
+                return redirect()->route('physical_inventory.indexSnapshot')->with('success', 'Stock Adjustment Approved');
+            }else{
+                return redirect()->route('physical_inventory_repair.indexSnapshot')->with('success', 'Stock Adjustment Approved');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('physical_inventory.indexAdjustStock')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('physical_inventory.indexAdjustStock')->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('physical_inventory_repair.indexAdjustStock')->with('error', $e->getMessage());
+            }
         }
     }
 

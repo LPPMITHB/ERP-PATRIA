@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Work Order » Select Material',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Work Requisition' => route('work_order.selectWR'),
-            'Select Material' => route('work_order.selectWRD',$modelWR->id),
+@if($menu == "building")
+    @breadcrumb(
+        [
+            'title' => 'Create Work Order » Select Material',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Work Requisition' => route('work_order.selectWR'),
+                'Select Material' => route('work_order.selectWRD',$modelWR->id),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'Create Work Order » Select Material',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Work Requisition' => route('work_order_repair.selectWR'),
+                'Select Material' => route('work_order_repair.selectWRD',$modelWR->id),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -19,7 +33,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="select-material" class="form-horizontal" action="{{ route('work_order.create') }}">
+                @if($menu == "building")
+                    <form id="select-material" class="form-horizontal" action="{{ route('work_order.create') }}">
+                @else
+                    <form id="select-material" class="form-horizontal" action="{{ route('work_order_repair.create') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="prd">

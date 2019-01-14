@@ -37,7 +37,11 @@
                                 <td>{{ isset($modelWR->description) ? $modelWR->description : '-'}}</td>
                                 <td>{{ isset($modelWR->project) ? $modelWR->project->name : '-' }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    <a href="{{ route('work_order.selectWRD', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($menu == "building")
+                                        <a href="{{ route('work_order.selectWRD', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @else
+                                        <a href="{{ route('work_order_repair.selectWRD', ['id'=>$modelWR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

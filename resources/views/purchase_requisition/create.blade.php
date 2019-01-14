@@ -118,7 +118,7 @@
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="resourceOk">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="project_id != ''">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
@@ -214,6 +214,10 @@
                                                 <selectize id="edit_modal" v-model="editInput.resource_id" :settings="resourceSettings">
                                                     <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-12" v-show="project_id != ''"> 
                                                 <label for="type" class="control-label">WBS Name</label>
@@ -333,8 +337,6 @@
                 
                 if(this.resource == "ok"){
                     isOk = true;
-                    this.dataInput.quantity = "";
-                    this.dataInput.quantityInt = 0;
                     this.dataInput.alocation = "";
                 }
 
@@ -475,6 +477,8 @@
                             window.axios.get('/api/getResourcePR/'+new_material_id).then(({ data }) => {
                                 material.resource_name = data.name;
                                 material.resource_code = data.code;
+                                material.quantityInt = this.editInput.quantityInt;
+                                material.quantity = this.editInput.quantity;
 
                                 // this.material_id.forEach(id => {
                                 //     if(id == old_material_id){

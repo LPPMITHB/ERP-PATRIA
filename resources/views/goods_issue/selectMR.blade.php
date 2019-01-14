@@ -36,7 +36,11 @@
                                 <td>{{ $modelMR->description }}</td>
                                 <td>{{ $modelMR->project->name }} - {{$modelMR->project->number}}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    <a href="{{ route('goods_issue.createGiWithRef', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($menu == 'building')
+                                        <a href="{{ route('goods_issue.createGiWithRef', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @else
+                                        <a href="{{ route('goods_issue_repair.createGiWithRef', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

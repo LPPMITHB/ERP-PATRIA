@@ -1,17 +1,32 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Edit Work Request',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Work Request' => route('work_request.index'),
-            'Edit Work Request' => route('work_request.edit',$modelWR->id),
+@if($menu == "building")
+    @breadcrumb(
+        [
+            'title' => 'Edit Work Request',
+            'subtitle' => '',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Work Request' => route('work_request.index'),
+                'Edit Work Request' => route('work_request.edit',$modelWR->id),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'Edit Work Request',
+            'subtitle' => '',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Work Request' => route('work_request_repair.index'),
+                'Edit Work Request' => route('work_request_repair.edit',$modelWR->id),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -19,7 +34,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="edit-wr" class="form-horizontal" method="POST" action="{{ route('work_request.update',['id'=>$modelWR->id]) }}">
+                @if($menu == "building")
+                    <form id="edit-wr" class="form-horizontal" method="POST" action="{{ route('work_request.update',['id'=>$modelWR->id]) }}">
+                @else
+                    <form id="edit-wr" class="form-horizontal" method="POST" action="{{ route('work_request_repair.update',['id'=>$modelWR->id]) }}">
+                @endif
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim

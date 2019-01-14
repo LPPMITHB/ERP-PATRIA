@@ -18,7 +18,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-wr" class="form-horizontal" method="POST" action="{{ route('work_request.store') }}">
+                @if($menu == "building")
+                    <form id="create-wr" class="form-horizontal" method="POST" action="{{ route('work_request.store') }}">
+                @else
+                    <form id="create-wr" class="form-horizontal" method="POST" action="{{ route('work_request_repair.store') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="wr">

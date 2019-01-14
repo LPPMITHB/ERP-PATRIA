@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Goods Receipt',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Purchase Order' => route('goods_receipt.selectPO'),
-            'Details' => '',
+@if($route == "/goods_receipt")
+    @breadcrumb(
+        [
+            'title' => 'Create Goods Receipt',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Order' => route('goods_receipt.selectPO'),
+                'Details' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/goods_receipt_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Goods Receipt',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Order' => route('goods_receipt_repair.selectPO'),
+                'Details' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -19,7 +33,11 @@
     <div class="col-sm-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt.store') }}">
+                @if($route == "/goods_receipt")
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt.store') }}">
+                @elseif($route == "/goods_receipt_repair")
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt_repair.store') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="pod">

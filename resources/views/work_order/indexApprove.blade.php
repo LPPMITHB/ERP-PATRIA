@@ -56,7 +56,11 @@
                                     <td>REJECTED</td>
                                 @endif
                                 <td class="textCenter">
-                                    <a href="{{ route('work_order.showApprove', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($menu == "building")
+                                        <a href="{{ route('work_order.showApprove', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @else
+                                        <a href="{{ route('work_order_repair.showApprove', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

@@ -1,17 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View All Goods Receipt',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Goods Receipt' => route('goods_receipt.index'),
+@if($route == "/goods_receipt")
+    @breadcrumb(
+        [
+            'title' => 'View All Goods Receipt',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Goods Receipt' => route('goods_receipt.index'),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/goods_receipt_repair")
+    @breadcrumb(
+        [
+            'title' => 'View All Goods Receipt',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Goods Receipt' => route('goods_receipt_repair.index'),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -35,7 +47,11 @@
                                 <td>{{ $GR->number }}</td>
                                 <td>{{ $GR->description }}</td>
                                 <td class="textCenter p-l-0 p-r-0">
-                                    <a href="{{ route('goods_receipt.show', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($route == "/goods_receipt")
+                                        <a href="{{ route('goods_receipt.show', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @elseif($route == "/goods_receipt_repair")
+                                        <a href="{{ route('goods_receipt_repair.show', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

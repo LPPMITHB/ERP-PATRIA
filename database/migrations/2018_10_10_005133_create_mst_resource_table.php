@@ -17,35 +17,14 @@ class CreateMstResourceTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('brand')->nullable();
-            $table->integer('quantity')->default(1)->nullable();
-            $table->string('description')->nullable();
-            // $table->string('machine_type');
-            $table->string('category_id')->default(0);
-            $table->integer('cost_standard_price');
-            $table->date('manufactured_date')->nullable();
-            $table->date('purchasing_date')->nullable();
-            $table->unsignedInteger('purchasing_price')->nullable();
-            $table->unsignedInteger('lifetime')->nullable();
-            $table->unsignedInteger('depreciation_method')->nullable();
-            $table->float('accumulated_depreciation')->nullable();
-            $table->integer('running_hours')->nullable();
-            $table->unsignedInteger('cost_per_hour')->nullable();
-            $table->float('utilization')->default(0);
-            $table->unsignedInteger('performance')->nullable();
-            $table->float('productivity')->default(0);
-            $table->unsignedInteger('status')->default(0);
-            $table->unsignedInteger('vendor_id')->nullable(); 
-            $table->unsignedInteger('uom_id')->nullable(); 
+            $table->longText('description')->nullable();
+            $table->integer('cost_standard_price')->default(0);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
             $table->foreign('branch_id')->references('id')->on('mst_branch'); 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('vendor_id')->references('id')->on('mst_vendor');
-
-            $table->foreign('uom_id')->references('id')->on('mst_uom');
         });
     }
 

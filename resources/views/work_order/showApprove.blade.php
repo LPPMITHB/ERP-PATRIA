@@ -168,9 +168,15 @@
                 </table>
                 @if($modelWO->status == 1 || $modelWO->status == 4)
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                        <a class="btn btn-primary pull-right m-l-10" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'approve']) }}">APPROVE</a>
-                        <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
-                        <a class="btn btn-danger pull-right p-r-10" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'reject']) }}">REJECT</a>
+                        @if($menu == "building")
+                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'reject']) }}">REJECT</a>
+                        @else
+                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('work_order_repair.approval', ['id'=>$modelWO->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('work_order_repair.approval', ['id'=>$modelWO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('work_order_repair.approval', ['id'=>$modelWO->id,'status'=>'reject']) }}">REJECT</a>
+                        @endif
                     </div>
                 @endif
             </div> <!-- /.box-body -->

@@ -29,124 +29,20 @@
                             <tr>
                                 <td>Code</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$resource->code}}</b></td>
+                                <td><b>{{$resource->code}}</b></td>
                             </tr>
                             <tr>
                                 <td>Name</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$resource->name}}</b></td>
+                                <td><b>{{$resource->name}}</b></td>
                             </tr>
                             <tr>
-                                <td>Brand</td>
+                                <td>Description</td>
                                 <td>:</td>
-                                <td class="tdEllipsis" data-toggle="tooltip" title="{{ $resource->brand }}">&ensp;<b>{{ $resource->brand }}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Unit Of Measurement</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->uom->name}}</b></td>
-                            </tr>
-
-                            {{-- <tr>
-                                <td>Type</td>
-                                <td>:</td>
-                                @if($resource->machine_type == 2)
-                                    <td>&ensp;<b>{{ 'MATERIAL' }}</b></td>
-                                @elseif($resource->machine_type == 1)
-                                    <td>&ensp;<b>{{ 'RESOURCE' }}</b></td>
-                                @else
-                                    <td>&ensp;<b>{{ 'OTHERS' }}</b></td>
-                                @endif
-                            </tr> --}}
-
-                            <tr>
-                                <td>Quantity</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->quantity}}</b></td>
-                            </tr>
-                                
-                            <tr>
-                                <td>Category</td>
-                                <td>:</td>
-                                @if($resource->category_id == 3)
-                                <td>&ensp;<b>{{ 'INTERNAL EQUIPMENT' }}</b></td>
-                                    @elseif($resource->category_id == 2)
-                                <td>&ensp;<b>{{ 'EXTERNAL EQUIPMENT' }}</b></td>
-                                    @elseif($resource->category_id == 1)
-                                <td>&ensp;<b>{{ 'OTHERS' }}</b></td>
-                                    @else
-                                <td>&ensp;<b>{{ 'SUBCON' }}</b></td>
-                                    @endif
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>:</td>
-                                @if ($resource->status == 1)
-                                    <td>&ensp;<b>{{'AVAILABLE'}}</b></td>
-                                @elseif ($resource->status == 0)
-                                    <td>&ensp;<b>{{'NOT AVAILABLE'}}</b></td>
-                                @endif
+                                <td class="tdEllipsis" data-toggle="tooltip" title="{{ $resource->description }}"><b>{{ isset($resource->description) ? $resource->description : '-' }}</b></td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-
-                <div class="col-sm-4 m-t-20">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Manufactured Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->manufactured_date}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Purchasing Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->purchasing_date}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Cost Standard Price</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{number_format($resource->cost_standard_price)}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Purchasing Price</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{number_format($resource->purchasing_price)}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Lifetime</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->lifetime}} day(s)</b></td>
-                            </tr>
-                            <tr>
-                                <td>Depreciation Method</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$resource->depreciation_method}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Accumulated Depreciation</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{ number_format($resource->accumulated_depreciation) }}</b></td>
-                                </tr>
-                        </tbody>
-                    </table>
-                </div>
-                    <div class="col-sm-4 m-t-20">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>Vendor</td>
-                                    <td>:</td>
-                                    <td>&ensp;<b>{{$resource->vendor->name}}</b></td>
-                                </tr>
-                                <tr>
-                                    <td>Description</td>
-                                    <td>:</td>
-                                    <td class="tdEllipsis" data-toggle="tooltip" title="{{ $resource->description }}">&ensp;<b>{{ $resource->description }}</b></td>
-                                </tr>
-                            </tbody>
-                        </table>
                 </div>
             </div>
             <div class="box-body">
