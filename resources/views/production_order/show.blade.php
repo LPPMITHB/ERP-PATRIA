@@ -1,16 +1,32 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Production Order » '.$modelPrO->number,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View Production Order' => route('production_order.show',$modelPrO->id),
+
+@if($route == "/production_order")
+    @breadcrumb(
+        [
+            'title' => 'View Production Order » '.$modelPrO->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Production Orders' => route('production_order.index'),
+                'View Production Order' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'View Production Order » '.$modelPrO->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Production Orders' => route('production_order_repair.index'),
+                'View Production Order' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
