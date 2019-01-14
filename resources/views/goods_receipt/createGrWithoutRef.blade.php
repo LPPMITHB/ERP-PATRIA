@@ -6,8 +6,7 @@
         'title' => 'Create Goods Receipt Without Reference',
         'items' => [
             'Dashboard' => route('index'),
-            'Create GR' => route('goods_receipt.createGrWithoutRef'),
-            
+            'Create GR Without Reference' => '',
         ]
     ]
 )
@@ -19,7 +18,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt.storeWOR') }}">
+                @if($route == "/goods_receipt")
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt.storeWOR') }}">
+                @elseif($route == "/goods_receipt_repair")
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt_repair.storeWOR') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="pod">

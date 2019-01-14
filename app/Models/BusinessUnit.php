@@ -12,4 +12,8 @@ class BusinessUnit extends Model
     {
         return $this->hasMany('App\Models\Project');
     }
+    public function customers()
+    {
+        return $this->hasMany('App\Models\Customer');
+    }
 }

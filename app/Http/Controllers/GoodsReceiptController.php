@@ -24,14 +24,15 @@ use Auth;
 
 class GoodsReceiptController extends Controller
 {
-    public function createGrWithRef($id)
+    public function createGrWithRef(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
         if($modelPO->purchaseRequisition->type == 1){
             $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
             $modelSloc = StorageLocation::all();
 
-            return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc'));
+            return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc','route'));
         }elseif($modelPO->purchaseRequisition->type == 2){
             $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
             $resource_categories = Configuration::get('resource_category');
@@ -51,51 +52,56 @@ class GoodsReceiptController extends Controller
                     ]);
                 }
             }
-            return view('goods_receipt.createGrWithRefResource', compact('modelPO','datas','resource_categories','uom','depreciation_methods'));
+            return view('goods_receipt.createGrWithRefResource', compact('modelPO','datas','resource_categories','uom','depreciation_methods','route'));
         }
     }
 
-    public function createGrFromWo($id)
+    public function createGrFromWo(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $modelWO = WorkOrder::where('id',$id)->with('vendor')->first();
         $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material')->get();
         
-        return view('goods_receipt.createGrFromWo', compact('modelWO','modelWODs'));
+        return view('goods_receipt.createGrFromWo', compact('modelWO','modelWODs','route'));
     }
 
-    public function selectPO()
+    public function selectPO(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelPOs = PurchaseOrder::where('status',2)->get();
         $modelWOs = WorkOrder::where('status',2)->get();
         
-        return view('goods_receipt.selectPO', compact('modelPOs','modelWOs'));
+        return view('goods_receipt.selectPO', compact('modelPOs','modelWOs','route'));
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $modelGR = GoodsReceipt::findOrFail($id);
         $modelGRD = $modelGR->GoodsReceiptDetails ;
 
-        return view('goods_receipt.show', compact('modelGR','modelGRD'));
+        return view('goods_receipt.show', compact('modelGR','modelGRD','route'));
     }
     
-    public function createGrWithoutRef()
+    public function createGrWithoutRef(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $modelMaterial = Material::all()->jsonSerialize();
         $modelSloc = StorageLocation::all();
-        
 
-        return view('goods_receipt.createGrWithoutRef', compact('modelMaterial','modelSloc'));
+        return view('goods_receipt.createGrWithoutRef', compact('modelMaterial','modelSloc','route'));
     }
 
-    public function index(){
+    public function index(Request $request){
+        $route = $request->route()->getPrefix();
         $modelGRs = GoodsReceipt::all();
 
-        return view ('goods_receipt.index', compact('modelGRs'));
+        return view ('goods_receipt.index', compact('modelGRs','route'));
     }
 
     public function store(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gr_number = $this->generateGRNumber();
 
@@ -124,15 +130,24 @@ class GoodsReceiptController extends Controller
             }
             $this->checkStatusPO($datas->po_id);
             DB::commit();
-            return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('goods_receipt.selectPO',$datas->po_id)->with('error', $e->getMessage());
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.selectPO',$datas->po_id)->with('error', $e->getMessage());
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.selectPO',$datas->po_id)->with('error', $e->getMessage());
+            }
         }
     }
 
     public function storeWo(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gr_number = $this->generateGRNumber();
         DB::beginTransaction();
@@ -158,15 +173,24 @@ class GoodsReceiptController extends Controller
                 $PI->save();
             }
             DB::commit();
-            return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('goods_receipt.selectPO',$datas->wo_id)->with('error', $e->getMessage());
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.selectPO',$datas->wo_id)->with('error', $e->getMessage());
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.selectPO',$datas->wo_id)->with('error', $e->getMessage());
+            }
         }
     }
 
     public function storeWOR(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gr_number = $this->generateGRNumber();
 
@@ -192,10 +216,18 @@ class GoodsReceiptController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('goods_receipt.createGrWithoutRef')->with('error', $e->getMessage());
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.createGrWithoutRef')->with('error', $e->getMessage());
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.createGrWithoutRef')->with('error', $e->getMessage());
+            }
         }
     }
     public function updatePOD($pod_id,$received){

@@ -121,6 +121,11 @@ class RolesTableSeeder extends Seeder
                 'create-purchase-order' => true,'list-purchase-order' => true,'show-purchase-order' => true,'edit-purchase-order' => true,'approve-purchase-order' => true,
                 'create-goods-movement' => true,'list-goods-movement' => true,'view-goods-movement' => true,'edit-goods-movement' => true,
                 'create-work-order' => true,'list-work-order' => true,'show-work-order' => true,'edit-work-order' => true,  'approve-work-order' => true,
+                'create-material-requisition' => true,'list-material-requisition' => true,'show-material-requisition' => true,'edit-material-requisition' => true,
+                'create-goods-issue' => true,'list-goods-issue' => true,'show-goods-issue' => true,'edit-goods-issue' => true,
+                'create-snapshot' => true,'count-stock' => true,'adjust-stock' => true,'list-adjustment-history' => true,'show-adjustment-history' => true,'show-snapshot' => true, 
+                'show-stock-management' => true, 
+                'create-material-write-off' => true,
             ]),
             'created_at' => date('Y-m-d'),
         ]);

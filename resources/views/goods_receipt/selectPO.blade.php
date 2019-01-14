@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Goods Receipt » Select Purchase Order',
+        'title' => 'Create Goods Receipt » Select PO / WO',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Order' => '',
+            'Select PO / WO' => '',
         ]
     ]
 ) 
@@ -37,7 +37,11 @@
                                 <td>{{ $modelPO->description }}</td>
                                 <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    <a href="{{ route('goods_receipt.createGrWithRef', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($route == "/goods_receipt")
+                                        <a href="{{ route('goods_receipt.createGrWithRef', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @elseif($route == "/goods_receipt_repair")
+                                        <a href="{{ route('goods_receipt_repair.createGrWithRef', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -48,7 +52,11 @@
                                 <td>{{ $modelWO->description }}</td>
                                 <td>{{ isset($modelWO->project) ? $modelWO->project->name : '-' }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    <a href="{{ route('goods_receipt.createGrFromWo', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($route == "/goods_receipt")
+                                        <a href="{{ route('goods_receipt.createGrFromWo', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @elseif($route == "/goods_receipt_repair")
+                                        <a href="{{ route('goods_receipt_repair.createGrFromWo', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
