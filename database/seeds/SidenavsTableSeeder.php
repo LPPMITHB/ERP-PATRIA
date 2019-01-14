@@ -608,10 +608,16 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Goods Receipt
-        $createGrWithRef = Menu::where('route_name','goods_receipt.selectPO')->select('id')->first()->id;
+        $selectPO = Menu::where('route_name','goods_receipt.selectPO')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPO,
+            'route_name' => 'goods_receipt.selectPO',
+        ]);
+
+        $createGrWithRef = Menu::where('route_name','goods_receipt.createGrWithRef')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createGrWithRef,
-            'route_name' => 'goods_receipt.selectPO',
+            'route_name' => 'goods_receipt.createGrWithRef',
         ]);
         
         $viewGr = Menu::where('route_name','goods_receipt.index')->select('id')->first()->id;
@@ -627,10 +633,16 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Goods Receipt Repair
-        $createGrWithRef = Menu::where('route_name','goods_receipt_repair.selectPO')->select('id')->first()->id;
+        $selectPO = Menu::where('route_name','goods_receipt_repair.selectPO')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPO,
+            'route_name' => 'goods_receipt_repair.selectPO',
+        ]);
+
+        $createGrWithRef = Menu::where('route_name','goods_receipt_repair.createGrWithRef')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createGrWithRef,
-            'route_name' => 'goods_receipt_repair.selectPO',
+            'route_name' => 'goods_receipt.createGrWithRef',
         ]);
         
         $viewGr = Menu::where('route_name','goods_receipt_repair.index')->select('id')->first()->id;
