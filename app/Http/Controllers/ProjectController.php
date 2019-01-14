@@ -763,19 +763,18 @@ class ProjectController extends Controller
     function getEarliestActivity($wbs, $earliest_date){
         if($wbs){
             if(count($wbs->wbss)>0){
-                if(count($wbs->activities)>0){
-                    $activityRef = Activity::where('wbs_id',$wbs->id)->orderBy('planned_start_date','asc')->first();
-                    $earliest_date_ref = $activityRef->planned_start_date;
-                    if($earliest_date != null){
-                        if($earliest_date > $earliest_date_ref){
+                foreach($wbs->wbss as $wbs_child){
+                    if(count($wbs_child->activities)>0){
+                        $activityRef = Activity::where('wbs_id',$wbs_child->id)->orderBy('planned_start_date','asc')->first();
+                        $earliest_date_ref = $activityRef->planned_start_date;
+                        if($earliest_date != null){
+                            if($earliest_date > $earliest_date_ref){
+                                $earliest_date = $earliest_date_ref;
+                            }
+                        }else{
                             $earliest_date = $earliest_date_ref;
                         }
-                    }else{
-                        $earliest_date = $earliest_date_ref;
                     }
-                }
-                
-                foreach($wbs->wbss as $wbs_child){
                     return self::getEarliestActivity($wbs_child,$earliest_date);
                 }
             }else{
@@ -794,7 +793,6 @@ class ProjectController extends Controller
             }
         }
     }
-    
     function getDataForGantt($project, $data, $links, $today){
         $index = 0;
         $wbss_id = $project->wbss->pluck('id')->toArray();

@@ -438,12 +438,21 @@ class BOMController extends Controller
 
     public function edit(Request $request, $id)
     {
+        $pr_number = '-';
+        $rap_number = '-';
         $route = $request->route()->getPrefix();
         $modelBOM = Bom::where('id',$id)->with('project')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service')->get();
         $project = Project::where('id',$modelBOM->project_id)->with('ship','customer')->first();
         $modelPR = PurchaseRequisition::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelPR)){
+            $pr_number = $modelPR->number;
+        }
+
         $modelRAP = Rap::where('bom_id',$modelBOM->id)->first();
+        if(isset($modelRAP)){
+            $rap_number = $modelRAP->number;
+        }
 
         $materials = Material::orderBy('name')->get()->jsonSerialize();
         $services = Service::orderBy('name')->get()->jsonSerialize();
