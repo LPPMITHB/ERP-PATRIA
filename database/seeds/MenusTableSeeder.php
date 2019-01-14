@@ -342,12 +342,11 @@ class MenusTableSeeder extends Seeder
             'name' => 'Goods Receipt',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-
 
         $goodsReceipt =  Menu::where('name','Goods Receipt')->select('id')->first()->id;
         DB::table('menus')->insert([
@@ -356,7 +355,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_receipt.selectPO',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$goodsReceipt,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -368,7 +367,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_receipt.createGrWithoutRef',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$goodsReceipt,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -380,12 +379,11 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_receipt.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$goodsReceipt,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -1105,7 +1103,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Material Requisition',
+            'name' => 'Goods Receipt',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
@@ -1114,6 +1112,53 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        $goodsReceipt =  Menu::where('name','Goods Receipt')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create GR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_receipt_repair.selectPO',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReceipt,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create GR without reference',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_receipt_repair.createGrWithoutRef',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReceipt,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View GR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_receipt_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReceipt,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Material Requisition',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         $materialRequisitionRepair =  Menu::where('name','Material Requisition')->where('menu_id',$materialManagement)->select('id')->first()->id;
         DB::table('menus')->insert([

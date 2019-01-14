@@ -45,7 +45,7 @@ class ResourceController extends Controller
 
     public function assignResource()
     {
-        $resources = Resource::where('status',1)->get();
+        $resources = Resource::all();
         $projects = Project::where('status',1)->get();
         $assignresource = ResourceDetail::with('project','resource','wbs')->get();
         return view('resource.assignResource', compact('resources','projects','assignresource'));

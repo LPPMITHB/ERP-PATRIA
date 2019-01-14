@@ -47,6 +47,8 @@ class RolesTableSeeder extends Seeder
                 'create-purchase-order-repair' => true,'list-purchase-order-repair' => true,'show-purchase-order-repair' => true,'edit-purchase-order-repair' => true,'approve-purchase-order-repair' => true,
                 'create-goods-issue' => true,'list-goods-issue' => true,'show-goods-issue' => true,'edit-goods-issue' => true,
                 'create-goods-issue-repair' => true,'list-goods-issue-repair' => true,'show-goods-issue-repair' => true,'edit-goods-issue-repair' => true,
+                'create-goods-receipt' => true,'create-goods-receipt-without-ref' => true,'list-goods-receipt' => true,'show-goods-receipt' => true,
+                'create-goods-receipt-repair' => true,'create-goods-receipt-without-ref-repair' => true,'list-goods-receipt-repair' => true,'show-goods-receipt-repair' => true,
                 'create-goods-movement' => true,'list-goods-movement' => true,'view-goods-movement' => true,'edit-goods-movement' => true,
                 'create-goods-movement-repair' => true,'list-goods-movement-repair' => true,'view-goods-movement-repair' => true,'edit-goods-movement-repair' => true,
                 'create-snapshot' => true,'count-stock' => true,'adjust-stock' => true,'list-adjustment-history' => true,'show-adjustment-history' => true,'show-snapshot' => true, 
@@ -116,15 +118,8 @@ class RolesTableSeeder extends Seeder
                 'create-purchase-requisition' => true,'list-purchase-requisition' => true,'show-purchase-requisition' => true,'edit-purchase-requisition' => true,'approve-purchase-requisition' => true,'consolidation-purchase-requisition' => true,
                 'create-purchase-order' => true,'list-purchase-order' => true,'show-purchase-order' => true,'edit-purchase-order' => true,'approve-purchase-order' => true,
                 'create-goods-movement' => true,'list-goods-movement' => true,'view-goods-movement' => true,'edit-goods-movement' => true,
-                'create-material-requisition' => true,'list-material-requisition' => true,'show-material-requisition' => true,'edit-material-requisition' => true,
-                'create-goods-issue' => true,'list-goods-issue' => true,'show-goods-issue' => true,'edit-goods-issue' => true,
-                'create-snapshot' => true,'count-stock' => true,'adjust-stock' => true,'list-adjustment-history' => true,'show-adjustment-history' => true,'show-snapshot' => true, 
-                'create-work-request' => true,'list-work-request' => true,'show-work-request' => true,'edit-work-request' => true,  'approve-work-request' => true,
-                'create-material-write-off' => true,
-                'show-stock-management' => true, 
             ]),
             'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
         ]);
 
         DB::table('roles')->insert([
@@ -158,6 +153,7 @@ class RolesTableSeeder extends Seeder
                 'create-work-request-repair' => true,'list-work-request-repair' => true,'show-work-request-repair' => true,'edit-work-request-repair' => true, 'approve-work-request-repair' => true,
                 'create-material-write-off-repair' => true,
                 'show-stock-management-repair' => true, 
+                'create-goods-receipt-repair' => true,'create-goods-receipt-without-ref-repair' => true,'list-goods-receipt-repair' => true,'show-goods-receipt-repair' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
