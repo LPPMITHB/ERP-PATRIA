@@ -877,29 +877,44 @@ Route::name('physical_inventory_repair.')->prefix('physical_inventory_repair')->
 
 // Good Receipt Routes
 Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {    
-    Route::get('/', 'GoodsReceiptController@index')->name('index');
+    Route::get('/selectPO', 'GoodsReceiptController@selectPO')->name('selectPO')->middleware('can:create-goods-receipt');
 
-    Route::get('/createGrWithRef/{id}', 'GoodsReceiptController@createGrWithRef')->name('createGrWithRef')->middleware('can:create-purchase-order');
+    Route::get('/createGrWithRef/{id}', 'GoodsReceiptController@createGrWithRef')->name('createGrWithRef')->middleware('can:create-goods-receipt');
 
-    Route::get('/createGrFromWo/{id}', 'GoodsReceiptController@createGrFromWo')->name('createGrFromWo')->middleware('can:create-purchase-order');
+    Route::post('/', 'GoodsReceiptController@store')->name('store')->middleware('can:create-goods-receipt');
 
-    Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-purchase-order');
+    Route::get('/createGrFromWo/{id}', 'GoodsReceiptController@createGrFromWo')->name('createGrFromWo')->middleware('can:create-goods-receipt');
 
-    Route::get('/selectPO', 'GoodsReceiptController@selectPO')->name('selectPO')->middleware('can:create-purchase-order');
+    Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-goods-receipt');
 
-    Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-purchase-order');
+    Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-goods-receipt-without-ref');
 
-    Route::get('/{id}/edit', 'GoodsReceiptController@edit')->name('edit')->middleware('can:edit-purchase-order');
+    Route::post('/storeWOR', 'GoodsReceiptController@storeWOR')->name('storeWOR')->middleware('can:create-goods-receipt-without-ref');
 
-    Route::patch('/{id}', 'GoodsReceiptController@update')->name('update')->middleware('can:edit-purchase-order');
+    Route::get('/', 'GoodsReceiptController@index')->name('index')->middleware('can:list-goods-receipt');
 
-    Route::post('/', 'GoodsReceiptController@store')->name('store')->middleware('can:create-purchase-order');
+    Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt');
+});
 
-    Route::post('/storeWOR', 'GoodsReceiptController@storeWOR')->name('storeWOR')->middleware('can:create-purchase-order');
+// Good Receipt Repair Routes
+Route::name('goods_receipt_repair.')->prefix('goods_receipt_repair')->group(function() {    
+    Route::get('/selectPO', 'GoodsReceiptController@selectPO')->name('selectPO')->middleware('can:create-goods-receipt-repair');
 
-    Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-purchase-order');
+    Route::get('/createGrWithRef/{id}', 'GoodsReceiptController@createGrWithRef')->name('createGrWithRef')->middleware('can:create-goods-receipt-repair');
 
-    Route::delete('/{id}', 'GoodsReceiptController@destroy')->name('destroy')->middleware('can:destroy-purchase-order');
+    Route::post('/', 'GoodsReceiptController@store')->name('store')->middleware('can:create-goods-receipt-repair');
+
+    Route::get('/createGrFromWo/{id}', 'GoodsReceiptController@createGrFromWo')->name('createGrFromWo')->middleware('can:create-goods-receipt-repair');
+
+    Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-goods-receipt-repair');
+
+    Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-goods-receipt-without-ref-repair');
+
+    Route::post('/storeWOR', 'GoodsReceiptController@storeWOR')->name('storeWOR')->middleware('can:create-goods-receipt-without-ref-repair');
+
+    Route::get('/', 'GoodsReceiptController@index')->name('index')->middleware('can:list-goods-receipt-repair');
+
+    Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt-repair');
 });
 
 //Stock Management Routes

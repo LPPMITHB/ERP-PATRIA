@@ -575,6 +575,79 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+        
+        //Goods Receipt
+        $createGR = Menu::where('name','Create GR')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Receipt',
+            'menu_id' => $createGR,
+            'middleware' => 'create-goods-receipt',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $createGRWOR = Menu::where('name','Create GR without reference')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Receipt Without Ref',
+            'menu_id' => $createGRWOR,
+            'middleware' => 'create-goods-receipt-without-ref',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGR = Menu::where('name','View GR')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Receipt',
+            'menu_id' => $viewGR,
+            'middleware' => 'list-goods-receipt',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Goods Receipt',
+            'menu_id' => $viewGR,
+            'middleware' => 'show-goods-receipt',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Goods Receipt Repair
+        $GRRepair = Menu::where('name','Goods Receipt')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createGRRepair = Menu::where('name','Create GR')->where('menu_id',$GRRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Receipt Repair',
+            'menu_id' => $createGRRepair,
+            'middleware' => 'create-goods-receipt-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $createGRWORRepair = Menu::where('name','Create GR without reference')->where('menu_id',$GRRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Receipt Without Ref Repair',
+            'menu_id' => $createGRWORRepair,
+            'middleware' => 'create-goods-receipt-without-ref-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGRRepair = Menu::where('name','View GR')->where('menu_id',$GRRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Receipt Repair',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'list-goods-receipt-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Goods Receipt Repair',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'show-goods-receipt-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
         //Physical Inventory
         $createSnapshot = Menu::where('name','Snapshot')->select('id')->first()->id;

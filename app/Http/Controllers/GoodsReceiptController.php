@@ -267,23 +267,6 @@ class GoodsReceiptController extends Controller
         $gr_number = 'GR-'.$gr_number;
 		return $gr_number;
     }
-    
-    public function update(Request $request)
-    {
-        $datas = $request->json()->all();
-        $modelGRD = GoodsReceiptDetail::where('goods_receipt_id',$datas['gr_id'])->where('material_id',$datas['material_id'])->first();
-        DB::beginTransaction();
-        try {
-            $modelGRD->quantity = $datas['quantity'];
-            $modelGRD->update();
-            
-            DB::commit();
-            return response(json_encode($modelPRD),Response::HTTP_OK);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('goods_receipt.edit',$datas['pr_id'])->with('error', $e->getMessage());
-        }
-    }
 
     public function getSlocApi($id){
         $modelSloc = StorageLocation::find($id)->jsonSerialize();
@@ -301,7 +284,6 @@ class GoodsReceiptController extends Controller
 
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
-
 
     public function getGRDAPI($id){
 
