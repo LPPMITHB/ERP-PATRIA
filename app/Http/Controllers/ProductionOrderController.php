@@ -229,7 +229,11 @@ class ProductionOrderController extends Controller
         if($modelBOM != null){
             return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD','route'));
         }else{
-            return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            if($route == "/production_order"){
+                return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }
         }
     }
 
