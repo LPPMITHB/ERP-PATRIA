@@ -84,32 +84,77 @@ class ProductionOrderController extends Controller
             if($wbs->wbs){
                 if(count($wbs->activities)>0){
                     $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    if($wbs->productionOrder==null){
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $routes.$wbs->id],
+                        ]);
+                    }else{
+                        if($route == "/production_order"){
+                            $show = '/production_order/';
+                        }elseif($route == "/production_order_repair"){
+                            $show = '/production_order_repair/';
+                        }
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
+                        ]);
+                    }
+                }else{
+                    if($wbs->productionOrder==null){
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $routes.$wbs->id],
+                        ]);
+                    }else{
+                        if($route == "/production_order"){
+                            $show = '/production_order/';
+                        }elseif($route == "/production_order_repair"){
+                            $show = '/production_order_repair/';
+                        }
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
+                        ]);  
+                    }
+                    
+                }
+            }else{
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                if($wbs->productionOrder==null){
                     $dataWbs->push([
                         "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
+                        "parent" => $modelProject->number,
                         "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $routes.$wbs->id],
                     ]);
                 }else{
+                    if($route == "/production_order"){
+                        $show = '/production_order/';
+                    }elseif($route == "/production_order_repair"){
+                        $show = '/production_order_repair/';
+                    }
                     $dataWbs->push([
                         "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                        "parent" => $modelProject->number,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => $routes.$wbs->id],
+                        "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
                     ]);
                 }
-            }else{
-                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
-
-                $dataWbs->push([
-                    "id" => $wbs->code , 
-                    "parent" => $modelProject->number,
-                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
-                    "icon" => "fa fa-suitcase",
-                    "a_attr" =>  ["href" => $routes.$wbs->id],
-                ]);
             } 
         }
 

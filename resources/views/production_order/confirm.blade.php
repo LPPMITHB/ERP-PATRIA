@@ -394,6 +394,7 @@
     })
 
     var data = {
+        menu : @json($route),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
         materials : [],
@@ -564,7 +565,7 @@
             confirm(){            
                 var confirmActivity = this.confirmActivity;
                 var url = "";
-                if(this.menu == "building"){
+                if(this.menu =="/production_order"){
                     var url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
                 }else{
                     var url = "/activity_repair/updateActualActivity/"+confirmActivity.activity_id;
