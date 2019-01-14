@@ -1154,7 +1154,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Material Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1167,7 +1167,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition_repair.create',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialRequisitionRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1179,7 +1179,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition_repair.indexApprove',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialRequisitionRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1191,7 +1191,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_requisition_repair.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialRequisitionRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1202,7 +1202,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Goods Issue',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1215,7 +1215,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_issue_repair.selectMR',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsIssue,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1227,7 +1227,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_issue_repair.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsIssue,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1274,7 +1274,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Physical Inventory',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1288,7 +1288,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory_repair.viewAdjustmentHistory',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1300,7 +1300,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory_repair.indexSnapshot',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1313,7 +1313,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory_repair.indexCountStock',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1326,7 +1326,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory_repair.indexAdjustStock',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$physicalInventory,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1338,7 +1338,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'stock_management_repair.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1350,7 +1350,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'material_write_off_repair.create',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1361,7 +1361,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'WIP',
             'icon' => 'fa-database',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1374,7 +1374,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$wipRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1387,7 +1387,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request_repair.create',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$workRequestRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1399,7 +1399,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request_repair.indexApprove',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$workRequestRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1411,7 +1411,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_request_repair.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$workRequestRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1422,7 +1422,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Work Order',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$wipRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1435,7 +1435,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_order_repair.selectWR',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$workOrderRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1447,7 +1447,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_order_repair.indexApprove',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$workOrderRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1459,7 +1459,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'work_order_repair.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$workOrderRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

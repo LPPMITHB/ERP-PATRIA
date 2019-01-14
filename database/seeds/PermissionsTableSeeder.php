@@ -310,6 +310,15 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        $approveWR = Menu::where('name','View & Edit WR')->select('id')->first()->id;        
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Request',
+            'menu_id' => $approveWR,
+            'middleware' => 'approve-work-request',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         $viewWR = Menu::where('name','View & Edit WR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Work Request',
@@ -334,6 +343,144 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        //Work Order
+        $createWO = Menu::where('name','Create WO')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Order',
+            'menu_id' => $createWO,
+            'middleware' => 'create-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveWO = Menu::where('name','View & Edit WO')->select('id')->first()->id;        
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Order',
+            'menu_id' => $approveWO,
+            'middleware' => 'approve-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewWO = Menu::where('name','View & Edit WO')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'list-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'show-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'edit-work-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Work Order Repair
+        $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
+        $woRepair = Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        $createWO = Menu::where('name','Create WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Order',
+            'menu_id' => $createWO,
+            'middleware' => 'create-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;        
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Order',
+            'menu_id' => $approveWO,
+            'middleware' => 'approve-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'list-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'show-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'edit-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Work Request Repair
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
+        $wrRepair = Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        $createWRRepair = Menu::where('name','Create WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Request',
+            'menu_id' => $createWRRepair,
+            'middleware' => 'create-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveWRRepair = Menu::where('name','Approve WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Request',
+            'menu_id' => $approveWRRepair,
+            'middleware' => 'approve-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewWRRepair = Menu::where('name','View & Edit WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Request',
+            'menu_id' => $viewWRRepair,
+            'middleware' => 'list-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Request',
+            'menu_id' => $viewWRRepair,
+            'middleware' => 'show-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Request',
+            'menu_id' => $viewWRRepair,
+            'middleware' => 'edit-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
 
         //Purchase Requisition
         $createPR = Menu::where('name','Create PR')->select('id')->first()->id;
@@ -484,6 +631,53 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Material Requisition',
             'menu_id' => $viewMR,
             'middleware' => 'edit-material-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
+        $mrRepair = Menu::where('name','Material Requisition')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        //Material Requisition Repair
+        $createMRRepair = Menu::where('name','Create MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Material Requisition',
+            'menu_id' => $createMRRepair,
+            'middleware' => 'create-material-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveMRRepair = Menu::where('name','Approve MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Material Requisition',
+            'menu_id' => $approveMRRepair,
+            'middleware' => 'approve-material-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewMRRepair = Menu::where('name','View & Edit MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Material Requisition',
+            'menu_id' => $viewMRRepair,
+            'middleware' => 'list-material-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Material Requisition',
+            'menu_id' => $viewMRRepair,
+            'middleware' => 'show-material-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Material Requisition',
+            'menu_id' => $viewMRRepair,
+            'middleware' => 'edit-material-requisition-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -702,6 +896,60 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Physical Inventory Repair
+        $piRepair = Menu::where('name','Physical Inventory')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createSnapshot = Menu::where('name','Snapshot')->where('menu_id',$piRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Snapshot',
+            'menu_id' => $createSnapshot,
+            'middleware' => 'create-snapshot-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Snapshot',
+            'menu_id' => $createSnapshot,
+            'middleware' => 'show-snapshot-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $countStock = Menu::where('name','Count Stock')->where('menu_id',$piRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Count Stock',
+            'menu_id' => $countStock,
+            'middleware' => 'count-stock-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $adjustStock = Menu::where('name','Adjust Stock')->where('menu_id',$piRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Adjust Stock',
+            'menu_id' => $adjustStock,
+            'middleware' => 'adjust-stock-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewAdjustmentHistory = Menu::where('name','View Adjustment History')->where('menu_id',$piRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Adjustment History',
+            'menu_id' => $viewAdjustmentHistory,
+            'middleware' => 'list-adjustment-history-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Adjustment History',
+            'menu_id' => $viewAdjustmentHistory,
+            'middleware' => 'show-adjustment-history-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Goods Issue
         $createGI = Menu::where('name','Create GI')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -733,6 +981,42 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Goods Issue',
             'menu_id' => $viewGI,
             'middleware' => 'edit-goods-issue',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Goods Issue Repair
+        $giRepair = Menu::where('name','Goods Issue')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createGI = Menu::where('name','Create GI')->where('menu_id',$giRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Issue',
+            'menu_id' => $createGI,
+            'middleware' => 'create-goods-issue-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGIRepair = Menu::where('name','View GI')->where('menu_id',$giRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Issue',
+            'menu_id' => $viewGIRepair,
+            'middleware' => 'list-goods-issue-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Goods Issue',
+            'menu_id' => $viewGIRepair,
+            'middleware' => 'show-goods-issue-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Goods Issue',
+            'menu_id' => $viewGIRepair,
+            'middleware' => 'edit-goods-issue-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -1412,11 +1696,21 @@ class PermissionsTableSeeder extends Seeder
         //Stock Management
         $stockManagement = Menu::where('name','Stock Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
-        'name' => 'List Stock Management',
-        'menu_id' => $stockManagement,
-        'middleware' => 'list-stock-management',
-        'created_at' => date('Y-m-d'),
-        'updated_at' => date('Y-m-d'),
+            'name' => 'List Stock Management',
+            'menu_id' => $stockManagement,
+            'middleware' => 'show-stock-management',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Stock Management Repair
+        $stockManagement = Menu::where('name','Stock Management')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Stock Management',
+            'menu_id' => $stockManagement,
+            'middleware' => 'show-stock-management-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
         ]);
 
         //Material Write Off
@@ -1427,7 +1721,17 @@ class PermissionsTableSeeder extends Seeder
             'middleware' => 'create-material-write-off',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
-            ]);
+        ]);
+
+        //Material Write Off Repair
+        $materialWriteOff = Menu::where('name','Material Write Off')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Material Write Off',
+            'menu_id' => $materialWriteOff,
+            'middleware' => 'create-material-write-off-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
         //Goods Movement Permission
         $building =  Menu::where('name','Ship Building')->select('id')->first()->id;
