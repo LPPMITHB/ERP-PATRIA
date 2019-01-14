@@ -23,18 +23,20 @@ class WorkRequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $modelWRs = WorkRequest::all();
 
-        return view('work_request.index', compact('modelWRs'));
+        return view('work_request.index', compact('modelWRs','menu'));
     }
 
-    public function indexApprove()
+    public function indexApprove(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $modelWRs = WorkRequest::whereIn('status',[1,4])->get();
 
-        return view('work_request.indexApprove', compact('modelWRs'));
+        return view('work_request.indexApprove', compact('modelWRs', 'menu'));
     }
 
 
@@ -43,11 +45,16 @@ class WorkRequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        $modelProject = Project::where('status',1)->get();
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }
 
-        return view('work_request.create', compact('modelProject'));
+        return view('work_request.create', compact('modelProject', 'menu'));
     }
 
     /**
@@ -58,6 +65,7 @@ class WorkRequestController extends Controller
      */
     public function store(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $datas = json_decode($request->datas);
 
         $wr_number = $this->generateWRNumber();
@@ -120,10 +128,18 @@ class WorkRequestController extends Controller
             }
             
             DB::commit();
-            return redirect()->route('work_request.show',$WR->id)->with('success', 'Work Request Created');
+            if($menu == "building"){
+                return redirect()->route('work_request.show',$WR->id)->with('success', 'Work Request Created');
+            }else{
+                return redirect()->route('work_request_repair.show',$WR->id)->with('success', 'Work Request Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('work_request.create')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('work_request.create')->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('work_request_repair.create')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -140,11 +156,12 @@ class WorkRequestController extends Controller
         return view('work_request.show', compact('modelWR'));
     }
 
-    public function showApprove($id)
+    public function showApprove($id, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $modelWR = WorkRequest::findOrFail($id);
 
-        return view('work_request.showApprove', compact('modelWR'));
+        return view('work_request.showApprove', compact('modelWR','menu'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -152,8 +169,9 @@ class WorkRequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $modelWR = WorkRequest::findOrFail($id);
         $project = Project::where('id',$modelWR->project_id)->with('customer','ship')->first();
         $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get();
@@ -164,7 +182,7 @@ class WorkRequestController extends Controller
         $modelWRD->jsonSerialize();
         $wbss = [];
         $wbss = WBS::where('project_id',$modelWR->project_id)->get()->jsonSerialize();
-        return view('work_request.edit', compact('modelWR','project','modelWRD','wbss'));
+        return view('work_request.edit', compact('modelWR','project','modelWRD','wbss','menu'));
     }
 
     /**
@@ -176,6 +194,7 @@ class WorkRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
@@ -239,11 +258,18 @@ class WorkRequestController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('work_request.show',$WR->id)->with('success', 'Work Request Updated');
+            if($menu == "building"){
+                return redirect()->route('work_request.show',$WR->id)->with('success', 'Work Request Updated');
+            }else{
+                return redirect()->route('work_request_repair.show',$WR->id)->with('success', 'Work Request Updated');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-
-            return redirect()->route('work_request.create')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('work_request.create')->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('work_request_repair.create')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -287,8 +313,9 @@ class WorkRequestController extends Controller
             return redirect()->route('purchase_requisition.create')->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
         }  
     }
-    public function approval($wr_id,$status)
+    public function approval($wr_id,$status, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         DB::beginTransaction();
         try{
             $modelWR = WorkRequest::findOrFail($wr_id);
@@ -296,21 +323,37 @@ class WorkRequestController extends Controller
                 $modelWR->status = 2;
                 $modelWR->update();
                 DB::commit();
-                return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Approved');
+                if($menu == "building"){
+                    return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Approved');
+                }else{
+                    return redirect()->route('work_request_repair.showApprove',$wr_id)->with('success', 'Work Request Approved');
+                }
             }elseif($status == "need-revision"){
                 $modelWR->status = 3;
                 $modelWR->update();
                 DB::commit();
-                return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Need Revision');
+                if($menu == "building"){
+                    return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Need Revision');
+                }else{
+                    return redirect()->route('work_request_repair.showApprove',$wr_id)->with('success', 'Work Request Need Revision');
+                }
             }elseif($status == "reject"){
                 $modelWR->status = 5;
                 $modelWR->update();
                 DB::commit();
-                return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Rejected');
+                if($menu == "building"){
+                    return redirect()->route('work_request.showApprove',$wr_id)->with('success', 'Work Request Rejected');
+                }else{
+                    return redirect()->route('work_request_repair.showApprove',$wr_id)->with('success', 'Work Request Rejected');
+                }
             }
         } catch (\Exception $e){
             DB::rollback();
-            return redirect()->route('work_request.show',$wr_id);
+            if($menu == "building"){
+                return redirect()->route('work_request.show',$wr_id);
+            }else{
+                return redirect()->route('work_request_repair.show',$wr_id);
+            }
         }
 
         

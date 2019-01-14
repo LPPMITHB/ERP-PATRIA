@@ -31,12 +31,13 @@ class MaterialWriteOffController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
         $materials = Material::all();
         $storageLocations = StorageLocation::where('status',1)->get();
 
-        return view('material_write_off.create', compact('materials','storageLocations'));
+        return view('material_write_off.create', compact('materials','storageLocations','menu'));
     }
 
     /**
@@ -48,6 +49,7 @@ class MaterialWriteOffController extends Controller
     public function store(Request $request)
     {
         $datas = json_decode($request->datas);
+        $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
         
         $number = $this->generateGINumber();
 
@@ -75,10 +77,18 @@ class MaterialWriteOffController extends Controller
                 // $this->updateStock($data);
             }
             DB::commit();
-            return redirect()->route('goods_issue.show',$MWO->id)->with('success', 'Material Write Off Created');
+            if($menu == "building"){
+                return redirect()->route('goods_issue.show',$MWO->id)->with('success', 'Material Write Off Created');
+            }else{
+                return redirect()->route('goods_issue_repair.show',$MWO->id)->with('success', 'Material Write Off Created');
+            }
         }catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('material_write_off.create')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('material_write_off.create')->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('material_write_off_repair.create')->with('error', $e->getMessage());
+            }
         }
 
     }

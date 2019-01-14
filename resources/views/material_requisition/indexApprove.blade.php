@@ -36,7 +36,11 @@
                                 <td>{{ $modelMR->description }}</td>
                                 <td>{{ $modelMR->project->name }}</td>
                                 <td class="textCenter">
-                                    <a href="{{ route('material_requisition.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($menu == "building")
+                                        <a href="{{ route('material_requisition.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @else
+                                        <a href="{{ route('material_requisition_repair.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

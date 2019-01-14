@@ -16,7 +16,11 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('work_order.update') }}">
+            @if($menu == "building")
+                <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('work_order.update') }}">
+            @else
+                <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('work_order_repair.update') }}">
+            @endif
             <input type="hidden" name="_method" value="PATCH">
             @csrf
                 @verbatim

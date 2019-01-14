@@ -25,7 +25,11 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="create_snapshot">
-                            <form class="form-horizontal" method="POST" action="{{ route('physical_inventory.displaySnapshot') }}">
+                            @if($menu == "building")
+                                <form class="form-horizontal" method="POST" action="{{ route('physical_inventory.displaySnapshot') }}">
+                            @else
+                                <form class="form-horizontal" method="POST" action="{{ route('physical_inventory_repair.displaySnapshot') }}">
+                            @endif
                                 @csrf
                                 <div class="box-body">
                 
@@ -92,11 +96,15 @@
                                             </td>
                                             <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>
                                             <td class="p-l-0 textCenter">
-                                                <button class="btn btn-primary btn-xs">
-                                                    <a  href="{{route('physical_inventory.showSnapshot', ['id' => $snapshot->id])}}">
+                                                @if($menu == "building")
+                                                    <a class="btn btn-primary btn-xs" href="{{route('physical_inventory.showSnapshot', ['id' => $snapshot->id])}}">
                                                         VIEW
                                                     </a>
-                                                </button>
+                                                @else
+                                                    <a class="btn btn-primary btn-xs" href="{{route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])}}">
+                                                        VIEW
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

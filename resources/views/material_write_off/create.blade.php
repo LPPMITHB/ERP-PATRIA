@@ -17,7 +17,11 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.store') }}">
+                @if($menu == "building")
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.store') }}">
+                @else
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off_repair.store') }}">
+                @endif
                     @csrf
                     @verbatim
                     <div id="mwo">

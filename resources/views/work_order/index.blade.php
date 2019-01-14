@@ -45,35 +45,62 @@
                                 @if($modelWO->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_order_repair.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWO->status == 2)
                                     <td>APPROVED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWO->status == 3)
                                     <td>NEED REVISION</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_order_repair.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWO->status == 4)
                                     <td>REVISED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_order_repair.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @elseif($modelWO->status == 5)
                                     <td>REJECTED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @else
                                     <td>RECEIVED</td>
                                     <td class="textCenter">
-                                        <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($menu == "building")
+                                            <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @else
+                                            <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
                                     </td>
                                 @endif
                             </tr>
