@@ -288,11 +288,7 @@ class ProjectController extends Controller
         }
 
         DB::beginTransaction();
-        if($menu == "building"){
-            $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
-        }else{
-            $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',2)->first();
-        }
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->first();
         try {
             $project = new Project;
             $project->number =  $request->number;

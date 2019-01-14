@@ -176,6 +176,7 @@
     });
 
     var data = {
+        menu : @json($menu),
         sources : ['Stock','WIP'],
         bom : @json($modelBOM),
         project : @json($project),
@@ -299,7 +300,12 @@
                 data = JSON.stringify(data);
                 var bom_id = this.bom.id;
 
-                var url = "{{ route('bom.update') }}";
+                if(this.menu == "building"){
+                    var url = "{{ route('bom.update') }}";
+                }else{
+                    var url = "{{ route('bom_repair.update') }}";
+                }
+
 
                 window.axios.put(url,data).then((response) => {
                     iziToast.success({
@@ -347,7 +353,11 @@
                     var newMaterial = this.input;
                     var bom_id = this.input.bom_id;
                     newMaterial = JSON.stringify(newMaterial);
+                if(this.menu == "building"){
                     var url = "{{ route('bom.storeBom') }}";
+                }else{
+                    var url = "{{ route('bom_repair.storeBom') }}";
+                }
 
                     window.axios.post(url,newMaterial).then((response) => {
                         iziToast.success({
