@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionsTableSeeder::class);
         $this->call(SidenavsTableSeeder::class);
         $this->call(MaterialsTableSeeder::class);
+        $this->call(ServicesTableSeeder::class);
         $this->call(ShipsTableSeeder::class);
         $this->call(CustomersTableSeeder::class);
         $this->call(WarehousesTableSeeder::class);
@@ -31,23 +32,21 @@ class DatabaseSeeder extends Seeder
         $this->call(ProProjectTableSeeder::class);
         $this->call(ProWbsTableSeeder::class);
         $this->call(ProActivityTableSeeder::class);
-        $this->call(BOMsTableSeeder::class);
-        $this->call(BOMDetailsTableSeeder::class);
-        $this->call(RAPTableSeeder::class);        
-        $this->call(RAPDetailsTableSeeder::class);
-        $this->call(PRTableSeeder::class);
-        $this->call(PRDetailsTableSeeder::class);
-        $this->call(POTableSeeder::class);
-        $this->call(PODetailsTableSeeder::class);
+        $this->call(MstBomTableSeeder::class);
+        $this->call(MstBomDetailTableSeeder::class);
+        $this->call(TrxRapTableSeeder::class);
+        $this->call(TrxRapDetailTableSeeder::class);
+        $this->call(TrxPurchaseRequisitionTableSeeder::class);
+        $this->call(TrxPurchaseRequisitionDetailTableSeeder::class);
+        $this->call(TrxPurchaseOrderTableSeeder::class);
+        $this->call(TrxPurchaseOrderDetailTableSeeder::class);
         $this->call(YardsTableSeeder::class);
         $this->call(UOMTableSeeder::class);
         $this->call(CategoriesTableSeeder::class);
         $this->call(ResourcesTableSeeder::class);
-        $this->call(ServicesTableSeeder::class);
-        $this->call(ProductionOrderTableSeeder::class);
-        $this->call(ProductionOrderDetailsTableSeeder::class); 
+        $this->call(TrxProductionOrderTableSeeder::class);
+        $this->call(TrxProductionOrderDetailTableSeeder::class);
         $this->call(WorkRequestTableSeeder::class); 
         $this->call(WorkRequestDetailTableSeeder::class); 
-
     }
 }

@@ -12,10 +12,12 @@ class ProActivityTableSeeder extends Seeder
      */
     public function run()
     {
+        
+
         \DB::table('pro_activity')->delete();
         
         \DB::table('pro_activity')->insert(array (
-            0 => //200
+            0 => 
             array (
                 'id' => 1,
                 'code' => 'ACT181010001',
@@ -456,5 +458,7 @@ class ProActivityTableSeeder extends Seeder
                 'updated_at' => '2018-12-19 10:45:11',
             ),
         ));
+        
+        
     }
 }
