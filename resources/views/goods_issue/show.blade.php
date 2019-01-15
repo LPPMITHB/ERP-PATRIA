@@ -29,9 +29,10 @@
                         </div>
                     </div>
                 </div>
+            <div class="box-header p-t-0 p-b-0">
                 <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4">
                             Ship Name
                         </div>
                         <div class="col-md-8">
@@ -39,7 +40,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4">
                             PO Code
                         </div>
                         <div class="col-md-8">
@@ -47,7 +48,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4">
                             Type
                         </div>
                         <div class="col-md-8">
@@ -85,42 +86,43 @@
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4 col-xs-4">
                                 Status
                             </div>
                             @if($modelGI->status == 1)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-md-8">
                                 : <b>OPEN</b>
                             </div>
                         @elseif($modelGI->status == 2)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-md-8">
                                 : <b>APPROVE</b>
                             </div>
                         @elseif($modelGI->status == 3)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-md-8">
                                 : <b>NEEDS REVISION</b>
                             </div>
                         @elseif($modelGI->status == 4)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-md-8">
                                 : <b>REJECTED</b>
                             </div>
                         @elseif($modelGI->status == 0)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-md-8">
                                 : <b>ISSUED</b>
                             </div>
                         @endif
                     </div>
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4 col-xs-4">
                                 Description
                             </div>
-                            <div class="col-md-7">
+                            <div class="col-md-8">
                                 : <b> {{ $modelGI->description }} </b>
                             </div>
                     </div>
                 </div>
             </div>
-            <div class="box-body p-t-0 p-b-0">
+        </div>
+            <div class="box-body">
                 <table class="table table-bordered showTable" id="gi-table">
                     <thead>
                         <tr>

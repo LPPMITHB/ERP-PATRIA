@@ -107,7 +107,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(data,index) in modelPrOD">
+                                    <tr v-for="(data,index) in boms">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.material.code }}</td>
                                         <td class="tdEllipsis">{{ data.material.name }}</td>
@@ -118,6 +118,33 @@
                                         </td>
                                         <td class="tdEllipsis" v-else>
                                             <i class="fa fa-times text-danger"></i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4 class="box-title m-t-0">Service</h4>
+                            <table id="service-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%">No</th>
+                                        <th style="width: 25%">Code</th>
+                                        <th style="width: 25%">Name</th>
+                                        <th style="width: 15%">Quantity</th>
+                                        <th style="width: 15%">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(data,index) in services">
+                                        <td>{{ index + 1 }}</td>
+                                        <td class="tdEllipsis">{{ data.service.code }}</td>
+                                        <td class="tdEllipsis">{{ data.service.name }}</td>
+                                        <td class="tdEllipsis">{{ data.quantity }}</td>
+                                        <td class="tdEllipsis">
+                                            <i class="fa fa-check text-success"></i>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -199,6 +226,7 @@
     var data = {
         modelPrOD : @json($modelPrOD),
         boms : @json($boms),
+        services : @json($services),
         resourceDetails : @json($resources),
         materials : [],
         resources : [],

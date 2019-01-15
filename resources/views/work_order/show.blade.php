@@ -147,8 +147,9 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="35%">Material Name</th>
-                            <th width="20%">Quantity</th>
+                            <th width="10%">Quantity</th>
                             <th width="20%">Price / pcs</th>
+                            <th width="10%">Discount (%)</th>
                             <th width="20%">Sub Total Price</th>
                         </tr>
                     </thead>
@@ -160,7 +161,8 @@
                                     <td>{{ $POD->material->code }} - {{ $POD->material->name }}</td>
                                     <td>{{ number_format($POD->quantity) }}</td>
                                     <td>{{ number_format($POD->total_price / $POD->quantity,2) }}</td>
-                                    <td>{{ number_format($POD->total_price,2) }}</td>
+                                    <td>{{ number_format($POD->discount,2) }}</td>
+                                    <td>{{ number_format($POD->total_price - ($POD->total_price * ($POD->discount/100)),2) }}</td>
                                 </tr>
                             @endif
                         @endforeach

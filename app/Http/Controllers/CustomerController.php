@@ -70,10 +70,8 @@ class CustomerController extends Controller
             $customer->address = ucfirst($request->input('address'));
             $customer->contact_person_phone = $request->input('contact_person_phone');
             $customer->status = $request->input('status');
-            $customer->user_id = Auth::user()->id;
             $customer->branch_id = Auth::user()->branch->id;
-            $customer->save();
-
+            
             $modelRole = Role::where('name','CUSTOMER')->first();
             $stringBusinessUnit = '['.$request->input('businessUnit').']';
             
@@ -88,6 +86,9 @@ class CustomerController extends Controller
             $user->business_unit_id = $stringBusinessUnit;
             $user->branch_id = Auth::user()->branch->id;
             $user->save();
+
+            $customer->user_id = $user->id;
+            $customer->save();
 
             DB::commit();
             return redirect()->route('customer.show',$customer->id)->with('success', 'Success Created New Customer!');
@@ -106,9 +107,30 @@ class CustomerController extends Controller
     public function show($id)
     {
         $customer = Customer::findOrFail($id);
+        $business_ids = json_decode($customer->user->business_unit_id);
+        $business_unit = "";
         
+        foreach($business_ids as $business_id){
+            if($business_unit == ""){
+                if($business_id == 1){
+                $business_unit = "Building";
+                }elseif($business_id == 2){
+                    $business_unit = "Repair";
+                }elseif($business_id == 3){
+                    $business_unit = "Trading";
+                }
+            }else{
+                if($business_id == 1){
+                    $business_unit = $business_unit.", Building";
+                }elseif($business_id == 2){
+                    $business_unit = $business_unit.", Repair";
+                }elseif($business_id == 3){
+                    $business_unit = $business_unit.", Trading";
+                }
+            }
+        }
         
-        return view('customer.show', compact('customer'));
+        return view('customer.show', compact('customer','business_unit'));
     }
 
     /**
@@ -153,11 +175,14 @@ class CustomerController extends Controller
             $customer->status = $request->input('status');
             $customer->update();
 
+            $stringBusinessUnit = '['.$request->input('businessUnit').']';
+
             $user = User::where('username', $customer->code)->first();
             $user->name = ucwords($request->input('name'));
             $user->email = $request->input('contact_person_email');
             $user->address = ucfirst($request->input('address'));
             $user->phone_number = $request->input('contact_person_phone');
+            $user->business_unit_id = $stringBusinessUnit;
             $user->update();
         
             DB::commit();

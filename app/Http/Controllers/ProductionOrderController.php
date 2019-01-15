@@ -214,20 +214,53 @@ class ProductionOrderController extends Controller
         $modelBOM = Bom::where('wbs_id',$modelPrO->wbs_id)->get();
 
         $boms = Collection::make();
-        foreach($modelBOM as $bom){
-            foreach($bom->bomDetails as $bomDetail){
-                $boms->push([
-                    "id" => $bomDetail->id , 
-                    "material" => [
-                        "code" => $bomDetail->material->code,
-                        "name" => $bomDetail->material->name,
-                    ],
-                    "quantity" => $bomDetail->quantity,
-                    "material_id" => $bomDetail->material_id,
-                    "wbs_id" => $bomDetail->bom->wbs_id
-                ]);
+        $services = Collection::make();
+        if($route == '/production_order'){
+            foreach($modelBOM as $bom){
+                foreach($bom->bomDetails as $bomDetail){
+                    $boms->push([
+                        "id" => $bomDetail->id , 
+                        "material" => [
+                            "code" => $bomDetail->material->code,
+                            "name" => $bomDetail->material->name,
+                        ],
+                        "quantity" => $bomDetail->quantity,
+                        "material_id" => $bomDetail->material_id,
+                        "wbs_id" => $bomDetail->bom->wbs_id
+                    ]);
+                }
+            }
+        }elseif($route == '/production_order_repair'){
+            foreach($modelBOM as $bom){
+                foreach($bom->bomDetails as $bomDetail){
+                    if($bomDetail->material_id != ""){
+                        $boms->push([
+                            "id" => $bomDetail->id , 
+                            "material" => [
+                                "code" => $bomDetail->material->code,
+                                "name" => $bomDetail->material->name,
+                            ],
+                            "quantity" => $bomDetail->quantity,
+                            "material_id" => $bomDetail->material_id,
+                            "wbs_id" => $bomDetail->bom->wbs_id
+                        ]);
+                    }elseif($bomDetail->service_id != ""){
+                        $services->push([
+                            "id" => $bomDetail->id , 
+                            "service" => [
+                                "code" => $bomDetail->service->code,
+                                "name" => $bomDetail->service->name,
+                            ],
+                            "quantity" => $bomDetail->quantity,
+                            "service_id" => $bomDetail->service_id,
+                            "wbs_id" => $bomDetail->bom->wbs_id
+                        ]);
+                    }
+                }
             }
         }
+
+        // print_r($boms);exit();
 
         // tambahan resource dari assign resource
         $modelRD = ResourceTrx::where('wbs_id',$modelPrO->wbs_id)->get();
@@ -244,13 +277,13 @@ class ProductionOrderController extends Controller
                 "resource_id" => $RD->resource_id
             ]);
         }
-        return view('production_order.release', compact('modelPrO','project','modelPrOD','boms','resources','route'));
+        return view('production_order.release', compact('modelPrO','project','modelPrOD','boms','services','resources','route'));
     }
 
     public function confirm(Request $request,$id){
         $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','service','productionOrder')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
 
         return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route'));
@@ -311,11 +344,19 @@ class ProductionOrderController extends Controller
 
             if(count($datas->materials) > 0){
                 foreach($datas->materials as $material){
-                    $PrOD = new ProductionOrderDetail;
-                    $PrOD->production_order_id = $PrO->id;
-                    $PrOD->material_id = $material->material_id;
-                    $PrOD->quantity = $material->quantity;
-                    $PrOD->save();
+                    if($material->material_id != ""){
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->material_id = $material->material_id;
+                        $PrOD->quantity = $material->quantity;
+                        $PrOD->save();
+                    }elseif($material->service_id != ""){
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->service_id = $material->service_id;
+                        $PrOD->quantity = $material->quantity;
+                        $PrOD->save();
+                    }
                 }
             }
 
@@ -416,12 +457,18 @@ class ProductionOrderController extends Controller
                 $modelPrO->status = 2;
                 $modelPrO->save();
             }
-
             foreach ($datas->materials as  $material) {
                 $prod = ProductionOrderDetail::find($material->id);
                 $prod->actual = $material->used;
                 $prod->update();
             }
+
+            foreach ($datas->services as  $service) {
+                    $prod = ProductionOrderDetail::find($service->id);
+                    $prod->actual = $service->used;
+                    $prod->update();
+            }
+            
             DB::commit();
             if($route == "/production_order"){
                 return redirect()->route('production_order.showConfirm',$modelPrO->id)->with('success', 'Production Order Confirmed');
@@ -447,9 +494,10 @@ class ProductionOrderController extends Controller
     public function show(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $modelPrO = ProductionOrder::findOrFail($id);    
-        
-        return view('production_order.show', compact('modelPrO','route'));
+        $modelPrO = ProductionOrder::findOrFail($id);
+        $modelActivities = $modelPrO->wbs->activities;
+
+        return view('production_order.show', compact('modelPrO','route','modelActivities'));
         
     }
 

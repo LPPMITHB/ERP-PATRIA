@@ -92,6 +92,35 @@
                     </div>
                 </div>
             </div>
+            {{-- table activity --}}
+            <div class="box-body p-t-0 p-b-5">
+                    <h4>Activity</h4>
+                <table class="table table-bordered showTable" id="activity-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th width="40%">Activity Name</th>
+                            <th width="25%">Description</th>
+                            <th width="25%">Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php($counter=1)
+                        @foreach($modelActivities as $activity)
+                        @if($activity->id != "")
+                            <tr>
+                                <td>{{ $counter }}</td>
+                                <td>{{ $activity->name }}</td>
+                                <td>{{ $activity->description }}</td>
+                                <td>{{ $activity->progress  }} %</td>
+                            </tr>
+                        @php($counter++)
+                        @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div> <!-- /.box-body -->
+
             {{-- table material --}}
             <div class="box-body p-t-0 p-b-5">
                     <h4>Material</h4>
@@ -101,6 +130,7 @@
                             <th width="5%">No</th>
                             <th width="40%">Material Name</th>
                             <th width="25%">Quantity</th>
+                            <th width="25%">Used</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -111,6 +141,36 @@
                                 <td>{{ $counter }}</td>
                                 <td>{{ $PrOD->material->name }}</td>
                                 <td>{{ number_format($PrOD->quantity) }}</td>
+                                <td>{{ number_format($PrOD->actual) }}</td>
+                            </tr>
+                        @php($counter++)
+                        @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div> <!-- /.box-body -->
+
+            {{-- table service --}}
+            <div class="box-body p-t-0 p-b-5">
+                    <h4>Service</h4>
+                <table class="table table-bordered showTable" id="service-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th width="40%">Service Name</th>
+                            <th width="25%">Quantity</th>
+                            <th width="25%">Used</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php($counter=1)
+                        @foreach($modelPrO->ProductionOrderDetails as $PrOD)
+                        @if($PrOD->service_id != "")
+                            <tr>
+                                <td>{{ $counter }}</td>
+                                <td>{{ $PrOD->service->name }}</td>
+                                <td>{{ number_format($PrOD->quantity) }}</td>
+                                <td>{{ number_format($PrOD->actual) }}</td>
                             </tr>
                         @php($counter++)
                         @endif

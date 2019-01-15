@@ -23,7 +23,7 @@ class MaterialRequisitionController extends Controller
         $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }else{
+        }elseif($menu == "building"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
 
@@ -37,7 +37,7 @@ class MaterialRequisitionController extends Controller
         $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }else{
+        }elseif($menu == "building"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
 
@@ -51,7 +51,7 @@ class MaterialRequisitionController extends Controller
         $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
-        }else{
+        }elseif($menu == "building"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
         }    
 
@@ -115,14 +115,14 @@ class MaterialRequisitionController extends Controller
             DB::commit();
             if($menu == "building"){
                 return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Created');
-            }else{
+            }elseif($menu == "repair"){
                 return redirect()->route('material_requisition_repair.show',$MR->id)->with('success', 'Material Requisition Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
             if($menu == "building"){
                 return redirect()->route('material_requisition.create')->with('error', $e->getMessage());
-            }else{
+            }elseif($menu == "repair"){
                 return redirect()->route('material_requisition_repair.create')->with('error', $e->getMessage());
             }
         }
@@ -152,7 +152,7 @@ class MaterialRequisitionController extends Controller
         $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',2)->first()->jsonSerialize();
-        }else{
+        }elseif($menu == "building"){
             $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',1)->first()->jsonSerialize();
         }
         $modelWBS = $modelMR->project->wbss; 
@@ -234,14 +234,14 @@ class MaterialRequisitionController extends Controller
             DB::commit();
             if($menu == "building"){
                 return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Updated');
-            }else{
+            }elseif($menu == "repair"){
                 return redirect()->route('material_requisition_repair.show',$MR->id)->with('success', 'Material Requisition Updated');
             }
         } catch (\Exception $e) {
             DB::rollback();
             if($menu == "building"){
                 return redirect()->route('material_requisition.edit',$MR->id)->with('error', $e->getMessage());
-            }else{
+            }elseif($menu == "repair"){
                 return redirect()->route('material_requisition_repair.edit',$MR->id)->with('error', $e->getMessage());
             }
         }
@@ -263,7 +263,7 @@ class MaterialRequisitionController extends Controller
         }
         if($menu == "building"){
             return redirect()->route('material_requisition.show',$mr_id)->with('success', 'Material Requisition Updated');
-        }else{
+        }elseif($menu == "repair"){
             return redirect()->route('material_requisition_repair.show',$mr_id)->with('success', 'Material Requisition Updated');
         }
     }
