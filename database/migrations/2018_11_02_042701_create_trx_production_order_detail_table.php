@@ -18,6 +18,7 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->unsignedInteger('production_order_id');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
+            $table->unsignedInteger('service_id')->nullable();
             $table->integer('quantity')->nullable();
             $table->integer('actual')->nullable();
             $table->timestamps();
@@ -25,6 +26,7 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->foreign('production_order_id')->references('id')->on('trx_production_order');
             $table->foreign('material_id')->references('id')->on('mst_material');
             $table->foreign('resource_id')->references('id')->on('mst_resource');
+            $table->foreign('service_id')->references('id')->on('mst_service');
         });
     }
 
