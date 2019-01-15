@@ -47,4 +47,9 @@ class WBS extends Model
     {
         return $this->hasMany('App\Models\MaterialRequisitionDetail', 'wbs_id');
     }
+
+    public function productionOrder()
+    {
+        return $this->hasOne('App\Models\ProductionOrder', 'wbs_id');
+    }
 }

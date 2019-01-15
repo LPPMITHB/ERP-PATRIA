@@ -7,7 +7,7 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Production Orders' => route('production_order.index'),
+            'View All Production Orders' => '',
         ]
     ]
 )
@@ -37,7 +37,11 @@
                                 <td>{{ $modelPO->project->name }}</td>
                                 <td>{{ $modelPO->wbs->name}}</td>
                                 <td align="center">
-                                    <a href="{{ route('production_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($route == "/production_order")
+                                        <a href="{{ route('production_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @elseif($route == "/production_order_repair")
+                                        <a href="{{ route('production_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

@@ -1,18 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Release Production Order » '.$modelPrO->number,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('production_order.selectProject'),
-            'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
-            'Add Additional Material & Resource' => ''
+@if($route == "/production_order")
+    @breadcrumb(
+        [
+            'title' => 'Release Production Order » '.$modelPrO->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('production_order.selectProject'),
+                'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
+                'Add Additional Material & Resource' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+            [
+                'title' => 'Release Production Order » '.$modelPrO->number,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'Select Project' => route('production_order_repair.selectProject'),
+                    'Select WBS' => route('production_order_repair.selectWBS', ['id' => $project->id]),
+                    'Add Additional Material & Resource' => ''
+                ]
+            ]
+        )
+        @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -67,7 +82,11 @@
                     </table>
                 </div>
             </div>
-            <form id="release-pro" class="form-horizontal" method="POST" action="{{ route('production_order.storeRelease') }}">
+            @if($route == "/production_order")
+                <form id="release-pro" class="form-horizontal" method="POST" action="{{ route('production_order.storeRelease') }}">
+            @elseif($route == "/production_order_repair")
+                <form id="release-pro" class="form-horizontal" method="POST" action="{{ route('production_order_repair.storeRelease') }}">
+            @endif
             <input type="hidden" name="_method" value="PATCH">
             @csrf
             @verbatim
