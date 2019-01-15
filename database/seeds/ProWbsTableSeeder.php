@@ -12,6 +12,8 @@ class ProWbsTableSeeder extends Seeder
      */
     public function run()
     {
+        
+
         \DB::table('pro_wbs')->delete();
         
         \DB::table('pro_wbs')->insert(array (
@@ -78,7 +80,7 @@ class ProWbsTableSeeder extends Seeder
                 'created_at' => '2018-12-19 09:28:25',
                 'updated_at' => '2018-12-19 09:28:25',
             ),
-            3 => //76
+            3 => 
             array (
                 'id' => 4,
                 'code' => 'WBS181010004',
@@ -204,7 +206,7 @@ class ProWbsTableSeeder extends Seeder
                 'created_at' => '2018-12-19 09:31:54',
                 'updated_at' => '2018-12-19 09:31:54',
             ),
-            9 => //82
+            9 => 
             array (
                 'id' => 10,
                 'code' => 'WBS182020001',
@@ -331,5 +333,7 @@ class ProWbsTableSeeder extends Seeder
                 'updated_at' => '2018-12-19 10:17:10',
             ),
         ));
+        
+        
     }
 }

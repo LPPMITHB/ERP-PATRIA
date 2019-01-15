@@ -23,8 +23,13 @@ class PurchaseRequisitionController extends Controller
      */
     public function index(Request $request)
     {
-        $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::all();
+        $route = $request->route()->getPrefix();    
+        if($route == "/purchase_requisition"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/purchase_requisition_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }
+        $modelPRs = PurchaseRequisition::whereIn('project_id',$modelProject)->get();
 
         return view('purchase_requisition.index', compact('modelPRs','route'));
     }
@@ -32,7 +37,12 @@ class PurchaseRequisitionController extends Controller
     public function indexApprove(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->get();
+        if($route == "/purchase_requisition"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/purchase_requisition_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
 
         return view('purchase_requisition.indexApprove', compact('modelPRs','route'));
     }
@@ -53,9 +63,14 @@ class PurchaseRequisitionController extends Controller
     public function create(Request $request)
     {
         $route = $request->route()->getPrefix();
+        if($route == "/purchase_requisition"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/purchase_requisition_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+
         $modelMaterial = Material::all()->jsonSerialize();
         $modelResource = Resource::all()->jsonSerialize();
-        $modelProject = Project::where('status',1)->get();
 
         return view('purchase_requisition.create', compact('modelMaterial','modelProject','modelResource','route'));
     }
@@ -315,7 +330,12 @@ class PurchaseRequisitionController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        $route = $request->route()->getPrefix();
+        $route = $request->route()->getPrefix() == "/purchase_requisition" ? "building" : "repair";    
+        if($route == "/purchase_requisition"){
+            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',1)->first()->jsonSerialize();
+        }elseif($route == "/purchase_requisition_repair"){
+            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',2)->first()->jsonSerialize();
+        }
         $modelPR = PurchaseRequisition::findOrFail($id);
         $project = Project::where('id',$modelPR->project_id)->with('customer','ship')->first();
         $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs','resource')->get()->jsonSerialize();
@@ -338,7 +358,7 @@ class PurchaseRequisitionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $route = $request->route()->getPrefix();
+        $route = $request->route()->getPrefix() == "/purchase_requisition" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
@@ -508,7 +528,7 @@ class PurchaseRequisitionController extends Controller
     }
     public function approval(Request $request, $pr_id,$status)
     {
-        $route = $request->route()->getPrefix();
+        $route = $request->route()->getPrefix() == "/purchase_requisition" ? "building" : "repair";
         DB::beginTransaction();
         try{
             $modelPR = PurchaseRequisition::findOrFail($pr_id);
