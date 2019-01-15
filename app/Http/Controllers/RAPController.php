@@ -171,29 +171,37 @@ class RAPController extends Controller
         $project = $wbs->project;
         $materialEvaluation = Collection::make();
         $modelBom = Bom::where('wbs_id',$id)->first();
-
-        foreach($modelBom->bomDetails as $bomDetail){
-            if($bomDetail->material){
-                if(count($bomDetail->material->materialRequisitionDetails)>0){
-                    foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                        if ($mrd->wbs_id == $id) {
-                            $materialEvaluation->push([
-                                "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                                "quantity" => $bomDetail->quantity,
-                                "used" => $mrd->issued,
-                            ]);
+        if($modelBom != null){
+            foreach($modelBom->bomDetails as $bomDetail){
+                if($bomDetail->material){
+                    if(count($bomDetail->material->materialRequisitionDetails)>0){
+                        foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                            if ($mrd->wbs_id == $id) {
+                                $materialEvaluation->push([
+                                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                    "quantity" => $bomDetail->quantity,
+                                    "used" => $mrd->issued,
+                                ]);
+                            }
                         }
+                    }else{
+                        $materialEvaluation->push([
+                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                            "quantity" => $bomDetail->quantity,
+                            "used" => 0,
+                        ]);
                     }
-                }else{
-                    $materialEvaluation->push([
-                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
-                        "quantity" => $bomDetail->quantity,
-                        "used" => 0,
-                    ]);
                 }
             }
+            return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation','route'));
+        }else{
+            $route = $request->route()->getPrefix();
+            if($route == '/rap'){
+                return redirect()->route('rap.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }elseif($route == '/rap_repair'){
+                return redirect()->route('rap_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }
         }
-        return view('rap.showMaterialEvaluation', compact('project','wbs','materialEvaluation','route'));
     } 
     
      public function index(Request $request, $id)

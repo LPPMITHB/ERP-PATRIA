@@ -29,12 +29,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-8 col-md-8 m-t-10">
+                <div class="col-xs-12 col-sm-12 col-md-8 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-xs-4">
                             Status
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-xs-8">
                             : 
                             <b> 
                                 @if($snapshot->status == 1)
@@ -48,10 +48,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-xs-4">
                             Created At
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-xs-8">
                             : 
                             <b>{{$snapshot->created_at}}</b>
                         </div>

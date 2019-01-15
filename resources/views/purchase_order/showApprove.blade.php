@@ -33,7 +33,7 @@
     <div class="col-xs-12">
         <div class="box box-blue">
             <div class="row">
-                <div class="col-sm-3 col-md-3">
+                <div class="col-sm-3 col-md-3 ">
                     <div class="info-box">
                         <span class="info-box-icon bg-blue">
                             <i class="fa fa-envelope"></i>
@@ -44,100 +44,100 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-xs-12 col-sm-12 col-md-4 m-t-10  m-l-10">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             Project Number
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ isset($modelPO->project) ? $modelPO->project->number : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             Ship Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->name : '-' }}">
                             : <b> {{ isset($modelPO->project) ? $modelPO->project->name : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             Ship Type
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->ship->type : '-' }}">
                             : <b> {{ isset($modelPO->project) ? $modelPO->project->ship->type : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             Ref Number
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPO->purchaseRequisition->number }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             Total Price
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ number_format($modelPO->total_price) }} </b>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-xs-12 col-sm-4 col-md-4 m-t-10  m-l-10">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4 col-xs-5">
                             Customer Name
                         </div>
-                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->customer->name : '-'}}">
+                        <div class="col-md-8 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->customer->name : '-'}}">
                             : <b> {{ isset($modelPO->project) ? $modelPO->project->customer->name : '-' }} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4 col-xs-5 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPO->vendor->code }} - {{ $modelPO->vendor->name }}">
                             Vendor Name
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPO->vendor->code }} - {{ $modelPO->vendor->name }} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4 col-xs-5">
                             Status
                         </div>
                         @if($modelPO->status == 1)
-                            <div class="col-md-7">
+                            <div class="col-md-8 col-xs-7">
                                 : <b>OPEN</b>
                             </div>
                         @elseif($modelPO->status == 2)
-                            <div class="col-md-7">
+                            <div class="col-md-8 col-xs-7">
                                 : <b>APPROVED</b>
                             </div>
                         @elseif($modelPO->status == 3)
-                            <div class="col-md-7">
+                            <div class="col-md-8 col-xs-7">
                                 : <b>NEED REVISION</b>
                             </div>
                         @elseif($modelPO->status == 4)
-                            <div class="col-md-7">
+                            <div class="col-md-8 col-xs-7">
                                 : <b>REVISED</b>
                             </div>
                         @elseif($modelPO->status == 5)
-                            <div class="col-md-7">
+                            <div class="col-md-8 col-xs-8">
                                 : <b>REJECTED</b>
                             </div>
                         @elseif($modelPO->status == 0)
-                            <div class="col-md-7">
+                            <div class="col-md-8 col-xs-7">
                                 : <b>RECEIVED</b>
                             </div>
                         @endif
-                        <div class="col-md-5">
+                        <div class="col-md-4 col-xs-5">
                             Created By
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPO->user->name }} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4 col-xs-5">
                             Created At
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPO->created_at }} </b>
                         </div>
                     </div>
@@ -178,16 +178,16 @@
                 </table>
                 @if($modelPO->status == 1 || $modelPO->status == 4)
                     @if($route == "/purchase_order")
-                        <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
-                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
+                        <div class="col-md-12 m-b-10 p-r-0">
+                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
                         </div>
                     @elseif($route == "/purchase_order_repair")
                         <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                            <a class="btn btn-primary pull-right m-l-10" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="btn btn-danger pull-right m-l-10 p-r-10" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
-                            <a class="btn btn-danger pull-right p-r-10" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
+                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
                         </div>
                     @endif
                 @endif

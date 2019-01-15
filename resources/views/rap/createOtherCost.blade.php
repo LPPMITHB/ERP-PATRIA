@@ -100,7 +100,7 @@
                                 </td>
                                 <td class="no-padding">
                                     <selectize v-model="newCost.wbs_id" :settings="workSettings">
-                                        <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                        <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
                                     </selectize>
                                 </td>
                                 <td class="no-padding textCenter">
@@ -131,7 +131,7 @@
                                         <div class="form-group col-sm-12">
                                             <label for="wbs" class="control-label">Work Breakdown Structure</label>
                                             <selectize v-model="editCost.wbs_id" :settings="workSettings">
-                                                <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
+                                                <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
                                             </selectize>
                                         </div>
                                     </div>
@@ -165,7 +165,7 @@ $(document).ready(function(){
 
 var data = {
     costs : "",
-    works : [],
+    wbss : [],
     newIndex : "", 
     newCost : {
         description : "",
@@ -181,7 +181,7 @@ var data = {
         project_id : @json($project->id),
     },
     workSettings: {
-        placeholder: 'Please Select Work (Optional)',
+        placeholder: 'Please Select WBS (Optional)',
         plugins: ['dropdown_direction'],
         dropdownDirection : 'down',
     },
@@ -220,9 +220,9 @@ var vm = new Vue({
             this.editCost.wbs_id = data.wbs_id;
             this.editCost.cost = data.plan_cost;
         },
-        getWorks(){
-            window.axios.get('/api/getAllWorks/'+this.newCost.project_id).then(({ data }) => {
-                this.works = data;
+        getWbss(){
+            window.axios.get('/api/getAllWbs/'+this.newCost.project_id).then(({ data }) => {
+                this.wbss = data;
             });
         },
         getCosts(){
@@ -336,7 +336,7 @@ var vm = new Vue({
     },
     created: function() {
         this.getCosts();
-        this.getWorks();
+        this.getWbss();
     },
     
 });

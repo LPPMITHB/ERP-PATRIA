@@ -531,6 +531,7 @@ textarea {
 
 .info-box {
     box-shadow: none;
+    margin-bottom: -10px;
 }
 
 .small-box h4 {
@@ -737,4 +738,12 @@ textarea {
 
 #content{
     transition: top 0.3s;
+}
+
+.info-box-icon{
+    margin-top: -5px;
+}
+
+.info-box-content{
+    margin-top: 5px;
 }

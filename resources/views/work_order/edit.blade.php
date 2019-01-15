@@ -90,6 +90,7 @@
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
+                                                <th style="width: 10%">Discount (%)</th>
                                                 <th style="width: 30%">WBS Name</th>
                                             </tr>
                                         </thead>
@@ -103,6 +104,9 @@
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="WOD.total_price" placeholder="Please Input Price / pcs">
+                                                </td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control" v-model="WOD.discount" placeholder="Discount">
                                                 </td>
                                                 <td v-if="WOD.wbs != null" class="tdEllipsis">{{ WOD.wbs.name }}</td>
                                                 <td v-else class="tdEllipsis">-</td>
@@ -211,8 +215,39 @@
                 handler: function(newValue) {
                     var data = newValue;
                     data.forEach(WOD => {
-                        WOD.quantity = (WOD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");     
-                        WOD.total_price = (WOD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                        WOD.quantity = (WOD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                        var decimal = (WOD.total_price+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                WOD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                WOD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            WOD.total_price = (WOD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        } 
+
+                        var discount = parseInt((WOD.discount+"").replace(/,/g, ''));
+                        if(discount > 100){
+                            iziToast.warning({
+                                title: 'Discount cannot exceed 100% !',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            WOD.discount = 100;
+                        }
+                        var decimal = (WOD.discount+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                WOD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                WOD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            WOD.discount = (WOD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }            
                     });
                 },
                 deep: true
