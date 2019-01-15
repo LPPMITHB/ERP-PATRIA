@@ -23271,6 +23271,7 @@ textarea {
 .info-box {
   -webkit-box-shadow: none;
           box-shadow: none;
+  margin-bottom: -10px;
 }
 
 .small-box h4 {
@@ -23476,6 +23477,14 @@ textarea {
 #content {
   -webkit-transition: top 0.3s;
   transition: top 0.3s;
+}
+
+.info-box-icon {
+  margin-top: -5px;
+}
+
+.info-box-content {
+  margin-top: 5px;
 }
 
 /*
