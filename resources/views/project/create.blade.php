@@ -274,12 +274,20 @@ $(document).ready(function(){
         data: data,
         methods : {
             submitForm(){
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'business_unit_id');
-                struturesElem.setAttribute('value', JSON.stringify(this.business_unit_id));
-                form.appendChild(struturesElem);
-                form.submit();
+                if(this.project.class_cp_phone.length > 13 || this.project.class_cp_phone.length < 10){
+                    iziToast.warning({
+                        title: 'Classification Contact Person Phone format is not appropriate !',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                }else{
+                    let struturesElem = document.createElement('input');
+                    struturesElem.setAttribute('type', 'hidden');
+                    struturesElem.setAttribute('name', 'business_unit_id');
+                    struturesElem.setAttribute('value', JSON.stringify(this.business_unit_id));
+                    form.appendChild(struturesElem);
+                    form.submit();
+                }
             },
         },
         watch : {
@@ -295,7 +303,7 @@ $(document).ready(function(){
                 if(newValue != ""){
 
                     this.project.class_cp_phone = (this.project.class_cp_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
-
+                    
                 }
 
             },

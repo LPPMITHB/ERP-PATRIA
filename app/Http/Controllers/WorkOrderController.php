@@ -70,6 +70,7 @@ class WorkOrderController extends Controller
                 $modelWRD->forget($key);
             }else{
                 $WRD['cost'] =0;
+                $WRD['discount'] = 0;
             }
         }
 
@@ -100,6 +101,7 @@ class WorkOrderController extends Controller
         $datas = json_decode($request->datas);
         $wo_number = $this->generateWONumber();
 
+        dd($datas);
         DB::beginTransaction();
         try {
             $WO = new WorkOrder;

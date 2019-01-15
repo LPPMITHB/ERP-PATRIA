@@ -418,13 +418,17 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $indexApproveWR,
             'route_name' => 'work_request.indexApprove',
         ]);
-
+        
         $viewWr = Menu::where('route_name','work_request.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewWr,
             'route_name' => 'work_request.index',
         ]);
-        
+            
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewWr,
+            'route_name' => 'work_request.showApprove',
+        ]);
         // WR REPAIR
         $createWrRepair = Menu::where('route_name','work_request_repair.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
