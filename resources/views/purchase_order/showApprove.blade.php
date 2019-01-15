@@ -33,7 +33,7 @@
     <div class="col-xs-12">
         <div class="box box-blue">
             <div class="row">
-                <div class="col-sm-3 col-md-3">
+                <div class="col-sm-3 col-md-3 ">
                     <div class="info-box">
                         <span class="info-box-icon bg-blue">
                             <i class="fa fa-envelope"></i>
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-4 m-t-10">
+                <div class="col-xs-12 col-sm-12 col-md-4 m-t-10  m-l-10">
                     <div class="row">
                         <div class="col-md-4 col-xs-5">
                             Project Number
@@ -86,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 m-t-10">
+                <div class="col-xs-12 col-sm-4 col-md-4 m-t-10  m-l-10">
                     <div class="row">
                         <div class="col-md-4 col-xs-5">
                             Customer Name

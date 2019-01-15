@@ -138,11 +138,13 @@
                     </thead>
                     <tbody>
                         @foreach($modelBOM->bomDetails as $BOMD)
+                        @if($BOMD->material_id != "")
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $BOMD->material->name }}</td>
                                 <td>{{ number_format($BOMD->quantity) }}</td>
                             </tr>
+                        @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -167,6 +169,33 @@
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->
+            
+            @if($route == '/production_order_repair')
+            <div class="box-body p-t-0 p-b-5">
+                    <h4>Service</h4>
+                <table class="table table-bordered showTable" id="service-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th width="40%">Service Name</th>
+                            <th width="25%">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($modelBOM->bomDetails as $BOMD)
+                        @if($BOMD->service_id != "")
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $BOMD->service->name }}</td>
+                                <td>{{ number_format($BOMD->quantity) }}</td>
+                            </tr>
+                        @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div> <!-- /.box-body -->
+            @endif
+
             @if($route == "/production_order")
                 <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.store') }}">
             @elseif($route == "/production_order_repair")
