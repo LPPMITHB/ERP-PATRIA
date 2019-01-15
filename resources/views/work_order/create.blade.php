@@ -112,6 +112,7 @@
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
+                                                <th style="width: 10%">Discount (%)</th>
                                                 <th style="width: 30%">WBS Name</th>
                                             </tr>
                                         </thead>
@@ -125,6 +126,9 @@
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="WRD.cost" placeholder="Please Input Price / pcs">
+                                                </td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control" v-model="WRD.discount" placeholder="Discount">
                                                 </td>
                                                 <td class="tdEllipsis" v-if="WRD.wbs != null">{{ WRD.wbs.name }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
@@ -157,7 +161,7 @@
         $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
         $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'No' || title == "Quantity" || title == "Order" || title == "Price / pcs (Rp.)"){
+            if(title == 'No' || title == "Quantity" || title == "Order" || title == "Price / pcs (Rp.)" || title == "Discount (%)"){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -271,6 +275,27 @@
                             }
                         }else{
                             WRD.cost = (WRD.cost+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        } 
+
+                        var discount = parseInt((WRD.discount+"").replace(/,/g, ''));
+                        if(discount > 100){
+                            iziToast.warning({
+                                title: 'Discount cannot exceed 100% !',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            WRD.discount = 100;
+                        }
+                        var decimal = (WRD.discount+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                WRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                WRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            WRD.discount = (WRD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }  
                     });
                 },

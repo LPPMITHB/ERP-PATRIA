@@ -95,6 +95,7 @@ class PurchaseRequisitionController extends Controller
         try {
             if($datas->resource == ""){
                 $PR = new PurchaseRequisition;
+                $PR->description = $datas->description;
                 $PR->number = $pr_number;
                 $PR->valid_date = $valid_to;
                 if($datas->project_id != null){
@@ -143,6 +144,7 @@ class PurchaseRequisitionController extends Controller
                 }
             }else{
                 $PR = new PurchaseRequisition;
+                $PR->description = $datas->description;
                 $PR->number = $pr_number;
                 $PR->valid_date = $valid_to;
                 if($datas->project_id != null){

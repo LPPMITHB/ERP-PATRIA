@@ -33,7 +33,7 @@ class WorkOrderController extends Controller
     
     public function index(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }else{
@@ -47,7 +47,7 @@ class WorkOrderController extends Controller
 
     public function indexApprove(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }else{
@@ -61,7 +61,7 @@ class WorkOrderController extends Controller
 
     public function create(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         $modelWR = WorkRequest::where('id',$datas->id)->with('project')->first();
         $modelWRD = WorkRequestDetail::whereIn('id',$datas->checkedWRD)->with('material','wbs')->get();
@@ -70,6 +70,7 @@ class WorkOrderController extends Controller
                 $modelWRD->forget($key);
             }else{
                 $WRD['cost'] =0;
+                $WRD['discount'] = 0;
             }
         }
 
@@ -80,7 +81,7 @@ class WorkOrderController extends Controller
 
     public function selectWRD($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         $modelWR = WorkRequest::findOrFail($id);
         $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get();
         foreach($modelWRD as $key=>$WRD){
@@ -96,7 +97,7 @@ class WorkOrderController extends Controller
 
     public function store(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         $wo_number = $this->generateWONumber();
 
@@ -122,16 +123,15 @@ class WorkOrderController extends Controller
                 $WOD->material_id = $data->material_id;
                 $WOD->work_request_detail_id = $data->id;
                 $WOD->wbs_id = $data->wbs_id;
-
+                $WOD->discount = $data->discount;
                 $WOD->total_price = $data->cost * $data->quantity;
-                
                 $WOD->save();
 
                 $statusWR = $this->updateWR($data->id,$data->quantity);
                 if($statusWR === true){
                     $status = 1;
                 }
-                $total_price += $WOD->total_price;
+                $total_price += $WOD->total_price -($WOD->total_price * ($WOD->discount/100));
             }
 
             $WO->total_price = $total_price;
@@ -162,7 +162,7 @@ class WorkOrderController extends Controller
 
     public function showApprove($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         $modelWO = WorkOrder::findOrFail($id);
 
         return view('work_order.showApprove', compact('modelWO','menu'));
@@ -170,7 +170,7 @@ class WorkOrderController extends Controller
 
     public function edit($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         $modelWO = WorkOrder::where('id',$id)->with('workRequest')->first();
         $modelWOD = WorkOrderDetail::where('work_order_id',$id)->with('material','workRequestDetail','wbs')->get();
         $modelProject = Project::where('id',$modelWO->workRequest->project_id)->with('ship','customer')->first();
@@ -180,7 +180,7 @@ class WorkOrderController extends Controller
 
     public function update(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         $datas = json_decode($request->datas);
 
         DB::beginTransaction();
@@ -193,6 +193,7 @@ class WorkOrderController extends Controller
                 $WOD = WorkOrderDetail::findOrFail($data->id);
                 $diff = $data->quantity - $WOD->quantity;
                 $WOD->quantity = $data->quantity;
+                $WOD->discount = $data->discount;
                 $WOD->total_price = $data->quantity * $data->total_price;
                 $WOD->save();
 
@@ -200,7 +201,7 @@ class WorkOrderController extends Controller
                 if($statusWR === true){
                     $status = 1;
                 }
-                $total_price += $WOD->total_price;
+                $total_price += $WOD->total_price -($WOD->total_price * ($WOD->discount/100));
             }
             $WO->vendor_id = $datas->modelWO->vendor_id;
             $WO->description = $datas->modelWO->description;
@@ -235,7 +236,7 @@ class WorkOrderController extends Controller
 
     public function approval($wo_id,$status, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
         DB::beginTransaction();
         try{
             $modelWO = WorkOrder::findOrFail($wo_id);

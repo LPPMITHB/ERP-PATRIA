@@ -447,9 +447,10 @@ class ProductionOrderController extends Controller
     public function show(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $modelPrO = ProductionOrder::findOrFail($id);    
-        
-        return view('production_order.show', compact('modelPrO','route'));
+        $modelPrO = ProductionOrder::findOrFail($id);   
+        $modelActivities = $modelPrO->wbs->activities;
+
+        return view('production_order.show', compact('modelPrO','route','modelActivities'));
         
     }
 
