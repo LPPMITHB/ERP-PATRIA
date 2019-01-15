@@ -18,7 +18,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="edit-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.update',['id'=>$modelMR->id]) }}">
+                @if($menu == "building")
+                    <form id="edit-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.update',['id'=>$modelMR->id]) }}">
+                @else
+                    <form id="edit-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition_repair.update',['id'=>$modelMR->id]) }}">
+                @endif
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim
@@ -311,7 +315,7 @@
                 material.wbs_id = this.editInput.wbs_id;
 
                 window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
-                    material.wbs_name = data.name;
+                    material.wbs_name = data.wbs.name;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {

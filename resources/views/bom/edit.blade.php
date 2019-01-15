@@ -73,8 +73,8 @@
                                 <div class="col-md-7 col-xs-8 no-padding"><a :href="showRapRoute(rap.id)" class="text-primary"><b>: {{rap.number}}</b></a></div>
 
                                 <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                                <div v-if="pr != null" class="col-md-7 col-xs-8 no-padding"><a :href="showPrRoute(pr.id)" class="text-primary"><b>: {{pr.number}}</b></a></div>
-                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
+                                <div v-if="pr == null" class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
+                                <div v-else-if="pr != null" class="col-md-7 col-xs-8 no-padding"><a :href="showPrRoute(pr.id)" class="text-primary"><b>: {{pr.number}}</b></a></div>
 
                                 <div class="col-md-5 col-xs-4 no-padding">Description</div>
                                 <div class="col-md-7 col-xs-8 no-padding">
@@ -83,39 +83,44 @@
                             </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-10">
-                            <table class="table table-bordered showTable m-b-0">
+                            <table class="table table-bordered m-b-0">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
                                         <th width="30%">Material</th>
-                                        <th width="38%">Description</th>
-                                        <th width="12%">Quantity</th>
+                                        <th width="30%">Description</th>
+                                        <th width="10%">Quantity</th>
+                                        <th width="10%">Source</th>
                                         <th width="5%" ></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(bomDetail, index) in materialTable">
-                                        <td>{{ index + 1 }}</td>
+                                        <td class="p-t-13 p-b-13">{{ index + 1 }}</td>
                                         <td>{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
                                         <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
                                         <td v-else>{{ '-' }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
+                                        <td>{{ bomDetail.source }}</td>
                                         <td class="p-l-0" align="center">
                                             
                                         </td>
                                     </tr>
-                                </table>
-                                <table class="table table-bordered">
                                     <tr>
-                                        <td width="5%">{{newIndex}}</td>
-                                        <td width="30%" class="no-padding">
+                                        <td>{{newIndex}}</td>
+                                        <td class="no-padding">
                                             <selectize id="material" v-model="input.material_id" :settings="materialSettings">
                                                 <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                             </selectize>    
                                         </td>
-                                        <td width="38%" class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
-                                        <td width="12%" class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
-                                        <td width="5%" class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
+                                        <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding">
+                                            <selectize v-model="input.source" :settings="sourceSettings">
+                                                <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
+                                            </selectize>    
+                                        </td>
+                                        <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
                                             </div></a>
@@ -171,6 +176,8 @@
     });
 
     var data = {
+        menu : @json($menu),
+        sources : ['Stock','WIP'],
         bom : @json($modelBOM),
         project : @json($project),
         materials : @json($materials),
@@ -194,6 +201,9 @@
         materialTable : @json($modelBOMDetail),
         materialSettings: {
             placeholder: 'Please Select Material'
+        },
+        sourceSettings: {
+            placeholder: 'Please Select Source'
         },
         modalData : {
             bom_detail_id : "",
@@ -271,7 +281,7 @@
                 }
                 data = JSON.stringify(data);
                 var url = "{{ route('bom.updateDesc') }}";
-                window.axios.patch(url,data).then((response) => {
+                window.axios.put(url,data).then((response) => {
                 })
                 .catch((error) => {
                     iziToast.warning({
@@ -290,11 +300,14 @@
                 data = JSON.stringify(data);
                 var bom_id = this.bom.id;
 
-                var url = "{{ route('bom.update') }}";
-                console.log(url);
+                if(this.menu == "building"){
+                    var url = "{{ route('bom.update') }}";
+                }else{
+                    var url = "{{ route('bom_repair.update') }}";
+                }
 
-                window.axios.patch(url,data).then((response) => {
-                    console.log(response);
+
+                window.axios.put(url,data).then((response) => {
                     iziToast.success({
                         title: 'Edit Success',
                         position: 'topRight',
@@ -325,6 +338,12 @@
                     this.newIndex = this.materialTable.length + 1;
                 });
             },
+            getPR(bom_id){
+                window.axios.get('/api/getPRBom/'+bom_id).then(({ data }) => {
+                    console.log(data)
+                    this.pr = data;
+                });
+            },
             submitToTable(){
                 this.input.quantityInt = (this.input.quantityInt+"").replace(/,/g , '');
                 this.input.quantityInt = parseInt(this.input.quantityInt);
@@ -334,7 +353,11 @@
                     var newMaterial = this.input;
                     var bom_id = this.input.bom_id;
                     newMaterial = JSON.stringify(newMaterial);
+                if(this.menu == "building"){
                     var url = "{{ route('bom.storeBom') }}";
+                }else{
+                    var url = "{{ route('bom_repair.storeBom') }}";
+                }
 
                     window.axios.post(url,newMaterial).then((response) => {
                         iziToast.success({
@@ -350,9 +373,11 @@
                         this.input.material_id = "";
                         this.input.material_name = "";
                         this.input.quantity = "";
+                        this.input.source = "Stock";
                         this.input.quantityInt = 0;
                         this.materialTable = [];
                         this.getBom(bom_id);
+                        this.getPR(this.bom.id);
                     })
                     .catch((error) => {
                         iziToast.warning({
@@ -410,7 +435,6 @@
                         }else{
                             this.modalData.description = data.description;
                         }
-                        console.log(data);
                         this.modalData.material_name = data.name;
                     });
                 }

@@ -84,7 +84,7 @@
                             <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" id="cost_standard_price" name="cost_standard_price" required value="{{ $service->cost_standard_price }}">
+                                <input type="text" class="form-control" onkeyup="validate(event)" id="cost_standard_price" name="cost_standard_price" required value="{{ $service->cost_standard_price }}">
                             </div>
                         </div>
 
@@ -137,21 +137,7 @@
     document.getElementById("code").readOnly = true;
 
 function validate(evt) {
-  var theEvent = evt || window.event;
-
-  // Handle paste
-  if (theEvent.type === 'paste') {
-      key = event.clipboardData.getData('text/plain');
-  } else {
-  // Handle key press
-      var key = theEvent.keyCode || theEvent.which;
-      key = String.fromCharCode(key);
-  }
-  var regex = /[0-9]|\./;
-  if( !regex.test(key) ) {
-    theEvent.returnValue = false;
-    if(theEvent.preventDefault) theEvent.preventDefault();
-  }
+    document.getElementById('cost_standard_price').value = document.getElementById('cost_standard_price').value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
     
 </script>

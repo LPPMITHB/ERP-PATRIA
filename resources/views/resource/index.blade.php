@@ -6,7 +6,7 @@
         'title' => 'View All Resources',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Resources' => route('resource.index'),
+            'View All Resources' => '',
         ]
     ]
 )
@@ -21,21 +21,15 @@
                 <div class="box-tools pull-right p-t-5">
                     <a href="{{ route('resource.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
-            </div> <!-- /.box-header -->
+            </div>
             <div class="box-body">
-            {{-- <div style ="overflow:scroll"> --}}
-                <table class="table table-bordered table-hover tableFixed" id="resource-table">
+                <table class="table table-bordered tablePaging tableFixed">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
-                            <th style="width: 10%">Code</th>
-                            <th style="width: 10%">Name</th>
-                            <th style="width: 9%">Category</th>
-                            <th style="width: 9%">Type</th>
-                            <th style="width: 10%">Utilization</th>
-                            <th style="width: 12%">Performance</th>
-                            <th style="width: 11%">Productivity</th>
-                            <th style="width: 13%">Description</th>
+                            <th style="width: 15%">Code</th>
+                            <th style="width: 30%">Name</th>
+                            <th style="width: 40%">Description</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
@@ -46,44 +40,28 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis">{{ $resource->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->name}}">{{ $resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->category}}">{{ $resource->category }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->type}}">{{ $resource->type }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->utilizatio}}">{{ $resource->utilization }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->performance}}">{{ $resource->performance }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->productivity}}">{{ $resource->productivity }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->description}}">{{ $resource->description }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('resource.show', ['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('resource.edit',['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                 </td>
-                                
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div> <!-- /.box-body -->
+            </div> 
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
-        </div> <!-- /.box -->
-    </div> <!-- /.col-xs-12 -->
-</div> <!-- /.row -->
+        </div> 
+    </div> 
+</div>
 @endsection
 
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#resource-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

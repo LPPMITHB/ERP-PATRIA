@@ -9,8 +9,11 @@ use App\Models\ResourceDetail;
 use App\Models\Project;
 use App\Models\WBS;
 use App\Models\Uom;
+use App\Models\Vendor;
 use App\Models\Category;
 use App\Models\PurchaseOrderDetail;
+use App\Models\Configuration;
+use DateTime;
 use Auth;
 use DB;
 
@@ -24,13 +27,25 @@ class ResourceController extends Controller
     public function index()
     {
         $resources = Resource::all();
+        $resource_category = Configuration::get('resource_category');
+
+        foreach($resources as $resource){
+            $resource['categoryName'] ="";
+            foreach($resource_category as $category){
+                if($resource->category_id == $category->id){
+                    $resource->categoryName = $category->name;
+                    // print_r($categoryName);exit();
+                }
+            }
+        }
         
-        return view('resource.index', compact('resources'));
+
+        return view('resource.index', compact('resources','resource_category'));
     }
 
     public function assignResource()
     {
-        $resources = Resource::where('status',1)->get();
+        $resources = Resource::all();
         $projects = Project::where('status',1)->get();
         $assignresource = ResourceDetail::with('project','resource','wbs')->get();
         return view('resource.assignResource', compact('resources','projects','assignresource'));
@@ -45,11 +60,8 @@ class ResourceController extends Controller
     {
         $resource = new Resource;
         $resource_code = self::generateResourceCode();
-        $categories = Category::all();
-        $uoms = Uom::all();
-        
-        return view('resource.create', compact('resource', 'resource_code','uoms','categories'));
 
+        return view('resource.create', compact('resource', 'resource_code','uoms','vendors','resource_category'));
     }
 
     /**
@@ -60,18 +72,14 @@ class ResourceController extends Controller
      */
     public function store(Request $request)
     {
-        $datas = json_decode($request->datas);
+        $data = json_decode($request->datas);
+
         DB::beginTransaction();
         try {
             $resource = new Resource;
-            $resource->code = strtoupper($datas->dataInput->code);
-            $resource->name = ucwords($datas->dataInput->name);
-            $resource->description = $datas->dataInput->description;
-            $resource->type = $datas->dataInput->type;
-            $resource->quantity = $datas->dataInput->quantity;
-            $resource->uom_id = $datas->dataInput->uom;
-            $resource->category_id = $datas->dataInput->category;
-            $resource->status = $datas->dataInput->status;
+            $resource->code = strtoupper($data->code);
+            $resource->name = ucwords($data->name);
+            $resource->description = $data->description;
             $resource->user_id = Auth::user()->id;
             $resource->branch_id = Auth::user()->branch->id;
             $resource->save();
@@ -171,7 +179,9 @@ class ResourceController extends Controller
     {
         $resource = Resource::findOrFail($id);
         $modelPOD = PurchaseOrderDetail::where('resource_id',$id)->get();
-        
+        $resource_category = Configuration::get('resource_category');
+        $vendor = Vendor::all();
+        // print_r($resource);exit();      
         return view('resource.show', compact('resource','modelPOD'));
     }
 
@@ -184,11 +194,8 @@ class ResourceController extends Controller
     public function edit($id)
     {
         $resource = Resource::findOrFail($id);
-        $resource_code = $resource->code;
-        $categories = Category::all();
-        $uoms = Uom::all();
-        
-        return view('resource.create', compact('resource','uoms','resource_code','categories'));
+
+        return view('resource.edit', compact('resource','uoms','resource_code','vendors','resource_category'));
     }
 
     /**
@@ -200,20 +207,14 @@ class ResourceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $datas = json_decode($request->datas);
+        $data = json_decode($request->datas);
+
         DB::beginTransaction();
         try {
             $resource = Resource::find($id);
-            $resource->code = strtoupper($datas->dataInput->code);
-            $resource->name = ucwords($datas->dataInput->name);
-            $resource->description = $datas->dataInput->description;
-            $resource->type = $datas->dataInput->type;
-            $resource->quantity = $datas->dataInput->quantity;
-            $resource->uom_id = $datas->dataInput->uom;
-            $resource->category_id = $datas->dataInput->category;
-            $resource->status = $datas->dataInput->status;
-            $resource->user_id = Auth::user()->id;
-            $resource->branch_id = Auth::user()->branch->id;
+            $resource->code = strtoupper($data->code);
+            $resource->name = ucwords($data->name);
+            $resource->description = $data->description;
             $resource->update();
 
             DB::commit();
@@ -294,6 +295,7 @@ class ResourceController extends Controller
 
         return response($resource, Response::HTTP_OK);
     }
+    
     
     public function getWbsAssignResourceApi($id){
         $wbs = WBS::where('project_id',$id)->get()->jsonSerialize();

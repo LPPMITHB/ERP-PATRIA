@@ -1,24 +1,26 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if(!$modelPO->project)
+@if($route == "/purchase_order")
     @breadcrumb(
         [
-            'title' => 'View Purchase Order',
+            'title' => isset($modelPO->project) ? 'View Purchase Order » '.$modelPO->project->number : 'View Purchase Order',
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Order' => route('purchase_order.show',$modelPO->id),
+                'View All Purchase Order' => route('purchase_order.index'),
+                'View Purchase Order' => '',
             ]
         ]
     )
     @endbreadcrumb
-@else
+@elseif($route == "/purchase_order_repair")
     @breadcrumb(
         [
-            'title' => 'View Purchase Order » '.$modelPO->project->name,
+            'title' => isset($modelPO->project) ? 'View Purchase Order » '.$modelPO->project->number : 'View Purchase Order',
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Order' => route('purchase_order.show',$modelPO->id),
+                'View All Purchase Order' => route('purchase_order_repair.index'),
+                'View Purchase Order' => '',
             ]
         ]
     )
@@ -146,21 +148,29 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
+                            @if($modelPO->purchaseRequisition->type == 1)
+                                <th width="35%">Material Name</th>
+                            @elseif($modelPO->purchaseRequisition->type == 2)
+                                <th width="35%">Resource Name</th>
+                            @endif
                             <th width="20%">Quantity</th>
                             <th width="20%">Price / pcs</th>
                             <th width="20%">Sub Total Price</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPO->purchaseOrderDetails as $POD)
-                            @if($POD->quantity > 0)
+                        @foreach($datas as $POD)
+                            @if($POD['quantity'] > 0)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $POD->material->code }} - {{ $POD->material->name }}</td>
-                                    <td>{{ number_format($POD->quantity) }}</td>
-                                    <td>{{ number_format($POD->total_price / $POD->quantity) }}</td>
-                                    <td>{{ number_format($POD->total_price) }}</td>
+                                    @if($modelPO->purchaseRequisition->type == 1)
+                                        <td>{{ $POD['material_code'] }} - {{ $POD['material_name'] }}</td>
+                                    @elseif($modelPO->purchaseRequisition->type == 2)
+                                        <td>{{ $POD['resource_code'] }} - {{ $POD['resource_name'] }}</td>
+                                    @endif
+                                    <td>{{ number_format($POD['quantity']) }}</td>
+                                    <td>{{ number_format($POD['price']) }}</td>
+                                    <td>{{ number_format($POD['sub_total']) }}</td>
                                 </tr>
                             @endif
                         @endforeach

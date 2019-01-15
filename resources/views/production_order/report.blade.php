@@ -99,7 +99,7 @@
                     </thead>
                     <tbody>
                         @php($counter=1)
-                        @foreach($modelPrO->ProductionOrderDetail as $PrOD)
+                        @foreach($modelPrO->ProductionOrderDetails as $PrOD)
                         @if($PrOD->material_id != "")
                             <tr>
                                 <td>{{ $counter }}</td>

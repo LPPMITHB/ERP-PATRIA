@@ -1,16 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Goods Receipt » '.$modelGR->number,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View Goods Receipt' => route('purchase_order.show',$modelGR->id),
+@if($route == "/goods_receipt")
+    @breadcrumb(
+        [
+            'title' => 'View Goods Receipt » '.$modelGR->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Goods Receipts' => route('goods_receipt.index'),
+                'View Goods Receipt' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/goods_receipt_repair")
+    @breadcrumb(
+        [
+            'title' => 'View Goods Receipt » '.$modelGR->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Goods Receipts' => route('goods_receipt_repair.index'),
+                'View Goods Receipt' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -33,13 +48,13 @@
                             <div class="box-header no-padding">
                                 <div class="box-body">
                                     <div class="col-md-4 col-xs-4 no-padding"> Project Name</div>
-                                    <div class="col-md-6 no-padding"> : <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->project->name :  '-'}} </b></div>
+                                    <div class="col-md-6 no-padding"> : <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->project->name :  '-'}} </b></div>
                                 
                                     <div class="col-md-4 col-xs-4 no-padding">PO Code</div>
-                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
+                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
                                 
                                     <div class="col-md-4 col-xs-4 no-padding">Vendor Name</div>
-                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->vendor->name : '-'}} </b></div>
+                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->vendor->name : '-'}} </b></div>
                                 </div>
                             </div>
                     </div>

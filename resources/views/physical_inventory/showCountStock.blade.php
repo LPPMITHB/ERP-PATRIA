@@ -87,7 +87,11 @@
             </div> <!-- /.box-body -->
             @if($confirm)
                 <div class="box-footer">
-                    <form id="snapshot" method="POST" action="{{route('physical_inventory.storeAdjustStock', ['id' => $snapshot->id])}}">
+                    @if($menu == "building")
+                        <form id="snapshot" method="POST" action="{{route('physical_inventory.storeAdjustStock', ['id' => $snapshot->id])}}">
+                    @else
+                        <form id="snapshot" method="POST" action="{{route('physical_inventory_repair.storeAdjustStock', ['id' => $snapshot->id])}}">
+                    @endif
                         @csrf
                         <input type="hidden" name="_method" value="PATCH">
                         <button id="btnSubmit" class="btn btn-primary col-sm-12">APPROVE STOCK ADJUSTMENT</button>

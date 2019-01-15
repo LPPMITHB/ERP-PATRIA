@@ -18,7 +18,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.store') }}">
+                @if($menu == 'building')
+                    <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.store') }}">
+                @else       
+                    <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition_repair.store') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="mr">
@@ -91,9 +95,13 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft">
+                                            <td class="p-l-0 textLeft" v-show="wbss.length > 0">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="wbss.length == 0">
+                                                <selectize disabled v-model="dataInput.wbs_id" :settings="wbsNullSettings">
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
@@ -211,6 +219,9 @@
         },
         nullSettings:{
             placeholder: 'Please Select WBS First !'
+        },
+        wbsNullSettings:{
+            placeholder: "Project doesn't have WBS !"
         },
         materialNullSettings:{
             placeholder: "WBS doesn't have BOM !"

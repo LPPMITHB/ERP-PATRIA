@@ -79,10 +79,10 @@
                         @foreach($projects as $project)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $project->number }}</td>
-                                <td>{{ $project->customer->name }}</td>
-                                <td>{{ $project->name }}</td>
-                                <td>{{ $project->ship->type }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->number}}">{{ $project->number }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}">{{ $project->customer->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->name}}">{{ $project->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->ship->type}}">{{ $project->ship->type }}</td>
                                 @if($route == '/rap')
                                     @if($menu == "view_rap")
                                         <td class="p-l-5 p-r-5" align="center">

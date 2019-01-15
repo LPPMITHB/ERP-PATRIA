@@ -13,6 +13,11 @@ class Resource extends Model
         return $this->belongsTo('App\Models\Uom');
     }
 
+    public function vendor()
+    {
+        return $this->belongsTo('App\Models\Vendor');
+    }
+
     public function productionOrderDetails()
     {
         return $this->hasMany('App\Models\ProductionOrderDetail');

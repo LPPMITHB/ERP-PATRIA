@@ -206,7 +206,7 @@ class ProjectController extends Controller
                     "a_attr" =>  ["href" => $route.$wbs->id],
                 ]);
             } 
-        } 
+        }
         
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
@@ -288,11 +288,7 @@ class ProjectController extends Controller
         }
 
         DB::beginTransaction();
-        if($menu == "building"){
-            $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',1)->first();
-        }else{
-            $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->where('business_unit_id',2)->first();
-        }
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->first();
         try {
             $project = new Project;
             $project->number =  $request->number;
@@ -764,7 +760,7 @@ class ProjectController extends Controller
         if($wbs){
             if(count($wbs->wbss)>0){
                 foreach($wbs->wbss as $wbs_child){
-                    if(count($wbs->activities)>0){
+                    if(count($wbs_child->activities)>0){
                         $activityRef = Activity::where('wbs_id',$wbs_child->id)->orderBy('planned_start_date','asc')->first();
                         $earliest_date_ref = $activityRef->planned_start_date;
                         if($earliest_date != null){
@@ -1043,7 +1039,7 @@ class ProjectController extends Controller
                         $plannedCost += $wbs->bom->rap->total_price;
                         $dataPlannedCost->push([
                             "t" => $date, 
-                            "y" => $plannedCost."",
+                            "y" => ($plannedCost/1000000)."",
                         ]);
                     }
                 }
@@ -1067,7 +1063,7 @@ class ProjectController extends Controller
                 }
                 $dataActualCost->push([
                     "t" => $date, 
-                    "y" => $actualCost."",
+                    "y" => ($actualCost/1000000)."",
                 ]);
             }
         }

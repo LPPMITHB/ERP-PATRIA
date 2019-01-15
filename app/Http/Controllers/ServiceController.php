@@ -46,6 +46,7 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $request['cost_standard_price']=str_replace(",","",$request['cost_standard_price']);
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_service|string|max:255',
             'name' => 'required|string|max:255',
@@ -94,7 +95,7 @@ class ServiceController extends Controller
     {
         $service = Service::findOrFail($id);
         
-        return view('service.create', compact('service','companies'));
+        return view('service.create', compact('service'));
 
     }
 

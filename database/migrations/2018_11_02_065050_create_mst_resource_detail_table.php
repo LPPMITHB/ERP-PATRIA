@@ -15,17 +15,34 @@ class CreateMstResourceDetailTable extends Migration
     {
         Schema::create('mst_resource_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('resource_id')->nullable();           
-            $table->unsignedInteger('project_id')->nullable();           
-            $table->unsignedInteger('wbs_id')->nullable();       
-            $table->unsignedInteger('category_id');       
-            $table->integer('quantity')->nullable();
+            $table->unsignedInteger('resource_id')->nullable();  
+            $table->string('code')->unique();
+            $table->string('brand')->nullable();
+            $table->integer('quantity')->default(1);
+            $table->string('description')->nullable();
+            $table->string('category_id')->default(0);
+            $table->date('manufactured_date')->nullable();
+            $table->date('purchasing_date')->nullable();
+            $table->unsignedInteger('purchasing_price')->nullable();
+            $table->unsignedInteger('lifetime')->nullable();
+            $table->unsignedInteger('depreciation_method')->nullable();
+            $table->float('accumulated_depreciation')->nullable();
+            $table->integer('running_hours')->nullable()->default(0);
+            $table->unsignedInteger('cost_per_hour')->nullable();
+            $table->float('utilization')->default(0);
+            $table->unsignedInteger('performance')->nullable();
+            $table->unsignedInteger('performance_uom_id')->nullable(); 
+            $table->unsignedInteger('time')->nullable();
+            $table->unsignedInteger('time_uom_id')->nullable(); 
+            $table->float('productivity')->default(0);
+            $table->unsignedInteger('status')->default(0);
+            $table->unsignedInteger('vendor_id')->nullable(); 
             $table->timestamps();
 
             $table->foreign('resource_id')->references('id')->on('mst_resource');
-            $table->foreign('project_id')->references('id')->on('pro_project');          
-            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
-            $table->foreign('category_id')->references('id')->on('mst_category');
+            $table->foreign('vendor_id')->references('id')->on('mst_vendor');
+            $table->foreign('performance_uom_id')->references('id')->on('mst_uom');
+            $table->foreign('time_uom_id')->references('id')->on('mst_uom');
         });
     }
 

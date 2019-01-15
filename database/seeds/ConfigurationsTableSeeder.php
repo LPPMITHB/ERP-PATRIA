@@ -53,5 +53,67 @@ class ConfigurationsTableSeeder extends Seeder
                 'value' => 10552.3
             ),
         );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'currencies',
+            'title' => 'Currencies',
+            'value' => json_encode($currencies),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $resource_category = array(
+            
+            0 => array(
+                'id' => 0,
+                'name' => 'Subcon',
+            ),
+            1 => array(
+                'id' => 1,
+                'name' => 'Others',
+            ),
+            2 => array(
+                'id' => 2,
+                'name' => 'External Equipment',
+            ),
+            3 => array(
+                'id' => 3,
+                'name' => 'Internal Equipment',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'resource_category',
+            'title' => 'Resource Categories',
+            'value' => json_encode($resource_category),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $depreciation_methods = array(
+            0 => array(
+                'id' => 0,
+                'name' => 'Straight Line Method',
+            ),
+            1 => array(
+                'id' => 1,
+                'name' => 'Double Declining Balance Method',
+            ),
+            2 => array(
+                'id' => 2,
+                'name' => 'Sum of The Year Digit Method',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'depreciation_methods',
+            'title' => 'Depreciation Methods',
+            'value' => json_encode($depreciation_methods),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

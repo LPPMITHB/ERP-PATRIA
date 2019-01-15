@@ -91,7 +91,7 @@ class WBSController extends Controller
             $array[$key] = $value;
         }
         $array[$wbs->code] = "";
-        return view('wbs.createSubWBS', compact('project', 'wbs','array','structures','menu'));
+        return view('wbs.createSubWBS', compact('project', 'wbs','array','menu'));
     }
 
     public function update(Request $request, $id)

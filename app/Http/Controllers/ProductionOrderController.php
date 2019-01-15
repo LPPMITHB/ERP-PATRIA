@@ -13,6 +13,7 @@ use App\Models\ProductionOrderDetail;
 use App\Models\Bom;
 use App\Models\Material;
 use App\Models\Resource;
+use App\Models\ResourceTrx;
 use App\Models\Stock;
 use App\Models\ResourceDetail;
 use App\Models\MaterialRequisition;
@@ -27,58 +28,161 @@ class ProductionOrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function selectProject(){
+    public function selectProject(Request $request){
+        $route = $request->route()->getPrefix();
         $modelProject = Project::where('status',1)->get();
         $menu = "create_pro";
 
-        return view('production_order.selectProject', compact('modelProject','menu'));
+        return view('production_order.selectProject', compact('modelProject','menu','route'));
     }
 
-    public function selectProjectRelease (){
+    public function selectProjectRelease (Request $request){
+        $route = $request->route()->getPrefix();
         $modelProject = Project::where('status',1)->get();
         $menu = "release_pro";
 
-        return view('production_order.selectProject', compact('modelProject','menu'));
+        return view('production_order.selectProject', compact('modelProject','menu','route'));
     }
 
-    public function selectProjectConfirm (){
+    public function selectProjectConfirm (Request $request){
+        $route = $request->route()->getPrefix();
         $modelProject = Project::where('status',1)->get();
         $menu = "confirm_pro";
 
-        return view('production_order.selectProject', compact('modelProject','menu'));
+        return view('production_order.selectProject', compact('modelProject','menu','route'));
     }
 
-    public function selectProjectReport (){
+    public function selectProjectReport (Request $request){
+        $route = $request->route()->getPrefix();
         $modelProject = Project::where('status',1)->get();
         $menu = "report_pro";
 
-        return view('production_order.selectProject', compact('modelProject','menu'));
+        return view('production_order.selectProject', compact('modelProject','menu','route'));
     }
     
-    public function selectWBS($id){
-        $modelProject = Project::findOrFail($id);
-        $modelWBS = WBS::where('project_id',$id)->get();
+    public function selectWBS(Request $request,$id){
+        $route = $request->route()->getPrefix();
 
-        return view('production_order.selectWBS', compact('modelWBS','modelProject'));
+        $modelProject = Project::findOrFail($id);
+        $wbss = $modelProject->wbss;
+        $dataWbs = Collection::make();
+
+        $totalWeightProject = $modelProject->wbss->where('wbs_id',null)->sum('weight');
+        $dataWbs->push([
+            "id" => $modelProject->number, 
+            "parent" => "#",
+            "text" => $modelProject->name. " | Weight : (".$totalWeightProject."% / 100%)",
+            "icon" => "fa fa-ship"
+        ]);
+        if($route == "/production_order"){
+            $routes = '/production_order/create/';
+        }elseif($route == "/production_order_repair"){
+            $routes = '/production_order_repair/create/';
+        }
+    
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                if(count($wbs->activities)>0){
+                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    if($wbs->productionOrder==null){
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $routes.$wbs->id],
+                        ]);
+                    }else{
+                        if($route == "/production_order"){
+                            $show = '/production_order/';
+                        }elseif($route == "/production_order_repair"){
+                            $show = '/production_order_repair/';
+                        }
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
+                        ]);
+                    }
+                }else{
+                    if($wbs->productionOrder==null){
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $routes.$wbs->id],
+                        ]);
+                    }else{
+                        if($route == "/production_order"){
+                            $show = '/production_order/';
+                        }elseif($route == "/production_order_repair"){
+                            $show = '/production_order_repair/';
+                        }
+                        $dataWbs->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
+                        ]);  
+                    }
+                    
+                }
+            }else{
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                if($wbs->productionOrder==null){
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $modelProject->number,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $routes.$wbs->id],
+                    ]);
+                }else{
+                    if($route == "/production_order"){
+                        $show = '/production_order/';
+                    }elseif($route == "/production_order_repair"){
+                        $show = '/production_order_repair/';
+                    }
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $modelProject->number,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
+                    ]);
+                }
+            } 
+        }
+
+        return view('production_order.selectWBS', compact('dataWbs','modelProject','route'));
     }
 
-    public function selectPrO($id){
+    public function selectPrO(Request $request, $id){
+        $route = $request->route()->getPrefix();
         $modelProject = Project::findOrFail($id);
         $modelPrO = ProductionOrder::where('project_id',$id)->where('status',1)->get();
 
-        return view('production_order.selectPrO', compact('modelPrO','modelProject'));
+        return view('production_order.selectPrO', compact('modelPrO','modelProject','route'));
     }
 
-    public function confirmPrO($id){
+    public function confirmPrO(Request $request,$id){
+        $route = $request->route()->getPrefix();
         $modelProject = Project::findOrFail($id);
         $modelPrO = ProductionOrder::where('project_id',$id)->where('status',2)->get();
 
-        return view('production_order.confirmPrO', compact('modelPrO','modelProject'));
+        return view('production_order.confirmPrO', compact('modelPrO','modelProject','route'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $modelPOs = ProductionOrder::all();
+
+        return view('production_order.index',compact('modelPOs','route'));
     }
 
     public function selectPrOReport($id){
@@ -100,7 +204,8 @@ class ProductionOrderController extends Controller
         return view('production_order.report', compact('modelPrO','modelProject','totalPrice'));
     }
 
-    public function release($id){
+    public function release(Request $request, $id){
+        $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
         $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
@@ -125,7 +230,7 @@ class ProductionOrderController extends Controller
         }
 
         // tambahan resource dari assign resource
-        $modelRD = ResourceDetail::where('wbs_id',$modelPrO->wbs_id)->get();
+        $modelRD = ResourceTrx::where('wbs_id',$modelPrO->wbs_id)->get();
 
         $resources = Collection::make();
         foreach($modelRD as $RD){
@@ -139,47 +244,16 @@ class ProductionOrderController extends Controller
                 "resource_id" => $RD->resource_id
             ]);
         }
-        return view('production_order.release', compact('modelPrO','project','modelPrOD','boms','resources'));
+        return view('production_order.release', compact('modelPrO','project','modelPrOD','boms','resources','route'));
     }
 
-    public function confirm($id){
+    public function confirm(Request $request,$id){
+        $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
         $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
 
-        // tambahan material dari BOM
-        $modelBOM = Bom::where('wbs_id',$modelPrO->wbs_id)->get();
-
-        $boms = Collection::make();
-        foreach($modelBOM as $bom){
-            foreach($bom->bomDetails as $bomDetail){
-                $boms->push([
-                    "id" => $bomDetail->id , 
-                    "material" => [
-                        "code" => $bomDetail->material->code,
-                        "name" => $bomDetail->material->name,
-                    ],
-                    "quantity" => $bomDetail->quantity,
-                    "material_id" => $bomDetail->material_id,
-                    "wbs_id" => $bomDetail->bom->wbs_id
-                ]);
-            }
-        }
-        $modelRD = ResourceDetail::where('wbs_id',$modelPrO->wbs_id)->get();
-
-        $resources = Collection::make();
-        foreach($modelRD as $RD){
-            $resources->push([
-                "id" => $RD->id , 
-                "resource" => [
-                    "code" => $RD->resource->code,
-                    "name" => $RD->resource->name,
-                    "status" => $RD->resource->status,
-                ],
-                "resource_id" => $RD->resource_id
-            ]);
-        }
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','boms','resources'));
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route'));
     }
 
     /**
@@ -187,17 +261,25 @@ class ProductionOrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::findOrFail($wbs->project_id);
         $materials = Material::all()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
 
-        $modelBOM = Bom::where('wbs_id',$wbs->id)->get();
-        $modelRD = ResourceDetail::where('wbs_id',$wbs->id)->get();
-
-        return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD'));
+        $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
+        $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
+        if($modelBOM != null){
+            return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD','route'));
+        }else{
+            if($route == "/production_order"){
+                return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }
+        }
     }
 
     /**
@@ -208,6 +290,7 @@ class ProductionOrderController extends Controller
      */
     public function store(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $arrData = $datas->datas;
 
@@ -226,32 +309,68 @@ class ProductionOrderController extends Controller
 
             $status = 0;
 
+            if(count($datas->materials) > 0){
+                foreach($datas->materials as $material){
+                    $PrOD = new ProductionOrderDetail;
+                    $PrOD->production_order_id = $PrO->id;
+                    $PrOD->material_id = $material->material_id;
+                    $PrOD->quantity = $material->quantity;
+                    $PrOD->save();
+                }
+            }
+
+            if(count($datas->resources) > 0){
+                foreach($datas->resources as $resource){
+                    $PrOD = new ProductionOrderDetail;
+                    $PrOD->production_order_id = $PrO->id;
+                    $PrOD->resource_id = $resource->resource_id;
+                    $PrOD->save();
+                }
+            }
+
             foreach($arrData as $data){
-                $PrOD = new ProductionOrderDetail;
-                $PrOD->production_order_id = $PrO->id;
                 if($data->type == "Material"){
-                    $PrOD->material_id = $data->id;
-                    $PrOD->quantity = $data->quantity;
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('material_id' , $data->id)->first();
+                    if($existing != null){
+                        $existing->quantity += $data->quantity;
+                        $existing->update();
+                    }else{
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->material_id = $data->id;
+                        $PrOD->quantity = $data->quantity;
+                        $PrOD->save();
+                    }
                 }
                 else{
+                    $PrOD = new ProductionOrderDetail;
                     $PrOD->resource_id = $data->id;
                     $PrOD->quantity = 1;
+                    $PrOD->save();
                 }
-            
-                $PrOD->save();
             }
+
             DB::commit();
-            return redirect()->route('production_order.show',$PrO->id)->with('success', 'Production Order Created');
+            if($route == "/production_order"){
+                return redirect()->route('production_order.show',$PrO->id)->with('success', 'Production Order Created');
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.show',$PrO->id)->with('success', 'Production Order Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('production_order.create',$datas->project_id)->with('error', $e->getMessage());
+            if($route == "/production_order"){
+                return redirect()->route('production_order.create',$datas->project_id)->with('error', $e->getMessage());
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.create',$datas->project_id)->with('error', $e->getMessage());
+            }
         }
     }
 
     public function storeRelease(Request $request){
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        $po_id = $datas->modelPrOD[0]->production_order_id;
-        $modelPrO = ProductionOrder::findOrFail($po_id);
+        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $modelPrO = ProductionOrder::findOrFail($pro_id);
 
         DB::beginTransaction();
         try {
@@ -259,30 +378,63 @@ class ProductionOrderController extends Controller
             $modelPrO->save();
 
             $this->createMR($datas->modelPrOD);
-            $this->updatePrOD($datas->boms, $datas->resourceDetails,$po_id);
             DB::commit();
-            return redirect()->route('production_order.show',$modelPrO->id)->with('success', 'Production Order Released');
+            if($route == "/production_order"){
+                return redirect()->route('production_order.showRelease',$modelPrO->id)->with('success', 'Production Order Released');
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.showRelease',$modelPrO->id)->with('success', 'Production Order Released');
+            }
         }catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('production_order.selectProjectRelease')->with('error', $e->getMessage());
+            if($route == "/production_order"){
+                return redirect()->route('production_order.selectProjectRelease')->with('error', $e->getMessage());
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.selectProjectRelease')->with('error', $e->getMessage());
+            }
         }
     }
 
     public function storeConfirm(Request $request){
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        $po_id = $datas->modelPrOD[0]->production_order_id;
-        $modelPrO = ProductionOrder::findOrFail($po_id);
+        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $modelPrO = ProductionOrder::findOrFail($pro_id);
 
         DB::beginTransaction();
         try {
-            $modelPrO->status = 0;
-            $modelPrO->save();
+            $statusAll = $modelPrO->wbs->activities->groupBy('status');
+            $notDone = true;
+            foreach($statusAll as $key => $status){
+                if($key == 1){
+                    $notDone = false;
+                }
+            }
+            if($notDone){
+                $modelPrO->status = 0;
+                $modelPrO->save();
+            }else{
+                $modelPrO->status = 2;
+                $modelPrO->save();
+            }
 
+            foreach ($datas->materials as  $material) {
+                $prod = ProductionOrderDetail::find($material->id);
+                $prod->actual = $material->used;
+                $prod->update();
+            }
             DB::commit();
-            return redirect()->route('production_order.show',$modelPrO->id)->with('success', 'Production Order Released');
+            if($route == "/production_order"){
+                return redirect()->route('production_order.showConfirm',$modelPrO->id)->with('success', 'Production Order Confirmed');
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.showConfirm',$modelPrO->id)->with('success', 'Production Order Confirmed');
+            }
         }catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('production_order.selectProjectConfirm')->with('error', $e->getMessage());
+            if($route == "/production_order"){
+                return redirect()->route('production_order.selectProjectConfirm')->with('error', $e->getMessage());
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.selectProjectConfirm')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -292,46 +444,13 @@ class ProductionOrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::findOrFail($id);    
         
-        return view('production_order.show', compact('modelPrO'));
+        return view('production_order.show', compact('modelPrO','route'));
         
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     public function createMR($modelPrOD){
@@ -350,29 +469,11 @@ class ProductionOrderController extends Controller
             if($PrOD->material_id != "" || $PrOD->material_id != null){
                 $MRD = new MaterialRequisitionDetail;
                 $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $PrOD->quantity;
+                $MRD->quantity = $PrOD->sugQuantity;
                 $MRD->issued = 0;
                 $MRD->material_id = $PrOD->material_id;
                 $MRD->save();
             }
-        }
-    }
-
-    public function updatePrOD($modelMaterial, $modelResource, $po_id){
-        foreach($modelMaterial as $material){
-            $modelPrOD = new ProductionOrderDetail;
-            $modelPrOD->production_order_id = $po_id;
-            $modelPrOD->material_id = $material->material_id;
-            $modelPrOD->wbs_id = $material->wbs_id;
-            $modelPrOD->quantity = $material->sugQuantity;
-            $modelPrOD->save();
-        }
-
-        foreach($modelResource as $resource){
-            $modelPrOD = new ProductionOrderDetail;
-            $modelPrOD->production_order_id = $po_id;
-            $modelPrOD->resource_id = $resource->resource_id;
-            $modelPrOD->save();
         }
     }
 
@@ -409,7 +510,6 @@ class ProductionOrderController extends Controller
             $stock = json_encode($stock);
         }else{
             $stock = [];
-            $stock = json_encode($stock);
         }
 
         return response($stock, Response::HTTP_OK);

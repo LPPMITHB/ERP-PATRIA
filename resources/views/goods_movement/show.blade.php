@@ -31,26 +31,26 @@
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             Storage Location From
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             : <b> {{ $modelGM->storageLocationFrom->name }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             Storage Location To
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             : <b> {{ $modelGM->storageLocationTo->name }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             Description
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             : <b> {{ $modelGM->description }} </b>
                         </div>
                     </div>

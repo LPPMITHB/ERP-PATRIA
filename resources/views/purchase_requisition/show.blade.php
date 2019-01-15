@@ -6,24 +6,26 @@
 @else  
     @php($type = 'Resource')
 @endif
-@if($modelPR->project)
+@if($route == "/purchase_requisition")
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition - '.$type.' » '.$modelPR->project->name,
+            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+                'View All Purchase Requisition' => route('purchase_requisition.index'),
+                'View Purchase Requisition' => '',
             ]
         ]
     )
     @endbreadcrumb
-@else
+@elseif($route == "/purchase_requisition_repair")
     @breadcrumb(
         [
-            'title' => 'View Purchase Requisition - '.$type,
+            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
-                'View Purchase Requisition' => route('purchase_requisition.show',$modelPR->id),
+                'View All Purchase Requisition' => route('purchase_requisition_repair.index'),
+                'View Purchase Requisition' => '',
             ]
         ]
     )
@@ -60,7 +62,7 @@
                         <div class="col-xs-5 col-md-5">
                             Ship Name
                         </div>
-                        <div class="col-xs-7 col-md-7">
+                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPR->project) ?$modelPR->project->name : ''}}">
                             : <b> {{ isset($modelPR->project) ? $modelPR->project->name : '-' }} </b>
                         </div>
                     </div>
@@ -108,6 +110,10 @@
                             <div class="col-xs-7 col-md-7">
                                 : <b>ORDERED</b>
                             </div>
+                        @elseif($modelPR->status == 6)
+                            <div class="col-xs-7 col-md-7">
+                                : <b>CONSOLIDATED</b>
+                            </div>
                         @endif
                         <div class="col-xs-5 col-md-5">
                             Created By
@@ -135,7 +141,7 @@
                                 <th width="35%">Resource Name</th>
                             @endif
                             <th width="15%">Quantity</th>
-                            <th width="30%">Work Name</th>
+                            <th width="30%">WBS Name</th>
                             <th width="15%">Alocation</th>
                         </tr>
                     </thead>

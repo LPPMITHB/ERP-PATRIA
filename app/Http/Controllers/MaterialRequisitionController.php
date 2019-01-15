@@ -18,31 +18,50 @@ use DB;
 class MaterialRequisitionController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $modelMRs = MaterialRequisition::all();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
 
-        return view('material_requisition.index', compact('modelMRs'));
+        $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->get();
+
+        return view('material_requisition.index', compact('modelMRs','menu'));
     }
 
-    public function indexApprove()
+    public function indexApprove(Request $request)
     {
-        $modelMRs = MaterialRequisition::whereIn('status',[1,4])->get();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
 
-        return view('material_requisition.indexApprove', compact('modelMRs'));
+        $modelMRs = MaterialRequisition::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
+
+        return view('material_requisition.indexApprove', compact('modelMRs','menu'));
     }
     
-    public function create()
+    public function create(Request $request)
     {
-        $modelProject = Project::where('status',1)->get();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }    
 
-        return view('material_requisition.create', compact('modelProject'));
+        return view('material_requisition.create', compact('modelProject','menu'));
     }
 
     public function store(Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         $datas = json_decode($request->datas);
-
         $mr_number = $this->generateMRNumber();
 
         DB::beginTransaction();
@@ -94,10 +113,18 @@ class MaterialRequisitionController extends Controller
             }
             
             DB::commit();
-            return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Created');
+            if($menu == "building"){
+                return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Created');
+            }else{
+                return redirect()->route('material_requisition_repair.show',$MR->id)->with('success', 'Material Requisition Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('material_requisition.create')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('material_requisition.create')->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('material_requisition_repair.create')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -109,18 +136,25 @@ class MaterialRequisitionController extends Controller
         return view('material_requisition.show', compact('modelMR'));
     }
 
-    public function showApprove($id)
+    public function showApprove($id, Request $request)
     {
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+
         $modelMR = MaterialRequisition::findOrFail($id);
 
-        return view('material_requisition.showApprove', compact('modelMR'));
+        return view('material_requisition.showApprove', compact('modelMR','menu'));
     }
 
-    public function edit($id)
+    public function edit($id, Request $request)
     {
         $modelMR = MaterialRequisition::findOrFail($id);
         $modelMaterial = Material::all()->jsonSerialize();
-        $modelProject = $modelMR->project->with('ship','customer','wbss')->first()->jsonSerialize();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',2)->first()->jsonSerialize();
+        }else{
+            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',1)->first()->jsonSerialize();
+        }
         $modelWBS = $modelMR->project->wbss; 
         $modelMRD = Collection::make();
         foreach($modelMR->MaterialRequisitionDetails as $mrd){
@@ -135,11 +169,12 @@ class MaterialRequisitionController extends Controller
                 "wbs_name" => $mrd->wbs->name,
             ]);
         }
-        return view('material_requisition.edit', compact('modelMR','modelMRD','modelMaterial','modelProject','modelWBS'));
+        return view('material_requisition.edit', compact('menu','modelMR','modelMRD','modelMaterial','modelProject','modelWBS'));
     }
 
     public function update(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
@@ -197,15 +232,24 @@ class MaterialRequisitionController extends Controller
 
             }
             DB::commit();
-            return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Updated');
+            if($menu == "building"){
+                return redirect()->route('material_requisition.show',$MR->id)->with('success', 'Material Requisition Updated');
+            }else{
+                return redirect()->route('material_requisition_repair.show',$MR->id)->with('success', 'Material Requisition Updated');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('material_requisition.create')->with('error', $e->getMessage());
+            if($menu == "building"){
+                return redirect()->route('material_requisition.edit',$MR->id)->with('error', $e->getMessage());
+            }else{
+                return redirect()->route('material_requisition_repair.edit',$MR->id)->with('error', $e->getMessage());
+            }
         }
     }
 
 
-    public function approval($mr_id,$status){
+    public function approval($mr_id,$status, Request $request){
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         $modelMR = MaterialRequisition::findOrFail($mr_id);
         if($status == "approve"){
             $modelMR->status = 2;
@@ -217,7 +261,11 @@ class MaterialRequisitionController extends Controller
             $modelMR->status = 5;
             $modelMR->update();
         }
-        return redirect()->route('material_requisition.show',$mr_id)->with('success', 'Material Requisition Updated');
+        if($menu == "building"){
+            return redirect()->route('material_requisition.show',$mr_id)->with('success', 'Material Requisition Updated');
+        }else{
+            return redirect()->route('material_requisition_repair.show',$mr_id)->with('success', 'Material Requisition Updated');
+        }
     }
     // function
     public function reserveStock($material_id,$quantity){

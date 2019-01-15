@@ -33,6 +33,7 @@ Route::get('/getNewBom/{id}', 'BOMController@getNewBomAPI')->name('api.bom.getNe
 Route::get('/getBomDetail/{id}', 'BOMController@getBomDetailAPI')->name('api.bom.getBomDetailAPI');
 Route::get('/getMaterialsBOM/{id}', 'BOMController@getMaterialsAPI')->name('api.bom.getMaterialsAPI');
 Route::get('/getServicesBOM/{id}', 'BOMController@getServicesAPI')->name('api.bom.getServicesAPI');
+Route::get('/getPRBom/{id}', 'BOMController@getPRAPI')->name('api.bom.getPRAPI');
 
 // bos
 Route::get('/getServiceBOS/{id}', 'BOSController@getServiceAPI')->name('api.bos.getServiceAPI');
@@ -76,6 +77,15 @@ Route::get('/getWarehouseInfoSM/{id}', 'StockManagementController@getWarehouseIn
 Route::get('/getWarehouseStockSM/{id}', 'StockManagementController@getWarehouseStockSM')->name('api.stock_management.getWarehouseStockSM');
 Route::get('/getStockInfoSM', 'StockManagementController@getStockInfoSM')->name('api.stock_management.getStockInfoSM');
 
+// work request
+Route::get('/getQuantityReserved/{id}', 'WorkRequestController@getQuantityReservedApi')->name('api.work_request.getQuantityReservedApi');
+Route::get('/getMaterialWr/{id}', 'WorkRequestController@getMaterialWrAPI')->name('api.work_request.getMaterialWrAPI');
+Route::get('/getWbsWr/{id}', 'WorkRequestController@getWbsWrAPI')->name('api.work_request.getWbsWrAPI');
+Route::get('/getBomWr/{id}', 'WorkRequestController@getBomWrAPI')->name('api.work_request.getBomWrAPI');
+Route::get('/getBomDetailWr/{id}', 'WorkRequestController@getBomDetailWrAPI')->name('api.work_request.getBomDetailWrAPI');
+Route::get('/getProjectWR/{id}', 'WorkRequestController@getProjectApi')->name('api.work_request.getProjectApi');
+Route::get('/getWbsWREdit/{id}/{wr_id}', 'WorkRequestController@getWbsEditAPI')->name('api.work_request.getWbsEditAPI');
+
 // material write off
 Route::get('/getMaterial/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');
 Route::get('/getMaterials/{id}', 'MaterialWriteOffController@getMaterialsApi')->name('api.material_write_off.getMaterialsApi');
@@ -90,9 +100,9 @@ Route::get('/getSlocDetailGM/{id}', 'GoodsMovementController@getSlocDetailAPI')-
 Route::get('/getSlocDetail/{id}', 'GoodsIssueController@getSlocDetailAPI')->name('api.goods_issue.getSlocDetailAPI');
 
 // production order
-Route::get('/getMaterialWO/{id}', 'ProductionOrderController@getMaterialAPI')->name('api.production_order.getMaterialAPI');
-Route::get('/getResourceWO/{id}', 'ProductionOrderController@getResourceAPI')->name('api.production_order.getResourceAPI');
-Route::get('/getStockWO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
+Route::get('/getMaterialPrO/{id}', 'ProductionOrderController@getMaterialAPI')->name('api.production_order.getMaterialAPI');
+Route::get('/getResourcePrO/{id}', 'ProductionOrderController@getResourceAPI')->name('api.production_order.getResourceAPI');
+Route::get('/getStockPrO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
 
 // assign Resource
 Route::get('/getResourceAssign/{id}', 'ResourceController@getResourceAssignApi')->name('api.resource.getResourceAssignApi');

@@ -366,7 +366,7 @@ var vm = new Vue({
             }        
             editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
-            window.axios.patch(url,editWbs)
+            window.axios.put(url,editWbs)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -458,7 +458,7 @@ var vm = new Vue({
             if(roundNumber(newValue,2)>this.maxWeight){
                 iziToast.warning({
                     displayMode: 'replace',
-                    message: 'Total weight cannot exceed 100%',
+                    title: 'Total weight cannot exceed 100%',
                     position: 'topRight',
                 });
             }
@@ -475,7 +475,7 @@ var vm = new Vue({
             if(this.editWbs.weight>maxWeightEdit){
                 iziToast.warning({
                     displayMode: 'replace',
-                    message: 'Total weight cannot exceed 100%',
+                    title: 'Total weight cannot exceed 100%',
                     position: 'topRight',
                 });
             }

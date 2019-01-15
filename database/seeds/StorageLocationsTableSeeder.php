@@ -13,7 +13,7 @@ class StorageLocationsTableSeeder extends Seeder
 {
         DB::table('mst_storage_location')->insert([
             'code' => 'SL0001',
-            'name' => 'Gudang A',
+            'name' => 'SLoc A',
             'area' => '400',
             'description' => 'StorLoc 1',
             'status' => 1,
@@ -24,7 +24,7 @@ class StorageLocationsTableSeeder extends Seeder
             
         DB::table('mst_storage_location')->insert([
             'code' => 'SL0002',
-            'name' => 'Gudang B',
+            'name' => 'SLoc B',
             'area' => '440',
             'description' => 'StorLoc 2',
             'status' => 1,
@@ -35,7 +35,7 @@ class StorageLocationsTableSeeder extends Seeder
 
         DB::table('mst_storage_location')->insert([
             'code' => 'SL0003',
-            'name' => 'Gudang C',
+            'name' => 'SLoc C',
             'area' => '250',
             'description' => 'StorLoc 3',
             'status' => 1,
@@ -46,7 +46,7 @@ class StorageLocationsTableSeeder extends Seeder
 
         DB::table('mst_storage_location')->insert([
             'code' => 'SL0004',
-            'name' => 'Gudang D',
+            'name' => 'SLoc D',
             'area' => '100',
             'description' => 'StorLoc 4',
             'status' => 1,
@@ -57,7 +57,7 @@ class StorageLocationsTableSeeder extends Seeder
 
         DB::table('mst_storage_location')->insert([
             'code' => 'SL0005',
-            'name' => 'Gudang E',
+            'name' => 'SLoc E',
             'area' => '725',
             'description' => 'StorLoc 5',
             'status' => 1,
@@ -68,7 +68,7 @@ class StorageLocationsTableSeeder extends Seeder
 
         DB::table('mst_storage_location')->insert([
             'code' => 'SL0006',
-            'name' => 'Gudang F',
+            'name' => 'SLoc F',
             'area' => '320',
             'description' => 'StorLoc 6',
             'status' => 1,
@@ -79,7 +79,7 @@ class StorageLocationsTableSeeder extends Seeder
 
         DB::table('mst_storage_location')->insert([
             'code' => 'SL0007',
-            'name' => 'Gudang G',
+            'name' => 'SLoc G',
             'area' => '250',
             'description' => 'StorLoc 7',
             'status' => 1,

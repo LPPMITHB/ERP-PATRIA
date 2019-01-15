@@ -52,9 +52,9 @@
                         </div>
                         <div class="col-md-8">
                             @if($modelGI->type == 0)
-                            : <b> Manual </b>
-                            @elseif($modelGI->type == 1)
                             : <b> Automatic </b>
+                            @elseif($modelGI->type == 1)
+                            : <b>  Manual </b>
                             @else
                             : <b> Material Write Off </b>
                             @endif

@@ -19,7 +19,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('goods_issue.store') }}">
+                @if($menu=="building")
+                    <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('goods_issue.store') }}">
+                @else
+                    <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('goods_issue_repair.store') }}">
+                @endif
                 @csrf
                 </form>
                 @verbatim
@@ -71,7 +75,7 @@
                                     <tr v-for="(MRD,index) in modelMRD">
                                         <td>{{ index+1 }}</td>
                                         <td>{{ MRD.material.code }} - {{ MRD.material.name }}</td>
-                                        <td>{{ MRD.quantity }}</td>
+                                        <td>{{ MRD.quantity - MRD.already_issued }}</td>
                                         <td>{{ total[index] }}</td>
                                         <td>
                                             <button class="btn btn-primary btn-xs" data-toggle="modal" @click="slocDetailCheck(MRD.modelGI)" :href="targetModal(MRD.id)">MANAGE PICKING</button>
@@ -94,7 +98,7 @@
                                                                         <tr>
                                                                             <td>Quantity</td>
                                                                             <td>:</td>
-                                                                            <td>&ensp;<b>{{MRD.quantity}}</b></td>
+                                                                            <td>&ensp;<b>{{MRD.quantity - MRD.already_issued}}</b></td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>Issued</td>
@@ -273,6 +277,7 @@
                                 var qty = parseInt((modelGI.quantity+"").replace(/,/g , ''));
 
                                 var maxQtyMR =  parseInt((activeMRD.quantity+"").replace(/,/g , ''));
+                                maxQtyMR -=  parseInt((activeMRD.already_issued+"").replace(/,/g , ''));
                                 if(modelGI.issued != ""){
                                     total += parseInt((modelGI.issued+"").replace(/,/g , ''));
                                     if(total > maxQtyMR){

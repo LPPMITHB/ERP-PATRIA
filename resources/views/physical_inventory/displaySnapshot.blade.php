@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'PHYSICAL INVENTORY » STOCK DETAILS',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Begin Snapshot' => route('physical_inventory.indexSnapshot'),
-            'Stock Details' => ''
+@if($menu == "building")
+    @breadcrumb(
+        [
+            'title' => 'PHYSICAL INVENTORY » STOCK DETAILS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Begin Snapshot' => route('physical_inventory.indexSnapshot'),
+                'Stock Details' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'PHYSICAL INVENTORY » STOCK DETAILS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Begin Snapshot' => route('physical_inventory_repair.indexSnapshot'),
+                'Stock Details' => ''
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -51,7 +65,11 @@
                 </table>
             </div>
             <div class="box-footer">
-                <form id="snapshot" method="POST" action="{{ route('physical_inventory.storeSnapshot') }}">
+                @if($menu == "building")
+                    <form id="snapshot" method="POST" action="{{ route('physical_inventory.storeSnapshot') }}">
+                @else
+                    <form id="snapshot" method="POST" action="{{ route('physical_inventory_repair.storeSnapshot') }}">
+                @endif
                     @csrf
                 </form>
                 <button id="btnSubmit" {{count($stocks)>0 ? '' : 'disabled'}} class="btn btn-primary col-sm-12">CREATE SNAPSHOT</button>

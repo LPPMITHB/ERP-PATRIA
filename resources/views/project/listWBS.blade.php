@@ -90,18 +90,6 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#wbs-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').hide();
-            }
-        });
-        jQuery('#wbs-table').wrap('<div class="dataTables_scroll" />');
 
         var data = @json($dataWbs);
         

@@ -1,18 +1,33 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Release Production Order » '.$modelPrO->number,
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Project' => route('production_order.selectProject'),
-            'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
-            'Add Additional Material & Resource' => ''
+@if($route == "/production_order")
+    @breadcrumb(
+        [
+            'title' => 'Release Production Order » '.$modelPrO->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('production_order.selectProject'),
+                'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
+                'Add Additional Material & Resource' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+            [
+                'title' => 'Release Production Order » '.$modelPrO->number,
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'Select Project' => route('production_order_repair.selectProject'),
+                    'Select WBS' => route('production_order_repair.selectWBS', ['id' => $project->id]),
+                    'Add Additional Material & Resource' => ''
+                ]
+            ]
+        )
+        @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -67,7 +82,11 @@
                     </table>
                 </div>
             </div>
-            <form id="release-pro" class="form-horizontal" method="POST" action="{{ route('production_order.storeRelease') }}">
+            @if($route == "/production_order")
+                <form id="release-pro" class="form-horizontal" method="POST" action="{{ route('production_order.storeRelease') }}">
+            @elseif($route == "/production_order_repair")
+                <form id="release-pro" class="form-horizontal" method="POST" action="{{ route('production_order_repair.storeRelease') }}">
+            @endif
             <input type="hidden" name="_method" value="PATCH">
             @csrf
             @verbatim
@@ -88,7 +107,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(data,index) in materials">
+                                    <tr v-for="(data,index) in modelPrOD">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.material.code }}</td>
                                         <td class="tdEllipsis">{{ data.material.name }}</td>
@@ -228,25 +247,16 @@
                 this.resources.push(resource);
             });
 
-            this.modelPrOD.forEach(WOD => {
-                if(WOD.material_id != null){
-                    var status = 0;
-                    this.materials.forEach(material => {
-                        if(material.material_id == WOD.material_id){
-                            material.quantity += WOD.quantity;
-                            status = 1;
-                        }
-                    });
-                    if(status == 0){
-                        this.materials.push(WOD);
-                    }
-                }else if(WOD.resource_id != null){
-                    this.resources.push(WOD);
+            this.modelPrOD.forEach(PrOD => {
+                if(PrOD.material_id != null){
+                    this.materials.push(PrOD);
+                }else if(PrOD.resource_id != null){
+                    this.resources.push(PrOD);
                 }
             });
             
             this.materials.forEach(material => {
-                window.axios.get('/api/getStockWO/'+material.material_id).then(({ data }) => {
+                window.axios.get('/api/getStockPrO/'+material.material_id).then(({ data }) => {
                     if(data.length == 0){
                         material.sugQuantity = material.quantity;
                         material.quantity = 0;
@@ -261,6 +271,8 @@
                     }
                 });
             });
+
+
         },
     });
 </script>

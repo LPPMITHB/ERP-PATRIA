@@ -23,7 +23,7 @@ class ProductionOrder extends Model
         return $this->belongsTo('App\Models\Branch');
     }
 
-    public function productionOrderDetails()
+    public function ProductionOrderDetails()
     {
         return $this->hasMany('App\Models\ProductionOrderDetail');
     }

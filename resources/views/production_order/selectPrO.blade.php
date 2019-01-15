@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [   
-        'title' => 'Release Production Order » '.$modelProject->name.' » Select WO',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View all Projects' => route('production_order.selectProjectRelease'),
-            'Select Production Order' => ''
+@if($route == "/production_order")
+    @breadcrumb(
+        [   
+            'title' => 'Release Production Order » '.$modelProject->name.' » Select PrO',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View all Projects' => route('production_order.selectProjectRelease'),
+                'Select Production Order' => ''
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+        [   
+            'title' => 'Release Production Order » '.$modelProject->name.' » Select PrO',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View all Projects' => route('production_order_repair.selectProjectRelease'),
+                'Select Production Order' => ''
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -26,9 +40,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Code</td>
+                                <td>Number</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->code}}</b></td>
+                                <td>&ensp;<b>{{$modelProject->number}}</b></td>
                             </tr>
                             <tr>
                                 <td>Ship</td>
@@ -67,7 +81,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0">
-                <h4 class="box-title no-padding">Work Orders</h4>
+                <h4 class="box-title no-padding">Production Orders</h4>
                 <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                     <thead>
                         <tr>
@@ -90,9 +104,15 @@
                                     <td class="p-l-10">{{ 'UNRELEASED' }}</td>
                                 @endif
                                 <td class="textCenter">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('production_order.release', ['id'=>$pro->id]) }}">
-                                        SELECT
-                                    </a>
+                                    @if($route == "/production_order")
+                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order.release', ['id'=>$pro->id]) }}">
+                                            SELECT
+                                        </a>
+                                    @elseif($route == "/production_order_repair")
+                                        <a class="btn btn-primary btn-xs" href="{{ route('production_order_repair.release', ['id'=>$pro->id]) }}">
+                                            SELECT
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

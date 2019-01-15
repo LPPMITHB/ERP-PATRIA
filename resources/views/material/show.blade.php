@@ -55,36 +55,50 @@
                         </tr>
                         <tr>
                             <td>4</td>
-                            <td>Cost Standard Price</td>
-                            <td>{{$material->currency}} {{ number_format($material->cost_standard_price,2) }}</td>
+                            <td>Cost Standard Price Material</td>
+                            <td>Rp {{ number_format($material->cost_standard_price,2) }}</td>
                         </tr>
+
+                        <tr>
+                            <td>4</td>
+                            <td>Cost Standard Price Service</td>
+                            <td>Rp {{ number_format($material->cost_standard_price_service,2) }}</td>
+                        </tr>
+
                         <tr>
                             <td>5</td>
-                            <td>Weight</td>
-                            <td>{{ number_format($material->weight) }} Kg</td>
+                            <td>Min</td>
+                            <td>{{ number_format($material->min) }}</td>
                         </tr>
+
                         <tr>
                             <td>6</td>
-                            <td>Height</td>
-                            <td>{{ number_format($material->height) }} M</td>
+                            <td>Max</td>
+                            <td>{{ number_format($material->max) }}</td>
                         </tr>
+
                         <tr>
                             <td>7</td>
-                            <td>Length</td>
-                            <td>{{ number_format($material->length) }} M</td>
+                            <td>Weight</td>
+                            <td>{{ number_format($material->weight) }} {{$uoms->where('id',$material->weight_uom_id)->first() != null ? $uoms->where('id',$material->weight_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>8</td>
-                            <td>Width</td>
-                            <td>{{ number_format($material->width) }} M</td>
+                            <td>Height</td>
+                            <td>{{ number_format($material->height) }} {{$uoms->where('id',$material->height_uom_id)->first() != null ? $uoms->where('id',$material->height_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>9</td>
-                            <td>Volume</td>
-                            <td>{{ number_format($material->volume) }} M<sup>3</sup></td>
+                            <td>Length</td>
+                            <td>{{ number_format($material->length) }} {{$uoms->where('id',$material->length_uom_id)->first() != null ? $uoms->where('id',$material->length_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>10</td>
+                            <td>Width</td>
+                            <td>{{ number_format($material->width) }} {{$uoms->where('id',$material->width_uom_id)->first() != null ? $uoms->where('id',$material->width_uom_id)->first()->unit : ""}}</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
                             <td>Type</td>
                             @if ($material->type == 3)
                                 <td>Bulk part</td>
@@ -97,7 +111,7 @@
                             @endif
                         </tr>
                         <tr>
-                            <td>11</td>
+                            <td>12</td>
                             <td>Status</td>
                             <td class="iconTd">
                                 @if ($material->status == 1)
