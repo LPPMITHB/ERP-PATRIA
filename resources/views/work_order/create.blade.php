@@ -277,6 +277,15 @@
                             WRD.cost = (WRD.cost+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         } 
 
+                        var discount = parseInt((WRD.discount+"").replace(/,/g, ''));
+                        if(discount > 100){
+                            iziToast.warning({
+                                title: 'Discount cannot exceed 100% !',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            WRD.discount = 100;
+                        }
                         var decimal = (WRD.discount+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
                             var maxDecimal = 2;

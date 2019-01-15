@@ -297,7 +297,6 @@
             submitForm(){
                 $('div.overlay').show();
                 this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
-                this.submittedForm.cost_standard_price = this.submittedForm.cost_standard_price.replace(/,/g , '');
                 this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.min = (this.submittedForm.min+"").replace(/,/g , '');
                 this.submittedForm.max = (this.submittedForm.max+"").replace(/,/g , '');
