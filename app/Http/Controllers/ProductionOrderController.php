@@ -274,7 +274,11 @@ class ProductionOrderController extends Controller
         if($modelBOM != null){
             return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD','route'));
         }else{
-            return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            if($route == "/production_order"){
+                return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }
         }
     }
 
@@ -443,9 +447,10 @@ class ProductionOrderController extends Controller
     public function show(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $modelPrO = ProductionOrder::findOrFail($id);    
-        
-        return view('production_order.show', compact('modelPrO','route'));
+        $modelPrO = ProductionOrder::findOrFail($id);   
+        $modelActivities = $modelPrO->wbs->activities;
+
+        return view('production_order.show', compact('modelPrO','route','modelActivities'));
         
     }
 

@@ -80,7 +80,7 @@
                         <tr>
                             <td>7</td>
                             <td>Business Unit</td>
-                            <td>{{ $customer->businessUnit}}</td>
+                            <td>{{ $business_unit }}</td>
                         </tr>
                         <tr>
                             <td>8</td>

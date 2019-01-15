@@ -111,7 +111,6 @@
         $('div.overlay').remove();
         $('.alert').addClass('animated bounce');
     });
-    document.getElementById("code").readOnly = true;
     
 </script>
 @endpush
