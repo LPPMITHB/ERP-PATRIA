@@ -30,7 +30,11 @@ class ProductionOrderController extends Controller
      */
     public function selectProject(Request $request){
         $route = $request->route()->getPrefix();
-        $modelProject = Project::where('status',1)->get();
+        if($route == "/production_order"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/production_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
         $menu = "create_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu','route'));
@@ -38,7 +42,11 @@ class ProductionOrderController extends Controller
 
     public function selectProjectRelease (Request $request){
         $route = $request->route()->getPrefix();
-        $modelProject = Project::where('status',1)->get();
+        if($route == "/production_order"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/production_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
         $menu = "release_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu','route'));
@@ -46,7 +54,11 @@ class ProductionOrderController extends Controller
 
     public function selectProjectConfirm (Request $request){
         $route = $request->route()->getPrefix();
-        $modelProject = Project::where('status',1)->get();
+        if($route == "/production_order"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/production_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
         $menu = "confirm_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu','route'));
@@ -54,7 +66,11 @@ class ProductionOrderController extends Controller
 
     public function selectProjectReport (Request $request){
         $route = $request->route()->getPrefix();
-        $modelProject = Project::where('status',1)->get();
+        if($route == "/production_order"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/production_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
         $menu = "report_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu','route'));
@@ -180,7 +196,12 @@ class ProductionOrderController extends Controller
     public function index(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPOs = ProductionOrder::all();
+        if($route == "/production_order"){
+            $project_ids = Project::where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/production_order_repair"){
+            $project_ids = Project::where('business_unit_id',2)->pluck('id')->toArray();
+        }
+        $modelPOs = ProductionOrder::whereIn('project_id',$project_ids)->get();
 
         return view('production_order.index',compact('modelPOs','route'));
     }
@@ -498,7 +519,6 @@ class ProductionOrderController extends Controller
         $modelActivities = $modelPrO->wbs->activities;
 
         return view('production_order.show', compact('modelPrO','route','modelActivities'));
-        
     }
 
     public function createMR($modelPrOD){
