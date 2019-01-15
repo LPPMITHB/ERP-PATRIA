@@ -66,9 +66,9 @@
                                     <tr>
                                         <th width="5%">No</th>
                                         <th width="45%">Material</th>
-                                        <th width="15%">Quantity</th>
-                                        <th width="15%">Issued</th>
-                                        <th width="10%">Manage Picking</th>
+                                        <th width="13%">Quantity</th>
+                                        <th width="13%">Issued</th>
+                                        <th width="14%">Manage Picking</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -77,7 +77,7 @@
                                         <td>{{ MRD.material.code }} - {{ MRD.material.name }}</td>
                                         <td>{{ MRD.quantity - MRD.already_issued }}</td>
                                         <td>{{ total[index] }}</td>
-                                        <td>
+                                        <td class="p-l-0 p-r-0 textCenter">
                                             <button class="btn btn-primary btn-xs" data-toggle="modal" @click="slocDetailCheck(MRD.modelGI)" :href="targetModal(MRD.id)">MANAGE PICKING</button>
                                             <template v-if="MRD.modelGI.length > 0">
                                                 <div class="modal fade" :id="MRD.id">
