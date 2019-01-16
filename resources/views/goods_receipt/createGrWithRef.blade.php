@@ -166,7 +166,12 @@
         computed : {
             createOk: function(){
                 let isOk = false;
-                
+
+                var data = this.modelPOD;
+
+                if(this.sloc_id == ""){
+                        isOk = true;
+                    }
                 return isOk;
             },
         },
@@ -198,7 +203,7 @@
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                form.submit();
+                // form.submit();
             }
         },
         watch : {

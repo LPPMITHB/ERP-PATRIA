@@ -61,9 +61,8 @@ class GoodsReceiptController extends Controller
         $route = $request->route()->getPrefix();
         $modelWO = WorkOrder::where('id',$id)->with('vendor')->first();
         $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material')->get();
-        $modelSloc = StorageLocation::all();
         
-        return view('goods_receipt.createGrFromWo', compact('modelWO','modelWODs','route','modelSloc'));
+        return view('goods_receipt.createGrFromWo', compact('modelWO','modelWODs','route'));
     }
 
     public function selectPO(Request $request)
