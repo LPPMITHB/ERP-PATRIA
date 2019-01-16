@@ -150,7 +150,7 @@
                             <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_phone}}</b></div>
                             
                             <div class="col-md-4 col-xs-6 no-padding">Class CP Email</div>
-                            <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_email}}</b></div>
+                            <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->class_contact_person_email}}"><b>: {{$project->class_contact_person_email}}</b></div>
                         @endif
                     </div>
                 </div>

@@ -25,7 +25,7 @@
             <span class="label label-warning">{{ auth()->user()->unreadNotifications->count() }}</span>
             @endif
           </a>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu" style="width: 550px">
               @if(auth()->user()->unreadNotifications->count())
                 <li class="header">You have {{ auth()->user()->unreadNotifications->count() }} new notifications</li>
                   @foreach(auth()->user()->unreadNotifications as $notification)

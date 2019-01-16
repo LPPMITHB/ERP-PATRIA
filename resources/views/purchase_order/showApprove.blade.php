@@ -178,15 +178,15 @@
                 </table>
                 @if($modelPO->status == 1 || $modelPO->status == 4)
                     @if($route == "/purchase_order")
-                        <div class="col-md-12 m-b-10 p-r-0">
+                        <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                             <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">REVISE</a>
                             <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('purchase_order.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
                         </div>
                     @elseif($route == "/purchase_order_repair")
                         <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                             <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'need-revision']) }}">REVISE</a>
                             <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('purchase_order_repair.approval', ['id'=>$modelPO->id,'status'=>'reject']) }}">REJECT</a>
                         </div>
                     @endif

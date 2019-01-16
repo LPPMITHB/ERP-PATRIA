@@ -147,14 +147,14 @@
                     </tbody>
                 </table>
                 @if($modelWR->status == 1 || $modelWR->status == 4)
-                    <div class="col-md-12 m-b-10 p-r-0">
+                    <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                         @if($menu == "building")
                             <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('work_request.approval', ['id'=>$modelWR->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_request.approval', ['id'=>$modelWR->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_request.approval', ['id'=>$modelWR->id,'status'=>'need-revision']) }}">REVISE</a>
                             <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('work_request.approval', ['id'=>$modelWR->id,'status'=>'reject']) }}">REJECT</a>
                         @else
                             <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('work_request_repair.approval', ['id'=>$modelWR->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_request_repair.approval', ['id'=>$modelWR->id,'status'=>'need-revision']) }}">NEEDS REVISION</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_request_repair.approval', ['id'=>$modelWR->id,'status'=>'need-revision']) }}">REVISE</a>
                             <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('work_request_repair.approval', ['id'=>$modelWR->id,'status'=>'reject']) }}">REJECT</a>
                         @endif
                     </div>
