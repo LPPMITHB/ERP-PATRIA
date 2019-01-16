@@ -254,6 +254,7 @@
 @push('script')
 <script>
     const form = document.querySelector('form#edit-pr');
+    console.log(form)
 
     $(document).ready(function(){
         $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
@@ -429,7 +430,7 @@
                     prd.quantity = parseInt((prd.quantity+"").replace(/,/g , ''));
                 });
 
-                this.submittedForm.materials = this.dataMaterial;    
+                this.submittedForm.materials = this.dataMaterial;  
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');

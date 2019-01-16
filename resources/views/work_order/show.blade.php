@@ -30,8 +30,8 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box box-blue">
-            <div class="row">
-                <div class="col-sm-3 col-md-3">
+            <div class="box-header no-padding">
+                <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left">
                     <div class="info-box">
                         <span class="info-box-icon bg-blue">
                             <i class="fa fa-envelope"></i>
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-xs-12 col-lg-4 col-md-12 m-t-10">
                     <div class="row">
                         <div class="col-md-4">
                             Project Number
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-xs-12 col-lg-4 col-md-12 m-t-10">
                     <div class="row">
                         <div class="col-md-5">
                             Customer Name
@@ -142,32 +142,41 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered showTable" id="boms-table">
+                <table class="table table-bordered tableFixed showTable" id="boms-table">
                     <thead>
                         <tr>
-                            <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
-                            <th width="10%">Quantity</th>
-                            <th width="20%">Price / pcs</th>
-                            <th width="10%">Discount (%)</th>
-                            <th width="20%">Sub Total Price</th>
+                            <th width="3%">No</th>
+                            <th width="25%">Material Name</th>
+                            <th width="30%">Description</th>
+                            <th width="5%">Qty</th>
+                            <th width="13%">Price / pcs</th>
+                            <th width="6%">Disc (%)</th>
+                            <th width="15%">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelWO->workOrderDetails as $POD)
-                            @if($POD->quantity > 0)
+                        @foreach($modelWO->workOrderDetails as $WOD)
+                            @if($WOD->quantity > 0)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $POD->material->code }} - {{ $POD->material->name }}</td>
-                                    <td>{{ number_format($POD->quantity) }}</td>
-                                    <td>{{ number_format($POD->total_price / $POD->quantity,2) }}</td>
-                                    <td>{{ number_format($POD->discount,2) }}</td>
-                                    <td>{{ number_format($POD->total_price - ($POD->total_price * ($POD->discount/100)),2) }}</td>
+                                    <td>{{ $WOD->material->code }} - {{ $WOD->material->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WOD->workRequestDetail->description}}">{{ $WOD->workRequestDetail->description }}</td>
+                                    <td>{{ number_format($WOD->quantity) }}</td>
+                                    <td>{{ number_format($WOD->total_price / $WOD->quantity,2) }}</td>
+                                    <td>{{ number_format($WOD->discount,2) }}</td>
+                                    <td>{{ number_format($WOD->total_price - ($WOD->total_price * ($WOD->discount/100)),2) }}</td>
                                 </tr>
                             @endif
                         @endforeach
                     </tbody>
                 </table>
+                <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                    @if($menu == "building")
+                        <a class="col-xs-12 col-md-1 btn btn-primary pull-right" href="{{ route('work_order.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
+                    @else
+                        <a class="col-xs-12 col-md-1 btn btn-primary pull-right" href="{{ route('work_order_repair.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
+                    @endif
+                </div>
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>

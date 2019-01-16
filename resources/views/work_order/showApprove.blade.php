@@ -142,13 +142,14 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered showTable" id="boms-table">
+                <table class="table table-bordered tableFixed showTable" id="boms-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th width="35%">Material Name</th>
-                            <th width="20%">Quantity</th>
+                            <th width="10%">Quantity</th>
                             <th width="20%">Price / pcs</th>
+                            <th width="10%">Discount (%)</th>
                             <th width="20%">Sub Total Price</th>
                         </tr>
                     </thead>
@@ -160,7 +161,8 @@
                                     <td>{{ $WOD->material->code }} - {{ $WOD->material->name }}</td>
                                     <td>{{ number_format($WOD->quantity) }}</td>
                                     <td>{{ number_format($WOD->total_price / $WOD->quantity) }}</td>
-                                    <td>{{ number_format($WOD->total_price) }}</td>
+                                    <td>{{ number_format($WOD->discount,2) }}</td>
+                                    <td>{{ number_format($WOD->total_price - ($WOD->total_price * ($WOD->discount/100)),2) }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -170,11 +172,11 @@
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                         @if($menu == "building")
                             <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'need-revision']) }}">REVISE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'need-revision']) }}">REVISE</a>
                             <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('work_order.approval', ['id'=>$modelWO->id,'status'=>'reject']) }}">REJECT</a>
                         @else
                             <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('work_order_repair.approval', ['id'=>$modelWO->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_order_repair.approval', ['id'=>$modelWO->id,'status'=>'need-revision']) }}">REVISE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_order_repair.approval', ['id'=>$modelWO->id,'status'=>'need-revision']) }}">REVISE</a>
                             <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('work_order_repair.approval', ['id'=>$modelWO->id,'status'=>'reject']) }}">REJECT</a>
                         @endif
                     </div>
