@@ -138,7 +138,7 @@
                                 <td>{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
                                 <td>{{ number_format($WRD->quantity) }}</td>
                                 <td>{{ isset($WRD->wbs) ? $WRD->wbs->name : '-' }}</td>
-                                <td>{{ isset($WRD->description) ? $WRD->description : '-' }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{ isset($WRD->description) ? $WRD->description : '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

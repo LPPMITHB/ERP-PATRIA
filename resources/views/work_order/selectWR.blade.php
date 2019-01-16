@@ -19,7 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered table-hover" id="wo-table">
+                <table class="table table-bordered table-hover tableFixed" id="wo-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -34,7 +34,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelWR->number }}</td>
-                                <td>{{ isset($modelWR->description) ? $modelWR->description : '-'}}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelWR->description}}">{{ isset($modelWR->description) ? $modelWR->description : '-'}}</td>
                                 <td>{{ isset($modelWR->project) ? $modelWR->project->name : '-' }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == "building")
