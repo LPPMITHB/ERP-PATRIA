@@ -127,24 +127,50 @@
             </div>
 
             <div class="box-body p-t-0 p-b-5">
+                    <h4>Activity</h4>
+                <table class="table table-bordered showTable" id="activity-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th width="30%">Activity Name</th>
+                            <th width="25%">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php($counter=1)
+                        @foreach($modelActivities as $activity)
+                            @if($activity->id != "")
+                                <tr>
+                                    <td>{{ $counter++ }}</td>
+                                    <td>{{ $activity->name }}</td>
+                                    <td>{{ $activity->description }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div> <!-- /.box-body -->
+
+            <div class="box-body p-t-0 p-b-5">
                     <h4>Material</h4>
                 <table class="table table-bordered showTable" id="material-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Material Name</th>
+                            <th width="30%">Material Name</th>
                             <th width="25%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @php($counter = 1)
                         @foreach($modelBOM->bomDetails as $BOMD)
-                        @if($BOMD->material_id != "")
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $BOMD->material->name }}</td>
-                                <td>{{ number_format($BOMD->quantity) }}</td>
-                            </tr>
-                        @endif
+                            @if($BOMD->material_id != "")
+                                <tr>
+                                    <td>{{ $counter++ }}</td>
+                                    <td>{{ $BOMD->material->code }} - {{ $BOMD->material->name }}</td>
+                                    <td>{{ number_format($BOMD->quantity) }}</td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -156,14 +182,16 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Resource Name</th>
+                            <th width="30%">Resource Name</th>
+                            <th width="25%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($modelRD as $RD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $RD->resource->name }}</td>
+                                <td>{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
+                                <td>{{ $RD->quantity }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -177,19 +205,20 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Service Name</th>
+                            <th width="30%">Service Name</th>
                             <th width="25%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @php($counter = 1)
                         @foreach($modelBOM->bomDetails as $BOMD)
-                        @if($BOMD->service_id != "")
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $BOMD->service->name }}</td>
-                                <td>{{ number_format($BOMD->quantity) }}</td>
-                            </tr>
-                        @endif
+                            @if($BOMD->service_id != "")
+                                <tr>
+                                    <td>{{ $counter++ }}</td>
+                                    <td>{{ $BOMD->service->code }} - {{ $BOMD->service->name }}</td>
+                                    <td>{{ number_format($BOMD->quantity) }}</td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

@@ -322,11 +322,12 @@ class ProductionOrderController extends Controller
         $project = Project::findOrFail($wbs->project_id);
         $materials = Material::all()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
+        $modelActivities = $wbs->activities;
 
         $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
         $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
         if($modelBOM != null){
-            return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD','route'));
+            return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD','route','modelActivities'));
         }else{
             if($route == "/production_order"){
                 return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
