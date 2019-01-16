@@ -109,11 +109,10 @@ class CustomerController extends Controller
         $customer = Customer::findOrFail($id);
         $business_ids = json_decode($customer->user->business_unit_id);
         $business_unit = "";
-        
         foreach($business_ids as $business_id){
             if($business_unit == ""){
                 if($business_id == 1){
-                $business_unit = "Building";
+                    $business_unit = "Building";
                 }elseif($business_id == 2){
                     $business_unit = "Repair";
                 }elseif($business_id == 3){
@@ -130,7 +129,7 @@ class CustomerController extends Controller
             }
         }
         
-        return view('customer.show', compact('customer','business_unit'));
+        return view('customer.show', compact('customer','business_unit','business_ids'));
     }
 
     /**
@@ -142,8 +141,10 @@ class CustomerController extends Controller
     public function edit($id)
     {
         $customer = Customer::findOrFail($id);
-        $businessUnits = BusinessUnit::all();
         
+        $businessUnits = BusinessUnit::all();
+
+
         return view('customer.create', compact('customer','businessUnits'));
     }
 
@@ -184,7 +185,8 @@ class CustomerController extends Controller
             $user->phone_number = $request->input('contact_person_phone');
             $user->business_unit_id = $stringBusinessUnit;
             $user->update();
-        
+            
+
             DB::commit();
             return redirect()->route('customer.show',$customer->id)->with('success', 'Customer Updated Succesfully');
         } catch (\Exception $e) {
