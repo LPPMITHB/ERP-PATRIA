@@ -813,6 +813,8 @@ Route::name('work_order_repair.')->prefix('work_order_repair')->group(function()
     Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-work-order-repair');
 
     Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-work-order-repair');
+
+    Route::get('/print/{id}', 'WorkOrderController@printPdf')->name('print')->middleware('can:show-work-order');    
 });
 
 //Physical Inventory Routes
