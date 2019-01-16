@@ -786,10 +786,6 @@ Route::name('work_order.')->prefix('work_order')->group(function() {
     Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-work-order');
 
     Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-work-order');
-
-    Route::get('/print/{id}', 'WorkOrderController@printPdf')->name('print')->middleware('can:show-work-order');
-    
-    Route::get('/review/{id}', 'WorkOrderController@review')->name('review')->middleware('can:show-work-order');
 });
 
 //Work Order Routes
