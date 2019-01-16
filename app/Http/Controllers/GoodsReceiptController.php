@@ -13,6 +13,8 @@ use App\Models\WorkOrderDetail;
 use App\Models\ProjectInventory;
 use App\Models\StorageLocation;
 use App\Models\Material;
+use App\Models\Resource;
+use App\Models\ResourceDetail;
 use App\Models\Branch;
 use App\Models\Stock;
 use App\Models\Uom;
@@ -48,7 +50,7 @@ class GoodsReceiptController extends Controller
                         "resource_code" => $POD->resource->code,
                         "resource_name" => $POD->resource->name,
                         "quantity" => 1,
-                        "status" => "Not Receive",
+                        "status" => "Detail Not Complete",
                     ]);
                 }
             }
@@ -79,8 +81,17 @@ class GoodsReceiptController extends Controller
         $route = $request->route()->getPrefix();
         $modelGR = GoodsReceipt::findOrFail($id);
         $modelGRD = $modelGR->GoodsReceiptDetails ;
-
-        return view('goods_receipt.show', compact('modelGR','modelGRD','route'));
+        if($modelGRD[0]->resource_detail_id != ''){
+            $type = "Resource";
+        }elseif($modelGRD[0]->material_id != ''){
+            $type = "Material";
+        }
+        
+        if($type == "Material"){
+            return view('goods_receipt.show', compact('modelGR','modelGRD','route'));
+        }elseif($type == "Resource"){
+            return view('goods_receipt.showResource', compact('modelGR','modelGRD','route'));
+        }
     }
     
     public function createGrWithoutRef(Request $request)
@@ -97,6 +108,73 @@ class GoodsReceiptController extends Controller
         $modelGRs = GoodsReceipt::all();
 
         return view ('goods_receipt.index', compact('modelGRs','route'));
+    }
+
+    public function storeResource(Request $request){
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+        $gr_number = $this->generateGRNumber();
+
+        DB::beginTransaction();
+        try {
+            $GR = new GoodsReceipt;
+            $GR->number = $gr_number;
+            $GR->purchase_order_id = $datas->po_id;
+            $GR->description = $datas->description;
+            $GR->branch_id = Auth::user()->branch->id;
+            $GR->user_id = Auth::user()->id;
+            $GR->save();
+
+            foreach($datas->resources as $data){
+                $RD = new ResourceDetail;
+                $RD->code = $data->code;
+                $RD->resource_id = $data->resource_id;
+                $RD->category_id = $data->category_id;
+                $RD->description = $data->description;
+                if($data->category_id == 0){
+                    $RD->sub_con_address = $data->sub_con_address;
+                    $RD->sub_con_phone = $data->sub_con_phone;
+                    $RD->sub_con_competency = $data->sub_con_competency;
+                }elseif($data->category_id == 1){
+                    $RD->others_name = $data->name;
+                }elseif($data->category_id == 2){
+                    $RD->brand = $data->brand;
+                    $RD->performance = ($data->performance != '') ? $data->performance : null;
+                    $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
+                }elseif($data->category_id == 3){
+                    $RD->brand = $data->brand;
+                    $RD->depreciation_method = $data->depreciation_method;
+                    $RD->manufactured_date = ($data->manufactured_date != '') ? $data->manufactured_date : null;
+                    $RD->purchasing_date = ($data->purchasing_date != '') ? $data->purchasing_date : null;
+                    $RD->purchasing_price = ($data->purchasing_price != '') ? $data->purchasing_price : null;
+                    $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
+                    $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
+                    $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
+                    $RD->performance = ($data->performance != '') ? $data->performance : null;
+                    $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
+                }
+                $RD->save();
+
+                $GRD = new GoodsReceiptDetail;
+                $GRD->goods_receipt_id = $GR->id;
+                $GRD->quantity = 1;
+                $GRD->resource_detail_id = $RD->id;
+                $GRD->save();
+            }
+            DB::commit();
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.show',$GR->id)->with('success', 'Goods Receipt Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/goods_receipt"){
+                return redirect()->route('goods_receipt.selectPO',$datas->po_id)->with('error', $e->getMessage());
+            }elseif($route == "/goods_receipt_repair"){
+                return redirect()->route('goods_receipt_repair.selectPO',$datas->po_id)->with('error', $e->getMessage());
+            }
+        }
     }
 
     public function store(Request $request)
@@ -320,6 +398,20 @@ class GoodsReceiptController extends Controller
     public function getGRDAPI($id){
 
         return response(GoodsReceiptDetail::where('goods_recipt_id',$id), Response::HTTP_OK);
+    }
+
+    public function generateCodeAPI($data){
+        $data = json_decode($data);
+        $number = 1;
+        $code = $data[0].'-'.$data[1].'-';
+
+        $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->first();
+        if($modelRD){
+            $number += intval(substr($modelRD->code,19));
+        }
+        $code = $data[0].'-'.$data[1].'-'.$number;
+
+        return response($code, Response::HTTP_OK);
     }
 }
 

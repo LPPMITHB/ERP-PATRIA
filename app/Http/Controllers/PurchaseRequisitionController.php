@@ -528,7 +528,7 @@ class PurchaseRequisitionController extends Controller
     }
     public function approval(Request $request, $pr_id,$status)
     {
-        $route = $request->route()->getPrefix() == "/purchase_requisition" ? "building" : "repair";
+        $route = $request->route()->getPrefix();
         DB::beginTransaction();
         try{
             $modelPR = PurchaseRequisition::findOrFail($pr_id);

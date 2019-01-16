@@ -18,6 +18,11 @@ class GoodsReceiptDetail extends Model
         return $this->belongsTo('App\Models\Material');
     }
 
+    public function resourceDetail()
+    {
+        return $this->belongsTo('App\Models\ResourceDetail');
+    }
+
     public function storageLocation()
     {
         return $this->belongsTo('App\Models\StorageLocation');
