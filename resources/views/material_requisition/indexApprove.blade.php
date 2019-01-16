@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered table-hover" id="mr-table">
+                <table class="table table-bordered tableFixed" id="mr-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -33,7 +33,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelMR->number }}</td>
-                                <td>{{ $modelMR->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelMR->description}}">{{ $modelMR->description }}</td>
                                 <td>{{ $modelMR->project->name }}</td>
                                 <td class="textCenter">
                                     @if($menu == "building")

@@ -21,7 +21,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08125456372',
         'status' => 0,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>4,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -45,7 +45,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08875476124',
         'status' => 0,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>6,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -57,7 +57,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '081350441156',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>7,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -69,7 +69,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '089763521431',
         'status' => 0,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>8,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -81,7 +81,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08782341997',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>9,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -93,7 +93,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '085663118923',
         'status' => 0,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>10,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -105,7 +105,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08111350022',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>11,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -117,7 +117,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08154217788',
         'status' => 0,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>12,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -129,19 +129,19 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08931253467',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>13,
         ]);
 
         DB::table('mst_customer')->insert([
         'code' => 'CUST0011',
         'name' => 'PT. BINTANG CAKRA BINASAMUDRA',
         'contact_person_name' => 'Wisnu Kusuma',
-        'contact_person_email' => 'winsu.kusuma@yahoo.com',
+        'contact_person_email' => 'wisnu.kusuma@yahoo.com',
         'address' => 'Jl. Kartika Alam III / 16, RT. 08 / 016 Pondok Pinang',
         'contact_person_phone' => '08881235644',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>14,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -153,7 +153,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08997536421',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>15,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -165,7 +165,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08125354040',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>16,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -177,7 +177,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08164788228',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>17,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -189,7 +189,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08563476229',
         'status' => 0,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>18,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -201,7 +201,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08357676231',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>19,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -213,7 +213,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '08129798001',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>20,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -225,7 +225,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '0',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>21,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -237,7 +237,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '081353010222',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>22,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -249,7 +249,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '0817788901',
         'status' => 0,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>23,
         ]);
 
         DB::table('mst_customer')->insert([
@@ -261,7 +261,7 @@ class CustomersTableSeeder extends Seeder
         'contact_person_phone' => '081100090807',
         'status' => 1,
         'branch_id' => 1,
-        'user_id' =>5,
+        'user_id' =>24,
         ]);
         
         }

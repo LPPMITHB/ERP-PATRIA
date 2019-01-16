@@ -23,9 +23,9 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="20%">Number</th>
-                            <th width="35%">Description</th>
+                            <th width="32%">Description</th>
                             <th width="20%">Project Name</th>
-                            <th width="10%">Status</th>
+                            <th width="13%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -34,7 +34,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelMR->number }}</td>
-                                <td>{{ $modelMR->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelMR->description}}">{{ $modelMR->description }}</td>
                                 <td>{{ $modelMR->project->name }}</td>
                                 <td>
                                     @if($modelMR->status == 0)

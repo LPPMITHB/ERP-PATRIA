@@ -786,6 +786,9 @@ Route::name('work_order.')->prefix('work_order')->group(function() {
     Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-work-order');
 
     Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-work-order');
+
+    Route::get('/print/{id}', 'WorkOrderController@printPdf')->name('print')->middleware('can:show-work-order');    
+
 });
 
 //Work Order Routes
@@ -813,6 +816,8 @@ Route::name('work_order_repair.')->prefix('work_order_repair')->group(function()
     Route::post('/', 'WorkOrderController@store')->name('store')->middleware('can:create-work-order-repair');
 
     Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-work-order-repair');
+
+    Route::get('/print/{id}', 'WorkOrderController@printPdf')->name('print')->middleware('can:show-work-order');    
 });
 
 //Physical Inventory Routes
@@ -886,6 +891,8 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
     Route::get('/createGrFromWo/{id}', 'GoodsReceiptController@createGrFromWo')->name('createGrFromWo')->middleware('can:create-goods-receipt');
 
     Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-goods-receipt');
+
+    Route::post('/storeResource', 'GoodsReceiptController@storeResource')->name('storeResource')->middleware('can:create-goods-receipt');
 
     Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-goods-receipt-without-ref');
 

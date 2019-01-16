@@ -100,7 +100,6 @@
                                     <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                                 </div>
                             </div>
-
                         </div>
                     @endverbatim
                 </form>
@@ -166,7 +165,12 @@
         computed : {
             createOk: function(){
                 let isOk = false;
-                
+                this.modelPOD.forEach(POD => {
+                    console.log(POD);
+                });
+                if(this.POD.sloc_id.length == ""){
+                        isOk = true;
+                    }
                 return isOk;
             },
         },
@@ -198,7 +202,7 @@
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                form.submit();
+                // form.submit();
             }
         },
         watch : {

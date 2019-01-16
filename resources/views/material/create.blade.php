@@ -255,7 +255,7 @@
             createOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.cost_standard_price == ""){
+                if(this.submittedForm.code == "" || this.submittedForm.name == ""){
                     isOk = true;
                 }
                 return isOk;

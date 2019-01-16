@@ -234,7 +234,7 @@
             createOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.cost_standard_price == ""){
+                if(this.submittedForm.code == "" || this.submittedForm.name == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -287,18 +287,30 @@
                 this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.min = (this.submittedForm.min+"").replace(/,/g , '');
                 this.submittedForm.max = (this.submittedForm.max+"").replace(/,/g , '');
+
                 this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
                 this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
                 this.submittedForm.lengths = this.submittedForm.lengths.replace(/,/g , '');
                 this.submittedForm.width = this.submittedForm.width.replace(/,/g , '');
                 this.submittedForm.volume = this.submittedForm.volume.replace(/,/g , '');
 
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
-                form.appendChild(struturesElem);
-                form.submit();
+                if(parseInt(this.submittedForm.max) < parseInt(this.submittedForm.min)){
+                    iziToast.error({
+                        title: 'max value cannot exceed min value !',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                }else{
+                    let struturesElem = document.createElement('input');
+                    struturesElem.setAttribute('type', 'hidden');
+                    struturesElem.setAttribute('name', 'datas');
+                    struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                    form.appendChild(struturesElem);
+                    form.submit();
+                }
+
+
             },
             calculateVolume(){
                 this.submittedForm.volume = parseInt(this.submittedForm.height.replace(/,/g , '')) * parseInt(this.submittedForm.lengths.replace(/,/g , '')) * parseInt(this.submittedForm.width.replace(/,/g , ''));
@@ -409,8 +421,15 @@
                 if(newValue != ""){
                     
                     this.submittedForm.min = (this.submittedForm.min+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    this.submittedForm.max = (this.submittedForm.max+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-                    this.submittedForm.max = this.submittedForm.min;
+                    if(parseInt((this.submittedForm.max+"").replace(/,/g , '')) < parseInt((this.submittedForm.min+"").replace(/,/g , ''))){
+                        iziToast.warning({
+                            title: 'max value cannot exceed min value !',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                    }
                 }else{
                     this.submittedForm.max = 0;
                 }
@@ -423,25 +442,21 @@
 
                     if(parseInt((this.submittedForm.max+"").replace(/,/g , '')) < parseInt((this.submittedForm.min+"").replace(/,/g , ''))){
                         iziToast.warning({
-                            title: 'Cannot insert less than min !',
+                            title: 'max value cannot exceed min value !',
                             position: 'topRight',
                             displayMode: 'replace'
                         });
-                        this.submittedForm.max = this.submittedForm.min;
                     }
                 }else{
-                    this.submittedForm.max = this.submittedForm.min;
                     if(this.submittedForm.max != this.submittedForm.min){
                         iziToast.warning({
-                            title: 'Cannot insert less than min !',
+                            title: 'max value cannot exceed min value !',
                             position: 'topRight',
                             displayMode: 'replace'
                         });
                     }
                 }
             },
-
-
         },
         created: function() {
             var maxDecimalDimension = 4;

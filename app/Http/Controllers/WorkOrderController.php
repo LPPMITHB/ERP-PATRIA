@@ -16,6 +16,7 @@ use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
 use Auth;
 use DB;
+use PDF;
 
 class WorkOrderController extends Controller
 {
@@ -153,11 +154,12 @@ class WorkOrderController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id,Request $request)
     {
         $modelWO = WorkOrder::findOrFail($id);
+        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
 
-        return view('work_order.show', compact('modelWO'));
+        return view('work_order.show', compact('modelWO', 'menu'));
     }
 
     public function showApprove($id, Request $request)
@@ -299,6 +301,20 @@ class WorkOrderController extends Controller
     }
 
     // function
+    public function printPdf($id)
+    {
+        $modelWO = WorkOrder::find($id);
+        $pdf = PDF::loadView('work_order.pdf',['modelWO' => $modelWO]);
+        $now = date("Y_m_d_H_i_s");
+        return $pdf->stream('Work_Order_'.$now.'.pdf');
+    }
+
+    public function review($id)
+    {
+        $modelWO = WorkOrder::find($id);
+        return view('work_order.pdf', compact('modelWO'));
+
+    }
     public function generateWONumber(){
         $modelWO = WorkOrder::orderBy('created_at','desc')->first();
         $yearNow = date('y');

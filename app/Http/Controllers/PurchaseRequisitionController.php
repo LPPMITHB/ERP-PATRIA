@@ -330,12 +330,7 @@ class PurchaseRequisitionController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        $route = $request->route()->getPrefix() == "/purchase_requisition" ? "building" : "repair";    
-        if($route == "/purchase_requisition"){
-            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',1)->first()->jsonSerialize();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = $modelMR->project->with('ship','customer','wbss')->where('business_unit_id',2)->first()->jsonSerialize();
-        }
+        $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
         $project = Project::where('id',$modelPR->project_id)->with('customer','ship')->first();
         $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','wbs','resource')->get()->jsonSerialize();
@@ -358,7 +353,7 @@ class PurchaseRequisitionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $route = $request->route()->getPrefix() == "/purchase_requisition" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
@@ -528,7 +523,7 @@ class PurchaseRequisitionController extends Controller
     }
     public function approval(Request $request, $pr_id,$status)
     {
-        $route = $request->route()->getPrefix() == "/purchase_requisition" ? "building" : "repair";
+        $route = $request->route()->getPrefix();
         DB::beginTransaction();
         try{
             $modelPR = PurchaseRequisition::findOrFail($pr_id);

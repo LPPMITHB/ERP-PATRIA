@@ -43,7 +43,7 @@
                     <div id="po">
                         <div class="box-header">
                             <div class="row">
-                                <div class="col-xs-12 col-md-4" v-if="modelProject.length > 0 && modelProject != null">
+                                <div class="col-xs-12 col-md-4" v-if="modelProject != null">
                                     <div class="col-xs-5 no-padding">PR Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
             
