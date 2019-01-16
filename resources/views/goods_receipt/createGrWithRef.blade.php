@@ -100,7 +100,6 @@
                                     <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                                 </div>
                             </div>
-
                         </div>
                     @endverbatim
                 </form>
@@ -166,10 +165,10 @@
         computed : {
             createOk: function(){
                 let isOk = false;
-
-                var data = this.modelPOD;
-
-                if(this.sloc_id == ""){
+                this.modelPOD.forEach(POD => {
+                    console.log(POD);
+                });
+                if(this.POD.sloc_id.length == ""){
                         isOk = true;
                     }
                 return isOk;
