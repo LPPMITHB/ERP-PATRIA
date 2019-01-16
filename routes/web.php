@@ -892,6 +892,8 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
 
     Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-goods-receipt');
 
+    Route::post('/storeResource', 'GoodsReceiptController@storeResource')->name('storeResource')->middleware('can:create-goods-receipt');
+
     Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-goods-receipt-without-ref');
 
     Route::post('/storeWOR', 'GoodsReceiptController@storeWOR')->name('storeWOR')->middleware('can:create-goods-receipt-without-ref');

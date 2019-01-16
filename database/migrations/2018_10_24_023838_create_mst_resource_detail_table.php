@@ -15,12 +15,12 @@ class CreateMstResourceDetailTable extends Migration
     {
         Schema::create('mst_resource_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('resource_id')->nullable();  
+            $table->unsignedInteger('resource_id');  
             $table->string('code')->unique();
             $table->string('brand')->nullable();
             $table->integer('quantity')->default(1);
             $table->string('description')->nullable();
-            $table->string('category_id')->default(0);
+            $table->string('category_id');
             $table->date('manufactured_date')->nullable();
             $table->date('purchasing_date')->nullable();
             $table->unsignedInteger('purchasing_price')->nullable();
@@ -37,6 +37,10 @@ class CreateMstResourceDetailTable extends Migration
             $table->float('productivity')->default(0);
             $table->unsignedInteger('status')->default(0);
             $table->unsignedInteger('vendor_id')->nullable(); 
+            $table->string('others_name')->nullable();
+            $table->string('sub_con_address')->nullable();
+            $table->string('sub_con_phone')->nullable();
+            $table->string('sub_con_competency')->nullable();
             $table->timestamps();
 
             $table->foreign('resource_id')->references('id')->on('mst_resource');
