@@ -53,6 +53,7 @@ return array(
     'App\\Http\\Controllers\\WorkRequestController' => $baseDir . '/app/Http/Controllers/WorkRequestController.php',
     'App\\Http\\Controllers\\YardController' => $baseDir . '/app/Http/Controllers/YardController.php',
     'App\\Http\\Controllers\\YardPlanController' => $baseDir . '/app/Http/Controllers/YardPlanController.php',
+    'App\\Http\\Controllers\\reallyBig' => $baseDir . '/app/Http/Controllers/WorkOrderController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',
     'App\\Http\\Middleware\\RedirectIfAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAuthenticated.php',

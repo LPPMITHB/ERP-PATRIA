@@ -409,6 +409,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\Controllers\\WorkRequestController' => __DIR__ . '/../..' . '/app/Http/Controllers/WorkRequestController.php',
         'App\\Http\\Controllers\\YardController' => __DIR__ . '/../..' . '/app/Http/Controllers/YardController.php',
         'App\\Http\\Controllers\\YardPlanController' => __DIR__ . '/../..' . '/app/Http/Controllers/YardPlanController.php',
+        'App\\Http\\Controllers\\reallyBig' => __DIR__ . '/../..' . '/app/Http/Controllers/WorkOrderController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
