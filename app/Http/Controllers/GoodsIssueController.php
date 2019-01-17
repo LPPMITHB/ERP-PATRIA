@@ -84,7 +84,7 @@ class GoodsIssueController extends Controller
 
     public function store(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         $gi_number = $this->generateGINumber();
 
