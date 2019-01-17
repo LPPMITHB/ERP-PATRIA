@@ -166,13 +166,13 @@
             createOk: function(){
                 let isOk = false;
                 this.modelPOD.forEach(POD => {
-                    console.log(POD);
-                });
-                if(this.POD.sloc_id.length == ""){
+                    if(POD.sloc_id == null){
                         isOk = true;
                     }
+                console.log(this.modelPOD)
+                });
                 return isOk;
-            },
+            }
         },
         methods : {
             changeText(){
@@ -223,6 +223,7 @@
                 },
                 deep: true
             },
+
         },
         created: function(){
             var data = this.modelPOD;

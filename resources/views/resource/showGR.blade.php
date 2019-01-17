@@ -1,25 +1,25 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if($route == "/goods_receipt")
+@if($route == "/resource")
     @breadcrumb(
         [
             'title' => 'View Goods Receipt » '.$modelGR->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Goods Receipts' => route('goods_receipt.index'),
+                'View All Goods Receipts' => route('resource.index'),
                 'View Goods Receipt' => '',
             ]
         ]
     )
     @endbreadcrumb
-@elseif($route == "/goods_receipt_repair")
+@elseif($route == "/resource_repair")
     @breadcrumb(
         [
             'title' => 'View Goods Receipt » '.$modelGR->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Goods Receipts' => route('goods_receipt_repair.index'),
+                'View All Goods Receipts' => route('resource_repair.index'),
                 'View Goods Receipt' => '',
             ]
         ]

@@ -709,7 +709,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Resource Management',
             'icon' => 'fa-database',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $building,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -722,7 +722,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $resourcemanagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -734,7 +734,31 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource.assignResource',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Receive Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource.selectPO',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Issue Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource.issueResource',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $resourcemanagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

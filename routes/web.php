@@ -179,6 +179,16 @@ Route::name('material.')->prefix('material')->group(function() {
 Route::name('resource.')->prefix('resource')->group(function() {
     Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource');
 
+    Route::get('/selectPO', 'ResourceController@selectPO')->name('selectPO');
+
+    Route::get('/createGR/{id}', 'ResourceController@createGR')->name('createGR');
+
+    Route::post('/storeGR', 'ResourceController@storeGR')->name('storeGR');
+
+    Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR');
+
+    Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource');
+
     Route::get('/create', 'ResourceController@create')->name('create')->middleware('can:create-resource');
 
     Route::get('/', 'ResourceController@index')->name('index')->middleware('can:list-resource');
@@ -194,10 +204,6 @@ Route::name('resource.')->prefix('resource')->group(function() {
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
 
     Route::patch('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
-
-    Route::patch('/storeResourceDetail/{wbs_id}', 'ResourceController@storeResourceDetail')->name('storeResourceDetail')->middleware('can:create-resource');
-    
-    Route::patch('/storeResourceCategory/{wbs_id}', 'ResourceController@storeResourceCategory')->name('storeResourceCategory')->middleware('can:create-resource');
 });
 
 //Unit Of Measurement Routes
@@ -891,8 +897,6 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
     Route::get('/createGrFromWo/{id}', 'GoodsReceiptController@createGrFromWo')->name('createGrFromWo')->middleware('can:create-goods-receipt');
 
     Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-goods-receipt');
-
-    Route::post('/storeResource', 'GoodsReceiptController@storeResource')->name('storeResource')->middleware('can:create-goods-receipt');
 
     Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-goods-receipt-without-ref');
 

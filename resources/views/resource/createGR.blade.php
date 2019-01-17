@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Goods Receipt',
+        'title' => 'Create Resource Receipt',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Order' => route('goods_receipt.selectPO'),
+            'Select Purchase Order' => route('resource.selectPO'),
             'Details' => '',
         ]
     ]
@@ -19,7 +19,7 @@
     <div class="col-sm-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt.storeResource') }}">
+                <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('resource.storeGR') }}">
                 @csrf
                     @verbatim
                     <div id="pod">
@@ -299,6 +299,7 @@
         uom :   @json($uom),
         description:"",
         editInput : {
+            pod_id : "",
             category_id : "",
             description : "",
             code : "",
@@ -372,6 +373,7 @@
                 this.detailData.description = this.editInput.description;
                 this.detailData.index = this.editInput.index;
                 this.detailData.resource_id = this.editInput.resource_id;
+                this.detailData.pod_id = this.editInput.pod_id;
 
                 if(category_id == 0){
                     this.detailData.sub_con_address = this.editInput.sub_con_address;
@@ -408,6 +410,7 @@
                 this.editInput.code = '';
                 this.editInput.description = '';
                 this.editInput.index = '';
+                this.editInput.pod_id = '';
                 if(category_id == 0){
                     this.editInput.sub_con_address = '';
                     this.editInput.sub_con_phone = '';
@@ -452,7 +455,6 @@
             openEditModal(data,index){
                 $('div.overlay').show();
                 this.editInput.index = index;
-
                 let status = 0;
                 this.submitData.forEach(dataSubmit => {
                     if(dataSubmit.index == index){
@@ -461,6 +463,7 @@
                         this.editInput.description = dataSubmit.description;
                         this.editInput.index = dataSubmit.index;
                         this.editInput.resource_id = dataSubmit.resource_id;
+                        this.editInput.pod_id = dataSubmit.pod_id;
 
                         if(dataSubmit.category_id == 0){
                             this.editInput.sub_con_address = dataSubmit.sub_con_address;
@@ -491,12 +494,13 @@
                 if(status == 0){
                     let resource_code = data.resource_code;
                     this.editInput.resource_id = data.resource_id;
+                    this.editInput.pod_id = data.pod_id;
                     let po_number = this.modelPO.number;
                     let datas = [];
                     datas.push(resource_code,po_number);
                     datas = JSON.stringify(datas);
 
-                    window.axios.get('/api/generateCodeGr/'+datas).then(({ data }) => {
+                    window.axios.get('/api/generateCodeGrResource/'+datas).then(({ data }) => {
                         this.editInput.code = data;
 
                         this.submitData.forEach(dataSubmit => {
