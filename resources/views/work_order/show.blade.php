@@ -142,7 +142,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered showTable" id="boms-table">
+                <table class="table table-bordered tableFixed showTable" id="boms-table">
                     <thead>
                         <tr>
                             <th width="3%">No</th>
@@ -160,7 +160,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $WOD->material->code }} - {{ $WOD->material->name }}</td>
-                                    <td>{{ $WOD->workRequestDetail->description }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WOD->workRequestDetail->description}}">{{ $WOD->workRequestDetail->description }}</td>
                                     <td>{{ number_format($WOD->quantity) }}</td>
                                     <td>{{ number_format($WOD->total_price / $WOD->quantity,2) }}</td>
                                     <td>{{ number_format($WOD->discount,2) }}</td>

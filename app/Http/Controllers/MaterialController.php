@@ -49,6 +49,7 @@ class MaterialController extends Controller
             'name' => $data->name,
             'description' => $data->description,
             'cost_standard_price' => $data->cost_standard_price,
+            'cost_standard_price_service' => $data->cost_standard_service,
             'weight' => $data->weight,
             'height' => $data->height,
             'length' => $data->lengths,
@@ -61,7 +62,8 @@ class MaterialController extends Controller
             'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'cost_standard_price' => 'required|numeric',
+            'cost_standard_price' => 'nullable|numeric',
+            'cost_standard_price_service' => 'nullable|numeric',
             'weight' => 'nullable|numeric',
             'height' => 'nullable|numeric',
             'length' => 'nullable|numeric',
@@ -74,10 +76,10 @@ class MaterialController extends Controller
             $material->code = $data->code;
             $material->name = $data->name;
             $material->description = $data->description;
-            $material->cost_standard_price = $data->cost_standard_price;
-            $material->cost_standard_price_service = $data->cost_standard_service;
-            $material->min = $data->min;
-            $material->max = $data->max;
+            $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
+            $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
+            $material->min = $data->min == "" ? 0 : $data->min;
+            $material->max = $data->max == "" ? 0 : $data->max;
             $material->weight = $data->weight;
             $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
             $material->height = $data->height;
@@ -143,6 +145,7 @@ class MaterialController extends Controller
             'name' => $data->name,
             'description' => $data->description,
             'cost_standard_price' => $data->cost_standard_price,
+            'cost_standard_price_service' => $data->cost_standard_service,
             'weight' => $data->weight,
             'height' => $data->height,
             'length' => $data->lengths,
@@ -155,7 +158,8 @@ class MaterialController extends Controller
             'code' => 'required|alpha_dash|unique:mst_material,code,'.$id.',id|string|max:255',
             'name' => 'required|string|max:255',   
             'description' => 'nullable|string|max:255',    
-            'cost_standard_price' => 'required|numeric',
+            'cost_standard_price' => 'nullable|numeric',
+            'cost_standard_price_service' => 'nullable|numeric',
             'weight' => 'nullable|numeric',
             'height' => 'nullable|numeric',
             'length' => 'nullable|numeric',
@@ -170,10 +174,10 @@ class MaterialController extends Controller
         $material->code = $data->code;
         $material->name = $data->name;
         $material->description = $data->description;
-        $material->cost_standard_price = $data->cost_standard_price;
-        $material->cost_standard_price_service = $data->cost_standard_service;
-        $material->min = $data->min;
-        $material->max = $data->max;
+        $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
+        $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
+        $material->min = $data->min == "" ? 0 : $data->min;
+        $material->max = $data->max == "" ? 0 : $data->max;
         $material->weight = $data->weight;
         $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
         $material->height = $data->height;

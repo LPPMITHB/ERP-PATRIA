@@ -182,12 +182,8 @@ class WorkRequestController extends Controller
      */
     public function edit($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
-        if($menu == "repair"){
-            $modelProject = $modelWR->project->with('ship','customer','wbss')->where('business_unit_id',2)->first()->jsonSerialize();
-        }elseif($menu == "building"){
-            $modelProject = $modelWR->project->with('ship','customer','wbss')->where('business_unit_id',1)->first()->jsonSerialize();
-        }    
+        $menu = $request->route()->getPrefix();    
+
         $modelWR = WorkRequest::findOrFail($id);
         $project = Project::where('id',$modelWR->project_id)->with('customer','ship')->first();
         $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get();

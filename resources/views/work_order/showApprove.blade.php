@@ -142,7 +142,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered showTable" id="boms-table">
+                <table class="table table-bordered tableFixed showTable" id="boms-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
