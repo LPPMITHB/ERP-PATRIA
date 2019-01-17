@@ -89,16 +89,11 @@ class GoodsReceiptController extends Controller
         $route = $request->route()->getPrefix();
         $modelGR = GoodsReceipt::findOrFail($id);
         $modelGRD = $modelGR->GoodsReceiptDetails ;
-        if($modelGRD[0]->resource_detail_id != ''){
-            $type = "Resource";
-        }elseif($modelGRD[0]->material_id != ''){
-            $type = "Material";
-        }
-        
-        if($type == "Material"){
+
+        if($modelGRD[0]->material_id != ''){
             return view('goods_receipt.show', compact('modelGR','modelGRD','route'));
-        }elseif($type == "Resource"){
-            return view('goods_receipt.showResource', compact('modelGR','modelGRD','route'));
+        }elseif($modelGRD[0]->resource_detail_id != ''){
+            // return view('goods_receipt.showResource', compact('modelGR','modelGRD','route'));
         }
     }
     
