@@ -45,7 +45,7 @@
                                     <td>Resource</td>
                                 @endif
                                 <td>{{ $modelPR->number }}</td>
-                                <td>{{ $modelPR->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPR->description}}">{{ $modelPR->description }}</td>
                                 <td>{{ isset($modelPR->project) ? $modelPR->project->name : '-'}}</td>
                                 @if($modelPR->status == 1)
                                     <td>OPEN</td>

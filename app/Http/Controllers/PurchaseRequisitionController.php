@@ -29,7 +29,7 @@ class PurchaseRequisitionController extends Controller
         }elseif($route == "/purchase_requisition_repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
-        $modelPRs = PurchaseRequisition::whereIn('project_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('project_id',$modelProject)->orwhere('project_id',null)->get();
 
         return view('purchase_requisition.index', compact('modelPRs','route'));
     }

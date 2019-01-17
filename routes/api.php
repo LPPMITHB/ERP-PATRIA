@@ -66,7 +66,6 @@ Route::get('/getSlocGR/{id}', 'GoodsReceiptController@getSlocApi')->name('api.go
 Route::get('/getMaterialGR/{id}', 'GoodsReceiptController@getMaterialAPI')->name('api.goods_receipt.getMaterialAPI');
 Route::get('/getMaterials/{id}', 'GoodsReceiptController@getMaterialsAPI')->name('api.goods_receipt.getMaterialsAPI');
 Route::get('/getPRD/{id}', 'GoodsReceiptController@getGRDAPI')->name('api.goods_receipt.getPRDAPI');
-Route::get('/generateCodeGr/{data}', 'GoodsReceiptController@generateCodeAPI')->name('api.goods_receipt.generateCodeAPI');
 
 // purchase order
 Route::get('/getVendor', 'PurchaseOrderController@getVendorAPI')->name('api.purchase_order.getVendorAPI');
@@ -113,7 +112,7 @@ Route::get('/getProjectNameAssignResource/{id}', 'ResourceController@getProjectN
 Route::get('/getResourceNameAssignResource/{id}', 'ResourceController@getResourceNameAssignResourceApi')->name('api.resource.getResourceNameAssignResourceApi');
 Route::get('/getResourceDetail', 'ResourceController@getResourceDetailApi')->name('api.resource.getResourceDetailApi');
 Route::get('/getCategoryAR/{id}', 'ResourceController@getCategoryARApi')->name('api.resource.getCategoryARApi');
-
+Route::get('/generateCodeGrResource/{data}', 'ResourceController@generateCodeAPI')->name('api.resource.generateCodeAPI');
 
 // yard plan
 Route::get('/getWbs/{id}', 'YardPlanController@getWbsAPI')->name('api.yard_plan.getWbsAPI');

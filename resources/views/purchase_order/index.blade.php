@@ -40,7 +40,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
-                                <td>{{ $modelPO->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPO->description}}">{{ $modelPO->description }}</td>
                                 <td>{{ isset($modelPO->project) ? $modelPO->project->number : '-' }}</td>
                                 @if($modelPO->status == 1)
                                     <td>OPEN</td>

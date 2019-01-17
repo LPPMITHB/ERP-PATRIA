@@ -44,7 +44,7 @@
                                     <td v-if="PRs.type == 1">Material</td>
                                     <td v-else>Resource</td>
                                     <td>{{ PRs.number }}</td>
-                                    <td>{{ PRs.description }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(PRs.description)">{{ PRs.description }}</td>
                                     <td v-if="PRs.project != null">{{ PRs.project.name }}</td>
                                     <td v-else>-</td>
                                     <td v-if="PRs.status == 0">ORDERED</td>
@@ -119,7 +119,15 @@
         checkedPR : [],
         submittedForm : {},
         type : "",
-    }
+    };
+
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
 
     var app = new Vue({
         el : '#prd',
@@ -156,6 +164,9 @@
             }
         },
         methods: {
+            tooltipText: function(text) {
+                return text
+            },
             submitForm(){
                 var prd = this.checkedPR;
                 var jsonPrd = JSON.stringify(prd);

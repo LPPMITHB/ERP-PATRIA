@@ -19,7 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered table-hover tableFixed" id="po-table">
+                <table class="table tableFixed table-bordered table-hover" id="po-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -41,7 +41,7 @@
                                     <td>Resource</td>
                                 @endif
                                 <td>{{ $modelPR->number }}</td>
-                                <td>{{ isset($modelPR->description) ? $modelPR->description : '-'}}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPR->description}}">{{ isset($modelPR->description) ? $modelPR->description : '-'}}</td>
                                 <td>{{ isset($modelPR->project) ? $modelPR->project->name : '-' }}</td>
                                 @if($modelPR->status == 1)
                                     <td>OPEN</td>

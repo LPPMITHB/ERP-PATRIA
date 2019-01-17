@@ -151,15 +151,14 @@
         modelPOD : @json($modelPODs),
         modelPO :   @json($modelPO),
         modelSloc : @json($modelSloc),
-        
+
         slocSettings: {
             placeholder: 'Please Select Storage Location'
         },
         description:"",
         submittedForm :{},
-        
     }
-    
+
     var vm = new Vue({
         el : '#pod',
         data : data,
@@ -167,11 +166,12 @@
             createOk: function(){
                 let isOk = false;
                 this.modelPOD.forEach(POD => {
-                    if( POD.sloc_id == null){
+                    if(POD.sloc_id == null){
                         isOk = true;
                     }
-                return isOk;
+                console.log(this.modelPOD)
                 });
+                return isOk;
             }
         },
         methods : {
@@ -187,23 +187,22 @@
                 var data = this.modelPOD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
-                
+
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , ''); 
                     POD.received = parseInt(POD.received);     
                 });
-                console.log(this.modelPOD);
-                
+
                 this.submittedForm.POD = data;
                 this.submittedForm.po_id = this.modelPO.id;
                 this.submittedForm.description = this.description;
-                
+
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                form.submit();
+                // form.submit();
             }
         },
         watch : {
@@ -214,7 +213,7 @@
                         if(parseInt(POD.quantity.replace(/,/g , '')) < parseInt(POD.received.replace(/,/g , ''))){
                             POD.received = POD.quantity;
                             iziToast.warning({
-                                title: 'Cannot input more than available quantity..',
+                                title: 'Cannot input more than avaiable quantity..',
                                 position: 'topRight',
                                 displayMode: 'replace'
                             });
@@ -224,11 +223,12 @@
                 },
                 deep: true
             },
+
         },
         created: function(){
             var data = this.modelPOD;
             data.forEach(POD => {
-                POD['sloc_id'] = "";
+                POD['sloc_id'] = null;
                 POD.received = parseInt(POD.quantity) - parseInt(POD.received);
                 POD.quantity = POD.received;
                 POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
