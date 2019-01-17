@@ -166,13 +166,12 @@
             createOk: function(){
                 let isOk = false;
                 this.modelPOD.forEach(POD => {
-                    console.log(POD);
-                });
-                if(this.POD.sloc_id.length == ""){
+                    if(POD.sloc_id == null){
                         isOk = true;
                     }
+                });
                 return isOk;
-            },
+            }
         },
         methods : {
             changeText(){
