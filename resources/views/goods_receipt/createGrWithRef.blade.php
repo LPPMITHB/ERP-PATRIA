@@ -166,7 +166,7 @@
             createOk: function(){
                 let isOk = false;
                 this.modelPOD.forEach(POD => {
-                    if( POD.sloc_id == null ){
+                    if(POD.sloc_id == null){
                         isOk = true;
                     }
                 });
