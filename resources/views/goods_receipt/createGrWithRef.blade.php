@@ -169,6 +169,7 @@
                     if(POD.sloc_id == null){
                         isOk = true;
                     }
+                console.log(this.modelPOD)
                 });
                 return isOk;
             }
@@ -222,6 +223,7 @@
                 },
                 deep: true
             },
+
         },
         created: function(){
             var data = this.modelPOD;

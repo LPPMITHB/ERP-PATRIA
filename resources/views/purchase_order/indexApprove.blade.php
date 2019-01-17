@@ -24,7 +24,7 @@
                 </div>
             </div> <!-- /.box-header --> --}}
             <div class="box-body">
-                <table class="table table-bordered" id="po-table">
+                <table class="table tableFixed table-bordered" id="po-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -40,7 +40,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
-                                <td>{{ $modelPO->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPO->description}}">{{ $modelPO->description }}</td>
                                 <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
                                 @if($modelPO->status == 1)
                                     <td>OPEN</td>
