@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Goods Receipt',
+        'title' => 'Create Resource Receipt',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Order' => route('goods_receipt.selectPO'),
+            'Select Purchase Order' => route('resource.selectPO'),
             'Details' => '',
         ]
     ]
@@ -19,7 +19,7 @@
     <div class="col-sm-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_receipt.storeResource') }}">
+                <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('resource.storeGR') }}">
                 @csrf
                     @verbatim
                     <div id="pod">
@@ -496,7 +496,7 @@
                     datas.push(resource_code,po_number);
                     datas = JSON.stringify(datas);
 
-                    window.axios.get('/api/generateCodeGr/'+datas).then(({ data }) => {
+                    window.axios.get('/api/generateCodeGrResource/'+datas).then(({ data }) => {
                         this.editInput.code = data;
 
                         this.submitData.forEach(dataSubmit => {
