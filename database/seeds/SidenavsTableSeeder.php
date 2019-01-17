@@ -1398,6 +1398,22 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'resource.selectPO',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPOResource,
+            'route_name' => 'resource.createGR',
+        ]);
+
+        $indexReceived = Menu::where('route_name','resource.indexReceived')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexReceived,
+            'route_name' => 'resource.indexReceived',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexReceived,
+            'route_name' => 'resource.showGR',
+        ]);
+
         $issueResource = Menu::where('route_name','resource.issueResource')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $issueResource,
