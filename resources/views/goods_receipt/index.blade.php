@@ -45,7 +45,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $GR->number }}</td>
-                                <td>{{ $GR->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->description}}">{{ $GR->description }}</td>
                                 <td class="textCenter p-l-0 p-r-0">
                                     @if($route == "/goods_receipt")
                                         <a href="{{ route('goods_receipt.show', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>

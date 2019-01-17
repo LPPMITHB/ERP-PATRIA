@@ -19,7 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered table-hover" id="po-table">
+                <table class="table table-bordered table-hover tableFixed" id="po-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>

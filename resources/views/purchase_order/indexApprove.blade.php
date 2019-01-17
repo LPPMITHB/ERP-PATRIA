@@ -24,7 +24,7 @@
                 </div>
             </div> <!-- /.box-header --> --}}
             <div class="box-body">
-                <table class="table table-bordered" id="po-table">
+                <table class="table table-bordered tableFixed" id="po-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
