@@ -182,7 +182,7 @@ class WorkRequestController extends Controller
      */
     public function edit($id, Request $request)
     {
-        $menu = $request->route()->getPrefix();    
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";  
 
         $modelWR = WorkRequest::findOrFail($id);
         $project = Project::where('id',$modelWR->project_id)->with('customer','ship')->first();
@@ -206,7 +206,7 @@ class WorkRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";  
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
