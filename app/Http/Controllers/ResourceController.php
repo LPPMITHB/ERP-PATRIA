@@ -15,6 +15,8 @@ use App\Models\Category;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
 use App\Models\Configuration;
+use App\Models\GoodsReceipt;
+use App\Models\GoodsReceiptDetail;
 use DateTime;
 use Auth;
 use DB;
@@ -102,6 +104,7 @@ class ResourceController extends Controller
             $quantity = $POD->quantity - $POD->received;
             for ($i=0; $i < $quantity; $i++) { 
                 $datas->push([
+                    "pod_id" => $POD->id,
                     "resource_id" => $POD->resource->id, 
                     "resource_code" => $POD->resource->code,
                     "resource_name" => $POD->resource->name,
@@ -117,7 +120,6 @@ class ResourceController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gr_number = $this->GR->generateGRNumber();
-
         DB::beginTransaction();
         try {
             $GR = new GoodsReceipt;
@@ -163,20 +165,36 @@ class ResourceController extends Controller
                 $GRD->quantity = 1;
                 $GRD->resource_detail_id = $RD->id;
                 $GRD->save();
+
+                $this->GR->updatePOD($data->pod_id,1);
             }
+            $this->GR->checkStatusPO($datas->po_id);
             DB::commit();
-            if($route == "/goods_receipt"){
-                return redirect()->route('goods_receipt.show',$GR->id)->with('success', 'Goods Receipt Created');
-            }elseif($route == "/goods_receipt_repair"){
-                return redirect()->route('goods_receipt_repair.show',$GR->id)->with('success', 'Goods Receipt Created');
+            if($route == "/resource"){
+                return redirect()->route('resource.showGR',$GR->id)->with('success', 'Goods Receipt Created');
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.showGR',$GR->id)->with('success', 'Goods Receipt Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($route == "/goods_receipt"){
-                return redirect()->route('goods_receipt.selectPO',$datas->po_id)->with('error', $e->getMessage());
-            }elseif($route == "/goods_receipt_repair"){
-                return redirect()->route('goods_receipt_repair.selectPO',$datas->po_id)->with('error', $e->getMessage());
+            if($route == "/resource"){
+                return redirect()->route('resource.selectPO',$datas->po_id)->with('error', $e->getMessage());
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.selectPO',$datas->po_id)->with('error', $e->getMessage());
             }
+        }
+    }
+
+    public function showGR(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $modelGR = GoodsReceipt::findOrFail($id);
+        $modelGRD = $modelGR->GoodsReceiptDetails ;
+
+        if($modelGRD[0]->material_id != ''){
+            // return view('goods_receipt.show', compact('modelGR','modelGRD','route'));
+        }elseif($modelGRD[0]->resource_detail_id != ''){
+            return view('resource.showGR', compact('modelGR','modelGRD','route'));
         }
     }
 
