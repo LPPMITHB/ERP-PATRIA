@@ -234,7 +234,7 @@
             createOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.cost_standard_price == ""){
+                if(this.submittedForm.code == "" || this.submittedForm.name == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -287,18 +287,6 @@
                 this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.min = (this.submittedForm.min+"").replace(/,/g , '');
                 this.submittedForm.max = (this.submittedForm.max+"").replace(/,/g , '');
-
-                if(this.submittedForm.min == ""){
-                    this.submittedForm.min = 0;
-                }else if(this.submittedForm.min != ""){
-                    this.submittedForm.min = this.submittedForm.min;
-                }
-
-                if(this.submittedForm.max == ""){
-                    this.submittedForm.max = 0;
-                }else if(this.submittedForm.max != ""){
-                    this.submittedForm.max = this.submittedForm.max;
-                }
 
                 this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
                 this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
