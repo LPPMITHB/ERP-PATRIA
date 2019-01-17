@@ -183,7 +183,9 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::get('/createGR/{id}', 'ResourceController@createGR')->name('createGR');
 
-    Route::post('/storeGR', 'GoodsReceiptController@storeGR')->name('storeGR');
+    Route::post('/storeGR', 'ResourceController@storeGR')->name('storeGR');
+
+    Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR');
 
     Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource');
 
@@ -895,7 +897,6 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
     Route::get('/createGrFromWo/{id}', 'GoodsReceiptController@createGrFromWo')->name('createGrFromWo')->middleware('can:create-goods-receipt');
 
     Route::post('/storeWo', 'GoodsReceiptController@storeWo')->name('storeWo')->middleware('can:create-goods-receipt');
-
 
     Route::get('/createGrWithoutRef', 'GoodsReceiptController@createGrWithoutRef')->name('createGrWithoutRef')->middleware('can:create-goods-receipt-without-ref');
 
