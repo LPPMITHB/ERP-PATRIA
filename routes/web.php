@@ -187,6 +187,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR');
 
+    Route::get('/indexReceived', 'ResourceController@indexReceived')->name('indexReceived');
+
     Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource');
 
     Route::get('/create', 'ResourceController@create')->name('create')->middleware('can:create-resource');
