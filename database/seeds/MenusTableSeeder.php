@@ -754,9 +754,33 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'View Received Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource.indexReceived',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Issue Resource',
             'icon' => 'fa-wrench',
             'route_name'=> 'resource.issueResource',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Issued Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource.indexIssued',
             'is_active' => true,
             'roles' => 'ADMIN,PMP',
             'menu_id'=> $resourcemanagement,

@@ -198,6 +198,20 @@ class ResourceController extends Controller
         }
     }
 
+    public function indexReceived(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $modelGRs = GoodsReceipt::all();
+
+        foreach($modelGRs as $key => $GR){
+            if($GR->purchaseOrder->purchaseRequisition->type != 2){
+                $modelPOs->forget($key);
+            }
+        }
+
+        return view('resource.indexReceived', compact('modelGRs','route'));
+    }
+
     public function issueResource(Request $request)
     {
         $route = $request->route()->getPrefix();

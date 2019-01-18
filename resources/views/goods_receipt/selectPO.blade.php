@@ -34,7 +34,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
-                                <td>{{ $modelPO->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPO->description}}">{{ $modelPO->description }}</td>
                                 <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($route == "/goods_receipt")
@@ -49,7 +49,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelWO->number }}</td>
-                                <td>{{ $modelWO->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelWO->description}}">{{ $modelWO->description }}>{{ $modelWO->description }}</td>
                                 <td>{{ isset($modelWO->project) ? $modelWO->project->name : '-' }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($route == "/goods_receipt")

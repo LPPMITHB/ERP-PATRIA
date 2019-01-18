@@ -17,6 +17,8 @@ use App\Models\MaterialRequisitionDetail;
 use Auth;
 use DB;
 use PDF;
+use App\Providers\numberConverter;
+
 
 class WorkOrderController extends Controller
 {
@@ -304,7 +306,8 @@ class WorkOrderController extends Controller
     public function printPdf($id)
     {
         $modelWO = WorkOrder::find($id);
-        $pdf = PDF::loadView('work_order.pdf',['modelWO' => $modelWO]);
+        $words = numberConverter::longform($modelWO->total_price);
+        $pdf = PDF::loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words]);
         $now = date("Y_m_d_H_i_s");
         return $pdf->stream('Work_Order_'.$now.'.pdf');
     }
@@ -312,7 +315,9 @@ class WorkOrderController extends Controller
     public function review($id)
     {
         $modelWO = WorkOrder::find($id);
-        return view('work_order.pdf', compact('modelWO'));
+        $words = numberConverter::longform($modelWO->total_price);
+        
+        return view('work_order.pdf', compact('modelWO','words'));
 
     }
     public function generateWONumber(){
@@ -380,4 +385,6 @@ class WorkOrderController extends Controller
         $mr_number = 'MR-'.$mr_number;
 		return $mr_number;
     }
+    
+
 }

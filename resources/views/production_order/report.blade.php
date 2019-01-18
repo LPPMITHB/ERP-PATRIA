@@ -29,56 +29,56 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             Project Code
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPrO->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             Project Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPrO->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-5">
                             WBS Code
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPrO->wbs->code }} </b>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-25 no-padding">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-5">
                             Status
                         </div>
                         @if($modelPrO->status == 1)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>UNRELEASED</b>
                             </div>
                         @elseif($modelPrO->status == 2)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-5">
                                 : <b>RELEASED</b>
                             </div>
                         @else
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>COMPLETED</b>
                             </div>
                         @endif
                     </div>
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-5">
                             Actual Total Price
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="Rp.{{number_format($totalPrice)}}">
                             : <b>Rp.{{number_format($totalPrice)}}</b>
                         </div>
                     </div>

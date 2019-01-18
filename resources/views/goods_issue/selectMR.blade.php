@@ -33,7 +33,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelMR->number }}</td>
-                                <td>{{ $modelMR->description }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelMR->description }}">{{ $modelMR->description }}</td>
                                 <td>{{ $modelMR->project->name }} - {{$modelMR->project->number}}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == 'building')
