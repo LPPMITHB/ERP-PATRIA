@@ -22,5 +22,9 @@ class GoodsReceipt extends Model
     {
         return $this->hasMany('App\Models\Material');
     }
-    
+
+    public function vendor()
+    {
+        return $this->belongsTo('App\Models\Vendor');
+    }
 }

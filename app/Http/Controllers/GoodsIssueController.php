@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\GoodsIssue;
+use App\Models\GoodsReceipt;
 use App\Models\Project;
 use App\Models\GoodsIssueDetail;
 use App\Models\MaterialRequisition;
@@ -13,6 +14,7 @@ use App\Models\StorageLocation;
 use App\Models\Stock;
 use App\Models\StorageLocationDetail;
 use App\Models\Branch;
+use App\Models\PurchaseOrder;
 use DB;
 use Auth;
 
@@ -60,6 +62,20 @@ class GoodsIssueController extends Controller
         }
 
         return view('goods_issue.selectMR', compact('modelMRs','menu'));
+    }
+
+    public function selectGR(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }else{
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
+        $modelPO = PurchaseOrder::whereIn('project_id', $modelProject)->pluck('id')->toArray();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $modelPO)->get();
+
+        return view('goods_return.selectGR', compact('modelGRs','menu'));
     }
 
     public function approval($gi_id,$status){
