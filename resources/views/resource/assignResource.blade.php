@@ -63,23 +63,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(datas,index) in modelAssignResource">
+                                            <tr v-for="(data,index) in modelAssignResource">
                                                 <td>{{ index + 1 }}</td>
-                                                <td>{{ datas.resource.code }} - {{ datas.resource.name }}</td>
-                                                <td>{{ datas.wbs.name }}</td>
-                                                <td>{{ datas.quantity }}</td>
-                                                <template v-if="datas.wbs_id == null">
-
-                                                    <td>{{ "Not Assigned" }}</td>
-                                                
-                                                </template>
-                                                <template v-else>
-                                                
-                                                    <td>{{ "Assigned" }}</td>
-                                                
-                                                </template>     
+                                                <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                                <td>{{ data.wbs.name }}</td>
+                                                <td>{{ data.quantity }}</td>
+                                                <td v-if="data.wbs_id == null">{{ "Not Assigned" }}</td>
+                                                <td v-else>{{ "Assigned" }}</td>
                                                 <td class="p-l-3 textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(datas,index)">
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                                         EDIT
                                                     </a>
                                                 </td>
@@ -123,16 +115,20 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="type" class="control-label">Resource</label>
+                                                <label class="control-label">Resource</label>
                                                 <selectize v-model="editInput.resource_id" :settings="resourceSettings">
-                                                    <option v-for="(resource,index) in modelResources" :value="resource.id">{{ resource.name }}</option>
+                                                    <option v-for="(resource,index) in modelResources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
-                                                <label for="wbs_name" class="control-label">WBS Name</label>
+                                                <label class="control-label">WBS Name</label>
                                                 <selectize v-model="editInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.name }}</option>
                                                 </selectize>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Quantity</label>
+                                                <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                         </div>
                                     </div>
@@ -170,20 +166,14 @@
         modelWBS : [],
         modelAssignResource : [],
         newIndex : "",
-        dataWBS : "",
         dataInput : {
-            project_id : "",
             resource_id :"",
             wbs_id : "",
-            category_id : "",
             quantity : "",
         },
         editInput : {
-            resourcedetail_id : "",
-            project_id : "",
             resource_id :"",
             wbs_id : "",
-            category_id : "",
             quantity : "",
         },
         projectSettings: {
@@ -195,7 +185,6 @@
         wbsSettings: {
             placeholder: 'Please Select WBS'
         },
-        selectedResource : [],
     }
 
     var vm = new Vue({
@@ -216,7 +205,7 @@
             updateOk: function(){
                 let isOk = false;
 
-                if(this.editInput.resource_id == "" || this.editInput.project_id == "" || this.editInput.wbs_id == ""){
+                if(this.editInput.resource_id == "" || this.editInput.wbs_id == "" || this.editInput.quantity == ""){
                     isOk = true;
                 }
 
@@ -236,13 +225,19 @@
                 })
                 return text
             },
+            getResource(){
+                window.axios.get('/api/getResourceDetail/' + this.project_id).then(({ data }) => {
+                    this.modelAssignResource = data;
+                    this.newIndex = Object.keys(this.modelAssignResource).length+1;
+                });
+            },
             add(){
+                $('div.overlay').show();            
                 this.dataInput.project_id = this.project_id;
                 var dataInput = this.dataInput;
                 dataInput = JSON.stringify(dataInput);
                 var url = "{{ route('resource.storeAssignResource') }}";
 
-                $('div.overlay').show();            
                 window.axios.post(url,dataInput).then((response) => {
                     if(response.data.error != undefined){
                         iziToast.warning({
@@ -272,104 +267,42 @@
                 })
                 
             },
-            getResource(){
-                window.axios.get('/api/getResourceDetail/' + this.project_id).then(({ data }) => {
-                    this.modelAssignResource = data;
-                    this.newIndex = Object.keys(this.modelAssignResource).length+1;
-                });
-            },
-
             update(){
-                var editInput = this.editInput;       
-                var resource_id = this.editInput.resource_id;
-                window.axios.get('/api/getCategoryAR/'+resource_id).then(({ data }) => {
-                    this.editInput.category_id = data.category_id;
-                    this.editInput.quantity = data.quantity;
+                $('div.overlay').show();            
+                var url = "/resource/updateAssignResource/"+this.editInput.id;
+                let editInput = JSON.stringify(this.editInput);
 
-                    var url = "/resource/updateAssignResource/"+editInput.resourcedetail_id;
-                    editInput = JSON.stringify(editInput);
-                    $('div.overlay').show();            
-                    window.axios.put(url,editInput)
-                    .then((response) => {
-                        if(response.data.error != undefined){
-                            iziToast.warning({
-                                displayMode: 'replace',
-                                title: response.data.error,
-                                position: 'topRight',
-                            });
-                            $('div.overlay').hide();            
-                        }else{
-                            iziToast.success({
-                                displayMode: 'replace',
-                                title: response.data.response,
-                                position: 'topRight',
-                            });
-                            $('div.overlay').hide();            
-                        }
-                        
-                        this.getResource();   
-                    })
-                    .catch((error) => {
+                window.axios.put(url,editInput).then((response) => {
+                    if(response.data.error != undefined){
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: response.data.error,
+                            position: 'topRight',
+                        });
                         $('div.overlay').hide();            
-                    })
+                    }else{
+                        iziToast.success({
+                            displayMode: 'replace',
+                            title: response.data.response,
+                            position: 'topRight',
+                        });
+                        $('div.overlay').hide();            
+                    }
+                    
+                    this.getResource();   
                 })
                 .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
+                    $('div.overlay').hide();            
                 })
-            
             },
-
             openEditModal(data,index){
-                this.editInput.resourcedetail_id = data.id;
-                this.editInput.project_id = data.project_id;
-                this.editInput.project_name = data.project_name;
+                this.editInput.id = data.id
                 this.editInput.resource_id = data.resource_id;
-                this.editInput.resource_name = data.resource_name;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_name = data.wbs_name;
-                this.editInput.index = index;
+                this.editInput.quantity = data.quantity;
             },
-
-            removeRow(index){
-                this.modelAssignResource.splice(index, 1);
-                // this.material_id.splice(index, 1);
-
-                // var jsonMaterialId = JSON.stringify(this.material_id);
-                // this.getNewMaterials(jsonMaterialId);
-                
-                this.newIndex = this.modelAssignResource.length + 1;
-
-            },
-
         },
-
         watch : {
-            'dataInput.resource_id' : function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getResourceAssign/'+newValue).then(({ data }) => {
-                        this.selectedResource = [];
-                        this.selectedResource.push(data);
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.selectedResource = [];
-                }
-            },
             'project_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
@@ -425,11 +358,10 @@
             'dataInput.quantity': function(newValue){
                 this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             },
+            'editInput.quantity': function(newValue){
+                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            },
         },
-        created: function() {
-        },
-
     });
-
 </script>
 @endpush

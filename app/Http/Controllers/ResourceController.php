@@ -313,21 +313,19 @@ class ResourceController extends Controller
     public function updateAssignResource (Request $request, $id)
     {
         $data = $request->json()->all();
-        $resource_ref = ResourceDetail::find($id);
+        $resource_ref = ResourceTrx::findOrFail($id);
 
         DB::beginTransaction();
         try {
             $resource_ref->resource_id = $data['resource_id'];
-            $resource_ref->project_id = $data['project_id'];
             $resource_ref->wbs_id = $data['wbs_id'];
-            $resource_ref->category_id = $data['category_id'];
             $resource_ref->quantity = $data['quantity'];
 
             if(!$resource_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
-                return response(["response"=>"Success to Update WBS ".$resource_ref->code],Response::HTTP_OK);
+                return response(["response"=>"Success to Update Assign Resource ".$resource_ref->code],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
