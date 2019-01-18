@@ -99,7 +99,7 @@
                                 <td class="p-l-10">{{ $loop->iteration }}</td>
                                 <td class="tdEllipsis p-l-10">{{ $pro->number }}</td>
                                 <td class="tdEllipsis p-l-10">{{ $pro->wbs->code }} - {{ $pro->wbs->name }}</td>
-                                <td class="p-l-10">{{ $pro->user->name }}</td>
+                                <td class="tdEllipsis p-l-10">{{ $pro->user->name }}</td>
                                 @if($pro->status == 1)
                                     <td class="p-l-10">{{ 'UNRELEASED' }}</td>
                                 @endif
