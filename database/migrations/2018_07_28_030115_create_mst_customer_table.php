@@ -19,9 +19,9 @@ class CreateMstCustomerTable extends Migration
             $table->string('name');
             $table->longText('address_1')->nullable();
             $table->longText('address_2')->nullable();
-            $table->string('contact_person_name');
-            $table->string('contact_person_email')->unique();
-            $table->string('contact_person_phone');
+            $table->string('contact_person_name')->nullable();
+            $table->string('contact_person_email')->unique()->nullable();
+            $table->string('contact_person_phone')->nullable();
             $table->integer('tax_number')->nullable();
             $table->integer('pkp_number')->nullable();
             $table->string('province')->nullable();
