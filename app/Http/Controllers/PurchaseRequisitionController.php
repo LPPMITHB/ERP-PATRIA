@@ -29,7 +29,11 @@ class PurchaseRequisitionController extends Controller
         }elseif($route == "/purchase_requisition_repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
-        $modelPRs = PurchaseRequisition::whereIn('project_id',$modelProject)->orwhere('project_id',null)->get();
+        if($route == "/purchase_requisition"){
+            $modelPRs = PurchaseRequisition::whereIn('project_id',$modelProject)->orwhere('business_unit_id',1)->get();
+        }elseif($route == "/purchase_requisition_repair"){
+            $modelPRs = PurchaseRequisition::whereIn('project_id',$modelProject)->orwhere('business_unit_id',2)->get();
+        }
 
         return view('purchase_requisition.index', compact('modelPRs','route'));
     }
@@ -50,8 +54,12 @@ class PurchaseRequisitionController extends Controller
     public function indexConsolidation(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::whereIn('status',[1])->with('project')->get();
-
+        if($route == "/purchase_requisition"){
+            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',1)->with('project')->get();
+        }elseif($route == "/purchase_requisition_repair"){
+            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',2)->with('project')->get();
+        }
+        
         return view('purchase_requisition.indexConsolidation', compact('modelPRs','route'));
     }
 
@@ -85,7 +93,6 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-
         $pr_number = $this->generatePRNumber();
         $current_date = today();
         $valid_to = $current_date->addDays(7);
@@ -100,6 +107,11 @@ class PurchaseRequisitionController extends Controller
                 $PR->valid_date = $valid_to;
                 if($datas->project_id != null){
                     $PR->project_id = $datas->project_id;
+                }
+                if($route == '/purchase_requisition'){
+                    $PR->business_unit_id = 1;
+                }else if($route == '/purchase_requisition_repair'){
+                    $PR->business_unit_id = 2;
                 }
                 $PR->status = 1;
                 $PR->type = 1;
@@ -149,6 +161,11 @@ class PurchaseRequisitionController extends Controller
                 $PR->valid_date = $valid_to;
                 if($datas->project_id != null){
                     $PR->project_id = $datas->project_id;
+                }
+                if($route == '/purchase_requisition'){
+                    $PR->business_unit_id = 1;
+                }else if($route == '/purchase_requisition_repair'){
+                    $PR->business_unit_id = 2;
                 }
                 $PR->status = 1;
                 $PR->type = 2;
@@ -223,6 +240,12 @@ class PurchaseRequisitionController extends Controller
             $PR->status = 1;
             $PR->type = $datas->type;
             $PR->description = 'PR Consolidation';
+            if($route == '/purchase_requisition'){
+                $PR->business_unit_id = 1;
+
+            }elseif($route == '/purchase_requisition_repair'){
+                $PR->business_unit_id = 2;
+            }
             $PR->user_id = Auth::user()->id;
             $PR->branch_id = Auth::user()->branch->id;
             $PR->save();

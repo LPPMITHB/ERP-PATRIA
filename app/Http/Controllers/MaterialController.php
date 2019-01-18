@@ -78,6 +78,7 @@ class MaterialController extends Controller
             $material->description = $data->description;
             $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
             $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
+            $material->uom_id = $data->uom_id;
             $material->min = $data->min == "" ? 0 : $data->min;
             $material->max = $data->max == "" ? 0 : $data->max;
             $material->weight = $data->weight;
@@ -176,6 +177,7 @@ class MaterialController extends Controller
         $material->description = $data->description;
         $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
         $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
+        $material->uom_id = $data->uom_id;
         $material->min = $data->min == "" ? 0 : $data->min;
         $material->max = $data->max == "" ? 0 : $data->max;
         $material->weight = $data->weight;

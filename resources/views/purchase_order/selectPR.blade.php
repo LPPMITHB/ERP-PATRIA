@@ -48,9 +48,9 @@
                                 @elseif($modelPR->status == 2)
                                     <td>APPROVED</td>
                                 @elseif($modelPR->status == 0 || $modelPR->status == 7)
-                                    <td>ORDERED PARTIALLY</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="ORDERED PARTIALLY">ORDERED PARTIALLY</td>
                                 @elseif($modelPR->status == 3)
-                                    <td>NEEDS REVISION</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="NEEDS REVISION">NEEDS REVISION</td>
                                 @elseif($modelPR->status == 4)
                                     <td>REVISED</td>
                                 @elseif($modelPR->status == 5)

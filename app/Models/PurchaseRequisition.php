@@ -27,4 +27,10 @@ class PurchaseRequisition extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+    
+    public function businessUnit()
+    {
+        return $this->belongsTo('App\Models\BusinessUnit');
+    }
+
 }
