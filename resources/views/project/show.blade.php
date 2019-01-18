@@ -491,6 +491,10 @@
                                return 'Rp' + value;
                             }
                        }    
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'in million'
                     }
                 }]
             } 

@@ -307,19 +307,13 @@ class WorkOrderController extends Controller
     {
         $modelWO = WorkOrder::find($id);
         $words = numberConverter::longform($modelWO->total_price);
-        $pdf = PDF::loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words]);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words]);
         $now = date("Y_m_d_H_i_s");
         return $pdf->stream('Work_Order_'.$now.'.pdf');
     }
 
-    public function review($id)
-    {
-        $modelWO = WorkOrder::find($id);
-        $words = numberConverter::longform($modelWO->total_price);
-        
-        return view('work_order.pdf', compact('modelWO','words'));
-
-    }
     public function generateWONumber(){
         $modelWO = WorkOrder::orderBy('created_at','desc')->first();
         $yearNow = date('y');
