@@ -373,9 +373,8 @@ class WorkRequestController extends Controller
 
     // function
     public function generateWRNumber(){
-        $modelWR = WorkRequest::orderBy('created_at','desc')->first();
+        $modelWR = WorkRequest::orderBy('number','desc')->first();
         $yearNow = date('y');
-        
 		$number = 1;
         if(isset($modelWR)){
             $yearDoc = substr($modelWR->number, 3,2);

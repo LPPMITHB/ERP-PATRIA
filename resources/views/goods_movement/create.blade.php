@@ -322,7 +322,7 @@
                         if(parseInt(SLD.quantity.replace(/,/g , '')) > parseInt(SLD.quantity_rn.replace(/,/g , ''))){
                             SLD.quantity = SLD.quantity_rn;
                             iziToast.warning({
-                                title: 'Cannot input more than avaiable quantity..',
+                                title: 'Cannot input more than available quantity..',
                                 position: 'topRight',
                                 displayMode: 'replace'
                             });

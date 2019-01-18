@@ -90,7 +90,7 @@
                                     <td v-else class="tdEllipsis">-</td>
                                     <td class="p-l-0 textCenter">
                                         <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
-                                            EDIT ACTUAL COST
+                                            INPUT ACTUAL COST
                                         </a>
                                     </td>
                                 </tr>

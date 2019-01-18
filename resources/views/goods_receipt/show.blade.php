@@ -62,7 +62,7 @@
                             <div class="box-header no-padding">
                                     <div class="box-body">
                                         <div class="col-md-4 col-xs-4 no-padding">Description</div>
-                                        <div class="col-md-6 no-padding">: <b> {{ $modelGR->description }} </b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelGR->description}}">: <b> {{ $modelGR->description }} </b></div>
                                     </div>
                             </div>
                     </div>

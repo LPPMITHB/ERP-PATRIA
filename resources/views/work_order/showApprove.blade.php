@@ -42,100 +42,100 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 col-xs-12 m-t-10 m-l-25">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4 no-padding">
                             Project Number
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-6">
                             : <b> {{ isset($modelWO->project) ? $modelWO->project->number : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4 no-padding">
                             Ship Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-6 tdEllipsis" data-container="body" data-toggle="tooltip" title=" {{ isset($modelWO->project) ? $modelWO->project->name : '-' }}">
                             : <b> {{ isset($modelWO->project) ? $modelWO->project->name : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4 no-padding">
                             Ship Type
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-6">
                             : <b> {{ isset($modelWO->project) ? $modelWO->project->ship->type : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4 no-padding">
                             Ref Number
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-6">
                             : <b> {{ $modelWO->workRequest->number }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4 no-padding">
                             Total Price
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-6">
                             : <b> {{ number_format($modelWO->total_price) }} </b>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 col-xs-12 m-t-10 m-l-25">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-4 no-padding">
                             Customer Name
                         </div>
-                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelWO->project) ? $modelWO->project->customer->name : '-'}}">
+                        <div class="col-md-7 col-xs-6 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelWO->project) ? $modelWO->project->customer->name : '-'}}">
                             : <b> {{ isset($modelWO->project) ? $modelWO->project->customer->name : '-' }} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-4 no-padding">
                             Vendor Name
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-7 col-xs-6 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }}">
                             : <b> {{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-4 no-padding">
                             Status
                         </div>
                         @if($modelWO->status == 1)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-6">
                                 : <b>OPEN</b>
                             </div>
                         @elseif($modelWO->status == 2)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-6">
                                 : <b>APPROVED</b>
                             </div>
                         @elseif($modelWO->status == 3)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-6">
                                 : <b>NEED REVISION</b>
                             </div>
                         @elseif($modelWO->status == 4)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-6">
                                 : <b>REVISED</b>
                             </div>
                         @elseif($modelWO->status == 5)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-6">
                                 : <b>REJECTED</b>
                             </div>
                         @elseif($modelWO->status == 0)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-6">
                                 : <b>RECEIVED</b>
                             </div>
                         @endif
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-4 no-padding">
                             Created By
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-7 col-xs-6">
                             : <b> {{ $modelWO->user->name }} </b>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-4 no-padding">
                             Created At
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-7 col-xs-6">
                             : <b> {{ $modelWO->created_at }} </b>
                         </div>
                     </div>
