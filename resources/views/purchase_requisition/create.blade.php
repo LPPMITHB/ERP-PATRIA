@@ -38,7 +38,7 @@
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
             
                                     <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="selectedProject[0].customer.name" @mouseover="changeText"><b>: {{selectedProject[0].customer.name}}</b></div>
+                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
 
                                     <div class="col-xs-5 no-padding">Start Date</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
@@ -395,13 +395,17 @@
             }
         },
         methods : {
-            changeText(){
-                if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
-                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != this.selectedProject[0].customer.name ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML=this.selectedProject[0].customer.name;    
-                    }
-                }
-            },  
+            tooltip(text){
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).tooltip('destroy');
+                    $(el).tooltip({
+                        title: text,
+                        placement: binding.arg,
+                        trigger: 'hover'             
+                    })
+                })
+                return text
+            },
             submitForm(){
                 this.submit = "";
                 this.submittedForm.resource = this.resource;

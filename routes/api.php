@@ -110,7 +110,7 @@ Route::get('/getWbsAssignResource/{id}', 'ResourceController@getWbsAssignResourc
 Route::get('/getWbsNameAssignResource/{id}', 'ResourceController@getWbsNameAssignResourceApi')->name('api.resource.getWbsNameAssignResourceApi');
 Route::get('/getProjectNameAssignResource/{id}', 'ResourceController@getProjectNameAssignResourceApi')->name('api.resource.getProjectNameAssignResourceApi');
 Route::get('/getResourceNameAssignResource/{id}', 'ResourceController@getResourceNameAssignResourceApi')->name('api.resource.getResourceNameAssignResourceApi');
-Route::get('/getResourceDetail', 'ResourceController@getResourceDetailApi')->name('api.resource.getResourceDetailApi');
+Route::get('/getResourceDetail/{id}', 'ResourceController@getResourceDetailApi')->name('api.resource.getResourceDetailApi');
 Route::get('/getCategoryAR/{id}', 'ResourceController@getCategoryARApi')->name('api.resource.getCategoryARApi');
 Route::get('/generateCodeGrResource/{data}', 'ResourceController@generateCodeAPI')->name('api.resource.generateCodeAPI');
 

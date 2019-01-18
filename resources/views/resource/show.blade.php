@@ -45,7 +45,7 @@
                     </table>
                 </div>
             </div>
-            <div class="box-body">
+            {{-- <div class="box-body">
                 <h4 class="m-t-0">Resource Utilization</h4>
                 <table class="table table-bordered width100 showTable tableFixed">
                     <thead>
@@ -71,7 +71,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
