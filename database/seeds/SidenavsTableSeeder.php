@@ -659,6 +659,26 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_receipt_repair.createGrWithoutRef',
         ]);
 
+        // Goods Return
+        $selectGR = Menu::where('route_name','goods_return.selectGR')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGR,
+            'route_name' => 'goods_return.selectGR',
+        ]);
+
+        $selectPO = Menu::where('route_name','goods_return.selectPO')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPO,
+            'route_name' => 'goods_return.selectGR',
+        ]);
+
+        $viewReturn = Menu::where('route_name','goods_return.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewReturn,
+            'route_name' => 'goods_return.index',
+        ]);
+
+        //Goods Issue
         $selectMR = Menu::where('route_name','goods_issue.selectMR')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $selectMR,

@@ -888,7 +888,7 @@ Route::name('physical_inventory_repair.')->prefix('physical_inventory_repair')->
 
 });
 
-// Good Receipt Routes
+// Goods Receipt Routes
 Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {    
     Route::get('/selectPO', 'GoodsReceiptController@selectPO')->name('selectPO')->middleware('can:create-goods-receipt');
 
@@ -909,7 +909,7 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
     Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt');
 });
 
-// Good Receipt Repair Routes
+// Goods Receipt Repair Routes
 Route::name('goods_receipt_repair.')->prefix('goods_receipt_repair')->group(function() {    
     Route::get('/selectPO', 'GoodsReceiptController@selectPO')->name('selectPO')->middleware('can:create-goods-receipt-repair');
 
@@ -928,6 +928,15 @@ Route::name('goods_receipt_repair.')->prefix('goods_receipt_repair')->group(func
     Route::get('/', 'GoodsReceiptController@index')->name('index')->middleware('can:list-goods-receipt-repair');
 
     Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt-repair');
+});
+
+//Goods Return 
+Route::name('goods_return.')->prefix('goods_return')->group(function() {    
+    Route::get('/selectGR', 'GoodsIssueController@selectGR')->name('selectGR')->middleware('can:create-goods-issue');
+
+    Route::get('/selectPO', 'GoodsIssueController@selectPO')->name('selectPO')->middleware('can:create-goods-issue');
+
+    Route::get('/', 'GoodsIssueController@indexGoodsReturn')->name('index')->middleware('can:create-goods-issue');
 });
 
 //Stock Management Routes
