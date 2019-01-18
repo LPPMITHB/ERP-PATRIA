@@ -62,7 +62,7 @@
                                     <div class="col-xs-5 no-padding">End Date</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
                                 </div>
-                                <div class="col-xs-12 col-md-4" v-else>
+                                    <div class="col-xs-12 col-md-4" v-else>
                                     <div class="col-xs-5 no-padding">PR Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
 

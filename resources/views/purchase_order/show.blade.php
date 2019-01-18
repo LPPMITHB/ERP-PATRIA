@@ -44,9 +44,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-4 m-t-10 m-l-10">
+                <div class="col-xs-12 col-sm-12 col-md-4 m-t-10 m-l-25 no-padding">
                     <div class="row">
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-4 col-xs-4">
                             Project Number
                         </div>
                         <div class="col-md-8 col-xs-7">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-4 col-xs-4">
                             Ship Name
                         </div>
                         <div class="col-md-8 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->name : '-' }}">
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-4 col-xs-4">
                             Ship Type
                         </div>
                         <div class="col-md-8 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->ship->type : '-' }}">
@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-4 col-xs-4">
                             Ref Number
                         </div>
                         <div class="col-md-8 col-xs-7">
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-4 col-xs-4">
                             Total Price
                         </div>
                         <div class="col-md-8 col-xs-7">
@@ -86,58 +86,58 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 m-t-10 m-l-10">
+                <div class="col-xs-12 col-sm-4 col-md-4 m-t-10 m-l-25 no-padding">
                     <div class="row">
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-5 col-xs-4">
                             Customer Name
                         </div>
-                        <div class="col-md-8 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->customer->name : '-'}}">
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPO->project) ? $modelPO->project->customer->name : '-'}}">
                             : <b> {{ isset($modelPO->project) ? $modelPO->project->customer->name : '-' }} </b>
                         </div>
-                        <div class="col-md-4 col-xs-5 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPO->vendor->code }} - {{ $modelPO->vendor->name }}">
+                        <div class="col-md-5 col-xs-4" >
                             Vendor Name
                         </div>
-                        <div class="col-md-8 col-xs-7">
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPO->vendor->code }} - {{ $modelPO->vendor->name }}">
                             : <b> {{ $modelPO->vendor->code }} - {{ $modelPO->vendor->name }} </b>
                         </div>
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-5 col-xs-4">
                             Status
                         </div>
                         @if($modelPO->status == 1)
-                            <div class="col-md-8 col-xs-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>OPEN</b>
                             </div>
                         @elseif($modelPO->status == 2)
-                            <div class="col-md-8 col-xs-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>APPROVED</b>
                             </div>
                         @elseif($modelPO->status == 3)
-                            <div class="col-md-8 col-xs-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>NEED REVISION</b>
                             </div>
                         @elseif($modelPO->status == 4)
-                            <div class="col-md-8 col-xs-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>REVISED</b>
                             </div>
                         @elseif($modelPO->status == 5)
-                            <div class="col-md-8 col-xs-8">
+                            <div class="col-md-7 col-xs-8">
                                 : <b>REJECTED</b>
                             </div>
                         @elseif($modelPO->status == 0)
-                            <div class="col-md-8 col-xs-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>RECEIVED</b>
                             </div>
                         @endif
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-5 col-xs-4">
                             Created By
                         </div>
-                        <div class="col-md-8 col-xs-7">
+                        <div class="col-md-7 col-xs-7">
                             : <b> {{ $modelPO->user->name }} </b>
                         </div>
-                        <div class="col-md-4 col-xs-5">
+                        <div class="col-md-5 col-xs-4">
                             Created At
                         </div>
-                        <div class="col-md-8 col-xs-7">
+                        <div class="col-md-7 col-xs-7">
                             : <b> {{ $modelPO->created_at }} </b>
                         </div>
                     </div>

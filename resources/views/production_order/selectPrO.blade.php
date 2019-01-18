@@ -33,31 +33,27 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header">
-                <div class="col-sm-6 p-l-0">
+                <div class="col-md-12 col-xs-12 p-l-0">
                     <table>
                         <thead>
-                            <th colspan="2">Project Information</th>
+                            <th colspan="2" >Project Information</th>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Number</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->number}}</b></td>
+                                <td class="col-md-4 col-xs-4">Number</td>
+                                <td class="col-md-6 col-xs-4">: <b> {{ $modelProject->number }} </b></td>
                             </tr>
                             <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->ship->type}}</b></td>
+                                <td class="col-md-4 col-xs-4">Ship</td>
+                                <td class="col-md-6 col-xs-4">: <b> {{ $modelProject->ship->type }} </b></td>
                             </tr>
                             <tr>
                                 <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->customer->name}}</b></td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelProject->customer->name}}">: <b> {{ $modelProject->customer->name }} </b></td>
                             </tr>
                             <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
+                                <td class ="col-md-4 col-xs-4 tdEllipsis">Planned Start Date</td>
+                                <td class="col-md-6 col-xs-4">: <b>@php
                                             $date = DateTime::createFromFormat('Y-m-d', $modelProject->planned_start_date);
                                             $date = $date->format('d-m-Y');
                                             echo $date;
@@ -66,9 +62,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
+                                <td class ="col-md-4 col-xs-6 tdEllipsis">Planned End Date</td>
+                                <td class="col-md-6 col-xs-4">: <b>@php
                                             $date = DateTime::createFromFormat('Y-m-d', $modelProject->planned_end_date);
                                             $date = $date->format('d-m-Y');
                                             echo $date;
@@ -98,8 +93,8 @@
                             <tr>
                                 <td class="p-l-10">{{ $loop->iteration }}</td>
                                 <td class="tdEllipsis p-l-10">{{ $pro->number }}</td>
-                                <td class="tdEllipsis p-l-10">{{ $pro->wbs->code }} - {{ $pro->wbs->name }}</td>
-                                <td class="tdEllipsis p-l-10">{{ $pro->user->name }}</td>
+                                <td class="tdEllipsis p-l-10" data-container="body" data-toggle="tooltip" title="{{$pro->wbs->code}} - {{$pro->wbs->name}}">{{ $pro->wbs->code }} - {{ $pro->wbs->name }}</td>
+                                <td class="tdEllipsis p-l-10" data-container="body" data-toggle="tooltip" title="{{$pro->user->name}}">{{ $pro->user->name }}</td>
                                 @if($pro->status == 1)
                                     <td class="p-l-10">{{ 'UNRELEASED' }}</td>
                                 @endif

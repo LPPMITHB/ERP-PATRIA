@@ -1,24 +1,24 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if($route == "/goods_receipt")
+@if($route == "/resource")
     @breadcrumb(
         [
-            'title' => 'View All Goods Receipt',
+            'title' => 'View All Received Resource',
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Goods Receipt' => route('goods_receipt.index'),
+                'View All Received Resource' => route('resource.indexReceived'),
             ]
         ]
     )
     @endbreadcrumb
-@elseif($route == "/goods_receipt_repair")
+@elseif($route == "/resource_repair")
     @breadcrumb(
         [
-            'title' => 'View All Goods Receipt',
+            'title' => 'View All Received Resource',
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Goods Receipt' => route('goods_receipt_repair.index'),
+                'View All Received Resource' => route('resource_repair.indexReceived'),
             ]
         ]
     )
@@ -35,7 +35,7 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">GR Code</th>
+                            <th width="20%">GR Number</th>
                             <th width="45%">Description</th>
                             <th width="5%"></th>
                         </tr>
@@ -45,12 +45,12 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $GR->number }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->description}}">{{ $GR->description }}</td>
+                                <td>{{ $GR->description }}</td>
                                 <td class="textCenter p-l-0 p-r-0">
-                                    @if($route == "/goods_receipt")
-                                        <a href="{{ route('goods_receipt.show', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                    @elseif($route == "/goods_receipt_repair")
-                                        <a href="{{ route('goods_receipt_repair.show', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($route == "/resource")
+                                        <a href="{{ route('resource.showGR', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @elseif($route == "/resource_repair")
+                                        <a href="{{ route('resource_repair.showGR', ['id'=>$GR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     @endif
                                 </td>
                             </tr>
