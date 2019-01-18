@@ -33,51 +33,32 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header">
-                <div class="col-sm-6 p-l-0">
-                    <table>
-                        <thead>
-                            <th colspan="2">Project Information</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Number</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->number}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Ship</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->ship->type}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Customer</td>
-                                <td>:</td>
-                                <td>&ensp;<b>{{$modelProject->customer->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $modelProject->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $modelProject->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-md-12 col-lg-4 col-xs-12 p-l-0">
+                    <div class="box-body no-padding">
+                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                            <div class="col-md-4 col-xs-4 no-padding">Number</div>
+                                <div class="col-md-8 col-xs-8 no-padding"><b>: {{$modelProject->number}}</b></div>
+                            <div class="col-md-4 col-xs-4 no-padding">Ship</div>
+                                <div class="col-md-8 col-xs-8 no-padding"><b>: {{$modelProject->ship->type}}</b></div>
+                            <div class="col-md-4 col-xs-4 no-padding">Customer</div>
+                                <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelProject->customer->name}}"><b>: {{$modelProject->customer->name}}</b></div>
+                            <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                                <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $modelProject->planned_start_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                                @endphp
+                                </b>
+                            </div>
+                            <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                                <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $modelProject->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                                @endphp
+                                </b>
+                            </div>
+                    </div>
                 </div>
             </div>
             <div class="box-body p-t-0">
