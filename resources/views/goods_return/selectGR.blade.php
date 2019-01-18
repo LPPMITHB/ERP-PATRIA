@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Goods Issue » Select Material Requisition',
+        'title' => 'Create Goods Return » Select Goods Receipt',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Material Requisition' => route('goods_issue.selectMR'),
+            'Select Goods Receipt' => "",
         ]
     ]
 ) 
@@ -22,24 +22,26 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Number</th>
-                            <th width="40%">Description</th>
+                            <th width="20%">GR Number</th>
+                            <th width="20%">PO Number</th>
+                            <th width="20%">Description</th>
                             <th width="25%">Project Name</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelMRs as $modelMR)
+                        @foreach($modelGRs as $modelGR)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelMR->number }}</td>
-                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelMR->description }}">{{ $modelMR->description }}</td>
-                                <td>{{ $modelMR->project->name }} - {{$modelMR->project->number}}</td>
+                                <td>{{ $modelGR->number }}</td>
+                                <td>{{ $modelGR->purchaseOrder->number }}</td>
+                                <td>{{ $modelGR->description }}</td>
+                                <td>{{ $modelGR->vendor->name }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == 'building')
-                                        <a href="{{ route('goods_issue.createGiWithRef', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('goods_issue.createGiWithRef', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @else
-                                        <a href="{{ route('goods_issue_repair.createGiWithRef', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('goods_issue_repair.createGiWithRef', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>

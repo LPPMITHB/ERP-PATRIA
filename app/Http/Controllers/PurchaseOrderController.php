@@ -21,7 +21,14 @@ class PurchaseOrderController extends Controller
     public function selectPR(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->get();
+        // print_r($route);exit();
+        if($route == "/purchase_order"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/purchase_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }
+
+        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('project_id',$modelProject)->get();
         
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }

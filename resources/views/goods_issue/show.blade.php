@@ -61,28 +61,7 @@
                             @endif
                         </div>
                     </div>
-                    {{-- <div class="row">
-                        <div class="col-md-4">
-                            Status
-                        </div>
-                        <div class="col-md-8">
-                            @if($modelGI->status == 1)
-                            : <b> OPEN </b>
-                            @elseif($modelGI->status == 0)
-                            : <b> ISSUED </b>
-                            @elseif($modelGI->status == 2)
-                            : <b> APPROVED </b>
-                            @elseif($modelGI->status == 3)
-                            : <b> NEEDS REVISION </b>
-                            @elseif($modelGI->status == 4)
-                            : <b> REVISED </b>
-                            @elseif($modelGI->status == 5)
-                            : <b> REJECTED </b>
-                            @else
-                            : <b> {{ '-' }} </b>
-                            @endif
-                        </div>
-                    </div> --}}
+                    
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
@@ -115,7 +94,7 @@
                         <div class="col-md-4 col-xs-4">
                                 Description
                             </div>
-                            <div class="col-md-8">
+                        <div class="col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">
                                 : <b> {{ $modelGI->description }} </b>
                             </div>
                     </div>

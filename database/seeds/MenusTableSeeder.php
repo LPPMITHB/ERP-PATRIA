@@ -387,6 +387,54 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Goods Return',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        $goodsReturn =  Menu::where('name','Goods Return')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Return Based On Goods Receipt',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return.selectGR',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Return Based On Purchase Order',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return.selectPO',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Goods Return',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Material Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,

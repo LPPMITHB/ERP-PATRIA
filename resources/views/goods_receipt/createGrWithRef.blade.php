@@ -80,7 +80,7 @@
                                         <tbody>
                                             <tr v-for="(POD,index) in modelPOD" v-if="POD.quantity > 0">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ POD.material.code }} - {{ POD.material.name }}</td>
+                                                <td>{{ POD.material_code }} - {{ POD.material_name }}</td>
                                                 <td>{{ POD.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">
@@ -148,7 +148,7 @@
     });
 
     var data = {
-        modelPOD : @json($modelPODs),
+        modelPOD : @json($datas),
         modelPO :   @json($modelPO),
         modelSloc : @json($modelSloc),
 
@@ -165,14 +165,11 @@
         computed : {
             createOk: function(){
                 let isOk = false;
-
-
-                // console.log('a');
-                // this.modelPOD.forEach(POD => {
-                //     if(POD.sloc_id == null){
-                //         isOk = true;
-                //     }
-                // });
+                this.modelPOD.forEach(POD => {
+                    if(POD.sloc_id == null){
+                        isOk = true;
+                    }
+                });
                 return isOk;
             }
         },
@@ -196,7 +193,7 @@
                 });
 
                 this.submittedForm.POD = data;
-                this.submittedForm.po_id = this.modelPO.id;
+                this.submittedForm.purchase_order_id = this.modelPO.id;
                 this.submittedForm.description = this.description;
 
                 let struturesElem = document.createElement('input');
@@ -204,7 +201,7 @@
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                // form.submit();
+                form.submit();
             }
         },
         watch : {

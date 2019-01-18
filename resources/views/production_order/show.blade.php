@@ -45,47 +45,47 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4">
                             Project Code
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPrO->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4">
                             Project Name
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPrO->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xs-4">
                             WBS Code
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xs-7">
                             : <b> {{ $modelPrO->wbs->code }} </b>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4 col-md-4 m-t-10">
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-5 col-xs-4">
                             Status
                         </div>
                         @if($modelPrO->status == 1)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>UNRELEASED</b>
                             </div>
                         @elseif($modelPrO->status == 2)
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>RELEASED</b>
                             </div>
                         @else
-                            <div class="col-md-7">
+                            <div class="col-md-7 col-xs-7">
                                 : <b>COMPLETED</b>
                             </div>
                         @endif

@@ -36,7 +36,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelGI->number }}</td>
-                                <td>{{ $modelGI->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">{{ $modelGI->description }}</td>
                                 <td>{{ isset ($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}}</td>
                                 <td>
                                     @if($modelGI->materialRequisition)

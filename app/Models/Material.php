@@ -27,6 +27,11 @@ class Material extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function uom()
+    {
+        return $this->belongsTo('App\Models\Uom');
+    }
     
     public function RapDetails()
     {

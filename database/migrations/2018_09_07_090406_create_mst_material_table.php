@@ -20,6 +20,9 @@ class CreateMstMaterialTable extends Migration
             $table->longText('description')->nullable();
             $table->integer('cost_standard_price')->default(0);
             $table->integer('cost_standard_price_service')->default(0);
+            $table->integer('uom_id')->nullable();
+            $table->integer('latest_price')->default(0);
+            $table->integer('average_price')->default(0);
             $table->integer('min')->nullable();
             $table->integer('max')->nullable();
             $table->float('weight', 10, 2)->nullable();
