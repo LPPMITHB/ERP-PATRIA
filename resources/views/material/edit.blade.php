@@ -67,6 +67,16 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="uom" class="col-sm-2 control-label">Unit Of Measurement</label>
+                                
+                                <div class="col-sm-10">
+                                    <selectize id="uom" v-model="submittedForm.uom_id" :settings="uom_settings">
+                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                    </selectize> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="min" class="col-sm-2 control-label">Min</label>
                                 
                                 <div class="col-sm-10">
@@ -194,6 +204,7 @@
             description : @json($material->description),
             cost_standard_price : @json($material->cost_standard_price),
             cost_standard_service : @json($material->cost_standard_price_service),
+            uom_id : @json($material->uom_id),
             min : @json($material->min),
             max : @json($material->max),
             weight : @json($material->weight),
@@ -206,6 +217,9 @@
             width_uom_id : @json($material->width_uom_id),
             status : @json($material->status),
             type : @json($material->type),
+        },
+        uom_settings: {
+            placeholder: 'Select UOM!'
         },
         min_settings: {
             placeholder: '0'
@@ -234,7 +248,7 @@
             createOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.code == "" || this.submittedForm.name == ""){
+                if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.uom_id == ""){
                     isOk = true;
                 }
                 return isOk;
