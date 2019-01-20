@@ -16,13 +16,13 @@ class CreateMstMaterialTable extends Migration
         Schema::create('mst_material', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
-            $table->string('name');
+            $table->longText('name');
             $table->longText('description')->nullable();
             $table->integer('cost_standard_price')->default(0);
             $table->integer('cost_standard_price_service')->default(0);
-            $table->integer('uom_id')->nullable();
             $table->integer('latest_price')->default(0);
             $table->integer('average_price')->default(0);
+            $table->integer('uom_id')->nullable();
             $table->integer('min')->nullable();
             $table->integer('max')->nullable();
             $table->float('weight', 10, 2)->nullable();
