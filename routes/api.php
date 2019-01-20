@@ -102,6 +102,7 @@ Route::get('/getSlocDetail/{id}', 'GoodsIssueController@getSlocDetailAPI')->name
 // production order
 Route::get('/getMaterialPrO/{id}', 'ProductionOrderController@getMaterialAPI')->name('api.production_order.getMaterialAPI');
 Route::get('/getResourcePrO/{id}', 'ProductionOrderController@getResourceAPI')->name('api.production_order.getResourceAPI');
+Route::get('/getServicePrO/{id}', 'ProductionOrderController@getServiceAPI')->name('api.production_order.getServiceAPI');
 Route::get('/getStockPrO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
 
 // assign Resource

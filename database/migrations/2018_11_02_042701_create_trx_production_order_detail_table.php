@@ -17,6 +17,7 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('production_order_id');
             $table->unsignedInteger('material_id')->nullable();
+            $table->string('source')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
             $table->integer('quantity')->nullable();

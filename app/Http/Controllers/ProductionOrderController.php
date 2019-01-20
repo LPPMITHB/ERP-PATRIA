@@ -13,6 +13,7 @@ use App\Models\ProductionOrderDetail;
 use App\Models\Bom;
 use App\Models\Material;
 use App\Models\Resource;
+use App\Models\Service;
 use App\Models\ResourceTrx;
 use App\Models\Stock;
 use App\Models\ResourceDetail;
@@ -322,12 +323,13 @@ class ProductionOrderController extends Controller
         $project = Project::findOrFail($wbs->project_id);
         $materials = Material::all()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
+        $services = Service::all()->jsonSerialize();
         $modelActivities = $wbs->activities;
-
+        
         $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
         $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
         if($modelBOM != null){
-            return view('production_order.create', compact('wbs','project','materials','resources','modelBOM','modelRD','route','modelActivities'));
+            return view('production_order.create', compact('wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
         }else{
             if($route == "/production_order"){
                 return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
@@ -348,9 +350,8 @@ class ProductionOrderController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $arrData = $datas->datas;
-
         $po_number = $this->generatePrONumber();
-
+        
         DB::beginTransaction();
         try {
             $PrO = new ProductionOrder;
@@ -371,6 +372,7 @@ class ProductionOrderController extends Controller
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->material_id = $material->material_id;
                         $PrOD->quantity = $material->quantity;
+                        $PrOD->source = $material->source;
                         $PrOD->save();
                     }elseif($material->service_id != ""){
                         $PrOD = new ProductionOrderDetail;
@@ -402,17 +404,35 @@ class ProductionOrderController extends Controller
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->material_id = $data->id;
                         $PrOD->quantity = $data->quantity;
+                        $PrOD->source = 'Stock';
+                        $PrOD->save();
+                    }
+                }elseif($data->type == "Resource"){
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('resource_id' , $data->id)->first();
+                    if($existing != null){
+                        $existing->quantity += $data->quantity;
+                        $existing->update();
+                    }else{
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->resource_id = $data->id;
+                        $PrOD->quantity = $data->quantity;
+                        $PrOD->save();
+                    }
+                }elseif($data->type == "Service"){
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('service_id' , $data->id)->first();
+                    if($existing != null){
+                        $existing->quantity += $data->quantity;
+                        $existing->update();
+                    }else{
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->service_id = $data->id;
+                        $PrOD->quantity = $data->quantity;
                         $PrOD->save();
                     }
                 }
-                else{
-                    $PrOD = new ProductionOrderDetail;
-                    $PrOD->resource_id = $data->id;
-                    $PrOD->quantity = 1;
-                    $PrOD->save();
-                }
             }
-
             DB::commit();
             if($route == "/production_order"){
                 return redirect()->route('production_order.show',$PrO->id)->with('success', 'Production Order Created');
@@ -571,6 +591,11 @@ class ProductionOrderController extends Controller
     public function getResourceAPI($id){
 
         return response(Resource::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getServiceAPI($id){
+
+        return response(Service::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getStockAPI($id){
