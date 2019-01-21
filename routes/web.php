@@ -205,7 +205,7 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
 
-    Route::patch('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
+    Route::put('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
 });
 
 //Unit Of Measurement Routes
@@ -936,7 +936,13 @@ Route::name('goods_return.')->prefix('goods_return')->group(function() {
 
     Route::get('/selectPO', 'GoodsIssueController@selectPO')->name('selectPO')->middleware('can:create-goods-issue');
 
-    Route::get('/', 'GoodsIssueController@indexGoodsReturn')->name('index')->middleware('can:create-goods-issue');
+    Route::post('/', 'GoodsIssueController@storeGoodsReturn')->name('store')->middleware('can:create-goods-issue');
+
+    Route::get('/createGoodsReturn/{id}', 'GoodsIssueController@createGoodsReturn')->name('createGoodsReturn')->middleware('can:create-goods-issue');
+
+    Route::get('/', 'GoodsIssueController@indexGoodsReturn')->name('index')->middleware('can:list-goods-issue');
+   
+    Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue');
 });
 
 //Stock Management Routes

@@ -12,4 +12,14 @@ class ResourceTrx extends Model
     {
         return $this->belongsTo('App\Models\WBS');
     }
+
+    public function project()
+    {
+        return $this->belongsTo('App\Models\Project');
+    }
+
+    public function resource()
+    {
+        return $this->belongsTo('App\Models\Resource');
+    }
 }

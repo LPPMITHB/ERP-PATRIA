@@ -47,21 +47,39 @@
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-4 col-xs-4">
-                            Project Code
+                        <div class="col-md-5 col-xs-5">
+                            Project Number
                         </div>
-                        <div class="col-md-8 col-xs-7">
+                        <div class="col-md-7 col-xs-7">
                             : <b> {{ $modelPrO->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-4">
-                            Project Name
+                        <div class="col-md-5 col-xs-5">
+                            Ship Name
                         </div>
-                        <div class="col-md-8 col-xs-7">
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPrO->project->name }}">
                             : <b> {{ $modelPrO->project->name }} </b>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            Ship Type
+                        </div>
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPrO->project->ship->type }}">
+                            : <b> {{ $modelPrO->project->ship->type }} </b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            Customer Name
+                        </div>
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPrO->project->customer->name }}">
+                            : <b> {{ $modelPrO->project->customer->name }} </b>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
                         <div class="col-md-4 col-xs-4">
                             WBS Code
@@ -70,52 +88,73 @@
                             : <b> {{ $modelPrO->wbs->code }} </b>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        <div class="col-md-5 col-xs-4">
+                        <div class="col-md-4 col-xs-4">
                             Status
                         </div>
                         @if($modelPrO->status == 1)
-                            <div class="col-md-7 col-xs-7">
+                            <div class="col-md-8 col-xs-8">
                                 : <b>UNRELEASED</b>
                             </div>
                         @elseif($modelPrO->status == 2)
-                            <div class="col-md-7 col-xs-7">
+                            <div class="col-md-8 col-xs-8">
                                 : <b>RELEASED</b>
                             </div>
                         @else
-                            <div class="col-md-7 col-xs-7">
+                            <div class="col-md-8 col-xs-8">
                                 : <b>COMPLETED</b>
                             </div>
                         @endif
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4">
+                            Created By
+                        </div>
+                        <div class="col-md-8 col-xs-7 tdEllipsis">
+                            : <b> {{ $modelPrO->user->name }} </b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4">
+                            Created At
+                        </div>
+                        <div class="col-md-8 col-xs-7">
+                            : <b> {{ $modelPrO->created_at }} </b>
+                        </div>
                     </div>
                 </div>
             </div>
             {{-- table activity --}}
             <div class="box-body p-t-0 p-b-5">
-                    <h4>Activity</h4>
-                <table class="table table-bordered showTable" id="activity-table">
+                <h4>Activity</h4>
+                <table class="table table-bordered showTable tableFixed" id="activity-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Activity Name</th>
-                            <th width="25%">Description</th>
-                            <th width="25%">Progress</th>
+                            <th width="30%">Activity Name</th>
+                            <th width="31%">Description</th>
+                            <th width="13%">Planned Start Date</th>
+                            <th width="13%">Planned End Date</th>
+                            <th width="8%">Progress</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php($counter=1)
                         @foreach($modelActivities as $activity)
-                        @if($activity->id != "")
-                            <tr>
-                                <td>{{ $counter }}</td>
-                                <td>{{ $activity->name }}</td>
-                                <td>{{ $activity->description }}</td>
-                                <td>{{ $activity->progress  }} %</td>
-                            </tr>
-                        @php($counter++)
-                        @endif
+                            @if($activity->id != "")
+                                @php($planned_start_date = DateTime::createFromFormat('Y-m-d', $activity->planned_start_date))
+                                @php($planned_start_date = $planned_start_date->format('d-m-Y'))
+                                @php($planned_end_date = DateTime::createFromFormat('Y-m-d', $activity->planned_end_date))
+                                @php($planned_end_date = $planned_end_date->format('d-m-Y'))
+                                <tr>
+                                    <td>{{ $counter++ }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->name}}">{{ $activity->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->description}}">{{ $activity->description }}</td>
+                                    <td>{{ $planned_start_date }}</td>
+                                    <td>{{ $planned_end_date }}</td>
+                                    <td>{{ $activity->progress  }} %</td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -123,14 +162,17 @@
 
             {{-- table material --}}
             <div class="box-body p-t-0 p-b-5">
-                    <h4>Material</h4>
-                <table class="table table-bordered showTable" id="material-table">
+                <h4>Material</h4>
+                <table class="table table-bordered showTable tableFixed" id="material-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Material Name</th>
-                            <th width="25%">Quantity</th>
-                            <th width="25%">Used</th>
+                            <th width="30%">Material Name</th>
+                            <th width="31%">Description</th>
+                            <th width="7%">Quantity</th>
+                            <th width="7%">Used</th>
+                            <th width="10%">Unit</th>
+                            <th width="10%">Source</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -138,71 +180,81 @@
                         @foreach($modelPrO->ProductionOrderDetails as $PrOD)
                         @if($PrOD->material_id != "")
                             <tr>
-                                <td>{{ $counter }}</td>
-                                <td>{{ $PrOD->material->name }}</td>
+                                <td>{{ $counter++ }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->code }} - {{ $PrOD->material->name }}">{{ $PrOD->material->code }} - {{ $PrOD->material->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->description }}">{{ $PrOD->material->description }}</td>
                                 <td>{{ number_format($PrOD->quantity) }}</td>
                                 <td>{{ number_format($PrOD->actual) }}</td>
+                                <td>{{ $PrOD->material->uom->unit }}</td>
+                                <td>{{ $PrOD->source }}</td>
                             </tr>
-                        @php($counter++)
                         @endif
                         @endforeach
                     </tbody>
                 </table>
-            </div> <!-- /.box-body -->
+            </div>
 
-            {{-- table service --}}
+            {{-- table resource --}}
             <div class="box-body p-t-0 p-b-5">
-                    <h4>Service</h4>
-                <table class="table table-bordered showTable" id="service-table">
+                <h4>Resource</h4>
+                <table class="table table-bordered showTable tableFixed" id="resource-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Service Name</th>
-                            <th width="25%">Quantity</th>
-                            <th width="25%">Used</th>
+                            <th width="30%">Resource Name</th>
+                            <th width="31%">Description</th>
+                            <th width="17%">Quantity</th>
+                            <th width="17%">Used</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php($counter=1)
                         @foreach($modelPrO->ProductionOrderDetails as $PrOD)
-                        @if($PrOD->service_id != "")
+                        @if($PrOD->resource_id != "")
                             <tr>
-                                <td>{{ $counter }}</td>
-                                <td>{{ $PrOD->service->name }}</td>
+                                <td>{{ $counter++ }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->description }}">{{ ($PrOD->resource->description) ? $PrOD->resource->description : '-'}}</td>
                                 <td>{{ number_format($PrOD->quantity) }}</td>
                                 <td>{{ number_format($PrOD->actual) }}</td>
                             </tr>
-                        @php($counter++)
                         @endif
                         @endforeach
                     </tbody>
                 </table>
-            </div> <!-- /.box-body -->
+            </div>
 
-            {{-- table resource --}}
-            <div class="box-body p-t-0 p-b-5">
-                    <table class="table table-bordered showTable" id="resource-table">
+            @if($route == "/production_order_repair")
+                {{-- table service --}}
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Service</h4>
+                    <table class="table table-bordered showTable" id="service-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="40%">Resource Name</th>
+                                <th width="30%">Service Name</th>
+                                <th width="31%">Description</th>
+                                <th width="17%">Quantity</th>
+                                <th width="17%">Used</th>
                             </tr>
                         </thead>
-                <h4>Resource</h4>
                         <tbody>
                             @php($counter=1)
                             @foreach($modelPrO->ProductionOrderDetails as $PrOD)
-                            @if($PrOD->resource_id != "")
-                                <tr>
-                                    <td>{{ $counter }}</td>
-                                    <td>{{ $PrOD->resource ->name}}</td>
-                                </tr>
-                                @php($counter++)
-                            @endif
+                                @if($PrOD->service_id != "")
+                                    <tr>
+                                        <td>{{ $counter++ }}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->service->code }} - {{ $PrOD->service->name }}">{{ $PrOD->service->code }} - {{ $PrOD->service->name }}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->service->description }}">{{ $PrOD->service->description }}</td>
+                                        <td>{{ number_format($PrOD->quantity) }}</td>
+                                        <td>{{ number_format($PrOD->actual) }}</td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
-                </div> <!-- /.box-body -->
+                </div>
+            @endif
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>

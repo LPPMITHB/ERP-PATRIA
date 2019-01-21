@@ -57,26 +57,25 @@ class GoodsReceiptController extends Controller
 
             return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc','route','datas'));
         }elseif($modelPO->purchaseRequisition->type == 2){
-            $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
-            $resource_categories = Configuration::get('resource_category');
-            $depreciation_methods = Configuration::get('depreciation_methods');
-            $uom = Uom::all();
-            $datas = Collection::make();
+            // $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
+            // $resource_categories = Configuration::get('resource_category');
+            // $depreciation_methods = Configuration::get('depreciation_methods');
+            // $uom = Uom::all();
+            // $datas = Collection::make();
 
-
-            foreach($modelPODs as $POD){
-                $quantity = $POD->quantity - $POD->received;
-                for ($i=0; $i < $quantity; $i++) { 
-                    $datas->push([
-                        "resource_id" => $POD->resource->id, 
-                        "resource_code" => $POD->resource->code,
-                        "resource_name" => $POD->resource->name,
-                        "quantity" => 1,
-                        "status" => "Detail Not Complete",
-                    ]);
-                }
-            }
-            return view('goods_receipt.createGrWithRefResource', compact('modelPO','datas','resource_categories','uom','depreciation_methods','route'));
+            // foreach($modelPODs as $POD){
+            //     $quantity = $POD->quantity - $POD->received;
+            //     for ($i=0; $i < $quantity; $i++) { 
+            //         $datas->push([
+            //             "resource_id" => $POD->resource->id, 
+            //             "resource_code" => $POD->resource->code,
+            //             "resource_name" => $POD->resource->name,
+            //             "quantity" => 1,
+            //             "status" => "Detail Not Complete",
+            //         ]);
+            //     }
+            // }
+            // return view('goods_receipt.createGrWithRefResource', compact('modelPO','datas','resource_categories','uom','depreciation_methods','route'));
         }
     }
 

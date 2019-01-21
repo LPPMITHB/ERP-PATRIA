@@ -56,6 +56,8 @@
                             : <b> Automatic </b>
                             @elseif($modelGI->type == 1)
                             : <b>  Manual </b>
+                            @elseif($modelGI->type == 4)
+                            : <b>  Goods Return </b>
                             @else
                             : <b> Material Write Off </b>
                             @endif

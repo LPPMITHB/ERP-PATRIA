@@ -67,49 +67,58 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
-                            <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                    <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
 
-                        <div class="col-md-4 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
-                        
-                        <div class="col-md-4 col-xs-4 no-padding">Description</div>
-                        <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
+                    <div class="col-md-4 col-xs-4 no-padding">Name</div>
+                    <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                    
+                    <div class="col-md-4 col-xs-4 no-padding">Description</div>
+                    <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
 
-                        <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
-                        <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
-                        
-                        <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
-                        <div class="col-md-6 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
-                                $date = $date->format('d-m-Y');
-                                echo $date;
-                            @endphp
-                            </b>
-                        </div>
-                        <div class="col-md-4 col-xs-4 no-padding">Progress</div>
-                        <div class="col-md-4 col-xs-8 no-padding"><b>: {{$wbs->progress}}%</b></div>
+                    <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
+                    <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
+                    
+                    <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
+                    <div class="col-md-6 col-xs-8 no-padding"><b>: @php
+                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
+                            $date = $date->format('d-m-Y');
+                            echo $date;
+                        @endphp
+                        </b>
+                    </div>
+                    <div class="col-md-4 col-xs-4 no-padding">Progress</div>
+                    <div class="col-md-4 col-xs-8 no-padding"><b>: {{$wbs->progress}}%</b></div>
+                </div>
             </div>
-        </div>
 
             <div class="box-body p-t-0 p-b-5">
-                    <h4>Activity</h4>
-                <table class="table table-bordered showTable" id="activity-table">
+                <h4>Activity</h4>
+                <table class="table table-bordered showTable tableFixed" id="activity-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="30%">Activity Name</th>
-                            <th width="25%">Description</th>
+                            <th width="35%">Activity Name</th>
+                            <th width="30%">Description</th>
+                            <th width="15%">Planned Start Date</th>
+                            <th width="15%">Planned End Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php($counter=1)
                         @foreach($modelActivities as $activity)
                             @if($activity->id != "")
+                                @php($planned_start_date = DateTime::createFromFormat('Y-m-d', $activity->planned_start_date))
+                                @php($planned_start_date = $planned_start_date->format('d-m-Y'))
+                                @php($planned_end_date = DateTime::createFromFormat('Y-m-d', $activity->planned_end_date))
+                                @php($planned_end_date = $planned_end_date->format('d-m-Y'))
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    <td>{{ $activity->name }}</td>
-                                    <td>{{ $activity->description }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->name}}">{{ $activity->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->description}}">{{ $activity->description }}</td>
+                                    <td>{{ $planned_start_date }}</td>
+                                    <td>{{ $planned_end_date }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -118,13 +127,16 @@
             </div> <!-- /.box-body -->
 
             <div class="box-body p-t-0 p-b-5">
-                    <h4>Material</h4>
-                <table class="table table-bordered showTable" id="material-table">
+                <h4>Material</h4>
+                <table class="table table-bordered showTable tableFixed" id="material-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="30%">Material Name</th>
-                            <th width="25%">Quantity</th>
+                            <th width="35%">Material Name</th>
+                            <th width="30%">Description</th>
+                            <th width="10%">Quantity</th>
+                            <th width="10%">Unit</th>
+                            <th width="10%">Source</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -133,8 +145,11 @@
                             @if($BOMD->material_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    <td>{{ $BOMD->material->code }} - {{ $BOMD->material->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }} - {{ $BOMD->material->name }}">{{ $BOMD->material->code }} - {{ $BOMD->material->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
                                     <td>{{ number_format($BOMD->quantity) }}</td>
+                                    <td>{{ $BOMD->material->uom->unit }}</td>
+                                    <td>{{ $BOMD->source }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -144,19 +159,21 @@
 
             <div class="box-body p-t-0 p-b-5">
                 <h4>Resource</h4>
-                <table class="table table-bordered showTable" id="material-table">
+                <table class="table table-bordered showTable tableFixed" id="resource-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="30%">Resource Name</th>
-                            <th width="25%">Quantity</th>
+                            <th width="35%">Resource Name</th>
+                            <th width="30%">Description</th>
+                            <th width="30%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($modelRD as $RD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->description }}">{{ $RD->resource->description }}</td>
                                 <td>{{ $RD->quantity }}</td>
                             </tr>
                         @endforeach
@@ -171,8 +188,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="30%">Service Name</th>
-                            <th width="25%">Quantity</th>
+                            <th width="35%">Service Name</th>
+                            <th width="30%">Description</th>
+                            <th width="30%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -181,7 +199,8 @@
                             @if($BOMD->service_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    <td>{{ $BOMD->service->code }} - {{ $BOMD->service->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->code }} - {{ $BOMD->service->name }}">{{ $BOMD->service->code }} - {{ $BOMD->service->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->description }}">{{ $BOMD->service->description }}</td>
                                     <td>{{ number_format($BOMD->quantity) }}</td>
                                 </tr>
                             @endif
@@ -200,15 +219,16 @@
             @verbatim
             <div id="production_order">
                 <div class="box-body">
-                    <h4 class="box-title m-t-0">Add Additional Material / Resource</h4>
+                    <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material / Resource</h4>
+                    <h4 class="box-title m-t-0" v-else-if="route == '/production_order_repair'">Add Additional Material / Resource / Service</h4>
                     <table id="activity-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 15%">Type</th>
-                                <th style="width: 25%">Name</th>
-                                <th style="width: 25%">Description</th>
-                                <th style="width: 20%">Quantity</th>
+                                <th style="width: 10%">Type</th>
+                                <th style="width: 30%">Name</th>
+                                <th style="width: 35%">Description</th>
+                                <th style="width: 10%">Quantity</th>
                                 <th style="width: 10%"></th>
                             </tr>
                         </thead>
@@ -232,10 +252,17 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft">
+                                <td class="p-l-0 textLeft" v-if="route == '/production_order'">
                                     <selectize v-model="dataInput.type" :settings="typeSettings">
                                         <option value="Material">Material</option>
                                         <option value="Resource">Resource</option>
+                                    </selectize>
+                                </td>
+                                <td class="p-l-0 textLeft" v-else-if="route == '/production_order_repair'">
+                                    <selectize v-model="dataInput.type" :settings="typeSettings">
+                                        <option value="Material">Material</option>
+                                        <option value="Resource">Resource</option>
+                                        <option value="Service">Service</option>
                                     </selectize>
                                 </td>
                                 <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'">
@@ -248,6 +275,11 @@
                                         <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                     </selectize>  
                                 </td>
+                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Service'">
+                                    <selectize v-model="dataInput.id" :settings="serviceSettings" >
+                                        <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
+                                    </selectize>  
+                                </td>
                                 <td class="p-l-0 textLeft" v-show="dataInput.type == ''">
                                     <selectize v-model="dataInput.id" :settings="nullSettings" disabled>
                                         <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
@@ -256,11 +288,11 @@
                                 <td class="p-l-0">
                                     <input class="form-control" v-model="dataInput.description" placeholder="-" disabled>
                                 </td>
-                                <td class="p-l-0" v-if = "dataInput.type == 'Material'">
+                                <td class="p-l-0" v-if="dataInput.id != ''">
                                     <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
                                 </td>
-                                <td class="p-l-0" v-else = "dataInput.type == 'Resource'">
-                                    <input class="form-control" v-model="dataInput.quantity" disabled>
+                                <td class="p-l-0" v-else>
+                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" disabled> 
                                 </td>
                                 <td class="p-l-0 textCenter">
                                     <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
@@ -308,6 +340,9 @@
         materialSettings: {
             placeholder: 'Please Select Material'
         },
+        serviceSettings: {
+            placeholder: 'Please Select Service'
+        },
         nullSettings:{
             placeholder: 'Please Select Type First !'
         },
@@ -316,10 +351,12 @@
         wbs_id :@json($wbs->id),
         materials : @json($materials),
         resources : @json($resources),
+        services : @json($services),
         bom : @json($modelBOM->bomDetails),
         assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
+        route : @json($route)
     };
 
     var vm = new Vue({
@@ -411,12 +448,23 @@
                             this.dataInput.name = data.name;
                             this.dataInput.code = data.code;
                         });
+                    }else if(this.dataInput.type == "Service"){
+                        window.axios.get('/api/getServicePrO/'+newValue).then(({ data }) => {
+                            if(data.description == "" || data.description == null){
+                                this.dataInput.description = '-';
+                            }else{
+                                this.dataInput.description = data.description;
+                            }
+                            this.dataInput.name = data.name;
+                            this.dataInput.code = data.code;
+                        });
                     }
                 }
             },
             'dataInput.type': function(newValue){
                 this.dataInput.id = "";
                 this.dataInput.description = "";
+                this.dataInput.quantity = "";
             },
             'dataInput.quantity' : function(newvalue){
                 this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
