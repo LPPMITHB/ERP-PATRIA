@@ -638,6 +638,12 @@ class ProductionOrderController extends Controller
         return response($stock, Response::HTTP_OK);
     }
 
+    public function getTrxResourceAPI($id){
+        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->with('resource')->get()->jsonSerialize();
+
+        return response($resource, Response::HTTP_OK);
+    }
+
     public function generateMRNumber(){
         $modelMR = MaterialRequisition::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
