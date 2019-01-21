@@ -207,6 +207,7 @@
         watch : {
             modelPOD:{
                 handler: function(newValue) {
+                    console.log(newValue)
                     var data = newValue;
                     data.forEach(POD => {
                         if(parseInt(POD.quantity.replace(/,/g , '')) < parseInt(POD.received.replace(/,/g , ''))){
@@ -222,17 +223,21 @@
                 },
                 deep: true
             },
-
         },
         created: function(){
             var data = this.modelPOD;
             data.forEach(POD => {
-                POD['sloc_id'] = null;
+                POD.sloc_id = null;
                 POD.received = parseInt(POD.quantity) - parseInt(POD.received);
                 POD.quantity = POD.received;
                 POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                 POD.received = (POD.received+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             });
+        },
+        updated: function () {
+            this.$nextTick(function () {
+                console.log('a')
+            })
         }
     });
 </script>

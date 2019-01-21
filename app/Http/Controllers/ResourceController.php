@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
+use App\Models\ResourceTrx;
 use App\Models\Project;
 use App\Models\WBS;
 use App\Models\Uom;
@@ -17,6 +18,7 @@ use App\Models\PurchaseOrderDetail;
 use App\Models\Configuration;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
+use App\Models\ProductionOrder;
 use DateTime;
 use Auth;
 use DB;
@@ -32,18 +34,23 @@ class ResourceController extends Controller
 
     public function index()
     {
+
         $resources = Resource::all();
 
         return view('resource.index', compact('resources'));
     }
 
-    public function assignResource()
+    public function assignResource(Request $request)
     {
+        $route = $request->route()->getPrefix();
+        if($route == "/resource"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/resource_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
         $resources = Resource::all();
-        $projects = Project::where('status',1)->get();
-        $assignresource = ResourceDetail::with('project','resource','wbs')->get();
 
-        return view('resource.assignResource', compact('resources','projects','assignresource'));
+        return view('resource.assignResource', compact('resources','modelProject'));
     }
 
     public function create()
@@ -306,21 +313,19 @@ class ResourceController extends Controller
     public function updateAssignResource (Request $request, $id)
     {
         $data = $request->json()->all();
-        $resource_ref = ResourceDetail::find($id);
+        $resource_ref = ResourceTrx::findOrFail($id);
 
         DB::beginTransaction();
         try {
             $resource_ref->resource_id = $data['resource_id'];
-            $resource_ref->project_id = $data['project_id'];
             $resource_ref->wbs_id = $data['wbs_id'];
-            $resource_ref->category_id = $data['category_id'];
             $resource_ref->quantity = $data['quantity'];
 
             if(!$resource_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
-                return response(["response"=>"Success to Update WBS ".$resource_ref->code],Response::HTTP_OK);
+                return response(["response"=>"Success to Update Assign Resource ".$resource_ref->code],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -334,13 +339,11 @@ class ResourceController extends Controller
    
         DB::beginTransaction();
         try {
-            $resource = new ResourceDetail;
+            $resource = new ResourceTrx;
             $resource->resource_id = $data['resource_id'];
             $resource->project_id = $data['project_id'];
             $resource->wbs_id = $data['wbs_id'];
-            $resource->category_id = $data['category_id'];
             $resource->quantity = $data['quantity'];
-            
 
             if(!$resource->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -375,8 +378,13 @@ class ResourceController extends Controller
     
     
     public function getWbsAssignResourceApi($id){
-        $wbs = WBS::where('project_id',$id)->get()->jsonSerialize();
-
+        $wbs = WBS::where('project_id',$id)->get();
+        foreach($wbs as $key => $data){
+            $ProdOrder = ProductionOrder::where('wbs_id',$data->id)->where('status','!=',1)->first();
+            if($ProdOrder){
+                $wbs->forget($key);
+            }
+        }
         return response($wbs, Response::HTTP_OK);
     }
 
@@ -404,8 +412,9 @@ class ResourceController extends Controller
 
     }
 
-    public function getResourceDetailApi(){
-        $resourcedetail = ResourceDetail::with('project','resource','wbs')->get()->jsonSerialize();
+    public function getResourceDetailApi($id){
+        $resourcedetail = ResourceTrx::with('project','resource','wbs')->where('project_id',$id)->get()->jsonSerialize();
+
         return response($resourcedetail, Response::HTTP_OK);
     }
     

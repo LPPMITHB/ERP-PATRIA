@@ -40,7 +40,7 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis">{{ $resource->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->name}}">{{ $resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->description}}">{{ $resource->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->description}}">{{ ($resource->description != '' || $resource->description != null) ? $resource->description : '-' }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('resource.show', ['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('resource.edit',['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
