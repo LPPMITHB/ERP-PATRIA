@@ -18,6 +18,8 @@ class CreateTrxGoodsIssueTable extends Migration
             $table->string('number')->unique();
             // $table->unsignedInteger('work_order_id');
             $table->unsignedInteger('material_requisition_id')->nullable();
+            $table->unsignedInteger('purchase_order_id')->nullable();
+            $table->unsignedInteger('goods_receipt_id')->nullable();
             $table->string('description');
             $table->integer('status')->default(1);
             $table->integer('type')->default(1);
@@ -26,6 +28,8 @@ class CreateTrxGoodsIssueTable extends Migration
             $table->timestamps();
 
             $table->foreign('material_requisition_id')->references('id')->on('trx_material_requisition');
+            $table->foreign('purchase_order_id')->references('id')->on('trx_purchase_order');
+            $table->foreign('goods_receipt_id')->references('id')->on('trx_goods_receipt');
         });
     }
 

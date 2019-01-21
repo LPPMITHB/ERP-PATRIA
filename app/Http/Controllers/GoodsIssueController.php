@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\GoodsIssue;
 use App\Models\GoodsReceipt;
+use App\Models\GoodsReceiptDetail;
 use App\Models\Project;
 use App\Models\GoodsIssueDetail;
 use App\Models\MaterialRequisition;
@@ -73,9 +74,72 @@ class GoodsIssueController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
         $modelPO = PurchaseOrder::whereIn('project_id', $modelProject)->pluck('id')->toArray();
-        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $modelPO)->get();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $modelPO)->where('status',1)->get();
 
         return view('goods_return.selectGR', compact('modelGRs','menu'));
+    }
+
+    public function createGoodsReturn($id,Request $request){
+
+        $route = $request->route()->getPrefix();    
+        $modelGR = GoodsReceipt::find($id);
+        $vendor = $modelGR->purchaseOrder->vendor;
+        $modelGRD = GoodsReceiptDetail::whereRaw('quantity - returned != 0')->where('goods_receipt_id',$modelGR->id)->with('material')->get();
+        foreach($modelGRD as $MRD){
+            $MRD['returned_temp'] = 0;
+        }
+
+        return view('goods_return.createGoodsReturn', compact('modelGR','modelGRD','route','vendor'));
+    }
+
+    public function storeGoodsReturn(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $datas = json_decode($request->datas);
+        $gi_number = $this->generateGINumber();
+
+        DB::beginTransaction();
+        try {
+            $GI = new GoodsIssue;
+            $GI->number = $gi_number;
+            $GI->goods_receipt_id = $datas->goods_receipt_id;
+            $GI->description = $datas->description;
+            $GI->type = 4;
+            $GI->branch_id = Auth::user()->branch->id;
+            $GI->user_id = Auth::user()->id;
+            $GI->save();
+            foreach($datas->GRD as $GRD){
+                if($GRD->returned_temp > 0){
+                    $GRD_returned = GoodsReceiptDetail::find($GRD->id);
+                    $GRD_returned->returned += $GRD->returned_temp;
+                    $GRD_returned->update();
+
+                    $GID = new GoodsIssueDetail;
+                    $GID->goods_issue_id = $GI->id;
+                    $GID->quantity = $GRD->returned_temp;
+                    $GID->material_id = $GRD->material_id;
+                    $GID->storage_location_id = $GRD->storage_location_id;
+                    $GID->save();
+
+                    $this->updateStock($GRD->material_id, $GRD->returned_temp);
+                    $this->updateSlocDetail($GRD->material_id, $GRD->storage_location_id,$GRD->returned_temp);
+                    $this->checkStatusGR($datas->goods_receipt_id);
+                }
+            }
+            DB::commit();
+            if($menu == "building"){
+                return redirect()->route('goods_return.show',$GI->id)->with('success', 'Goods Return Created');
+            }else{
+                return redirect()->route('goods_issue_repair.show',$GI->id)->with('success', 'Goods Return Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($menu == "building"){
+                return redirect()->route('goods_return.selectGR',$datas->goods_receipt_id)->with('error', $e->getMessage());
+            }else{
+                // return redirect()->route('goods_issue_repair.selectMR',$datas->mr_id)->with('error', $e->getMessage());
+            }
+        }
     }
 
     public function approval($gi_id,$status){
@@ -221,6 +285,20 @@ class GoodsIssueController extends Controller
         if($status == 0){
             $modelMR->status = 0;
             $modelMR->save();
+        }
+    }
+
+    public function checkStatusGR($gr_id){
+        $modelGR = GoodsReceipt::findOrFail($gr_id);
+        $status = 0;
+        foreach($modelGR->goodsReceiptDetails as $GRD){
+            if($GRD->returned < $GRD->quantity){
+                $status = 1;
+            }
+        }
+        if($status == 0){
+            $modelGR->status = 0;
+            $modelGR->save();
         }
     }
 

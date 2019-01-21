@@ -669,7 +669,7 @@ class SidenavsTableSeeder extends Seeder
         $selectPO = Menu::where('route_name','goods_return.selectPO')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $selectPO,
-            'route_name' => 'goods_return.selectGR',
+            'route_name' => 'goods_return.selectPO',
         ]);
 
         $viewReturn = Menu::where('route_name','goods_return.index')->select('id')->first()->id;
