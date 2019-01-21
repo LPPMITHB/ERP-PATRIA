@@ -64,21 +64,31 @@
                                     </tr>
                                     <tr>
                                         <td>5</td>
-                                        <td>Phone Number</td>
-                                        <td>{{ $vendor->phone_number }}</td>
+                                        <td>Phone Number 1</td>
+                                        <td>{{ $vendor->phone_number_1 }}</td>
                                     </tr>
                                     <tr>
                                         <td>6</td>
+                                        <td>Phone Number 2</td>
+                                        <td>{{ $vendor->phone_number_2 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>Contact Name</td>
+                                        <td>{{ $vendor->contact_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
                                         <td>Email</td>
                                         <td>{{ $vendor->email }}</td>
                                     </tr>
                                     <tr>
-                                        <td>7</td>
-                                        <td>Competence</td>
-                                        <td>{{ $vendor->competence }}</td>
+                                        <td>9</td>
+                                        <td>Description</td>
+                                        <td>{{ $vendor->description }}</td>
                                     </tr>
                                     <tr>
-                                        <td>8</td>
+                                        <td>10</td>
                                         <td>Status</td>
                                         <td class="iconTd">
                                             @if ($vendor->status == 1)
