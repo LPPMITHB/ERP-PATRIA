@@ -56,7 +56,7 @@
                             <label for="code" class="col-sm-2 control-label">Code</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" data-inputmask="'mask': '99-aaa-*****-aa'" id="code" name="code" required autofocus v-model="submittedForm.code" @keyup="submittedForm.code  = this.event.target.value;">
+                                <input type="text" class="form-control" id="code" name="code" required autofocus v-model="submittedForm.code">
                             </div>
                         </div>
                         

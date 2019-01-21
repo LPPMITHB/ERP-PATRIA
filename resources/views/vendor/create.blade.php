@@ -157,7 +157,6 @@
         $("#phone_number").inputmask();
     });
     document.getElementById("code").readOnly = true;
-    document.getElementById("volume").readOnly = true;
 
 function validate(evt) {
   var theEvent = evt || window.event;
