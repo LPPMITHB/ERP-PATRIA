@@ -104,6 +104,7 @@ Route::get('/getMaterialPrO/{id}', 'ProductionOrderController@getMaterialAPI')->
 Route::get('/getResourcePrO/{id}', 'ProductionOrderController@getResourceAPI')->name('api.production_order.getResourceAPI');
 Route::get('/getServicePrO/{id}', 'ProductionOrderController@getServiceAPI')->name('api.production_order.getServiceAPI');
 Route::get('/getStockPrO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
+Route::get('/getProjectInvPrO/{id}', 'ProductionOrderController@getProjectInvAPI')->name('api.production_order.getProjectInvAPI');
 
 // assign Resource
 Route::get('/getResourceAssign/{id}', 'ResourceController@getResourceAssignApi')->name('api.resource.getResourceAssignApi');

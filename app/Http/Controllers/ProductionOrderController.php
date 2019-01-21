@@ -16,6 +16,7 @@ use App\Models\Resource;
 use App\Models\Service;
 use App\Models\ResourceTrx;
 use App\Models\Stock;
+use App\Models\ProjectInventory;
 use App\Models\ResourceDetail;
 use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
@@ -228,78 +229,95 @@ class ProductionOrderController extends Controller
 
     public function release(Request $request, $id){
         $route = $request->route()->getPrefix();
-        $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','productionOrder')->get()->jsonSerialize();
+        $modelPrO = ProductionOrder::where('id',$id)->first();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->get();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
+        $wbs = WBS::findOrFail($modelPrO->wbs_id);
 
-        // tambahan material dari BOM
-        $modelBOM = Bom::where('wbs_id',$modelPrO->wbs_id)->get();
-
-        $boms = Collection::make();
+        $activities = $wbs->activities;
+        $materials = Collection::make();
         $services = Collection::make();
+        $resources = Collection::make();
         if($route == '/production_order'){
-            foreach($modelBOM as $bom){
-                foreach($bom->bomDetails as $bomDetail){
-                    $boms->push([
-                        "id" => $bomDetail->id , 
+            foreach($modelPrOD as $prOD){
+                if($prOD->material_id != ""){
+                    $materials->push([
+                        "id" => $prOD->id , 
                         "material" => [
-                            "code" => $bomDetail->material->code,
-                            "name" => $bomDetail->material->name,
+                            "code" => $prOD->material->code,
+                            "name" => $prOD->material->name,
+                            "description" => $prOD->material->description,
+                            "unit" => $prOD->material->uom->unit,
+                            "source" => $prOD->source,
                         ],
-                        "quantity" => $bomDetail->quantity,
-                        "material_id" => $bomDetail->material_id,
-                        "wbs_id" => $bomDetail->bom->wbs_id
+                        "quantity" => $prOD->quantity,
+                        "material_id" => $prOD->material_id,
                     ]);
+                }elseif($prOD->resource_id != ""){
+                    $qty =  $prOD->quantity;
+                    for ($x = 0; $x < $qty; $x++) {
+                        $resources->push([
+                            "id" => $prOD->id , 
+                            "resource" => [
+                                "code" => $prOD->resource->code,
+                                "name" => $prOD->resource->name,
+                                "description" => $prOD->resource->description,
+                            ],
+                            "quantity" => $prOD->quantity,
+                            "resource_id" => $prOD->resource_id,
+                            "trx_resource_id" => null,
+                            "trx_resource_code" => null,
+                        ]);
+                    } 
                 }
             }
         }elseif($route == '/production_order_repair'){
-            foreach($modelBOM as $bom){
-                foreach($bom->bomDetails as $bomDetail){
-                    if($bomDetail->material_id != ""){
-                        $boms->push([
-                            "id" => $bomDetail->id , 
-                            "material" => [
-                                "code" => $bomDetail->material->code,
-                                "name" => $bomDetail->material->name,
+            foreach($modelPrOD as $prOD){
+                if($prOD->material_id != ""){
+                    $materials->push([
+                        "id" => $prOD->id , 
+                        "material" => [
+                            "code" => $prOD->material->code,
+                            "name" => $prOD->material->name,
+                            "description" => $prOD->material->description,
+                            "unit" => $prOD->material->uom->unit,
+                            "source" => $prOD->source,
+                        ],
+                        "quantity" => $prOD->quantity,
+                        "material_id" => $prOD->material_id,
+                    ]);
+                }elseif($prOD->resource_id != ""){
+                    $qty =  $prOD->quantity;
+                    for ($x = 0; $x < $qty; $x++) {
+                        $resources->push([
+                            "id" => $prOD->id , 
+                            "resource" => [
+                                "code" => $prOD->resource->code,
+                                "name" => $prOD->resource->name,
+                                "description" => $prOD->resource->description,
                             ],
-                            "quantity" => $bomDetail->quantity,
-                            "material_id" => $bomDetail->material_id,
-                            "wbs_id" => $bomDetail->bom->wbs_id
+                            "quantity" => $prOD->quantity,
+                            "resource_id" => $prOD->resource_id,
+                            "trx_resource_id" => null,
+                            "trx_resource_code" => null,
                         ]);
-                    }elseif($bomDetail->service_id != ""){
-                        $services->push([
-                            "id" => $bomDetail->id , 
-                            "service" => [
-                                "code" => $bomDetail->service->code,
-                                "name" => $bomDetail->service->name,
-                            ],
-                            "quantity" => $bomDetail->quantity,
-                            "service_id" => $bomDetail->service_id,
-                            "wbs_id" => $bomDetail->bom->wbs_id
-                        ]);
-                    }
+                    } 
+                }elseif($prOD->service_id != ""){
+                    $services->push([
+                        "id" => $prOD->id , 
+                        "service" => [
+                            "code" => $prOD->service->code,
+                            "name" => $prOD->service->name,
+                            "description" => $prOD->service->description,
+                        ],
+                        "quantity" => $prOD->quantity,
+                        "service_id" => $prOD->service_id,
+                    ]);
                 }
             }
         }
 
-        // print_r($boms);exit();
-
-        // tambahan resource dari assign resource
-        $modelRD = ResourceTrx::where('wbs_id',$modelPrO->wbs_id)->get();
-
-        $resources = Collection::make();
-        foreach($modelRD as $RD){
-            $resources->push([
-                "id" => $RD->id , 
-                "resource" => [
-                    "code" => $RD->resource->code,
-                    "name" => $RD->resource->name,
-                    "status" => $RD->resource->status,
-                ],
-                "resource_id" => $RD->resource_id
-            ]);
-        }
-        return view('production_order.release', compact('modelPrO','project','modelPrOD','boms','services','resources','route'));
+        return view('production_order.release', compact('modelPrO','project','modelPrOD','materials','services','resources','route','wbs','activities'));
     }
 
     public function confirm(Request $request,$id){
@@ -351,7 +369,7 @@ class ProductionOrderController extends Controller
         $datas = json_decode($request->datas);
         $arrData = $datas->datas;
         $po_number = $this->generatePrONumber();
-        
+
         DB::beginTransaction();
         try {
             $PrO = new ProductionOrder;
@@ -600,6 +618,17 @@ class ProductionOrderController extends Controller
 
     public function getStockAPI($id){
         $stock = Stock::where('material_id',$id)->first();
+        if($stock){
+            $stock = json_encode($stock);
+        }else{
+            $stock = [];
+        }
+
+        return response($stock, Response::HTTP_OK);
+    }
+
+    public function getProjectInvAPI($id){
+        $stock = ProjectInventory::where('material_id',$id)->first();
         if($stock){
             $stock = json_encode($stock);
         }else{

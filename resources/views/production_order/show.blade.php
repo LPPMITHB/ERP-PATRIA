@@ -58,7 +58,7 @@
                         <div class="col-md-5 col-xs-5">
                             Ship Name
                         </div>
-                        <div class="col-md-7 col-xs-7 tdEllipsis">
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPrO->project->name }}">
                             : <b> {{ $modelPrO->project->name }} </b>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                         <div class="col-md-5 col-xs-5">
                             Ship Type
                         </div>
-                        <div class="col-md-7 col-xs-7 tdEllipsis">
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPrO->project->ship->type }}">
                             : <b> {{ $modelPrO->project->ship->type }} </b>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                         <div class="col-md-5 col-xs-5">
                             Customer Name
                         </div>
-                        <div class="col-md-7 col-xs-7 tdEllipsis">
+                        <div class="col-md-7 col-xs-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPrO->project->customer->name }}">
                             : <b> {{ $modelPrO->project->customer->name }} </b>
                         </div>
                     </div>

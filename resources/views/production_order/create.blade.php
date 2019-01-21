@@ -35,7 +35,6 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header">
-
                 <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
                     <div class="box-body no-padding">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
