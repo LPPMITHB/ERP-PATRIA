@@ -17,4 +17,14 @@ class GoodsIssue extends Model
     {
         return $this->hasMany('App\Models\GoodsIssueDetail');
     }
+
+    public function goodsReceipt()
+    {
+        return $this->belongsTo('App\Models\GoodsReceipt');
+    }
+
+    public function purchaseOrder()
+    {
+        return $this->belongsTo('App\Models\PurchaseOrder');
+    }
 }
