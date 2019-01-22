@@ -58,7 +58,7 @@ class ResourceController extends Controller
         $resource = new Resource;
         $resource_code = self::generateResourceCode();
 
-        return view('resource.create', compact('resource', 'resource_code','uoms','vendors','resource_category'));
+        return view('resource.create', compact('resource', 'resource_code'));
     }
 
     public function store(Request $request)
