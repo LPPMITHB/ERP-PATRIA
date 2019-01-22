@@ -88,10 +88,26 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="phone_number" class="col-sm-2 control-label">Phone Number</label>
+                            <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number" required value="{{ $vendor->phone_number }}">
+                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1" required value="{{ $vendor->phone_number_1 }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                                <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2" required value="{{ $vendor->phone_number_2 }}">
+                                </div>
+                            </div>
+
+                        <div class="form-group">
+                            <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="contact_name" name="contact_name" required value="{{ $vendor->contact_name }}">
                             </div>
                         </div>
 
@@ -104,10 +120,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="competence" class="col-sm-2 control-label">Competence</label>
+                            <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="competence" name="competence" required value="{{ $vendor->competence }}">
+                                <input type="text" class="form-control" id="description" name="description" required value="{{ $vendor->description }}">
                             </div>
                         </div>
 

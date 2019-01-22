@@ -45,8 +45,8 @@ class VendorController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_vendor|string|max:255',
             'name' => 'required|string|max:255',
-            'phone_number' => 'required|numeric',
-            'email' => 'required|email|unique:mst_vendor|string|max:255'
+            'email' => 'required|email|unique:mst_vendor|string|max:255',
+            'description' => 'required|string|max:255'
         ]);
         DB::beginTransaction();
         try {
@@ -55,10 +55,12 @@ class VendorController extends Controller
         $vendor->name = ucwords($request->input('name'));
         $vendor->type = ucwords($request->input('type'));
         $vendor->address = ucfirst($request->input('address'));
-        $vendor->phone_number = $request->input('phone_number');
+        $vendor->phone_number_1 = $request->input('phone_number_1');
+        $vendor->phone_number_2 = $request->input('phone_number_2');
+        $vendor->contact_name = $request->input('contact_name');
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
-        $vendor->competence = $request->input('competence');
+        $vendor->description = $request->input('description');
         $vendor->user_id = Auth::user()->id;
         $vendor->branch_id = Auth::user()->branch->id;
         $vendor->save();
@@ -91,7 +93,7 @@ class VendorController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_vendor,code,'.$id.',id|string|max:255',
             'name' => 'required|string|max:255',
-            'phone_number' => 'required|numeric',
+            'description' => 'required|string|max:255',
             'email' => 'required|email|unique:mst_vendor,email,'.$id.',id|string|max:255'
         ]);
         DB::beginTransaction();
@@ -101,10 +103,12 @@ class VendorController extends Controller
         $vendor->name = ucwords($request->input('name'));
         $vendor->type = ucwords($request->input('type'));
         $vendor->address = ucfirst($request->input('address'));
-        $vendor->phone_number = $request->input('phone_number');
+        $vendor->phone_number_1 = $request->input('phone_number_1');
+        $vendor->phone_number_2 = $request->input('phone_number_2');
+        $vendor->contact_name = $request->input('contact_name');
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
-        $vendor->competence = $request->input('competence');
+        $vendor->description = $request->input('description');
         $vendor->update();
 
         DB::commit();

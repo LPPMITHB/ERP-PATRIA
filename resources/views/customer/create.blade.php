@@ -62,34 +62,90 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="type" class="col-sm-2 control-label">Address</label>
+                            <label for="type" class="col-sm-2 control-label">Address 1</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address" required value="{{ $customer->address }}">
+                                <input type="text" class="form-control" id="address_1" name="address_1" value="{{ $customer->address_1 }}">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="contact_person_name" class="col-sm-2 control-label">Contact Person Name</label>
+                                <label for="type" class="col-sm-2 control-label">Address 2</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="address_2" name="address_2" value="{{ $customer->address_2 }}">
+                                </div>
+                            </div>
+
+                        <div class="form-group">
+                            <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="contact_person_name" name="contact_person_name" required value="{{ $customer->contact_person_name }}">
+                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="phone_number_1" name="phone_number_1" value="{{ $customer->phone_number_1 }}">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="contact_person_email" class="col-sm-2 control-label">Contact Person E-mail</label>
+                                <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="phone_number_2" name="phone_number_2" value="{{ $customer->phone_number_2 }}">
+                                </div>
+                            </div>
+
+                        <div class="form-group">
+                            <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
             
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="contact_person_email" name="contact_person_email" required value="{{ $customer->contact_person_email }}">
+                                <input type="text" class="form-control" id="contact_name" name="contact_name" value="{{ $customer->contact_name }}">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="contact_person_phone" class="col-sm-2 control-label">Contact Person Phone</label>
+                            <label for="email" class="col-sm-2 control-label">Email</label>
             
                             <div class="col-sm-10">
-                                <input type="numeric" onkeypress="validate(event)" minlength="10" maxlength="13" class="form-control" id="contact_person_phone" name="contact_person_phone" required value="{{ $customer->contact_person_phone }}">
+                                <input type="email" class="form-control" id="email" name="email" value="{{ $customer->email }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tax_number" class="col-sm-2 control-label">Tax Number</label>
+            
+                            <div class="col-sm-10">
+                                <input type="numeric" onkeypress="validate(event)" class="form-control" id="tax_number" name="tax_number" value="{{ $customer->tax_number }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pkp_number" class="col-sm-2 control-label">Pkp Number</label>
+            
+                            <div class="col-sm-10">
+                                <input type="numeric" onkeypress="validate(event)" class="form-control" id="pkp_number" name="pkp_number" value="{{ $customer->pkp_number }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="province" class="col-sm-2 control-label">Province</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="province" name="province" value="{{ $customer->province }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="zip_code" class="col-sm-2 control-label">Zip Code</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="zip_code" name="zip_code" value="{{ $customer->zip_code }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country" class="col-sm-2 control-label">Country</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="country" name="country" value="{{ $customer->country }}">
                             </div>
                         </div>
 
