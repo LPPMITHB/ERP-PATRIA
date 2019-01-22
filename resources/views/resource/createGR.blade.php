@@ -121,6 +121,23 @@
                                                     <label for="description" class="control-label">Description</label>
                                                     <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
                                                 </div>
+                                                <div class="col-sm-12">
+                                                    <div class="col-sm-12 no-padding">
+                                                        <label for="performance" class="control-label">Performance</label>
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding p-r-10">
+                                                        <input type="text" id="performance" v-model="editInput.performance" class="form-control" placeholder="Performance">
+
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding">
+                                                        <selectize v-model="editInput.performance_uom_id" :settings="uomSettings">
+                                                            <option v-for="(data, index) in uom" :value="data.id">{{ data.unit }} </option>
+                                                        </selectize>
+                                                    </div>
+                                                    <div class="col-sm-6 p-t-8">
+                                                        Per Hour
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div v-show="editInput.category_id == '1'">
@@ -135,6 +152,23 @@
                                                 <div class="col-sm-12">
                                                     <label for="description" class="control-label">Description</label>
                                                     <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="col-sm-12 no-padding">
+                                                        <label for="performance" class="control-label">Performance</label>
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding p-r-10">
+                                                        <input type="text" id="performance" v-model="editInput.performance" class="form-control" placeholder="Performance">
+
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding">
+                                                        <selectize v-model="editInput.performance_uom_id" :settings="uomSettings">
+                                                            <option v-for="(data, index) in uom" :value="data.id">{{ data.unit }} </option>
+                                                        </selectize>
+                                                    </div>
+                                                    <div class="col-sm-6 p-t-8">
+                                                        Per Hour
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -304,12 +338,12 @@
             description : "",
             code : "",
             index : "",
+            performance : "",
+            performance_uom_id : "",
 
             name:"",
 
             brand : "",
-            performance : "",
-            performance_uom_id : "",
 
             sub_con_address : "",
             sub_con_phone : "",
@@ -374,6 +408,8 @@
                 this.detailData.index = this.editInput.index;
                 this.detailData.resource_id = this.editInput.resource_id;
                 this.detailData.pod_id = this.editInput.pod_id;
+                this.detailData.performance = this.editInput.performance;
+                this.detailData.performance_uom_id = this.editInput.performance_uom_id;
 
                 if(category_id == 0){
                     this.detailData.sub_con_address = this.editInput.sub_con_address;
@@ -383,8 +419,6 @@
                     this.detailData.name = this.editInput.name;
                 }else if(category_id == 2){
                     this.detailData.brand = this.editInput.brand;
-                    this.detailData.performance = this.editInput.performance;
-                    this.detailData.performance_uom_id = this.editInput.performance_uom_id;
                 }else if(category_id == 3){
                     this.detailData.brand = this.editInput.brand;
                     this.detailData.manufactured_date = this.editInput.manufactured_date;
@@ -394,8 +428,6 @@
                     this.detailData.lifetime_uom_id = this.editInput.lifetime_uom_id;
                     this.detailData.cost_per_hour = this.editInput.cost_per_hour;
                     this.detailData.depreciation_method = this.editInput.depreciation_method;
-                    this.detailData.performance = this.editInput.performance;
-                    this.detailData.performance_uom_id = this.editInput.performance_uom_id;
                 }
                 let data = JSON.stringify(this.detailData);
                 data = JSON.parse(data);
@@ -411,6 +443,9 @@
                 this.editInput.description = '';
                 this.editInput.index = '';
                 this.editInput.pod_id = '';
+                this.editInput.performance = '';
+                this.editInput.performance_uom_id = '';
+                
                 if(category_id == 0){
                     this.editInput.sub_con_address = '';
                     this.editInput.sub_con_phone = '';
@@ -419,8 +454,6 @@
                     this.editInput.name = '';
                 }else if(category_id == 2){
                     this.editInput.brand = '';
-                    this.editInput.performance = '';
-                    this.editInput.performance_uom_id = '';
                 }else if(category_id == 3){
                     this.editInput.brand = '';
                     this.editInput.manufactured_date = '';
@@ -430,8 +463,6 @@
                     this.editInput.lifetime_uom_id = '';
                     this.editInput.cost_per_hour = '';
                     this.editInput.depreciation_method = '';
-                    this.editInput.performance = '';
-                    this.editInput.performance_uom_id = '';
                 }
 
                 iziToast.success({
