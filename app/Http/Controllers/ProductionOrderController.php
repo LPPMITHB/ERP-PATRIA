@@ -565,18 +565,19 @@ class ProductionOrderController extends Controller
 
         $MR = new MaterialRequisition;
         $MR->number = $mr_number;
-        $MR->project_id = $modelPrOD[0]->production_order->project_id;
+        $prod_order = ProductionOrder::find($modelPrOD[0]->production_order_id);
+        $MR->project_id = $prod_order->project_id;
         $MR->description = "AUTO CREATE MR FROM PRODUCTION ORDER";
         $MR->type = 1;
         $MR->user_id = Auth::user()->id;
         $MR->branch_id = Auth::user()->branch->id;
         $MR->save();
-
+        
         foreach($modelPrOD as $PrOD){
             if($PrOD->material_id != "" || $PrOD->material_id != null){
                 $MRD = new MaterialRequisitionDetail;
                 $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $PrOD->sugQuantity;
+                $MRD->quantity = $PrOD->quantity;
                 $MRD->issued = 0;
                 $MRD->material_id = $PrOD->material_id;
                 $MRD->save();
