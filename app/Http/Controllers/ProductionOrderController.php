@@ -472,7 +472,6 @@ class ProductionOrderController extends Controller
     public function storeRelease(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        print_r($datas);exit();
         $pro_id = $datas->modelPrOD[0]->production_order_id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
 
@@ -480,6 +479,13 @@ class ProductionOrderController extends Controller
         try {
             $modelPrO->status = 2;
             $modelPrO->save();
+
+            $PrOD = new ProductionOrderDetail;
+            $PrOD->production_order_id = $pro_id;
+            $PrOD->material_id = $material->material_id;
+            $PrOD->quantity = $material->quantity;
+            $PrOD->source = $material->source;
+            $PrOD->save();
 
             $this->createMR($datas->modelPrOD);
             DB::commit();
@@ -577,12 +583,14 @@ class ProductionOrderController extends Controller
 
         foreach($modelPrOD as $PrOD){
             if($PrOD->material_id != "" || $PrOD->material_id != null){
-                $MRD = new MaterialRequisitionDetail;
-                $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $PrOD->sugQuantity;
-                $MRD->issued = 0;
-                $MRD->material_id = $PrOD->material_id;
-                $MRD->save();
+                if($PrOD->source == "Stock"){
+                    $MRD = new MaterialRequisitionDetail;
+                    $MRD->material_requisition_id = $MR->id;
+                    $MRD->quantity = $PrOD->sugQuantity;
+                    $MRD->issued = 0;
+                    $MRD->material_id = $PrOD->material_id;
+                    $MRD->save();
+                }
             }
         }
     }
