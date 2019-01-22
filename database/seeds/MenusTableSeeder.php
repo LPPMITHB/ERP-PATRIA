@@ -399,7 +399,7 @@ class MenusTableSeeder extends Seeder
         $goodsReturn =  Menu::where('name','Goods Return')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Return Based On Goods Receipt',
+            'name' => 'Based On Goods Receipt',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_return.selectGR',
             'is_active' => true,
@@ -411,7 +411,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Return Based On Purchase Order',
+            'name' => 'Based On Purchase Order',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_return.selectPO',
             'is_active' => true,

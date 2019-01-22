@@ -666,10 +666,20 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_return.selectGR',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGR,
+            'route_name' => 'goods_return.createGoodsReturnGR',
+        ]);
+
         $selectPO = Menu::where('route_name','goods_return.selectPO')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $selectPO,
-            'route_name' => 'goods_return.selectGR',
+            'route_name' => 'goods_return.selectPO',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPO,
+            'route_name' => 'goods_return.createGoodsReturnPO',
         ]);
 
         $viewReturn = Menu::where('route_name','goods_return.index')->select('id')->first()->id;

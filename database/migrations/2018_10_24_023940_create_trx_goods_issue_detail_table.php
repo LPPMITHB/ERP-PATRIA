@@ -18,7 +18,7 @@ class CreateTrxGoodsIssueDetailTable extends Migration
             $table->unsignedInteger('goods_issue_id');
             $table->integer('quantity');
             $table->unsignedInteger('material_id');
-            $table->unsignedInteger('storage_location_id');
+            $table->unsignedInteger('storage_location_id')->nullable();
             $table->timestamps();
 
             $table->foreign('storage_location_id')->references('id')->on('mst_storage_location'); 
