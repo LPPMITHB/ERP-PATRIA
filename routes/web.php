@@ -205,6 +205,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::post('/', 'ResourceController@store')->name('store')->middleware('can:create-resource');
 
+    Route::post('/storeIssue', 'ResourceController@storeIssue')->name('storeIssue')->middleware('can:create-resource');
+
     Route::post('/storeInternal', 'ResourceController@storeInternal')->name('storeInternal')->middleware('can:create-resource');
 
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
