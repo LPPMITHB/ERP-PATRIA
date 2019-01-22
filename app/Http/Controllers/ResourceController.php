@@ -143,6 +143,8 @@ class ResourceController extends Controller
                 $RD->resource_id = $data->resource_id;
                 $RD->category_id = $data->category_id;
                 $RD->description = $data->description;
+                $RD->performance = ($data->performance != '') ? $data->performance : null;
+                $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
                 if($data->category_id == 0){
                     $RD->sub_con_address = $data->sub_con_address;
                     $RD->sub_con_phone = $data->sub_con_phone;
@@ -151,8 +153,6 @@ class ResourceController extends Controller
                     $RD->others_name = $data->name;
                 }elseif($data->category_id == 2){
                     $RD->brand = $data->brand;
-                    $RD->performance = ($data->performance != '') ? $data->performance : null;
-                    $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
                 }elseif($data->category_id == 3){
                     $RD->brand = $data->brand;
                     $RD->depreciation_method = $data->depreciation_method;
@@ -162,8 +162,6 @@ class ResourceController extends Controller
                     $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
                     $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
                     $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
-                    $RD->performance = ($data->performance != '') ? $data->performance : null;
-                    $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
                 }
                 $RD->save();
 
