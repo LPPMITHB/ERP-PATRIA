@@ -183,6 +183,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::get('/createGR/{id}', 'ResourceController@createGR')->name('createGR');
 
+    Route::get('/createInternal/{id}', 'ResourceController@createInternal')->name('createInternal');
+
     Route::post('/storeGR', 'ResourceController@storeGR')->name('storeGR');
 
     Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR');
@@ -202,6 +204,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
     Route::patch('/{id}', 'ResourceController@update')->name('update')->middleware('can:edit-resource');
 
     Route::post('/', 'ResourceController@store')->name('store')->middleware('can:create-resource');
+
+    Route::post('/storeInternal', 'ResourceController@storeInternal')->name('storeInternal')->middleware('can:create-resource');
 
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
 

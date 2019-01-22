@@ -20,6 +20,9 @@
     <div class="col-sm-12">
         <div class="box">
             <div class="box-header">
+                <div class="box-tools pull-right p-t-5">
+                    <a href="{{ route('resource.createInternal',$resource->id) }}" class="btn btn-primary btn-sm">INPUT INTERNAL RESOURCE</a>
+                </div>
                 <div class="col-sm-4">
                     <table>
                         <thead>
