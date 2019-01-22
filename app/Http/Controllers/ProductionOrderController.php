@@ -265,8 +265,9 @@ class ProductionOrderController extends Controller
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => null,
+                            "trx_resource_id" => '',
                             "trx_resource_code" => null,
+                            "status" => null,
                         ]);
                     } 
                 }
@@ -298,8 +299,9 @@ class ProductionOrderController extends Controller
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => null,
+                            "trx_resource_id" => '',
                             "trx_resource_code" => null,
+                            "status" => null,
                         ]);
                     } 
                 }elseif($prOD->service_id != ""){
@@ -470,6 +472,7 @@ class ProductionOrderController extends Controller
     public function storeRelease(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        print_r($datas);exit();
         $pro_id = $datas->modelPrOD[0]->production_order_id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
 
@@ -638,8 +641,9 @@ class ProductionOrderController extends Controller
         return response($stock, Response::HTTP_OK);
     }
 
-    public function getTrxResourceAPI($id){
-        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->with('resource')->get()->jsonSerialize();
+    public function getTrxResourceAPI($id,$jsonResource){
+        $jsonResource = json_decode($jsonResource);
+        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
 
         return response($resource, Response::HTTP_OK);
     }
