@@ -60,7 +60,7 @@ class MaterialWriteOffController extends Controller
             $MWO->number = $number;
             $MWO->description = $datas->description;
             $MWO->status = 1;
-            $MWO->type = 2;
+            $MWO->type = 5;
             $MWO->user_id = Auth::user()->id;
             $MWO->branch_id = Auth::user()->branch->id;
             $MWO->save();
