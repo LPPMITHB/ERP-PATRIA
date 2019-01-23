@@ -35,7 +35,7 @@ class GoodsReceiptController extends Controller
             $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
             $modelSloc = StorageLocation::all();
             $datas = Collection::make();
-
+ 
             
             foreach($modelPODs as $POD){
                 $datas->push([
@@ -50,12 +50,15 @@ class GoodsReceiptController extends Controller
                     "wbs_id" => $POD->wbs_id,
                     "total_price" => $POD->total_price,
                     "sloc_id" => "",
+                    "item_OK" => 0,
                     ]);
                 }
                 // print_r($datas);exit();
-            
 
+
+            
             return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc','route','datas'));
+        
         }elseif($modelPO->purchaseRequisition->type == 2){
             // $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
             // $resource_categories = Configuration::get('resource_category');
@@ -162,6 +165,7 @@ class GoodsReceiptController extends Controller
                     $GRD->quantity = $data->received;
                     $GRD->material_id = $data->material_id;
                     $GRD->storage_location_id = $data->sloc_id;
+                    $GRD->item_OK = $data->item_OK;
                     $GRD->save();
                 
                     $this->updatePOD($data->purchase_order_id,$data->received);
