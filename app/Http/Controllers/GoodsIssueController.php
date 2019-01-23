@@ -31,8 +31,9 @@ class GoodsIssueController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
 
+
         $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->pluck('id')->toArray();
-        $modelGIs = GoodsIssue::whereIn('material_requisition_id',$modelMRs)->orwhere('type',5)->get();
+        $modelGIs = GoodsIssue::whereIn('material_requisition_id',$modelMRs)->orwhere('business_unit_id',$modelProject)->get();
 
         return view ('goods_issue.index', compact('modelGIs','menu'));
     }
@@ -269,6 +270,11 @@ class GoodsIssueController extends Controller
         try {
             $GI = new GoodsIssue;
             $GI->number = $gi_number;
+            if($menu == "building"){
+                $MWO->business_unit_id = 1;
+            }else if($menu == "repair"){
+                $MWO->business_unit_id = 2;
+            }
             $GI->material_requisition_id = $datas->mr_id;
             $GI->description = $datas->description;
             $GI->branch_id = Auth::user()->branch->id;
