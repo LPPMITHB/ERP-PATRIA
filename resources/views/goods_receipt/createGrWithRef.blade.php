@@ -52,7 +52,7 @@
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.vendor.name }}</b></div>
                 
                                         <div class="col-md-4 col-xs-4 no-padding">Address</div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{ modelPO.vendor.address }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.address)"><b>: {{ modelPO.vendor.address }}</b></div>
 
                                         <div class="col-md-4 col-xs-4 no-padding">Phone Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.vendor.phone_number }}</b></div>
@@ -72,9 +72,10 @@
                                             <tr>
                                                 <th width="5%">No</th>
                                                 <th width="35%">Material Name</th>
-                                                <th width="15%">Quantity</th>
-                                                <th width="15%">Received</th>
+                                                <th width="10%">Quantity</th>
+                                                <th width="10%">Received</th>
                                                 <th width="30%">Storage Location</th>
+                                                <th width="10%">Item OK</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -89,6 +90,9 @@
                                                     <selectize v-model="POD.sloc_id" :settings="slocSettings">
                                                         <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
                                                     </selectize>  
+                                                </td>
+                                                <td class="no-padding p-t-2 p-b-2" align="center">
+                                                    <input type="checkbox" v-icheck="" v-model="checkedPOD" :value="POD.material_id">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -151,6 +155,7 @@
         modelPOD : @json($datas),
         modelPO :   @json($modelPO),
         modelSloc : @json($modelSloc),
+        checkedPOD :[],
 
         slocSettings: {
             placeholder: 'Please Select Storage Location'
@@ -159,21 +164,31 @@
         submittedForm :{},
     }
 
-    var vm = new Vue({
+        Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
+    var app = new Vue({
         el : '#pod',
         data : data,
         computed : {
             createOk: function(){
-                let isOk = false;
-                this.modelPOD.forEach(POD => {
-                    if(POD.sloc_id == null){
-                        isOk = true;
-                    }
-                });
-                return isOk;
+                // let isOk = false;
+                // this.modelPOD.forEach(POD => {
+                //     if(POD.sloc_id == null){
+                //         isOk = true;
+                //     }
+                // });
+                // return isOk;
             }
         },
         methods : {
+            tooltipText: function(text) {
+            return text
+            },
             changeText(){
                 if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
                     if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelPO.vendor.address ){
@@ -181,33 +196,77 @@
                     }
                 }
             }, 
-            
             submitForm(){
                 var data = this.modelPOD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
-
+                
+                var pod = this.checkedPOD;
+                var jsonPod = JSON.stringify(pod);
+                jsonPod = JSON.parse(jsonPod);
+                console.log(jsonPod)
+                
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , ''); 
-                    POD.received = parseInt(POD.received);     
+                    POD.received = parseInt(POD.received);   
+                    
+                    if(POD.material_id == this.checkedPOD[0]){
+                        POD.item_OK = 1;
+                    }else if(POD.material_id != this.checkedPOD[0]){
+                        POD.item_OK = 0;
+                    }
                 });
-
+                
+                console.log(data)
                 this.submittedForm.POD = data;
+                this.submittedForm.checkedPOD = jsonPod;            
                 this.submittedForm.purchase_order_id = this.modelPO.id;
                 this.submittedForm.description = this.description;
-
+                
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                form.submit();
+                // form.submit();
+            }
+        },
+        directives: {
+            icheck: {
+                inserted: function(el, b, vnode) {
+                    var vdirective = vnode.data.directives,
+                    vModel;
+                    for (var i = 0, vDirLength = vdirective.length; i < vDirLength; i++) {
+                        if (vdirective[i].name == "model") {
+                            vModel = vdirective[i].expression;
+                            break;
+                        }
+                    }
+                    jQuery(el).iCheck({
+                        checkboxClass: "icheckbox_square-blue",
+                        radioClass: "iradio_square-blue",
+                        increaseArea: "20%" // optional
+                    });
+                    jQuery(el).on("ifChanged", function(e) {
+                        if ($(el).attr("type") == "radio") {
+                            app.$data[vModel] = $(this).val();
+                        }
+                        if ($(el).attr("type") == "checkbox") {
+                            let data = app.$data[vModel];
+
+                            $(el).prop("checked")
+                            ? app.$data[vModel].push($(this).val())
+                            : data.splice(data.indexOf($(this).val()), 1);
+                        }
+                    });
+                }
             }
         },
         watch : {
             modelPOD:{
                 handler: function(newValue) {
-                    console.log(newValue)
+                    // console.log(newValue)
+        
                     var data = newValue;
                     data.forEach(POD => {
                         if(parseInt(POD.quantity.replace(/,/g , '')) < parseInt(POD.received.replace(/,/g , ''))){
@@ -236,7 +295,6 @@
         },
         updated: function () {
             this.$nextTick(function () {
-                console.log('a')
             })
         }
     });

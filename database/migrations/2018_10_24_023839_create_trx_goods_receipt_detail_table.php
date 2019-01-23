@@ -21,6 +21,7 @@ class CreateTrxGoodsReceiptDetailTable extends Migration
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_detail_id')->nullable();
             $table->unsignedInteger('storage_location_id')->nullable();
+            $table->integer('item_OK');
             $table->timestamps();
 
             $table->foreign('storage_location_id')->references('id')->on('mst_storage_location'); 
