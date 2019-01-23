@@ -1,5 +1,5 @@
 <?php
-$distFontDir = $rootDir .'/lib/fonts/';
+$distFontDir = $rootDir . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR;
 return array(
     'sans-serif' =>
         array(
