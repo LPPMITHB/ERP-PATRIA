@@ -28,7 +28,7 @@ class PurchaseOrderController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
 
-        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('project_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('business_unit_id',$modelProject)->get();
         
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
