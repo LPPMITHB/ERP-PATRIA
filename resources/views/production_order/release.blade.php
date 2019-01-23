@@ -389,8 +389,6 @@
             },
             submitForm() {
                 this.submittedForm.modelPrOD = this.modelPrOD;
-                this.submittedForm.materials = this.materials;
-                this.submittedForm.services = this.services;
                 this.submittedForm.resources = this.resources;
 
                 let struturesElem = document.createElement('input');

@@ -24,7 +24,6 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->unsignedInteger('service_id')->nullable();
             $table->integer('quantity')->nullable();
             $table->integer('actual')->nullable();
-            $table->integer('status')->nullable();
             $table->timestamps();
 
             $table->foreign('production_order_id')->references('id')->on('trx_production_order');

@@ -325,7 +325,7 @@ class ProductionOrderController extends Controller
     public function confirm(Request $request,$id){
         $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','service','productionOrder')->get()->jsonSerialize();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
 
         return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route'));
@@ -478,16 +478,23 @@ class ProductionOrderController extends Controller
         DB::beginTransaction();
         try {
             $modelPrO->status = 2;
-            $modelPrO->save();
+            $modelPrO->update();
 
-            $PrOD = new ProductionOrderDetail;
-            $PrOD->production_order_id = $pro_id;
-            $PrOD->material_id = $material->material_id;
-            $PrOD->quantity = $material->quantity;
-            $PrOD->source = $material->source;
-            $PrOD->save();
+            foreach($datas->resources as $resource){
+                $PrOD = new ProductionOrderDetail;
+                $PrOD->production_order_id = $pro_id;
+                $PrOD->production_order_detail_id = $resource->id;
+                $PrOD->resource_id = $resource->resource_id;
+                $PrOD->resource_detail_id = $resource->trx_resource_id;
+                $PrOD->quantity = 1;
+                $PrOD->save();
 
+                $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
+                $RD->status = 2;
+                $RD->update();
+            }
             $this->createMR($datas->modelPrOD);
+
             DB::commit();
             if($route == "/production_order"){
                 return redirect()->route('production_order.showRelease',$modelPrO->id)->with('success', 'Production Order Released');
@@ -571,10 +578,11 @@ class ProductionOrderController extends Controller
 
     public function createMR($modelPrOD){
         $mr_number = $this->generateMRNumber();
+        $project_id = ProductionOrder::findOrFail($modelPrOD[0]->production_order_id)->project_id;
 
         $MR = new MaterialRequisition;
         $MR->number = $mr_number;
-        $MR->project_id = $modelPrOD[0]->production_order->project_id;
+        $MR->project_id = $project_id;
         $MR->description = "AUTO CREATE MR FROM PRODUCTION ORDER";
         $MR->type = 1;
         $MR->user_id = Auth::user()->id;
@@ -586,7 +594,7 @@ class ProductionOrderController extends Controller
                 if($PrOD->source == "Stock"){
                     $MRD = new MaterialRequisitionDetail;
                     $MRD->material_requisition_id = $MR->id;
-                    $MRD->quantity = $PrOD->sugQuantity;
+                    $MRD->quantity = $PrOD->quantity;
                     $MRD->issued = 0;
                     $MRD->material_id = $PrOD->material_id;
                     $MRD->save();

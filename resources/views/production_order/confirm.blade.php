@@ -128,18 +128,18 @@
             @csrf
             @verbatim
             <div id="production_order">
-                <div class="box-body">
-                    <h4 class="box-title">List of Activities</h4>
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Activity</h4>
                     <table id="activity-table" class="table table-bordered tableFixed" >
                         <thead>
                             <tr>
-                                <th style="width: 10px">No</th>
-                                <th style="width: 20%">Name</th>
+                                <th style="width: 5%">No</th>
+                                <th style="width: 25%">Activity Name</th>
                                 <th style="width: 30%">Description</th>
-                                <th style="width: 8%">Status</th>
-                                <th style="width: 8%">Progress</th>
-                                <th style="width: 8%">Weight</th>
-                                <th style="width: 55px"></th>
+                                <th style="width: 10%">Status</th>
+                                <th style="width: 10%">Progress</th>
+                                <th style="width: 10%">Weight</th>
+                                <th style="width: 10%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -277,6 +277,7 @@
                         <!-- /.modal-dialog -->
                     </div>
                 </div>
+
                 <div class="box-body">
                     <div class="row">
                         <div class="col-sm-12">
@@ -284,20 +285,20 @@
                             <table id="material-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%">No</th>
-                                        <th style="width: 25%">Code</th>
-                                        <th style="width: 25%">Name</th>
-                                        <th style="width: 15%">Quantity</th>
-                                        <th style="width: 15%">Actual</th>
-                                        <th style="width: 15%">Remaining</th>
-                                        <th style="width: 15%">Used</th>
+                                        <th width="5%">No</th>
+                                        <th width="30%">Material Name</th>
+                                        <th width="28%">Description</th>
+                                        <th width="8%">Quantity</th>
+                                        <th width="8%">Actual</th>
+                                        <th width="8%">Remaining</th>
+                                        <th width="8%">Used</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in materials">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.material.code }}</td>
-                                        <td class="tdEllipsis">{{ data.material.name }}</td>
+                                        <td class="tdEllipsis">{{ data.material.code }} - {{ data.material.name }}</td>
+                                        <td class="tdEllipsis">{{ data.material.description }}</td>
                                         <td class="tdEllipsis">{{ data.quantity }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
@@ -309,9 +310,10 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row">
+
+                    <div class="row" v-if="route == '/production_order_repair'">
                         <div class="col-sm-12">
-                            <h4 class="box-title m-t-0">Service</h4>
+                            <h4 class="m-t-0">Service</h4>
                             <table id="service-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                 <thead>
                                     <tr>
@@ -340,40 +342,31 @@
                             </table>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-sm-12">
-                            <h4 class="box-title m-t-0">Resource</h4>
-                            <table id="resource-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                            <h4 class="m-t-0">Resource</h4>
+                            <table id="resource-table" class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%">No</th>
-                                        <th style="width: 25%">Code</th>
-                                        <th style="width: 25%">Name</th>
-                                        <th style="width: 15%">Available</th>
-                                        <th style="width: 15%">Status</th>
+                                        <th width="5%">No</th>
+                                        <th width="30%">Resource Name</th>
+                                        <th width="25%">Description</th>
+                                        <th width="30%">Operational Resource</th>
+                                        <th width="10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in resources">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.resource.code }}</td>
-                                        <td class="tdEllipsis">{{ data.resource.name }}</td>
-                                        <template v-if="data.resource.status == 1">
-                                            <td class="tdEllipsis" >
-                                                {{ 'YES' }}
-                                            </td>
-                                            <td class="tdEllipsis">
-                                                <i class="fa fa-check text-success"></i>
-                                            </td> 
-                                        </template>
-                                        <template v-else>
-                                            <td class="tdEllipsis">
-                                                {{ 'NO' }}
-                                            </td>
-                                            <td class="tdEllipsis">
-                                                <i class="fa fa-times text-danger"></i>
-                                            </td>
-                                        </template>
+                                        <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                        <td class="tdEllipsis">{{ (data.resource.description) ? data.resource.description : '-'}}</td>
+                                        <td class="tdEllipsis">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
+                                        <td class="p-l-5" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#" data-toggle="modal">
+                                            <div class="btn-group">
+                                                INPUT ACTUAL
+                                            </div></a>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -403,17 +396,7 @@
             format: 'yyyy-mm-dd',
             autoclose : true,
         });
-        $('#material-table,#resource-table,#activity-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').hide();
-            }
-        });
+        $('div.overlay').hide();
     });
 
     Vue.directive('tooltip', function(el, binding){
@@ -425,6 +408,7 @@
     })
 
     var data = {
+        route : @json($route),
         menu : @json($route),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
@@ -566,25 +550,7 @@
             getActivities(){
                 window.axios.get('/api/getActivities/'+this.wbs_id).then(({ data }) => {
                     this.activities = data;
-                    var dT = $('#activity-table').DataTable();
-                    dT.destroy();
-                    this.$nextTick(function() {
-                        $('#activity-table').DataTable({
-                            'paging'      : true,
-                            'lengthChange': false,
-                            'searching'   : false,
-                            'ordering'    : false,
-                            'info'        : true,
-                            'autoWidth'   : false,
-                            'initComplete': function(){
-                                $('div.overlay').remove();
-                            },
-                            columnDefs : [
-                                { targets: 0, sortable: false},
-                            ]
-                        });
-                    })
-                });
+                    });
 
             },
             confirm(){            
@@ -693,7 +659,7 @@
                     POD.sugQuantity = POD.quantity-POD.actual;
                     POD.used = POD.quantity-POD.actual;
                     this.services.push(POD);
-                }else if(POD.resource_id != null){
+                }else if(POD.resource_id != null && POD.resource_detail_id != null){
                     this.resources.push(POD);
                 }
             });
