@@ -95,7 +95,7 @@
             <div id="add_wbs">
                 <div class="box-body">
                     <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>{{parentWbsWeight}}%</b>)</h4>
-                    <table id="wbs-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
+                    <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
@@ -103,7 +103,7 @@
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
-                                <th style="width: 11%">Weight</th>
+                                <th style="width: 8%">Weight</th>
                                 <th style="width: 12%"></th>
                             </tr>
                         </thead>

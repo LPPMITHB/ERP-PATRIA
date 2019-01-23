@@ -17,7 +17,7 @@ class CreateMstCategoryTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('used_for');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
