@@ -189,7 +189,11 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR');
 
+    Route::get('/showGI/{id}', 'ResourceController@showGI')->name('showGI');
+
     Route::get('/indexReceived', 'ResourceController@indexReceived')->name('indexReceived');
+
+    Route::get('/indexIssued', 'ResourceController@indexIssued')->name('indexIssued');
 
     Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource');
 

@@ -52,7 +52,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td>{{ data.resource_name }}</td>
                                             <td>{{ data.resource_detail_name }}</td>
-                                            <td >{{ "NOT USED" }}</td>
+                                            <td >{{ "IDLE" }}</td>
                                             <td class="p-l-3 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                                     EDIT
@@ -71,11 +71,11 @@
                                             </selectize>
                                         </td>
                                         <td class="p-l-0 textLeft" v-show="dataInput.resource_id == ''">
-                                            <selectize disabled v-model="dataInput.resource_detail_id" :settings="nullResourceDetailSettings">
+                                            <selectize disabled :settings="nullResourceDetailSettings">
                                             </selectize>
                                         </td>
                                         <td class="p-l-0 textLeft" v-show="modelResourceDetails.length == 0 && dataInput.resource_id != ''">
-                                            <selectize disabled v-model="dataInput.resource_detail_id" :settings="emptyResourceDetailSettings">
+                                            <selectize disabled :settings="emptyResourceDetailSettings">
                                             </selectize>
                                         </td>
                                         <td class="p-l-0 textLeft" v-show="modelResourceDetails.length > 0">
@@ -110,6 +110,26 @@
                                                     <option v-for="(resource,index) in modelResources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </div>
+                                            <div class="col-sm-12" v-show="editInput.resource_id == ''">
+                                                <label class="control-label">Resource Detail</label>
+                                                <selectize disabled :settings="nullResourceDetailSettings">
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="modelResourceDetailsEdit.length == 0 && editInput.resource_id != ''">
+                                                <label class="control-label">Resource Detail</label>
+                                                <selectize disabled :settings="emptyResourceDetailSettings">
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="modelResourceDetailsEdit.length > 0">
+                                                <label class="control-label">Resource Detail</label>
+                                                <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
+                                                    <option v-for="(resource_detail,index) in modelResourceDetailsEdit" :value="resource_detail.id">[{{ resource_detail.code }}] {{ resource_detail.brand }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Status</label>
+                                                <input disabled type="text" class="form-control" v-model="statusEdit">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -138,7 +158,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#assign-resource');
+    const form = document.querySelector('form#create-gi');
 
     $(document).ready(function(){
         $('div.overlay').hide();
@@ -147,9 +167,12 @@
     var data = {
         modelResources : @json($resources),
         modelResourceDetails : [],
+        modelResourceDetailsEdit : [],
         statusResourceDetails : true,
+        statusResourceDetailsEdit : true,
         description : "",
         status : "",
+        statusEdit : "IDLE",
         modelIssued : [],
         newIndex : 0,
         dataInput : {
@@ -160,11 +183,13 @@
         },
         editInput : {
             resource_id :"",
+            old_resource_id : "",
             resource_name : "",
             resource_detail_id : "",
             resource_detail_name : "",
-            index : "",
         },
+        submittedForm:{},
+        activeIndex : "",
         resourceSettings: {
             placeholder: 'Please Select Resource'
         },
@@ -206,7 +231,7 @@
             updateOk: function(){
                 let isOk = false;
 
-                if(this.editInput.resource_id == "" || this.editInput.wbs_id == "" || this.editInput.quantity == ""){
+                if(this.editInput.resource_id == "" || this.editInput.resource_detail_id == "" || this.statusResourceDetailsEdit){
                     isOk = true;
                 }
 
@@ -237,16 +262,37 @@
             },
             openEditModal(data,index){
                 this.editInput.resource_id = data.resource_id;
-                this.editInput.resource_name = data.resource_name;
+                this.editInput.old_resource_id = data.resource_id;
                 this.editInput.resource_detail_id = data.resource_detail_id;
-                this.editInput.resource_detail_name = data.resource_detail_name;
-                this.editInput.index = index;
+                this.activeIndex = index;
             }, 
+            update(){
+                $('div.overlay').show();
+                var updatedData = this.modelIssued[this.activeIndex];
+                updatedData.resource_id = this.editInput.resource_id;
+                updatedData.resource_name = this.editInput.resource_name;
+                updatedData.resource_detail_id = this.editInput.resource_detail_id;
+                updatedData.resource_detail_name = this.editInput.resource_detail_name;
+                
+                $('div.overlay').hide();
+            },
+            submitForm(){
+                this.submittedForm.description = this.description;
+                this.submittedForm.resources = this.modelIssued;    
+
+                console.log(JSON.stringify(this.submittedForm));
+                let struturesElem = document.createElement('input');
+                struturesElem.setAttribute('type', 'hidden');
+                struturesElem.setAttribute('name', 'datas');
+                struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                form.appendChild(struturesElem);
+                form.submit();
+            },
         },
         watch : {
             'dataInput.resource_id' : function(newValue){
-                this.modelResourceDetails = [];
                 $('div.overlay').show();
+                this.modelResourceDetails = [];
                 var toast = document.querySelector('.iziToast'); // Selector of your toast    
                 if(toast != null){
                     iziToast.hide({
@@ -254,21 +300,22 @@
                     }, toast);
                 }   
                 
-                this.modelResources.forEach(resource => {
-                    if(resource.id == newValue){
-                        this.dataInput.resource_name = resource.code+" - "+resource.name;
-                    }
-                });
-                this.dataInput.resource_detail_id = "";
-                let resourceDetail = [];
-                this.modelIssued.forEach(data => {
-                    resourceDetail.push(data.resource_detail_id);
-                });
-
-                let datas = [];
-                datas.push(newValue,resourceDetail);
-                datas = JSON.stringify(datas);
                 if(newValue != ""){
+                    this.modelResources.forEach(resource => {
+                        if(resource.id == newValue){
+                            this.dataInput.resource_name = resource.code+" - "+resource.name;
+                        }
+                    });
+
+                    this.dataInput.resource_detail_id = "";
+                    let resourceDetail = [];
+                    this.modelIssued.forEach(data => {
+                        resourceDetail.push(data.resource_detail_id);
+                    });
+
+                    let datas = [];
+                    datas.push(newValue,resourceDetail);
+                    datas = JSON.stringify(datas);
                     window.axios.get('/api/getResourceDetail/'+datas).then(({ data }) => {
                         this.modelResourceDetails = data;
                         $('div.overlay').hide();
@@ -282,6 +329,62 @@
                         $('div.overlay').hide();
                     })
                 }else{
+                    this.dataInput.resource_detail_id = "";
+                    $('div.overlay').hide();
+                }
+            },
+            'editInput.resource_id' : function(newValue){
+                $('div.overlay').show();
+                this.modelResourceDetailsEdit = [];
+                if(this.editInput.old_resource_id != newValue){
+                    this.editInput.resource_detail_id = "";
+                    this.editInput.resource_detail_name = "";
+                    this.editInput.old_resource_id = null;
+                }
+
+                if(this.editInput.old_resource_id == null){
+                    this.editInput.resource_detail_id = "";
+                    this.editInput.resource_detail_name = "";
+                }
+                var toast = document.querySelector('.iziToast'); // Selector of your toast    
+                if(toast != null){
+                    iziToast.hide({
+                        transitionOut: 'fadeOutUp'
+                    }, toast);
+                }   
+                if(newValue != ""){
+                    this.modelResources.forEach(resource => {
+                        if(resource.id == newValue){
+                            this.editInput.resource_name = resource.code+" - "+resource.name;
+                        }
+                    });
+                    
+                    let resourceDetail = [];
+
+                    let nowIndex = this.activeIndex;
+                    this.modelIssued.forEach(function(data,index) {
+                        if(index != nowIndex){
+                            resourceDetail.push(data.resource_detail_id);
+                        }
+                    });
+
+                    let datas = [];
+                    datas.push(newValue,resourceDetail);
+                    datas = JSON.stringify(datas);
+                    window.axios.get('/api/getResourceDetail/'+datas).then(({ data }) => {
+                        this.modelResourceDetailsEdit = data;
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again.. ('+error+')',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else{
+                    this.editInput.resource_detail_id = "";
                     $('div.overlay').hide();
                 }
             },
@@ -322,6 +425,46 @@
                         }, toast);
                     }
                     this.status = "";
+                    $('div.overlay').hide();
+                }
+            },
+            'editInput.resource_detail_id' : function(newValue){
+                $('div.overlay').show();
+                var toast = document.querySelector('.iziToast'); // Selector of your toast                                
+                if(newValue != ""){
+                    this.statusResourceDetailsEdit = true;
+                    this.modelResourceDetailsEdit.forEach(resourceDetail => {
+                        if(resourceDetail.id == newValue){
+                            this.editInput.resource_detail_name = "["+resourceDetail.code+"] "+resourceDetail.brand;
+                            if(resourceDetail.status == 1){
+                                this.statusEdit = "IDLE";
+                                this.statusResourceDetailsEdit = false;
+                                if(toast != null){
+                                    iziToast.hide({
+                                        transitionOut: 'fadeOutUp'
+                                    }, toast);
+                                }
+                                $('div.overlay').hide();
+                            } else if(resourceDetail.status == 2){
+                                this.statusEdit = "USED";
+                                iziToast.warning({
+                                    close: false,
+                                    timeout: 0,
+                                    title: 'The resource is still used!',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                            }
+                        }
+                    });
+                }else{
+                    if(toast != null){
+                        iziToast.hide({
+                            transitionOut: 'fadeOutUp'
+                        }, toast);
+                    }
+                    this.statusEdit = "-";
                     $('div.overlay').hide();
                 }
             }

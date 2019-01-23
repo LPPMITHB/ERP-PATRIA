@@ -16,6 +16,8 @@ use App\Models\Category;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
 use App\Models\Configuration;
+use App\Models\GoodsIssue;
+use App\Models\GoodsIssueDetail;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
 use App\Models\ProductionOrder;
@@ -156,8 +158,15 @@ class ResourceController extends Controller
                 }elseif($data->category_id == 3){
                     $RD->brand = $data->brand;
                     $RD->depreciation_method = $data->depreciation_method;
-                    $RD->manufactured_date = ($data->manufactured_date != '') ? $data->manufactured_date : null;
-                    $RD->purchasing_date = ($data->purchasing_date != '') ? $data->purchasing_date : null;
+                    if($data->manufactured_date != ""){
+                        $manufactured_date = DateTime::createFromFormat('m/j/Y', $data->manufactured_date);
+                        $RD->manufactured_date = $manufactured_date->format('Y-m-d');
+                    }
+    
+                    if($data->purchasing_date != ""){
+                        $purchasing_date = DateTime::createFromFormat('m/j/Y', $data->purchasing_date);
+                        $RD->purchasing_date = $purchasing_date->format('Y-m-d');
+                    }
                     $RD->purchasing_price = ($data->purchasing_price != '') ? $data->purchasing_price : null;
                     $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
                     $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
@@ -203,6 +212,15 @@ class ResourceController extends Controller
         }
     }
 
+    public function showGI(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $modelGI = GoodsIssue::findOrFail($id);
+        $modelGID = $modelGI->GoodsIssueDetails;
+
+        return view('resource.showGI', compact('modelGI','modelGID','route'));
+    }
+
     public function indexReceived(Request $request)
     {
         $route = $request->route()->getPrefix();
@@ -217,12 +235,68 @@ class ResourceController extends Controller
         return view('resource.indexReceived', compact('modelGRs','route'));
     }
 
+    public function indexIssued(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $modelGIs = GoodsIssue::where('type', 2)->get();
+
+        return view('resource.indexIssued', compact('modelGIs','route'));
+    }
+
     public function issueResource(Request $request)
     {
         $route = $request->route()->getPrefix();
         $resources = Resource::all();
         
         return view('resource.issue', compact('route','resources'));
+    }
+
+    public function storeIssue(Request $request){
+        $route = $request->route()->getPrefix();
+        $data = json_decode($request->datas);
+        $gi_number = $this->generateGINumber();
+
+        DB::beginTransaction();
+        try {
+            $GI = new GoodsIssue;
+            $GI->number = $gi_number;
+            if($route == '/resource'){
+                $business_unit = 1;
+            }elseif($route == '/resource_repair'){
+                $business_unit = 2;
+            }
+            $GI->business_unit_id = $business_unit;
+            $GI->type = 2;
+            $GI->description = $data->description;
+            $GI->branch_id = Auth::user()->branch->id;
+            $GI->user_id = Auth::user()->id;
+            $GI->save();
+            foreach($data->resources as $resource_detail){
+                $resource_detail_ref = ResourceDetail::find($resource_detail->resource_detail_id);
+                $resource_detail_ref->status = 0;
+                $resource_detail_ref->update();
+
+                $GID = new GoodsIssueDetail;
+                $GID->goods_issue_id = $GI->id;
+                $GID->quantity = 1;
+                $GID->resource_detail_id = $resource_detail->resource_detail_id;
+                $GID->save();
+            }
+            
+            DB::commit();
+            if($route == "/resource"){
+                return redirect()->route('resource.showGI',$GI->id)->with('success', 'Resource Issued');
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.showGI',$GI->id)->with('success', 'Resource Issued');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/resource"){
+                return redirect()->route('resource.issueResource')->with('error', $e->getMessage());
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.issueResource')->with('error', $e->getMessage());
+            }
+        }
     }
 
     public function storeResourceDetail(Request $request, $wbs_id)
@@ -442,6 +516,27 @@ class ResourceController extends Controller
         return $code;
     }
 
+    public function generateGINumber(){
+        $modelGI = GoodsIssue::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
+		$number = 1;
+        if(isset($modelGI)){
+            $yearDoc = substr($modelGI->number, 3,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelGI->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'000000');
+        $year = intval($year);
+
+		$gi_number = $year+$number;
+        $gi_number = 'GI-'.$gi_number;
+
+        return $gi_number;
+    }
+
     public function getResourceAssignApi($id){
         $resource = Resource::where('id',$id)->with('uom')->first()->jsonSerialize();
 
@@ -512,5 +607,6 @@ class ResourceController extends Controller
 
         return response($code, Response::HTTP_OK);
     }
+    
 
 }
