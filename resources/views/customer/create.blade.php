@@ -137,7 +137,7 @@
                             <label for="zip_code" class="col-sm-2 control-label">Zip Code</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="zip_code" name="zip_code" value="{{ $customer->zip_code }}">
+                                <input type="text" onkeypress="validate(event)" class="form-control" id="zip_code" name="zip_code" value="{{ $customer->zip_code }}">
                             </div>
                         </div>
 

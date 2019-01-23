@@ -255,6 +255,12 @@ class PhysicalInventoryController extends Controller
 
             if(count($goodsIssue)>0){
                 $gi = new GoodsIssue;
+                if($menu == 'building'){
+                    $business_unit = 1;
+                }elseif($menu == 'repair'){
+                    $business_unit = 2;
+                }
+                $GI->business_unit_id = $business_unit;
                 $gi->number = $this->gi->generateGINumber();
                 $gi->description = "Stock Adjustment ".$snapshot->code;
                 $gi->user_id = Auth::user()->id;

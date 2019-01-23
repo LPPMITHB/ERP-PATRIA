@@ -294,7 +294,6 @@ $(document).ready(function(){
             customer: function(newValue){
                 if(newValue != ""){
                     window.axios.get('/api/getCustomerPM/'+newValue).then(({ data }) => {
-                        console.log(data); 
                         if(data.contact_name == null && data.phone_number_1 == null && data.email == null){
                             this.ownerRep = " - ";
                         }

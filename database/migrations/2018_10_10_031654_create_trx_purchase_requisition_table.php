@@ -22,7 +22,7 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->unsignedInteger('bom_id')->nullable();
             $table->unsignedInteger('purchase_requisition_id')->nullable();
             $table->unsignedInteger('business_unit_id');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');

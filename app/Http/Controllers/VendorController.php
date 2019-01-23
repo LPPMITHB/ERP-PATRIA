@@ -45,7 +45,6 @@ class VendorController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_vendor|string|max:255',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:mst_vendor|string|max:255',
             'description' => 'required|string|max:255'
         ]);
         DB::beginTransaction();

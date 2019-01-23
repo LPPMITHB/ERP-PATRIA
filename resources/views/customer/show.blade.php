@@ -59,33 +59,33 @@
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td>Phone Number 1</td>
-                            <td>{{ $customer->phone_number_1 }}</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Phone Number 2</td>
-                            <td>{{ $customer->phone_number_2 }}</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Contact Name</td>
-                            <td>{{ $customer->contact_name }}</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>Email</td>
-                            <td>{{ $customer->email }}</td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
                             <td>Address 1</td>
                             <td>{{ $customer->address_1 }}</td>
                         </tr>
                         <tr>
-                            <td>8</td>
+                            <td>4</td>
                             <td>Address 2</td>
                             <td>{{ $customer->address_2 }}</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Phone Number 1</td>
+                            <td>{{ $customer->phone_number_1 }}</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Phone Number 2</td>
+                            <td>{{ $customer->phone_number_2 }}</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Contact Name</td>
+                            <td>{{ $customer->contact_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Email</td>
+                            <td>{{ $customer->email }}</td>
                         </tr>
                         <tr>
                             <td>9</td>
