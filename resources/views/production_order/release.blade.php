@@ -179,9 +179,10 @@
                                 <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
                                 <td class="tdEllipsis">{{ (data.resource.description) ? data.resource.description : '-' }}</td>
                                 <td class="tdEllipsis">{{ (data.trx_resource_code) ? data.trx_resource_code : '-' }}</td>
-                                <td class="tdEllipsis" v-if="data.trx_resource_id == null"> {{ 'NOT SELECTED' }}</td>
-                                <td class="tdEllipsis" v-else-if="data.trx_resource_id == 1"> {{ 'IDLE' }}</td>
-                                <td class="tdEllipsis" v-else-if="data.trx_resource_id == 2"> {{ 'USED' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == 2"> {{ 'USED' }}</td>
                                 <td class="p-l-0" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">
                                     <div class="btn-group">
                                         SELECT
@@ -223,14 +224,15 @@
                                         <tr>
                                             <td>1</td>
                                             <td class="tdEllipsis">{{ editInput.type }}</td>
-                                            <td class="tdEllipsis">{{ editInput.status }}</td>
+                                            <td class="tdEllipsis" v-if="editInput.status == 1">{{ 'IDLE' }}</td>
+                                            <td class="tdEllipsis" v-else-if="editInput.status == 2">{{ 'USED' }}</td>
                                             <td class="tdEllipsis">{{ editInput.notes }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="">SELECT</button>
+                                <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTable">SELECT</button>
                             </div>
                         </div>
                     </div>
@@ -302,8 +304,11 @@
             resource_id: "",
             type: "",
             status: "",
-            notes : ""
+            notes : "",
+            index : "",
+            trx_resource_code : ""
         },
+        selectedResource :[], 
     };
 
     var vm = new Vue({
@@ -313,6 +318,11 @@
             createOk: function(){
                 let isOk = false;
 
+                this.resources.forEach(resource => {
+                    if(resource.trx_resource_id == ""){
+                        isOk = true;
+                    }
+                });
                 return isOk;
             },
             selectOk: function(){
@@ -322,10 +332,50 @@
             }
         },
         methods: {
+            clearEditInput(){
+                this.editInput.resource_id = "";
+                this.editInput.type = "";
+                this.editInput.status = "";
+                this.editInput.notes = "";
+                this.editInput.index = "";
+                this.editInput.trx_resource_code = "";
+            },
             addResource(data,index) {
-                window.axios.get('/api/getTrxResourcePro/'+data.resource_id).then(({ data }) => {
-                    this.resourceDetails = data;
+                this.clearEditInput();
+                this.editInput.index = index;
+                this.editInput.resource_id = data.trx_resource_id;
+                this.selectedResource.forEach(resource_id => {
+                    if(resource_id == this.editInput.resource_id){
+                        let indexArr = this.selectedResource.indexOf(resource_id);
+                        this.selectedResource.splice(indexArr,1)
+                    }
+                });
 
+                let selectedResource = JSON.stringify(this.selectedResource);
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource).then(({ data }) => {
+                    this.resourceDetails = data;
+                    this.resourceDetails.forEach(resourceDetail => {
+                        if(resourceDetail.id == this.editInput.resource_id){
+                            this.editInput.status = resourceDetail.status;
+                            this.editInput.trx_resource_code = resourceDetail.code;
+
+                            if(resourceDetail.category_id == 0){
+                                this.editInput.type = "Subcon"
+                            }else if(resourceDetail.category_id == 1){
+                                this.editInput.type = "Others"
+                            }else if(resourceDetail.category_id == 2){
+                                this.editInput.type = "External Equipment"
+                            }else if(resourceDetail.category_id == 3){
+                                this.editInput.type = "Internal Equipment"
+                            }
+
+                            if(resourceDetail.status == 1){
+                                this.editInput.notes = "-"
+                            }else if(resourceDetail.status == 2){
+                                this.editInput.notes = ""
+                            }
+                        }
+                    });
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -339,8 +389,9 @@
             },
             submitForm() {
                 this.submittedForm.modelPrOD = this.modelPrOD;
-                this.submittedForm.boms = this.boms;
-                this.submittedForm.resourceDetails = this.resourceDetails;
+                this.submittedForm.materials = this.materials;
+                this.submittedForm.services = this.services;
+                this.submittedForm.resources = this.resources;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -393,6 +444,21 @@
                         });
                     }
                 });
+            },
+            submitToTable(){
+                let resource = this.resources[this.editInput.index];
+                if(this.editInput.resource_id == ''){
+                    resource.trx_resource_code = '';
+                    resource.trx_resource_id = '';
+                    resource.status = '';
+                }else{
+                    resource.trx_resource_code = this.editInput.trx_resource_code;
+                    resource.trx_resource_id = this.editInput.resource_id ;
+                    resource.status = this.editInput.status;
+                }
+
+                this.selectedResource.push(this.editInput.resource_id);
+                this.clearEditInput();
             }
         },
         watch: {
@@ -400,6 +466,8 @@
                 if(newValue != ""){
                     this.resourceDetails.forEach(data => {
                         if(data.id == newValue){
+                            this.editInput.trx_resource_code = data.code;
+                            this.editInput.status = data.status;
                             if(data.category_id == 0){
                                 this.editInput.type = "Subcon"
                             }else if(data.category_id == 1){
@@ -411,10 +479,8 @@
                             }
 
                             if(data.status == 1){
-                                this.editInput.status = "Idle"
                                 this.editInput.notes = "-"
                             }else if(data.status == 2){
-                                this.editInput.status = "Used"
                                 this.editInput.notes = ""
                             }
                         }

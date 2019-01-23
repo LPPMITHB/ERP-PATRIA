@@ -58,7 +58,7 @@ class ResourceController extends Controller
         $resource = new Resource;
         $resource_code = self::generateResourceCode();
 
-        return view('resource.create', compact('resource', 'resource_code','uoms','vendors','resource_category'));
+        return view('resource.create', compact('resource', 'resource_code'));
     }
 
     public function store(Request $request)
@@ -143,6 +143,8 @@ class ResourceController extends Controller
                 $RD->resource_id = $data->resource_id;
                 $RD->category_id = $data->category_id;
                 $RD->description = $data->description;
+                $RD->performance = ($data->performance != '') ? $data->performance : null;
+                $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
                 if($data->category_id == 0){
                     $RD->sub_con_address = $data->sub_con_address;
                     $RD->sub_con_phone = $data->sub_con_phone;
@@ -151,8 +153,6 @@ class ResourceController extends Controller
                     $RD->others_name = $data->name;
                 }elseif($data->category_id == 2){
                     $RD->brand = $data->brand;
-                    $RD->performance = ($data->performance != '') ? $data->performance : null;
-                    $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
                 }elseif($data->category_id == 3){
                     $RD->brand = $data->brand;
                     $RD->depreciation_method = $data->depreciation_method;
@@ -162,8 +162,6 @@ class ResourceController extends Controller
                     $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
                     $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
                     $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
-                    $RD->performance = ($data->performance != '') ? $data->performance : null;
-                    $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
                 }
                 $RD->save();
 
@@ -357,6 +355,67 @@ class ResourceController extends Controller
         }
     }
 
+    public function createInternal($id)
+    {
+        $resource = Resource::findOrFail($id);
+        $resource_detail_code = self::generateCodeInternal($resource->code);
+        $depreciation_methods = Configuration::get('depreciation_methods');
+        $uom = Uom::all();
+        
+        return view('resource.createInternal', compact('resource','resource_detail_code','depreciation_methods','uom'));        
+    }
+
+    public function storeInternal(Request $request){
+        $route = $request->route()->getPrefix();
+        $data = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+                $RD = new ResourceDetail;
+                $RD->code = $data->code;
+                $RD->resource_id = $data->resource_id;
+                $RD->category_id = 3;
+                $RD->description = $data->description;
+                $RD->brand = $data->brand;
+                if($data->depreciation_method != ""){
+                    $RD->depreciation_method = $data->depreciation_method;
+                }
+
+                if($data->manufactured_date != ""){
+                    $manufactured_date = DateTime::createFromFormat('m/j/Y', $data->manufactured_date);
+                    $RD->manufactured_date = $manufactured_date->format('Y-m-d');
+                }
+
+                if($data->purchasing_date != ""){
+                    $purchasing_date = DateTime::createFromFormat('m/j/Y', $data->purchasing_date);
+                    $RD->purchasing_date = $purchasing_date->format('Y-m-d');
+                }
+
+                $RD->purchasing_price = ($data->purchasing_price != '') ? $data->purchasing_price : null;
+                $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
+                $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
+                $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
+                $RD->performance = ($data->performance != '') ? $data->performance : null;
+                $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
+                $RD->save();
+
+            DB::commit();
+            if($route == "/resource"){
+                return redirect()->route('resource.show',$data->resource_id)->with('success', 'Internal Resource Created');
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.show',$data->resource_id)->with('success', 'Internal Resource Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/resource"){
+                return redirect()->route('resource.show',$data->resource_id)->with('error', $e->getMessage());
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.show',$data->resource_id)->with('error', $e->getMessage());
+            }
+        }
+    }
+
+    //Function
     public function generateResourceCode(){
         $code = 'RSC';
         $modelResource = Resource::orderBy('code', 'desc')->first();
@@ -368,6 +427,18 @@ class ResourceController extends Controller
 
         $resource_code = $code.''.sprintf('%04d', $number);
 		return $resource_code;
+    }
+
+    public function generateCodeInternal($data){
+        $number = 1;
+        $code = $data.'-';
+
+        $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->first();
+        if($modelRD){
+            $number += intval(substr($modelRD->code,8));
+        }
+        $code = $data.'-'.$number;
+        return $code;
     }
 
     public function getResourceAssignApi($id){
@@ -431,4 +502,5 @@ class ResourceController extends Controller
 
         return response($code, Response::HTTP_OK);
     }
+
 }

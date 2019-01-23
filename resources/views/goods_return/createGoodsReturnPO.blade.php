@@ -34,9 +34,9 @@
         <div class="box">
             <div class="box-body">
                 @if($route == "/goods_return")
-                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_return.store') }}">
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_return.storePO') }}">
                 @elseif($route == "/goods_return_repair")
-                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_return_repair.store') }}">
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_return_repair.storePO') }}">
                 @endif
                 @csrf
                     @verbatim
@@ -46,7 +46,7 @@
                                 <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-xs-4 no-padding">GR Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGR.number }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.number }}</b></div>
                                         
                                         <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ vendor.name }}</b></div>
@@ -58,7 +58,7 @@
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ vendor.phone_number }}</b></div>
 
                                         <div class="col-md-4 col-xs-4 no-padding">GR Description</div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelGR.description)"><b>: {{ modelGR.description }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelPO.description)"><b>: {{ modelPO.description }}</b></div>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
@@ -81,13 +81,13 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(GRD,index) in modelGRD">
+                                            <tr v-for="(POD,index) in modelPOD">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ GRD.material.code }} - {{ GRD.material.name }}</td>
-                                                <td>{{ GRD.material.description }}</td>
-                                                <td>{{ GRD.quantity - GRD.returned }} </td>
+                                                <td>{{ POD.material.code }} - {{ POD.material.name }}</td>
+                                                <td>{{ POD.material.description }}</td>
+                                                <td>{{ POD.quantity - POD.received - POD.returned }} </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control width100" v-model="GRD.returned_temp" placeholder="Please Input Returned Quantity">
+                                                    <input class="form-control width100" v-model="POD.returned_temp" placeholder="Please Input Returned Quantity">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -147,12 +147,9 @@
     });
 
     var data = {
-        modelGRD : @json($modelGRD),
-        modelGR :   @json($modelGR),
+        modelPOD : @json($modelPOD),
+        modelPO :   @json($modelPO),
         vendor : @json($vendor),
-        slocSettings: {
-            placeholder: 'Please Select Storage Location'
-        },
         description:"",
         submittedForm :{},
     }
@@ -163,8 +160,8 @@
         computed : {
             createOk: function(){
                 let isOk = true;
-                this.modelGRD.forEach(GRD => {
-                    if((GRD.returned_temp+"").replace(/,/g , '') > 0){
+                this.modelPOD.forEach(POD => {
+                    if((POD.returned_temp+"").replace(/,/g , '') > 0){
                         isOk = false;
                     }
                 });
@@ -177,24 +174,24 @@
             },
             changeText(){
                 if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
-                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelGR.vendor.address ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelGR.vendor.address;    
+                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelPO.vendor.address ){
+                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelPO.vendor.address;    
                     }
                 }
             }, 
             
             submitForm(){
-                var data = this.modelGRD;
+                var data = this.modelPOD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
 
-                data.forEach(GRD => {
-                    GRD.quantity = GRD.quantity.replace(/,/g , ''); 
-                    GRD.returned_temp = parseInt(GRD.returned_temp);     
+                data.forEach(POD => {
+                    POD.quantity = POD.quantity.replace(/,/g , ''); 
+                    POD.returned_temp = parseInt(POD.returned_temp);     
                 });
 
-                this.submittedForm.GRD = data;
-                this.submittedForm.goods_receipt_id = this.modelGR.id;
+                this.submittedForm.POD = data;
+                this.submittedForm.purchase_order_id = this.modelPO.id;
                 this.submittedForm.description = this.description;
 
                 let struturesElem = document.createElement('input');
@@ -206,27 +203,27 @@
             }
         },
         watch : {
-            modelGRD:{
+            modelPOD:{
                 handler: function(newValue) {
                     var data = newValue;
-                    data.forEach(GRD => {
-                        if(parseInt((GRD.quantity+"").replace(/,/g , '')) < parseInt((GRD.returned_temp+"").replace(/,/g , ''))){
-                            GRD.returned_temp = GRD.quantity;
+                    data.forEach(POD => {
+                        if((parseInt((POD.quantity+"").replace(/,/g , '')) - parseInt((POD.received+"").replace(/,/g , ''))  - parseInt((POD.returned+"").replace(/,/g , ''))) < parseInt((POD.returned_temp+"").replace(/,/g , ''))){
+                            POD.returned_temp = POD.quantity - POD.received - POD.returned;
                             iziToast.warning({
                                 title: 'Cannot input more than received quantity..',
                                 position: 'topRight',
                                 displayMode: 'replace'
                             });
                         }
-                        GRD.returned_temp = (GRD.returned_temp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                        POD.returned_temp = (POD.returned_temp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                     });
                 },
                 deep: true
             },
         },
         created: function(){
-            this.modelGRD.forEach(GRD => {
-                GRD.quantity = (GRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            this.modelPOD.forEach(POD => {
+                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             });
         },
     });

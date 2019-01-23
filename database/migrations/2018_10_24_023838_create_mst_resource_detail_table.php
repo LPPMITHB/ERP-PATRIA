@@ -26,7 +26,7 @@ class CreateMstResourceDetailTable extends Migration
             $table->unsignedInteger('purchasing_price')->nullable();
             $table->unsignedInteger('lifetime')->nullable();
             $table->unsignedInteger('lifetime_uom_id')->nullable(); 
-            $table->unsignedInteger('depreciation_method')->nullable();
+            $table->unsignedInteger('depreciation_method')->default(0);
             $table->float('accumulated_depreciation')->nullable();
             $table->integer('running_hours')->nullable()->default(0);
             $table->unsignedInteger('cost_per_hour')->nullable();

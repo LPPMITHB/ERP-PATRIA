@@ -183,6 +183,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::get('/createGR/{id}', 'ResourceController@createGR')->name('createGR');
 
+    Route::get('/createInternal/{id}', 'ResourceController@createInternal')->name('createInternal');
+
     Route::post('/storeGR', 'ResourceController@storeGR')->name('storeGR');
 
     Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR');
@@ -202,6 +204,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
     Route::patch('/{id}', 'ResourceController@update')->name('update')->middleware('can:edit-resource');
 
     Route::post('/', 'ResourceController@store')->name('store')->middleware('can:create-resource');
+
+    Route::post('/storeInternal', 'ResourceController@storeInternal')->name('storeInternal')->middleware('can:create-resource');
 
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
 
@@ -936,9 +940,13 @@ Route::name('goods_return.')->prefix('goods_return')->group(function() {
 
     Route::get('/selectPO', 'GoodsIssueController@selectPO')->name('selectPO')->middleware('can:create-goods-issue');
 
-    Route::post('/', 'GoodsIssueController@storeGoodsReturn')->name('store')->middleware('can:create-goods-issue');
+    Route::post('/GR', 'GoodsIssueController@storeGoodsReturnGR')->name('storeGR')->middleware('can:create-goods-issue');
+    
+    Route::post('/PO', 'GoodsIssueController@storeGoodsReturnPO')->name('storePO')->middleware('can:create-goods-issue');
 
-    Route::get('/createGoodsReturn/{id}', 'GoodsIssueController@createGoodsReturn')->name('createGoodsReturn')->middleware('can:create-goods-issue');
+    Route::get('/createGoodsReturnGR/{id}', 'GoodsIssueController@createGoodsReturnGR')->name('createGoodsReturnGR')->middleware('can:create-goods-issue');
+
+    Route::get('/createGoodsReturnPO/{id}', 'GoodsIssueController@createGoodsReturnPO')->name('createGoodsReturnPO')->middleware('can:create-goods-issue');
 
     Route::get('/', 'GoodsIssueController@indexGoodsReturn')->name('index')->middleware('can:list-goods-issue');
    

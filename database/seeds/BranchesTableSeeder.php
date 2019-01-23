@@ -8,7 +8,7 @@ class BranchesTableSeeder extends Seeder
     {
         DB::table('mst_branch')->insert([
             'code' => 'BR0001',
-            'name' => 'Patria Matritime Perkasa',
+            'name' => 'Patria Maritim Perkasa',
             'address' => 'Batam',
             'phone_number' => '0226650343',
             'fax' => '0226650344',

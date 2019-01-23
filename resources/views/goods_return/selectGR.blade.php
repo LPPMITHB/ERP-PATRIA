@@ -39,7 +39,7 @@
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->purchaseOrder->vendor->name }}">{{ $modelGR->purchaseOrder->vendor->name }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == 'building')
-                                        <a href="{{ route('goods_return.createGoodsReturn', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('goods_return.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @else
                                         {{-- <a href="{{ route('goods_return_repair.createGiWithRef', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a> --}}
                                     @endif

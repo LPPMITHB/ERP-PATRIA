@@ -265,8 +265,9 @@ class ProductionOrderController extends Controller
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => null,
+                            "trx_resource_id" => '',
                             "trx_resource_code" => null,
+                            "status" => null,
                         ]);
                     } 
                 }
@@ -298,8 +299,9 @@ class ProductionOrderController extends Controller
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => null,
+                            "trx_resource_id" => '',
                             "trx_resource_code" => null,
+                            "status" => null,
                         ]);
                     } 
                 }elseif($prOD->service_id != ""){
@@ -478,6 +480,13 @@ class ProductionOrderController extends Controller
             $modelPrO->status = 2;
             $modelPrO->save();
 
+            $PrOD = new ProductionOrderDetail;
+            $PrOD->production_order_id = $pro_id;
+            $PrOD->material_id = $material->material_id;
+            $PrOD->quantity = $material->quantity;
+            $PrOD->source = $material->source;
+            $PrOD->save();
+
             $this->createMR($datas->modelPrOD);
             DB::commit();
             if($route == "/production_order"){
@@ -574,12 +583,14 @@ class ProductionOrderController extends Controller
 
         foreach($modelPrOD as $PrOD){
             if($PrOD->material_id != "" || $PrOD->material_id != null){
-                $MRD = new MaterialRequisitionDetail;
-                $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $PrOD->sugQuantity;
-                $MRD->issued = 0;
-                $MRD->material_id = $PrOD->material_id;
-                $MRD->save();
+                if($PrOD->source == "Stock"){
+                    $MRD = new MaterialRequisitionDetail;
+                    $MRD->material_requisition_id = $MR->id;
+                    $MRD->quantity = $PrOD->sugQuantity;
+                    $MRD->issued = 0;
+                    $MRD->material_id = $PrOD->material_id;
+                    $MRD->save();
+                }
             }
         }
     }
@@ -638,8 +649,9 @@ class ProductionOrderController extends Controller
         return response($stock, Response::HTTP_OK);
     }
 
-    public function getTrxResourceAPI($id){
-        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->with('resource')->get()->jsonSerialize();
+    public function getTrxResourceAPI($id,$jsonResource){
+        $jsonResource = json_decode($jsonResource);
+        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
 
         return response($resource, Response::HTTP_OK);
     }
