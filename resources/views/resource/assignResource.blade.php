@@ -226,7 +226,7 @@
                 return text
             },
             getResource(){
-                window.axios.get('/api/getResourceDetail/' + this.project_id).then(({ data }) => {
+                window.axios.get('/api/getResourceTrx/' + this.project_id).then(({ data }) => {
                     this.modelAssignResource = data;
                     this.newIndex = Object.keys(this.modelAssignResource).length+1;
                 });

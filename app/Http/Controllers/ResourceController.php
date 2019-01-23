@@ -220,8 +220,9 @@ class ResourceController extends Controller
     public function issueResource(Request $request)
     {
         $route = $request->route()->getPrefix();
+        $resources = Resource::all();
         
-        return view('resource.issue', compact('route'));
+        return view('resource.issue', compact('route','resources'));
     }
 
     public function storeResourceDetail(Request $request, $wbs_id)
@@ -483,11 +484,20 @@ class ResourceController extends Controller
 
     }
 
-    public function getResourceDetailApi($id){
-        $resourcedetail = ResourceTrx::with('project','resource','wbs')->where('project_id',$id)->get()->jsonSerialize();
+    public function getResourceTrxApi($id){
+        $resourceTrx = ResourceTrx::with('project','resource','wbs')->where('project_id',$id)->get()->jsonSerialize();
 
-        return response($resourcedetail, Response::HTTP_OK);
+        return response($resourceTrx, Response::HTTP_OK);
     }
+
+    public function getResourceDetailApi($data){
+        $data = json_decode($data);
+        $resourceDetail = ResourceDetail::where('resource_id',$data[0])->whereNotIn('id',$data[1])->whereIn('status',[1,2])->get()->jsonSerialize();
+
+        return response($resourceDetail, Response::HTTP_OK);
+    }
+
+    
     
     public function generateCodeAPI($data){
         $data = json_decode($data);
