@@ -220,8 +220,9 @@ class ResourceController extends Controller
     public function issueResource(Request $request)
     {
         $route = $request->route()->getPrefix();
+        $resources = Resource::all();
         
-        return view('resource.issue', compact('route'));
+        return view('resource.issue', compact('route','resources'));
     }
 
     public function storeResourceDetail(Request $request, $wbs_id)
@@ -355,6 +356,67 @@ class ResourceController extends Controller
         }
     }
 
+    public function createInternal($id)
+    {
+        $resource = Resource::findOrFail($id);
+        $resource_detail_code = self::generateCodeInternal($resource->code);
+        $depreciation_methods = Configuration::get('depreciation_methods');
+        $uom = Uom::all();
+        
+        return view('resource.createInternal', compact('resource','resource_detail_code','depreciation_methods','uom'));        
+    }
+
+    public function storeInternal(Request $request){
+        $route = $request->route()->getPrefix();
+        $data = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+                $RD = new ResourceDetail;
+                $RD->code = $data->code;
+                $RD->resource_id = $data->resource_id;
+                $RD->category_id = 3;
+                $RD->description = $data->description;
+                $RD->brand = $data->brand;
+                if($data->depreciation_method != ""){
+                    $RD->depreciation_method = $data->depreciation_method;
+                }
+
+                if($data->manufactured_date != ""){
+                    $manufactured_date = DateTime::createFromFormat('m/j/Y', $data->manufactured_date);
+                    $RD->manufactured_date = $manufactured_date->format('Y-m-d');
+                }
+
+                if($data->purchasing_date != ""){
+                    $purchasing_date = DateTime::createFromFormat('m/j/Y', $data->purchasing_date);
+                    $RD->purchasing_date = $purchasing_date->format('Y-m-d');
+                }
+
+                $RD->purchasing_price = ($data->purchasing_price != '') ? $data->purchasing_price : null;
+                $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
+                $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
+                $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
+                $RD->performance = ($data->performance != '') ? $data->performance : null;
+                $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
+                $RD->save();
+
+            DB::commit();
+            if($route == "/resource"){
+                return redirect()->route('resource.show',$data->resource_id)->with('success', 'Internal Resource Created');
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.show',$data->resource_id)->with('success', 'Internal Resource Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/resource"){
+                return redirect()->route('resource.show',$data->resource_id)->with('error', $e->getMessage());
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.show',$data->resource_id)->with('error', $e->getMessage());
+            }
+        }
+    }
+
+    //Function
     public function generateResourceCode(){
         $code = 'RSC';
         $modelResource = Resource::orderBy('code', 'desc')->first();
@@ -366,6 +428,18 @@ class ResourceController extends Controller
 
         $resource_code = $code.''.sprintf('%04d', $number);
 		return $resource_code;
+    }
+
+    public function generateCodeInternal($data){
+        $number = 1;
+        $code = $data.'-';
+
+        $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->first();
+        if($modelRD){
+            $number += intval(substr($modelRD->code,8));
+        }
+        $code = $data.'-'.$number;
+        return $code;
     }
 
     public function getResourceAssignApi($id){
@@ -410,11 +484,20 @@ class ResourceController extends Controller
 
     }
 
-    public function getResourceDetailApi($id){
-        $resourcedetail = ResourceTrx::with('project','resource','wbs')->where('project_id',$id)->get()->jsonSerialize();
+    public function getResourceTrxApi($id){
+        $resourceTrx = ResourceTrx::with('project','resource','wbs')->where('project_id',$id)->get()->jsonSerialize();
 
-        return response($resourcedetail, Response::HTTP_OK);
+        return response($resourceTrx, Response::HTTP_OK);
     }
+
+    public function getResourceDetailApi($data){
+        $data = json_decode($data);
+        $resourceDetail = ResourceDetail::where('resource_id',$data[0])->whereNotIn('id',$data[1])->whereIn('status',[1,2])->get()->jsonSerialize();
+
+        return response($resourceDetail, Response::HTTP_OK);
+    }
+
+    
     
     public function generateCodeAPI($data){
         $data = json_decode($data);
@@ -429,4 +512,5 @@ class ResourceController extends Controller
 
         return response($code, Response::HTTP_OK);
     }
+
 }
