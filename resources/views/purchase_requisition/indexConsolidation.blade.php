@@ -172,8 +172,6 @@
                 var jsonPrd = JSON.stringify(prd);
                 jsonPrd = JSON.parse(jsonPrd);
 
-                console.log(this.modelPRs)
-
                 this.modelPRs.forEach(data => {
                     if(data.id == this.checkedPR[0] && data.type == 1){
                         this.type = "1";
@@ -190,7 +188,7 @@
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                // form.submit();
+                form.submit();
             }
         },
         directives: {
