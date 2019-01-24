@@ -30,6 +30,8 @@ class RolesTableSeeder extends Seeder
                 'create-currencies' => true,'list-currencies' => true,'show-currencies' => true,'edit-currencies' => true,
                 'create-material' => true,'list-material' => true,'show-material' => true,'edit-material' => true,
                 'create-resource' => true,'list-resource' => true,'show-resource' => true,'edit-resource' => true,
+                'create-receive-resource' => true,'list-receive-resource' => true,'show-receive-resource' => true,
+                'create-issue-resource' => true,
                 'create-service' => true,'list-service' => true,'show-service' => true,'edit-service' => true,
                 'create-unit-of-measurement' => true,'list-unit-of-measurement' => true,'show-unit-of-measurement' => true,'edit-unit-of-measurement' => true,
                 'create-vendor' => true,'list-vendor' => true,'show-vendor' => true,'edit-vendor' => true,
@@ -135,6 +137,8 @@ class RolesTableSeeder extends Seeder
                 'create-goods-receipt' => true,'create-goods-receipt-without-ref' => true,'list-goods-receipt' => true,'show-goods-receipt' => true,
                 'create-work-request' => true,'list-work-request' => true,'show-work-request' => true,'edit-work-request' => true,  'approve-work-request' => true,
                 'create-production-order' => true,'list-production-order' => true,'show-production-order' => true,'release-production-order' => true,'confirm-production-order' => true,
+                'create-resource' => true,'list-resource' => true,'show-resource' => true,'edit-resource' => true,
+                'create-receive-resource' => true,'list-receive-resource' => true,'show-receive-resource' => true,
             ]),
             'created_at' => date('Y-m-d'),
         ]);

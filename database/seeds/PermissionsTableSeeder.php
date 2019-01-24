@@ -1293,6 +1293,43 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Receive Resource
+        $receiveResource = Menu::where('name','Receive Resource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Receive Resource',
+            'menu_id' => $receiveResource,
+            'middleware' => 'create-receive-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $listResource = Menu::where('name','View Received Resource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Received Resource',
+            'menu_id' => $listResource,
+            'middleware' => 'list-receive-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Received Resource',
+            'menu_id' => $listResource,
+            'middleware' => 'show-receive-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        //Issue Resource
+        $issueResource = Menu::where('name','Issue Resource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Issue Resource',
+            'menu_id' => $issueResource,
+            'middleware' => 'create-issue-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Service
         $service = Menu::where('name','Service')->select('id')->first()->id;
         DB::table('permissions')->insert([

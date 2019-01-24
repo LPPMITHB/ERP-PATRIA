@@ -52,6 +52,7 @@ class CustomerController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_customer|string|max:255',
             'name' => 'required|string|unique:mst_customer|max:255',
+            'email' => 'required|email|unique:mst_customer|max:255',
         ]);
 
         $configuration = Configuration::get('default-password')->password;
@@ -98,7 +99,7 @@ class CustomerController extends Controller
             return redirect()->route('customer.show',$customer->id)->with('success', 'Success Created New Customer!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('customer.create')->with('error', $e->getMessage());
+            return redirect()->route('customer.create')->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -163,7 +164,8 @@ class CustomerController extends Controller
     {
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_customer,code,'.$id.',id|string|max:255',
-            'name' => 'required|string|max:255',       
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:mst_customer|max:255',
         ]);
 
         DB::beginTransaction();

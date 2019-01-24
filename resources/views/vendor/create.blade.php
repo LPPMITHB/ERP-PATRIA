@@ -67,7 +67,10 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $vendor->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus
+                                @if($vendor->name != null) value="{{ $vendor->name }}"
+                                @else value="{{ old('name') }}">
+                                @endif
                             </div>
                         </div>
 
@@ -75,15 +78,21 @@
                             <label for="type" class="col-sm-2 control-label">Type</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="type" name="type" required autofocus value="{{ $vendor->type }}">
-                            </div>
+                                <input type="text" class="form-control" id="type" name="type" required 
+                                @if($vendor->type != null) value="{{ $vendor->type }}"
+                                @else value="{{ old('type') }}">
+                                @endif
                         </div>
+                    </div>
 
                         <div class="form-group">
                             <label for="address" class="col-sm-2 control-label">Address</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address" value="{{ $vendor->address }}">
+                                <input type="text" class="form-control" id="address" name="address" required 
+                                @if($vendor->address != null) value="{{ $vendor->address }}"
+                                @else value="{{ old('address') }}">
+                                @endif
                             </div>
                         </div>
 
@@ -91,23 +100,32 @@
                             <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1" value="{{ $vendor->phone_number_1 }}">
+                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1" required
+                                @if($vendor->phone_number_1 != null) value="{{ $vendor->phone_number_1 }}"
+                                @else value="{{ old('phone_number_1') }}">
+                                @endif
                             </div>
                         </div>
 
                         <div class="form-group">
-                                <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2</label>
-                
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2" value="{{ $vendor->phone_number_2 }}">
-                                </div>
+                            <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2</label>
+            
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2"
+                            @if($vendor->phone_number_2 != null) value="{{ $vendor->phone_number_2 }}"
+                            @else value="{{ old('phone_number_2') }}">
+                            @endif
                             </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="contact_name" name="contact_name" value="{{ $vendor->contact_name }}">
+                                <input type="text" class="form-control" id="contact_name" name="contact_name" required
+                                @if($vendor->contact_name != null) value="{{ $vendor->contact_name }}"
+                                @else value="{{ old('contact_name') }}">
+                                @endif
                             </div>
                         </div>
 
@@ -115,7 +133,10 @@
                             <label for="email" class="col-sm-2 control-label">Email</label>
             
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" name="email" value="{{ $vendor->email }}">
+                                <input type="text" class="form-control" id="email" name="email" required
+                                @if($vendor->email != null) value="{{ $vendor->email }}"
+                                @else value="{{ old('email') }}">
+                                @endif
                             </div>
                         </div>
 
@@ -123,7 +144,10 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" required value="{{ $vendor->description }}">
+                                <input type="text" class="form-control" id="description" name="description" required
+                                @if($vendor->description != null) value="{{ $vendor->description }}"
+                                @else value="{{ old('description') }}">
+                                @endif
                             </div>
                         </div>
 
