@@ -18,7 +18,7 @@ class CreateMstYardTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->integer('area');
-            $table->longText('description')->nullable();
+            $table->text('description')->nullable();
             $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');

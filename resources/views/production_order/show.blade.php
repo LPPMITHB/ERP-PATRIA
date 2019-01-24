@@ -244,14 +244,14 @@
                                             <td>{{ $counter++ }}</td>
                                             <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
                                             <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resourceDetail->code }} - {{ $PrOD->resourceDetail->brand }}">{{ $PrOD->resourceDetail->code }} - {{ $PrOD->resourceDetail->brand }}</td>
-                                            @php($performance = isset($PrOD->perfomance) ? $PrOD->perfomance : '-')
+                                            @php($performance = isset($PrOD->performance) ? number_format($PrOD->performance) : '-')
                                             @if($performance == '-')
                                                 @php($unit = '')
                                             @else
                                                 @php($unit = isset($PrOD->performanceUom) ? $PrOD->performanceUom->unit : '')
                                             @endif
                                             <td class="tdEllipsis">{{ $performance.' '.$unit}}</td>
-                                            <td class="tdEllipsis">{{ ($PrOD->usage) ? $PrOD->usage.' Hour(s)' : '0 Hour'}}</td>
+                                            <td class="tdEllipsis">{{ ($PrOD->usage) ? number_format($PrOD->usage).' Hour(s)' : '0 Hour'}}</td>
                                         </tr>
                                     @endif
                                 @endif

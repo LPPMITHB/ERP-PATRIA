@@ -17,7 +17,7 @@ class CreateMstShipTable extends Migration
             $table->increments('id');
             $table->string('type')->unique();
             $table->string('hull_number')->nullable();
-            $table->longText('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');

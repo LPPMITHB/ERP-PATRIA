@@ -299,11 +299,11 @@
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.material.code }} - {{ data.material.name }}</td>
                                         <td class="tdEllipsis">{{ data.material.description }}</td>
-                                        <td class="tdEllipsis">{{ data.quantity }}</td>
+                                        <td class="tdEllipsis">{{ data.used }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
                                         <td class="tdEllipsis no-padding ">
-                                            <input class="form-control width100" v-model="data.used" placeholder="Please Input Quantity">
+                                            <input class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -331,11 +331,11 @@
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.service.code }}</td>
                                         <td class="tdEllipsis">{{ data.service.name }}</td>
-                                        <td class="tdEllipsis">{{ data.quantity }}</td>
+                                        <td class="tdEllipsis">{{ data.used }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
                                         <td class="tdEllipsis no-padding ">
-                                            <input class="form-control width100" v-model="data.used" placeholder="Please Input Quantity">
+                                            <input @keyup="keymonitor" class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -583,6 +583,11 @@
                         status = 1;
                     }
                 });
+                this.materials.forEach(material => {
+                    if(material.quantity != null && material.quantity != ''){
+                        material.quantity = parseInt((material.quantity+"").replace(/,/g , ''));
+                    }
+                });
                 if(status == 0){
                     let statusResource = 0;
                     this.resources.forEach(resource => {
@@ -591,6 +596,14 @@
                         }
                     });
                     if(statusResource == 0){
+                        this.modelPrOD.forEach(PROD => {
+                            if(PROD.performance != null && PROD.performance != ''){
+                                PROD.performance = parseInt((PROD.performance+"").replace(/,/g , ''));
+                            }
+                            if(PROD.usage != null && PROD.usage != ''){
+                                PROD.usage = parseInt((PROD.usage+"").replace(/,/g , ''));
+                            }
+                        });
                         this.submittedForm.modelPrOD = this.modelPrOD;
                         this.submittedForm.materials = this.materials;
                         this.submittedForm.services = this.services;
@@ -610,6 +623,14 @@
                         });
                     }
                 }else{
+                    this.modelPrOD.forEach(PROD => {
+                        if(PROD.performance != null && PROD.performance != ''){
+                            PROD.performance = parseInt((PROD.performance+"").replace(/,/g , ''));
+                        }
+                        if(PROD.usage != null && PROD.usage != ''){
+                            PROD.usage = parseInt((PROD.usage+"").replace(/,/g , ''));
+                        }
+                    });
                     this.submittedForm.modelPrOD = this.modelPrOD;
                     this.submittedForm.materials = this.materials;
                     this.submittedForm.services = this.services;
@@ -762,6 +783,14 @@
                 },
                 deep: true
             }, 
+            materials:{
+                handler: function(newValue) {
+                    this.materials.forEach(material => {
+                        material.quantity = (material.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    });
+                },
+                deep: true
+            }, 
             'confirmActivity.actual_start_date' :function(newValue){
                 if(newValue == ""){
                     $('#actual_end_date').datepicker('setDate', null);
@@ -780,6 +809,12 @@
                         this.confirmActivity.actual_end_date = "";
                     }
             },
+            'editInput.performance' : function(newValue){
+                this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            },
+            'editInput.usage' : function(newValue){
+                this.editInput.usage = (this.editInput.usage+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            }
         },
         created: function() {
             this.getActivities();
@@ -789,26 +824,38 @@
                         POD.actual = 0;
                     }
                     POD.sugQuantity = POD.quantity-POD.actual;
-                    POD.used = POD.quantity-POD.actual;
+                    let used = POD.quantity-POD.actual;
+                    POD.used = POD.quantity;
+                    POD.quantity = used;
                     if(POD.sugQuantity < 0){
                         POD.sugQuantity = 0;
                     }
                     if(POD.used < 0){
-                        POD.used = 0;
+                        POD.quantity = 0;
                     }
+                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.materials.push(POD);
                 }else if(POD.service_id != null){
                     if(POD.actual == null){
                         POD.actual = 0;
                     }
                     POD.sugQuantity = POD.quantity-POD.actual;
-                    POD.used = POD.quantity-POD.actual;
+                    let used = POD.quantity-POD.actual;
+                    POD.used = POD.quantity;
+                    POD.quantity = used;
                     if(POD.sugQuantity < 0){
                         POD.sugQuantity = 0;
                     }
                     if(POD.used < 0){
-                        POD.used = 0;
+                        POD.quantity = 0;
                     }
+                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.services.push(POD);
                 }else if(POD.resource_id != null && POD.resource_detail_id != null){
                     this.resources.push(POD);

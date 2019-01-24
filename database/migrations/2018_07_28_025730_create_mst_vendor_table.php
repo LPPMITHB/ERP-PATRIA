@@ -20,7 +20,7 @@ class CreateMstVendorTable extends Migration
             $table->string('phone_number_1')->nullable();
             $table->string('phone_number_2')->nullable();
             $table->string('contact_name')->nullable();
-            $table->longText('address')->nullable();
+            $table->text('address')->nullable();
             $table->string('type')->nullable();
             $table->text('description')->nullable();
             $table->string('email')->nullable();

@@ -519,7 +519,6 @@ class ProductionOrderController extends Controller
         $datas = json_decode($request->datas);
         $pro_id = $datas->modelPrOD[0]->production_order_id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
-
         DB::beginTransaction();
         try {
             $statusAll = $modelPrO->wbs->activities->groupBy('status');
@@ -536,15 +535,16 @@ class ProductionOrderController extends Controller
                 $modelPrO->status = 2;
                 $modelPrO->save();
             }
+
             foreach ($datas->materials as  $material) {
                 $prod = ProductionOrderDetail::find($material->id);
-                $prod->actual += $material->used;
+                $prod->actual += $material->quantity;
                 $prod->update();
             }
 
             foreach ($datas->services as  $service) {
                 $prod = ProductionOrderDetail::find($service->id);
-                $prod->actual = $service->used;
+                $prod->actual = $service->quantity;
                 $prod->update();
             }
 
@@ -556,14 +556,30 @@ class ProductionOrderController extends Controller
                     $prod->usage = $resource->usage;
                     $prod->status = "ACTUALIZED";
                     $prod->update();
+
+                    $resource_detail_id = $prod->resource_detail_id;
+                    $status = 0;
+                    $modelProdDetail = ProductionOrderDetail::where('resource_detail_id',$resource_detail_id)->where('status','UNACTUALIZED')->get();
+                    if(count($modelProdDetail) > 0){
+                        $status = 1;
+                    }
+                    if($status == 0){
+                        $modelRD = ResourceDetail::find($resource_detail_id);
+                        $modelRD->status = 1;
+                        $modelRD->update();
+                    }
                 }elseif($resource->status == "UNACTUALIZED"){
                     $prod = ProductionOrderDetail::find($resource->id);
                     $prod->performance = ($resource->performance != "") ? $resource->performance : null;
                     $prod->performance_uom_id = ($resource->performance_uom_id != "") ? $resource->performance_uom_id : null;
                     $prod->usage = ($resource->usage != "") ? $resource->usage : null;
                     $prod->status = "UNACTUALIZED";
-                    // print_r($prod->status);exit();
                     $prod->update();
+
+                    $resource_detail_id = $prod->resource_detail_id;
+                    $modelRD = ResourceDetail::find($resource_detail_id);
+                    $modelRD->status = 2;
+                    $modelRD->update();
                 }
             }
             
