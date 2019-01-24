@@ -1319,6 +1319,16 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+        
+        //Issue Resource
+        $issueResource = Menu::where('name','Issue Resource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Issue Resource',
+            'menu_id' => $issueResource,
+            'middleware' => 'create-issue-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
         //Master Data Service
         $service = Menu::where('name','Service')->select('id')->first()->id;
