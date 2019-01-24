@@ -70,8 +70,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
                                 @if($branch->name != null) value="{{ $branch->name }}"
-                                @else value="{{ old('name') }}">
-                                @endif
+                                @else value="{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -81,8 +81,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="address" name="address" required
                                 @if($branch->address != null) value="{{ $branch->address }}"
-                                @else value="{{ old('address') }}">
-                                @endif
+                                @else value="{{ old('address') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -92,8 +92,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="phone_number" name="phone_number" required
                                 @if($branch->phone_number != null) value="{{ $branch->phone_number }}"
-                                @else value="{{ old('phone_number') }}">
-                                @endif
+                                @else value="{{ old('phone_number') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -103,8 +103,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="fax" name="fax"
                                 @if($branch->fax != null) value="{{ $branch->fax }}"
-                                @else value="{{ old('fax') }}">
-                                @endif
+                                @else value="{{ old('fax') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -114,8 +114,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="email" name="email" required
                                 @if($branch->email != null) value="{{ $branch->email }}"
-                                @else value="{{ old('email') }}">
-                                @endif
+                                @else value="{{ old('email') }}"
+                                @endif>
                             </div>
                         </div>
 

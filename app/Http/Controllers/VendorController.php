@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use App\Models\PurchaseOrder;
+use App\Models\Configuration;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -31,7 +32,9 @@ class VendorController extends Controller
     {
         $vendor = new Vendor;
         $vendor_code = self::generateVendorCode();
-        return view('vendor.create',compact('vendor','vendor_code'));
+        $vendor_categories = Configuration::get('vendor_category');
+
+        return view('vendor.create',compact('vendor','vendor_code','vendor_categories'));
     }
 
     /**
@@ -45,7 +48,7 @@ class VendorController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_vendor|string|max:255',
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255'
+            'description' => 'nullable|string|max:255'
         ]);
         DB::beginTransaction();
         try {
@@ -83,8 +86,9 @@ class VendorController extends Controller
     public function edit($id)
     {
         $vendor = Vendor::findOrFail($id);
+        $vendor_categories = Configuration::get('vendor_category');
 
-        return view('vendor.create',compact('vendor'));
+        return view('vendor.create',compact('vendor','vendor_categories'));
     }
 
     public function update(Request $request, $id)
@@ -92,8 +96,7 @@ class VendorController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_vendor,code,'.$id.',id|string|max:255',
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'email' => 'required|email|unique:mst_vendor,email,'.$id.',id|string|max:255'
+            'description' => 'nullable|string|max:255',
         ]);
         DB::beginTransaction();
         try {

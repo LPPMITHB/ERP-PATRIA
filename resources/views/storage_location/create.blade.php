@@ -69,8 +69,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
                                 @if($storage_location->name != null) value="{{ $storage_location->name }}"
-                                @else value="{{ old('name') }}">
-                                @endif
+                                @else value="{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -80,8 +80,8 @@
                             <div class="col-sm-10">
                                 <input type='text' onkeypress='validate(event)' class="form-control" id="area" name="area" required
                                 @if($storage_location->area != null) value="{{ $storage_location->area }}"
-                                @else value="{{ old('area') }}">
-                                @endif
+                                @else value="{{ old('area') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -91,8 +91,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="description" name="description"
                                 @if($storage_location->description != null) value="{{ $storage_location->description }}"
-                                @else value="{{ old('description') }}">
-                                @endif
+                                @else value="{{ old('description') }}"
+                                @endif>
                             </div>
                         </div>
                         

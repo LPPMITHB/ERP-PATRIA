@@ -49,7 +49,7 @@
                                 <td v-else-if="data.type == 1">Consumable</td>
                                 <td v-else-if="data.type == 0">Raw</td>
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    <a :href="createRouteShow(data.id)" class="btn btn-primary btn-xs">VIEW</a>
+                                    <a :href="createRouteShow(data.code)" class="btn btn-primary btn-xs">VIEW</a>
                                     <a :href="createRouteEdit(data.id)" class="btn btn-primary btn-xs">EDIT</a>
                                 </td>
                             </tr>
