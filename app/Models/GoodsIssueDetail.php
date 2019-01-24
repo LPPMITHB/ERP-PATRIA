@@ -22,4 +22,9 @@ class GoodsIssueDetail extends Model
     {
         return $this->belongsTo('App\Models\StorageLocation');
     }
+
+    public function resourceDetail()
+    {
+        return $this->belongsTo('App\Models\ResourceDetail');
+    }
 }

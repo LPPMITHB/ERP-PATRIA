@@ -497,6 +497,13 @@
                     this.editInput.material_id = "";
                     this.editInput.quantity = "";
                     this.editInput.quantityInt = 0;
+                    this.editInput.old_wbs_id = null;
+                }
+
+                if(this.editInput.old_wbs_id == null){
+                    this.editInput.material_id = "";
+                    this.editInput.quantity = "";
+                    this.editInput.quantityInt = 0;
                 }
 
                 if(newValue != ""){
