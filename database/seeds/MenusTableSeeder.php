@@ -1560,6 +1560,89 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 2,
+            'name' => 'Resource Management',
+            'icon' => 'fa-database',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $repair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        $resourcemanagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Assign Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource_repair.assignResource',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Receive Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource_repair.selectPO',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Received Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource_repair.indexReceived',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Issue Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource_repair.issueResource',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Issued Resource',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource_repair.indexIssued',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
             'name' => 'Production Planning & Execution',
             'icon' => 'fa-database',
             'is_active' => true,
