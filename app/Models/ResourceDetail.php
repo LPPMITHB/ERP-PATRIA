@@ -12,4 +12,9 @@ class ResourceDetail extends Model
     {
         return $this->belongsTo('App\Models\Resource');
     }
+
+    public function performanceUom()
+    {
+        return $this->belongsTo('App\Models\Uom', 'performance_uom_id');
+    }
 }

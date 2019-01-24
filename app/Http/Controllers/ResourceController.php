@@ -132,6 +132,7 @@ class ResourceController extends Controller
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
             $GR->purchase_order_id = $datas->po_id;
+            $GR->type = 4;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
@@ -169,6 +170,7 @@ class ResourceController extends Controller
                 $GRD->goods_receipt_id = $GR->id;
                 $GRD->quantity = 1;
                 $GRD->resource_detail_id = $RD->id;
+                $GRD->item_OK = 1;
                 $GRD->save();
 
                 $this->GR->updatePOD($data->pod_id,1);

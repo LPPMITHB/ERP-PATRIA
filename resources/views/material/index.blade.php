@@ -22,9 +22,9 @@
                 <div class="box-tools pull-right">
                     <a href="{{ route('material.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
-            </div> <!-- /.box-header -->
+            </div>
             @verbatim
-            <div id="index_material">
+                <div id="index_material">
                     <div class="box-body p-b-0 p-t-15">
                     <table class="table table-bordered tablePagingVue" id="material-table">
                         <thead>
@@ -56,11 +56,11 @@
                         </tbody>
                     </table>
                 </div> <!-- /.box-body -->
-                <div class="overlay">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
             </div>
             @endverbatim
+            <div class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
         </div>
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->
