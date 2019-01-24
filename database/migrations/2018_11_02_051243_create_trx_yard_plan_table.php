@@ -20,7 +20,7 @@ class CreateTrxYardPlanTable extends Migration
             $table->date('planned_end_date');
             $table->date('actual_start_date')->nullable();
             $table->date('actual_end_date')->nullable();
-            $table->longText('description')->nullable();
+            $table->text('description')->nullable();
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('branch_id');

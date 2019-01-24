@@ -189,11 +189,11 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR')->middleware('can:show-receive-resource');
 
-    Route::get('/showGI/{id}', 'ResourceController@showGI')->name('showGI');
+    Route::get('/showGI/{id}', 'ResourceController@showGI')->name('showGI')->middleware('can:show-issue-resource');
 
     Route::get('/indexReceived', 'ResourceController@indexReceived')->name('indexReceived')->middleware('can:list-receive-resource');
 
-    Route::get('/indexIssued', 'ResourceController@indexIssued')->name('indexIssued');
+    Route::get('/indexIssued', 'ResourceController@indexIssued')->name('indexIssued')->middleware('can:list-issue-resource');
 
     Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource')->middleware('can:create-issue-resource');
 
@@ -209,7 +209,7 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::post('/', 'ResourceController@store')->name('store')->middleware('can:create-resource');
 
-    Route::post('/storeIssue', 'ResourceController@storeIssue')->name('storeIssue')->middleware('can:create-resource');
+    Route::post('/storeIssue', 'ResourceController@storeIssue')->name('storeIssue')->middleware('can:create-issue-resource');
 
     Route::post('/storeInternal', 'ResourceController@storeInternal')->name('storeInternal')->middleware('can:create-resource');
 

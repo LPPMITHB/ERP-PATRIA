@@ -16,7 +16,7 @@ class CreateMstBomTable extends Migration
         Schema::create('mst_bom', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
-            $table->longText('description');
+            $table->text('description');
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('branch_id');
