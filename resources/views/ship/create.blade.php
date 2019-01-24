@@ -48,8 +48,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="type" name="type" required autofocus
                                 @if($ship->type != null) value="{{ $ship->type }}"
-                                @else value="{{ old('type') }}">
-                                @endif
+                                @else value="{{ old('type') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -59,8 +59,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="hull_number" name="hull_number"
                                 @if($ship->hull_number != null) value="{{ $ship->hull_number }}"
-                                @else value="{{ old('hull_number') }}">
-                                @endif
+                                @else value="{{ old('hull_number') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -70,8 +70,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="description" name="description"
                                 @if($ship->description != null) value="{{ $ship->description }}"
-                                @else value="{{ old('description') }}">
-                                @endif
+                                @else value="{{ old('description') }}"
+                                @endif>
                             </div>
                         </div>
                         
