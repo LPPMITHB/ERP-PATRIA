@@ -15,6 +15,7 @@
                 /** Define now the real margins of every page in the PDF **/
                 @page{
                     margin-top:310px;
+                    margin-bottom : 240px;
                 }
 
                 /** Define the header rules **/
@@ -24,22 +25,18 @@
                     left: 0cm;
                     right: 0cm;
                 }
+                #footer{
+                    position: fixed;
+                    bottom: 0px;
+                    left: 10px;
+                    right: 0cm;
+                }
         </style>
     </head>
     <body>
         <script type="text/php">
             if (isset($pdf)) {
-                $x = 250;
-                $y = 765;
-                $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
-                $font = null;
-                $size = 9;
-                $color = array(0,0,0);
-                $word_space = 0.0;  //  default
-                $char_space = 0.0;  //  default
-                $angle = 0.0;   //  default
-                $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);          
-            }
+                }
         </script>
         <header>
             <div class="row">
@@ -67,7 +64,7 @@
                             <div style="font-size: 11px;">Vendor   :</div>
                             <div class="p-l-5" style="word-wrap:break-word;width: 340px; border: black 1px solid; border-radius: 5px; margin-left: 65px; margin-top: -50px;">
                                 <b style="font-size: 12px;">{{$modelWO->vendor->name}}</b>
-                                <p style="font-size: 11px; margin-top:10px">{{$modelWO->vendor->address}} <br>T.{{$modelWO->vendor->phone_number}}</p>
+                                <p style="font-size: 11px; margin-top:10px">{{$modelWO->vendor->address}} <br>T.{{$modelWO->vendor->phone_number_1}}</p>
                             </div>
                         </div>
                     </div>
@@ -155,7 +152,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div style="page-break-inside:avoid;margin-left: -10px; ">
+                        <div id="footer" style="page-break-inside:avoid;margin-left: -10px; ">
                             <div style="font-size: 11px; margin-top:5px;">Say :</div>
                             <div style="height: 20px; font-size: 9px; width:420px; padding-left:5px; margin-left:30px; margin-top:-16px; border: black 1px solid; border-radius: 5px;">
                                     {{$words}} IDR
@@ -188,6 +185,20 @@
                                     <div style="margin-left: 103px; margin-top:-20px; font-size: 12px"><b>:</b></div>
                                     <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right"><b>IDR {{number_format($modelWO->total_price,2)}}</b></div>
                                 </div>
+                            </div>
+                            <div>
+                                <div style="margin-top: 10px; font-size: 12px">Prepared by</div>
+                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                            </div>
+                            <div style="margin-left: 250px; margin-top:-150px">
+                                <div style="margin-top: 10px; font-size: 12px">Aproved by</div>
+                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                            </div>
+                            <div style="margin-left: 500px; margin-top:-150px">
+                                <div style="margin-top: 10px; font-size: 12px">Supplier Confirmation</div>
+                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px; font-size: 12px;">Chop and Sign</div>
+                                <div style=" font-size: 12px">Date</div>
                             </div>
                         </div>
                     </div> 
