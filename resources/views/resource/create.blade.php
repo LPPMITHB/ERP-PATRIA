@@ -19,7 +19,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                    <form id="resource" class="form-horizontal" method="POST" action="{{ route('resource.store') }}">
+                    @if($route == "/resource")
+                        <form id="resource" class="form-horizontal" method="POST" action="{{ route('resource.store') }}">
+                    @elseif($route == "/resource_repair")
+                        <form id="resource" class="form-horizontal" method="POST" action="{{ route('resource_repair.store') }}">
+                    @endif
                 @csrf
                 @verbatim
                     <div id="resource">

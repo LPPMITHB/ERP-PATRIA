@@ -18,7 +18,7 @@ class CreateTrxRapTable extends Migration
             $table->string('number')->unique();
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('bom_id');
-            $table->bigInteger('total_price')->nullable();
+            $table->double('total_price')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');
             $table->timestamps();

@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Resource Receipt',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Purchase Order' => route('resource.selectPO'),
-            'Details' => '',
+@if($route == "/resource")
+    @breadcrumb(
+        [
+            'title' => 'Create Resource Receipt',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Order' => route('resource.selectPO'),
+                'Details' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/resource_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Resource Receipt',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Purchase Order' => route('resource_repair.selectPO'),
+                'Details' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -19,7 +33,11 @@
     <div class="col-sm-12">
         <div class="box">
             <div class="box-body">
-                <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('resource.storeGR') }}">
+                @if($route == '/resource')
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('resource.storeGR') }}">
+                @elseif($route == '/resource_repair')
+                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('resource_repair.storeGR') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="pod">
@@ -326,6 +344,7 @@
     });
 
     var data = {
+        route : @json($route),
         depreciation_methods : @json($depreciation_methods),
         resource_categories : @json($resource_categories),
         datas : @json($datas),

@@ -7,7 +7,7 @@
             'title' => 'View Goods Receipt » '.$modelGR->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Goods Receipts' => route('resource.index'),
+                'View All Goods Receipts' => route('resource.indexReceived'),
                 'View Goods Receipt' => '',
             ]
         ]
@@ -19,7 +19,7 @@
             'title' => 'View Goods Receipt » '.$modelGR->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Goods Receipts' => route('resource_repair.index'),
+                'View All Goods Receipts' => route('resource_repair.indexReceived'),
                 'View Goods Receipt' => '',
             ]
         ]

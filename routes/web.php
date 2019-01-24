@@ -218,6 +218,49 @@ Route::name('resource.')->prefix('resource')->group(function() {
     Route::put('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
 });
 
+//Resource Management Routes
+Route::name('resource_repair.')->prefix('resource_repair')->group(function() {
+    Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource-repair');
+
+    Route::get('/selectPO', 'ResourceController@selectPO')->name('selectPO')->middleware('can:create-receive-resource-repair');
+
+    Route::get('/createGR/{id}', 'ResourceController@createGR')->name('createGR')->middleware('can:create-receive-resource-repair');
+
+    Route::get('/createInternal/{id}', 'ResourceController@createInternal')->name('createInternal')->middleware('can:create-resource-repair');
+
+    Route::post('/storeGR', 'ResourceController@storeGR')->name('storeGR')->middleware('can:create-receive-resource-repair');
+
+    Route::get('/showGR/{id}', 'ResourceController@showGR')->name('showGR')->middleware('can:show-receive-resource-repair');
+
+    Route::get('/showGI/{id}', 'ResourceController@showGI')->name('showGI')->middleware('can:show-issue-resource-repair');
+
+    Route::get('/indexReceived', 'ResourceController@indexReceived')->name('indexReceived')->middleware('can:list-receive-resource-repair');
+
+    Route::get('/indexIssued', 'ResourceController@indexIssued')->name('indexIssued')->middleware('can:list-issue-resource-repair');
+
+    Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource')->middleware('can:create-issue-resource-repair');
+
+    Route::get('/create', 'ResourceController@create')->name('create')->middleware('can:create-resource-repair');
+
+    Route::get('/', 'ResourceController@index')->name('index')->middleware('can:list-resource-repair');
+
+    Route::get('/{id}', 'ResourceController@show')->name('show')->middleware('can:show-resource-repair');
+
+    Route::get('/{id}/edit', 'ResourceController@edit')->name('edit')->middleware('can:edit-resource-repair');
+
+    Route::patch('/{id}', 'ResourceController@update')->name('update')->middleware('can:edit-resource-repair');
+
+    Route::post('/', 'ResourceController@store')->name('store')->middleware('can:create-resource-repair');
+
+    Route::post('/storeIssue', 'ResourceController@storeIssue')->name('storeIssue')->middleware('can:create-resource-repair');
+
+    Route::post('/storeInternal', 'ResourceController@storeInternal')->name('storeInternal')->middleware('can:create-resource-repair');
+
+    Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource-repair');
+
+    Route::put('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource-repair');
+});
+
 //Unit Of Measurement Routes
 Route::name('unit_of_measurement.')->prefix('unit_of_measurement')->group(function() {
     Route::get('/create', 'UnitOfMeasurementController@create')->name('create')->middleware('can:create-unit-of-measurement');

@@ -19,7 +19,11 @@
         <div class="box">
             <div class="box-header m-b-10">
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('resource.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    @if($route == "/resource")
+                        <a href="{{ route('resource.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    @elseif($route == "/resource_repair")
+                        <a href="{{ route('resource_repair.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    @endif
                 </div>
             </div>
             <div class="box-body">
@@ -42,8 +46,13 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->name}}">{{ $resource->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->description}}">{{ ($resource->description != '' || $resource->description != null) ? $resource->description : '-' }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
-                                    <a href="{{ route('resource.show', ['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                    <a href="{{ route('resource.edit',['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                    @if($route == "/resource")
+                                        <a href="{{ route('resource.show', ['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a href="{{ route('resource.edit',['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                    @elseif($route == "/resource_repair")
+                                        <a href="{{ route('resource_repair.show', ['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a href="{{ route('resource_repair.edit',['id'=>$resource->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
