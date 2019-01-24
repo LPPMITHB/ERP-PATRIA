@@ -83,7 +83,7 @@
                             <label for="address" class="col-sm-2 control-label">Address</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address" required value="{{ $vendor->address }}">
+                                <input type="text" class="form-control" id="address" name="address" value="{{ $vendor->address }}">
                             </div>
                         </div>
 
@@ -91,7 +91,7 @@
                             <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1" required value="{{ $vendor->phone_number_1 }}">
+                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1" value="{{ $vendor->phone_number_1 }}">
                             </div>
                         </div>
 
@@ -99,7 +99,7 @@
                                 <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2" required value="{{ $vendor->phone_number_2 }}">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2" value="{{ $vendor->phone_number_2 }}">
                                 </div>
                             </div>
 
@@ -107,7 +107,7 @@
                             <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="contact_name" name="contact_name" required value="{{ $vendor->contact_name }}">
+                                <input type="text" class="form-control" id="contact_name" name="contact_name" value="{{ $vendor->contact_name }}">
                             </div>
                         </div>
 
@@ -115,7 +115,7 @@
                             <label for="email" class="col-sm-2 control-label">Email</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="email" name="email" required value="{{ $vendor->email }}">
+                                <input type="email" class="form-control" id="email" name="email" value="{{ $vendor->email }}">
                             </div>
                         </div>
 

@@ -22,7 +22,7 @@ class CreateMstVendorTable extends Migration
             $table->string('contact_name')->nullable();
             $table->longText('address')->nullable();
             $table->string('type')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('email')->nullable();
             $table->string('status');
             $table->unsignedInteger('branch_id');

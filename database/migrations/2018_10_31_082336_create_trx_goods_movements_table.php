@@ -16,7 +16,7 @@ class CreateTrxGoodsMovementsTable extends Migration
         Schema::create('trx_goods_movement', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number')->unique();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->unsignedInteger('storage_location_from_id');
             $table->unsignedInteger('storage_location_to_id');
             $table->unsignedInteger('branch_id');

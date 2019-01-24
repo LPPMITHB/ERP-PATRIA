@@ -17,7 +17,7 @@ class CreateProActivityTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->integer('status')->default(1);
             $table->unsignedInteger('wbs_id')->nullable();
             $table->integer('planned_duration');

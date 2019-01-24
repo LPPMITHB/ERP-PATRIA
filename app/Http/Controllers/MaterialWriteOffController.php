@@ -50,7 +50,6 @@ class MaterialWriteOffController extends Controller
     {
         $datas = json_decode($request->datas);
         $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
-        
         $number = $this->generateGINumber();
 
         DB::beginTransaction();
@@ -59,8 +58,12 @@ class MaterialWriteOffController extends Controller
             $MWO = new GoodsIssue;
             $MWO->number = $number;
             $MWO->description = $datas->description;
-            $MWO->status = 1;
-            $MWO->type = 2;
+            if($menu == "building"){
+                $MWO->business_unit_id = 1;
+            }else if($menu == "repair"){
+                $MWO->business_unit_id = 2;
+            }
+            $MWO->type = 5;
             $MWO->user_id = Auth::user()->id;
             $MWO->branch_id = Auth::user()->branch->id;
             $MWO->save();

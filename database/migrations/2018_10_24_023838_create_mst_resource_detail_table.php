@@ -19,7 +19,7 @@ class CreateMstResourceDetailTable extends Migration
             $table->string('code')->unique();
             $table->string('brand')->nullable();
             $table->integer('quantity')->default(1);
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('category_id');
             $table->date('manufactured_date')->nullable();
             $table->date('purchasing_date')->nullable();

@@ -17,7 +17,7 @@ class CreateProWbsTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->string('deliverables');
             $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
