@@ -819,6 +819,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'resource.issueResource',
             'is_active' => true,
             'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1563,7 +1564,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Resource Management',
             'icon' => 'fa-database',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1576,7 +1577,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource_repair.index',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $resourcemanagementRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1588,7 +1589,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource_repair.assignResource',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $resourcemanagementRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1600,7 +1601,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource_repair.selectPO',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $resourcemanagementRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1612,7 +1613,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource_repair.indexReceived',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $resourcemanagementRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1624,7 +1625,8 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource_repair.issueResource',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagementRepair,
+            'roles' => 'ADMIN,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1635,7 +1637,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'resource_repair.indexIssued',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=> $resourcemanagementRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

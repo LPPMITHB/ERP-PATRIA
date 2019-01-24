@@ -1,16 +1,33 @@
 @extends('layouts.main')
 @section('content-header')
 
-@breadcrumb(
-    [
-        'title' => 'Create Internal Resource',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Create Internal Resource' => '',
+@if($route == "/resource")
+    @breadcrumb(
+        [
+            'title' => 'Create Internal Resource',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource.index'),
+                $resource->name => route('resource.show',$resource->id),
+                'Create Internal Resource' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/resource_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Internal Resource',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource_repair.index'),
+                $resource->name => route('resource_repair.show',$resource->id),
+                'Create Internal Resource' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 
 @endsection
 
@@ -19,7 +36,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
+                @if($route == "/resource")
                     <form id="resource" class="form-horizontal" method="POST" action="{{ route('resource.storeInternal') }}">
+                @elseif($route == "/resource_repair")
+                    <form id="resource" class="form-horizontal" method="POST" action="{{ route('resource_repair.storeInternal') }}">
+                @endif
                 @csrf
                 @verbatim
                     <div id="resource">
@@ -177,6 +198,7 @@
                 this.dataInput.purchasing_price = (this.dataInput.purchasing_price+"").replace(/,/g , '');
                 this.dataInput.cost_per_hour = (this.dataInput.cost_per_hour+"").replace(/,/g , '');
                 this.dataInput.performance = (this.dataInput.performance+"").replace(/,/g , '');
+                this.dataInput.lifetime = (this.dataInput.lifetime+"").replace(/,/g , '');
 
                 $('div.overlay').show();
                 let struturesElem = document.createElement('input');
@@ -226,6 +248,19 @@
                     }
                 }else{
                     this.dataInput.performance = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.lifetime': function(newValue) {
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.dataInput.lifetime = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.dataInput.lifetime = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.dataInput.lifetime = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
         }
