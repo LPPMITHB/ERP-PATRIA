@@ -39,9 +39,15 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">{{ $modelGI->description }}</td>
                                 <td>{{ isset ($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}}</td>
                                 <td>
-                                    @if($modelGI->materialRequisition)
-                                        {{ $modelGI->materialRequisition->type == 0 ? 'Manual' : 'Automatic' }}
-                                    @else
+                                    @if( $modelGI->type == 1 )
+                                        MR Transaction
+                                    @elseif($modelGI->type == 2)
+                                        Resource Transaction
+                                    @elseif($modelGI->type == 3)
+                                        PI Transaction
+                                    @elseif($modelGI->type == 4)
+                                        Goods Return
+                                    @elseif($modelGI->type == 5)
                                         Material Write Off
                                     @endif
                                 </td>

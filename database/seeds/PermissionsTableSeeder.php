@@ -1303,6 +1303,23 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        $listIssueResource = Menu::where('name','View Issued Resource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Show Issue Resource',
+            'menu_id' => $listIssueResource,
+            'middleware' => 'show-issue-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'List Issue Resource',
+            'menu_id' => $listIssueResource,
+            'middleware' => 'list-issue-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Service
         $service = Menu::where('name','Service')->select('id')->first()->id;
         DB::table('permissions')->insert([

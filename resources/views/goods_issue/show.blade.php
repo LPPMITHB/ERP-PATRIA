@@ -52,10 +52,12 @@
                             Type
                         </div>
                         <div class="col-md-8">
-                            @if($modelGI->type == 0)
-                            : <b> Automatic </b>
-                            @elseif($modelGI->type == 1)
-                            : <b>  Manual </b>
+                            @if($modelGI->type == 1)
+                            : <b> MR Transaction </b>
+                            @elseif($modelGI->type == 2)
+                            : <b>  Resource Transaction </b>
+                            @elseif($modelGI->type == 3)
+                            : <b>  PI Transaction </b>
                             @elseif($modelGI->type == 4)
                             : <b>  Goods Return </b>
                             @else

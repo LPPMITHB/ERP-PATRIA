@@ -195,34 +195,71 @@
             </div>
 
             {{-- table resource --}}
-            <div class="box-body p-t-0 p-b-5">
-                <h4>Resource</h4>
-                <table class="table table-bordered showTable tableFixed" id="resource-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="30%">Resource Name</th>
-                            <th width="31%">Description</th>
-                            <th width="17%">Quantity</th>
-                            <th width="17%">Used</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php($counter=1)
-                        @foreach($modelPrO->ProductionOrderDetails as $PrOD)
-                        @if($PrOD->resource_id != "")
+            @if($modelPrO->status == 1)
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Resource</h4>
+                    <table class="table table-bordered showTable tableFixed" id="resource-table">
+                        <thead>
                             <tr>
-                                <td>{{ $counter++ }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->description }}">{{ ($PrOD->resource->description) ? $PrOD->resource->description : '-'}}</td>
-                                <td>{{ number_format($PrOD->quantity) }}</td>
-                                <td>{{ number_format($PrOD->actual) }}</td>
+                                <th width="5%">No</th>
+                                <th width="30%">Resource Name</th>
+                                <th width="31%">Description</th>
+                                <th width="34%">Quantity</th>
                             </tr>
-                        @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @php($counter=1)
+                            @foreach($modelPrO->ProductionOrderDetails as $PrOD)
+                            @if($PrOD->resource_id != "")
+                                <tr>
+                                    <td>{{ $counter++ }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->description }}">{{ ($PrOD->resource->description) ? $PrOD->resource->description : '-'}}</td>
+                                    <td>{{ number_format($PrOD->quantity) }}</td>
+                                </tr>
+                            @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Resource</h4>
+                    <table class="table table-bordered showTable tableFixed" id="resource-table">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="30%">Resource Name</th>
+                                <th width="31%">Operational Resource</th>
+                                <th width="17%">Performance</th>
+                                <th width="17%">Usage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php($counter=1)
+                            @foreach($modelPrO->ProductionOrderDetails as $PrOD)
+                                @if($PrOD->resource_id != "")
+                                    @if($PrOD->production_order_detail_id != null)
+                                        <tr>
+                                            <td>{{ $counter++ }}</td>
+                                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
+                                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resourceDetail->code }} - {{ $PrOD->resourceDetail->brand }}">{{ $PrOD->resourceDetail->code }} - {{ $PrOD->resourceDetail->brand }}</td>
+                                            @php($performance = isset($PrOD->perfomance) ? $PrOD->perfomance : '-')
+                                            @if($performance == '-')
+                                                @php($unit = '')
+                                            @else
+                                                @php($unit = isset($PrOD->performanceUom) ? $PrOD->performanceUom->unit : '')
+                                            @endif
+                                            <td class="tdEllipsis">{{ $performance.' '.$unit}}</td>
+                                            <td class="tdEllipsis">{{ ($PrOD->usage) ? $PrOD->usage.' Hour(s)' : '0 Hour'}}</td>
+                                        </tr>
+                                    @endif
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
 
             @if($route == "/production_order_repair")
                 {{-- table service --}}

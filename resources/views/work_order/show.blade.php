@@ -95,7 +95,7 @@
                         <div class="col-md-5 col-xs-4 no-padding">
                             Vendor Name
                         </div>
-                        <div class="col-md-7 col-xs-8">
+                        <div class="col-md-7 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }}">
                             : <b> {{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }} </b>
                         </div>
                         <div class="col-md-5 col-xs-4 no-padding">
@@ -172,9 +172,9 @@
                 </table>
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($menu == "building")
-                        <a class="col-xs-12 col-md-1 btn btn-primary pull-right" href="{{ route('work_order.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_order.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
                     @else
-                        <a class="col-xs-12 col-md-1 btn btn-primary pull-right" href="{{ route('work_order_repair.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_order_repair.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
                     @endif
                 </div>
             </div> <!-- /.box-body -->

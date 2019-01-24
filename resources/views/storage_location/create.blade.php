@@ -100,9 +100,13 @@
                                 <label for="company" class="col-sm-2 control-label">Warehouse</label>
                 
                                 <div class="col-sm-10">
-                                    <select class="form-control" name="warehouse" id="warehouse" required>
+                                    <select class="form-control" name="warehouse" id="warehouse" required >
                                         @foreach($warehouses as $warehouse)
-                                            <option value="{{ $warehouse->id }}">{{$warehouse->name}}</option>
+                                            @if($storage_location->warehouse_id == $warehouse->id)
+                                                <option value="{{ $warehouse->id }}" selected>{{$warehouse->name}}</option>
+                                            @else
+                                                <option value="{{ $warehouse->id }}">{{$warehouse->name}}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>

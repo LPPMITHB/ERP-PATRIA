@@ -323,13 +323,13 @@ class BOMController extends Controller
                     if($route == "/bom"){
                         self::saveBomDetail($bom,$datas->materials);
                         self::createRap($datas,$bom);
-                        self::checkStock($bom);
+                        self::checkStock($bom,$route);
                         DB::commit();
                         return redirect()->route('bom.show', ['id' => $bom->id])->with('success', 'Bill Of Material Created');
                     }else{
                         self::saveBomDetailRepair($bom,$datas->materials);
                         self::createRap($datas,$bom);
-                        self::checkStock($bom);
+                        self::checkStock($bom,$route);
                         DB::commit();
                         return redirect()->route('bom_repair.show', ['id' => $bom->id])->with('success', 'BOM/BOS Created');
                     }
@@ -393,7 +393,7 @@ class BOMController extends Controller
 
                 // create PR & Reserve stock
                 // print_r($data['source']);exit();
-                self::checkStockEdit($data,$modelRap->project_id);
+                self::checkStockEdit($data,$modelRap->project_id,$route);
             }elseif($route == "/bom_repair"){
                 $rap_detail->material_id = $bom_detail->material_id;
                 $rap_detail->service_id = $bom_detail->service_id;
@@ -407,7 +407,7 @@ class BOMController extends Controller
                 $rap_detail->save();
                 // create PR & Reserve stock
                 
-                self::checkStockEdit($data,$modelRap->project_id);
+                self::checkStockEdit($data,$modelRap->project_id,$route);
             }
             DB::commit();
             return response(json_encode($rap_detail),Response::HTTP_OK);
@@ -662,7 +662,12 @@ class BOMController extends Controller
         return $total_price;
     }
 
-    public function checkStock($bom){
+    public function checkStock($bom,$route){
+        if($route=="/bom"){
+            $business_unit = 1;
+        }elseif($route == "/bom_repair"){
+            $business_unit = 2;
+        }
         // create PR (optional)
         $status = 0;
         foreach($bom->bomDetails as $bomDetail){
@@ -690,6 +695,7 @@ class BOMController extends Controller
 
             $PR = new PurchaseRequisition;
             $PR->number = $pr_number;
+            $PR->business_unit_id = $business_unit;
             $PR->valid_date = $valid_to;
             $PR->type = 1;
             $PR->project_id = $project_id;
@@ -740,7 +746,12 @@ class BOMController extends Controller
         }
     }
 
-    public function checkStockEdit($data,$project_id){
+    public function checkStockEdit($data,$project_id,$route){
+        if($route=="/bom"){
+            $business_unit = 1;
+        }elseif($route == "/bom_repair"){
+            $business_unit = 2;
+        }
         // create PR (optional)
         if(isset($data['source']) != false){
             if($data['source'] != "WIP"){
@@ -767,6 +778,7 @@ class BOMController extends Controller
     
                             $PR = new PurchaseRequisition;
                             $PR->number = $pr_number;
+                            $PR->business_unit_id = $business_unit;
                             $PR->valid_date = $valid_to;
                             $PR->type = 1;
                             $PR->project_id = $project_id;

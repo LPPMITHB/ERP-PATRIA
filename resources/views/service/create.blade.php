@@ -84,7 +84,7 @@
                             <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeyup="validate(event)" id="cost_standard_price" name="cost_standard_price" required value="{{ $service->cost_standard_price }}">
+                                <input type="text" class="form-control" onkeyup="validate(event)" id="cost_standard_price" name="cost_standard_price" required value="{{ number_format($service->cost_standard_price) }}">
                             </div>
                         </div>
 

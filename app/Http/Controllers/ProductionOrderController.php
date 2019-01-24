@@ -11,6 +11,7 @@ use App\Models\WBS;
 use App\Models\ProductionOrder;
 use App\Models\ProductionOrderDetail;
 use App\Models\Bom;
+use App\Models\Uom;
 use App\Models\Material;
 use App\Models\Resource;
 use App\Models\Service;
@@ -327,8 +328,9 @@ class ProductionOrderController extends Controller
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
         $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
+        $uoms = Uom::all()->jsonSerialize();
 
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route'));
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms'));
     }
 
     /**
@@ -487,6 +489,7 @@ class ProductionOrderController extends Controller
                 $PrOD->resource_id = $resource->resource_id;
                 $PrOD->resource_detail_id = $resource->trx_resource_id;
                 $PrOD->quantity = 1;
+                $PrOD->status = "UNACTUALIZED";
                 $PrOD->save();
 
                 $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
@@ -535,14 +538,33 @@ class ProductionOrderController extends Controller
             }
             foreach ($datas->materials as  $material) {
                 $prod = ProductionOrderDetail::find($material->id);
-                $prod->actual = $material->used;
+                $prod->actual += $material->used;
                 $prod->update();
             }
 
             foreach ($datas->services as  $service) {
-                    $prod = ProductionOrderDetail::find($service->id);
-                    $prod->actual = $service->used;
+                $prod = ProductionOrderDetail::find($service->id);
+                $prod->actual = $service->used;
+                $prod->update();
+            }
+
+            foreach($datas->resources as $resource){
+                if($resource->status == "ACTUALIZED"){
+                    $prod = ProductionOrderDetail::find($resource->id);
+                    $prod->performance = $resource->performance;
+                    $prod->performance_uom_id = $resource->performance_uom_id;
+                    $prod->usage = $resource->usage;
+                    $prod->status = "ACTUALIZED";
                     $prod->update();
+                }elseif($resource->status == "UNACTUALIZED"){
+                    $prod = ProductionOrderDetail::find($resource->id);
+                    $prod->performance = ($resource->performance != "") ? $resource->performance : null;
+                    $prod->performance_uom_id = ($resource->performance_uom_id != "") ? $resource->performance_uom_id : null;
+                    $prod->usage = ($resource->usage != "") ? $resource->usage : null;
+                    $prod->status = "UNACTUALIZED";
+                    // print_r($prod->status);exit();
+                    $prod->update();
+                }
             }
             
             DB::commit();

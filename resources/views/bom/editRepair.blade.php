@@ -286,11 +286,12 @@
                     isOk = true;
                 }else{
                     if(this.input.type == "Material"){
-                        if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                        if(this.input.material_id == "" || this.input.quantity == ""){
                             isOk = true;
                         }
                     }else if(this.input.type == "Service"){
-                        if(this.input.service_id == "" || this.input.service_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                        console.log()
+                        if(this.input.service_id == "" || this.input.quantity == ""){
                             isOk = true;
                         }
                     }

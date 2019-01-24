@@ -31,6 +31,7 @@ class GoodsIssueController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
 
+
         $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->pluck('id')->toArray();
         $modelGIs = GoodsIssue::whereIn('material_requisition_id',$modelMRs)->where('type',1)->get();
 
