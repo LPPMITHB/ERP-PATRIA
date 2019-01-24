@@ -20,7 +20,7 @@
                 @if($route=="/resource")
                     <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('resource.storeIssue') }}">
                 @elseif($route == "/resource_repair")
-                    <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('resource.storeIssue') }}">
+                    <form id="create-gi" class="form-horizontal" method="POST" action="{{ route('resource_repair.storeIssue') }}">
                 @endif
                 @csrf
                     @verbatim

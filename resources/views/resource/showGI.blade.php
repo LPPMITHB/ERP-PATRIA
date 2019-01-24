@@ -1,16 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Goods Issue » '.$modelGI->number,
-        'items' => [
-            'Dashboard' => route('index'),
-            'View Goods Issue' => route('purchase_order.show',$modelGI->id),
+@if($route == "/resource")
+    @breadcrumb(
+        [
+            'title' => 'View Goods Issue » '.$modelGI->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Goods Issue' => route('resource.indexIssued'),
+                'View Goods Issue' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/resource_repair")
+    @breadcrumb(
+        [
+            'title' => 'View Goods Issue » '.$modelGI->number,
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Goods Issue' => route('resource_repair.indexIssued'),
+                'View Goods Issue' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')

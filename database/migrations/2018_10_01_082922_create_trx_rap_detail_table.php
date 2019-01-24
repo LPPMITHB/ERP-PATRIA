@@ -19,7 +19,7 @@ class CreateTrxRapDetailTable extends Migration
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
             $table->integer('quantity');
-            $table->bigInteger('price');
+            $table->double('price');
             $table->timestamps();
     
             $table->foreign('material_id')->references('id')->on('mst_material');

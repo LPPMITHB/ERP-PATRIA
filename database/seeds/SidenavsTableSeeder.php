@@ -1461,6 +1461,68 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'resource.issueResource',
         ]);
 
+        //Resource Repair
+        $manageResourceRepair = Menu::where('route_name','resource_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageResourceRepair,
+            'route_name' => 'resource_repair.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageResourceRepair,
+            'route_name' => 'resource_repair.create',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageResourceRepair,
+            'route_name' => 'resource_repair.edit',
+        ]);
+
+        $assignResourceRepair = Menu::where('route_name','resource_repair.assignResource')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $assignResourceRepair,
+            'route_name' => 'resource_repair.assignResource',
+        ]); 
+
+        $selectPOResourceRepair = Menu::where('route_name','resource_repair.selectPO')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPOResourceRepair,
+            'route_name' => 'resource_repair.selectPO',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPOResourceRepair,
+            'route_name' => 'resource_repair.createGR',
+        ]);
+
+        $indexReceivedRepair = Menu::where('route_name','resource_repair.indexReceived')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexReceivedRepair,
+            'route_name' => 'resource_repair.indexReceived',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexReceivedRepair,
+            'route_name' => 'resource_repair.showGR',
+        ]);
+
+        $indexIssuedRepair = Menu::where('route_name','resource_repair.indexIssued')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexIssuedRepair,
+            'route_name' => 'resource_repair.indexIssued',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexIssuedRepair,
+            'route_name' => 'resource_repair.showGI',
+        ]);
+
+        $issueResourceRepair = Menu::where('route_name','resource_repair.issueResource')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $issueResourceRepair,
+            'route_name' => 'resource_repair.issueResource',
+        ]);
+
         $manageService = Menu::where('route_name','service.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageService,

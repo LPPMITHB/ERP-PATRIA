@@ -1319,7 +1319,7 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         //Issue Resource
         $issueResource = Menu::where('name','Issue Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -1934,6 +1934,95 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Confirm Production Order Repair',
             'menu_id' => $confirmProductionOrderRepair,
             'middleware' => 'confirm-production-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Resource Management
+        $resourceManagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
+        $resourceRepair = Menu::where('name','Manage Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Resource',
+            'menu_id' => $resourceRepair,
+            'middleware' => 'list-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Resource',
+            'menu_id' => $resourceRepair,
+            'middleware' => 'create-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Resource',
+            'menu_id' => $resource,
+            'middleware' => 'show-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Resource',
+            'menu_id' => $resource,
+            'middleware' => 'edit-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Receive Resource
+        $receiveResource = Menu::where('name','Receive Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Receive Resource',
+            'menu_id' => $receiveResource,
+            'middleware' => 'create-receive-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $listResource = Menu::where('name','View Received Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Received Resource',
+            'menu_id' => $listResource,
+            'middleware' => 'list-receive-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Received Resource',
+            'menu_id' => $listResource,
+            'middleware' => 'show-receive-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Issue Resource
+        $issueResource = Menu::where('name','Issue Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Issue Resource',
+            'menu_id' => $issueResource,
+            'middleware' => 'create-issue-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $listIssueResource = Menu::where('name','View Issued Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Show Issue Resource',
+            'menu_id' => $listIssueResource,
+            'middleware' => 'show-issue-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'List Issue Resource',
+            'menu_id' => $listIssueResource,
+            'middleware' => 'list-issue-resource-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

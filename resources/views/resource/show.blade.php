@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View Resource',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Resources' => route('resource.index'),
-            $resource->name => route('resource.show',$resource->id),
+@if($route == "/resource")
+    @breadcrumb(
+        [
+            'title' => 'View Resource',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource.index'),
+                $resource->name => route('resource.show',$resource->id),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/resource_repair")
+@endif
+    @breadcrumb(
+        [
+            'title' => 'View Resource',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource_repair.index'),
+                $resource->name => route('resource_repair.show',$resource->id),
+            ]
+        ]
+    )
+    @endbreadcrumb
 @endsection
 
 @section('content')
@@ -21,7 +35,11 @@
         <div class="box">
             <div class="box-header">
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('resource.createInternal',$resource->id) }}" class="btn btn-primary btn-sm">INPUT INTERNAL RESOURCE</a>
+                    @if($route == "/resource")
+                        <a href="{{ route('resource.createInternal',$resource->id) }}" class="btn btn-primary btn-sm">INPUT INTERNAL RESOURCE</a>
+                    @elseif($route == "/resource_repair")
+                        <a href="{{ route('resource_repair.createInternal',$resource->id) }}" class="btn btn-primary btn-sm">INPUT INTERNAL RESOURCE</a>
+                    @endif
                 </div>
                 <div class="col-sm-4">
                     <table>

@@ -23,7 +23,7 @@ class CreateTrxPurchaseOrderDetailTable extends Migration
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
-            $table->bigInteger('total_price')->nullable();
+            $table->double('total_price')->nullable();
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');
