@@ -21,7 +21,7 @@ class CreateTrxWorkOrderTable extends Migration
             $table->unsignedInteger('project_id')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->default(1);
-            $table->bigInteger('total_price')->nullable();
+            $table->double('total_price')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
