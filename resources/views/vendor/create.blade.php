@@ -133,7 +133,7 @@
                             <label for="email" class="col-sm-2 control-label">Email</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="email" name="email" required
+                                <input type="email" class="form-control" id="email" name="email" required
                                 @if($vendor->email != null) value="{{ $vendor->email }}"
                                 @else value="{{ old('email') }}">
                                 @endif
@@ -144,7 +144,7 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" required
+                                <input type="text" class="form-control" id="description" name="description"
                                 @if($vendor->description != null) value="{{ $vendor->description }}"
                                 @else value="{{ old('description') }}">
                                 @endif
