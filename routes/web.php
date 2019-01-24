@@ -835,7 +835,7 @@ Route::name('work_order_repair.')->prefix('work_order_repair')->group(function()
 
     Route::delete('/{id}', 'WorkOrderController@destroy')->name('destroy')->middleware('can:destroy-work-order-repair');
 
-    Route::get('/print/{id}', 'WorkOrderController@printPdf')->name('print')->middleware('can:show-work-order');    
+    Route::get('/print/{id}', 'WorkOrderController@printPdf')->name('print')->middleware('can:show-work-order-repair');    
 });
 
 //Physical Inventory Routes
