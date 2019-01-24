@@ -153,6 +153,11 @@ class GoodsReceiptController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->purchase_order_id = $datas->purchase_order_id;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
@@ -199,6 +204,11 @@ class GoodsReceiptController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->work_order_id = $datas->wo_id;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
@@ -243,6 +253,11 @@ class GoodsReceiptController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;

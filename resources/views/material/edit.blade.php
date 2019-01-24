@@ -251,6 +251,30 @@
                 if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.uom_id == ""){
                     isOk = true;
                 }
+
+                if(this.submittedForm.weight_uom_id != ""){
+                    if(this.submittedForm.weight == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.submittedForm.height_uom_id != ""){
+                    if(this.submittedForm.height == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.submittedForm.length_uom_id != ""){
+                    if(this.submittedForm.lengths == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.submittedForm.width_uom_id != ""){
+                    if(this.submittedForm.width == ""){
+                        isOk = true;
+                    }
+                }
                 return isOk;
             },
             weightOk :function(){

@@ -16,6 +16,7 @@ class CreateTrxGoodsReceiptTable extends Migration
         Schema::create('trx_goods_receipt', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number')->unique();
+            $table->unsignedInteger('business_unit_id');
             $table->unsignedInteger('purchase_order_id')->nullable();
             $table->unsignedInteger('work_order_id')->nullable();
             $table->unsignedInteger('vendor_id')->nullable();

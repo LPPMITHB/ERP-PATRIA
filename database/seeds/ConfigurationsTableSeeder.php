@@ -115,5 +115,30 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $vendor_category = array(
+            
+            0 => array(
+                'id' => 0,
+                'name' => 'Subcon',
+            ),
+            1 => array(
+                'id' => 1,
+                'name' => 'Material',
+            ),
+            2 => array(
+                'id' => 2,
+                'name' => 'Resource',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'vendor_category',
+            'title' => 'Vendor Category',
+            'value' => json_encode($vendor_category),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

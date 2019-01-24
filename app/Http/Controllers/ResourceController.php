@@ -149,6 +149,11 @@ class ResourceController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->purchase_order_id = $datas->po_id;
             $GR->type = 4;
             $GR->description = $datas->description;
