@@ -69,8 +69,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
                                 @if($warehouse->name != null) value="{{ $warehouse->name }}"
-                                @else value="{{ old('name') }}">
-                                @endif
+                                @else value="{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -79,9 +79,9 @@
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="description" name="description"
-                                @if($vendor->description != null) value="{{ $vendor->description }}"
-                                @else value="{{ old('description') }}">
-                                @endif
+                                @if($warehouse->description != null) value="{{ $warehouse->description }}"
+                                @else value="{{ old('description') }}"
+                                @endif>
                             </div>
                         </div>
 

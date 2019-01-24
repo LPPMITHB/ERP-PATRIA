@@ -292,7 +292,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="submitToTable()">SAVE</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" :disabled="inputOk" @click.prevent="submitToTable()">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -414,9 +414,21 @@
         computed : {
             createOk: function(){
                 let isOk = false;
-                
+                if(this.submitData == ""){
+                    isOk = true;
+                }
                 return isOk;
             },
+           inputOk: function(){
+                let isOk = false;
+                if(this.editInput.category_id == ""
+                ) if(this.editInput.category_id == 1 {
+                    this.submitData =
+                }){
+                    isOk = true;
+                }
+                return isOk;
+            }
         },
         methods : {
             submitToTable(){
