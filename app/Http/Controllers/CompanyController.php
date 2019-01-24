@@ -49,7 +49,7 @@ class CompanyController extends Controller
             'code' => 'required|alpha_dash|unique:mst_company|string|max:255',
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone-number' => 'required|numeric',
+            'phone_number' => 'required|numeric',
             'fax' => 'nullable|numeric|unique:mst_company|min:6',
             'email' => 'required|email|unique:mst_company|max:255',
         ]);
@@ -59,7 +59,7 @@ class CompanyController extends Controller
         $company->code = strtoupper($request->input('code'));
         $company->name = ucwords($request->input('name'));
         $company->address = ucwords(strtolower($request->input('address')));
-        $company->phone_number = $request->input('phone-number');
+        $company->phone_number = $request->input('phone_number');
         $company->fax = $request->input('fax');
         $company->email = $request->input('email');
         $company->status = $request->input('status');
@@ -69,10 +69,9 @@ class CompanyController extends Controller
         return redirect()->route('company.show',$company->id)->with('success', 'Success Created New Company!');
     } catch (\Exception $e) {
         DB::rollback();
-        return redirect()->route('company.create')->with('error', $e->getMessage());
+        return redirect()->route('company.create')->with('error', $e->getMessage())->withInput();
     }
     }
-
     /**
      * Display the specified resource.
      *
@@ -112,7 +111,7 @@ class CompanyController extends Controller
             'code' => 'required|alpha_dash|unique:mst_company,code,'.$id.',id|string|max:255',
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone-number' => 'required|numeric',
+            'phone_number' => 'required|numeric',
             'fax' => 'nullable|numeric|unique:mst_company,email,'.$id.',id|min:6',
             'email' => 'required|email|unique:mst_company,email,'.$id.',id|string|max:255'
         ]);
@@ -123,7 +122,7 @@ class CompanyController extends Controller
         $company->code = strtoupper($request->input('code'));
         $company->name = ucwords($request->input('name'));
         $company->address = ucwords(strtolower($request->input('address')));
-        $company->phone_number = $request->input('phone-number');
+        $company->phone_number = $request->input('phone_number');
         $company->fax = $request->input('fax');
         $company->email = $request->input('email');
         $company->status = $request->input('status');

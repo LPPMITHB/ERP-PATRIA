@@ -67,7 +67,10 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $storage_location->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus
+                                @if($storage_location->name != null) value="{{ $storage_location->name }}"
+                                @else value="{{ old('name') }}">
+                                @endif
                             </div>
                         </div>
 
@@ -75,7 +78,10 @@
                             <label for="type" class="col-sm-2 control-label">Area (m<sup>2</sup>)</label>
             
                             <div class="col-sm-10">
-                                <input type='text' onkeypress='validate(event)' class="form-control" id="area" name="area" required value="{{ $storage_location->area }}">
+                                <input type='text' onkeypress='validate(event)' class="form-control" id="area" name="area" required
+                                @if($storage_location->area != null) value="{{ $storage_location->area }}"
+                                @else value="{{ old('area') }}">
+                                @endif
                             </div>
                         </div>
 
@@ -83,7 +89,10 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" value="{{ $storage_location->description }}">
+                                <input type="text" class="form-control" id="description" name="description"
+                                @if($storage_location->description != null) value="{{ $storage_location->description }}"
+                                @else value="{{ old('description') }}">
+                                @endif
                             </div>
                         </div>
                         

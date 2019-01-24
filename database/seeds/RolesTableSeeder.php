@@ -30,6 +30,7 @@ class RolesTableSeeder extends Seeder
                 'create-currencies' => true,'list-currencies' => true,'show-currencies' => true,'edit-currencies' => true,
                 'create-material' => true,'list-material' => true,'show-material' => true,'edit-material' => true,
                 'create-resource' => true,'list-resource' => true,'show-resource' => true,'edit-resource' => true,
+                'create-issue-resource' => true,
                 'create-service' => true,'list-service' => true,'show-service' => true,'edit-service' => true,
                 'create-unit-of-measurement' => true,'list-unit-of-measurement' => true,'show-unit-of-measurement' => true,'edit-unit-of-measurement' => true,
                 'create-vendor' => true,'list-vendor' => true,'show-vendor' => true,'edit-vendor' => true,

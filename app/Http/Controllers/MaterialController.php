@@ -99,7 +99,7 @@ class MaterialController extends Controller
         return redirect()->route('material.show',$material->id)->with('success', 'Success Created New Material!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('material.create')->with('error', $e->getMessage());
+            return redirect()->route('material.create')->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -196,7 +196,7 @@ class MaterialController extends Controller
         return redirect()->route('material.show',$material->id)->with('success', 'Material Updated Succesfully');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('material.update',$material->id)->with('error', $e->getMessage());
+            return redirect()->route('material.update',$material->id)->with('error', $e->getMessage())->withInput();
         }
             
     }

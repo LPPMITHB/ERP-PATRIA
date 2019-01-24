@@ -819,7 +819,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'resource.issueResource',
             'is_active' => true,
             'roles' => 'ADMIN,PMP',
-            'menu_id'=> $resourcemanagement,
+            'menu_id'=> $issueResource,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

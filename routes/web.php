@@ -195,7 +195,7 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::get('/indexIssued', 'ResourceController@indexIssued')->name('indexIssued');
 
-    Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource');
+    Route::get('/issueResource', 'ResourceController@issueResource')->name('issueResource')->middleware('can:create-issue-resource');
 
     Route::get('/create', 'ResourceController@create')->name('create')->middleware('can:create-resource');
 
