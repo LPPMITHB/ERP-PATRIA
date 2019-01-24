@@ -282,7 +282,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h4 class="box-title m-t-0">Material</h4>
-                            <table id="material-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                            <table id="material-table" class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -351,8 +351,8 @@
                                     <tr>
                                         <th width="5%">No</th>
                                         <th width="30%">Resource Name</th>
-                                        <th width="25%">Description</th>
-                                        <th width="30%">Operational Resource</th>
+                                        <th width="40%">Operational Resource</th>
+                                        <th width="15%">Status</th>
                                         <th width="10%"></th>
                                     </tr>
                                 </thead>
@@ -360,16 +360,69 @@
                                     <tr v-for="(data,index) in resources">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                        <td class="tdEllipsis">{{ (data.resource.description) ? data.resource.description : '-'}}</td>
                                         <td class="tdEllipsis">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
-                                        <td class="p-l-5" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#" data-toggle="modal">
+                                        <td>{{ data.status }}</td>
+                                        <td v-if="data.status == 'UNACTUALIZED'" class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
                                             <div class="btn-group">
                                                 INPUT ACTUAL
+                                            </div></a>
+                                        </td>
+                                        <td v-else class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
+                                            <div class="btn-group">
+                                                EDIT ACTUAL
                                             </div></a>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="actual_resource">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Input Actual Resource's Performance</h4>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-6 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Performance</label>
+                                                <input class="form-control" v-model="editInput.performance" placeholder="Please Input Performance">
+                                            </div>
+                                            <div class="col-sm-6 no-padding">
+                                                <label for="type" class="control-label p-b-10">Unit</label>
+                                                <template v-if="editInput.statusUom == ''">
+                                                    <selectize id="edit_modal" v-model="editInput.performance_uom_id" :settings="uomSettings">
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                    </selectize>
+                                                </template>
+                                                <template v-else-if="editInput.statusUom == 'exist'">
+                                                    <selectize id="edit_modal" v-model="editInput.performance_uom_id" :settings="uomSettings" disabled>
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                    </selectize>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-6 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Usage</label>
+                                                <input class="form-control width100" v-model="editInput.usage" placeholder="Please Input Usage">
+                                            </div>
+                                            <div class="col-sm-6 p-t-45 p-l-0">
+                                                Hour(s)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12 p-t-10 p-r-0">
@@ -410,6 +463,7 @@
     var data = {
         route : @json($route),
         menu : @json($route),
+        uoms : @json($uoms),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
         materials : [],
@@ -427,7 +481,17 @@
         },
         havePredecessor : false,
         submittedForm : {
-        }
+        },
+        editInput: {
+            performance : "",
+            performance_uom_id : "",
+            usage : "",
+            statusUom : "",
+            index : ""
+        },
+        uomSettings: {
+            placeholder: 'Please Select Unit'
+        },
     };
 
     var vm = new Vue({
@@ -465,23 +529,99 @@
                 let isOk = false;
 
                 return isOk;
+            },
+            selectOk: function(){
+                let isOk = false;
+                
+                return isOk;
             }
         },
         methods: {
+            clearEditInput(){
+                this.editInput.performance = "";
+                this.editInput.performance_uom_id = "";
+                this.editInput.usage = "";
+                this.editInput.statusUom = "";
+            },
+            openEditModal(data,index){
+                this.clearEditInput();
+                this.editInput.index = index;
+                this.editInput.performance = data.performance;
+                this.editInput.usage = data.usage;
+                this.editInput.performance_uom_id = data.performance_uom_id;
+
+                if(data.resource_detail.performance_uom_id != "" && data.resource_detail.performance_uom_id != null && this.editInput.performance_uom_id != ""){
+                    this.editInput.performance_uom_id = data.resource_detail.performance_uom_id;
+                    this.editInput.statusUom = "exist";
+                }else{
+                    this.editInput.statusUom = "";
+                }
+            },
+            submitToTable(){
+                let resource = this.resources[this.editInput.index];
+                resource.performance = this.editInput.performance;
+                resource.performance_uom_id = this.editInput.performance_uom_id;
+                resource.usage = this.editInput.usage;
+                if(resource.performance != "" && resource.usage != ""){
+                    resource.status = "ACTUALIZED";
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: 'Actual Performance Submitted!',
+                        position: 'topRight',
+                    });
+                }else{
+                    resource.status = "UNACTUALIZED";
+                }
+            },
             tooltipText: function(text) {
                 return text
             },
             submitForm() {
-                this.submittedForm.modelPrOD = this.modelPrOD;
-                this.submittedForm.materials = this.materials;
-                this.submittedForm.services = this.services;
+                let status = 0;
+                this.activities.forEach(activity => {
+                    if(activity.progress != 100){
+                        status = 1;
+                    }
+                });
+                if(status == 0){
+                    let statusResource = 0;
+                    this.resources.forEach(resource => {
+                        if(resource.status == "UNACTUALIZED"){
+                            statusResource = 1;
+                        }
+                    });
+                    if(statusResource == 0){
+                        this.submittedForm.modelPrOD = this.modelPrOD;
+                        this.submittedForm.materials = this.materials;
+                        this.submittedForm.services = this.services;
+                        this.submittedForm.resources = this.resources;
 
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
-                form.appendChild(struturesElem);
-                form.submit();
+                        let struturesElem = document.createElement('input');
+                        struturesElem.setAttribute('type', 'hidden');
+                        struturesElem.setAttribute('name', 'datas');
+                        struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                        form.appendChild(struturesElem);
+                        form.submit();
+                    }else{
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: 'Please Input Actual Resource\'s Performance !',
+                            position: 'topRight',
+                        });
+                    }
+                }else{
+                    this.submittedForm.modelPrOD = this.modelPrOD;
+                    this.submittedForm.materials = this.materials;
+                    this.submittedForm.services = this.services;
+                    this.submittedForm.resources = this.resources;
+
+                    let struturesElem = document.createElement('input');
+                    struturesElem.setAttribute('type', 'hidden');
+                    struturesElem.setAttribute('name', 'datas');
+                    struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                    form.appendChild(struturesElem);
+                    form.submit();
+                }
             },
             openConfirmModal(data){
                 this.predecessorTableView = [];
@@ -642,7 +782,6 @@
             },
         },
         created: function() {
-            $('div.overlay').show();
             this.getActivities();
             this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null){
@@ -651,6 +790,12 @@
                     }
                     POD.sugQuantity = POD.quantity-POD.actual;
                     POD.used = POD.quantity-POD.actual;
+                    if(POD.sugQuantity < 0){
+                        POD.sugQuantity = 0;
+                    }
+                    if(POD.used < 0){
+                        POD.used = 0;
+                    }
                     this.materials.push(POD);
                 }else if(POD.service_id != null){
                     if(POD.actual == null){
@@ -658,6 +803,12 @@
                     }
                     POD.sugQuantity = POD.quantity-POD.actual;
                     POD.used = POD.quantity-POD.actual;
+                    if(POD.sugQuantity < 0){
+                        POD.sugQuantity = 0;
+                    }
+                    if(POD.used < 0){
+                        POD.used = 0;
+                    }
                     this.services.push(POD);
                 }else if(POD.resource_id != null && POD.resource_detail_id != null){
                     this.resources.push(POD);
@@ -665,16 +816,13 @@
             });
         },
     });
+    function parseDate(str) {
+        var mdy = str.split('/');
+        return new Date(mdy[2], mdy[0]-1, mdy[1]);
+    }
 
-function parseDate(str) {
-    var mdy = str.split('/');
-    return new Date(mdy[2], mdy[0]-1, mdy[1]);
-}
-
-function datediff(first, second) {
-    // Take the difference between the dates and divide by milliseconds per day.
-    // Round to nearest whole number to deal with DST.
-    return Math.round(((second-first)/(1000*60*60*24))+1);
-}
+    function datediff(first, second) {
+        return Math.round(((second-first)/(1000*60*60*24))+1);
+    }
 </script>
 @endpush

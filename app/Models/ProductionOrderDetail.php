@@ -37,4 +37,9 @@ class ProductionOrderDetail extends Model
     {
         return $this->belongsTo('App\Models\ResourceDetail');
     }
+
+    public function performanceUom()
+    {
+        return $this->belongsTo('App\Models\Uom', 'performance_uom_id');
+    }
 }
