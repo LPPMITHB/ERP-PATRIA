@@ -69,8 +69,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus 
                                 @if($company->name != null)value="{{ $company->name }}"
-                                @else value = "{{ old('name') }}">
-                                @endif
+                                @else value = "{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -80,8 +80,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="adress" name="address" required 
                                 @if($company->address != null) value="{{ $company->address }}"
-                                @else value = "{{ old('address')}}">
-                                @endif
+                                @else value = "{{ old('address')}}"
+                                @endif>
                             </div>
                         </div>
 
@@ -91,8 +91,8 @@
                             <div class="col-sm-10">
                                 <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="phone_number" name="phone_number"  required 
                                 @if($company->phone_number != null) value="{{ $company->phone_number }}"
-                                @else value = "{{ old('phone_number')}}">
-                                @endif
+                                @else value = "{{ old('phone_number')}}"
+                                @endif>
                             </div>
                         </div>
                         
@@ -102,8 +102,8 @@
                                 <div class="col-sm-10">
                                     <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="fax" name="fax" 
                                     @if($company->fax != null) value="{{ $company->fax }}"
-                                    @else value = "{{ old('fax')}}">
-                                    @endif
+                                    @else value = "{{ old('fax')}}"
+                                    @endif>
                                 </div>
                             </div>
 
@@ -113,8 +113,8 @@
                                 <div class="col-sm-10">
                                     <input type="email" class="form-control" id="email" name="email" required 
                                     @if($company->email != null) value="{{ $company->email }}"
-                                    @else value = "{{ old('email')}}">
-                                    @endif
+                                    @else value = "{{ old('email')}}"
+                                    @endif>
                                 </div>
                             </div>
 

@@ -60,8 +60,9 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus 
                                 @if($customer->name != null) value="{{ $customer->name }}"
-                                @else value="{{ old('name') }}">
+                                @else value="{{ old('name') }}"
                                 @endif
+                                >
                             </div>
                         </div>
 
@@ -71,8 +72,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="address_1" name="address_1"  
                                 @if($customer->address_1 != null) value="{{ $customer->address_1 }}"
-                                @else value="{{ old('address_1') }}">
-                                @endif
+                                @else value="{{ old('address_1') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -82,8 +83,8 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="address_2" name="address_2" 
                                     @if($customer->address_2 != null) value="{{ $customer->address_2 }}"
-                                    @else value="{{ old('address_2') }}">
-                                    @endif
+                                    @else value="{{ old('address_2') }}"
+                                    @endif>
                                 </div>
                             </div>
 
@@ -93,8 +94,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="phone_number_1" name="phone_number_1"
                                 @if($customer->phone_number_1 != null) value="{{ $customer->phone_number_1 }}"
-                                @else value="{{ old('phone_number_1') }}">
-                                @endif
+                                @else value="{{ old('phone_number_1') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -104,8 +105,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="phone_number_2" name="phone_number_2"
                                 @if($customer->phone_number_2 != null) value="{{ $customer->phone_number_2 }}"
-                                @else value="{{ old('phone_number_2') }}">
-                                @endif
+                                @else value="{{ old('phone_number_2') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -115,8 +116,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="contact_name" name="contact_name" 
                                 @if($customer->contact_name != null) value="{{ $customer->contact_name }}"
-                                @else value="{{ old('contact_name') }}">
-                                @endif
+                                @else value="{{ old('contact_name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -126,8 +127,8 @@
                             <div class="col-sm-10">
                                 <input type="email" class="form-control" id="email" name="email"
                                 @if($customer->email != null) value="{{ $customer->email }}"
-                                @else value="{{ old('email') }}">
-                                @endif
+                                @else value="{{ old('email') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -137,8 +138,8 @@
                             <div class="col-sm-10">
                                 <input type="numeric" onkeypress="validate(event)" class="form-control" id="tax_number" name="tax_number"
                                 @if($customer->tax_number != null) value="{{ $customer->tax_number }}"
-                                @else value="{{ old('tax_number') }}">
-                                @endif
+                                @else value="{{ old('tax_number') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -148,8 +149,8 @@
                             <div class="col-sm-10">
                                 <input type="numeric" onkeypress="validate(event)" class="form-control" id="pkp_number" name="pkp_number"
                                 @if($customer->pkp_number != null) value="{{ $customer->pkp_number }}"
-                                @else value="{{ old('pkp_number') }}">
-                                @endif
+                                @else value="{{ old('pkp_number') }}"
+                                @endif>
                         </div>
                     </div>
 
@@ -159,8 +160,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="province" name="province"
                                 @if($customer->province != null) value="{{ $customer->province }}"
-                                @else value="{{ old('province') }}">
-                                @endif
+                                @else value="{{ old('province') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -170,8 +171,8 @@
                             <div class="col-sm-10">
                                 <input type="numeric" onkeypress="validate(event)" minlength="4" maxlength="5" class="form-control" id="zip_code" name="zip_code"
                                 @if($customer->zip_code != null) value="{{ $customer->zip_code }}"
-                                @else value="{{ old('zip_code') }}">
-                                @endif
+                                @else value="{{ old('zip_code') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -181,8 +182,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="country" name="country"
                                 @if($customer->country != null) value="{{ $customer->country }}"
-                                @else value="{{ old('country') }}">
-                                @endif
+                                @else value="{{ old('country') }}"
+                                @endif>
                             </div>
                         </div>
 
