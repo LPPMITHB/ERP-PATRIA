@@ -159,6 +159,7 @@
     });
 
     var data = {
+        route : @json($route),
         modelResources : @json($resources),
         projects : @json($modelProject),
         selectedProject : [],
@@ -236,7 +237,11 @@
                 this.dataInput.project_id = this.project_id;
                 var dataInput = this.dataInput;
                 dataInput = JSON.stringify(dataInput);
-                var url = "{{ route('resource.storeAssignResource') }}";
+                if(this.route == "/resource"){
+                    var url = "{{ route('resource.storeAssignResource') }}";
+                }else if(this.route == "/resource_repair"){
+                    var url = "{{ route('resource_repair.storeAssignResource') }}";
+                }
 
                 window.axios.post(url,dataInput).then((response) => {
                     if(response.data.error != undefined){
@@ -268,8 +273,12 @@
                 
             },
             update(){
-                $('div.overlay').show();            
-                var url = "/resource/updateAssignResource/"+this.editInput.id;
+                $('div.overlay').show();   
+                if(this.route == "/resource"){
+                    var url = "/resource/updateAssignResource/"+this.editInput.id;
+                }else if(this.route == "/resource_repair"){
+                    var url = "/resource_repair/updateAssignResource/"+this.editInput.id;
+                }         
                 let editInput = JSON.stringify(this.editInput);
 
                 window.axios.put(url,editInput).then((response) => {

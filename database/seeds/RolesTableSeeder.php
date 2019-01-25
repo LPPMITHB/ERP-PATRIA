@@ -139,6 +139,7 @@ class RolesTableSeeder extends Seeder
                 'create-production-order' => true,'list-production-order' => true,'show-production-order' => true,'release-production-order' => true,'confirm-production-order' => true,
                 'create-resource' => true,'list-resource' => true,'show-resource' => true,'edit-resource' => true,
                 'create-receive-resource' => true,'list-receive-resource' => true,'show-receive-resource' => true,
+                'create-issue-resource' => true, 'list-issue-resource' => true,'show-issue-resource' => true,'edit-issue-resource' => true,
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -181,6 +182,9 @@ class RolesTableSeeder extends Seeder
                 'create-unit-of-measurement' => true,'list-unit-of-measurement' => true,'show-unit-of-measurement' => true,'edit-unit-of-measurement' => true,
                 'create-warehouse' => true,'list-warehouse' => true,'show-warehouse' => true,'edit-warehouse' => true,
                 'create-production-order-repair' => true,'list-production-order-repair' => true,'show-production-order-repair' => true,'release-production-order-repair' => true,'confirm-production-order-repair' => true,
+                'create-resource-repair' => true,'list-resource-repair' => true,'show-resource-repair' => true,'edit-resource-repair' => true,
+                'create-receive-resource-repair' => true,'list-receive-resource-repair' => true,'show-receive-resource-repair' => true,
+                'create-issue-resource-repair' => true, 'list-issue-resource-repair' => true,'show-issue-resource-repair' => true,'edit-issue-resource-repair' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

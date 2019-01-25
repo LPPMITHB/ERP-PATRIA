@@ -13,6 +13,7 @@ use App\Models\WBS;
 use App\Models\Uom;
 use App\Models\Vendor;
 use App\Models\Category;
+use App\Models\PurchaseRequisition;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
 use App\Models\Configuration;
@@ -34,12 +35,12 @@ class ResourceController extends Controller
         $this->GR = $GR;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-
+        $route = $request->route()->getPrefix();
         $resources = Resource::all();
 
-        return view('resource.index', compact('resources'));
+        return view('resource.index', compact('resources','route'));
     }
 
     public function assignResource(Request $request)
@@ -52,45 +53,22 @@ class ResourceController extends Controller
         }
         $resources = Resource::all();
 
-        return view('resource.assignResource', compact('resources','modelProject'));
+        return view('resource.assignResource', compact('resources','modelProject','route'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $resource = new Resource;
         $resource_code = self::generateResourceCode();
 
-        return view('resource.create', compact('resource', 'resource_code'));
+        return view('resource.create', compact('resource', 'resource_code','route'));
     }
 
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
-        $request = new Request([
-            'code' => $data->code,
-            'name' => $data->name,
-            'description' => $data->description,
-            'cost_standard_price' => $data->cost_standard_price,
-            'cost_standard_price_service' => $data->cost_standard_service,
-            'weight' => $data->weight,
-            'height' => $data->height,
-            'length' => $data->lengths,
-            'width' => $data->width,
-            'volume' => $data->volume
-
-        ]);
-
-        $this->validate($request, [
-            'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:255',
-            'cost_standard_price' => 'nullable|numeric',
-            'cost_standard_price_service' => 'nullable|numeric',
-            'weight' => 'nullable|numeric',
-            'height' => 'nullable|numeric',
-            'length' => 'nullable|numeric',
-            'width' => 'nullable|numeric',
-        ]);
+        $route = $request->route()->getPrefix();
 
         DB::beginTransaction();
         try {
@@ -103,10 +81,18 @@ class ResourceController extends Controller
             $resource->save();
 
             DB::commit();
-            return redirect()->route('resource.show',$resource->id)->with('success', 'Success Created New Resource!');
+            if($route == "/resource"){
+                return redirect()->route('resource.show',$resource->id)->with('success', 'Success Created New Resource!');
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.show',$resource->id)->with('success', 'Success Created New Resource!');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('resource.create')->with('error', $e->getMessage());
+            if($route == "/resource"){
+                return redirect()->route('resource.create')->with('error', $e->getMessage());
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.create')->with('error', $e->getMessage());
+            }
         }
     }
 
@@ -114,11 +100,11 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/resource"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
-        }elseif($route == "/resource_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $modelPR = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
+        }else if($route == "/resource_repair"){
+            $modelPR = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
         }
-        $modelPOs = PurchaseOrder::where('status',2)->whereIn('project_id',$modelProject)->get();
+        $modelPOs = PurchaseOrder::where('status',2)->whereIn('purchase_requisition_id',$modelPR)->get();
 
         foreach($modelPOs as $key => $PO){
             if($PO->purchaseRequisition->type != 2){
@@ -163,6 +149,11 @@ class ResourceController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->purchase_order_id = $datas->po_id;
             $GR->type = 4;
             $GR->description = $datas->description;
@@ -333,6 +324,7 @@ class ResourceController extends Controller
 
     public function storeResourceDetail(Request $request, $wbs_id)
     {
+        $route = $request->route()->getPrefix();
         $data = $request->json()->all();
         DB::beginTransaction();
         try {
@@ -380,25 +372,27 @@ class ResourceController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
         $modelPOD = PurchaseOrderDetail::where('resource_id',$id)->get();
         
-        return view('resource.show', compact('resource','modelPOD'));
+        return view('resource.show', compact('resource','modelPOD','route'));
     }
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
 
-        return view('resource.edit', compact('resource','uoms','resource_code','vendors','resource_category'));
+        return view('resource.edit', compact('resource','route'));
     }
 
     public function update(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $data = json_decode($request->datas);
-
         DB::beginTransaction();
         try {
             $resource = Resource::find($id);
@@ -408,15 +402,24 @@ class ResourceController extends Controller
             $resource->update();
 
             DB::commit();
-            return redirect()->route('resource.show',$resource->id)->with('success', 'Resource Updated Succesfully');
+            if($route == "/resource"){
+                return redirect()->route('resource.show',$resource->id)->with('success', 'Resource Updated Succesfully');
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.show',$resource->id)->with('success', 'Resource Updated Succesfully');
+            }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('resource.update',$resource->id)->with('error', $e->getMessage());
+            if($route == "/resource"){
+                return redirect()->route('resource.update',$resource->id)->with('error', $e->getMessage());
+            }elseif($route == "/resource_repair"){
+                return redirect()->route('resource_repair.update',$resource->id)->with('error', $e->getMessage());
+            }
         }
     }
 
     public function updateAssignResource (Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $data = $request->json()->all();
         $resource_ref = ResourceTrx::findOrFail($id);
 
@@ -440,6 +443,7 @@ class ResourceController extends Controller
 
     public function storeAssignResource(Request $request)
     {
+        $route = $request->route()->getPrefix();
         $data = $request->json()->all();
    
         DB::beginTransaction();
@@ -462,14 +466,15 @@ class ResourceController extends Controller
         }
     }
 
-    public function createInternal($id)
+    public function createInternal(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
         $resource_detail_code = self::generateCodeInternal($resource->code);
         $depreciation_methods = Configuration::get('depreciation_methods');
         $uom = Uom::all();
         
-        return view('resource.createInternal', compact('resource','resource_detail_code','depreciation_methods','uom'));        
+        return view('resource.createInternal', compact('resource','resource_detail_code','depreciation_methods','uom','route'));        
     }
 
     public function storeInternal(Request $request){

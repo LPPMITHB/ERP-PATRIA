@@ -1,18 +1,32 @@
 @extends('layouts.main')
 @section('content-header')
-
-@breadcrumb(
-    [
-        'title' => 'Edit Resource',
-        'subtitle' => 'Edit',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Resources' => route('resource.index'),
-            'Edit Resource' => '',
+@if($route == "/resource")
+    @breadcrumb(
+        [
+            'title' => 'Edit Resource',
+            'subtitle' => 'Edit',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource.index'),
+                'Edit Resource' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/resource_repair")
+    @breadcrumb(
+        [
+            'title' => 'Edit Resource',
+            'subtitle' => 'Edit',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource_repair.index'),
+                'Edit Resource' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 
@@ -21,7 +35,11 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
+                @if($route == "/resource")
                     <form id="resource" class="form-horizontal" method="POST" action="{{ route('resource.update',['id'=>$resource->id]) }}">
+                @elseif($route == "/resource_repair")
+                    <form id="resource" class="form-horizontal" method="POST" action="{{ route('resource_repair.update',['id'=>$resource->id]) }}">
+                @endif
                 @csrf
                 <input type="hidden" name="_method" value="PATCH"> 
                 @verbatim
