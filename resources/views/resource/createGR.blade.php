@@ -110,8 +110,8 @@
                                                     <input type="text" id="sub_con_address" v-model="editInput.sub_con_address" class="form-control" placeholder="Please Input Sub Con Address">
                                                 </div>
                                                 <div class="col-sm-12">
-                                                    <label for="sub_con_phone" class="control-label">Sub Con Contact Person*</label>
-                                                    <input type="text" id="sub_con_phone" v-model="editInput.sub_con_phone" class="form-control" placeholder="Please Input Sub Con Contact Person">
+                                                    <label for="sub_con_phone" class="control-label">Sub Con Contact Phone Number*</label>
+                                                    <input type="text" id="sub_con_phone" v-model="editInput.sub_con_phone" class="form-control" placeholder="Please Input Sub Con Contact Phone Number">
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <label for="sub_con_competency" class="control-label">Sub Con Competency*</label>
@@ -126,7 +126,7 @@
                                                         <label for="performance" class="control-label">Performance</label>
                                                     </div>
                                                     <div class="col-sm-3 no-padding p-r-10">
-                                                        <input type="text" id="performance" v-model="editInput.performance" class="form-control" placeholder="Performance">
+                                                        <input type="text" id="performance" v-model="editInput.performance" :disabled="performanceOk" class="form-control" placeholder="Performance">
 
                                                     </div>
                                                     <div class="col-sm-3 no-padding">
@@ -158,7 +158,7 @@
                                                         <label for="performance" class="control-label">Performance</label>
                                                     </div>
                                                     <div class="col-sm-3 no-padding p-r-10">
-                                                        <input type="text" id="performance" v-model="editInput.performance" class="form-control" placeholder="Performance">
+                                                        <input type="text" id="performance" v-model="editInput.performance" :disabled="performanceOk" class="form-control" placeholder="Performance">
 
                                                     </div>
                                                     <div class="col-sm-3 no-padding">
@@ -190,7 +190,7 @@
                                                         <label for="performance" class="control-label">Performance</label>
                                                     </div>
                                                     <div class="col-sm-3 no-padding p-r-10">
-                                                        <input type="text" id="performance" v-model="editInput.performance" class="form-control" placeholder="Performance">
+                                                        <input type="text" id="performance" v-model="editInput.performance" :disabled="performanceOk" class="form-control" placeholder="Performance">
 
                                                     </div>
                                                     <div class="col-sm-3 no-padding">
@@ -234,7 +234,7 @@
                                                         <label for="lifetime" class="control-label">Life Time</label>
                                                     </div>
                                                     <div class="col-sm-3 no-padding p-r-10">
-                                                        <input type="text" id="lifetime" v-model="editInput.lifetime" class="form-control" placeholder="Life Time">
+                                                        <input type="text" id="lifetime" v-model="editInput.lifetime" :disabled="lifetimeOk" class="form-control" placeholder="Life Time">
                                                     </div>
                                                     <div class="col-sm-3 no-padding">
                                                         <selectize v-model="editInput.lifetime_uom_id" :settings="timeSettings">
@@ -259,7 +259,7 @@
                                                         <label for="performance" class="control-label">Performance</label>
                                                     </div>
                                                     <div class="col-sm-3 no-padding p-r-10">
-                                                        <input type="text" id="performance" v-model="editInput.performance" class="form-control" placeholder="Performance">
+                                                        <input type="text" id="performance" v-model="editInput.performance" :disabled="performanceOk" class="form-control" placeholder="Performance">
                                                     </div>
                                                     <div class="col-sm-3 no-padding">
                                                         <selectize v-model="editInput.performance_uom_id" :settings="uomSettings">
@@ -395,24 +395,64 @@
         computed : {
             createOk: function(){
                 let isOk = false;
-                if(this.submitData == ""){
-                    isOk = true;
-                }
+                this.datas.forEach(data => {
+                    if(data.status == "Detail Not Complete"){
+                        isOk = true;
+                    }
+                });
+
                 return isOk;
             },
            inputOk: function(){
                 let isOk = false;
-                if(this.editInput.category_id == ""
-                ) if(this.editInput.category_id == 1 {
-                    this.submitData =
-                }){
+                if(this.editInput.category_id == ""){
+                    isOk = true;
+                }
+                if(this.editInput.category_id == 0){
+                    if(this.editInput.sub_con_address == "" || this.editInput.sub_con_phone == "" || this.editInput.sub_con_competency == ""){
+                        isOk = true;
+                    }
+                }
+                if(this.editInput.category_id == 1){
+                    if(this.editInput.name == ""){
+                        isOk = true;
+                    }
+                }
+                if(this.editInput.category_id == 2){
+                    if(this.editInput.brand == ""){
+                        isOk = true;
+                    }
+                }
+                if(this.editInput.category_id == 3){
+                    if(this.editInput.brand == ""){
+                        isOk = true;
+                    }
+                }
+                return isOk;
+            }, 
+            lifetimeOk :function(){
+                let isOk = false;
+
+                if(this.editInput.lifetime_uom_id == ""){
                     isOk = true;
                 }
                 return isOk;
-            }
+            },
+            performanceOk :function(){
+                let isOk = false;
+
+                if(this.editInput.performance_uom_id == ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
         },
         methods : {
             submitToTable(){
+
+                this.editInput.purchasing_price = this.editInput.purchasing_price.replace(/,/g , '');
+                this.editInput.cost_per_hour = this.editInput.cost_per_hour.replace(/,/g , '');
+                
                 let category_id = this.editInput.category_id;
                 this.detailData.category_id = category_id;
                 this.detailData.code = this.editInput.code;
@@ -422,7 +462,8 @@
                 this.detailData.pod_id = this.editInput.pod_id;
                 this.detailData.performance = this.editInput.performance;
                 this.detailData.performance_uom_id = this.editInput.performance_uom_id;
-
+                
+                console.log(this.detailData);
                 if(category_id == 0){
                     this.detailData.sub_con_address = this.editInput.sub_con_address;
                     this.detailData.sub_con_phone = this.editInput.sub_con_phone;
@@ -566,9 +607,74 @@
             },
         },
         watch : {
-            'this.editInput.category_id': function(newValue){
+            //data cleaning
+            'editInput.category_id': function(newValue){
+                if(newValue !=""){
+                    // console.log('a')
+                    this.editInput.sub_con_address = '';
+                    this.editInput.sub_con_phone = '';
+                    this.editInput.sub_con_competency = '';
+                    this.editInput.name = '';
+                    this.editInput.brand = '';
+                    this.editInput.description = '';
+                    this.editInput.performance = '';
+                    this.editInput.performance_uom_id = '';
+                    this.editInput.manufactured_date = '';
+                    this.editInput.purchasing_date = '';
+                    this.editInput.purchasing_price = '';
+                    this.editInput.lifetime = '';
+                    this.editInput.lifetime_uom_id = '';
+                    this.editInput.cost_per_hour = '';
+                    this.editInput.depreciation_method = '';
+                }
+            },
 
-            }
+            'editInput.sub_con_phone': function(newValue) {
+                if(newValue != ""){
+                    
+                    this.editInput.sub_con_phone = (this.editInput.sub_con_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
+
+                }
+            },
+            'editInput.performance': function(newValue) {
+                if(newValue != ""){
+                    
+                    this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
+                }
+            },
+            'editInput.purchasing_price': function(newValue) {
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 4;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.editInput.purchasing_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.editInput.purchasing_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.editInput.purchasing_price = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'editInput.lifetime': function(newValue) {
+                if(newValue != ""){
+                    
+                    this.editInput.lifetime = (this.editInput.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
+
+                }
+            },
+            'editInput.cost_per_hour': function(newValue) {
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 4;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.editInput.cost_per_hour = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.editInput.cost_per_hour = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.editInput.cost_per_hour = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
         },
         created: function(){
            

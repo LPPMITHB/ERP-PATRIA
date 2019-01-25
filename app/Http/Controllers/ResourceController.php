@@ -66,6 +66,31 @@ class ResourceController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
+        $request = new Request([
+            'code' => $data->code,
+            'name' => $data->name,
+            'description' => $data->description,
+            'cost_standard_price' => $data->cost_standard_price,
+            'cost_standard_price_service' => $data->cost_standard_service,
+            'weight' => $data->weight,
+            'height' => $data->height,
+            'length' => $data->lengths,
+            'width' => $data->width,
+            'volume' => $data->volume
+
+        ]);
+
+        $this->validate($request, [
+            'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
+            'cost_standard_price' => 'nullable|numeric',
+            'cost_standard_price_service' => 'nullable|numeric',
+            'weight' => 'nullable|numeric',
+            'height' => 'nullable|numeric',
+            'length' => 'nullable|numeric',
+            'width' => 'nullable|numeric',
+        ]);
 
         DB::beginTransaction();
         try {
@@ -88,7 +113,12 @@ class ResourceController extends Controller
     public function selectPO(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPOs = PurchaseOrder::where('status',2)->get();
+        if($route == "/resource"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/resource_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }
+        $modelPOs = PurchaseOrder::where('status',2)->whereIn('project_id',$modelProject)->get();
 
         foreach($modelPOs as $key => $PO){
             if($PO->purchaseRequisition->type != 2){
@@ -108,7 +138,7 @@ class ResourceController extends Controller
         $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
         $uom = Uom::all();
         $datas = Collection::make();
-
+        
         foreach($modelPODs as $POD){
             $quantity = $POD->quantity - $POD->received;
             for ($i=0; $i < $quantity; $i++) { 
@@ -119,9 +149,9 @@ class ResourceController extends Controller
                     "resource_name" => $POD->resource->name,
                     "quantity" => 1,
                     "status" => "Detail Not Complete",
-                ]);
+                    ]);
+                }
             }
-        }
         return view('resource.createGR', compact('modelPO','datas','resource_categories','uom','depreciation_methods','route'));
     }
 
