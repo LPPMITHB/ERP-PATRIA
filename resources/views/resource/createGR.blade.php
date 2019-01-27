@@ -124,6 +124,21 @@
                                                     <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
                                                 </div>
                                                 <div class="col-sm-12">
+                                                    <div class="col-sm-12 no-padding">
+                                                        <label for="lifetime" class="control-label">Rental Duration*</label>
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding p-r-10">
+                                                        <input type="text" v-model="editInput.lifetime" :disabled="lifetimeOk" class="form-control" placeholder="Rental Duration">
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding">
+                                                        <selectize v-model="editInput.lifetime_uom_id" :settings="timeSettings">
+                                                            <option value="1">Day(s)</option>
+                                                            <option value="2">Month(s)</option>
+                                                            <option value="3">Year(s)</option>
+                                                        </selectize>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
                                                     <label for="sub_con_address" class="control-label">Sub Con Address*</label>
                                                     <input type="text" id="sub_con_address" v-model="editInput.sub_con_address" class="form-control" placeholder="Please Input Sub Con Address">
                                                 </div>
@@ -168,6 +183,21 @@
                                                     <input type="text" id="name" v-model="editInput.name" class="form-control" placeholder="Please Input Resource Name">
                                                 </div>
                                                 <div class="col-sm-12">
+                                                    <div class="col-sm-12 no-padding">
+                                                        <label for="lifetime" class="control-label">Rental Duration*</label>
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding p-r-10">
+                                                        <input type="text" v-model="editInput.lifetime" :disabled="lifetimeOk" class="form-control" placeholder="Rental Duration">
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding">
+                                                        <selectize v-model="editInput.lifetime_uom_id" :settings="timeSettings">
+                                                            <option value="1">Day(s)</option>
+                                                            <option value="2">Month(s)</option>
+                                                            <option value="3">Year(s)</option>
+                                                        </selectize>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
                                                     <label for="description" class="control-label">Description</label>
                                                     <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
                                                 </div>
@@ -198,6 +228,21 @@
                                                 <div class="col-sm-12">
                                                     <label for="brand" class="control-label">Brand*</label>
                                                     <input type="text" id="brand" v-model="editInput.brand" class="form-control" placeholder="Please Input Brand">
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="col-sm-12 no-padding">
+                                                        <label for="lifetime" class="control-label">Rental Duration*</label>
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding p-r-10">
+                                                        <input type="text" v-model="editInput.lifetime" :disabled="lifetimeOk" class="form-control" placeholder="Rental Duration">
+                                                    </div>
+                                                    <div class="col-sm-3 no-padding">
+                                                        <selectize v-model="editInput.lifetime_uom_id" :settings="timeSettings">
+                                                            <option value="1">Day(s)</option>
+                                                            <option value="2">Month(s)</option>
+                                                            <option value="3">Year(s)</option>
+                                                        </selectize>
+                                                    </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <label for="description" class="control-label">Description</label>
@@ -413,10 +458,10 @@
         },
         computed : {
             createOk: function(){
-                let isOk = false;
+                let isOk = true;
                 this.datas.forEach(data => {
-                    if(data.status == "Detail Not Complete"){
-                        isOk = true;
+                    if(data.status == "Detail Completed"){
+                        isOk = false;
                     }
                 });
 
@@ -468,7 +513,6 @@
         },
         methods : {
             submitToTable(){
-
                 this.editInput.purchasing_price = this.editInput.purchasing_price.replace(/,/g , '');
                 this.editInput.cost_per_hour = this.editInput.cost_per_hour.replace(/,/g , '');
                 
@@ -481,8 +525,9 @@
                 this.detailData.pod_id = this.editInput.pod_id;
                 this.detailData.performance = this.editInput.performance;
                 this.detailData.performance_uom_id = this.editInput.performance_uom_id;
+                this.detailData.lifetime = this.editInput.lifetime;
+                this.detailData.lifetime_uom_id = this.editInput.lifetime_uom_id;
                 
-                console.log(this.detailData);
                 if(category_id == 0){
                     this.detailData.sub_con_address = this.editInput.sub_con_address;
                     this.detailData.sub_con_phone = this.editInput.sub_con_phone;
@@ -496,8 +541,6 @@
                     this.detailData.manufactured_date = this.editInput.manufactured_date;
                     this.detailData.purchasing_date = this.editInput.purchasing_date;
                     this.detailData.purchasing_price = this.editInput.purchasing_price;
-                    this.detailData.lifetime = this.editInput.lifetime;
-                    this.detailData.lifetime_uom_id = this.editInput.lifetime_uom_id;
                     this.detailData.cost_per_hour = this.editInput.cost_per_hour;
                     this.detailData.depreciation_method = this.editInput.depreciation_method;
                 }
@@ -517,6 +560,8 @@
                 this.editInput.pod_id = '';
                 this.editInput.performance = '';
                 this.editInput.performance_uom_id = '';
+                this.editInput.lifetime = '';
+                this.editInput.lifetime_uom_id = '';
                 
                 if(category_id == 0){
                     this.editInput.sub_con_address = '';
@@ -531,8 +576,6 @@
                     this.editInput.manufactured_date = '';
                     this.editInput.purchasing_date = '';
                     this.editInput.purchasing_price = '';
-                    this.editInput.lifetime = '';
-                    this.editInput.lifetime_uom_id = '';
                     this.editInput.cost_per_hour = '';
                     this.editInput.depreciation_method = '';
                 }
@@ -561,12 +604,15 @@
                 let status = 0;
                 this.submitData.forEach(dataSubmit => {
                     if(dataSubmit.index == index){
+                        console.log('a')
                         this.editInput.category_id = dataSubmit.category_id;
                         this.editInput.code = dataSubmit.code;
                         this.editInput.description = dataSubmit.description;
                         this.editInput.index = dataSubmit.index;
                         this.editInput.resource_id = dataSubmit.resource_id;
                         this.editInput.pod_id = dataSubmit.pod_id;
+                        this.editInput.lifetime = dataSubmit.lifetime;
+                        this.editInput.lifetime_uom_id = dataSubmit.lifetime_uom_id;
 
                         if(dataSubmit.category_id == 0){
                             this.editInput.sub_con_address = dataSubmit.sub_con_address;
@@ -583,8 +629,6 @@
                             this.editInput.manufactured_date = dataSubmit.manufactured_date;
                             this.editInput.purchasing_date = dataSubmit.purchasing_date;
                             this.editInput.purchasing_price = dataSubmit.purchasing_price;
-                            this.editInput.lifetime = dataSubmit.lifetime;
-                            this.editInput.lifetime_uom_id = dataSubmit.lifetime_uom_id;
                             this.editInput.cost_per_hour = dataSubmit.cost_per_hour;
                             this.editInput.depreciation_method = dataSubmit.depreciation_method;
                             this.editInput.performance = dataSubmit.performance;
@@ -626,10 +670,8 @@
             },
         },
         watch : {
-            //data cleaning
             'editInput.category_id': function(newValue){
                 if(newValue !=""){
-                    // console.log('a')
                     this.editInput.sub_con_address = '';
                     this.editInput.sub_con_phone = '';
                     this.editInput.sub_con_competency = '';
@@ -647,17 +689,13 @@
                     this.editInput.depreciation_method = '';
                 }
             },
-
             'editInput.sub_con_phone': function(newValue) {
                 if(newValue != ""){
-                    
                     this.editInput.sub_con_phone = (this.editInput.sub_con_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
-
                 }
             },
             'editInput.performance': function(newValue) {
                 if(newValue != ""){
-                    
                     this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
                 }
             },
@@ -676,9 +714,7 @@
             },
             'editInput.lifetime': function(newValue) {
                 if(newValue != ""){
-                    
                     this.editInput.lifetime = (this.editInput.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
-
                 }
             },
             'editInput.cost_per_hour': function(newValue) {
@@ -695,9 +731,6 @@
                 }
             },
         },
-        created: function(){
-           
-        }
     });
 </script>
 @endpush
