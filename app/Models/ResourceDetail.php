@@ -17,4 +17,14 @@ class ResourceDetail extends Model
     {
         return $this->belongsTo('App\Models\Uom', 'performance_uom_id');
     }
+
+    public function goodsReceiptDetail()
+    {
+        return $this->hasOne('App\Models\GoodsReceiptDetail');
+    }
+
+    public function productionOrderDetails()
+    {
+        return $this->hasMany('App\Models\ProductionOrderDetail');
+    }
 }

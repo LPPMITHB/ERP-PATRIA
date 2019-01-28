@@ -22767,7 +22767,8 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 
 .content-wrapper,
 .main-footer {
-  -webkit-transition: -webkit-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out,
+ margin 0.3s ease-in-out;
   -webkit-transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out;
@@ -22938,7 +22939,8 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   min-height: 100%;
   width: 210px;
   z-index: 810;
-  -webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out,
+ width 0.3s ease-in-out;
   -webkit-transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
