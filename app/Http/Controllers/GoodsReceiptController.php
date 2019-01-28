@@ -159,6 +159,7 @@ class GoodsReceiptController extends Controller
                 $GR->business_unit_id = 2;
             }
             $GR->purchase_order_id = $datas->purchase_order_id;
+            $GR->type = 1;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;

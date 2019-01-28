@@ -217,7 +217,6 @@
                     }
                 });
                 
-                console.log(data)
                 this.submittedForm.POD = data;
                 this.submittedForm.checkedPOD = jsonPod;            
                 this.submittedForm.purchase_order_id = this.modelPO.id;
@@ -228,7 +227,7 @@
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                // form.submit();
+                form.submit();
             }
         },
         directives: {
