@@ -417,6 +417,14 @@
                                                 Hour(s)
                                             </div>
                                         </div>
+                                        <template v-if="editInput.category_id == 0">
+                                            <div class="col-sm-12">
+                                                <div class="col-sm-6 p-l-0">
+                                                    <label for="type" class="control-label p-b-10">Total Accident</label>
+                                                    <input class="form-control width100" v-model="editInput.total_accident" placeholder="Please Input Total Accident">
+                                                </div>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -486,6 +494,7 @@
             performance : "",
             performance_uom_id : "",
             usage : "",
+            total_accident : "",
             statusUom : "",
             index : ""
         },
@@ -542,13 +551,16 @@
                 this.editInput.performance_uom_id = "";
                 this.editInput.usage = "";
                 this.editInput.statusUom = "";
+                this.editInput.total_accident = "";
             },
             openEditModal(data,index){
                 this.clearEditInput();
                 this.editInput.index = index;
                 this.editInput.performance = data.performance;
+                this.editInput.category_id = data.resource_detail.category_id;
                 this.editInput.usage = data.usage;
                 this.editInput.performance_uom_id = data.performance_uom_id;
+                this.editInput.total_accident = data.actual;
 
                 if(data.resource_detail.performance_uom_id != "" && data.resource_detail.performance_uom_id != null && this.editInput.performance_uom_id != ""){
                     this.editInput.performance_uom_id = data.resource_detail.performance_uom_id;
@@ -562,7 +574,8 @@
                 resource.performance = this.editInput.performance;
                 resource.performance_uom_id = this.editInput.performance_uom_id;
                 resource.usage = this.editInput.usage;
-                if(resource.performance != "" && resource.usage != ""){
+                resource.total_accident = this.editInput.total_accident;
+                if(resource.performance != "" && resource.usage != "" && resource.total_accident != ""){
                     resource.status = "ACTUALIZED";
                     iziToast.success({
                         displayMode: 'replace',
@@ -817,6 +830,7 @@
             }
         },
         created: function() {
+
             this.getActivities();
             this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null){
