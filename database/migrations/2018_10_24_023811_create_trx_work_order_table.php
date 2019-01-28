@@ -18,6 +18,7 @@ class CreateTrxWorkOrderTable extends Migration
             $table->string('number')->unique();
             $table->unsignedInteger('work_request_id')->nullable();
             $table->unsignedInteger('vendor_id');
+            $table->date('required_date');
             $table->unsignedInteger('project_id')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->default(1);

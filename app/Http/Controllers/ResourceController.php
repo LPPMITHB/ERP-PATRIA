@@ -102,7 +102,7 @@ class ResourceController extends Controller
         if($route == "/resource"){
             $modelPR = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
         }else if($route == "/resource_repair"){
-            $modelPR = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
+            $modelPR = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
         }
         $modelPOs = PurchaseOrder::where('status',2)->whereIn('purchase_requisition_id',$modelPR)->get();
 
@@ -124,7 +124,7 @@ class ResourceController extends Controller
         $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
         $uom = Uom::all();
         $datas = Collection::make();
-
+        
         foreach($modelPODs as $POD){
             $quantity = $POD->quantity - $POD->received;
             for ($i=0; $i < $quantity; $i++) { 
@@ -135,9 +135,9 @@ class ResourceController extends Controller
                     "resource_name" => $POD->resource->name,
                     "quantity" => 1,
                     "status" => "Detail Not Complete",
-                ]);
+                    ]);
+                }
             }
-        }
         return view('resource.createGR', compact('modelPO','datas','resource_categories','uom','depreciation_methods','route'));
     }
 
@@ -149,9 +149,9 @@ class ResourceController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
-            if($route == "/goods_receipt"){
+            if($route == "/resource"){
                 $GR->business_unit_id = 1;                
-            }elseif($route == "/goods_receipt_repair"){
+            }elseif($route == "/resource_repair"){
                 $GR->business_unit_id = 2;
             }
             $GR->purchase_order_id = $datas->po_id;
@@ -169,6 +169,19 @@ class ResourceController extends Controller
                 $RD->description = $data->description;
                 $RD->performance = ($data->performance != '') ? $data->performance : null;
                 $RD->performance_uom_id = ($data->performance_uom_id != '') ? $data->performance_uom_id : null;
+                $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
+                if($RD->lifetime_uom_id != null){
+                    if($data->lifetime != ''){
+                        if($RD->lifetime_uom_id == 1){
+                            $RD->lifetime = $data->lifetime * 8;
+                        }elseif($RD->lifetime_uom_id == 2){
+                            $RD->lifetime = $data->lifetime * 8 * 30;
+                        }elseif($RD->lifetime_uom_id == 3){
+                            $RD->lifetime = $data->lifetime * 8 * 365;
+                        }
+                    }
+                }
+
                 if($data->category_id == 0){
                     $RD->sub_con_address = $data->sub_con_address;
                     $RD->sub_con_phone = $data->sub_con_phone;
@@ -184,14 +197,11 @@ class ResourceController extends Controller
                         $manufactured_date = DateTime::createFromFormat('m/j/Y', $data->manufactured_date);
                         $RD->manufactured_date = $manufactured_date->format('Y-m-d');
                     }
-    
                     if($data->purchasing_date != ""){
                         $purchasing_date = DateTime::createFromFormat('m/j/Y', $data->purchasing_date);
                         $RD->purchasing_date = $purchasing_date->format('Y-m-d');
                     }
                     $RD->purchasing_price = ($data->purchasing_price != '') ? $data->purchasing_price : null;
-                    $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
-                    $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
                     $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
                 }
                 $RD->save();
@@ -376,9 +386,9 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
-        $modelPOD = PurchaseOrderDetail::where('resource_id',$id)->get();
+        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails')->get()->jsonSerialize();
         
-        return view('resource.show', compact('resource','modelPOD','route'));
+        return view('resource.show', compact('resource','modelRD','route'));
     }
 
     public function edit(Request $request,$id)
