@@ -83,13 +83,12 @@ class GoodsIssueController extends Controller
     public function selectGR(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
-        if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }else{
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        if($menu == "building"){
+            $business_unit = 1;
+        }elseif($menu == "repair"){
+            $business_unit = 2;
         }
-        $modelPO = PurchaseOrder::whereIn('project_id', $modelProject)->pluck('id')->toArray();
-        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $modelPO)->where('status',1)->get();
+        $modelGRs = GoodsReceipt::where('business_unit_id', 2)->where('status',1)->get();
 
         return view('goods_return.selectGR', compact('modelGRs','menu'));
     }
