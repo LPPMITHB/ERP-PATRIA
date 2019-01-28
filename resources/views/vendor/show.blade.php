@@ -28,121 +28,138 @@
                             <a href="{{ route('vendor.edit',['id'=>$vendor->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                         @endcan
                     </div>
-                </div>
                 </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="personal-info">
-                        <div class="box-body p-t-0">
-                            <table class="table table-bordered showTable">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 5%">#</th>
-                                        <th style="width: 20%">Attribute</th>
-                                        <th style="width: 65%">Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Code</td>
-                                        <td>{{ $vendor->code }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Name</td>
-                                        <td>{{ $vendor->name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>Type</td>
-                                        <td>{{ $vendor->type }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>4</td>
-                                        <td>Address</td>
-                                        <td class="tdEllipsis" data-toggle="tooltip" data-container="body" title="{{ $vendor->address }}">{{ $vendor->address }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>5</td>
-                                        <td>Phone Number 1</td>
-                                        <td>{{ $vendor->phone_number_1 }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>6</td>
-                                        <td>Phone Number 2</td>
-                                        <td>{{ $vendor->phone_number_2 }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>7</td>
-                                        <td>Contact Name</td>
-                                        <td>{{ $vendor->contact_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>8</td>
-                                        <td>Email</td>
-                                        <td>{{ $vendor->email }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>9</td>
-                                        <td>Description</td>
-                                        <td>{{ $vendor->description }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10</td>
-                                        <td>Status</td>
-                                        <td class="iconTd">
-                                            @if ($vendor->status == 1)
-                                                <i class="fa fa-check"></i>
-                                            @elseif ($vendor->status == 0)
-                                                <i class="fa fa-times"></i>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" id="personal-info">
+                    <div class="row m-l-15">
+                        <div class="col-xs-12 col-lg-4 col-md-12">    
+                                <div class="col-md-4 col-xs-6 no-padding">Code</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->number}}</b></div>
+                                
+                                <div class="col-md-4 col-xs-6 no-padding">Name</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->name}}</b></div>
+        
+                                <div class="col-md-4 col-xs-6 no-padding">Type</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->type}}</b></div>
+        
+                                <div class="col-md-4 col-xs-6 no-padding">Address</div>
+                                <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $vendor->address }}"><b>: {{ $vendor->address }}</b></div>
+        
+                                <div class="col-md-4 col-xs-6 no-padding">Phone Number 1</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_1}}</b></div>
+                                
+                                <div class="col-md-4 col-xs-6 no-padding">Phone Number 2</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_2}}</b></div>
+                                
+                                <div class="col-md-4 col-xs-6 no-padding">Contact Name</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->contact_name}}</b></div>
+                                
+                                <div class="col-md-4 col-xs-6 no-padding">Email</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->email}}</b></div>
+                                
+                                <div class="col-md-4 col-xs-6 no-padding">Description</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->description}}</b></div>
+                                
+                                <div class="col-md-4 col-xs-6 no-padding">Status</div>
+                                <div class="col-md-8 col-xs-6 no-padding"><b>: @if ($vendor->status == 1)
+                                        <i class="fa fa-check"></i>
+                                    @elseif ($vendor->status == 0)
+                                        <i class="fa fa-times"></i>
+                                    @endif</b></div>
+        
                         </div>
                     </div>
-                    <div class="tab-pane" id="po-list">
-                        <div class="box-body p-t-0">
-                            <table class="table table-bordered showTable tablePaging">
-                                <thead>
-                                    <tr>
-                                        <th width="5%">No</th>
-                                        <th width="10%">Number</th>
-                                        <th width="40%">Description</th>
-                                        <th width="15%">Project Number</th>
-                                        <th width="20%">Ship Name</th>
-                                        <th width="10%">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($modelPOs as $modelPO)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                <a href="{{ route('purchase_order.show',$modelPO->id) }}" class="text-primary">{{$modelPO->number}}</a>
-                                            </td>
-                                            <td>{{ $modelPO->description }}</td>
-                                            <td>{{ $modelPO->project->number }}</td>
-                                            <td>{{ $modelPO->project->name }}</td>
-                                            @if($modelPO->status == 1)
-                                                <td>OPEN</td>
-                                            @elseif($modelPO->status == 2)
-                                                <td>APPROVED</td>
-                                            @elseif($modelPO->status == 3)
-                                                <td>NEED REVISION</td>
-                                            @elseif($modelPO->status == 4)
-                                                <td>REVISED</td>
-                                            @elseif($modelPO->status == 5)
-                                                <td>REJECTED</td>
-                                            @elseif($modelPO->status == 0)
-                                                <td>RECEIVED</td>
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                    <div class="row m-t-10">
+                        <div class="col-sm-12">
+                            <div class="nav-tabs-custom">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#quality" data-toggle="tab">Quality</a></li>
+                                    <li><a href="#cost" data-toggle="tab">Cost</a></li>
+                                    <li><a href="#delivery" data-toggle="tab">Delivery</a></li>
+                                    <li><a href="#safety" data-toggle="tab">Safety</a></li>
+                                    <li><a href="#morale" data-toggle="tab">Morale</a></li>
+                                    <li><a href="#productivity" data-toggle="tab">Productivity</a></li>
+                                </ul>
+                            </div>
                         </div>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="quality">
+                                <div class="box-body p-t-0">
+                                    <table class="table table-bordered showTable tablePaging tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th width="5%">No</th>
+                                                <th width="10%">GI Number</th>
+                                                <th width="40%">Description</th>
+                                                <th width="15%">Project Number</th>
+                                                <th width="20%">Ship Name</th>
+                                                <th width="10%">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="cost">
+                                cost
+                            </div>
+                            <div class="tab-pane" id="delivery">
+                                delivery
+                            </div>
+                            <div class="tab-pane" id="safety">
+                                safety
+                            </div>
+                            <div class="tab-pane" id="morale">
+                                morale
+                            </div>
+                            <div class="tab-pane" id="productivity">
+                                productivity
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="po-list">
+                    <div class="box-body p-t-0">
+                        <table class="table table-bordered showTable tablePaging">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="10%">Number</th>
+                                    <th width="40%">Description</th>
+                                    <th width="15%">Project Number</th>
+                                    <th width="20%">Ship Name</th>
+                                    <th width="10%">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($modelPOs as $modelPO)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            <a href="{{ route('purchase_order.show',$modelPO->id) }}" class="text-primary">{{$modelPO->number}}</a>
+                                        </td>
+                                        <td>{{ $modelPO->description }}</td>
+                                        <td>{{ $modelPO->project->number }}</td>
+                                        <td>{{ $modelPO->project->name }}</td>
+                                        @if($modelPO->status == 1)
+                                            <td>OPEN</td>
+                                        @elseif($modelPO->status == 2)
+                                            <td>APPROVED</td>
+                                        @elseif($modelPO->status == 3)
+                                            <td>NEED REVISION</td>
+                                        @elseif($modelPO->status == 4)
+                                            <td>REVISED</td>
+                                        @elseif($modelPO->status == 5)
+                                            <td>REJECTED</td>
+                                        @elseif($modelPO->status == 0)
+                                            <td>RECEIVED</td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

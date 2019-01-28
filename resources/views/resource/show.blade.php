@@ -14,7 +14,6 @@
     )
     @endbreadcrumb
 @elseif($route == "/resource_repair")
-@endif
     @breadcrumb(
         [
             'title' => 'View Resource',
@@ -26,6 +25,7 @@
         ]
     )
     @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
