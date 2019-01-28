@@ -248,7 +248,39 @@
                     </div>
                     @if($vendor->type == "Subcon")
                     <div class="tab-pane" id="productivity">
-                        productivity
+                        <div class="box-body p-t-0 m-l-10 m-r-10">
+                            <table class="table table-bordered showTable productivityTable tableFixed">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th width="35%">Resource Name</th>
+                                        <th width="20%">Prod. Order Number</th>
+                                        <th width="25%">Performance</th>
+                                        <th width="25%">Usage</th>
+                                        <th width="25%">Productivity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $counter = 0;
+                                    @endphp
+                                    @foreach($resourceDetails as $resourceDetail)
+                                        @foreach ($resourceDetail->productionOrderDetails->where('status',"ACTUALIZED")->take(5) as $prod)
+                                            <tr>
+                                                <td>{{ $counter++ }}</td>
+                                                <td>{{ $resourceDetail->resource->name }} - {{ $resourceDetail->code }}</td>
+                                                <td>
+                                                    <a href="{{ route('production_order.show',$prod->productionOrder->id) }}" class="text-primary">{{$prod->productionOrder->number}}</a>
+                                                </td>
+                                                <td>{{ $prod->performance }} {{$prod->performanceUom->name}}</td>
+                                                <td>{{ $prod->usage }} Hour(s)</td>
+                                                <td>{{ $prod->performance / $prod->usage }} {{$prod->performanceUom->name}}/Hour(s)</td>
+                                            </tr>
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     @endif
                 </div>
@@ -351,7 +383,7 @@
         $('.deliveryTable thead tr').clone(true).appendTo( '.deliveryTable thead' );
         $('.deliveryTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'No' || title == "Returned Quantity"){
+            if(title == 'No' || title == "Day(s)"){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -368,6 +400,34 @@
         });
 
         var deliveryTable = $('.deliveryTable').DataTable( {
+            orderCellsTop   : true,
+            fixedHeader     : true,
+            paging          : true,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : true,
+        });
+
+        $('.productivityTable thead tr').clone(true).appendTo( '.productivityTable thead' );
+        $('.productivityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == "Returned Quantity"){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( productivityTable.column(i).search() !== this.value ) {
+                    productivityTable
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+                }
+            });
+        });
+
+        var productivityTable = $('.productivityTable').DataTable( {
             orderCellsTop   : true,
             fixedHeader     : true,
             paging          : true,

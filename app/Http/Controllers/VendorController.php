@@ -88,8 +88,9 @@ class VendorController extends Controller
         $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->get();
         $gr_ids = $modelGRs->pluck('id')->toArray();
         $return = GoodsIssue::whereIn('purchase_order_id', $po_ids)->orWhereIn('goods_receipt_id',$gr_ids)->where('type',4)->get();
+        $resourceDetails = $vendor->resourceDetails;
 
-        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs'));
+        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails'));
     }
 
     public function edit($id)
