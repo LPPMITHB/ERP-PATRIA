@@ -90,6 +90,12 @@
                                             </selectize>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label for="required_date">Required Date</label>
+                                            <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Required Date">  
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="col-sm-12">
@@ -200,6 +206,7 @@
             placeholder: 'Please Select Vendor'
         },
         vendor_id : "",
+        required_date : "",
         description : "",
         submittedForm : {},
     }
@@ -207,10 +214,20 @@
     var vm = new Vue({
         el : '#po',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+            });
+            $("#required_date").datepicker().on(
+                "changeDate", () => {
+                    this.required_date = $('#required_date').val();
+                }
+            );
+        },
         computed : {
             dataOk: function(){
                 let isOk = false;
-                if(this.vendor_id == ""){
+                if(this.vendor_id == "" || this.required_date == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -251,6 +268,7 @@
                 this.submittedForm.PRD = data;
                 this.submittedForm.type = this.modelPR.type;
                 this.submittedForm.vendor_id = this.vendor_id;
+                this.submittedForm.required_date = this.required_date;
                 this.submittedForm.description = this.description;
                 this.submittedForm.pr_id = this.modelPR.id;
                 this.submittedForm.project_id = this.modelPR.project_id;

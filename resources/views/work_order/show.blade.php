@@ -83,6 +83,14 @@
                             : <b> {{ number_format($modelWO->total_price,2) }} </b>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4 no-padding">
+                            Required Date
+                        </div>
+                        <div class="col-md-8 col-xs-8">
+                            : <b> {{ $modelWO->required_date }} </b>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-xs-12 col-lg-4 col-md-12 m-t-10 m-l-10">
                     <div class="row">
