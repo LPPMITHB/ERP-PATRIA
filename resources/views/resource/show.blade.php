@@ -124,75 +124,79 @@
                                     </div>
                                     <div class="box box-solid box-default m-b-0">
                                         <div class="box-body">
-                                            <div class="col-md-3 col-xs-3 no-padding"><b>Planned</b></div>
-                                            <div class="col-md-3 col-xs-3 no-padding"><b>Actual</b></div>
-                                            <div class="col-md-3 col-xs-3 no-padding"><b>Utilization</b></div>
-                                            <div class="col-md-3 col-xs-3 no-padding"><b>Productivity</b></div>
+                                            <div class="col-lg-3 no-padding">
+                                                <div class="col-md-12 col-xs-12 no-padding"><b>Planned</b></div>
+                                                <div class="col-md-12 col-xs-12 no-padding">
+                                                    <div class="col-md-4 col-xs-4 no-padding">Performance</div>
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.performance}}</b></div>
+                                                </div>
+                                                <div class="col-md-12 col-xs-12 no-padding">
+                                                    <div class="col-md-4 col-xs-4 no-padding">Duration</div>
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.rental_duration}}</b></div>
+                                                </div>
+                                            </div>
 
-                                            <div class="col-md-3 col-xs-3 no-padding">
-                                                <div class="col-md-4 col-xs-4 no-padding">Performance</div>
-                                                <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.performance}}</b></div>
+                                            <div class="col-lg-3 no-padding">
+                                                <div class="col-md-12 col-xs-12 no-padding"><b>Actual</b></div>
+                                                <div class="col-md-12 col-xs-12 no-padding">
+                                                    <div class="col-md-4 col-xs-4 no-padding">Productivity</div>
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.total_performance}}</b></div>
+                                                </div>
+                                                <div class="col-md-12 col-xs-12 no-padding">
+                                                    <div class="col-md-4 col-xs-4 no-padding">Duration</div>
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.total_usage}}</b></div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3 no-padding">
-                                                <div class="col-md-4 col-xs-4 no-padding">Performance</div>
-                                                <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
+
+                                            <div class="col-lg-3 no-padding">
+                                                <div class="col-md-12 col-xs-12 no-padding"><b>Utilization</b></div>
+                                                <div class="col-md-12 col-xs-12 no-padding">
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>{{ data.utilization }} %</b></div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3 no-padding">
-                                                <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
-                                            </div>
-                                            <div class="col-md-3 col-xs-3 no-padding">
-                                                <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
-                                            </div>
-                                            
-                                            <div class="col-md-3 col-xs-3 no-padding">
-                                                <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.rental_duration}}</b></div>
-                                            </div>
-                                            <div class="col-md-3 col-xs-3 no-padding">
-                                                <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
-                                            </div>
-                                            <div class="col-md-3 col-xs-3 no-padding"></div>
-                                            <div class="col-md-3 col-xs-3 no-padding"></div>
                                         </div>
                                     </div>
-                                    <template v-if="data.wbs.length > 0">
+                                    <template v-if="data.prod_order_detail.length > 0">
                                         <div class="box-body p-l-0 p-b-0">
                                             <h4>Usage History</h4>
                                         </div>
-                                        <template v-for="wbs in data.wbs">
+                                        <template v-for="prod_order_detail in data.prod_order_detail">
                                             <div class="box box-solid box-default">
                                                 <div class="box-body">
-                                                    <div class="col-md-3 col-xs-3 no-padding"><b>Planned</b></div>
-                                                    <div class="col-md-3 col-xs-3 no-padding"><b>Actual</b></div>
-                                                    <div class="col-md-3 col-xs-3 no-padding"><b>Utilization</b></div>
-                                                    <div class="col-md-3 col-xs-3 no-padding"><b>Productivity</b></div>
+                                                    <div class="col-lg-4 no-padding">
+                                                        <div class="col-md-12 col-xs-12 no-padding"><b>Information</b></div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">WBS</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.wbs.code}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Prod. Order</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.number}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Status</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.prod_order_status}}</b></div>
+                                                        </div>
+                                                    </div>
 
-                                                    <div class="col-md-3 col-xs-3 no-padding">
-                                                        <div class="col-md-4 col-xs-4 no-padding">Performance</div>
-                                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.performance}}</b></div>
-                                                    </div>
-                                                    <div class="col-md-3 col-xs-3 no-padding">
-                                                        <div class="col-md-4 col-xs-4 no-padding">Performance</div>
-                                                        <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
-                                                    </div>
-                                                    <div class="col-md-3 col-xs-3 no-padding">
-                                                        <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
-                                                    </div>
-                                                    <div class="col-md-3 col-xs-3 no-padding">
-                                                        <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
+                                                    <div class="col-lg-4 no-padding">
+                                                        <br>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Performance</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.performance != null) ? prod_order_detail.performance+' '+prod_order_detail.performance_uom.unit : '-'}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Usage</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.usage != null) ? prod_order_detail.usage+' Hour(s)' : '-'}}</b></div>
+                                                        </div>
                                                     </div>
                                                     
-                                                    <div class="col-md-3 col-xs-3 no-padding">
-                                                        <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.rental_duration}}</b></div>
+                                                    <div class="col-lg-4 no-padding">
+                                                        <div class="col-md-12 col-xs-12 no-padding"><b>Productivity</b></div>
+                                                        <div class="col-md-12 no-padding" v-if="prod_order_detail.performance == null"><b>-</b></div>
+                                                        <div class="col-md-12 no-padding" v-else-if="prod_order_detail.usage == null"><b>-</b></div>
+                                                        <div class="col-md-12 no-padding" v-else-if="prod_order_detail.usage != null && prod_order_detail.performance != null"><b>{{ (prod_order_detail.performance/prod_order_detail.usage).toFixed(2)+' '+prod_order_detail.performance_uom.unit+' / Hour' }}</b></div>
                                                     </div>
-                                                    <div class="col-md-3 col-xs-3 no-padding">
-                                                        <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                        <div class="col-md-8 col-xs-8 no-padding"><b>: </b></div>
-                                                    </div>
-                                                    <div class="col-md-3 col-xs-3 no-padding"></div>
-                                                    <div class="col-md-3 col-xs-3 no-padding"></div>
                                                 </div>
                                             </div>
                                         </template>
@@ -249,6 +253,7 @@
     var data = {
         modelRD : @json($modelRD),
         data:{
+            category_id : "",
             selectedId : "",
             code : "",
             po_number : "",
@@ -259,7 +264,10 @@
             description : "",
             performance : "",
             status : "",
-            wbs : [],
+            prod_order_detail : [],
+            utilization : "",
+            total_performance : "",
+            total_usage : "",
         }
     };
 
@@ -268,6 +276,7 @@
     data : data,
     methods : {
         clearData(){
+            this.data.category_id = "";
             this.data.selectedId = "";
             this.data.code = "";
             this.data.po_number = "";
@@ -278,7 +287,10 @@
             this.data.description = "";
             this.data.performance = "";
             this.data.status = "";
-            this.data.wbs = [];
+            this.data.prod_order_detail = [];
+            this.data.utilization = "";
+            this.data.total_performance = "";
+            this.data.total_usage = "";
         },
         showDetail(id){
             $('div.overlay').show();
@@ -287,6 +299,7 @@
 
             this.modelRD.forEach(RD => {
                 if(RD.id == this.data.selectedId){
+                    this.data.category_id = RD.category_id;
                     this.data.code = RD.code;
                     this.data.po_number = RD.goods_receipt_detail.goods_receipt.purchase_order.number;
                     this.data.receive_date = RD.created_at.substr(0,10);
@@ -294,12 +307,16 @@
                     this.data.description = (RD.description != '') ? RD.description : '-';
                     this.data.performance = (RD.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" "+RD.performance_uom.unit+" / hour";
 
+                    let lifetime = 0;
                     if(RD.lifetime_uom_id == 1){
-                        this.data.rental_duration = (RD.lifetime/8+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Day(s)';
+                        lifetime = RD.lifetime;
+                        this.data.rental_duration = (RD.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
                     }else if(RD.lifetime_uom_id == 2){
-                        this.data.rental_duration = ((RD.lifetime/8)/30+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Month(s)';
+                        lifetime = RD.lifetime/30;
+                        this.data.rental_duration = (RD.lifetime/30+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
                     }else if(RD.lifetime_uom_id == 3){
-                        this.data.rental_duration = ((RD.lifetime/8)/365+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Year(s)';
+                        lifetime = RD.lifetime/365;
+                        this.data.rental_duration = (RD.lifetime/365+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
                     }
 
                     if(RD.category_id == 0){
@@ -320,9 +337,26 @@
                         this.data.status = "USED";
                     }
                     
+                    let performance = 0;
+                    let usage = 0;
                     if(RD.production_order_details.length > 0){
-                        this.data.wbs = RD.production_order_details;
+                        RD.production_order_details.forEach(prodOrderDetail =>{
+                            if(prodOrderDetail.production_order.status == 0){
+                                prodOrderDetail.production_order.prod_order_status = "COMPLETED";
+                            }else if(prodOrderDetail.production_order.status == 1){
+                                prodOrderDetail.production_order.prod_order_status = "UNRELEASED";
+                            }else if(prodOrderDetail.production_order.status == 2){
+                                prodOrderDetail.production_order.prod_order_status = "RELEASED";
+                            }
+                            performance += prodOrderDetail.performance;
+                            usage += prodOrderDetail.usage;
+                        });
+                        let average = (performance / usage).toFixed(2);
+                        this.data.prod_order_detail = RD.production_order_details;
+                        this.data.total_performance = average+' '+RD.production_order_details[0].performance_uom.unit+' /hour';
+                        this.data.total_usage = usage+' Hour(s)';
                     }
+                    this.data.utilization = (usage / lifetime * 100).toFixed(2);
                 }
             });
             $('div.overlay').hide();

@@ -386,7 +386,7 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
-        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails')->get()->jsonSerialize();
+        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom')->get()->jsonSerialize();
         
         return view('resource.show', compact('resource','modelRD','route'));
     }
