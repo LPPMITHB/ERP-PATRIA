@@ -72,7 +72,9 @@
                             <li><a href="#delivery" data-toggle="tab">Delivery</a></li>
                             <li><a href="#safety" data-toggle="tab">Safety</a></li>
                             <li><a href="#morale" data-toggle="tab">Morale</a></li>
-                            <li><a href="#productivity" data-toggle="tab">Productivity</a></li>
+                            @if($vendor->type == "Subcon")                            
+                                <li><a href="#productivity" data-toggle="tab">Productivity</a></li>
+                            @endif
                         </ul>
                     </div>
                 </div>
@@ -195,11 +197,11 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="10%">GR Number</th>
-                                        <th width="10%">PO Number</th>
+                                        <th width="15%">GR Number</th>
+                                        <th width="15%">PO Number</th>
                                         <th width="40%">GR Description</th>
                                         <th width="10%">Status</th>
-                                        <th width="35%">Day(s)</th>
+                                        <th width="10%">Day(s)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -210,29 +212,28 @@
                                                 <a href="{{ route('goods_receipt.show',$modelGR->id) }}" class="text-primary">{{$modelGR->number}}</a>
                                             </td>
                                             <td>
-                                                <a href="{{ route('purchase_order.show',$modelGR->purchaseOrder->id) }}" class="text-primary">{{$modelGR->number}}</a>
+                                                <a href="{{ route('purchase_order.show',$modelGR->purchaseOrder->id) }}" class="text-primary">{{$modelGR->purchaseOrder->number}}</a>
                                             </td>
                                             <td>{{ $modelGR->description }}</td>
                                             <td>
-                                                @if($modelGR->purchaseOrder->required_date > date('Y-m-d', $modelGR->created_at))
-                                                <b>LATE</b>
-                                                @elseif($modelGR->purchaseOrder->required_date < date('Y-m-d', $modelGR->created_at))
-                                                <b>EARLY</b>
-                                                @elseif($modelGR->purchaseOrder->required_date == date('Y-m-d', $modelGR->created_at))
-                                                <b>ONTIME</b>
+                                                @if($modelGR->purchaseOrder->required_date > $modelGR->created_at->format('Y-m-d'))
+                                                <b class="text-danger">LATE</b>
+                                                @elseif($modelGR->purchaseOrder->required_date < $modelGR->created_at->format('Y-m-d'))
+                                                <b class="text-success">EARLY</b>
+                                                @elseif($modelGR->purchaseOrder->required_date == $modelGR->created_at->format('Y-m-d'))
+                                                <b class="text-success">ONTIME</b>
                                                 @endif
                                             </td>
                                             <td>
                                                 @php
                                                     $earlier = new DateTime($modelGR->purchaseOrder->required_date);
-                                                    $later = new DateTime(date('Y-m-d', $modelGR->created_at));
+                                                    $later = new DateTime($modelGR->created_at->format('Y-m-d'));
 
                                                     $diff = $later->diff($earlier)->format("%a");
                                                     $diff = abs($diff);
                                                 @endphp
                                                 {{$diff}}
                                             </td>
-                                            <td>Rp </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -245,9 +246,11 @@
                     <div class="tab-pane" id="morale">
                         morale
                     </div>
+                    @if($vendor->type == "Subcon")
                     <div class="tab-pane" id="productivity">
                         productivity
                     </div>
+                    @endif
                 </div>
             </div>
             <div class="overlay">
