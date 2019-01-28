@@ -14,17 +14,17 @@
         )
         @endbreadcrumb
     @elseif($route == "/resource_repair")
-    @breadcrumb(
-        [
-            'title' => 'Resource Monitoring',
-            'items' => [
-                'Dashboard' => route('index'),
-                'View All Resources' => route('resource_repair.index'),
-                $resource->name => '',
+        @breadcrumb(
+            [
+                'title' => 'Resource Monitoring',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'View All Resources' => route('resource_repair.index'),
+                    $resource->name => '',
+                ]
             ]
-        ]
-    )
-    @endbreadcrumb
+        )
+        @endbreadcrumb
     @endif
 @endsection
 

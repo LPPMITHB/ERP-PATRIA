@@ -145,6 +145,7 @@ class ResourceController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gr_number = $this->GR->generateGRNumber();
+        $vendor_id = PurchaseOrder::find($datas->po_id)->vendor->id;
         DB::beginTransaction();
         try {
             $GR = new GoodsReceipt;
@@ -155,6 +156,7 @@ class ResourceController extends Controller
                 $GR->business_unit_id = 2;
             }
             $GR->purchase_order_id = $datas->po_id;
+            $GR->vendor_id = $vendor_id;
             $GR->type = 4;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
@@ -165,6 +167,7 @@ class ResourceController extends Controller
                 $RD = new ResourceDetail;
                 $RD->code = $data->code;
                 $RD->resource_id = $data->resource_id;
+                $RD->vendor_id = $vendor_id;
                 $RD->category_id = $data->category_id;
                 $RD->description = $data->description;
                 $RD->performance = ($data->performance != '') ? $data->performance : null;

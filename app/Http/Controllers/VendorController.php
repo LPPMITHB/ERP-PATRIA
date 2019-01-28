@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use App\Models\PurchaseOrder;
+use App\Models\WorkOrder;
+use App\Models\GoodsReceipt;
+use App\Models\GoodsIssue;
 use App\Models\Configuration;
 use Illuminate\Http\Request;
 use Auth;
@@ -80,8 +83,13 @@ class VendorController extends Controller
     {
         $vendor = Vendor::findOrFail($id);
         $modelPOs = PurchaseOrder::where('vendor_id',$id)->get();
+        $modelWOs = WorkOrder::where('vendor_id',$id)->get();
+        $po_ids = $modelPOs->pluck('id')->toArray();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->get();
+        $gr_ids = $modelGRs->pluck('id')->toArray();
+        $return = GoodsIssue::whereIn('purchase_order_id', $po_ids)->orWhereIn('goods_receipt_id',$gr_ids)->where('type',4)->get();
 
-        return view('vendor.show',compact('vendor','modelPOs'));
+        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs'));
     }
 
     public function edit($id)
