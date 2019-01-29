@@ -74,7 +74,8 @@
                                 <tr v-for="(rd, index) in modelRD">
                                     <td>{{ index + 1 }}</td>
                                     <td><a @click.prevent="showDetail(rd.id)" href="">{{ rd.code }}</a></td>
-                                    <td>{{ rd.brand }}</td>
+                                    <td v-if="rd.category_id != 1">{{ rd.brand }}</td>
+                                    <td v-else>{{ rd.others_name }}</td>
                                     <td v-if="rd.category_id == 0">Sub Con</td>
                                     <td v-else-if="rd.category_id == 1">Others</td>
                                     <td v-else-if="rd.category_id == 2">External Equipment</td>
@@ -100,7 +101,53 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="active tab-pane" id="activity">
-                                    <div class="box-body p-t-0 p-l-0">
+                                    <div class="box-body p-t-0 p-l-0" v-if="data.category_id == 0">
+                                        <div class="col-sm-3 p-l-0">
+                                            <div class="col-md-6 col-xs-6 no-padding">PO Number</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.po_number}}</b></div>
+    
+                                            <div class="col-md-6 col-xs-6 no-padding">Receive Date</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.receive_date}}</b></div>
+    
+                                            <div class="col-md-6 col-xs-6 no-padding">Status</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.status}}</b></div>
+                                        </div>
+                                        <div class="col-sm-4 p-l-0">
+                                            <div class="col-md-4 col-xs-4 no-padding">Address</div>
+                                            <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{(data.address) ? data.address : '-'}}</b></div>
+    
+                                            <div class="col-md-4 col-xs-4 no-padding">Phone</div>
+                                            <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{(data.phone) ? data.phone : '-'}}</b></div>
+    
+                                            <div class="col-md-4 col-xs-4 no-padding">Competency</div>
+                                            <div class="col-md-8 col-xs-8 no-padding tdEllipsis" ><b>: {{(data.competency) ? data.competency : '-'}}</b></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="box-body p-t-0 p-l-0" v-if="data.category_id == 1">
+                                        <div class="col-sm-3 p-l-0">
+                                            <div class="col-md-6 col-xs-6 no-padding">PO Number</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.po_number}}</b></div>
+    
+                                            <div class="col-md-6 col-xs-6 no-padding">Receive Date</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.receive_date}}</b></div>
+    
+                                            <div class="col-md-6 col-xs-6 no-padding">Status</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.status}}</b></div>
+                                        </div>
+                                        <div class="col-sm-4 p-l-0">
+                                            <div class="col-md-4 col-xs-4 no-padding">Name</div>
+                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.other_name}}</b></div>
+    
+                                            <div class="col-md-4 col-xs-4 no-padding">Type</div>
+                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.type}}</b></div>
+    
+                                            <div class="col-md-4 col-xs-4 no-padding">Description</div>
+                                            <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{data.description}}</b></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="box-body p-t-0 p-l-0" v-if="data.category_id == 2">
                                         <div class="col-sm-3 p-l-0">
                                             <div class="col-md-6 col-xs-6 no-padding">PO Number</div>
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.po_number}}</b></div>
@@ -122,6 +169,45 @@
                                             <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.description}}</b></div>
                                         </div>
                                     </div>
+
+                                    <div class="box-body p-t-0 p-l-0" v-if="data.category_id == 3">
+                                        <div class="col-sm-4 p-l-0">
+                                            <div class="col-md-6 col-xs-6 no-padding">Brand</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.brand}}</b></div>
+    
+                                            <div class="col-md-6 col-xs-6 no-padding">Type</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.type}}</b></div>
+    
+                                            <div class="col-md-6 col-xs-6 no-padding">Description</div>
+                                            <div class="col-md-6 col-xs-6 no-padding tdEllipsis"><b>: {{data.description}}</b></div>
+    
+                                            <div class="col-md-6 col-xs-6 no-padding">Status</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.status}}</b></div>
+
+                                            <div class="col-md-6 col-xs-6 no-padding">Running Hours</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{(data.running_hour) ? data.running_hour : '-'}}</b></div>
+                                        </div>
+                                        <div class="col-sm-8 p-l-0">
+                                            <div class="col-md-3 col-xs-3 no-padding">Manufactured Date</div>
+                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.manufactured_date) ? data.manufactured_date : '-'}}</b></div>
+    
+                                            <div class="col-md-3 col-xs-3 no-padding">Purchasing Date</div>
+                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.purchasing_date) ? data.purchasing_date : '-'}}</b></div>
+    
+                                            <div class="col-md-3 col-xs-3 no-padding">Purchasing Price</div>
+                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.purchasing_price) ? data.purchasing_price : '-'}}</b></div>
+
+                                            <div class="col-md-3 col-xs-3 no-padding">Lifetime</div>
+                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{data.lifetime}}</b></div>
+
+                                            <div class="col-md-3 col-xs-3 no-padding">Depreciation Method</div>
+                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{data.depreciation_method}}</b></div>
+                                            
+                                            <div class="col-md-3 col-xs-3 no-padding">Cost Per Hour</div>
+                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.cost_per_hour) ? data.cost_per_hour : '-'}}</b></div>
+                                        </div>
+                                    </div>
+
                                     <div class="box box-solid box-default m-b-0">
                                         <div class="box-body">
                                             <div class="col-lg-3 no-padding">
@@ -132,26 +218,34 @@
                                                 </div>
                                                 <div class="col-md-12 col-xs-12 no-padding">
                                                     <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.rental_duration}}</b></div>
+                                                    <div class="col-md-8 col-xs-8 no-padding" v-if="data.category_id != 3"><b>: {{data.rental_duration}}</b></div>
+                                                    <div class="col-md-8 col-xs-8 no-padding" v-else-if="data.category_id == 3"><b>: {{data.lifetime}}</b></div>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3 no-padding">
                                                 <div class="col-md-12 col-xs-12 no-padding"><b>Actual</b></div>
                                                 <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-4 col-xs-4 no-padding">Productivity</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.total_performance}}</b></div>
+                                                    <div class="col-md-4 col-xs-4 no-padding">Performance</div>
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{(data.total_performance) ? data.total_performance : '-' }}</b></div>
                                                 </div>
                                                 <div class="col-md-12 col-xs-12 no-padding">
                                                     <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.total_usage}}</b></div>
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{(data.total_usage) ? data.total_usage : '-'}}</b></div>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3 no-padding">
                                                 <div class="col-md-12 col-xs-12 no-padding"><b>Utilization</b></div>
                                                 <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>{{ data.utilization }} %</b></div>
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>{{ (data.utilization) ? data.utilization : "0.00"}} %</b></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3 no-padding">
+                                                <div class="col-md-12 col-xs-12 no-padding"><b>Productivity</b></div>
+                                                <div class="col-md-12 col-xs-12 no-padding">
+                                                    <div class="col-md-8 col-xs-8 no-padding"><b>{{ (data.avg_productivity) ? data.avg_productivity : "0.00"}} %</b></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -188,6 +282,10 @@
                                                         <div class="col-md-12 col-xs-12 no-padding">
                                                             <div class="col-md-4 col-xs-4 no-padding">Usage</div>
                                                             <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.usage != null) ? prod_order_detail.usage+' Hour(s)' : '-'}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding" v-if="prod_order_detail.resource_detail.category_id == 0">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Accident</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.actual != null) ? prod_order_detail.actual+' Time(s)' : '-'}}</b></div>
                                                         </div>
                                                     </div>
                                                     
@@ -252,6 +350,7 @@
 
     var data = {
         modelRD : @json($modelRD),
+        depreciation_methods : @json($depreciation_methods),
         data:{
             category_id : "",
             selectedId : "",
@@ -268,6 +367,18 @@
             utilization : "",
             total_performance : "",
             total_usage : "",
+            running_hour : "",
+            manufactured_date : "",
+            purchasing_date : "",
+            purchasing_price : "",
+            lifetime : "",
+            depreciation_method : "",
+            cost_per_hour : "",
+            other_name : "",
+            address : "",
+            phone : "",
+            competency : "",
+            avg_productivity : ""
         }
     };
 
@@ -291,6 +402,18 @@
             this.data.utilization = "";
             this.data.total_performance = "";
             this.data.total_usage = "";
+            this.data.running_hour = "";
+            this.data.manufactured_date = "";
+            this.data.purchasing_date = "";
+            this.data.purchasing_price = "";
+            this.data.lifetime = "";
+            this.data.depreciation_method = "";
+            this.data.cost_per_hour = "";
+            this.data.other_name = "";
+            this.data.address = "";
+            this.data.phone = "";
+            this.data.competency = "";
+            this.data.avg_productivity = "";
         },
         showDetail(id){
             $('div.overlay').show();
@@ -299,25 +422,15 @@
 
             this.modelRD.forEach(RD => {
                 if(RD.id == this.data.selectedId){
+                    let planned_performance = 0;
+                    let actual_performance = 0;
+
                     this.data.category_id = RD.category_id;
                     this.data.code = RD.code;
-                    this.data.po_number = RD.goods_receipt_detail.goods_receipt.purchase_order.number;
-                    this.data.receive_date = RD.created_at.substr(0,10);
                     this.data.brand = RD.brand;
                     this.data.description = (RD.description != '') ? RD.description : '-';
                     this.data.performance = (RD.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" "+RD.performance_uom.unit+" / hour";
-
-                    let lifetime = 0;
-                    if(RD.lifetime_uom_id == 1){
-                        lifetime = RD.lifetime;
-                        this.data.rental_duration = (RD.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
-                    }else if(RD.lifetime_uom_id == 2){
-                        lifetime = RD.lifetime/30;
-                        this.data.rental_duration = (RD.lifetime/30+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
-                    }else if(RD.lifetime_uom_id == 3){
-                        lifetime = RD.lifetime/365;
-                        this.data.rental_duration = (RD.lifetime/365+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
-                    }
+                    planned_performance = RD.performance;
 
                     if(RD.category_id == 0){
                         this.data.type = "Sub Con";
@@ -336,7 +449,7 @@
                     }else if(RD.status == 2){
                         this.data.status = "USED";
                     }
-                    
+
                     let performance = 0;
                     let usage = 0;
                     if(RD.production_order_details.length > 0){
@@ -353,10 +466,70 @@
                         });
                         let average = (performance / usage).toFixed(2);
                         this.data.prod_order_detail = RD.production_order_details;
-                        this.data.total_performance = average+' '+RD.production_order_details[0].performance_uom.unit+' /hour';
+                        if(RD.production_order_details[0].performance_uom_id != null){
+                            this.data.total_performance = average+' '+RD.production_order_details[0].performance_uom.unit+' /hour';
+                        }
                         this.data.total_usage = usage+' Hour(s)';
+                        actual_performance = performance / usage;
                     }
-                    this.data.utilization = (usage / lifetime * 100).toFixed(2);
+
+                    if(this.data.category_id == 3){
+                        this.data.running_hour = RD.running_hour;
+                        this.data.manufactured_date = RD.manufactured_date;
+                        this.data.purchasing_date = RD.purchasing_date;
+                        this.data.purchasing_price = RD.purchasing_price;
+                        this.data.cost_per_hour = RD.cost_per_hour;
+                        this.depreciation_methods.forEach(depreciation_method => {
+                            if(RD.depreciation_method == depreciation_method.id){
+                                this.data.depreciation_method = depreciation_method.name;
+                            }
+                        });
+                        let lifetime = 0;
+                        this.data.lifetime = (RD.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
+                        lifetime = RD.lifetime;
+                        // if(RD.lifetime_uom_id == 1){
+                        // lifetime = RD.lifetime;
+                        //     this.data.lifetime = (RD.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
+                        // }else if(RD.lifetime_uom_id == 2){
+                        //     lifetime = RD.lifetime/30;
+                        //     this.data.lifetime = ((RD.lifetime/8)/30+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Month(s)';
+                        // }else if(RD.lifetime_uom_id == 3){
+                        //     lifetime = RD.lifetime/365;
+                        //     this.data.lifetime = ((RD.lifetime/8)/365+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Year(s)';
+                        // }
+                        this.data.utilization = (usage / lifetime * 100).toFixed(2);
+                    }else if(this.data.category_id == 1 || this.data.category_id == 2 || this.data.category_id == 0){
+                        let lifetime = 0;
+                        this.data.rental_duration = (RD.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
+                        lifetime = RD.lifetime;
+                        // if(RD.lifetime_uom_id == 1){
+                        //     lifetime = RD.lifetime;
+                        //     this.data.rental_duration = (RD.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
+                        // }else if(RD.lifetime_uom_id == 2){
+                        //     lifetime = RD.lifetime/30;
+                        //     this.data.rental_duration = ((RD.lifetime/8)/30+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Month(s)';
+                        // }else if(RD.lifetime_uom_id == 3){
+                        //     lifetime = RD.lifetime/365;
+                        //     this.data.rental_duration = ((RD.lifetime/8)/365+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Year(s)';
+                        // }
+
+                        this.data.receive_date = RD.created_at.substr(0,10);
+                        this.data.po_number = RD.goods_receipt_detail.goods_receipt.purchase_order.number;
+                        this.data.utilization = (usage / lifetime * 100).toFixed(2);
+                        if(this.data.category_id == 1){
+                            this.data.other_name = RD.others_name;
+                        }
+                        if(this.data.category_id == 0){
+                            this.data.address = RD.sub_con_address;
+                            this.data.phone = RD.sub_con_phone;
+                            this.data.competency = RD.sub_con_competency;
+                        }
+                    }
+                    this.data.avg_productivity = ((actual_performance / planned_performance)*100).toFixed(2);
+                    if(isNaN(this.data.avg_productivity)){
+                        this.data.avg_productivity = "0.00"
+                    console.log(this.data.avg_productivity);
+                    }
                 }
             });
             $('div.overlay').hide();

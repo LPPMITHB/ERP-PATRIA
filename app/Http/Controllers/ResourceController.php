@@ -390,9 +390,10 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
-        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom')->get()->jsonSerialize();
+        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail')->get()->jsonSerialize();
+        $depreciation_methods = Configuration::get('depreciation_methods');
         
-        return view('resource.show', compact('resource','modelRD','route'));
+        return view('resource.show', compact('resource','modelRD','route','depreciation_methods'));
     }
 
     public function edit(Request $request,$id)
@@ -533,6 +534,17 @@ class ResourceController extends Controller
                 }
 
                 $RD->purchasing_price = ($data->purchasing_price != '') ? $data->purchasing_price : null;
+                if($RD->lifetime_uom_id != null){
+                    if($data->lifetime != ''){
+                        if($RD->lifetime_uom_id == 1){
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 : null;
+                        }elseif($RD->lifetime_uom_id == 2){
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 * 30 : null;
+                        }elseif($RD->lifetime_uom_id == 3){
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 * 365 : null;
+                        }
+                    }
+                }
                 $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
                 $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
                 $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
@@ -574,7 +586,7 @@ class ResourceController extends Controller
         $number = 1;
         $code = $data.'-';
 
-        $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->first();
+        $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->where('code','not like','%-PO%')->first();
         if($modelRD){
             $number += intval(substr($modelRD->code,8));
         }

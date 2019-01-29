@@ -563,7 +563,9 @@ class ProductionOrderController extends Controller
                     $prod->performance = $resource->performance;
                     $prod->performance_uom_id = $resource->performance_uom_id;
                     $prod->usage = $resource->usage;
-                    $prod->actual = $resource->total_accident;
+                    if($resource->resource_detail->category_id == 0){
+                        $prod->actual = $resource->actual;
+                    }
                     $prod->status = "ACTUALIZED";
                     $prod->update();
 
@@ -582,7 +584,9 @@ class ProductionOrderController extends Controller
                     $prod->performance = ($resource->performance != "") ? $resource->performance : null;
                     $prod->performance_uom_id = ($resource->performance_uom_id != "") ? $resource->performance_uom_id : null;
                     $prod->usage = ($resource->usage != "") ? $resource->usage : null;
-                    $prod->actual = ($resource->total_accident != "") ? $resource->total_accident : null;
+                    if($resource->resource_detail->category_id == 0){
+                        $prod->actual = ($resource->actual != "") ? $resource->actual : null;
+                    }
                     $prod->status = "UNACTUALIZED";
                     $prod->update();
 
