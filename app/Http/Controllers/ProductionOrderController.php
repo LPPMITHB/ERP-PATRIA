@@ -405,16 +405,23 @@ class ProductionOrderController extends Controller
                     }
                 }
             }
-
+            
             if(count($datas->resources) > 0){
                 foreach($datas->resources as $resource){
-                    $PrOD = new ProductionOrderDetail;
-                    $PrOD->production_order_id = $PrO->id;
-                    $PrOD->resource_id = $resource->resource_id;
-                    $PrOD->save();
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('resource_id' , $resource->id)->first();
+                    if($existing != null){
+                        $existing->quantity += $resource->quantity;
+                        $existing->update();
+                    }else{
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->resource_id = $resource->resource_id;
+                        $PrOD->quantity = $resource->quantity;
+                        $PrOD->save();
+                    }
                 }
             }
-
+            
             foreach($arrData as $data){
                 if($data->type == "Material"){
                     $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('material_id' , $data->id)->first();
@@ -554,6 +561,7 @@ class ProductionOrderController extends Controller
                     $prod->performance = $resource->performance;
                     $prod->performance_uom_id = $resource->performance_uom_id;
                     $prod->usage = $resource->usage;
+                    $prod->actual = $resource->total_accident;
                     $prod->status = "ACTUALIZED";
                     $prod->update();
 
@@ -573,6 +581,7 @@ class ProductionOrderController extends Controller
                     $prod->performance = ($resource->performance != "") ? $resource->performance : null;
                     $prod->performance_uom_id = ($resource->performance_uom_id != "") ? $resource->performance_uom_id : null;
                     $prod->usage = ($resource->usage != "") ? $resource->usage : null;
+                    $prod->actual = ($resource->total_accident != "") ? $resource->total_accident : null;
                     $prod->status = "UNACTUALIZED";
                     $prod->update();
 
