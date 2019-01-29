@@ -996,7 +996,11 @@
                     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.services.push(POD);
                 }else if(POD.resource_id != null && POD.resource_detail_id != null){
-                    POD.morale = JSON.parse(POD.morale);
+                    if(POD.morale != null){
+                        POD.morale = JSON.parse(POD.morale);
+                    }else{
+                        POD.morale = [];
+                    }
                     this.resources.push(POD);
                 }
             });
