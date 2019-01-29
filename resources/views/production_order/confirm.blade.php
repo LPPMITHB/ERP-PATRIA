@@ -360,7 +360,8 @@
                                     <tr v-for="(data,index) in resources">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                        <td class="tdEllipsis">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
+                                        <td class="tdEllipsis" v-if="data.resource_detail.category_id != 1">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
+                                        <td class="tdEllipsis" v-else>{{ data.resource_detail.code }} - {{ data.resource_detail.others_name }}</td>
                                         <td>{{ data.status }}</td>
                                         <td v-if="data.status == 'UNACTUALIZED'" class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
                                             <div class="btn-group">
@@ -496,7 +497,8 @@
             usage : "",
             total_accident : "",
             statusUom : "",
-            index : ""
+            index : "",
+            total_accident : "",
         },
         uomSettings: {
             placeholder: 'Please Select Unit'
@@ -574,7 +576,7 @@
                 resource.performance = this.editInput.performance;
                 resource.performance_uom_id = this.editInput.performance_uom_id;
                 resource.usage = this.editInput.usage;
-                resource.total_accident = this.editInput.total_accident;
+                resource.actual = this.editInput.total_accident;
                 if(resource.performance != "" && resource.usage != "" && resource.total_accident != ""){
                     resource.status = "ACTUALIZED";
                     iziToast.success({
