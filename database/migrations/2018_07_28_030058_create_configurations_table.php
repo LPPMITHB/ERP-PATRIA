@@ -17,7 +17,7 @@ class CreateConfigurationsTable extends Migration
             $table->increments('id');
             $table->string('slug')->alpha_dash()->unique();
             $table->string('title');
-            $table->text('value');
+            $table->longText('value');
             $table->boolean('is_active');
             $table->timestamps();
         });

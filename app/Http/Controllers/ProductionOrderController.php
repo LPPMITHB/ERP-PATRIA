@@ -556,8 +556,10 @@ class ProductionOrderController extends Controller
             }
 
             foreach($datas->resources as $resource){
+                $prod = ProductionOrderDetail::find($resource->id);
+                $moraleNotesJson = json_encode($resource->morale);
+                $prod->morale = $moraleNotesJson;
                 if($resource->status == "ACTUALIZED"){
-                    $prod = ProductionOrderDetail::find($resource->id);
                     $prod->performance = $resource->performance;
                     $prod->performance_uom_id = $resource->performance_uom_id;
                     $prod->usage = $resource->usage;
@@ -577,7 +579,6 @@ class ProductionOrderController extends Controller
                         $modelRD->update();
                     }
                 }elseif($resource->status == "UNACTUALIZED"){
-                    $prod = ProductionOrderDetail::find($resource->id);
                     $prod->performance = ($resource->performance != "") ? $resource->performance : null;
                     $prod->performance_uom_id = ($resource->performance_uom_id != "") ? $resource->performance_uom_id : null;
                     $prod->usage = ($resource->usage != "") ? $resource->usage : null;
