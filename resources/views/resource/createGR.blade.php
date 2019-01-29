@@ -435,7 +435,8 @@
             placeholder: 'Please Select Depreciation Method'
         },
         detailData:{},
-        submitData:[]
+        submitData:[],
+        statusEdit: true,
     }
 
     var vm = new Vue({
@@ -464,7 +465,6 @@
                         isOk = false;
                     }
                 });
-
                 return isOk;
             },
            inputOk: function(){
@@ -473,17 +473,17 @@
                     isOk = true;
                 }
                 if(this.editInput.category_id == 0){
-                    if(this.editInput.sub_con_address == "" || this.editInput.sub_con_phone == "" || this.editInput.sub_con_competency == ""){
+                    if(this.editInput.lifetime == "" || this.editInput.sub_con_address == "" || this.editInput.sub_con_phone == "" || this.editInput.sub_con_competency == ""){
                         isOk = true;
                     }
                 }
                 if(this.editInput.category_id == 1){
-                    if(this.editInput.name == ""){
+                    if(this.editInput.lifetime == "" ||this.editInput.name == ""){
                         isOk = true;
                     }
                 }
                 if(this.editInput.category_id == 2){
-                    if(this.editInput.brand == ""){
+                    if(this.editInput.lifetime == "" || this.editInput.brand == ""){
                         isOk = true;
                     }
                 }
@@ -543,6 +543,7 @@
                     this.detailData.purchasing_price = this.editInput.purchasing_price;
                     this.detailData.cost_per_hour = this.editInput.cost_per_hour;
                     this.detailData.depreciation_method = this.editInput.depreciation_method;
+                    
                 }
                 let data = JSON.stringify(this.detailData);
                 data = JSON.parse(data);
@@ -601,10 +602,30 @@
             openEditModal(data,index){
                 $('div.overlay').show();
                 this.editInput.index = index;
+
+                this.editInput.category_id = '';
+                this.editInput.code = '';
+                this.editInput.description = '';
+                this.editInput.pod_id = '';
+                this.editInput.performance = '';
+                this.editInput.performance_uom_id = '';
+                this.editInput.lifetime = '';
+                this.editInput.lifetime_uom_id = '';
+                this.editInput.sub_con_address = '';
+                this.editInput.sub_con_phone = '';
+                this.editInput.sub_con_competency = '';
+                this.editInput.name = '';
+                this.editInput.brand = '';
+                this.editInput.manufactured_date = '';
+                this.editInput.purchasing_date = '';
+                this.editInput.purchasing_price = '';
+                this.editInput.cost_per_hour = '';
+                this.editInput.depreciation_method = '';
+
                 let status = 0;
                 this.submitData.forEach(dataSubmit => {
                     if(dataSubmit.index == index){
-                        console.log('a')
+                        this.statusEdit = false;
                         this.editInput.category_id = dataSubmit.category_id;
                         this.editInput.code = dataSubmit.code;
                         this.editInput.description = dataSubmit.description;
@@ -635,6 +656,7 @@
                             this.editInput.performance_uom_id = dataSubmit.performance_uom_id;
                         }
                         status = 1;
+
                     }
                 });
 
@@ -671,7 +693,7 @@
         },
         watch : {
             'editInput.category_id': function(newValue){
-                if(newValue !=""){
+                if(newValue !=""  && this.statusEdit){
                     this.editInput.sub_con_address = '';
                     this.editInput.sub_con_phone = '';
                     this.editInput.sub_con_competency = '';
@@ -686,7 +708,9 @@
                     this.editInput.lifetime = '';
                     this.editInput.lifetime_uom_id = '';
                     this.editInput.cost_per_hour = '';
-                    this.editInput.depreciation_method = '';
+                    this.editInput.depreciation_method = 0;
+                }else{
+                    this.statusEdit = true;
                 }
             },
             'editInput.sub_con_phone': function(newValue) {

@@ -145,6 +145,8 @@ class ResourceController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gr_number = $this->GR->generateGRNumber();
+        $depreciation_methods = Configuration::get('depreciation_methods');
+        
         DB::beginTransaction();
         try {
             $GR = new GoodsReceipt;
@@ -160,7 +162,7 @@ class ResourceController extends Controller
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
-
+            
             foreach($datas->resources as $data){
                 $RD = new ResourceDetail;
                 $RD->code = $data->code;
@@ -181,7 +183,7 @@ class ResourceController extends Controller
                         }
                     }
                 }
-
+                
                 if($data->category_id == 0){
                     $RD->sub_con_address = $data->sub_con_address;
                     $RD->sub_con_phone = $data->sub_con_phone;
@@ -205,14 +207,14 @@ class ResourceController extends Controller
                     $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
                 }
                 $RD->save();
-
+                
                 $GRD = new GoodsReceiptDetail;
                 $GRD->goods_receipt_id = $GR->id;
                 $GRD->quantity = 1;
                 $GRD->resource_detail_id = $RD->id;
                 $GRD->item_OK = 1;
                 $GRD->save();
-
+                
                 $this->GR->updatePOD($data->pod_id,1);
             }
             $this->GR->checkStatusPO($datas->po_id);
@@ -499,7 +501,7 @@ class ResourceController extends Controller
                 $RD->category_id = 3;
                 $RD->description = $data->description;
                 $RD->brand = $data->brand;
-                if($data->depreciation_method != ""){
+                if($data->depreciation_method != ''){
                     $RD->depreciation_method = $data->depreciation_method;
                 }
 

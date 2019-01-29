@@ -228,7 +228,7 @@
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
-                // form.submit();
+                form.submit();
             }
         },
         directives: {
