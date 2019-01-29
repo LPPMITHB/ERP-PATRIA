@@ -405,16 +405,23 @@ class ProductionOrderController extends Controller
                     }
                 }
             }
-
+            
             if(count($datas->resources) > 0){
                 foreach($datas->resources as $resource){
-                    $PrOD = new ProductionOrderDetail;
-                    $PrOD->production_order_id = $PrO->id;
-                    $PrOD->resource_id = $resource->resource_id;
-                    $PrOD->save();
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('resource_id' , $resource->id)->first();
+                    if($existing != null){
+                        $existing->quantity += $resource->quantity;
+                        $existing->update();
+                    }else{
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->resource_id = $resource->resource_id;
+                        $PrOD->quantity = $resource->quantity;
+                        $PrOD->save();
+                    }
                 }
             }
-
+            
             foreach($arrData as $data){
                 if($data->type == "Material"){
                     $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('material_id' , $data->id)->first();

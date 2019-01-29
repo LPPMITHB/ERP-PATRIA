@@ -450,12 +450,8 @@
             dataOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.id == "" || this.dataInput.quantity == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1){
-                    if(this.dataInput.type == 'Material' || this.dataInput.name ==""){
-                        isOk = true;
-                    }else if(this.dataInput.type == "" ){
-                        isOk = true;
-                    }
+                if(this.dataInput.type == "" || this.dataInput.id == "" || this.dataInput.quantity == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1){
+                    isOk = true;
                 }
                 return isOk;
             },

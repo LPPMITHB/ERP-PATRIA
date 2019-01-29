@@ -242,7 +242,6 @@
                 }else if(this.route == "/resource_repair"){
                     var url = "{{ route('resource_repair.storeAssignResource') }}";
                 }
-
                 window.axios.post(url,dataInput).then((response) => {
                     if(response.data.error != undefined){
                         iziToast.warning({

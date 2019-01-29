@@ -22,6 +22,7 @@ use App\Models\GoodsIssueDetail;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
 use App\Models\ProductionOrder;
+use App\Models\ProductionOrderDetail;
 use DateTime;
 use Auth;
 use DB;
@@ -69,7 +70,6 @@ class ResourceController extends Controller
     {
         $data = json_decode($request->datas);
         $route = $request->route()->getPrefix();
-
         DB::beginTransaction();
         try {
             $resource = new Resource;
@@ -79,6 +79,7 @@ class ResourceController extends Controller
             $resource->user_id = Auth::user()->id;
             $resource->branch_id = Auth::user()->branch->id;
             $resource->save();
+
 
             DB::commit();
             if($route == "/resource"){
@@ -458,7 +459,7 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $data = $request->json()->all();
-   
+        
         DB::beginTransaction();
         try {
             $resource = new ResourceTrx;
@@ -467,8 +468,23 @@ class ResourceController extends Controller
             $resource->wbs_id = $data['wbs_id'];
             $resource->quantity = $data['quantity'];
 
+            $ProdOrder = ProductionOrder::where('wbs_id',$data['wbs_id'])->where('status',1)->first();
+            if($ProdOrder){
+                $existing = ProductionOrderDetail::where('production_order_id',$ProdOrder->id)->where('resource_id' , $data['resource_id'])->first();
+                if($existing != null){
+                    $existing->quantity += $data['quantity'];
+                    $existing->update();
+                }else{
+                    $PrOD = new ProductionOrderDetail;
+                    $PrOD->production_order_id = $ProdOrder->id;
+                    $PrOD->resource_id = $data['resource_id'];
+                    $PrOD->quantity = $data['quantity'];
+                    $PrOD->save();
+                }
+            }
+
             if(!$resource->save()){
-                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+                return response($ProdOrder,Response::HTTP_OK);
             }else{
                 DB::commit();
                 return response(["response"=>"Success to assign resource"],Response::HTTP_OK);
@@ -641,8 +657,6 @@ class ResourceController extends Controller
 
         return response($resourceDetail, Response::HTTP_OK);
     }
-
-    
     
     public function generateCodeAPI($data){
         $data = json_decode($data);
