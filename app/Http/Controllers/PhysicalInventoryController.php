@@ -235,6 +235,7 @@ class PhysicalInventoryController extends Controller
             if(count($goodsReceipt)>0){
                 $gr = new GoodsReceipt;
                 $gr->number = $this->gr->generateGRNumber();
+                $gr->type = 5;
                 $gr->business_unit_id = $business_unit;
                 $gr->description = "Stock Adjustment ".$snapshot->code;
                 $gr->user_id = Auth::user()->id;
@@ -261,6 +262,7 @@ class PhysicalInventoryController extends Controller
 
             if(count($goodsIssue)>0){
                 $gi = new GoodsIssue;
+                $gi->type = 3;
                 $gi->business_unit_id = $business_unit;
                 $gi->number = $this->gi->generateGINumber();
                 $gi->description = "Stock Adjustment ".$snapshot->code;

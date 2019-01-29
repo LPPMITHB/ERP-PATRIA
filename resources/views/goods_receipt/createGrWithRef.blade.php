@@ -217,7 +217,6 @@
                     }
                 });
                 
-                console.log(data)
                 this.submittedForm.POD = data;
                 this.submittedForm.checkedPOD = jsonPod;            
                 this.submittedForm.purchase_order_id = this.modelPO.id;
