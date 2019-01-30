@@ -78,6 +78,18 @@ class ProductionOrderController extends Controller
 
         return view('production_order.selectProject', compact('modelProject','menu','route'));
     }
+
+    public function selectProjectIndex (Request $request){
+        $route = $request->route()->getPrefix();
+        if($route == "/production_order"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/production_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+        $menu = "index_pro";
+
+        return view('production_order.selectProject', compact('modelProject','menu','route'));
+    }
     
     public function selectWBS(Request $request,$id){
         $route = $request->route()->getPrefix();
@@ -196,7 +208,7 @@ class ProductionOrderController extends Controller
         return view('production_order.confirmPrO', compact('modelPrO','modelProject','route'));
     }
 
-    public function index(Request $request)
+    public function indexPrO(Request $request,$id)
     {
         $route = $request->route()->getPrefix();
         if($route == "/production_order"){
@@ -204,9 +216,14 @@ class ProductionOrderController extends Controller
         }elseif($route == "/production_order_repair"){
             $project_ids = Project::where('business_unit_id',2)->pluck('id')->toArray();
         }
-        $modelPOs = ProductionOrder::whereIn('project_id',$project_ids)->get();
+        
+        $modelProject = Project::where('status',1)->where('business_unit_id',$project_ids)->get();
+        
+        $modelPrOs = ProductionOrder::where('project_id',$id)->with('project','wbs')->get();
 
-        return view('production_order.index',compact('modelPOs','route'));
+        $id = $id;
+
+        return view('production_order.index',compact('modelProject','modelPrOs','route','id'));
     }
 
     public function selectPrOReport($id){
@@ -673,6 +690,18 @@ class ProductionOrderController extends Controller
     public function getServiceAPI($id){
 
         return response(Service::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getProjectPOApi($id){
+        $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
+
+        return response($project, Response::HTTP_OK);
+    }
+
+    public function getPOApi($id){
+        $modelPOs = ProductionOrder::where('project_id',$id)->with('project','wbs')->get()->jsonSerialize();
+
+        return response($modelPOs, Response::HTTP_OK);
     }
 
     public function getStockAPI($id){

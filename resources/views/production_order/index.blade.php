@@ -1,17 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View All Production Orders',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Production Orders' => '',
+@if($route == "/production_order")
+    @breadcrumb(
+        [
+            'title' => 'View All Production Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Production Order' => route('production_order.indexPrO',$id),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/production_order_repair")
+    @breadcrumb(
+        [
+            'title' => 'View All Production Order',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Production Order' => route('production_order_repair.indexPrO',$id),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -19,7 +31,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tableFixed tablePaging" id="gi-table">
+                <table class="table table-bordered tableFixed tablePaging">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -30,17 +42,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPOs as $modelPO)
+                        @foreach($modelPrOs as $modelPO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
                                 <td>{{ $modelPO->project->name }}</td>
-                                <td>{{ $modelPO->wbs->name}}</td>
-                                <td align="center">
-                                    @if($route == "/production_order")
-                                        <a href="{{ route('production_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                    @elseif($route == "/production_order_repair")
-                                        <a href="{{ route('production_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                <td class="tdEllipsis">{{ $modelPO->wbs->name }}</td>
+                                <td class="textCenter">
+                                    @if($route == "/production_order" && $modelPO->status == 1)
+                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a href="" class="btn btn-primary btn-xs">EDIT</a>
+                                    @elseif($route == "/production_order" && $modelPO->status != 1)
+                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
+                                    @elseif($route == "/production_order_repair" && $modelPO->status == 1)
+                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a href="" class="btn btn-primary btn-xs">EDIT</a>
+                                    @elseif($route == "/production_order_repair" && $modelPO->status != 1)
+                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
                                     @endif
                                 </td>
                             </tr>
@@ -59,7 +77,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();        
+        $('div.overlay').hide();
     });
 </script>
 @endpush

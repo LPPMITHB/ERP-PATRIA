@@ -49,7 +49,7 @@ class VendorController extends Controller
             'code' => 'required|alpha_dash|unique:mst_vendor|string|max:255',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'email' => 'required|email|unique:mst_customer|max:255'
+            'email' => 'nullable|email|unique:mst_customer|max:255'
         ]);
         DB::beginTransaction();
         try {
@@ -98,6 +98,7 @@ class VendorController extends Controller
             'code' => 'required|alpha_dash|unique:mst_vendor,code,'.$id.',id|string|max:255',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:mst_customer|max:255'
         ]);
         DB::beginTransaction();
         try {
