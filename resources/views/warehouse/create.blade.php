@@ -67,7 +67,10 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $warehouse->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus
+                                @if($warehouse->name != null) value="{{ $warehouse->name }}"
+                                @else value="{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -75,7 +78,10 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" value="{{ $warehouse->description }}">
+                                <input type="text" class="form-control" id="description" name="description"
+                                @if($warehouse->description != null) value="{{ $warehouse->description }}"
+                                @else value="{{ old('description') }}"
+                                @endif>
                             </div>
                         </div>
 

@@ -68,7 +68,10 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $branch->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus
+                                @if($branch->name != null) value="{{ $branch->name }}"
+                                @else value="{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -76,7 +79,10 @@
                             <label for="address" class="col-sm-2 control-label">Address</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address" required value="{{ $branch->address }}">
+                                <input type="text" class="form-control" id="address" name="address" required
+                                @if($branch->address != null) value="{{ $branch->address }}"
+                                @else value="{{ old('address') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -84,7 +90,10 @@
                             <label for="phone_number" class="col-sm-2 control-label">Phone Number</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="phone_number" name="phone_number" required value="{{ $branch->phone_number }}">
+                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="phone_number" name="phone_number" required
+                                @if($branch->phone_number != null) value="{{ $branch->phone_number }}"
+                                @else value="{{ old('phone_number') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -92,7 +101,10 @@
                             <label for="fax" class="col-sm-2 control-label">Fax</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="fax" name="fax" value="{{ $branch->fax }}">
+                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" id="fax" name="fax"
+                                @if($branch->fax != null) value="{{ $branch->fax }}"
+                                @else value="{{ old('fax') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -100,7 +112,10 @@
                             <label for="email" class="col-sm-2 control-label">Email</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="email" name="email" required value="{{ $branch->email }}">
+                                <input type="text" class="form-control" id="email" name="email" required
+                                @if($branch->email != null) value="{{ $branch->email }}"
+                                @else value="{{ old('email') }}"
+                                @endif>
                             </div>
                         </div>
 

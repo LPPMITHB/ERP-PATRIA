@@ -16,7 +16,7 @@ class CreateMstBusinessUnit extends Migration
         Schema::create('mst_business_unit', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->longText('description');
+            $table->text('description');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

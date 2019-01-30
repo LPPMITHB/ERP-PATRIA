@@ -40,7 +40,7 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis">{{ $customer->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$customer->name}}">{{ $customer->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$customer->address}}">{{ $customer->address }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$customer->address_1}}">{{ $customer->address_1 }}</td>
                                 <td class="tdEllipsis" align="center">
                                     <a href="{{ route('customer.show', ['id'=>$customer->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('customer.edit', ['id'=>$customer->id]) }}" class="btn btn-primary btn-xs">EDIT</a>

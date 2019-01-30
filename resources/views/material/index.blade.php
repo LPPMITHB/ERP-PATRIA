@@ -22,9 +22,9 @@
                 <div class="box-tools pull-right">
                     <a href="{{ route('material.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                 </div>
-            </div> <!-- /.box-header -->
+            </div>
             @verbatim
-            <div id="index_material">
+                <div id="index_material">
                     <div class="box-body p-b-0 p-t-15">
                     <table class="table table-bordered tablePagingVue" id="material-table">
                         <thead>
@@ -49,18 +49,18 @@
                                 <td v-else-if="data.type == 1">Consumable</td>
                                 <td v-else-if="data.type == 0">Raw</td>
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    <a :href="createRouteShow(data.id)" class="btn btn-primary btn-xs">VIEW</a>
+                                    <a :href="createRouteShow(data.code)" class="btn btn-primary btn-xs">VIEW</a>
                                     <a :href="createRouteEdit(data.id)" class="btn btn-primary btn-xs">EDIT</a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div> <!-- /.box-body -->
-                <div class="overlay">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
             </div>
             @endverbatim
+            <div class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
         </div>
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->

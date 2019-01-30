@@ -27,4 +27,19 @@ class ProductionOrderDetail extends Model
     {
         return $this->belongsTo('App\Models\Resource');
     }
+
+    public function productionOrderDetails()
+    {
+        return $this->hasMany('App\Models\ProductionOrderDetail');
+    }
+
+    public function resourceDetail()
+    {
+        return $this->belongsTo('App\Models\ResourceDetail');
+    }
+
+    public function performanceUom()
+    {
+        return $this->belongsTo('App\Models\Uom', 'performance_uom_id');
+    }
 }

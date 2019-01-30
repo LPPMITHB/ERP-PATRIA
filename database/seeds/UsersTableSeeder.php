@@ -28,7 +28,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'User PMP',
             'email' => 'pmp@pmp.com',
             'role_id' => 4,
-            'branch_id' => 2,
+            'branch_id' => 1,
             'password' => bcrypt('patria'),
             'business_unit_id' => '[1]',
         ]);
@@ -38,7 +38,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'User PAMI',
             'email' => 'pami@pami.com',
             'role_id' => 5,
-            'branch_id' => 1,
+            'branch_id' => 2,
             'password' => bcrypt('patria'),
             'business_unit_id' => '[2]',
         ]);

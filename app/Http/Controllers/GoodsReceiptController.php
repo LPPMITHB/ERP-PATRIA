@@ -35,7 +35,7 @@ class GoodsReceiptController extends Controller
             $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
             $modelSloc = StorageLocation::all();
             $datas = Collection::make();
-
+ 
             
             foreach($modelPODs as $POD){
                 $datas->push([
@@ -50,12 +50,15 @@ class GoodsReceiptController extends Controller
                     "wbs_id" => $POD->wbs_id,
                     "total_price" => $POD->total_price,
                     "sloc_id" => "",
+                    "item_OK" => 0,
                     ]);
                 }
                 // print_r($datas);exit();
-            
 
+
+            
             return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc','route','datas'));
+        
         }elseif($modelPO->purchaseRequisition->type == 2){
             // $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
             // $resource_categories = Configuration::get('resource_category');
@@ -150,7 +153,13 @@ class GoodsReceiptController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->purchase_order_id = $datas->purchase_order_id;
+            $GR->type = 1;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
@@ -162,6 +171,7 @@ class GoodsReceiptController extends Controller
                     $GRD->quantity = $data->received;
                     $GRD->material_id = $data->material_id;
                     $GRD->storage_location_id = $data->sloc_id;
+                    $GRD->item_OK = $data->item_OK;
                     $GRD->save();
                 
                     $this->updatePOD($data->purchase_order_id,$data->received);
@@ -195,6 +205,11 @@ class GoodsReceiptController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->work_order_id = $datas->wo_id;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
@@ -239,6 +254,11 @@ class GoodsReceiptController extends Controller
         try {
             $GR = new GoodsReceipt;
             $GR->number = $gr_number;
+            if($route == "/goods_receipt"){
+                $GR->business_unit_id = 1;                
+            }elseif($route == "/goods_receipt_repair"){
+                $GR->business_unit_id = 2;
+            }
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;

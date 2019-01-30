@@ -11,6 +11,7 @@ use App\Models\WBS;
 use App\Models\ProductionOrder;
 use App\Models\ProductionOrderDetail;
 use App\Models\Bom;
+use App\Models\Uom;
 use App\Models\Material;
 use App\Models\Resource;
 use App\Models\Service;
@@ -74,6 +75,18 @@ class ProductionOrderController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
         }
         $menu = "report_pro";
+
+        return view('production_order.selectProject', compact('modelProject','menu','route'));
+    }
+
+    public function selectProjectIndex (Request $request){
+        $route = $request->route()->getPrefix();
+        if($route == "/production_order"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/production_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+        $menu = "index_pro";
 
         return view('production_order.selectProject', compact('modelProject','menu','route'));
     }
@@ -195,7 +208,7 @@ class ProductionOrderController extends Controller
         return view('production_order.confirmPrO', compact('modelPrO','modelProject','route'));
     }
 
-    public function index(Request $request)
+    public function indexPrO(Request $request,$id)
     {
         $route = $request->route()->getPrefix();
         if($route == "/production_order"){
@@ -203,9 +216,14 @@ class ProductionOrderController extends Controller
         }elseif($route == "/production_order_repair"){
             $project_ids = Project::where('business_unit_id',2)->pluck('id')->toArray();
         }
-        $modelPOs = ProductionOrder::whereIn('project_id',$project_ids)->get();
+        
+        $modelProject = Project::where('status',1)->where('business_unit_id',$project_ids)->get();
+        
+        $modelPrOs = ProductionOrder::where('project_id',$id)->with('project','wbs')->get();
 
-        return view('production_order.index',compact('modelPOs','route'));
+        $id = $id;
+
+        return view('production_order.index',compact('modelProject','modelPrOs','route','id'));
     }
 
     public function selectPrOReport($id){
@@ -265,8 +283,9 @@ class ProductionOrderController extends Controller
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => null,
+                            "trx_resource_id" => '',
                             "trx_resource_code" => null,
+                            "status" => null,
                         ]);
                     } 
                 }
@@ -298,8 +317,9 @@ class ProductionOrderController extends Controller
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => null,
+                            "trx_resource_id" => '',
                             "trx_resource_code" => null,
+                            "status" => null,
                         ]);
                     } 
                 }elseif($prOD->service_id != ""){
@@ -323,10 +343,11 @@ class ProductionOrderController extends Controller
     public function confirm(Request $request,$id){
         $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','resource','service','productionOrder')->get()->jsonSerialize();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
+        $uoms = Uom::all()->jsonSerialize();
 
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route'));
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms'));
     }
 
     /**
@@ -401,16 +422,23 @@ class ProductionOrderController extends Controller
                     }
                 }
             }
-
+            
             if(count($datas->resources) > 0){
                 foreach($datas->resources as $resource){
-                    $PrOD = new ProductionOrderDetail;
-                    $PrOD->production_order_id = $PrO->id;
-                    $PrOD->resource_id = $resource->resource_id;
-                    $PrOD->save();
+                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('resource_id' , $resource->id)->first();
+                    if($existing != null){
+                        $existing->quantity += $resource->quantity;
+                        $existing->update();
+                    }else{
+                        $PrOD = new ProductionOrderDetail;
+                        $PrOD->production_order_id = $PrO->id;
+                        $PrOD->resource_id = $resource->resource_id;
+                        $PrOD->quantity = $resource->quantity;
+                        $PrOD->save();
+                    }
                 }
             }
-
+            
             foreach($arrData as $data){
                 if($data->type == "Material"){
                     $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('material_id' , $data->id)->first();
@@ -476,9 +504,24 @@ class ProductionOrderController extends Controller
         DB::beginTransaction();
         try {
             $modelPrO->status = 2;
-            $modelPrO->save();
+            $modelPrO->update();
 
+            foreach($datas->resources as $resource){
+                $PrOD = new ProductionOrderDetail;
+                $PrOD->production_order_id = $pro_id;
+                $PrOD->production_order_detail_id = $resource->id;
+                $PrOD->resource_id = $resource->resource_id;
+                $PrOD->resource_detail_id = $resource->trx_resource_id;
+                $PrOD->quantity = 1;
+                $PrOD->status = "UNACTUALIZED";
+                $PrOD->save();
+
+                $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
+                $RD->status = 2;
+                $RD->update();
+            }
             $this->createMR($datas->modelPrOD);
+
             DB::commit();
             if($route == "/production_order"){
                 return redirect()->route('production_order.showRelease',$modelPrO->id)->with('success', 'Production Order Released');
@@ -500,7 +543,6 @@ class ProductionOrderController extends Controller
         $datas = json_decode($request->datas);
         $pro_id = $datas->modelPrOD[0]->production_order_id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
-
         DB::beginTransaction();
         try {
             $statusAll = $modelPrO->wbs->activities->groupBy('status');
@@ -517,16 +559,59 @@ class ProductionOrderController extends Controller
                 $modelPrO->status = 2;
                 $modelPrO->save();
             }
+
             foreach ($datas->materials as  $material) {
                 $prod = ProductionOrderDetail::find($material->id);
-                $prod->actual = $material->used;
+                $prod->actual += $material->quantity;
                 $prod->update();
             }
 
             foreach ($datas->services as  $service) {
-                    $prod = ProductionOrderDetail::find($service->id);
-                    $prod->actual = $service->used;
+                $prod = ProductionOrderDetail::find($service->id);
+                $prod->actual = $service->quantity;
+                $prod->update();
+            }
+
+            foreach($datas->resources as $resource){
+                $prod = ProductionOrderDetail::find($resource->id);
+                $moraleNotesJson = json_encode($resource->morale);
+                $prod->morale = $moraleNotesJson;
+                if($resource->status == "ACTUALIZED"){
+                    $prod->performance = $resource->performance;
+                    $prod->performance_uom_id = $resource->performance_uom_id;
+                    $prod->usage = $resource->usage;
+                    if($resource->resource_detail->category_id == 0){
+                        $prod->actual = $resource->actual;
+                    }
+                    $prod->status = "ACTUALIZED";
                     $prod->update();
+
+                    $resource_detail_id = $prod->resource_detail_id;
+                    $status = 0;
+                    $modelProdDetail = ProductionOrderDetail::where('resource_detail_id',$resource_detail_id)->where('status','UNACTUALIZED')->get();
+                    if(count($modelProdDetail) > 0){
+                        $status = 1;
+                    }
+                    if($status == 0){
+                        $modelRD = ResourceDetail::find($resource_detail_id);
+                        $modelRD->status = 1;
+                        $modelRD->update();
+                    }
+                }elseif($resource->status == "UNACTUALIZED"){
+                    $prod->performance = ($resource->performance != "") ? $resource->performance : null;
+                    $prod->performance_uom_id = ($resource->performance_uom_id != "") ? $resource->performance_uom_id : null;
+                    $prod->usage = ($resource->usage != "") ? $resource->usage : null;
+                    if($resource->resource_detail->category_id == 0){
+                        $prod->actual = ($resource->actual != "") ? $resource->actual : null;
+                    }
+                    $prod->status = "UNACTUALIZED";
+                    $prod->update();
+
+                    $resource_detail_id = $prod->resource_detail_id;
+                    $modelRD = ResourceDetail::find($resource_detail_id);
+                    $modelRD->status = 2;
+                    $modelRD->update();
+                }
             }
             
             DB::commit();
@@ -562,10 +647,11 @@ class ProductionOrderController extends Controller
 
     public function createMR($modelPrOD){
         $mr_number = $this->generateMRNumber();
+        $project_id = ProductionOrder::findOrFail($modelPrOD[0]->production_order_id)->project_id;
 
         $MR = new MaterialRequisition;
         $MR->number = $mr_number;
-        $MR->project_id = $modelPrOD[0]->production_order->project_id;
+        $MR->project_id = $project_id;
         $MR->description = "AUTO CREATE MR FROM PRODUCTION ORDER";
         $MR->type = 1;
         $MR->user_id = Auth::user()->id;
@@ -574,12 +660,14 @@ class ProductionOrderController extends Controller
 
         foreach($modelPrOD as $PrOD){
             if($PrOD->material_id != "" || $PrOD->material_id != null){
-                $MRD = new MaterialRequisitionDetail;
-                $MRD->material_requisition_id = $MR->id;
-                $MRD->quantity = $PrOD->sugQuantity;
-                $MRD->issued = 0;
-                $MRD->material_id = $PrOD->material_id;
-                $MRD->save();
+                if($PrOD->source == "Stock"){
+                    $MRD = new MaterialRequisitionDetail;
+                    $MRD->material_requisition_id = $MR->id;
+                    $MRD->quantity = $PrOD->quantity;
+                    $MRD->issued = 0;
+                    $MRD->material_id = $PrOD->material_id;
+                    $MRD->save();
+                }
             }
         }
     }
@@ -616,6 +704,18 @@ class ProductionOrderController extends Controller
         return response(Service::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
+    public function getProjectPOApi($id){
+        $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
+
+        return response($project, Response::HTTP_OK);
+    }
+
+    public function getPOApi($id){
+        $modelPOs = ProductionOrder::where('project_id',$id)->with('project','wbs')->get()->jsonSerialize();
+
+        return response($modelPOs, Response::HTTP_OK);
+    }
+
     public function getStockAPI($id){
         $stock = Stock::where('material_id',$id)->first();
         if($stock){
@@ -636,6 +736,13 @@ class ProductionOrderController extends Controller
         }
 
         return response($stock, Response::HTTP_OK);
+    }
+
+    public function getTrxResourceAPI($id,$jsonResource){
+        $jsonResource = json_decode($jsonResource);
+        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
+
+        return response($resource, Response::HTTP_OK);
     }
 
     public function generateMRNumber(){

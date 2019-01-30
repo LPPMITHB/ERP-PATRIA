@@ -179,10 +179,11 @@
                                 <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
                                 <td class="tdEllipsis">{{ (data.resource.description) ? data.resource.description : '-' }}</td>
                                 <td class="tdEllipsis">{{ (data.trx_resource_code) ? data.trx_resource_code : '-' }}</td>
-                                <td class="tdEllipsis" v-if="data.trx_resource_id == null"> {{ 'NOT SELECTED' }}</td>
-                                <td class="tdEllipsis" v-else-if="data.trx_resource_id == 1"> {{ 'IDLE' }}</td>
-                                <td class="tdEllipsis" v-else-if="data.trx_resource_id == 2"> {{ 'USED' }}</td>
-                                <td class="p-l-0" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#">
+                                <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == 2"> {{ 'USED' }}</td>
+                                <td class="p-l-0" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">
                                     <div class="btn-group">
                                         SELECT
                                     </div></a>
@@ -190,6 +191,51 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="modal fade" id="select_resource">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Select Operational Resource</h4>
+                            </div>
+                            <div class="modal-body p-t-0">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Operational Resource</label>
+                                        <selectize id="edit_modal" v-model="editInput.resource_id" :settings="resourceSettings">
+                                            <option v-for="(resource, index) in resourceDetails" :value="resource.id">{{ resource.code }}</option>
+                                        </selectize>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered tableFixed showTable" v-show="editInput.resource_id != ''">
+                                    <thead>
+                                        <tr>
+                                            <th width="7%">No</th>
+                                            <th width="28%">Type</th>
+                                            <th width="15%">Status</th>
+                                            <th width="50%">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td class="tdEllipsis">{{ editInput.type }}</td>
+                                            <td class="tdEllipsis" v-if="editInput.status == 1">{{ 'IDLE' }}</td>
+                                            <td class="tdEllipsis" v-else-if="editInput.status == 2">{{ 'USED' }}</td>
+                                            <td class="tdEllipsis">{{ editInput.notes }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTable">SELECT</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="box-body p-t-0 p-b-5" v-if="route == '/production_order_repair'">
@@ -249,7 +295,20 @@
         services : @json($services),
         resources : @json($resources),
         activities : @json($activities),
-        submittedForm : {}
+        submittedForm : {},
+        resourceDetails : [],
+        resourceSettings: {
+            placeholder: 'Please Select Resource'
+        },
+        editInput : {
+            resource_id: "",
+            type: "",
+            status: "",
+            notes : "",
+            index : "",
+            trx_resource_code : ""
+        },
+        selectedResource :[], 
     };
 
     var vm = new Vue({
@@ -259,17 +318,78 @@
             createOk: function(){
                 let isOk = false;
 
+                this.resources.forEach(resource => {
+                    if(resource.trx_resource_id == ""){
+                        isOk = true;
+                    }
+                });
+                return isOk;
+            },
+            selectOk: function(){
+                let isOk = false;
+
                 return isOk;
             }
         },
         methods: {
+            clearEditInput(){
+                this.editInput.resource_id = "";
+                this.editInput.type = "";
+                this.editInput.status = "";
+                this.editInput.notes = "";
+                this.editInput.index = "";
+                this.editInput.trx_resource_code = "";
+            },
             addResource(data,index) {
+                this.clearEditInput();
+                this.editInput.index = index;
+                this.editInput.resource_id = data.trx_resource_id;
+                this.selectedResource.forEach(resource_id => {
+                    if(resource_id == this.editInput.resource_id){
+                        let indexArr = this.selectedResource.indexOf(resource_id);
+                        this.selectedResource.splice(indexArr,1)
+                    }
+                });
 
+                let selectedResource = JSON.stringify(this.selectedResource);
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource).then(({ data }) => {
+                    this.resourceDetails = data;
+                    this.resourceDetails.forEach(resourceDetail => {
+                        if(resourceDetail.id == this.editInput.resource_id){
+                            this.editInput.status = resourceDetail.status;
+                            this.editInput.trx_resource_code = resourceDetail.code;
+
+                            if(resourceDetail.category_id == 0){
+                                this.editInput.type = "Subcon"
+                            }else if(resourceDetail.category_id == 1){
+                                this.editInput.type = "Others"
+                            }else if(resourceDetail.category_id == 2){
+                                this.editInput.type = "External Equipment"
+                            }else if(resourceDetail.category_id == 3){
+                                this.editInput.type = "Internal Equipment"
+                            }
+
+                            if(resourceDetail.status == 1){
+                                this.editInput.notes = "-"
+                            }else if(resourceDetail.status == 2){
+                                this.editInput.notes = ""
+                            }
+                        }
+                    });
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
             },
             submitForm() {
                 this.submittedForm.modelPrOD = this.modelPrOD;
-                this.submittedForm.boms = this.boms;
-                this.submittedForm.resourceDetails = this.resourceDetails;
+                this.submittedForm.resources = this.resources;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -322,6 +442,50 @@
                         });
                     }
                 });
+            },
+            submitToTable(){
+                let resource = this.resources[this.editInput.index];
+                if(this.editInput.resource_id == ''){
+                    resource.trx_resource_code = '';
+                    resource.trx_resource_id = '';
+                    resource.status = '';
+                }else{
+                    resource.trx_resource_code = this.editInput.trx_resource_code;
+                    resource.trx_resource_id = this.editInput.resource_id ;
+                    resource.status = this.editInput.status;
+                }
+
+                this.selectedResource.push(this.editInput.resource_id);
+                this.clearEditInput();
+            }
+        },
+        watch: {
+            'editInput.resource_id': function(newValue){
+                if(newValue != ""){
+                    this.resourceDetails.forEach(data => {
+                        if(data.id == newValue){
+                            this.editInput.trx_resource_code = data.code;
+                            this.editInput.status = data.status;
+                            if(data.category_id == 0){
+                                this.editInput.type = "Subcon"
+                            }else if(data.category_id == 1){
+                                this.editInput.type = "Others"
+                            }else if(data.category_id == 2){
+                                this.editInput.type = "External Equipment"
+                            }else if(data.category_id == 3){
+                                this.editInput.type = "Internal Equipment"
+                            }
+
+                            if(data.status == 1){
+                                this.editInput.notes = "-"
+                            }else if(data.status == 2){
+                                this.editInput.notes = ""
+                            }
+                        }
+                    });
+                }else{
+
+                }
             }
         },
         created: function() {

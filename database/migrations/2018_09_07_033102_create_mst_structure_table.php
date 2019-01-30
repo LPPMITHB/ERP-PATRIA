@@ -18,7 +18,7 @@ class CreateMstStructureTable extends Migration
             $table->string('code')->unique();
             $table->unsignedInteger('structure_id')->nullable();
             $table->string('name');
-            $table->longText('description')->nullable();
+            $table->text('description')->nullable();
             $table->boolean('is_substructure')->default(false);
             $table->string('status')->default(1);
             $table->unsignedInteger('branch_id');

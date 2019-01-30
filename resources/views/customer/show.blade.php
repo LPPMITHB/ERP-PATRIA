@@ -59,31 +59,66 @@
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td>Address</td>
-                            <td>{{ $customer->address }}</td>
+                            <td>Address 1</td>
+                            <td>{{ $customer->address_1 }}</td>
                         </tr>
                         <tr>
                             <td>4</td>
-                            <td>Contact Person Name</td>
-                            <td>{{ $customer->contact_person_name }}</td>
+                            <td>Address 2</td>
+                            <td>{{ $customer->address_2 }}</td>
                         </tr>
                         <tr>
                             <td>5</td>
-                            <td>Contact Person E-Mail</td>
-                            <td>{{ $customer->contact_person_email }}</td>
+                            <td>Phone Number 1</td>
+                            <td>{{ $customer->phone_number_1 }}</td>
                         </tr>
                         <tr>
                             <td>6</td>
-                            <td>Contact Person Phone</td>
-                            <td>{{ $customer->contact_person_phone }}</td>
+                            <td>Phone Number 2</td>
+                            <td>{{ $customer->phone_number_2 }}</td>
                         </tr>
                         <tr>
                             <td>7</td>
+                            <td>Contact Name</td>
+                            <td>{{ $customer->contact_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Email</td>
+                            <td>{{ $customer->email }}</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Tax Number</td>
+                            <td>{{ $customer->tax_number }}</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Pkp Number</td>
+                            <td>{{ $customer->pkp_number }}</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Province</td>
+                            <td>{{ $customer->province }}</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Zip Code</td>
+                            <td>{{ $customer->zip_code }}</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Country</td>
+                            <td>{{ $customer->country }}</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
                             <td>Business Unit</td>
                             <td>{{ $business_unit }}</td>
                         </tr>
                         <tr>
-                            <td>8</td>
+                            <td>15</td>
                             <td>Status</td>
                             <td class="iconTd">
                                 @if ($customer->status == 1)

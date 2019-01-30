@@ -25,7 +25,7 @@
                             <th width="20%">GR Number</th>
                             <th width="20%">PO Number</th>
                             <th width="20%">Description</th>
-                            <th width="25%">Project Name</th>
+                            <th width="25%">Vendor</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -33,15 +33,15 @@
                         @foreach($modelGRs as $modelGR)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelGR->number }}</td>
-                                <td>{{ $modelGR->purchaseOrder->number }}</td>
-                                <td>{{ $modelGR->description }}</td>
-                                <td>{{ $modelGR->vendor->name }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->number }}">{{ $modelGR->number }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->purchaseOrder->number }}">{{ $modelGR->purchaseOrder->number }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->description }}">{{ $modelGR->description }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->purchaseOrder->vendor->name }}">{{ $modelGR->purchaseOrder->vendor->name }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == 'building')
-                                        <a href="{{ route('goods_issue.createGiWithRef', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('goods_return.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @else
-                                        <a href="{{ route('goods_issue_repair.createGiWithRef', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        {{-- <a href="{{ route('goods_return_repair.createGiWithRef', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a> --}}
                                     @endif
                                 </td>
                             </tr>

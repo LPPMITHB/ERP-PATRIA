@@ -18,7 +18,7 @@ class CreateTrxWorkRequestTable extends Migration
             $table->string('number')->unique();
             $table->date('valid_date');
             $table->unsignedInteger('project_id')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');

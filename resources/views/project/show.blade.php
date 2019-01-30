@@ -134,7 +134,7 @@
                 <div class="col-xs-12 col-lg-4 col-md-12">    
                     <div class="box-body">
                         <div class="col-md-4 col-xs-6 no-padding">Owner CP</div>
-                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->contact_person_name}} - {{$project->customer->contact_person_phone}}"><b>: {{$project->customer->contact_person_name}} - {{$project->customer->contact_person_phone}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->contact_name}} | {{$project->customer->phone_number_1}}"><b>: {{$project->customer->contact_name}} | {{$project->customer->phone_number_1}}</b></div>
                         
                         @if($menu == "building")
                             <div class="col-md-4 col-xs-6 no-padding">Flag</div>

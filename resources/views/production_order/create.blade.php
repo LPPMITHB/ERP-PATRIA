@@ -240,7 +240,7 @@
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>
                                 <td class="p-l-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="">
+                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                         EDIT
                                     </a>
                                     <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
@@ -304,6 +304,82 @@
                         <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                     </div>
                 </div>
+
+                <div class="modal fade" id="edit_item">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Edit Additional Material / Service / Resource</h4>
+                            </div>
+                            <div class="modal-body p-t-0">
+                                <div class="row" v-if="editInput.type == 'Material'">
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Material Name</label>
+                                        <selectize v-model="editInput.id" disabled>
+                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }} - {{ material.name }}</option>
+                                        </selectize>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Description</label>
+                                        <input class="form-control" v-model="editInput.description" disabled>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Quantity</label>
+                                        <input class="form-control" v-model="editInput.quantity">
+                                    </div>
+                                </div>
+
+                                <div class="row" v-if="editInput.type == 'Resource'">
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Resource Name</label>
+                                        <selectize v-model="editInput.id" disabled>
+                                            <option v-for="(resource, index) in resources" :value="resource.id" disabled>{{ resource.code }} - {{ resource.brand }}</option>
+                                        </selectize>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Description</label>
+                                        <input class="form-control" v-model="editInput.description" disabled>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Quantity</label>
+                                        <input class="form-control" v-model="editInput.quantity">
+                                    </div>
+                                </div>
+
+                                <div class="row" v-if="editInput.type == 'Service'">
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Service Name</label>
+                                        <selectize v-model="editInput.id" disabled>
+                                            <option v-for="(service, index) in services" :value="service.id" disabled>{{ service.code }} - {{ service.name }}</option>
+                                        </selectize>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Description</label>
+                                        <input class="form-control" v-model="editInput.description" disabled>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Quantity</label>
+                                        <input class="form-control" v-model="editInput.quantity">
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" :disabled="editOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @endverbatim
         </form>
@@ -356,7 +432,15 @@
         assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
-        route : @json($route)
+        route : @json($route),
+        editInput : {
+            type : "",
+            id : "",
+            code : "",
+            name : "",
+            description : "",
+            quantity : ""
+        }
     };
 
     var vm = new Vue({
@@ -366,12 +450,8 @@
             dataOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.id == "" || this.dataInput.quantity == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1){
-                    if(this.dataInput.type == 'Material' || this.dataInput.name ==""){
-                        isOk = true;
-                    }else if(this.dataInput.type == "" ){
-                        isOk = true;
-                    }
+                if(this.dataInput.type == "" || this.dataInput.id == "" || this.dataInput.quantity == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1){
+                    isOk = true;
                 }
                 return isOk;
             },
@@ -382,9 +462,37 @@
                     isOk = true;
                 }
                 return isOk;
+            },
+            editOk: function(){
+                let isOk = false;
+
+                if(this.editInput.quantity == ''){
+                    isOk = true;
+                }
+                return isOk;
             }
         },
         methods: {
+            clearEditInput(){
+                this.editInput.type = "";
+                this.editInput.id = "";
+                this.editInput.code = "";
+                this.editInput.name = "";
+                this.editInput.description = "";
+                this.editInput.quantity = "";
+            },
+            openEditModal(data,index){
+                this.clearEditInput();
+                this.editInput.index = index;
+                this.editInput.id = data.id;
+                this.editInput.description = data.description;
+                this.editInput.type = data.type;
+                this.editInput.quantity = data.quantity;
+            },
+            submitToTable(){
+                let data = this.datas[this.editInput.index];
+                data.quantity = this.editInput.quantity;
+            },
             add(){
                 var data = JSON.stringify(this.dataInput);
                 data = JSON.parse(data);
@@ -468,6 +576,9 @@
             },
             'dataInput.quantity' : function(newvalue){
                 this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            },
+            'editInput.quantity' : function(newValue){
+                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             }
         },
         created: function() {

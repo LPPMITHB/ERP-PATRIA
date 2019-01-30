@@ -14,6 +14,7 @@ use App\Models\WorkRequest;
 use App\Models\WorkRequestDetail;
 use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
+use DateTime;
 use Auth;
 use DB;
 use PDF;
@@ -110,6 +111,8 @@ class WorkOrderController extends Controller
             $WO->number = $wo_number;
             $WO->work_request_id = $datas->wr_id;
             $WO->vendor_id = $datas->vendor_id;
+            $required_date = DateTime::createFromFormat('m/j/Y', $datas->required_date);
+            $WO->required_date = $required_date->format('Y-m-d');
             $WO->project_id = $datas->project_id;
             $WO->description = $datas->description;
             $WO->status = 1;

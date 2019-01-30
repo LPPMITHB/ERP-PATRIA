@@ -28,4 +28,9 @@ class Vendor extends Model
         return $this->hasMany('App\Models\PurchaseOrder');
     }
 
+    public function resourceDetails()
+    {
+        return $this->hasMany('App\Models\ResourceDetail');
+    }
+
 }

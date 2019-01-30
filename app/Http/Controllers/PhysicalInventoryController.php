@@ -208,6 +208,11 @@ class PhysicalInventoryController extends Controller
     public function storeAdjustStock(Request $request, $id)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
+        if($menu == "building"){
+            $business_unit = 1;
+        }elseif($menu =="repair"){
+            $business_unit = 2;
+        }
         $data = json_decode($request->datas);
 
         DB::beginTransaction();
@@ -230,6 +235,8 @@ class PhysicalInventoryController extends Controller
             if(count($goodsReceipt)>0){
                 $gr = new GoodsReceipt;
                 $gr->number = $this->gr->generateGRNumber();
+                $gr->type = 5;
+                $gr->business_unit_id = $business_unit;
                 $gr->description = "Stock Adjustment ".$snapshot->code;
                 $gr->user_id = Auth::user()->id;
                 $gr->branch_id = Auth::user()->branch->id;
@@ -255,6 +262,8 @@ class PhysicalInventoryController extends Controller
 
             if(count($goodsIssue)>0){
                 $gi = new GoodsIssue;
+                $gi->type = 3;
+                $gi->business_unit_id = $business_unit;
                 $gi->number = $this->gi->generateGINumber();
                 $gi->description = "Stock Adjustment ".$snapshot->code;
                 $gi->user_id = Auth::user()->id;

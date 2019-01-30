@@ -326,6 +326,7 @@
                 this.getNewModalMaterials(jsonMaterialId);
             },
             submitForm(){
+                console.log('a')
                 this.submit = "";
                 this.submittedForm.materials = this.materialTable;
 

@@ -13,6 +13,7 @@ use App\Models\Project;
 use App\Models\Resource;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
+use DateTime;
 use Auth;
 use DB;
 
@@ -28,7 +29,7 @@ class PurchaseOrderController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
 
-        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('project_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('business_unit_id',$modelProject)->get();
         
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
@@ -96,6 +97,8 @@ class PurchaseOrderController extends Controller
             $PO->number = $po_number;
             $PO->purchase_requisition_id = $datas->pr_id;
             $PO->vendor_id = $datas->vendor_id;
+            $required_date = DateTime::createFromFormat('m/j/Y', $datas->required_date);
+            $PO->required_date = $required_date->format('Y-m-d');
             $PO->project_id = $datas->project_id;
             $PO->description = $datas->description;
             $PO->status = 1;

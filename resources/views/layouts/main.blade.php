@@ -8,7 +8,6 @@
         <title>ERP - PATRIA</title>
 
         <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
         @stack('style')
     </head>
     <body class="{{ $defaultSkin->default ?? 'skin-blue' }} sidebar-mini fixed">

@@ -52,9 +52,7 @@ class CustomerController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_customer|string|max:255',
             'name' => 'required|string|unique:mst_customer|max:255',
-            'contact_person_name' => 'required|string|max:255',
-            'contact_person_email' => 'required|email|unique:mst_customer|string|max:255',
-            'contact_person_phone' => 'nullable|numeric'
+            'email' => 'nullable|email|unique:mst_customer|max:255',
         ]);
 
         $configuration = Configuration::get('default-password')->password;
@@ -65,10 +63,17 @@ class CustomerController extends Controller
             $customer = new Customer;
             $customer->code = strtoupper($request->input('code'));
             $customer->name = ucwords($request->input('name'));
-            $customer->contact_person_name = $request->input('contact_person_name');
-            $customer->contact_person_email = $request->input('contact_person_email');
-            $customer->address = ucfirst($request->input('address'));
-            $customer->contact_person_phone = $request->input('contact_person_phone');
+            $customer->phone_number_1 = $request->input('phone_number_1');
+            $customer->phone_number_2 = $request->input('phone_number_2');
+            $customer->address_1 = ucfirst($request->input('address_1'));
+            $customer->address_2 = ucfirst($request->input('address_2'));
+            $customer->contact_name = $request->input('contact_name');
+            $customer->tax_number = $request->input('tax_number');
+            $customer->pkp_number = $request->input('pkp_number');
+            $customer->email = $request->input('email');
+            $customer->province = $request->input('province');
+            $customer->zip_code = $request->input('zip_code');
+            $customer->country = $request->input('country');
             $customer->status = $request->input('status');
             $customer->branch_id = Auth::user()->branch->id;
             
@@ -78,10 +83,10 @@ class CustomerController extends Controller
             $user = new User;
             $user->username = $request->input('code');
             $user->name = $request->input('name');
-            $user->email = $request->input('contact_person_email');
+            $user->email = $request->input('email');
             $user->password = Hash::make($password);
-            $user->address = $request->input('address');
-            $user->phone_number = $request->input('contact_person_phone');
+            $user->address = $request->input('address_1');
+            $user->phone_number = $request->input('phone_number_1');
             $user->role_id = $modelRole->id;
             $user->business_unit_id = $stringBusinessUnit;
             $user->branch_id = Auth::user()->branch->id;
@@ -94,7 +99,7 @@ class CustomerController extends Controller
             return redirect()->route('customer.show',$customer->id)->with('success', 'Success Created New Customer!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('customer.create')->with('error', $e->getMessage());
+            return redirect()->route('customer.create')->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -159,20 +164,25 @@ class CustomerController extends Controller
     {
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_customer,code,'.$id.',id|string|max:255',
-            'name' => 'required|string|max:255',       
-            'contact_person_name' => 'required|string|max:255',            
-            'contact_person_email' => 'required|email|unique:mst_customer,contact_person_email,'.$id.',id|string|max:255',
-            'contact_person_phone' => 'nullable|string'
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|unique:mst_customer|max:255',
         ]);
 
         DB::beginTransaction();
         try {
             $customer = Customer::find($id);
             $customer->name = ucwords($request->input('name'));
-            $customer->contact_person_name = $request->input('contact_person_name');
-            $customer->contact_person_email = $request->input('contact_person_email');
-            $customer->address = ucfirst($request->input('address'));
-            $customer->contact_person_phone = $request->input('contact_person_phone');
+            $customer->phone_number_1 = $request->input('phone_number_1');
+            $customer->phone_number_2 = $request->input('phone_number_2');
+            $customer->address_1 = ucfirst($request->input('address_1'));
+            $customer->address_2 = ucfirst($request->input('address_2'));
+            $customer->contact_name = $request->input('contact_name');
+            $customer->tax_number = $request->input('tax_number');
+            $customer->pkp_number = $request->input('pkp_number');
+            $customer->email = $request->input('email');
+            $customer->province = $request->input('province');
+            $customer->zip_code = $request->input('zip_code');
+            $customer->country = $request->input('country');
             $customer->status = $request->input('status');
             $customer->update();
 
@@ -180,9 +190,9 @@ class CustomerController extends Controller
 
             $user = User::where('username', $customer->code)->first();
             $user->name = ucwords($request->input('name'));
-            $user->email = $request->input('contact_person_email');
-            $user->address = ucfirst($request->input('address'));
-            $user->phone_number = $request->input('contact_person_phone');
+            $user->email = $request->input('email');
+            $user->address = ucfirst($request->input('address_1'));
+            $user->phone_number = $request->input('phone_number_1');
             $user->business_unit_id = $stringBusinessUnit;
             $user->update();
             
@@ -208,15 +218,15 @@ class CustomerController extends Controller
     }
 
     public function generateCustomerCode(){
-        $code = 'CUST';
+        $code = 'C15';
         $modelCustomer = Customer::orderBy('code', 'desc')->first();
         
         $number = 1;
 		if(isset($modelCustomer)){
-            $number += intval(substr($modelCustomer->code, -4));
+            $number += intval(substr($modelCustomer->code, -3));
 		}
 
-        $customer_code = $code.''.sprintf('%04d', $number);
+        $customer_code = $code.''.sprintf('%03d', $number);
 		return $customer_code;
 	}
 }

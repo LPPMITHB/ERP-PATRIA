@@ -56,7 +56,7 @@
                             <label for="code" class="col-sm-2 control-label">Code</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" data-inputmask="'mask': '99-aaa-*****-aa'" id="code" name="code" required autofocus v-model="submittedForm.code" @keyup="submittedForm.code  = this.event.target.value;">
+                                <input type="text" class="form-control" id="code" name="code" required autofocus v-model="submittedForm.code">
                             </div>
                         </div>
                         
@@ -224,6 +224,23 @@
     });
 
     var data = {
+        oldData : {
+            name : @json(Request::old('name')),
+            description : @json(Request::old('description')),
+            cost_standard_price : @json(Request::old('cost_standard_price')),
+            cost_standard_service : @json(Request::old('cost_standard_service')),
+            uom_id : @json(Request::old('uom_id')),
+            min :@json(Request::old('min')),
+            max : @json(Request::old('max')),
+            weight : @json(Request::old('weight')),
+            weight_uom_id : @json(Request::old('weight_uom_id')),
+            height : @json(Request::old('height')),
+            height_uom_id : @json(Request::old('height_uom_id')),
+            lengths : @json(Request::old('lengths')),
+            length_uom_id : @json(Request::old('length_uom_id')),
+            width : @json(Request::old('width')),
+            width_uom_id : @json(Request::old('width_uom_id')),
+        },
         uoms : @json($uoms),
         submittedForm :{
             code : "",
@@ -271,6 +288,30 @@
 
                 if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.uom_id == ""){
                     isOk = true;
+                }
+
+                if(this.submittedForm.weight_uom_id != ""){
+                    if(this.submittedForm.weight == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.submittedForm.height_uom_id != ""){
+                    if(this.submittedForm.height == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.submittedForm.length_uom_id != ""){
+                    if(this.submittedForm.lengths == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.submittedForm.width_uom_id != ""){
+                    if(this.submittedForm.width == ""){
+                        isOk = true;
+                    }
                 }
                 return isOk;
             },
@@ -340,6 +381,69 @@
             },
         },
         watch:{
+            created: function() {
+                if(this.oldData.name !=null) {
+                    this.project.name=this.oldData.name;
+                }
+                if(this.oldData.description !=null) {
+                    this.project.description=this.oldData.description;
+                }
+                if(this.oldData.cost_standard_price !=null) {
+                    this.project.cost_standard_price=this.oldData.cost_standard_price;
+                }
+                if(this.oldData.cost_standard_service !=null) {
+                    this.project.cost_standard_service=this.oldData.cost_standard_service;
+                }
+                if(this.oldData.uom_id !=null) {
+                    this.project.uom_id=this.oldData.uom_id;
+                }
+                if(this.oldData.min !=null) {
+                    this.project.min=this.oldData.min;
+                }
+                if(this.oldData.max !=null) {
+                    this.project.max=this.oldData.max;
+                }
+                if(this.oldData.weight !=null) {
+                    this.project.weight=this.oldData.weight;
+                }
+                if(this.oldData.weight_uom_id !=null) {
+                    this.project.weight_uom_id=this.oldData.weight_uom_id;
+                }
+                if(this.oldData.height !=null) {
+                    this.project.height=this.oldData.height;
+                }
+                if(this.oldData.height_uom_id !=null) {
+                    this.project.height_uom_id=this.oldData.height_uom_id;
+                }
+                if(this.oldData.lengths !=null) {
+                    this.project.lengths=this.oldData.lengths;
+                }
+                if(this.oldData.length_uom_id !=null) {
+                    this.project.length_uom_id=this.oldData.length_uom_id;
+                }
+                if(this.oldData.width !=null) {
+                    this.project.width=this.oldData.width;
+                }
+                if(this.oldData.width_uom_id !=null) {
+                    this.project.width_uom_id=this.oldData.width_uom_id;
+                }
+            },
+            name : @json(Request::old('name')),
+            description : @json(Request::old('description')),
+            cost_standard_price : @json(Request::old('cost_standard_price')),
+            cost_standard_service : @json(Request::old('cost_standard_service')),
+            uom_id : @json(Request::old('uom_id')),
+            min :@json(Request::old('min')),
+            max : @json(Request::old('max')),
+            weight : @json(Request::old('weight')),
+            weight_uom_id : @json(Request::old('weight_uom_id')),
+            height : @json(Request::old('height')),
+            height_uom_id : @json(Request::old('height_uom_id')),
+            lengths : @json(Request::old('lengths')),
+            length_uom_id : @json(Request::old('length_uom_id')),
+            width : @json(Request::old('width')),
+            width_uom_id : @json(Request::old('width_uom_id')),
+
             'submittedForm.cost_standard_service': function(newValue) {
                 var decimal = newValue.replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){

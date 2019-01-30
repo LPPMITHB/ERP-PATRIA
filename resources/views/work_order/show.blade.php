@@ -83,6 +83,14 @@
                             : <b> {{ number_format($modelWO->total_price,2) }} </b>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4 no-padding">
+                            Required Date
+                        </div>
+                        <div class="col-md-8 col-xs-8">
+                            : <b> {{ $modelWO->required_date }} </b>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-xs-12 col-lg-4 col-md-12 m-t-10 m-l-10">
                     <div class="row">
@@ -95,7 +103,7 @@
                         <div class="col-md-5 col-xs-4 no-padding">
                             Vendor Name
                         </div>
-                        <div class="col-md-7 col-xs-8">
+                        <div class="col-md-7 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }}">
                             : <b> {{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }} </b>
                         </div>
                         <div class="col-md-5 col-xs-4 no-padding">
@@ -172,9 +180,9 @@
                 </table>
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($menu == "building")
-                        <a class="col-xs-12 col-md-1 btn btn-primary pull-right" href="{{ route('work_order.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_order.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
                     @else
-                        <a class="col-xs-12 col-md-1 btn btn-primary pull-right" href="{{ route('work_order_repair.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_order_repair.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
                     @endif
                 </div>
             </div> <!-- /.box-body -->

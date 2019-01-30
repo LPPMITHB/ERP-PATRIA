@@ -68,7 +68,10 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $service->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus 
+                                @if($service->name != null) value="{{ $service->name }}"
+                                @else value="{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -76,7 +79,10 @@
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" value="{{ $service->description }}">
+                                <input type="text" class="form-control" id="description" name="description" 
+                                @if($service->description != null) value="{{ $service->description }}"
+                                @else value="{{ old('description') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -84,7 +90,7 @@
                             <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeyup="validate(event)" id="cost_standard_price" name="cost_standard_price" required value="{{ $service->cost_standard_price }}">
+                                <input type="text" class="form-control" onkeyup="validate(event)" id="cost_standard_price" name="cost_standard_price" required value="{{ number_format($service->cost_standard_price) }}">
                             </div>
                         </div>
 

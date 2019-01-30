@@ -17,7 +17,7 @@ class CreateMstBranchTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->longText('address')->nullable();
+            $table->text('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('fax')->nullable();
             $table->string('email')->unique();

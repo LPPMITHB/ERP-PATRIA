@@ -294,14 +294,37 @@ $(document).ready(function(){
             customer: function(newValue){
                 if(newValue != ""){
                     window.axios.get('/api/getCustomerPM/'+newValue).then(({ data }) => {
-                        this.ownerRep = data.contact_person_name+" - "+data.contact_person_phone+" - "+data.contact_person_email;
-                    });
-                }
-            },
+                        if(data.contact_name == null && data.phone_number_1 == null && data.email == null){
+                            this.ownerRep = " - ";
+                        }
+                        else if(data.contact_name == null && data.phone_number_1 == null){
+                            this.ownerRep = data.email;
+                        }
+                        else if(data.contact_name == null && data.email == null){
+                            this.ownerRep = data.phone_number_1;
+                        } 
+                        else if(data.phone_number_1 == null && data.email == null){
+                            this.ownerRep = data.contact_name;
+                        }
+                        else if(data.contact_name == null){
+                            this.ownerRep = data.phone_number_1+" - "+data.email;
+                        }
+                        else if(data.phone_number_1 == null){
+                            this.ownerRep = data.contact_name+" - "+data.email;
+                        }
+                        else if(data.email == null){
+                            this.ownerRep = data.contact_name+" - "+data.phone_number_1;
+                        }
+                        else
+                        this.ownerRep = data.contact_name+ " - " +data.phone_number_1+ " - " +data.email;
+                        });
+                    }
+                else
+                    this.ownerRep = "-";
+                },
 
             'project.class_cp_phone': function(newValue){
                 if(newValue != ""){
-
                     this.project.class_cp_phone = (this.project.class_cp_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
                     
                 }

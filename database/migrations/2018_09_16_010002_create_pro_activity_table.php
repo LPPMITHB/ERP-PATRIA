@@ -17,7 +17,7 @@ class CreateProActivityTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->integer('status')->default(1);
             $table->unsignedInteger('wbs_id')->nullable();
             $table->integer('planned_duration');
@@ -28,7 +28,7 @@ class CreateProActivityTable extends Migration
             $table->date('actual_end_date')->nullable();
             $table->float('progress')->default(0);
             $table->float('weight')->nullable();
-            $table->longText('predecessor')->nullable();
+            $table->text('predecessor')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  
             $table->timestamps();

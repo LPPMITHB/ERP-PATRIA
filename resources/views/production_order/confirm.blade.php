@@ -128,18 +128,18 @@
             @csrf
             @verbatim
             <div id="production_order">
-                <div class="box-body">
-                    <h4 class="box-title">List of Activities</h4>
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Activity</h4>
                     <table id="activity-table" class="table table-bordered tableFixed" >
                         <thead>
                             <tr>
-                                <th style="width: 10px">No</th>
-                                <th style="width: 20%">Name</th>
+                                <th style="width: 5%">No</th>
+                                <th style="width: 25%">Activity Name</th>
                                 <th style="width: 30%">Description</th>
-                                <th style="width: 8%">Status</th>
-                                <th style="width: 8%">Progress</th>
-                                <th style="width: 8%">Weight</th>
-                                <th style="width: 55px"></th>
+                                <th style="width: 10%">Status</th>
+                                <th style="width: 10%">Progress</th>
+                                <th style="width: 10%">Weight</th>
+                                <th style="width: 10%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -277,41 +277,43 @@
                         <!-- /.modal-dialog -->
                     </div>
                 </div>
+
                 <div class="box-body">
                     <div class="row">
                         <div class="col-sm-12">
                             <h4 class="box-title m-t-0">Material</h4>
-                            <table id="material-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                            <table id="material-table" class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%">No</th>
-                                        <th style="width: 25%">Code</th>
-                                        <th style="width: 25%">Name</th>
-                                        <th style="width: 15%">Quantity</th>
-                                        <th style="width: 15%">Actual</th>
-                                        <th style="width: 15%">Remaining</th>
-                                        <th style="width: 15%">Used</th>
+                                        <th width="5%">No</th>
+                                        <th width="30%">Material Name</th>
+                                        <th width="28%">Description</th>
+                                        <th width="8%">Quantity</th>
+                                        <th width="8%">Actual</th>
+                                        <th width="8%">Remaining</th>
+                                        <th width="8%">Used</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in materials">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.material.code }}</td>
-                                        <td class="tdEllipsis">{{ data.material.name }}</td>
-                                        <td class="tdEllipsis">{{ data.quantity }}</td>
+                                        <td class="tdEllipsis">{{ data.material.code }} - {{ data.material.name }}</td>
+                                        <td class="tdEllipsis">{{ data.material.description }}</td>
+                                        <td class="tdEllipsis">{{ data.used }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
                                         <td class="tdEllipsis no-padding ">
-                                            <input class="form-control width100" v-model="data.used" placeholder="Please Input Quantity">
+                                            <input class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="row">
+
+                    <div class="row" v-if="route == '/production_order_repair'">
                         <div class="col-sm-12">
-                            <h4 class="box-title m-t-0">Service</h4>
+                            <h4 class="m-t-0">Service</h4>
                             <table id="service-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                 <thead>
                                     <tr>
@@ -329,54 +331,175 @@
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.service.code }}</td>
                                         <td class="tdEllipsis">{{ data.service.name }}</td>
-                                        <td class="tdEllipsis">{{ data.quantity }}</td>
+                                        <td class="tdEllipsis">{{ data.used }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
                                         <td class="tdEllipsis no-padding ">
-                                            <input class="form-control width100" v-model="data.used" placeholder="Please Input Quantity">
+                                            <input @keyup="keymonitor" class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-sm-12">
-                            <h4 class="box-title m-t-0">Resource</h4>
-                            <table id="resource-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                            <h4 class="m-t-0">Resource</h4>
+                            <table id="resource-table" class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%">No</th>
-                                        <th style="width: 25%">Code</th>
-                                        <th style="width: 25%">Name</th>
-                                        <th style="width: 15%">Available</th>
-                                        <th style="width: 15%">Status</th>
+                                        <th width="5%">No</th>
+                                        <th width="30%">Resource Name</th>
+                                        <th width="40%">Operational Resource</th>
+                                        <th width="15%">Status</th>
+                                        <th width="10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in resources">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.resource.code }}</td>
-                                        <td class="tdEllipsis">{{ data.resource.name }}</td>
-                                        <template v-if="data.resource.status == 1">
-                                            <td class="tdEllipsis" >
-                                                {{ 'YES' }}
-                                            </td>
-                                            <td class="tdEllipsis">
-                                                <i class="fa fa-check text-success"></i>
-                                            </td> 
-                                        </template>
-                                        <template v-else>
-                                            <td class="tdEllipsis">
-                                                {{ 'NO' }}
-                                            </td>
-                                            <td class="tdEllipsis">
-                                                <i class="fa fa-times text-danger"></i>
-                                            </td>
-                                        </template>
+                                        <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                        <td class="tdEllipsis" v-if="data.resource_detail.category_id != 1">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
+                                        <td class="tdEllipsis" v-else>{{ data.resource_detail.code }} - {{ data.resource_detail.others_name }}</td>
+                                        <td>{{ data.status }}</td>
+                                        <td v-if="data.status == 'UNACTUALIZED'" class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
+                                            <div class="btn-group">
+                                                INPUT ACTUAL
+                                            </div></a>
+                                        </td>
+                                        <td v-else class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
+                                            <div class="btn-group">
+                                                EDIT ACTUAL
+                                            </div></a>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="actual_resource">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Input Actual Resource's Performance</h4>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-6 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Performance</label>
+                                                <input class="form-control" v-model="editInput.performance" placeholder="Please Input Performance">
+                                            </div>
+                                            <div class="col-sm-6 no-padding">
+                                                <label for="type" class="control-label p-b-10">Unit</label>
+                                                <template v-if="editInput.statusUom == ''">
+                                                    <selectize id="edit_modal" v-model="editInput.performance_uom_id" :settings="uomSettings">
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                    </selectize>
+                                                </template>
+                                                <template v-else-if="editInput.statusUom == 'exist'">
+                                                    <selectize id="edit_modal" v-model="editInput.performance_uom_id" :settings="uomSettings" disabled>
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                    </selectize>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-6 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Usage</label>
+                                                <input class="form-control width100" v-model="editInput.usage" placeholder="Please Input Usage">
+                                            </div>
+                                            <div class="col-sm-6 p-t-45 p-l-0">
+                                                Hour(s)
+                                            </div>
+                                        </div>
+                                        <template v-if="editInput.category_id == 0">
+                                            <div class="col-sm-12">
+                                                <div class="col-sm-6 p-l-0">
+                                                    <label for="type" class="control-label p-b-10">Total Accident</label>
+                                                    <input class="form-control width100" v-model="editInput.total_accident" placeholder="Please Input Total Accident">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label p-b-10">Morale Notes</label>
+                                                <table id="morale-table" class="table table-bordered tableFixed">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="5%">No</th>
+                                                            <th width="25%">Subject</th>
+                                                            <th width="35%">Notes</th>
+                                                            <th width="20%"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(data,index) in resources[editInput.index].morale">
+                                                            <td>{{ index + 1 }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.subject)">{{ data.subject }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.notes)">{{ data.notes }}</td>
+                                                            <td class="p-l-5" align="center"><a @click.prevent="editMoraleNotes(data,index)" class="btn btn-primary btn-xs" href="#morale_notes" data-toggle="modal">
+                                                                <button type="button" data-dismiss="modal" class="btn btn-primary btn-xs" @click.prevent="">
+                                                                    EDIT
+                                                                </button></a>
+                                                                <a href="#" @click="removeMoraleNotes(index)" class="btn btn-danger btn-xs">
+                                                                    <div class="btn-group">DELETE</div>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#morale_notes" data-toggle="modal">
+                                        <button type="button" data-dismiss="modal" class="btn btn-primary" @click.prevent="">
+                                            ADD NOTES
+                                        </button>
+                                    </a>
+                                    <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="morale_notes" >
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Input Morale Notes</h4>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-12 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Subject</label>
+                                                <input class="form-control" v-model="moraleNotes.subject" placeholder="Please Input Subject">
+                                            </div>
+                                            <div class="col-sm-12 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Notes</label>
+                                                <textarea rows="4" class="form-control" v-model="moraleNotes.notes" placeholder="Please Input Notes">
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#actual_resource" data-toggle="modal">
+                                        <button v-if="moraleNotes.index !== ''" type="button" class="btn btn-primary" :disabled="addMoraleOk" data-dismiss="modal" @click.prevent="updateMoraleNotes">SAVE</button>
+                                        <button v-else type="button" class="btn btn-primary" :disabled="addMoraleOk" data-dismiss="modal" @click.prevent="submitMoraleNotes">SAVE</button>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12 p-t-10 p-r-0">
@@ -403,17 +526,7 @@
             format: 'yyyy-mm-dd',
             autoclose : true,
         });
-        $('#material-table,#resource-table,#activity-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').hide();
-            }
-        });
+        $('div.overlay').hide();
     });
 
     Vue.directive('tooltip', function(el, binding){
@@ -425,7 +538,9 @@
     })
 
     var data = {
+        route : @json($route),
         menu : @json($route),
+        uoms : @json($uoms),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
         materials : [],
@@ -443,7 +558,24 @@
         },
         havePredecessor : false,
         submittedForm : {
-        }
+        },
+        editInput: {
+            performance : "",
+            performance_uom_id : "",
+            usage : "",
+            total_accident : "",
+            statusUom : "",
+            index : "",
+            total_accident : "",
+        },
+        moraleNotes : {
+            subject : "",
+            notes : "",
+            index : "",
+        },
+        uomSettings: {
+            placeholder: 'Please Select Unit'
+        },
     };
 
     var vm = new Vue({
@@ -477,27 +609,177 @@
             );
         },
         computed : {
+            addMoraleOk: function(){
+                let isOk = false;
+                if(this.moraleNotes.subject == ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
             createOk: function(){
                 let isOk = false;
 
                 return isOk;
+            },
+            selectOk: function(){
+                let isOk = false;
+                
+                return isOk;
             }
         },
         methods: {
+            clearEditInput(){
+                this.editInput.performance = "";
+                this.editInput.performance_uom_id = "";
+                this.editInput.usage = "";
+                this.editInput.statusUom = "";
+                this.editInput.total_accident = "";
+            },
+            editMoraleNotes(data,index){
+                this.moraleNotes.index = index;
+                this.moraleNotes.subject = data.subject;
+                this.moraleNotes.notes = data.notes;
+            },
+            openEditModal(data,index){
+                this.clearEditInput();
+                this.editInput.index = index;
+                this.editInput.performance = data.performance;
+                this.editInput.category_id = data.resource_detail.category_id;
+                this.editInput.usage = data.usage;
+                this.editInput.performance_uom_id = data.performance_uom_id;
+                this.editInput.total_accident = data.actual;
+
+                if(data.resource_detail.performance_uom_id != "" && data.resource_detail.performance_uom_id != null && this.editInput.performance_uom_id != ""){
+                    this.editInput.performance_uom_id = data.resource_detail.performance_uom_id;
+                    this.editInput.statusUom = "exist";
+                }else{
+                    this.editInput.statusUom = "";
+                }
+            },
+            submitToTable(){
+                let resource = this.resources[this.editInput.index];
+                resource.performance = this.editInput.performance;
+                resource.performance_uom_id = this.editInput.performance_uom_id;
+                resource.usage = this.editInput.usage;
+                resource.actual = this.editInput.total_accident;
+                if(resource.performance != "" && resource.usage != "" && resource.total_accident != ""){
+                    resource.status = "ACTUALIZED";
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: 'Actual Performance Submitted!',
+                        position: 'topRight',
+                    });
+                }else{
+                    resource.status = "UNACTUALIZED";
+                }
+            },
+            submitMoraleNotes(){
+                let resource = this.resources[this.editInput.index];
+                let moraleNotes = {};
+                moraleNotes.subject = this.moraleNotes.subject;
+                moraleNotes.notes = this.moraleNotes.notes;
+                resource.morale.push(moraleNotes);
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Morale Notes Submitted!',
+                    position: 'topRight',
+                });
+                this.moraleNotes.subject = "";
+                this.moraleNotes.notes = "";
+                
+            },
+            updateMoraleNotes(){
+                let resource = this.resources[this.editInput.index].morale[this.moraleNotes.index];
+                resource.subject = this.moraleNotes.subject;
+                resource.notes = this.moraleNotes.notes;
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Morale Notes Updated!',
+                    position: 'topRight',
+                });
+                this.moraleNotes.subject = "";
+                this.moraleNotes.notes = "";
+                this.moraleNotes.index = "";
+                
+            },
+            removeMoraleNotes: function(index) {
+                this.resources[this.editInput.index].morale.splice(index, 1);
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Morale Notes Deleted!',
+                    position: 'topRight',
+                });
+            },
             tooltipText: function(text) {
                 return text
             },
             submitForm() {
-                this.submittedForm.modelPrOD = this.modelPrOD;
-                this.submittedForm.materials = this.materials;
-                this.submittedForm.services = this.services;
+                let status = 0;
+                this.activities.forEach(activity => {
+                    if(activity.progress != 100){
+                        status = 1;
+                    }
+                });
+                this.materials.forEach(material => {
+                    if(material.quantity != null && material.quantity != ''){
+                        material.quantity = parseInt((material.quantity+"").replace(/,/g , ''));
+                    }
+                });
+                if(status == 0){
+                    let statusResource = 0;
+                    this.resources.forEach(resource => {
+                        if(resource.status == "UNACTUALIZED"){
+                            statusResource = 1;
+                        }
+                    });
+                    if(statusResource == 0){
+                        this.modelPrOD.forEach(PROD => {
+                            if(PROD.performance != null && PROD.performance != ''){
+                                PROD.performance = parseInt((PROD.performance+"").replace(/,/g , ''));
+                            }
+                            if(PROD.usage != null && PROD.usage != ''){
+                                PROD.usage = parseInt((PROD.usage+"").replace(/,/g , ''));
+                            }
+                        });
+                        this.submittedForm.modelPrOD = this.modelPrOD;
+                        this.submittedForm.materials = this.materials;
+                        this.submittedForm.services = this.services;
+                        this.submittedForm.resources = this.resources;
 
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
-                form.appendChild(struturesElem);
-                form.submit();
+                        let struturesElem = document.createElement('input');
+                        struturesElem.setAttribute('type', 'hidden');
+                        struturesElem.setAttribute('name', 'datas');
+                        struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                        form.appendChild(struturesElem);
+                        form.submit();
+                    }else{
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: 'Please Input Actual Resource\'s Performance !',
+                            position: 'topRight',
+                        });
+                    }
+                }else{
+                    this.modelPrOD.forEach(PROD => {
+                        if(PROD.performance != null && PROD.performance != ''){
+                            PROD.performance = parseInt((PROD.performance+"").replace(/,/g , ''));
+                        }
+                        if(PROD.usage != null && PROD.usage != ''){
+                            PROD.usage = parseInt((PROD.usage+"").replace(/,/g , ''));
+                        }
+                    });
+                    this.submittedForm.modelPrOD = this.modelPrOD;
+                    this.submittedForm.materials = this.materials;
+                    this.submittedForm.services = this.services;
+                    this.submittedForm.resources = this.resources;
+
+                    let struturesElem = document.createElement('input');
+                    struturesElem.setAttribute('type', 'hidden');
+                    struturesElem.setAttribute('name', 'datas');
+                    struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                    form.appendChild(struturesElem);
+                    form.submit();
+                }
             },
             openConfirmModal(data){
                 this.predecessorTableView = [];
@@ -566,24 +848,6 @@
             getActivities(){
                 window.axios.get('/api/getActivities/'+this.wbs_id).then(({ data }) => {
                     this.activities = data;
-                    var dT = $('#activity-table').DataTable();
-                    dT.destroy();
-                    this.$nextTick(function() {
-                        $('#activity-table').DataTable({
-                            'paging'      : true,
-                            'lengthChange': false,
-                            'searching'   : false,
-                            'ordering'    : false,
-                            'info'        : true,
-                            'autoWidth'   : false,
-                            'initComplete': function(){
-                                $('div.overlay').remove();
-                            },
-                            columnDefs : [
-                                { targets: 0, sortable: false},
-                            ]
-                        });
-                    })
                 });
 
             },
@@ -656,6 +920,14 @@
                 },
                 deep: true
             }, 
+            materials:{
+                handler: function(newValue) {
+                    this.materials.forEach(material => {
+                        material.quantity = (material.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    });
+                },
+                deep: true
+            }, 
             'confirmActivity.actual_start_date' :function(newValue){
                 if(newValue == ""){
                     $('#actual_end_date').datepicker('setDate', null);
@@ -674,9 +946,15 @@
                         this.confirmActivity.actual_end_date = "";
                     }
             },
+            'editInput.performance' : function(newValue){
+                this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            },
+            'editInput.usage' : function(newValue){
+                this.editInput.usage = (this.editInput.usage+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            }
         },
         created: function() {
-            $('div.overlay').show();
+
             this.getActivities();
             this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null){
@@ -684,31 +962,57 @@
                         POD.actual = 0;
                     }
                     POD.sugQuantity = POD.quantity-POD.actual;
-                    POD.used = POD.quantity-POD.actual;
+                    let used = POD.quantity-POD.actual;
+                    POD.used = POD.quantity;
+                    POD.quantity = used;
+                    if(POD.sugQuantity < 0){
+                        POD.sugQuantity = 0;
+                    }
+                    if(POD.used < 0){
+                        POD.quantity = 0;
+                    }
+                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.materials.push(POD);
                 }else if(POD.service_id != null){
                     if(POD.actual == null){
                         POD.actual = 0;
                     }
                     POD.sugQuantity = POD.quantity-POD.actual;
-                    POD.used = POD.quantity-POD.actual;
+                    let used = POD.quantity-POD.actual;
+                    POD.used = POD.quantity;
+                    POD.quantity = used;
+                    if(POD.sugQuantity < 0){
+                        POD.sugQuantity = 0;
+                    }
+                    if(POD.used < 0){
+                        POD.quantity = 0;
+                    }
+                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.services.push(POD);
-                }else if(POD.resource_id != null){
+                }else if(POD.resource_id != null && POD.resource_detail_id != null){
+                    if(POD.morale != null){
+                        POD.morale = JSON.parse(POD.morale);
+                    }else{
+                        POD.morale = [];
+                    }
                     this.resources.push(POD);
                 }
             });
         },
     });
+    function parseDate(str) {
+        var mdy = str.split('/');
+        return new Date(mdy[2], mdy[0]-1, mdy[1]);
+    }
 
-function parseDate(str) {
-    var mdy = str.split('/');
-    return new Date(mdy[2], mdy[0]-1, mdy[1]);
-}
-
-function datediff(first, second) {
-    // Take the difference between the dates and divide by milliseconds per day.
-    // Round to nearest whole number to deal with DST.
-    return Math.round(((second-first)/(1000*60*60*24))+1);
-}
+    function datediff(first, second) {
+        return Math.round(((second-first)/(1000*60*60*24))+1);
+    }
 </script>
 @endpush

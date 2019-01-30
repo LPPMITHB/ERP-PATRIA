@@ -34,17 +34,6 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <!-- @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif -->
 
                 @if($vendor->id)
                     <form class="form-horizontal" method="POST" action="{{ route('vendor.update',['id'=>$vendor->id]) }}">
@@ -67,7 +56,10 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $vendor->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus
+                                @if($vendor->name != null) value="{{ $vendor->name }}"
+                                @else value="{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -75,7 +67,11 @@
                             <label for="type" class="col-sm-2 control-label">Type</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="type" name="type" required autofocus value="{{ $vendor->type }}">
+                                <select class="form-control" name="type" id="type" required>
+                                    @foreach($vendor_categories as $category)
+                                        <option value="{{ $category->name }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -83,15 +79,43 @@
                             <label for="address" class="col-sm-2 control-label">Address</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address" required value="{{ $vendor->address }}">
+                                <input type="text" class="form-control" id="address" name="address" 
+                                @if($vendor->address != null) value="{{ $vendor->address }}"
+                                @else value="{{ old('address') }}"
+                                @endif>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="phone_number" class="col-sm-2 control-label">Phone Number</label>
+                            <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number" required value="{{ $vendor->phone_number }}">
+                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1"
+                                @if($vendor->phone_number_1 != null) value="{{ $vendor->phone_number_1 }}"
+                                @else value="{{ old('phone_number_1') }}"
+                                @endif>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2</label>
+            
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2"
+                            @if($vendor->phone_number_2 != null) value="{{ $vendor->phone_number_2 }}"
+                            @else value="{{ old('phone_number_2') }}"
+                            @endif>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
+            
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="contact_name" name="contact_name"
+                                @if($vendor->contact_name != null) value="{{ $vendor->contact_name }}"
+                                @else value="{{ old('contact_name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -99,15 +123,21 @@
                             <label for="email" class="col-sm-2 control-label">Email</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="email" name="email" required value="{{ $vendor->email }}">
+                                <input type="email" class="form-control" id="email" name="email" 
+                                @if($vendor->email != null) value="{{ $vendor->email }}"
+                                @else value="{{ old('email') }}"
+                                @endif>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="competence" class="col-sm-2 control-label">Competence</label>
+                            <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="competence" name="competence" required value="{{ $vendor->competence }}">
+                                <input type="text" class="form-control" id="description" name="description"
+                                @if($vendor->description != null) value="{{ $vendor->description }}"
+                                @else value="{{ old('description') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -148,6 +178,10 @@
         if($('#status').val()==null){
             $('#status').val(1);
         }
+        $('#type').val("{{$vendor->type}}");
+        if($('#type').val()==null){
+            $('#type').val(1);
+        }
         $('#status').select({
             minimumResultsForSearch: -1
         });
@@ -157,7 +191,6 @@
         $("#phone_number").inputmask();
     });
     document.getElementById("code").readOnly = true;
-    document.getElementById("volume").readOnly = true;
 
 function validate(evt) {
   var theEvent = evt || window.event;

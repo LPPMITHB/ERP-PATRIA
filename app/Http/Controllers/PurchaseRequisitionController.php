@@ -46,7 +46,7 @@ class PurchaseRequisitionController extends Controller
         }elseif($route == "/purchase_requisition_repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->whereIn('business_unit_id',$modelProject)->get();
 
         return view('purchase_requisition.indexApprove', compact('modelPRs','route'));
     }

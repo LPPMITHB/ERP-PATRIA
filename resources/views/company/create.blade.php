@@ -67,7 +67,10 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ $company->name }}">
+                                <input type="text" class="form-control" id="name" name="name" required autofocus 
+                                @if($company->name != null)value="{{ $company->name }}"
+                                @else value = "{{ old('name') }}"
+                                @endif>
                             </div>
                         </div>
 
@@ -75,15 +78,21 @@
                             <label for="address" class="col-sm-2 control-label">Address</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="adress" name="address" required value="{{ $company->address }}">
+                                <input type="text" class="form-control" id="adress" name="address" required 
+                                @if($company->address != null) value="{{ $company->address }}"
+                                @else value = "{{ old('address')}}"
+                                @endif>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="phone-number" class="col-sm-2 control-label">Phone Number</label>
+                            <label for="phone_number" class="col-sm-2 control-label">Phone Number</label>
             
                             <div class="col-sm-10">
-                                <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="phone-number" name="phone-number"  required value="{{ $company->phone_number }}">
+                                <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="phone_number" name="phone_number"  required 
+                                @if($company->phone_number != null) value="{{ $company->phone_number }}"
+                                @else value = "{{ old('phone_number')}}"
+                                @endif>
                             </div>
                         </div>
                         
@@ -91,7 +100,10 @@
                                 <label for="fax" class="col-sm-2 control-label">Fax</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="fax" name="fax" value="{{ $company->fax }}" >
+                                    <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="fax" name="fax" 
+                                    @if($company->fax != null) value="{{ $company->fax }}"
+                                    @else value = "{{ old('fax')}}"
+                                    @endif>
                                 </div>
                             </div>
 
@@ -99,7 +111,10 @@
                                 <label for="email" class="col-sm-2 control-label">Email</label>
                     
                                 <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="email" name="email" required value="{{ $company->email }}">
+                                    <input type="email" class="form-control" id="email" name="email" required 
+                                    @if($company->email != null) value="{{ $company->email }}"
+                                    @else value = "{{ old('email')}}"
+                                    @endif>
                                 </div>
                             </div>
 
