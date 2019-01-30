@@ -1175,7 +1175,13 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
 
     Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-production-order');
 
-    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order');
+    Route::get('/selectProjectIndex', 'ProductionOrderController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-production-order');
+
+    Route::get('/indexPrO/{id}', 'ProductionOrderController@indexPrO')->name('indexPrO')->middleware('can:list-production-order');
+
+    Route::get('/editPrO/{id}', 'ProductionOrderController@editPrO')->name('editPrO')->middleware('can:list-production-order');
+    
+    Route::patch('/updatePrO/{id}', 'ProductionOrderController@updatePrO')->name('updatePrO')->middleware('can:confirm-production-order');
 
     Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:list-production-order');
 
@@ -1216,7 +1222,9 @@ Route::name('production_order_repair.')->prefix('production_order_repair')->grou
 
     Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-production-order-repair');
 
-    Route::get('/', 'ProductionOrderController@index')->name('index')->middleware('can:list-production-order-repair');
+    Route::get('/selectProjectIndex', 'ProductionOrderController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-production-order-repair');
+
+    Route::get('/indexPrO/{id}', 'ProductionOrderController@indexPrO')->name('indexPrO')->middleware('can:list-production-order-repair');
 
     Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:list-production-order-repair');
 

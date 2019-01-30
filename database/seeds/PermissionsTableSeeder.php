@@ -1874,6 +1874,14 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Edit Production Order',
+            'menu_id' => $viewProductionOrder,
+            'middleware' => 'edit-production-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         $releaseProductionOrder = Menu::where('name','Release Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Release Production Order',
