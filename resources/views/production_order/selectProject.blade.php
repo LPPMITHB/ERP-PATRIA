@@ -9,6 +9,8 @@
         @php($title = "Confirm Production Order » Select Project")
     @elseif($menu == "report_pro")
         @php($title = "Prod. Order Actual Cost Report » Select Project")
+    @elseif($menu == "index_pro")
+        @php($title = "View Production Order » Select Project")
     @endif
     @breadcrumb(
         [
@@ -76,6 +78,14 @@
                                             <a class="btn btn-primary btn-xs" href="{{ route('production_order.selectPrOReport', ['id'=>$project->id]) }}">SELECT</a>
                                         @elseif($route == "/production_order_repair")
                                             <a class="btn btn-primary btn-xs" href="{{ route('production_order_repair.selectPrOReport', ['id'=>$project->id]) }}">SELECT</a>
+                                        @endif
+                                    </td>
+                                @elseif($menu == "index_pro")
+                                    <td class="p-l-5 p-r-5" align="center">
+                                        @if($route == "/production_order")
+                                            <a class="btn btn-primary btn-xs" href="{{ route('production_order.indexPrO', ['id'=>$project->id]) }}">SELECT</a>
+                                        @elseif($route == "/production_order_repair")
+                                            <a class="btn btn-primary btn-xs" href="{{ route('production_order_repair.indexPrO', ['id'=>$project->id]) }}">SELECT</a>
                                         @endif
                                     </td>
                                 @endif
