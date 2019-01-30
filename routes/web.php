@@ -1177,6 +1177,10 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
 
     Route::get('/indexPrO/{id}', 'ProductionOrderController@indexPrO')->name('indexPrO')->middleware('can:list-production-order');
 
+    Route::get('/editPrO/{id}', 'ProductionOrderController@editPrO')->name('editPrO')->middleware('can:list-production-order');
+    
+    Route::patch('/updatePrO/{id}', 'ProductionOrderController@updatePrO')->name('updatePrO')->middleware('can:confirm-production-order');
+
     Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:list-production-order');
 
     Route::get('/showRelease/{id}', 'ProductionOrderController@show')->name('showRelease')->middleware('can:show-production-order');
