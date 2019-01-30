@@ -258,81 +258,85 @@ class ProductionOrderController extends Controller
         $resources = Collection::make();
         if($route == '/production_order'){
             foreach($modelPrOD as $prOD){
-                if($prOD->material_id != ""){
-                    $materials->push([
-                        "id" => $prOD->id , 
-                        "material" => [
-                            "code" => $prOD->material->code,
-                            "name" => $prOD->material->name,
-                            "description" => $prOD->material->description,
-                            "unit" => $prOD->material->uom->unit,
-                            "source" => $prOD->source,
-                        ],
-                        "quantity" => $prOD->quantity,
-                        "material_id" => $prOD->material_id,
-                    ]);
-                }elseif($prOD->resource_id != ""){
-                    $qty =  $prOD->quantity;
-                    for ($x = 0; $x < $qty; $x++) {
-                        $resources->push([
+                if($prOD->quantity > 0){
+                    if($prOD->material_id != ""){
+                        $materials->push([
                             "id" => $prOD->id , 
-                            "resource" => [
-                                "code" => $prOD->resource->code,
-                                "name" => $prOD->resource->name,
-                                "description" => $prOD->resource->description,
+                            "material" => [
+                                "code" => $prOD->material->code,
+                                "name" => $prOD->material->name,
+                                "description" => $prOD->material->description,
+                                "unit" => $prOD->material->uom->unit,
+                                "source" => $prOD->source,
                             ],
                             "quantity" => $prOD->quantity,
-                            "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => '',
-                            "trx_resource_code" => null,
-                            "status" => null,
+                            "material_id" => $prOD->material_id,
                         ]);
-                    } 
+                    }elseif($prOD->resource_id != ""){
+                        $qty =  $prOD->quantity;
+                        for ($x = 0; $x < $qty; $x++) {
+                            $resources->push([
+                                "id" => $prOD->id , 
+                                "resource" => [
+                                    "code" => $prOD->resource->code,
+                                    "name" => $prOD->resource->name,
+                                    "description" => $prOD->resource->description,
+                                ],
+                                "quantity" => $prOD->quantity,
+                                "resource_id" => $prOD->resource_id,
+                                "trx_resource_id" => '',
+                                "trx_resource_code" => null,
+                                "status" => null,
+                            ]);
+                        } 
+                    }
                 }
             }
         }elseif($route == '/production_order_repair'){
             foreach($modelPrOD as $prOD){
-                if($prOD->material_id != ""){
-                    $materials->push([
-                        "id" => $prOD->id , 
-                        "material" => [
-                            "code" => $prOD->material->code,
-                            "name" => $prOD->material->name,
-                            "description" => $prOD->material->description,
-                            "unit" => $prOD->material->uom->unit,
-                            "source" => $prOD->source,
-                        ],
-                        "quantity" => $prOD->quantity,
-                        "material_id" => $prOD->material_id,
-                    ]);
-                }elseif($prOD->resource_id != ""){
-                    $qty =  $prOD->quantity;
-                    for ($x = 0; $x < $qty; $x++) {
-                        $resources->push([
+                if($prOD->quantity > 0){
+                    if($prOD->material_id != ""){
+                        $materials->push([
                             "id" => $prOD->id , 
-                            "resource" => [
-                                "code" => $prOD->resource->code,
-                                "name" => $prOD->resource->name,
-                                "description" => $prOD->resource->description,
+                            "material" => [
+                                "code" => $prOD->material->code,
+                                "name" => $prOD->material->name,
+                                "description" => $prOD->material->description,
+                                "unit" => $prOD->material->uom->unit,
+                                "source" => $prOD->source,
                             ],
                             "quantity" => $prOD->quantity,
-                            "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => '',
-                            "trx_resource_code" => null,
-                            "status" => null,
+                            "material_id" => $prOD->material_id,
                         ]);
-                    } 
-                }elseif($prOD->service_id != ""){
-                    $services->push([
-                        "id" => $prOD->id , 
-                        "service" => [
-                            "code" => $prOD->service->code,
-                            "name" => $prOD->service->name,
-                            "description" => $prOD->service->description,
-                        ],
-                        "quantity" => $prOD->quantity,
-                        "service_id" => $prOD->service_id,
-                    ]);
+                    }elseif($prOD->resource_id != ""){
+                        $qty =  $prOD->quantity;
+                        for ($x = 0; $x < $qty; $x++) {
+                            $resources->push([
+                                "id" => $prOD->id , 
+                                "resource" => [
+                                    "code" => $prOD->resource->code,
+                                    "name" => $prOD->resource->name,
+                                    "description" => $prOD->resource->description,
+                                ],
+                                "quantity" => $prOD->quantity,
+                                "resource_id" => $prOD->resource_id,
+                                "trx_resource_id" => '',
+                                "trx_resource_code" => null,
+                                "status" => null,
+                            ]);
+                        } 
+                    }elseif($prOD->service_id != ""){
+                        $services->push([
+                            "id" => $prOD->id , 
+                            "service" => [
+                                "code" => $prOD->service->code,
+                                "name" => $prOD->service->name,
+                                "description" => $prOD->service->description,
+                            ],
+                            "quantity" => $prOD->quantity,
+                            "service_id" => $prOD->service_id,
+                        ]);
+                    }
                 }
             }
         }
@@ -503,6 +507,11 @@ class ProductionOrderController extends Controller
 
         DB::beginTransaction();
         try {
+            foreach($modelPrO->productionOrderDetails as $prod){
+                if($prod->quantity == 0){
+                    $prod->delete();
+                }
+            }
             $modelPrO->status = 2;
             $modelPrO->update();
 
