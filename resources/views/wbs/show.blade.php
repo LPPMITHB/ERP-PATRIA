@@ -343,7 +343,6 @@ var vm = new Vue({
         },
     },
     created: function(){
-        console.log(this.wbsDisplay.parent_wbs);
         if(this.editWbs.parent_wbs != null){
             window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
                 this.totalWeight = data;

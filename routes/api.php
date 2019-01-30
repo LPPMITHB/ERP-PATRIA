@@ -107,7 +107,7 @@ Route::get('/getStockPrO/{id}', 'ProductionOrderController@getStockAPI')->name('
 Route::get('/getProjectInvPrO/{id}', 'ProductionOrderController@getProjectInvAPI')->name('api.production_order.getProjectInvAPI');
 Route::get('/getTrxResourcePro/{id}/{jsonResource}', 'ProductionOrderController@getTrxResourceAPI')->name('api.production_order.getTrxResourceAPI');
 
-// assign Resource
+// Resource
 Route::get('/getResourceAssign/{id}', 'ResourceController@getResourceAssignApi')->name('api.resource.getResourceAssignApi');
 Route::get('/getWbsAssignResource/{id}', 'ResourceController@getWbsAssignResourceApi')->name('api.resource.getWbsAssignResourceApi');
 Route::get('/getWbsNameAssignResource/{id}', 'ResourceController@getWbsNameAssignResourceApi')->name('api.resource.getWbsNameAssignResourceApi');
@@ -117,6 +117,7 @@ Route::get('/getResourceTrx/{id}', 'ResourceController@getResourceTrxApi')->name
 Route::get('/getResourceDetail/{data}', 'ResourceController@getResourceDetailApi')->name('api.resource.getResourceDetailApi');
 Route::get('/getCategoryAR/{id}', 'ResourceController@getCategoryARApi')->name('api.resource.getCategoryARApi');
 Route::get('/generateCodeGrResource/{data}', 'ResourceController@generateCodeAPI')->name('api.resource.generateCodeAPI');
+Route::get('/getNewResourceDetail/{id}', 'ResourceController@getNewResourceDetailAPI')->name('api.resource.getNewResourceDetailAPI');
 
 // yard plan
 Route::get('/getWbs/{id}', 'YardPlanController@getWbsAPI')->name('api.yard_plan.getWbsAPI');
