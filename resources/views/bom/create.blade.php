@@ -68,7 +68,7 @@
                             </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-20">
-                            <table class="table table-bordered tableFixed">
+                            <table class="table table-bordered tableFixed m-b-0">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -82,7 +82,7 @@
                                 <tbody>
                                     <tr v-for="(material, index) in materialTable">
                                         <td>{{ index + 1 }}</td>
-                                        <td>{{ material.material_code }} - {{ material.material_name }}</td>
+                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(material.material_name)">{{ material.material_code }} - {{ material.material_name }}</td>
                                         <td v-if="material.description != null">{{ material.description }}</td>
                                         <td v-else>-</td>
                                         <td>{{ material.quantity }}</td>

@@ -88,7 +88,7 @@ class GoodsIssueController extends Controller
         }elseif($menu == "repair"){
             $business_unit = 2;
         }
-        $modelGRs = GoodsReceipt::where('business_unit_id', 2)->where('status',1)->get();
+        $modelGRs = GoodsReceipt::where('business_unit_id', $business_unit)->where('status',1)->get();
 
         return view('goods_return.selectGR', compact('modelGRs','menu'));
     }

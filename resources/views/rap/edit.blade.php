@@ -88,7 +88,7 @@
                             <tbody>
                                 <tr v-for="(rapd, index) in modelRAPD">
                                     <td>{{ index+1 }}</td>
-                                    <td>{{ rapd.material.code }} - {{ rapd.material.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.name)">{{ rapd.material.code }} - {{ rapd.material.name }}</td>
                                     <td class="">{{ rapd.quantity }}</td>
                                     <td class="no-padding">
                                         <input v-model="rapd.price" class="form-control width100">
@@ -153,6 +153,13 @@
         modelRAPD : @json($modelRAPD)   
     }
 
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
     var vm = new Vue({
         el: '#edit-rap',
         data: data,
@@ -165,7 +172,10 @@
                 form.appendChild(struturesElem);
                 $(document.body).append(form)
                 form.submit();
-            }
+            },
+            tooltipText: function(text) {
+                return text
+            },
         },
         watch:{
             modelRAPD:{

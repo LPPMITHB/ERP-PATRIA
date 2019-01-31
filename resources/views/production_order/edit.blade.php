@@ -9,7 +9,7 @@
                 'Dashboard' => route('index'),
                 'Select Project' => route('production_order.selectProject'),
                 'Select WBS' => route('production_order.selectWBS', ['id' => $project->id]),
-                'Add Additional Material & Resource' => ''
+                'Edit Production Order '.$pro->number => ''
             ]
         ]
     )
@@ -22,7 +22,7 @@
                 'Dashboard' => route('index'),
                 'Select Project' => route('production_order_repair.selectProject'),
                 'Select WBS' => route('production_order_repair.selectWBS', ['id' => $project->id]),
-                'Add Additional Material & Resource' => ''
+                'Edit Production Order '.$pro->number => ''
             ]
         ]
     )
@@ -211,11 +211,12 @@
             @endif
 
             @if($route == "/production_order")
-                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.store') }}">
+                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.updatePrO',['id' => $pro->id]) }}">
             @elseif($route == "/production_order_repair")
-                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.store') }}">
+                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.updatePrO',['id' => $pro->id]) }}">
             @endif
                 @csrf
+                <input type="hidden" name="_method" value="PATCH">
             @verbatim
             <div id="production_order">
                 <div class="box-body">
@@ -301,7 +302,7 @@
                         </tfoot>
                     </table>
                     <div class="col-md-12 p-t-10 p-r-0">
-                        <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                        <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
                     </div>
                 </div>
 
@@ -422,7 +423,7 @@
         nullSettings:{
             placeholder: 'Please Select Type First !'
         },
-        datas : [],
+        datas : @json($additionalItems),
         project_id :@json($project->id),
         wbs_id :@json($wbs->id),
         materials : @json($materials),

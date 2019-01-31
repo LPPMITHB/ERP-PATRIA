@@ -22,7 +22,7 @@ class CreateTrxGoodsReceiptTable extends Migration
             $table->unsignedInteger('vendor_id')->nullable();
             $table->text('description');
             $table->integer('type');
-            // $table->integer('status')->default(1);
+            $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();

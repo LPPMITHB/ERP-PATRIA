@@ -26,6 +26,7 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->integer('actual')->nullable();
             $table->integer('performance')->nullable();
             $table->unsignedInteger('performance_uom_id')->nullable();
+            $table->longText('morale')->nullable();
             $table->integer('usage')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();

@@ -79,7 +79,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(POD,index) in modelPOD" v-if="POD.quantity > 0">
+                                            <tr v-for="(POD,index) in modelPOD" v-if="POD.quantity > 0" :id="getId(POD.id)">
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ POD.material_code }} - {{ POD.material_name }}</td>
                                                 <td>{{ POD.quantity }}</td>
@@ -92,7 +92,7 @@
                                                     </selectize>  
                                                 </td>
                                                 <td class="no-padding p-t-2 p-b-2" align="center">
-                                                    <input type="checkbox" v-icheck="" v-model="checkedPOD" :value="POD.material_id">
+                                                    <input type="checkbox" v-icheck="" v-model="checkedPOD" :value="POD.id">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -176,18 +176,21 @@
         data : data,
         computed : {
             createOk: function(){
-                // let isOk = false;
-                // this.modelPOD.forEach(POD => {
-                //     if(POD.sloc_id == null){
-                //         isOk = true;
-                //     }
-                // });
-                // return isOk;
+                let isOk = true;
+                this.modelPOD.forEach(POD => {
+                    if(POD.sloc_id != ""){
+                        isOk = false;
+                    }
+                });
+                return isOk;
             }
         },
         methods : {
+            getId: function(id){
+                return id;
+            },
             tooltipText: function(text) {
-            return text
+                return text
             },
             changeText(){
                 if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
@@ -201,34 +204,46 @@
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
                 
+                
                 var pod = this.checkedPOD;
                 var jsonPod = JSON.stringify(pod);
                 jsonPod = JSON.parse(jsonPod);
-                console.log(jsonPod)
-                
+                var isOk = false;
+
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , ''); 
                     POD.received = parseInt(POD.received);   
-                    
-                    if(POD.material_id == this.checkedPOD[0]){
-                        POD.item_OK = 1;
-                    }else if(POD.material_id != this.checkedPOD[0]){
-                        POD.item_OK = 0;
+                    if(POD.sloc_id != ""){
+                        if(this.checkedPOD.indexOf(POD.id+"") == -1){
+                            isOk = true;
+                            POD.item_OK = 0;
+                            document.getElementById(POD.id).style.backgroundColor = "yellow";
+                        }
+                        else{
+                            POD.item_OK = 1;
+                        }
                     }
                 });
-                
-                console.log(data)
-                this.submittedForm.POD = data;
-                this.submittedForm.checkedPOD = jsonPod;            
-                this.submittedForm.purchase_order_id = this.modelPO.id;
-                this.submittedForm.description = this.description;
-                
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
-                form.appendChild(struturesElem);
-                // form.submit();
+                if(isOk){ 
+                    iziToast.warning({
+                        title: 'Please Check the Material\'s Quality and check the ItemOk Checkbox',
+                        position: 'topRight',
+                        displayMode: 'replace',
+                    });
+                }
+                else{
+                    this.submittedForm.POD = data;
+                    this.submittedForm.checkedPOD = jsonPod;            
+                    this.submittedForm.purchase_order_id = this.modelPO.id;
+                    this.submittedForm.description = this.description;
+                    
+                    let struturesElem = document.createElement('input');
+                    struturesElem.setAttribute('type', 'hidden');
+                    struturesElem.setAttribute('name', 'datas');
+                    struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                    form.appendChild(struturesElem);
+                    form.submit();
+                }
             }
         },
         directives: {
@@ -282,11 +297,29 @@
                 },
                 deep: true
             },
+            checkedPOD:function(newValue){
+                var data = this.modelPOD;
+                data = JSON.stringify(data)
+                data = JSON.parse(data)
+
+                data.forEach(POD => {
+                    if(POD.sloc_id != ""){
+                        if(newValue.indexOf(POD.id+"") == -1){
+                            isOk = true;
+                            POD.item_OK = 0;
+                        }
+                        else{
+                            document.getElementById(POD.id).style.backgroundColor = "white";
+                            POD.item_OK = 1;
+                        }
+                    }
+                });
+            }
         },
         created: function(){
             var data = this.modelPOD;
             data.forEach(POD => {
-                POD.sloc_id = null;
+                // POD.sloc_id = null;
                 POD.received = parseInt(POD.quantity) - parseInt(POD.received);
                 POD.quantity = POD.received;
                 POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            

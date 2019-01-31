@@ -1,6 +1,3 @@
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,700");
-
 // Admin LTE
 @import "~admin-lte/dist/css/AdminLTE.css";
 @import "~admin-lte/dist/css/skins/_all-skins.css";
@@ -34,10 +31,16 @@
 // I Check
 @import "~admin-lte/plugins/iCheck/all.css";
 
-// Customer CSS
+// Custom CSS
 @import "custom";
 
-// Spacing Helepers
+// Animate
+@import "animate";
+
+// Roboto
+@import "roboto";
+
+// Spacing Helpers
 @import "spacing-helpers";
 
 // Izitoast

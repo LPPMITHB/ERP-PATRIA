@@ -420,6 +420,8 @@
             lifetime_uom_id : "",
             depreciation_method : 0,
             cost_per_hour : "",
+
+            status :"",
         },
         submittedForm :{},
         categorySettings: {
@@ -435,7 +437,8 @@
             placeholder: 'Please Select Depreciation Method'
         },
         detailData:{},
-        submitData:[]
+        submitData:[],
+        statusEdit: true,
     }
 
     var vm = new Vue({
@@ -464,7 +467,6 @@
                         isOk = false;
                     }
                 });
-
                 return isOk;
             },
            inputOk: function(){
@@ -473,17 +475,17 @@
                     isOk = true;
                 }
                 if(this.editInput.category_id == 0){
-                    if(this.editInput.sub_con_address == "" || this.editInput.sub_con_phone == "" || this.editInput.sub_con_competency == ""){
+                    if(this.editInput.lifetime == "" || this.editInput.sub_con_address == "" || this.editInput.sub_con_phone == "" || this.editInput.sub_con_competency == ""){
                         isOk = true;
                     }
                 }
                 if(this.editInput.category_id == 1){
-                    if(this.editInput.name == ""){
+                    if(this.editInput.lifetime == "" ||this.editInput.name == ""){
                         isOk = true;
                     }
                 }
                 if(this.editInput.category_id == 2){
-                    if(this.editInput.brand == ""){
+                    if(this.editInput.lifetime == "" || this.editInput.brand == ""){
                         isOk = true;
                     }
                 }
@@ -512,9 +514,39 @@
             },
         },
         methods : {
+            // clearExistingData(editData){
+            //     editData.code = '';
+            //     editData.description = '';
+            //     editData.index = '';
+            //     editData.resource_id = '';
+            //     editData.pod_id = '';
+            //     editData.performance = '';
+            //     editData.performance_uom_id = '';
+            //     editData.lifetime = '';
+            //     editData.lifetime_uom_id = '';
+            
+            //     if(category_id == 0){
+            //         editData.sub_con_address = '';
+            //         editData.sub_con_phone = '';
+            //         editData.sub_con_competency = '';
+            //     }else if(category_id == 1){
+            //         editData.name = '';
+            //     }else if(category_id == 2){
+            //         editData.brand = '';
+            //     }else if(category_id == 3){
+            //         editData.brand = '';
+            //         editData.manufactured_date = '';
+            //         editData.purchasing_date = '';
+            //         editData.purchasing_price = '';
+            //         editData.cost_per_hour = '';
+            //         editData.depreciation_method = '';
+            //     }
+            // },
             submitToTable(){
                 this.editInput.purchasing_price = this.editInput.purchasing_price.replace(/,/g , '');
+                this.editInput.performance = this.editInput.performance.replace(/,/g , '');
                 this.editInput.cost_per_hour = this.editInput.cost_per_hour.replace(/,/g , '');
+                this.editInput.lifetime = this.editInput.lifetime.replace(/,/g , '');
                 
                 let category_id = this.editInput.category_id;
                 this.detailData.category_id = category_id;
@@ -544,10 +576,51 @@
                     this.detailData.cost_per_hour = this.editInput.cost_per_hour;
                     this.detailData.depreciation_method = this.editInput.depreciation_method;
                 }
-                let data = JSON.stringify(this.detailData);
-                data = JSON.parse(data);
-                this.submitData.push(data);
+
+                if(this.editInput.status == 0){
+                    let data = JSON.stringify(this.detailData);
+                    data = JSON.parse(data);
+                    this.submitData.push(data);
+                }
+                else if (this.editInput.status == 1){
+                    let index = this.editInput.index;
+                    let editData = this.submitData[index];
+                    
+                    console.log(this.detailData.category_id)
+                    // this.clearExistingData(editData);
+
+                    editData.category_id = this.detailData.category_id;
+                    editData.code = this.detailData.code;
+                    editData.description = this.detailData.description;
+                    editData.index = this.detailData.index;
+                    editData.resource_id = this.detailData.resource_id;
+                    editData.pod_id = this.detailData.pod_id;
+                    editData.performance = this.detailData.performance;
+                    editData.performance_uom_id = this.detailData.performance_uom_id;
+                    editData.lifetime = this.detailData.lifetime;
+                    editData.lifetime_uom_id = this.detailData.lifetime_uom_id;
+                
+                    if(category_id == 0){
+                        editData.sub_con_address = this.detailData.sub_con_address;
+                        editData.sub_con_phone = this.detailData.sub_con_phone;
+                        editData.sub_con_competency = this.detailData.sub_con_competency;
+                    }else if(category_id == 1){
+                        editData.name = this.detailData.name;
+                    }else if(category_id == 2){
+                        editData.brand = this.detailData.brand;
+                    }else if(category_id == 3){
+                        editData.brand = this.detailData.brand;
+                        editData.manufactured_date = this.detailData.manufactured_date;
+                        editData.purchasing_date = this.detailData.purchasing_date;
+                        editData.purchasing_price = this.detailData.purchasing_price;
+                        editData.cost_per_hour = this.detailData.cost_per_hour;
+                        editData.depreciation_method = this.detailData.depreciation_method;
+                    }
+                } 
+                
+
                 this.detailData = {};
+
 
                 // Update status
                 this.datas[this.editInput.index].status = "Detail Completed";
@@ -562,6 +635,7 @@
                 this.editInput.performance_uom_id = '';
                 this.editInput.lifetime = '';
                 this.editInput.lifetime_uom_id = '';
+                this.editInput.status = '';
                 
                 if(category_id == 0){
                     this.editInput.sub_con_address = '';
@@ -601,10 +675,30 @@
             openEditModal(data,index){
                 $('div.overlay').show();
                 this.editInput.index = index;
+
+                this.editInput.category_id = '';
+                this.editInput.code = '';
+                this.editInput.description = '';
+                this.editInput.pod_id = '';
+                this.editInput.performance = '';
+                this.editInput.performance_uom_id = '';
+                this.editInput.lifetime = '';
+                this.editInput.lifetime_uom_id = '';
+                this.editInput.sub_con_address = '';
+                this.editInput.sub_con_phone = '';
+                this.editInput.sub_con_competency = '';
+                this.editInput.name = '';
+                this.editInput.brand = '';
+                this.editInput.manufactured_date = '';
+                this.editInput.purchasing_date = '';
+                this.editInput.purchasing_price = '';
+                this.editInput.cost_per_hour = '';
+                this.editInput.depreciation_method = '';
+
                 let status = 0;
                 this.submitData.forEach(dataSubmit => {
                     if(dataSubmit.index == index){
-                        console.log('a')
+                        this.statusEdit = false;
                         this.editInput.category_id = dataSubmit.category_id;
                         this.editInput.code = dataSubmit.code;
                         this.editInput.description = dataSubmit.description;
@@ -637,6 +731,7 @@
                         status = 1;
                     }
                 });
+                this.editInput.status = status;
 
                 if(status == 0){
                     let resource_code = data.resource_code;
@@ -666,12 +761,14 @@
                         });
                     })
                 }
+                
+                    
                 $('div.overlay').hide();
             },
         },
         watch : {
             'editInput.category_id': function(newValue){
-                if(newValue !=""){
+                if(newValue !=""  && this.statusEdit){
                     this.editInput.sub_con_address = '';
                     this.editInput.sub_con_phone = '';
                     this.editInput.sub_con_competency = '';
@@ -686,7 +783,9 @@
                     this.editInput.lifetime = '';
                     this.editInput.lifetime_uom_id = '';
                     this.editInput.cost_per_hour = '';
-                    this.editInput.depreciation_method = '';
+                    this.editInput.depreciation_method = 0;
+                }else{
+                    this.statusEdit = true;
                 }
             },
             'editInput.sub_con_phone': function(newValue) {
@@ -695,8 +794,16 @@
                 }
             },
             'editInput.performance': function(newValue) {
-                if(newValue != ""){
-                    this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 4;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.editInput.performance = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.editInput.performance = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.editInput.performance = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
             'editInput.purchasing_price': function(newValue) {
@@ -713,8 +820,16 @@
                 }
             },
             'editInput.lifetime': function(newValue) {
-                if(newValue != ""){
-                    this.editInput.lifetime = (this.editInput.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "");
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 4;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.editInput.lifetime = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.editInput.lifetime = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.editInput.lifetime = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
             'editInput.cost_per_hour': function(newValue) {

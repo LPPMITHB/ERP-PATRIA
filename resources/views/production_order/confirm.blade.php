@@ -360,7 +360,8 @@
                                     <tr v-for="(data,index) in resources">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                        <td class="tdEllipsis">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
+                                        <td class="tdEllipsis" v-if="data.resource_detail.category_id != 1">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
+                                        <td class="tdEllipsis" v-else>{{ data.resource_detail.code }} - {{ data.resource_detail.others_name }}</td>
                                         <td>{{ data.status }}</td>
                                         <td v-if="data.status == 'UNACTUALIZED'" class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
                                             <div class="btn-group">
@@ -424,11 +425,79 @@
                                                     <input class="form-control width100" v-model="editInput.total_accident" placeholder="Please Input Total Accident">
                                                 </div>
                                             </div>
+
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label p-b-10">Morale Notes</label>
+                                                <table id="morale-table" class="table table-bordered tableFixed">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="5%">No</th>
+                                                            <th width="25%">Subject</th>
+                                                            <th width="35%">Notes</th>
+                                                            <th width="20%"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(data,index) in resources[editInput.index].morale">
+                                                            <td>{{ index + 1 }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.subject)">{{ data.subject }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.notes)">{{ data.notes }}</td>
+                                                            <td class="p-l-5" align="center"><a @click.prevent="editMoraleNotes(data,index)" class="btn btn-primary btn-xs" href="#morale_notes" data-toggle="modal">
+                                                                <button type="button" data-dismiss="modal" class="btn btn-primary btn-xs" @click.prevent="">
+                                                                    EDIT
+                                                                </button></a>
+                                                                <a href="#" @click="removeMoraleNotes(index)" class="btn btn-danger btn-xs">
+                                                                    <div class="btn-group">DELETE</div>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </template>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
+                                    <a href="#morale_notes" data-toggle="modal">
+                                        <button type="button" data-dismiss="modal" class="btn btn-primary" @click.prevent="">
+                                            ADD NOTES
+                                        </button>
+                                    </a>
                                     <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="morale_notes" >
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Input Morale Notes</h4>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-12 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Subject</label>
+                                                <input class="form-control" v-model="moraleNotes.subject" placeholder="Please Input Subject">
+                                            </div>
+                                            <div class="col-sm-12 p-l-0">
+                                                <label for="type" class="control-label p-b-10">Notes</label>
+                                                <textarea rows="4" class="form-control" v-model="moraleNotes.notes" placeholder="Please Input Notes">
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#actual_resource" data-toggle="modal">
+                                        <button v-if="moraleNotes.index !== ''" type="button" class="btn btn-primary" :disabled="addMoraleOk" data-dismiss="modal" @click.prevent="updateMoraleNotes">SAVE</button>
+                                        <button v-else type="button" class="btn btn-primary" :disabled="addMoraleOk" data-dismiss="modal" @click.prevent="submitMoraleNotes">SAVE</button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -496,7 +565,13 @@
             usage : "",
             total_accident : "",
             statusUom : "",
-            index : ""
+            index : "",
+            total_accident : "",
+        },
+        moraleNotes : {
+            subject : "",
+            notes : "",
+            index : "",
         },
         uomSettings: {
             placeholder: 'Please Select Unit'
@@ -534,6 +609,13 @@
             );
         },
         computed : {
+            addMoraleOk: function(){
+                let isOk = false;
+                if(this.moraleNotes.subject == ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
             createOk: function(){
                 let isOk = false;
 
@@ -552,6 +634,11 @@
                 this.editInput.usage = "";
                 this.editInput.statusUom = "";
                 this.editInput.total_accident = "";
+            },
+            editMoraleNotes(data,index){
+                this.moraleNotes.index = index;
+                this.moraleNotes.subject = data.subject;
+                this.moraleNotes.notes = data.notes;
             },
             openEditModal(data,index){
                 this.clearEditInput();
@@ -574,7 +661,7 @@
                 resource.performance = this.editInput.performance;
                 resource.performance_uom_id = this.editInput.performance_uom_id;
                 resource.usage = this.editInput.usage;
-                resource.total_accident = this.editInput.total_accident;
+                resource.actual = this.editInput.total_accident;
                 if(resource.performance != "" && resource.usage != "" && resource.total_accident != ""){
                     resource.status = "ACTUALIZED";
                     iziToast.success({
@@ -585,6 +672,43 @@
                 }else{
                     resource.status = "UNACTUALIZED";
                 }
+            },
+            submitMoraleNotes(){
+                let resource = this.resources[this.editInput.index];
+                let moraleNotes = {};
+                moraleNotes.subject = this.moraleNotes.subject;
+                moraleNotes.notes = this.moraleNotes.notes;
+                resource.morale.push(moraleNotes);
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Morale Notes Submitted!',
+                    position: 'topRight',
+                });
+                this.moraleNotes.subject = "";
+                this.moraleNotes.notes = "";
+                
+            },
+            updateMoraleNotes(){
+                let resource = this.resources[this.editInput.index].morale[this.moraleNotes.index];
+                resource.subject = this.moraleNotes.subject;
+                resource.notes = this.moraleNotes.notes;
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Morale Notes Updated!',
+                    position: 'topRight',
+                });
+                this.moraleNotes.subject = "";
+                this.moraleNotes.notes = "";
+                this.moraleNotes.index = "";
+                
+            },
+            removeMoraleNotes: function(index) {
+                this.resources[this.editInput.index].morale.splice(index, 1);
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Morale Notes Deleted!',
+                    position: 'topRight',
+                });
             },
             tooltipText: function(text) {
                 return text
@@ -724,7 +848,7 @@
             getActivities(){
                 window.axios.get('/api/getActivities/'+this.wbs_id).then(({ data }) => {
                     this.activities = data;
-                    });
+                });
 
             },
             confirm(){            
@@ -872,6 +996,11 @@
                     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.services.push(POD);
                 }else if(POD.resource_id != null && POD.resource_detail_id != null){
+                    if(POD.morale != null){
+                        POD.morale = JSON.parse(POD.morale);
+                    }else{
+                        POD.morale = [];
+                    }
                     this.resources.push(POD);
                 }
             });
