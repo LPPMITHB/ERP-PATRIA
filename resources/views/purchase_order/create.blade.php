@@ -98,11 +98,23 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
-                                    <div class="col-sm-12">
-                                        <label for="">PO Description</label>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label for="">PO Description</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <textarea class="form-control" rows="2" v-model="description"></textarea>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-12">
-                                        <textarea class="form-control" rows="3" v-model="description"></textarea>
+                                    <div class="row">
+                                        <div class="col-sm-3 p-t-20">
+                                            <label for="">Currency :</label>
+                                        </div>
+                                        <div class="col-sm-9 p-t-15 p-l-0">
+                                            <selectize v-model="currency" :settings="currencySettings">
+                                                <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                            </selectize>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -118,7 +130,7 @@
                                                 <th v-else style="width: 25%">Resource Name</th>
                                                 <th style="width: 7%">Qty</th>
                                                 <th style="width: 8%">Order</th>
-                                                <th style="width: 15%">Price / pcs (Rp.)</th>
+                                                <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 25%">WBS Name</th>
                                                 <th style="width: 15%">Alocation</th>
                                             </tr>
@@ -201,10 +213,17 @@
         modelPR : @json($modelPR),
         PRDetail : @json($modelPRD),
         modelProject : @json($modelProject),
+        currencies : @json($currencies),
         modelVendor : [],
         vendorSettings: {
             placeholder: 'Please Select Vendor'
         },
+
+        currencySettings: {
+            placeholder: 'Please Select Currency'
+        },
+        selectedCurrency : "",
+        currency : "",
         vendor_id : "",
         required_date : "",
         description : "",
@@ -227,7 +246,7 @@
         computed : {
             dataOk: function(){
                 let isOk = false;
-                if(this.vendor_id == "" || this.required_date == ""){
+                if(this.vendor_id == "" || this.required_date == "" || this.currency == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -268,10 +287,12 @@
                 this.submittedForm.PRD = data;
                 this.submittedForm.type = this.modelPR.type;
                 this.submittedForm.vendor_id = this.vendor_id;
+                this.submittedForm.currency = this.currency;
                 this.submittedForm.required_date = this.required_date;
                 this.submittedForm.description = this.description;
                 this.submittedForm.pr_id = this.modelPR.id;
                 this.submittedForm.project_id = this.modelPR.project_id;
+                this.submittedForm.currency = this.currency;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -287,17 +308,56 @@
                     var data = newValue;
                     if(this.modelPR.type == 1){
                         data.forEach(PRD => {
-                            PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                            PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
+                            PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                            var decimal = (PRD.material.cost_standard_price+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    PRD.material.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    PRD.material.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }    
                         });
                     }else{
                         data.forEach(PRD => {
-                            PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                            PRD.resource.cost_standard_price = (PRD.resource.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");         
+                            PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
+                            var decimal = (PRD.resource.cost_standard_price+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    PRD.resource.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    PRD.resource.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                PRD.resource.cost_standard_price = (PRD.resource.cost_standard_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            } 
                         });
                     }
                 },
                 deep: true
+            },
+            'currency':function (newValue) {
+                if(newValue == ''){
+                    this.currency = this.currencies[0].name;
+                }
+                this.currencies.forEach(data => {
+                    if(newValue == data.name){
+                        this.selectedCurrency = data.unit;
+                        if(this.modelPR.type == 1){
+                            this.PRDetail.forEach(prd => {
+                                prd.material.cost_standard_price = parseInt((prd.material.price+"").replace(/,/g , '')) / data.value;
+                            });
+                        }else{
+                            this.PRDetail.forEach(prd => {
+                                prd.resource.cost_standard_price = parseInt((prd.resource.price+"").replace(/,/g , '')) / data.value;
+                            });
+                        }
+                    }
+                });
             },
         },
         created: function() {
@@ -326,7 +386,14 @@
                     placement: binding.arg,
                     trigger: 'hover'             
                 })
-            })
+            });
+
+            this.currency = this.currencies[0].name;
+            this.selectedCurrency = this.currencies[0].unit;
+
+            this.PRDetail.forEach(prd => {
+                prd.resource.price = parseInt((prd.resource.cost_standard_price+"").replace(/,/g , ''));
+            });
         },
     });
 </script>
