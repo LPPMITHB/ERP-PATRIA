@@ -18,6 +18,7 @@ use App\Models\ResourceDetail;
 use App\Models\BusinessUnit;
 use App\Models\MaterialRequisition;
 use App\Models\Bom;
+use App\Models\Cost;
 use Illuminate\Support\Collection;
 use DB;
 use DateTime;
@@ -1029,25 +1030,73 @@ class ProjectController extends Controller
     }
     public function getDataChart($dataPlannedCost,$wbsChart,$modelMR,$dataActualCost, $project, $dataActualProgress,$dataPlannedProgress)
     {
+        $otherCosts = Cost::where('project_id', $project->id)->orderBy('created_at', 'ASC')->get();
         $sorted = $wbsChart->all();
         ksort($sorted);
-        $plannedCost = 0;
+        $tempPlanned = Collection::make();
+        $tempActual = Collection::make();
+        foreach($otherCosts as $otherCost){
+            if($otherCost->actual_cost != null){
+                if($otherCost->wbs != null){
+                    $tempPlanned->push([
+                        "t" => $otherCost->wbs->planned_deadline, 
+                        "y" => ($otherCost->plan_cost/1000000)."",
+                    ]);
+                    $tempActual->push([
+                        "t" => $otherCost->wbs->planned_deadline, 
+                        "y" => ($otherCost->actual_cost/1000000)."",
+                    ]);
+                }else{
+                    $tempPlanned->push([
+                        "t" => $otherCost->created_at->format('Y-m-d'), 
+                        "y" => ($otherCost->plan_cost/1000000)."",
+                    ]);
+                    $tempActual->push([
+                        "t" => $otherCost->created_at->format('Y-m-d'), 
+                        "y" => ($otherCost->actual_cost/1000000)."",
+                    ]);
+                }
+            }else{
+                if($otherCost->wbs != null){
+                    $tempPlanned->push([
+                        "t" => $otherCost->wbs->planned_deadline, 
+                        "y" => ($otherCost->plan_cost/1000000)."",
+                    ]);
+                }else{
+                    $tempPlanned->push([
+                        "t" => $otherCost->created_at->format('Y-m-d'), 
+                        "y" => ($otherCost->plan_cost/1000000)."",
+                    ]);
+                }
+            }
+        }
         foreach($sorted as $date => $group){
             foreach($group as $wbs){
                 if($wbs->bom){
                     if($wbs->bom->rap->total_price != 0){
-                        $plannedCost += $wbs->bom->rap->total_price;
-                        $dataPlannedCost->push([
+                        $tempPlanned->push([
                             "t" => $date, 
-                            "y" => ($plannedCost/1000000)."",
+                            "y" => ($wbs->bom->rap->total_price/1000000)."",
                         ]);
                     }
                 }
             }
-            
+        }
+        $tempPlanned = $tempPlanned->groupBy('t');
+        $tempPlanned = $tempPlanned->all();
+        ksort($tempPlanned);
+
+        $plannedCost = 0;
+        foreach ($tempPlanned as $date => $datas) {
+            foreach ($datas as $data) {
+                $plannedCost += $data['y'];
+            }
+            $dataPlannedCost->push([
+                "t" => $date, 
+                "y" =>  $plannedCost."",
+            ]);
         }
 
-        $actualCost = 0;
         foreach($modelMR as $mr){
             $modelGI = $mr->goodsIssues->groupBy(function($date) {
                 return $date->created_at->toDateString();
@@ -1057,26 +1106,52 @@ class ProjectController extends Controller
             foreach($sorted as $date => $group){
                 foreach($group as $gi){
                     $gids = $gi->goodsIssueDetails;
+                    $giCost = 0;
                     foreach($gids as $gid){
-                        $actualCost += $gid->material->cost_standard_price * $gid->quantity;
+                        $giCost += $gid->material->cost_standard_price * $gid->quantity;
                     }
                 }
-                $dataActualCost->push([
+                $tempActual->push([
                     "t" => $date, 
-                    "y" => ($actualCost/1000000)."",
+                    "y" => ($giCost/1000000)."",
                 ]);
             }
+        }
+
+        $tempActual = $tempActual->groupBy('t');
+        $tempActual = $tempActual->all();
+        ksort($tempActual);
+        
+        $actualCost = 0;
+        foreach ($tempActual as $date => $datas) {
+            foreach ($datas as $data) {
+                $actualCost += $data['y'];
+            }
+            $dataActualCost->push([
+                "t" => $date, 
+                "y" =>  $actualCost."",
+            ]);
         }
 
         $actualProgress = 0;
         $plannedProgress = 0;
         $wbss = WBS::where('project_id', $project->id)->pluck('id')->toArray();
         $activities = Activity::whereIn('wbs_id',$wbss)->get();
-        $actualActivities =$activities->where('actual_end_date', "!=", "")->groupBy('actual_end_date');
+        $actualActivities =$activities->filter(function ($data) {
+            return $data->progress > 0 || $data->actual_end_date !== null;
+        });
+        $actualActivities = $actualActivities->groupBy('actual_end_date');
+        // where('progress','>',0)->orWhere('actual_end_date', "!=", "")->groupBy('actual_end_date');
         $plannnedActivities = $activities->groupBy('planned_end_date');
+        $actualSorted = $actualActivities;
+        foreach($actualSorted as $date =>$group){
+            if($date == null){
+                $actualSorted->put(date('Y-m-d'), $group);
+                $actualSorted->forget($date);
+            }
+        }
         $actualSorted = $actualActivities->all();
         $plannedSorted = $plannnedActivities->all();
-
         ksort($actualSorted);
         ksort($plannedSorted);
         foreach($actualSorted as $date => $group){
