@@ -7,6 +7,7 @@
             'title' => 'View All Production Order',
             'items' => [
                 'Dashboard' => route('index'),
+                'Select Project' => route('production_order.selectProjectIndex'),
                 'View All Production Order' => route('production_order.indexPrO',$id),
             ]
         ]
@@ -18,6 +19,7 @@
             'title' => 'View All Production Order',
             'items' => [
                 'Dashboard' => route('index'),
+                'Select Project' => route('production_order.selectProjectIndex'),
                 'View All Production Order' => route('production_order_repair.indexPrO',$id),
             ]
         ]
@@ -42,23 +44,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPrOs as $modelPO)
+                        @foreach($modelPrOs as $modelPrO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelPO->number }}</td>
-                                <td>{{ $modelPO->project->name }}</td>
-                                <td class="tdEllipsis">{{ $modelPO->wbs->name }}</td>
+                                <td>{{ $modelPrO->number }}</td>
+                                <td>{{ $modelPrO->project->name }}</td>
+                                <td class="tdEllipsis">{{ $modelPrO->wbs->name }}</td>
                                 <td class="textCenter">
-                                    @if($route == "/production_order" && $modelPO->status == 1)
-                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
-                                        <a href="" class="btn btn-primary btn-xs">EDIT</a>
-                                    @elseif($route == "/production_order" && $modelPO->status != 1)
-                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
-                                    @elseif($route == "/production_order_repair" && $modelPO->status == 1)
-                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
-                                        <a href="" class="btn btn-primary btn-xs">EDIT</a>
-                                    @elseif($route == "/production_order_repair" && $modelPO->status != 1)
-                                        <a href="" class="btn btn-primary btn-xs">VIEW</a>
+                                    @if($route == "/production_order" && $modelPrO->status == 1)
+                                        <a href="{{route('production_order.show',$modelPrO->id)}}" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a href="{{route('production_order.editPrO',$modelPrO->id)}}" class="btn btn-primary btn-xs">EDIT</a>
+                                    @elseif($route == "/production_order" && $modelPrO->status != 1)
+                                        <a href="{{route('production_order.show',$modelPrO->id)}}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @elseif($route == "/production_order_repair" && $modelPrO->status == 1)
+                                        <a href="{{route('production_order_repair.show',$modelPrO->id)}}" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a href="{{route('production_order_repair.editPrO',$modelPrO->id)}}" class="btn btn-primary btn-xs">EDIT</a>
+                                    @elseif($route == "/production_order_repair" && $modelPrO->status != 1)
+                                        <a href="{{route('production_order_repair.show',$modelPrO->id)}}" class="btn btn-primary btn-xs">VIEW</a>
                                     @endif
                                 </td>
                             </tr>

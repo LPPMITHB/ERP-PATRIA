@@ -177,6 +177,8 @@ Route::name('material.')->prefix('material')->group(function() {
 
 //Resource Management Routes
 Route::name('resource.')->prefix('resource')->group(function() {
+    Route::put('/updateDetail', 'ResourceController@updateDetail')->name('updateDetail')->middleware('can:show-resource');
+
     Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource');
 
     Route::get('/selectPO', 'ResourceController@selectPO')->name('selectPO')->middleware('can:create-receive-resource');
@@ -1176,6 +1178,10 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
     Route::get('/selectProjectIndex', 'ProductionOrderController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-production-order');
 
     Route::get('/indexPrO/{id}', 'ProductionOrderController@indexPrO')->name('indexPrO')->middleware('can:list-production-order');
+
+    Route::get('/editPrO/{id}', 'ProductionOrderController@editPrO')->name('editPrO')->middleware('can:list-production-order');
+    
+    Route::patch('/updatePrO/{id}', 'ProductionOrderController@updatePrO')->name('updatePrO')->middleware('can:confirm-production-order');
 
     Route::get('/selectProjectReport', 'ProductionOrderController@selectProjectReport')->name('selectProjectReport')->middleware('can:list-production-order');
 

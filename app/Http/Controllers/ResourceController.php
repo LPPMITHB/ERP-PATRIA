@@ -265,7 +265,7 @@ class ResourceController extends Controller
 
         foreach($modelGRs as $key => $GR){
             if($GR->purchaseOrder->purchaseRequisition->type != 2){
-                $modelPOs->forget($key);
+                $modelGRs->forget($key);
             }
         }
 
@@ -392,8 +392,71 @@ class ResourceController extends Controller
         $resource = Resource::findOrFail($id);
         $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail')->get()->jsonSerialize();
         $depreciation_methods = Configuration::get('depreciation_methods');
+        $resource_categories = Configuration::get('resource_category');
+        $uom = Uom::all();
         
-        return view('resource.show', compact('resource','modelRD','route','depreciation_methods'));
+        return view('resource.show', compact('resource','modelRD','route','depreciation_methods','resource_categories','uom'));
+    }
+
+    public function updateDetail(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $modelRD = ResourceDetail::findOrFail($data['resource_detail_id']);
+            $modelRD->description = $data['description'];
+            $modelRD->performance = ($data['performance'] != '') ? $data['performance'] : null;
+            $modelRD->performance_uom_id = ($data['performance_uom_id'] != '') ? $data['performance_uom_id'] : null;
+            $modelRD->lifetime_uom_id = ($data['lifetime_uom_id'] != '') ? $data['lifetime_uom_id'] : null;
+            if($modelRD->lifetime_uom_id != null){
+                if($data['lt'] != ''){
+                    if($modelRD->lifetime_uom_id == 1){
+                        $modelRD->lifetime = $data['lt'] * 8;
+                    }elseif($modelRD->lifetime_uom_id == 2){
+                        $modelRD->lifetime = $data['lt'] * 8 * 30;
+                    }elseif($modelRD->lifetime_uom_id == 3){
+                        $modelRD->lifetime = $data['lt'] * 8 * 365;
+                    }
+                }
+            }
+            if($data['category_id'] == 0){
+                $modelRD->sub_con_address = $data['sub_con_address'];
+                $modelRD->sub_con_phone = $data['sub_con_phone'];
+                $modelRD->sub_con_competency = $data['sub_con_competency'];
+            }else if($data['category_id'] == 1){
+                $modelRD->others_name = $data['name'];
+            }else if($data['category_id'] == 2){
+                $modelRD->brand = $data['brand'];
+            }else if($data['category_id'] == 3){
+                $modelRD->brand = $data['brand'];
+                $modelRD->depreciation_method = $data['depreciation_method'];
+                if($data['manufactured_date'] != ""){
+                    if($data['manufactured_date'] != $modelRD->manufactured_date){
+                        $manufactured_date = DateTime::createFromFormat('m/j/Y', $data['manufactured_date']);
+                        $modelRD->manufactured_date = $manufactured_date->format('Y-m-d');
+                    }
+                }
+                if($data['purchasing_date'] != ""){
+                    if($data['purchasing_date'] != $modelRD->purchasing_date){
+                        $purchasing_date = DateTime::createFromFormat('m/j/Y', $data['purchasing_date']);
+                        $modelRD->purchasing_date = $purchasing_date->format('Y-m-d');
+                    }
+                }
+                $modelRD->purchasing_price = ($data['purchasing_price'] != '') ? $data['purchasing_price'] : null;
+                $modelRD->cost_per_hour = ($data['cost_per_hour'] != '') ? $data['cost_per_hour'] : null;
+            }
+
+            if(!$modelRD->update()){
+                return redirect()->route('resource.show',$data['resource_detail_id'])->with('error','Failed to save, please try again !');
+            }else{
+                DB::commit();
+                return response(json_encode($modelRD),Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('resource.show',$data['resource_detail_id'])->with('error', $e->getMessage());
+        }
     }
 
     public function edit(Request $request,$id)
@@ -684,5 +747,9 @@ class ResourceController extends Controller
         return response($code, Response::HTTP_OK);
     }
     
+    public function getNewResourceDetailAPI($id){
+        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail')->get()->jsonSerialize();
 
+        return response($modelRD, Response::HTTP_OK);
+    }
 }

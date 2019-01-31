@@ -8,7 +8,8 @@
             'title' => 'View Production Order » '.$modelPrO->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Production Orders' => route('production_order.index'),
+                'Select Project' => route('production_order.selectProjectIndex'),
+                'View All Production Order' => route('production_order.indexPrO',$modelPrO->project->id),
                 'View Production Order' => '',
             ]
         ]
@@ -20,7 +21,8 @@
             'title' => 'View Production Order » '.$modelPrO->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Production Orders' => route('production_order_repair.index'),
+                'Select Project' => route('production_order_repair.selectProjectIndex'),
+                'View All Production Order' => route('production_order_repair.indexPrO',$modelPrO->project->id),
                 'View Production Order' => '',
             ]
         ]
