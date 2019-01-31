@@ -264,7 +264,7 @@ class ResourceController extends Controller
 
         foreach($modelGRs as $key => $GR){
             if($GR->purchaseOrder->purchaseRequisition->type != 2){
-                $modelPOs->forget($key);
+                $modelGRs->forget($key);
             }
         }
 
