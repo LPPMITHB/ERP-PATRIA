@@ -22,6 +22,7 @@ use App\Models\GoodsIssueDetail;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
 use App\Models\ProductionOrder;
+use App\Models\ProductionOrderDetail;
 use DateTime;
 use Auth;
 use DB;
@@ -69,7 +70,6 @@ class ResourceController extends Controller
     {
         $data = json_decode($request->datas);
         $route = $request->route()->getPrefix();
-
         DB::beginTransaction();
         try {
             $resource = new Resource;
@@ -79,6 +79,7 @@ class ResourceController extends Controller
             $resource->user_id = Auth::user()->id;
             $resource->branch_id = Auth::user()->branch->id;
             $resource->save();
+
 
             DB::commit();
             if($route == "/resource"){
@@ -389,9 +390,73 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
-        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom')->get()->jsonSerialize();
+        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail')->get()->jsonSerialize();
+        $depreciation_methods = Configuration::get('depreciation_methods');
+        $resource_categories = Configuration::get('resource_category');
+        $uom = Uom::all();
         
-        return view('resource.show', compact('resource','modelRD','route'));
+        return view('resource.show', compact('resource','modelRD','route','depreciation_methods','resource_categories','uom'));
+    }
+
+    public function updateDetail(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $modelRD = ResourceDetail::findOrFail($data['resource_detail_id']);
+            $modelRD->description = $data['description'];
+            $modelRD->performance = ($data['performance'] != '') ? $data['performance'] : null;
+            $modelRD->performance_uom_id = ($data['performance_uom_id'] != '') ? $data['performance_uom_id'] : null;
+            $modelRD->lifetime_uom_id = ($data['lifetime_uom_id'] != '') ? $data['lifetime_uom_id'] : null;
+            if($modelRD->lifetime_uom_id != null){
+                if($data['lt'] != ''){
+                    if($modelRD->lifetime_uom_id == 1){
+                        $modelRD->lifetime = $data['lt'] * 8;
+                    }elseif($modelRD->lifetime_uom_id == 2){
+                        $modelRD->lifetime = $data['lt'] * 8 * 30;
+                    }elseif($modelRD->lifetime_uom_id == 3){
+                        $modelRD->lifetime = $data['lt'] * 8 * 365;
+                    }
+                }
+            }
+            if($data['category_id'] == 0){
+                $modelRD->sub_con_address = $data['sub_con_address'];
+                $modelRD->sub_con_phone = $data['sub_con_phone'];
+                $modelRD->sub_con_competency = $data['sub_con_competency'];
+            }else if($data['category_id'] == 1){
+                $modelRD->others_name = $data['name'];
+            }else if($data['category_id'] == 2){
+                $modelRD->brand = $data['brand'];
+            }else if($data['category_id'] == 3){
+                $modelRD->brand = $data['brand'];
+                $modelRD->depreciation_method = $data['depreciation_method'];
+                if($data['manufactured_date'] != ""){
+                    if($data['manufactured_date'] != $modelRD->manufactured_date){
+                        $manufactured_date = DateTime::createFromFormat('m/j/Y', $data['manufactured_date']);
+                        $modelRD->manufactured_date = $manufactured_date->format('Y-m-d');
+                    }
+                }
+                if($data['purchasing_date'] != ""){
+                    if($data['purchasing_date'] != $modelRD->purchasing_date){
+                        $purchasing_date = DateTime::createFromFormat('m/j/Y', $data['purchasing_date']);
+                        $modelRD->purchasing_date = $purchasing_date->format('Y-m-d');
+                    }
+                }
+                $modelRD->purchasing_price = ($data['purchasing_price'] != '') ? $data['purchasing_price'] : null;
+                $modelRD->cost_per_hour = ($data['cost_per_hour'] != '') ? $data['cost_per_hour'] : null;
+            }
+
+            if(!$modelRD->update()){
+                return redirect()->route('resource.show',$data['resource_detail_id'])->with('error','Failed to save, please try again !');
+            }else{
+                DB::commit();
+                return response(json_encode($modelRD),Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('resource.show',$data['resource_detail_id'])->with('error', $e->getMessage());
+        }
     }
 
     public function edit(Request $request,$id)
@@ -458,7 +523,7 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $data = $request->json()->all();
-   
+        
         DB::beginTransaction();
         try {
             $resource = new ResourceTrx;
@@ -467,8 +532,23 @@ class ResourceController extends Controller
             $resource->wbs_id = $data['wbs_id'];
             $resource->quantity = $data['quantity'];
 
+            $ProdOrder = ProductionOrder::where('wbs_id',$data['wbs_id'])->where('status',1)->first();
+            if($ProdOrder){
+                $existing = ProductionOrderDetail::where('production_order_id',$ProdOrder->id)->where('resource_id' , $data['resource_id'])->first();
+                if($existing != null){
+                    $existing->quantity += $data['quantity'];
+                    $existing->update();
+                }else{
+                    $PrOD = new ProductionOrderDetail;
+                    $PrOD->production_order_id = $ProdOrder->id;
+                    $PrOD->resource_id = $data['resource_id'];
+                    $PrOD->quantity = $data['quantity'];
+                    $PrOD->save();
+                }
+            }
+
             if(!$resource->save()){
-                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+                return response($ProdOrder,Response::HTTP_OK);
             }else{
                 DB::commit();
                 return response(["response"=>"Success to assign resource"],Response::HTTP_OK);
@@ -517,6 +597,17 @@ class ResourceController extends Controller
                 }
 
                 $RD->purchasing_price = ($data->purchasing_price != '') ? $data->purchasing_price : null;
+                if($RD->lifetime_uom_id != null){
+                    if($data->lifetime != ''){
+                        if($RD->lifetime_uom_id == 1){
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 : null;
+                        }elseif($RD->lifetime_uom_id == 2){
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 * 30 : null;
+                        }elseif($RD->lifetime_uom_id == 3){
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 * 365 : null;
+                        }
+                    }
+                }
                 $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
                 $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
                 $RD->cost_per_hour = ($data->cost_per_hour != '') ? $data->cost_per_hour : null;
@@ -558,7 +649,7 @@ class ResourceController extends Controller
         $number = 1;
         $code = $data.'-';
 
-        $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->first();
+        $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->where('code','not like','%-PO%')->first();
         if($modelRD){
             $number += intval(substr($modelRD->code,8));
         }
@@ -641,8 +732,6 @@ class ResourceController extends Controller
 
         return response($resourceDetail, Response::HTTP_OK);
     }
-
-    
     
     public function generateCodeAPI($data){
         $data = json_decode($data);
@@ -658,5 +747,9 @@ class ResourceController extends Controller
         return response($code, Response::HTTP_OK);
     }
     
+    public function getNewResourceDetailAPI($id){
+        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail')->get()->jsonSerialize();
 
+        return response($modelRD, Response::HTTP_OK);
+    }
 }

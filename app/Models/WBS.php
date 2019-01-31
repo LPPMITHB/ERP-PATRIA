@@ -43,6 +43,11 @@ class WBS extends Model
         return $this->hasMany('App\Models\ResourceDetail');
     }
 
+    public function resourceTrxs()
+    {
+        return $this->hasMany('App\Models\ResourceTrx', 'wbs_id');
+    }
+
     public function materialRequisitionDetails()
     {
         return $this->hasMany('App\Models\MaterialRequisitionDetail', 'wbs_id');

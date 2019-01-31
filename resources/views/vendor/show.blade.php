@@ -70,9 +70,9 @@
                             <li class="active"><a href="#quality" data-toggle="tab">Quality</a></li>
                             <li><a href="#cost" data-toggle="tab">Cost</a></li>
                             <li><a href="#delivery" data-toggle="tab">Delivery</a></li>
-                            <li><a href="#safety" data-toggle="tab">Safety</a></li>
-                            <li><a href="#morale" data-toggle="tab">Morale</a></li>
                             @if($vendor->type == "Subcon")                            
+                                <li><a href="#safety" data-toggle="tab">Safety</a></li>
+                                <li><a href="#morale" data-toggle="tab">Morale</a></li>
                                 <li><a href="#productivity" data-toggle="tab">Productivity</a></li>
                             @endif
                         </ul>
@@ -240,13 +240,88 @@
                             </table>
                         </div>
                     </div>
+                    @if($vendor->type == "Subcon")
                     <div class="tab-pane" id="safety">
-                        safety
+                        <div class="box-body p-t-0 m-l-10 m-r-10">
+                            <table class="table table-bordered showTable safetyTable tableFixed">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th width="20%">Prod. Order Number</th>
+                                        <th width="35%">WBS Name</th>
+                                        <th width="25%">Project</th>
+                                        <th width="25%">Total Accident</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $counter = 0;
+                                    @endphp
+                                    @foreach($resourceDetails->where('category_id', 0) as $resourceDetail)
+                                        @foreach ($resourceDetail->productionOrderDetails->where('status',"ACTUALIZED")->take(5) as $prod)
+                                            <tr>
+                                                <td>{{ $counter++ }}</td>
+                                                <td>
+                                                    <a href="{{ route('production_order.show',$prod->productionOrder->id) }}" class="text-primary">{{$prod->productionOrder->number}}</a>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('wbs.show',$prod->productionOrder->wbs->id) }}" class="text-primary">{{$prod->productionOrder->wbs->name}}</a>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('project.show',$prod->productionOrder->wbs->project->id) }}" class="text-primary">{{$prod->productionOrder->wbs->project->number}} - {{$prod->productionOrder->wbs->project->name}}</a>
+                                                </td>
+                                                <td>{{ $prod->actual }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="tab-pane" id="morale">
-                        morale
+                        <div class="box-body p-t-0 m-l-10 m-r-10">
+                            <table class="table table-bordered showTable moraleTable tableFixed">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th width="15%">Prod. Order Number</th>
+                                        <th width="20%">WBS Name</th>
+                                        <th width="20%">Project</th>
+                                        <th width="20%">Subject</th>
+                                        <th width="40%">Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $counter = 1;
+                                    @endphp
+                                    @foreach($resourceDetails->where('category_id', 0) as $resourceDetail)
+                                        @foreach ($resourceDetail->productionOrderDetails->take(5) as $prod)
+                                            @php
+                                                $moraleNotes = json_decode($prod->morale);
+                                            @endphp
+                                            @foreach ($moraleNotes as $morale)
+                                                <tr>
+                                                    <td>{{ $counter++ }}</td>
+                                                    <td>
+                                                        <a href="{{ route('production_order.show',$prod->productionOrder->id) }}" class="text-primary">{{$prod->productionOrder->number}}</a>
+                                                    </td>
+                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$prod->productionOrder->wbs->name}}">
+                                                        <a href="{{ route('wbs.show',$prod->productionOrder->wbs->id) }}" class="text-primary">{{$prod->productionOrder->wbs->name}}</a>
+                                                    </td>
+                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$prod->productionOrder->wbs->project->number}} - {{$prod->productionOrder->wbs->project->name}}">
+                                                        <a href="{{ route('project.show',$prod->productionOrder->wbs->project->id) }}" class="text-primary">{{$prod->productionOrder->wbs->project->number}} - {{$prod->productionOrder->wbs->project->name}}</a>
+                                                    </td>
+                                                    <td>{{ $morale->subject }}</td>
+                                                    <td>{{ $morale->notes }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    @if($vendor->type == "Subcon")
                     <div class="tab-pane" id="productivity">
                         <div class="box-body p-t-0 m-l-10 m-r-10">
                             <table class="table table-bordered showTable productivityTable tableFixed">
@@ -262,7 +337,7 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $counter = 0;
+                                        $counter = 1;
                                     @endphp
                                     @foreach($resourceDetails as $resourceDetail)
                                         @foreach ($resourceDetail->productionOrderDetails->where('status',"ACTUALIZED")->take(5) as $prod)
@@ -272,9 +347,9 @@
                                                 <td>
                                                     <a href="{{ route('production_order.show',$prod->productionOrder->id) }}" class="text-primary">{{$prod->productionOrder->number}}</a>
                                                 </td>
-                                                <td>{{ $prod->performance }} {{$prod->performanceUom->name}}</td>
-                                                <td>{{ $prod->usage }} Hour(s)</td>
-                                                <td>{{ $prod->performance / $prod->usage }} {{$prod->performanceUom->name}}/Hour(s)</td>
+                                                <td>{{ number_format($prod->performance,2) }} {{$prod->performanceUom->name}}</td>
+                                                <td>{{ number_format($prod->usage,2) }} Hour(s)</td>
+                                                <td>{{ number_format($prod->performance / $prod->usage,2) }} {{$prod->performanceUom->name}}/Hour(s)</td>
                                             </tr>
                                         @endforeach
                                     @endforeach
@@ -411,7 +486,7 @@
         $('.productivityTable thead tr').clone(true).appendTo( '.productivityTable thead' );
         $('.productivityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'No' || title == "Returned Quantity"){
+            if(title == 'No' || title == "Performance" || title == "Usage" || title == "Productivity"){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -428,6 +503,62 @@
         });
 
         var productivityTable = $('.productivityTable').DataTable( {
+            orderCellsTop   : true,
+            fixedHeader     : true,
+            paging          : true,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : true,
+        });
+
+        $('.safetyTable thead tr').clone(true).appendTo( '.safetyTable thead' );
+        $('.safetyTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == "Total Accident"){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( safetyTable.column(i).search() !== this.value ) {
+                    safetyTable
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+                }
+            });
+        });
+
+        var safetyTable = $('.safetyTable').DataTable( {
+            orderCellsTop   : true,
+            fixedHeader     : true,
+            paging          : true,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : true,
+        });
+
+        $('.moraleTable thead tr').clone(true).appendTo( '.moraleTable thead' );
+        $('.moraleTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No'){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( moraleTable.column(i).search() !== this.value ) {
+                    moraleTable
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+                }
+            });
+        });
+
+        var moraleTable = $('.moraleTable').DataTable( {
             orderCellsTop   : true,
             fixedHeader     : true,
             paging          : true,

@@ -123,7 +123,7 @@
                             <label for="email" class="col-sm-2 control-label">Email</label>
             
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" name="email" required
+                                <input type="email" class="form-control" id="email" name="email" 
                                 @if($vendor->email != null) value="{{ $vendor->email }}"
                                 @else value="{{ old('email') }}"
                                 @endif>
