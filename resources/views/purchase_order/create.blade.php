@@ -391,9 +391,15 @@
             this.currency = this.currencies[0].name;
             this.selectedCurrency = this.currencies[0].unit;
 
-            this.PRDetail.forEach(prd => {
-                prd.resource.price = parseInt((prd.resource.cost_standard_price+"").replace(/,/g , ''));
-            });
+            if(this.modelPR.type == 1){
+                this.PRDetail.forEach(prd => {
+                    prd.material.price = parseInt((prd.material.cost_standard_price+"").replace(/,/g , ''));
+                });
+            }else{
+                this.PRDetail.forEach(prd => {
+                    prd.resource.price = parseInt((prd.resource.cost_standard_price+"").replace(/,/g , ''));
+                });
+            }
         },
     });
 </script>
