@@ -70,16 +70,16 @@
             <div id="add_wbs">
                 <div class="box-body">
                     <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>100%</b>)</h4>
-                    <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                    <table id="wbs-table" class="table table-bordered tableFixed pxTable" style="border-collapse:collapse">
                         <thead>
                             <tr>
-                                <th style="width: 5%">No</th>
+                                <th style="width: 2px">No</th>
                                 <th style="width: 17%">Name</th>
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
-                                <th style="width: 11%">Deadline</th>
-                                <th style="width: 8%">Weight</th>
-                                <th style="width: 12%"></th>
+                                <th style="width: 40px">Deadline</th>
+                                <th style="width: 25px">Weight</th>
+                                <th style="width: 75px"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,9 +88,9 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
-                                <td>{{ data.planned_deadline }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.planned_deadline)">{{ data.planned_deadline }}</td>
                                 <td>{{ data.weight }} %</td>
-                                <td class="p-l-0 textCenter">
+                                <td class="p-l-0 p-r-0 textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createSubWBS(data)">
                                         ADD WBS
                                     </a>
