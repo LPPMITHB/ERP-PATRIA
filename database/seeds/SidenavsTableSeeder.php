@@ -1028,7 +1028,7 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $indexProductionOrder,
             'route_name' => 'production_order.indexPrO',
         ]);
-
+        
         DB::table('sidenav')->insert([
             'menu_id' => $indexProductionOrder,
             'route_name' => 'production_order.show',
@@ -1037,6 +1037,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $indexProductionOrder,
             'route_name' => 'production_order.editPrO',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexProductionOrder,
+            'route_name' => 'production_order.index',
         ]);
 
         // production order repair
@@ -1101,11 +1106,6 @@ class SidenavsTableSeeder extends Seeder
         $reportProductionOrder = Menu::where('route_name','production_order_repair.selectProjectIndex')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $reportProductionOrder,
-            'route_name' => 'production_order_repair.index',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $reportProductionOrder,
             'route_name' => 'production_order_repair.selectProjectReport',
         ]);
 
@@ -1133,6 +1133,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $indexProductionOrderRepair,
             'route_name' => 'production_order_repair.editPrO',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $reportProductionOrder,
+            'route_name' => 'production_order_repair.index',
         ]);
 
         $yardPlan = Menu::where('route_name','yard_plan.index')->select('id')->first()->id;

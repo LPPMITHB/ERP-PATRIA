@@ -197,7 +197,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').remove();
+        $('div.overlay').hide();
     });
 </script>
 @endpush
