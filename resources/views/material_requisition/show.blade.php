@@ -127,6 +127,13 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                    @if($menu == "building")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('material_requisition.print', ['id'=>$modelMR->id]) }}">DOWNLOAD</a>
+                    @else
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('material_requisition_repair.print', ['id'=>$modelMR->id]) }}">DOWNLOAD</a>
+                    @endif
+                </div>
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
