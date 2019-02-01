@@ -25,12 +25,12 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         // print_r($route);exit();
         if($route == "/purchase_order"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+            $business_unit_id = 1;
         }elseif($route == "/purchase_order_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $business_unit_id = 2;
         }
 
-        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('business_unit_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('business_unit_id',$business_unit_id)->get();
         
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
@@ -38,7 +38,12 @@ class PurchaseOrderController extends Controller
     public function index(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPOs = PurchaseOrder::all();
+        if($route == "/purchase_order"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->get();
+        }elseif($route == "/purchase_order_repair"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->get();
+        }
+        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.index', compact('modelPOs','route'));
     
@@ -47,7 +52,12 @@ class PurchaseOrderController extends Controller
     public function indexApprove(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPOs = PurchaseOrder::whereIn('status',[1,4])->get();
+        if($route == "/purchase_order"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->get();
+        }elseif($route == "/purchase_order_repair"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->get();
+        }
+        $modelPOs = PurchaseOrder::whereIn('status',[1,4])->whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.indexApprove', compact('modelPOs','route'));
     
