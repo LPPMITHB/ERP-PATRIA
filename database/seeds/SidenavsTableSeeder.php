@@ -151,38 +151,6 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project_repair.projectCE',
         ]);
 
-        $confirmActivityRepair = Menu::where('route_name','activity_repair.indexConfirm')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $confirmActivityRepair,
-            'route_name' => 'activity_repair.indexConfirm',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $confirmActivityRepair,
-            'route_name' => 'activity_repair.selectWbs',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $confirmActivityRepair,
-            'route_name' => 'activity_repair.confirmActivity',
-        ]);
-
-        $confirmActivityBuilding = Menu::where('route_name','activity.indexConfirm')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $confirmActivityBuilding,
-            'route_name' => 'activity.indexConfirm',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $confirmActivityBuilding,
-            'route_name' => 'activity.selectWbs',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $confirmActivityBuilding,
-            'route_name' => 'activity.confirmActivity',
-        ]);
-
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $projectConfig,
