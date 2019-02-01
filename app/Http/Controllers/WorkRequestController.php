@@ -371,7 +371,18 @@ class WorkRequestController extends Controller
         
     }
 
-    // function
+    // function// function
+    public function printPdf($id)
+    {
+        $modelWO = WorkOrder::find($id);
+        $words = numberConverter::longform($modelWO->total_price);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words]);
+        $now = date("Y_m_d_H_i_s");
+        return $pdf->download('Work_Request_'.$now.'.pdf');
+    }
+
     public function generateWRNumber(){
         $modelWR = WorkRequest::orderBy('number','desc')->first();
         $yearNow = date('y');

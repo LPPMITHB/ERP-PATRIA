@@ -1127,11 +1127,6 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $indexProductionOrderRepair,
-            'route_name' => 'production_order_repair.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $indexProductionOrderRepair,
             'route_name' => 'production_order_repair.editPrO',
         ]);
 

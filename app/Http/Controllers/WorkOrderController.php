@@ -314,7 +314,7 @@ class WorkOrderController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words]);
         $now = date("Y_m_d_H_i_s");
-        return $pdf->stream('Work_Order_'.$now.'.pdf');
+        return $pdf->download('Work_Order_'.$now.'.pdf');
     }
 
     public function generateWONumber(){
