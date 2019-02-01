@@ -608,6 +608,17 @@ class PurchaseRequisitionController extends Controller
 		return $pr_number;
     }
 
+    public function printPdf($id)
+    {
+        $modelPR = PurchaseRequisition::find($id);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('purchase_requisition.pdf',['modelPR' => $modelPR]);
+        $now = date("Y_m_d_H_i_s");
+
+        return $pdf->stream('Purchase_Requisition_'.$now.'.pdf');
+    }
+
     public function getProjectApi($id){
         $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
 
