@@ -723,7 +723,7 @@ class ProductionOrderController extends Controller
                                 "description" => $prod->material->description,
                                 "id" => $prod->material->id,
                                 "name" => $prod->material->name,
-                                "quantity" => number_format($prod->quantity),
+                                "quantity" => number_format($prod->quantity - $bomD->quantity),
                                 "type" => "Material",
                             ]);
                         }
@@ -765,7 +765,7 @@ class ProductionOrderController extends Controller
                                 "description" => $prod->service->description,
                                 "id" => $prod->service->id,
                                 "name" => $prod->service->name,
-                                "quantity" => number_format($prod->quantity),
+                                "quantity" => number_format($prod->quantity - $bomD->quantity),
                                 "type" => "Service",
                             ]);
                         }
@@ -795,7 +795,7 @@ class ProductionOrderController extends Controller
                 "type" => "Service",
             ]);
         }
-        
+
         //Resources
         $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
         foreach($prod_resources as $prod){
