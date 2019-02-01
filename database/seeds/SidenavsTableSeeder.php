@@ -1028,7 +1028,7 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $indexProductionOrder,
             'route_name' => 'production_order.indexPrO',
         ]);
-
+        
         DB::table('sidenav')->insert([
             'menu_id' => $indexProductionOrder,
             'route_name' => 'production_order.show',

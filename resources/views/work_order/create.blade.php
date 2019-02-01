@@ -225,7 +225,7 @@
         computed : {
             dataOk: function(){
                 let isOk = false;
-                if(this.vendor_id == ""){
+                if(this.vendor_id == "" || this.required_date == ""){
                     isOk = true;
                 }
                 this.WRDetail.forEach(wrd => {
