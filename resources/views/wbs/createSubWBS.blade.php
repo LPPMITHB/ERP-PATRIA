@@ -14,7 +14,7 @@
         <div class="box">
             <div class="box-header">
                 <div class="col-xs-12 col-lg-4 col-md-12">    
-                    <div class="box-body">
+                    <div class="box-header">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Code</div>
@@ -45,50 +45,31 @@
                         </div>
                     </div>
                 </div>
+                <div class="box-header">
+                    <div class="col-xs-12 col-lg-4 col-md-12">    
+                        <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Name</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Description</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
 
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th>WBS Information</th>
-                            <th></th>
-                            <th></th>
-                        </thead>
-                    </table>
-                    <table class="tableFixed width100">
-                        <tbody>
-                            <tr>
-                                <td style="width: 25%">Name</td>
-                                <td style="width: 3%">:</td>
-                                <td><b>{{$wbs->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Description</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Deliverable</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->deliverables}}</b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Deadline</td>
-                                <td>:</td>
-                                <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
-                                        @endphp
-                                    </b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Progress</td>
-                                <td>:</td>
-                                <td><b>{{$wbs->progress}} %</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <div class="col-md-3 col-xs-4 no-padding">Deliverable</div>
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Deadline</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: @php
+                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Progress</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->progress}} %</b></div>
+                    </div>
                 </div>
             </div>
             @verbatim

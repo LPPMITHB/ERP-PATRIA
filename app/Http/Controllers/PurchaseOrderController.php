@@ -101,6 +101,7 @@ class PurchaseOrderController extends Controller
             }
         }
 
+
         DB::beginTransaction();
         try {
             $PO = new PurchaseOrder;
@@ -126,10 +127,10 @@ class PurchaseOrderController extends Controller
                 $POD->quantity = $data->quantity;
                 if($datas->type == 1){
                     $POD->material_id = $data->material_id;
-                    $POD->total_price = $data->material->cost_standard_price * $data->quantity;
+                    $POD->total_price = $data->material->cost_standard_price * $value * $data->quantity;
                 }elseif($datas->type == 2){
                     $POD->resource_id = $data->resource_id;
-                    $POD->total_price = $data->resource->cost_standard_price * $data->quantity;
+                    $POD->total_price = $data->resource->cost_standard_price * $value * $data->quantity;
                 }
                 $POD->purchase_requisition_detail_id = $data->id;
                 $POD->wbs_id = $data->wbs_id;
@@ -172,6 +173,13 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::findOrFail($id);
         $datas = Collection::make();
+        $unit = "";
+        $unitCurrency = Configuration::get('currencies');
+        foreach($unitCurrency as $data){
+            if($data->name == $modelPO->currency){
+                $unit = $data->unit;
+            }
+        }
 
         if($modelPO->purchaseRequisition->type == 1){
             foreach($modelPO->purchaseOrderDetails as $POD){
@@ -253,7 +261,7 @@ class PurchaseOrderController extends Controller
                 }
             }
         }
-        return view('purchase_order.show', compact('modelPO','route','datas'));
+        return view('purchase_order.show', compact('modelPO','unit','route','datas'));
     }
 
     public function showApprove(Request $request, $id)
