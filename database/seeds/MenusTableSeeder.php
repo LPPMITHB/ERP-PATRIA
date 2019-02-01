@@ -60,18 +60,6 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Confirm Activity',
-            'icon' => 'fa-clock-o',
-            'route_name'=> 'activity.indexConfirm',
-            'is_active' => true,
-            'roles' => 'ADMIN,PMP',
-            'menu_id'=> $projectManagementBuilding,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 3,
             'name' => 'WBS & Estimator Configuration',
             'icon' => 'fa-clock-o',
             'route_name'=> 'project.selectProjectConfig',
@@ -948,18 +936,6 @@ class MenusTableSeeder extends Seeder
             'name' => 'Manage Projects',
             'icon' => 'fa-calendar',
             'route_name'=> 'project_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectManagementRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Confirm Activity',
-            'icon' => 'fa-clock-o',
-            'route_name'=> 'activity_repair.indexConfirm',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $projectManagementRepair,
