@@ -407,6 +407,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap_repair.showMaterialEvaluation',
         ]);
 
+        // WR
         $createWr = Menu::where('route_name','work_request.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createWr,
@@ -429,6 +430,7 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $viewWr,
             'route_name' => 'work_request.showApprove',
         ]);
+
         // WR REPAIR
         $createWrRepair = Menu::where('route_name','work_request_repair.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
