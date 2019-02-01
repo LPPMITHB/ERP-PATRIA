@@ -162,7 +162,7 @@
                                 <th width="35%">Resource Name</th>
                             @endif
                             <th width="20%">Quantity</th>
-                            <th width="20%">Price / pcs</th>
+                            <th width="20%">Price / pcs ({{$unit}})</th>
                             <th width="20%">Sub Total Price</th>
                         </tr>
                     </thead>

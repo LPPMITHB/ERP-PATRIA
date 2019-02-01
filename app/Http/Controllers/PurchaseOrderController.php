@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use App\Models\Vendor;
+use App\Models\Configuration;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
 use App\Models\Branch;
@@ -56,6 +57,7 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        $currencies = Configuration::get('currencies');
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
         $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','wbs','resource')->get();
         foreach($modelPRD as $key=>$PRD){
@@ -68,7 +70,7 @@ class PurchaseOrderController extends Controller
         }else{
             $modelProject = [];
         }
-        return view('purchase_order.create', compact('modelPR','modelPRD','modelProject','route'));
+        return view('purchase_order.create', compact('modelPR','modelPRD','modelProject','currencies','route'));
     }
 
     public function selectPRD(Request $request, $id)
@@ -91,12 +93,23 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $po_number = $this->generatePONumber();
+        $value = "";
+        $valueCurrency = Configuration::get('currencies');
+        foreach ($valueCurrency as $data) {
+            if($data->name == $datas->currency){
+                $value = $data->value;
+            }
+        }
+
+
         DB::beginTransaction();
         try {
             $PO = new PurchaseOrder;
             $PO->number = $po_number;
             $PO->purchase_requisition_id = $datas->pr_id;
             $PO->vendor_id = $datas->vendor_id;
+            $PO->currency = $datas->currency;
+            $PO->value = $value;
             $required_date = DateTime::createFromFormat('m/j/Y', $datas->required_date);
             $PO->required_date = $required_date->format('Y-m-d');
             $PO->project_id = $datas->project_id;
@@ -114,10 +127,10 @@ class PurchaseOrderController extends Controller
                 $POD->quantity = $data->quantity;
                 if($datas->type == 1){
                     $POD->material_id = $data->material_id;
-                    $POD->total_price = $data->material->cost_standard_price * $data->quantity;
+                    $POD->total_price = $data->material->cost_standard_price * $value * $data->quantity;
                 }elseif($datas->type == 2){
                     $POD->resource_id = $data->resource_id;
-                    $POD->total_price = $data->resource->cost_standard_price * $data->quantity;
+                    $POD->total_price = $data->resource->cost_standard_price * $value * $data->quantity;
                 }
                 $POD->purchase_requisition_detail_id = $data->id;
                 $POD->wbs_id = $data->wbs_id;
@@ -160,6 +173,13 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::findOrFail($id);
         $datas = Collection::make();
+        $unit = "";
+        $unitCurrency = Configuration::get('currencies');
+        foreach($unitCurrency as $data){
+            if($data->name == $modelPO->currency){
+                $unit = $data->unit;
+            }
+        }
 
         if($modelPO->purchaseRequisition->type == 1){
             foreach($modelPO->purchaseOrderDetails as $POD){
@@ -241,7 +261,7 @@ class PurchaseOrderController extends Controller
                 }
             }
         }
-        return view('purchase_order.show', compact('modelPO','route','datas'));
+        return view('purchase_order.show', compact('modelPO','unit','route','datas'));
     }
 
     public function showApprove(Request $request, $id)
