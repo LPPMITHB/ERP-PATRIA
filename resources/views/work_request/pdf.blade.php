@@ -36,7 +36,19 @@
     <body>
         <script type="text/php">
             if (isset($pdf)) {
-                }
+                if ( isset($pdf) ) { 
+                    $x = 540;
+                    $y = 5;
+                    $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
+                    $font = null;
+                    $size = 9;
+                    $color = array(0,0,0);
+                    $word_space = 0.0;  //  default
+                    $char_space = 0.0;  //  default
+                    $angle = 0.0;   //  default
+                    $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+                } 
+            }
         </script>
         <header>
             <div class="row">
@@ -119,7 +131,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_request_pdf" style="width: 103%; margin-left: -10px">
+                        <table class="table-bordered" id="work_request_pdf" style="width: 100%; margin-left: -10px">
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="4%" class="text-center">No</th>
@@ -153,7 +165,7 @@
                                     
                             </div>
                             <div class="col-xs-12" style="margin-top:3px; width:435px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:80px;">
-                                <div style="font-size: 11px">Note</div>
+                                <div style="font-size: 11px">Description</div>
                                 <div style="font-size: 11px">{{$modelWR->description}}</div>
                             </div>
                             <div style="margin-left: 430px; margin-top: -20px">

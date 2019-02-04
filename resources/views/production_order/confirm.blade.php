@@ -335,7 +335,7 @@
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
                                         <td class="tdEllipsis no-padding ">
-                                            <input @keyup="keymonitor" class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
+                                            <input class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
                                         </td>
                                     </tr>
                                 </tbody>
