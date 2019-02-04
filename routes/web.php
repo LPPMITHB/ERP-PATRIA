@@ -1041,6 +1041,9 @@ Route::name('material_requisition.')->prefix('material_requisition')->group(func
     Route::post('/', 'MaterialRequisitionController@store')->name('store')->middleware('can:create-material-requisition');
 
     Route::delete('/{id}', 'MaterialRequisitionController@destroy')->name('destroy')->middleware('can:destroy-material-requisition');
+
+    Route::get('/print/{id}', 'MaterialRequisitionController@printPdf')->name('print')->middleware('can:show-material-requisition');    
+
 });
 
 //Material Requisition Repair Routes
@@ -1064,6 +1067,9 @@ Route::name('material_requisition_repair.')->prefix('material_requisition_repair
     Route::post('/', 'MaterialRequisitionController@store')->name('store')->middleware('can:create-material-requisition-repair');
 
     Route::delete('/{id}', 'MaterialRequisitionController@destroy')->name('destroy')->middleware('can:destroy-material-requisition-repair');
+
+    Route::get('/print/{id}', 'MaterialRequisitionController@printPdf')->name('print')->middleware('can:show-material-requisition-repair');    
+
 });
 
 // Goods Issue Routes
