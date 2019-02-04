@@ -162,10 +162,10 @@
                     </tbody>
                 </table>
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                    @if($menu == "building")
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
-                    @else
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition_repair.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
+                    @if($route == "/purchase_requisition")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
+                    @elseif($route == "/purchase_requisition_repair")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition_repair.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
                     @endif
                 </div>
             </div> <!-- /.box-body -->
