@@ -602,6 +602,7 @@
     });
 
     var data = {
+        route : @json($route),
         modelRD : @json($modelRD),
         depreciation_methods : @json($depreciation_methods),
         resource_categories : @json($resource_categories),
@@ -751,8 +752,11 @@
             this.editInput.cost_per_hour = parseInt((this.editInput.cost_per_hour+"").replace(/,/g , ''));
             this.editInput.purchasing_price = parseInt((this.editInput.purchasing_price+"").replace(/,/g , ''));
             let data = this.editInput;
-            
-            var url = "{{ route('resource.updateDetail') }}";
+            if(this.route == "/resource"){
+                var url = "{{ route('resource.updateDetail') }}";
+            }else if(this.route == "/resource_repair"){
+                var url = "{{ route('resource_repair.updateDetail') }}";
+            }
             window.axios.put(url,data).then((response) => {
                 window.axios.get('/api/getNewResourceDetail/'+this.data.resource_id).then(({ data }) => {
                     this.data.selectedId = "";
