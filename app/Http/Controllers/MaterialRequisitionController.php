@@ -289,12 +289,12 @@ class MaterialRequisitionController extends Controller
     public function printPdf($id)
     {
         $modelMR = MaterialRequisition::find($id);
-        $words = numberConverter::longform($modelMR->total_price);
+        $branch = Auth::user()->branch;
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('material_requisition.pdf',['modelMR' => $modelMR,'words'=>$words]);
+        $pdf->loadView('material_requisition.pdf',['modelMR' => $modelMR, 'branch' => $branch]);
         $now = date("Y_m_d_H_i_s");
-        return $pdf->stream('Material_Requisition_'.$now.'.pdf');
+        return $pdf->download('Material_Requisition_'.$now.'.pdf');
     }
 
     public function generateMRNumber(){
