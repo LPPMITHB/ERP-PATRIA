@@ -96,7 +96,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_order_pdf" style="width: 103%; margin-left: -10px; margin-top :-55px;">
+                        <table class="table-bordered" id="work_order_pdf" style="width: 100%; margin-left: -10px; margin-top :-55px;">
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="4%" class="text-center">No</th>

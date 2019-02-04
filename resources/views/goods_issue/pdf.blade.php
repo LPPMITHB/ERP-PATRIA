@@ -14,14 +14,14 @@
                  
                 /** Define now the real margins of every page in the PDF **/
                 @page{
-                    margin-top:210px;
-                    margin-bottom : 100px;
+                    margin-top:200px;
+                    margin-bottom : 140px;
                 }
 
                 /** Define the header rules **/
                 header {
                     position: fixed;
-                    top: -180px;
+                    top: -190px;
                     left: 0cm;
                     right: 0cm;
                 }
@@ -31,16 +31,24 @@
                     left: 10px;
                     right: 0cm;
                 }
+                table,td,th{
+                    border: 1px black solid;
+                }
         </style>
     </head>
     <body>
         <script type="text/php">
             if ( isset($pdf) ) { 
-                $font = Font_Metrics::get_font('helvetica', 'normal');
+                $x = 540;
+                $y = 5;
+                $text = "Page {PAGE_NUM} of {PAGE_COUNT}";
+                $font = null;
                 $size = 9;
-                $y = $pdf->get_height() - 24;
-                $x = $pdf->get_width() - 15 - Font_Metrics::get_text_width('1/1', $font, $size);
-                $pdf->page_text($x, $y, '{PAGE_NUM}/{PAGE_COUNT}', $font, $size);
+                $color = array(0,0,0);
+                $word_space = 0.0;  //  default
+                $char_space = 0.0;  //  default
+                $angle = 0.0;   //  default
+                $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
             } 
         </script>
         <header>
@@ -66,31 +74,50 @@
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                 </div>
             </div>
-            <table class="table-bordered" style="width: 103%; margin-left: -10px">
-                <tbody>
-                    <tr>
-                        <td style="font-size: 11px; padding-left:5px;" colspan="2">JOB NO : {{$modelGI->materialRequisition->project != null ? $modelGI->materialRequisition->project->number : "-"}}</td>
-                        <td style="font-size: 11px; padding-left:5px;">MR NO : {{$modelGI->materialRequisition->number}}</td>
-                        <td style="font-size: 11px; padding-left:5px;">DATE : {{$modelGI->created_at}}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 11px; padding-left:5px;" colspan="3">REBILL TO :</td>
-                        <td style="font-size: 11px; padding-left:5px;">PAGE :</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="margin-top: -47px">
+                <div class="p-l-5" style="height: 60px;word-wrap:break-word;width: 400px; border: black 1px solid; border-radius: 5px;margin-top: 34px;">
+                    <div style="font-size: 11px"><b>Description</b></div>
+                    <div style="font-size: 11px">{{$modelGI->description}}</div>
+                </div>
+                <div style="margin-top:-70px; padding-top:5px">
+                    <div style="margin-left: 450px; ">
+                        <div style="font-size: 11px;">Job No</div>
+                        <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
+                            : {{$modelGI->materialRequisition->project != null ? $modelGI->materialRequisition->project->number : "-"}}                 
+                        </div>
+                    </div>
+                    <div style="margin-left: 450px; ">
+                        <div style="font-size: 11px;">MR Number  </div>
+                        <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                            : {{$modelGI->materialRequisition->number}}                    
+                        </div>
+                    </div>
+                    <div style="margin-left: 450px; ">
+                        <div style="font-size: 11px;">Date  </div>
+                        <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                            : {{date("d-m-Y", strtotime($modelGI->created_at))}}              
+                        </div>
+                    </div>
+                    <div style="margin-left: 450px; ">
+                        <div style="font-size: 11px;">Rebill to  </div>
+                        <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                            : 
+                        </div>
+                    </div>
+                </div>
+            </div>
         </header>
         <main style="margin-top: -5px">
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_order_pdf" style="width: 103%; margin-left: -10px">
+                        <table class="table-bordered" id="work_order_pdf" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="4%" class="text-center">NO</th>
                                     <th style="font-size: 11px" width="20%" class="text-center" >ITEM NO</th>
-                                    <th style="font-size: 11px" width="30%" class="text-center">ITEM DESCRIPTION</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center">U/M</th>
+                                    <th style="font-size: 11px" width="40%" class="text-center">ITEM DESCRIPTION</th>
+                                    <th style="font-size: 11px" width="7%" class="text-center">U/M</th>
                                     <th style="font-size: 11px" width="13%" class="text-center">QUANTITY</th>
                                 </tr>
                             </thead>
@@ -109,31 +136,26 @@
                             </tbody>
                         </table>
                         <div id="footer" style="page-break-inside:avoid;margin-left: -10px; ">
-                            <table class="table-bordered" style="width: 103%; margin-left: -10px">
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center" height="20" style="font-size: 11px; padding-left:5px; width: 40px"></td>
-                                        <td class="text-center" height="20" style="font-size: 11px; padding-left:5px;">Requested By</td>
-                                        <td class="text-center" height="20" style="font-size: 11px; padding-left:5px;">Authorised By</td>
-                                        <td class="text-center" height="20" style="font-size: 11px; padding-left:5px;">Issued By</td>
-                                        <td class="text-center" height="20" style="font-size: 11px; padding-left:5px;">Received By</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center" height="20" style="font-size: 11px; padding-left:5px;">Name</td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;">{{$modelGI->materialRequisition->user->name}}</td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;"></td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;"></td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center" height="20" style="font-size: 11px; padding-left:5px;">Sign</td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;"></td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;"></td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;"></td>
-                                        <td height="20" style="font-size: 11px; padding-left:5px;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div>
+                                <div style="margin-left: 0px; margin-top: 3px; font-size: 11px">Requested By</div>
+                                <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-left: 0px;margin-top: -20px;font-size: 11px">Date</div>
+                            </div>
+                            <div style="margin-left: 230px; margin-top:-150px">
+                                <div style="margin-top: 3px; font-size: 11px">Approved By</div>
+                                <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                            </div>
+                            <div style="margin-left: 440px; margin-top:-150px">
+                                <div style="margin-top: 3px; font-size: 11px">Issued By</div>
+                                <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                            </div>
+                            <div style="margin-left: 640px; margin-top:-150px">
+                                <div style="margin-top: 3px; font-size: 11px">Received By</div>
+                                <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                            </div>
                         </div>
                     </div> 
                 </div> <!-- /.col-xs-12 -->
