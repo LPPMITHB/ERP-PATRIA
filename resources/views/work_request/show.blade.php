@@ -143,6 +143,13 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                    @if($route == "/work_request")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_request.print', ['id'=>$modelWR->id]) }}">DOWNLOAD</a>
+                    @elseif($route == "/work_request_repair")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_request_repair.print', ['id'=>$modelWR->id]) }}">DOWNLOAD</a>
+                    @endif
+                </div>
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>

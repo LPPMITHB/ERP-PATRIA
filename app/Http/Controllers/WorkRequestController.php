@@ -159,11 +159,12 @@ class WorkRequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();  
         $modelWR = WorkRequest::findOrFail($id);
 
-        return view('work_request.show', compact('modelWR'));
+        return view('work_request.show', compact('modelWR', 'route'));
     }
 
     public function showApprove($id, Request $request)
@@ -374,11 +375,11 @@ class WorkRequestController extends Controller
     // function// function
     public function printPdf($id)
     {
-        $modelWO = WorkOrder::find($id);
-        $words = numberConverter::longform($modelWO->total_price);
+        $branch = Auth::user()->branch; 
+        $modelWR = WorkRequest::find($id);
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words]);
+        $pdf->loadView('work_request.pdf',['modelWR' => $modelWR,'branch'=>$branch]);
         $now = date("Y_m_d_H_i_s");
         return $pdf->download('Work_Request_'.$now.'.pdf');
     }

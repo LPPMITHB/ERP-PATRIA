@@ -47,13 +47,13 @@
                         </div>
                         <div class="row" style="margin-left: -5px;">
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
-                                Kav.20 Dapur 12 Sei Lekop
+                                {{$branch->address}}
                             </div>
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
-                                Sagulung, Batam
+                                {{$branch->city}}
                             </div>
                             <div class="col-sm-12" style="font-size: 11px;line-height: 15px">
-                                T. 0778-7367111 F.0778-7367112
+                                T.{{$branch->phone_number}} F.{{$branch->fax}}
                             </div>
                         </div>
                         <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Work Order</b></h2>

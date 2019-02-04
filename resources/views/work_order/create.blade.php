@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content-header')
-@if($menu == "building")
+@if($route == "/work_order")
     @breadcrumb(
         [
             'title' => 'Create Work Order » Select Material',
@@ -13,7 +13,7 @@
         ]
     )
     @endbreadcrumb
-@else
+@elseif($route == "/work_order_repair")
     @breadcrumb(
         [
             'title' => 'Create Work Order » Select Material',
@@ -33,9 +33,9 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            @if($menu == "building")
+            @if($route == "/work_order")
                 <form id="create-po" class="form-horizontal" method="POST" action="{{ route('work_order.store') }}">
-            @else
+            @elseif($route == "/work_order_repair")
                 <form id="create-po" class="form-horizontal" method="POST" action="{{ route('work_order_repair.store') }}">
             @endif        
             @csrf
