@@ -1089,6 +1089,8 @@ Route::name('goods_issue.')->prefix('goods_issue')->group(function() {
     Route::post('/', 'GoodsIssueController@store')->name('store')->middleware('can:create-goods-issue');
 
     Route::delete('/{id}', 'GoodsIssueController@destroy')->name('destroy')->middleware('can:destroy-goods-issue');
+    
+    Route::get('/print/{id}', 'GoodsIssueController@printPdf')->name('print')->middleware('can:show-goods-issue');    
 });
 
 // Goods Issue Repair Routes
@@ -1114,6 +1116,8 @@ Route::name('goods_issue_repair.')->prefix('goods_issue_repair')->group(function
     Route::post('/', 'GoodsIssueController@store')->name('store')->middleware('can:create-goods-issue-repair');
 
     Route::delete('/{id}', 'GoodsIssueController@destroy')->name('destroy')->middleware('can:destroy-goods-issue-repair');
+    
+    Route::get('/print/{id}', 'GoodsIssueController@printPdf')->name('print')->middleware('can:show-goods-issue-repair');    
 });
 
 

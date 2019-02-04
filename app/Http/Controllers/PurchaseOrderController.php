@@ -39,9 +39,9 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_order"){
-            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->get();
+            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
         }elseif($route == "/purchase_order_repair"){
-            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->get();
+            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
         }
         $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->get();
 
@@ -53,9 +53,9 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_order"){
-            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->get();
+            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
         }elseif($route == "/purchase_order_repair"){
-            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->get();
+            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
         }
         $modelPOs = PurchaseOrder::whereIn('status',[1,4])->whereIn('purchase_requisition_id',$modelPRs)->get();
 
