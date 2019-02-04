@@ -18,7 +18,7 @@ class CreateTrxPurchaseOrderTable extends Migration
             $table->string('number')->unique();
             $table->unsignedInteger('purchase_requisition_id')->nullable();
             $table->unsignedInteger('vendor_id');
-            $table->date('required_date');
+            $table->date('delivery_date');
             $table->string('currency');
             $table->unsignedInteger('value');
             $table->unsignedInteger('project_id')->nullable();

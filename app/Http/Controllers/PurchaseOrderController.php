@@ -120,8 +120,8 @@ class PurchaseOrderController extends Controller
             $PO->vendor_id = $datas->vendor_id;
             $PO->currency = $datas->currency;
             $PO->value = $value;
-            $required_date = DateTime::createFromFormat('m/j/Y', $datas->required_date);
-            $PO->required_date = $required_date->format('Y-m-d');
+            $delivery_date = DateTime::createFromFormat('m/j/Y', $datas->delivery_date);
+            $PO->delivery_date = $delivery_date->format('Y-m-d');
             $PO->project_id = $datas->project_id;
             $PO->description = $datas->description;
             $PO->status = 1;

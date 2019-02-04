@@ -92,8 +92,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <label for="required_date">Required Date</label>
-                                            <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Required Date">  
+                                            <label for="delivery_date">Delivery Date</label>
+                                            <input v-model="delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">  
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +225,7 @@
         selectedCurrency : "",
         currency : "",
         vendor_id : "",
-        required_date : "",
+        delivery_date : "",
         description : "",
         submittedForm : {},
     }
@@ -237,16 +237,16 @@
             $('.datepicker').datepicker({
                 autoclose : true,
             });
-            $("#required_date").datepicker().on(
+            $("#delivery_date").datepicker().on(
                 "changeDate", () => {
-                    this.required_date = $('#required_date').val();
+                    this.delivery_date = $('#delivery_date').val();
                 }
             );
         },
         computed : {
             dataOk: function(){
                 let isOk = false;
-                if(this.vendor_id == "" || this.required_date == "" || this.currency == ""){
+                if(this.vendor_id == "" || this.delivery_date == "" || this.currency == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -288,7 +288,7 @@
                 this.submittedForm.type = this.modelPR.type;
                 this.submittedForm.vendor_id = this.vendor_id;
                 this.submittedForm.currency = this.currency;
-                this.submittedForm.required_date = this.required_date;
+                this.submittedForm.delivery_date = this.delivery_date;
                 this.submittedForm.description = this.description;
                 this.submittedForm.pr_id = this.modelPR.id;
                 this.submittedForm.project_id = this.modelPR.project_id;

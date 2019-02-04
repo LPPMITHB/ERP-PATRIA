@@ -137,7 +137,7 @@
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $PRD->material->name }}</td>
                                             <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ number_format($PRD->quantity) }}</td>
                                             <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{$PRD->material->uom->unit}}</td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center"></td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{date("d-m-Y", strtotime($PRD->required_date))}} </td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord"></td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord"></td>
                                         </tr>
