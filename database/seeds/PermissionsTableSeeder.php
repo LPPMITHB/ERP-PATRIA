@@ -1928,6 +1928,14 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Edit Production Order',
+            'menu_id' => $viewProductionOrderRepair,
+            'middleware' => 'edit-production-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         $releaseProductionOrderRepair = Menu::where('name','Release Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Release Production Order Repair',

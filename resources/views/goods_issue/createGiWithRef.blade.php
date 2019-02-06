@@ -95,12 +95,12 @@
                                                                         <th colspan="2">MR Details</th>
                                                                     </thead>
                                                                     <tbody>
-                                                                        <tr>
+                                                                        <tr class="text-left">
                                                                             <td>Quantity</td>
                                                                             <td>:</td>
                                                                             <td>&ensp;<b>{{MRD.quantity - MRD.already_issued}}</b></td>
                                                                         </tr>
-                                                                        <tr>
+                                                                        <tr class="text-left">
                                                                             <td>Issued</td>
                                                                             <td>:</td>
                                                                             <td>&ensp;<b>{{total[index]}}</b></td>
@@ -119,7 +119,7 @@
                                                                     <tbody>
                                                                         <tr v-for="(data,index) in MRD.modelGI" >
                                                                             <td>{{ index + 1 }}</td>
-                                                                            <td class="tdEllipsis">{{data.storage_location.code}} - {{data.storage_location.name}} (Available : {{data.quantity}})</td>
+                                                                            <td class="tdEllipsis text-left">{{data.storage_location.code}} - {{data.storage_location.name}} (Available : {{data.quantity}})</td>
                                                                             <td class="p-l-0 no-padding">
                                                                                 <input class="form-control width100" v-model="MRD.modelGI[index].issued" placeholder="Please Input Quantity">
                                                                             </td>

@@ -14,6 +14,7 @@ use App\Models\Stock;
 use Illuminate\Support\Collection;
 use Auth;
 use DB;
+use App\Providers\numberConverter;
 
 class MaterialRequisitionController extends Controller
 {
@@ -128,12 +129,12 @@ class MaterialRequisitionController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id,Request $request)
     {
         $modelMR = MaterialRequisition::findOrFail($id);
-       
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
 
-        return view('material_requisition.show', compact('modelMR'));
+        return view('material_requisition.show', compact('modelMR','menu'));
     }
 
     public function showApprove($id, Request $request)
@@ -283,6 +284,17 @@ class MaterialRequisitionController extends Controller
             $modelStock->reserved = $modelStock->reserved + $difference;
             $modelStock->save();
         }
+    }
+
+    public function printPdf($id)
+    {
+        $modelMR = MaterialRequisition::find($id);
+        $branch = Auth::user()->branch;
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('material_requisition.pdf',['modelMR' => $modelMR, 'branch' => $branch]);
+        $now = date("Y_m_d_H_i_s");
+        return $pdf->download('Material_Requisition_'.$now.'.pdf');
     }
 
     public function generateMRNumber(){

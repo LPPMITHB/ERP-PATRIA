@@ -68,15 +68,15 @@
                                 T.{{$branch->phone_number}} F.{{$branch->fax}}
                             </div>
                         </div>
-                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Work Order</b></h2>
+                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Work Request</b></h2>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                     <div>
                         <div>
                             <div style="font-size: 11px;">Vendor   :</div>
                             <div class="p-l-5" style="word-wrap:break-word;width: 340px; border: black 1px solid; border-radius: 5px; margin-left: 65px; margin-top: -50px;">
-                                <b style="font-size: 12px;">{{$modelWO->vendor->name}}</b>
-                                <p style="font-size: 11px; margin-top:10px">{{$modelWO->vendor->address}} <br>T.{{$modelWO->vendor->phone_number_1}}</p>
+                                <b style="font-size: 12px;">-</b>
+                                <p style="font-size: 11px; margin-top:10px"></p>
                             </div>
                         </div>
                     </div>
@@ -84,19 +84,19 @@
                         <div style="margin-left: 450px;">
                             <div style="font-size: 11px;">WO Number  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                {{$modelWO->number}}                    
+                                -               
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">WO Date  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{date("d-m-Y", strtotime($modelWO->created_at))}}                    
+                                -                    
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">PR Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelWO->workRequest->number}}                    
+                                {{$modelWR->number}}                    
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
@@ -120,14 +120,9 @@
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Requestor  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelWO->user->name}}                  
+                                {{$modelWR->user->name}}                  
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <div style="line-height:11px;margin-left: -755px; margin-top: 241px; word-wrap:break-word;width: 720px;">
-                        <i style="font-size: 9px;"><b>Please deliver all the items mentioned to the above address according to agreed delivery date and according to the terms of payment as indicated. Please quote the PO number in all succeeding communications (DO and Invoice) for reference</b></i>
                     </div>
                 </div>
             </div>
@@ -136,7 +131,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_order_pdf" style="width: 100%; margin-left: -10px">
+                        <table class="table-bordered" id="work_request_pdf" style="width: 100%; margin-left: -10px">
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="4%" class="text-center">No</th>
@@ -149,16 +144,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($modelWO->workOrderDetails as $WOD)
-                                    @if($WOD->quantity > 0)
+                                @foreach($modelWR->workRequestDetails as $WRD)
+                                    @if($WRD->quantity > 0)
                                         <tr>
-                                            <td style="font-size: 11px" width="4%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $WOD->material->code }} - {{ $WOD->material->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $WOD->workRequestDetail->description }}</td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{ number_format($WOD->quantity) }}</td>
-                                            <td style="font-size: 11px" width="13%" class="tdBreakWord text-right">{{ number_format($WOD->total_price / $WOD->quantity,2) }}</td>
-                                            <td style="font-size: 11px" width="6%" class="tdBreakWord text-center">{{ number_format($WOD->discount,2) }}</td>
-                                            <td style="font-size: 11px" width="17%" class="tdBreakWord text-right">{{ number_format($WOD->total_price - ($WOD->total_price * ($WOD->discount/100)),2) }}</td>
+                                            <td style="font-size: 11px" class="text-center" width="4%">{{ $loop->iteration }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $WRD->description }}</td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{ number_format($WRD->quantity) }}</td>
+                                            <td style="font-size: 11px" width="13%" class="tdBreakWord text-center">-</td>
+                                            <td style="font-size: 11px" width="6%" class="tdBreakWord text-center">-</td>
+                                            <td style="font-size: 11px" width="17%" class="tdBreakWord text-center">-</td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -167,35 +162,35 @@
                         <div id="footer" style="page-break-inside:avoid;margin-left: -10px; ">
                             <div style="font-size: 11px; margin-top:5px;">Say :</div>
                             <div style="height: 20px; font-size: 9px; width:420px; padding-left:5px; margin-left:30px; margin-top:-16px; border: black 1px solid; border-radius: 5px;">
-                                    {{$words}} IDR
+                                    
                             </div>
                             <div class="col-xs-12" style="margin-top:3px; width:435px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:80px;">
-                                <div style="font-size: 11px"><b>Description</b></div>
-                                <div style="font-size: 11px">{{$modelWO->description}}</div>
+                                <div style="font-size: 11px">Description</div>
+                                <div style="font-size: 11px">{{$modelWR->description}}</div>
                             </div>
                             <div style="margin-left: 430px; margin-top: -20px">
                                 <div style="width:265px; margin-left:30px; margin-top:-5px; border: black 1px solid; border-radius: 5px;">
                                     <div style="margin-left: 48px; font-size: 12px">Sub Total</div>
                                     <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($modelWO->workOrderDetails->sum('total_price'),2)}}</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
                                     <div style="margin-left: 52px; font-size: 12px">Discount</div>
                                     <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($modelWO->workOrderDetails->sum('total_price') - $modelWO->total_price,2)}}</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
                                 </div>
                                 <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
                                     <div style="margin-left: 79px; font-size: 12px">Tax</div>
                                     <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">0</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
                                 </div>
                                 <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius:05px;">
                                     <div style="margin-left: 6px; font-size: 12px">Estimated Freight</div>
                                     <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">0</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
                                 </div>
                                 <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
                                     <div style="margin-left: 36px; font-size: 12px"><b>Total Order</b></div>
                                     <div style="margin-left: 103px; margin-top:-20px; font-size: 12px"><b>:</b></div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right"><b>IDR {{number_format($modelWO->total_price,2)}}</b></div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right"><b>-</b></div>
                                 </div>
                             </div>
                             <div>
