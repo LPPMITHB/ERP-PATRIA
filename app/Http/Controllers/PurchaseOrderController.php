@@ -23,15 +23,14 @@ class PurchaseOrderController extends Controller
     public function selectPR(Request $request)
     {
         $route = $request->route()->getPrefix();
-        // print_r($route);exit();
         if($route == "/purchase_order"){
             $business_unit_id = 1;
         }elseif($route == "/purchase_order_repair"){
             $business_unit_id = 2;
         }
 
-        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('business_unit_id',$business_unit_id)->get();
-        
+        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',$business_unit_id)->get();
+
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
     
