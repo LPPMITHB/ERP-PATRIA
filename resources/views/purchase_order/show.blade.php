@@ -79,18 +79,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-xs-4">
-                            Total Price
-                        </div>
-                        <div class="col-md-8 col-xs-7">
-                            : <b> {{ number_format($modelPO->total_price) }} </b>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 col-xs-4">
                             Delivery Date
                         </div>
                         <div class="col-md-8 col-xs-7">
-                            : <b> {{ $modelPO->delivery_date }} </b>
+                            : <b>{{date("d-m-Y", strtotime($modelPO->delivery_date))}}</b>
                         </div>
                     </div>
                 </div>
@@ -161,9 +153,10 @@
                             @elseif($modelPO->purchaseRequisition->type == 2)
                                 <th width="35%">Resource Name</th>
                             @endif
-                            <th width="20%">Quantity</th>
+                            <th width="10%">Quantity</th>
+                            <th width="10%">Disc. (%)</th>
                             <th width="20%">Price / pcs ({{$unit}})</th>
-                            <th width="20%">Sub Total Price</th>
+                            <th width="20%">Sub Total Price ({{$unit}})</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -177,12 +170,40 @@
                                         <td>{{ $POD['resource_code'] }} - {{ $POD['resource_name'] }}</td>
                                     @endif
                                     <td>{{ number_format($POD['quantity']) }}</td>
+                                    <td>{{ number_format($POD['discount']) }}</td>
                                     <td>{{ number_format($POD['price']) }}</td>
                                     <td>{{ number_format($POD['sub_total']) }}</td>
                                 </tr>
                             @endif
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td class="text-right p-r-5"><b>Subtotal :</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($datas->sum('sub_total'),2)}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td class="text-right p-r-5"><b>Discount :</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($total_discount,2)}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td class="text-right p-r-5"><b>Tax ({{$modelPO->tax}}%) :</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($tax,2)}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td class="text-right p-r-5"><b>Estimated Freight :</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($modelPO->estimated_freight),2}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td class="text-right p-r-5"><b>Total Order :</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format(($datas->sum('sub_total') - $total_discount) + $tax + $modelPO->estimated_freight),2}}</b></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div> <!-- /.box-body -->
             <div class="overlay">

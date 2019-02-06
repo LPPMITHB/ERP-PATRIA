@@ -42,6 +42,15 @@
             
                                     <div class="col-xs-5 no-padding">Customer</div>
                                     <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(modelProject.customer.name)"><b>: {{modelProject.customer.name}}</b></div>
+                                    
+                                    <div class="col-sm-3 no-padding p-t-15">
+                                        <label for="">Currency</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                        <selectize v-model="currency" :settings="currencySettings">
+                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                        </selectize>
+                                    </div>
                                 </div>
                                 <div class="col-xs-12 col-md-4" v-else>
                                     <div class="col-xs-5 no-padding">WO Number</div>
@@ -58,6 +67,15 @@
             
                                     <div class="col-xs-5 no-padding">Customer</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+
+                                    <div class="col-sm-3 no-padding p-t-15">
+                                        <label for="">Currency</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                        <selectize v-model="currency" :settings="currencySettings">
+                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                        </selectize>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
