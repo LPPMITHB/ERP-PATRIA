@@ -413,10 +413,18 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        $value = "";
+        $valueCurrency = Configuration::get('currencies');
+        foreach ($valueCurrency as $data) {
+            if($data->name == $datas->modelPO->currency){
+                $value = $data->value;
+            }
+        }
+
         DB::beginTransaction();
         try {
             $PO = PurchaseOrder::findOrFail($datas->modelPO->id);
-            
+            dd($datas);
             $status = 0;
             $total_price = 0;
             foreach($datas->PODetail as $data){
@@ -434,6 +442,17 @@ class PurchaseOrderController extends Controller
             }
             $PO->vendor_id = $datas->modelPO->vendor_id;
             $PO->description = $datas->modelPO->description;
+            $PO->currency = $datas->modelPO->currency;
+            $PO->tax = $datas->modelPO->tax;
+            $PO->estimated_freight = $datas->modelPO->estimated_freight;
+            $PO->delivery_terms = $datas->modelPO->delivery_terms;
+            $PO->payment_terms = $datas->modelPO->payment_terms;
+            $delivery_date = DateTime::createFromFormat('m/j/Y', $datas->modelPO->delivery_date);
+            $PO->delivery_date = $delivery_date->format('Y-m-d');
+            
+            if($datas->modelPO->currency != $PO->currency){
+                $PO->value = $value;
+            }
             $PO->total_price = $total_price;
             if($PO->status == 3){
                 $PO->status = 4;
