@@ -1,5 +1,4 @@
 <html>
-
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,29 +6,32 @@
     
         <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css" media="all">
         <style>
-             /** 
+                /** 
                     Set the margins of the page to 0, so the footer and the header
                     can be of the full height and width !
                  **/
                  
                 /** Define now the real margins of every page in the PDF **/
                 @page{
-                    margin-top:310px;
-                    margin-bottom : 240px;
+                    margin-top:230px;
+                    margin-bottom : 120px;
                 }
 
                 /** Define the header rules **/
                 header {
                     position: fixed;
-                    top: -268px;
+                    top: -195px;
                     left: 0cm;
                     right: 0cm;
                 }
                 #footer{
                     position: fixed;
-                    bottom: 0px;
+                    bottom: 10px;
                     left: 10px;
                     right: 0cm;
+                }
+                table,td,th{
+                    border: 1px black solid;
                 }
         </style>
     </head>
@@ -59,9 +61,7 @@
                         <h2 class="pull-right" style="margin-top: -70px; margin-right:10px;"><b>Purchase Requisition</b></h2>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
-                    <div></div>
-                    <div></div>
-                    <div style="margin-top:-120px; padding-top:-18px">
+                    <div style="margin-top:-120px; padding-top:5px">
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">Request Date  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
@@ -86,11 +86,32 @@
                                 : {{($modelPR->project) ? $modelPR->project->number : '-'}}                    
                             </div>
                         </div>
+                        <div style="margin-left: 450px; ">
+                            <div style="font-size: 11px;">Status  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                @if($modelPR->status == 0)
+                                    @php($status = "CLOSED")
+                                @elseif($modelPR->status == 1)
+                                    @php($status = "OPEN")
+                                @elseif($modelPR->status == 2)
+                                    @php($status = "APPROVED")
+                                @elseif($modelPR->status == 3)
+                                    @php($status = "NEED REVISION")
+                                @elseif($modelPR->status == 4)
+                                    @php($status = "REVISED")
+                                @elseif($modelPR->status == 5)
+                                    @php($status = "REJECTED")
+                                @elseif($modelPR->status == 6)
+                                    @php($status = "CONSOLIDATED")
+                                @endif
+                                : {{$status}}                    
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </header>
-        <main style="margin-top: -90px">
+        <main id="main">
             <div class="row">
                 <div class="col-xs-12">
                     <div>
@@ -116,7 +137,7 @@
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $PRD->material->name }}</td>
                                             <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ number_format($PRD->quantity) }}</td>
                                             <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{$PRD->material->uom->unit}}</td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center"></td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{date("d-m-Y", strtotime($PRD->required_date))}} </td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord"></td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord"></td>
                                         </tr>

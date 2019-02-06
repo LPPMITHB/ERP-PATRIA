@@ -318,25 +318,38 @@ class GoodsIssueController extends Controller
         }
     }
     
-    public function show($id)
+    public function show(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();    
         $modelGI = GoodsIssue::findOrFail($id);
         $modelGID = $modelGI->GoodsIssueDetails;
         $approve = FALSE;
 
-        return view('goods_issue.show', compact('modelGI','modelGID','approve'));
+        return view('goods_issue.show', compact('modelGI','modelGID','approve','route'));
     }
 
-    public function showApprove($id)
+    public function showApprove(Request $request,$id)
     {
+        $route = $request->route()->getPrefix();    
         $modelGI = GoodsIssue::where('id', $id)->first();
         $modelGID = $modelGI->GoodsIssueDetails;
         $approve = TRUE;
 
-        return view('goods_issue.show', compact('modelGI','modelGID','approve'));
+        return view('goods_issue.show', compact('modelGI','modelGID','approve','route'));
     }
     
     // function
+    public function printPdf($id)
+    { 
+        $branch = Auth::user()->branch; 
+        $modelGI = GoodsIssue::find($id);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('goods_issue.pdf',['modelGI' => $modelGI,'branch'=>$branch]);
+        $now = date("Y_m_d_H_i_s");
+        return $pdf->download('Goods_Issue_'.$now.'.pdf');
+    }
+
     public function updateMR($mr_id,$issued){
         $modelMRD = MaterialRequisitionDetail::findOrFail($mr_id);
         if($modelMRD){

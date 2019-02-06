@@ -11,6 +11,7 @@ use App\Models\Material;
 use App\Models\Resource;
 use App\Models\WBS;
 use App\Models\Project;
+use DateTime;
 use Auth;
 use DB;
 
@@ -94,9 +95,6 @@ class PurchaseRequisitionController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $pr_number = $this->generatePRNumber();
-        $current_date = today();
-        $valid_to = $current_date->addDays(7);
-        $valid_to = $valid_to->toDateString();
 
         DB::beginTransaction();
         try {
@@ -104,7 +102,6 @@ class PurchaseRequisitionController extends Controller
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
-                $PR->valid_date = $valid_to;
                 if($datas->project_id != null){
                     $PR->project_id = $datas->project_id;
                 }
@@ -124,7 +121,9 @@ class PurchaseRequisitionController extends Controller
                     if(count($modelPRD)>0){
                         $status = 0;
                         foreach($modelPRD as $PurchaseRD){
-                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation){
+                            $required_date = DateTime::createFromFormat('m/j/Y', $data->required_date);
+                            $required_date = $required_date->format('Y-m-d');
+                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date){
                                 $PurchaseRD->quantity +=$data->quantityInt;
                                 $PurchaseRD->update();
 
@@ -137,6 +136,8 @@ class PurchaseRequisitionController extends Controller
                             $PRD->quantity = $data->quantityInt;
                             $PRD->material_id = $data->material_id;
                             $PRD->alocation = $data->alocation;
+                            $required_date = DateTime::createFromFormat('m/j/Y', $data->required_date);
+                            $PRD->required_date = $required_date->format('Y-m-d');
                             if($data->wbs_id != null){
                                 $PRD->wbs_id = $data->wbs_id;
                             }
@@ -148,6 +149,8 @@ class PurchaseRequisitionController extends Controller
                         $PRD->quantity = $data->quantityInt;
                         $PRD->material_id = $data->material_id;
                         $PRD->alocation = $data->alocation;
+                        $required_date = DateTime::createFromFormat('m/j/Y', $data->required_date);
+                        $PRD->required_date = $required_date->format('Y-m-d');
                         if($data->wbs_id != null){
                             $PRD->wbs_id = $data->wbs_id;
                         }
@@ -158,7 +161,6 @@ class PurchaseRequisitionController extends Controller
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
-                $PR->valid_date = $valid_to;
                 if($datas->project_id != null){
                     $PR->project_id = $datas->project_id;
                 }
@@ -178,7 +180,9 @@ class PurchaseRequisitionController extends Controller
                     if(count($modelPRD)>0){
                         $status = 0;
                         foreach($modelPRD as $PurchaseRD){
-                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->wbs_id == $data->wbs_id){
+                            $required_date = DateTime::createFromFormat('m/j/Y', $data->required_date);
+                            $required_date = $required_date->format('Y-m-d');
+                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->required_date == $required_date){
                                 $PurchaseRD->quantity +=$data->quantityInt;
                                 $PurchaseRD->update();
 
@@ -190,6 +194,8 @@ class PurchaseRequisitionController extends Controller
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->quantity = $data->quantityInt;
                             $PRD->resource_id = $data->resource_id;
+                            $required_date = DateTime::createFromFormat('m/j/Y', $data->required_date);
+                            $PRD->required_date = $required_date->format('Y-m-d');
                             if($data->wbs_id != null){
                                 $PRD->wbs_id = $data->wbs_id;
                             }
@@ -200,6 +206,8 @@ class PurchaseRequisitionController extends Controller
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = $data->quantityInt;
                         $PRD->resource_id = $data->resource_id;
+                        $required_date = DateTime::createFromFormat('m/j/Y', $data->required_date);
+                        $PRD->required_date = $required_date->format('Y-m-d');
                         if($data->wbs_id != null){
                             $PRD->wbs_id = $data->wbs_id;
                         }

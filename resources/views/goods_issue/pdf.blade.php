@@ -14,14 +14,14 @@
                  
                 /** Define now the real margins of every page in the PDF **/
                 @page{
-                    margin-top:210px;
+                    margin-top:200px;
                     margin-bottom : 140px;
                 }
 
                 /** Define the header rules **/
                 header {
                     position: fixed;
-                    top: -200px;
+                    top: -190px;
                     left: 0cm;
                     right: 0cm;
                 }
@@ -69,7 +69,7 @@
                                 T.{{$branch->phone_number}} F.{{$branch->fax}}
                             </div>
                         </div>
-                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Material Requisition</b></h2>
+                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Goods Issue</b></h2>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                 </div>
@@ -77,52 +77,31 @@
             <div style="margin-top: -47px">
                 <div class="p-l-5" style="height: 60px;word-wrap:break-word;width: 400px; border: black 1px solid; border-radius: 5px;margin-top: 34px;">
                     <div style="font-size: 11px"><b>Description</b></div>
-                    <div style="font-size: 11px">{{$modelMR->description}}</div>
+                    <div style="font-size: 11px">{{$modelGI->description}}</div>
                 </div>
                 <div style="margin-top:-70px; padding-top:5px">
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">Job No</div>
                         <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
-                            : {{$modelMR->project != null ? $modelMR->project->number : "-"}}                 
+                            : {{$modelGI->materialRequisition->project != null ? $modelGI->materialRequisition->project->number : "-"}}                 
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">MR Number  </div>
                         <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                            : {{$modelMR->number}}                    
+                            : {{$modelGI->materialRequisition->number}}                    
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">Date  </div>
                         <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                            : {{date("d-m-Y", strtotime($modelMR->created_at))}}              
+                            : {{date("d-m-Y", strtotime($modelGI->created_at))}}              
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">Rebill to  </div>
                         <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
                             : 
-                        </div>
-                    </div>
-                    <div style="margin-left: 450px; ">
-                        <div style="font-size: 11px;">Status  </div>
-                        <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                            @if($modelMR->status == 0)
-                                @php($status = "ISSUED")
-                            @elseif($modelMR->status == 1)
-                                @php($status = "OPEN")
-                            @elseif($modelMR->status == 2)
-                                @php($status = "APPROVED")
-                            @elseif($modelMR->status == 3)
-                                @php($status = "NEED REVISION")
-                            @elseif($modelMR->status == 4)
-                                @php($status = "REVISED")
-                            @elseif($modelMR->status == 5)
-                                @php($status = "REJECTED")
-                            @elseif($modelMR->status == 6)
-                                @php($status = "CONSOLIDATED")
-                            @endif
-                            : {{$status}}                    
                         </div>
                     </div>
                 </div>
@@ -143,14 +122,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($modelMR->materialRequisitionDetails as $MRD)
-                                    @if($MRD->quantity > 0)
+                                @foreach($modelGI->goodsIssueDetails as $GID)
+                                    @if($GID->quantity > 0)
                                         <tr>
                                             <td style="font-size: 11px" width="4%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $MRD->material->code }} - {{ $MRD->material->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $MRD->material->description }}</td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord">{{ $MRD->material->uom->unit     }}</td>
-                                            <td style="font-size: 11px" width="13%" class="tdBreakWord">{{ number_format($MRD->quantity) }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $GID->material->code }} - {{ $GID->material->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $GID->material->description }}</td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord">{{ $GID->material->uom->unit     }}</td>
+                                            <td style="font-size: 11px" width="13%" class="tdBreakWord">{{ number_format($GID->quantity) }}</td>
                                         </tr>
                                     @endif
                                 @endforeach
