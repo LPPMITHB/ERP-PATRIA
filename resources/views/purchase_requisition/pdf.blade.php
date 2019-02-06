@@ -138,8 +138,8 @@
                                             <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ number_format($PRD->quantity) }}</td>
                                             <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{$PRD->material->uom->unit}}</td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{date("d-m-Y", strtotime($PRD->required_date))}} </td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord"></td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord"></td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord">{{$PRD->user->role->name}}</td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord">{{($PRD->project_id != null) ? $PRD->project->number : ""}}</td>
                                         </tr>
                                     @endif
                                 @endforeach

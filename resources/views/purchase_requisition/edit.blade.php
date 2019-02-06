@@ -70,7 +70,13 @@
                                     <label for="">PR Description</label>
                                 </div>
                                 <div class="col-sm-12 p-l-0">
-                                    <textarea class="form-control" rows="3" v-model="modelPR.description"></textarea>
+                                    <textarea class="form-control" rows="2" v-model="modelPR.description"></textarea>
+                                </div>
+                                <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
+                                    <label for="">Required Date</label>
+                                </div>
+                                <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
+                                    <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
                                 </div>
                             </div>
                         </div>
@@ -80,11 +86,12 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th v-if="modelPR.type == 1" style="width: 30%">Material Name</th>
-                                            <th v-else style="width: 30%">Resource Name</th>
+                                            <th v-if="modelPR.type == 1" style="width: 25%">Material Name</th>
+                                            <th v-else style="width: 25%">Resource Name</th>
                                             <th style="width: 15%">Quantity</th>
-                                            <th style="width: 25%">WBS Name</th>
-                                            <th style="width: 15%">Alocation</th>
+                                            <th style="width: 22%">WBS Name</th>
+                                            <th style="width: 10%">Alocation</th>
+                                            <th style="width: 13%">Required Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -98,6 +105,7 @@
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.alocation }}</td>
                                             <td v-else class="tdEllipsis">-</td>
+                                            <td class="tdEllipsis">{{ material.required_date }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a v-if="modelPR.type == 1" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -140,6 +148,9 @@
                                                     <option value="Consumption">Consumption</option>
                                                     <option value="Stock">Stock</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="no-padding p-l-0 textLeft">
+                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
                                             <td class="no-padding textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -189,6 +200,10 @@
                                                     <option value="Consumption">Consumption</option>
                                                     <option value="Stock">Stock</option>
                                                 </selectize>
+                                            </div>
+                                             <div class="col-sm-12"> 
+                                                <label for="type" class="control-label">Required Date</label>
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
                                             </div>
                                         </div>
                                     </div>
@@ -323,7 +338,8 @@
             quantityInt : 0,
             wbs_id : "",
             wbs_name : "",
-            alocation : "Stock"
+            alocation : "Stock",
+            required_date : ""
         },
         editInput : {
             old_material_id : "",
@@ -334,17 +350,40 @@
             quantityInt : 0,
             wbs_id : "",
             wbs_name : "",
-            alocation : ""
+            alocation : "",
+            required_date : ""
         },
         material_id:[],
         material_id_modal:[],
         materials_modal :[],
+        required_date : "",
         submittedForm : {}
     }
 
     var vm = new Vue({
         el : '#pr',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format: 'dd-mm-yyyy',
+            });
+            $("#required_date").datepicker().on(
+                "changeDate", () => {
+                    this.required_date = $('#required_date').val();
+                }
+            );
+            $("#input_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.dataInput.required_date = $('#input_required_date').val();
+                }
+            );
+            $("#edit_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.editInput.required_date = $('#edit_required_date').val();
+                }
+            );
+        },
         computed : {
             resourceOk: function(){
                 let isOk = false;
@@ -448,11 +487,14 @@
                     material.quantity = this.editInput.quantity;
                     material.wbs_id = this.editInput.wbs_id;
                     material.alocation = this.editInput.alocation;
+                    material.required_date = this.editInput.required_date;
                 }else{
                     material.quantityInt = this.editInput.quantityInt;
                     material.quantity = this.editInput.quantity;
                     material.alocation = this.editInput.alocation;
+                    material.required_date = this.editInput.required_date;
                 }
+                console.log(material)
                 $('div.overlay').hide();
             },
             openEditModal(data,index){
@@ -467,6 +509,7 @@
                     this.editInput.wbs_name = data.wbs_name;
                     this.editInput.alocation = data.alocation;
                     this.editInput.index = index;
+                    this.editInput.required_date = data.required_date;
 
                     document.getElementById('material').value = data.material_code+" - "+data.material_name;
                     var material_id = JSON.stringify(this.material_id);
@@ -511,6 +554,7 @@
                         this.dataInput.wbs_id = "";
                         this.dataInput.wbs_name = "";
                         this.dataInput.alocation = "Stock";
+                        this.dataInput.required_date = "";
 
                         this.newIndex = Object.keys(this.dataMaterial).length+1;    
 
@@ -541,6 +585,7 @@
                         this.dataInput.wbs_id = "";
                         this.dataInput.wbs_name = "";
                         this.dataInput.quantity = "";
+                        this.dataInput.required_date = "";
 
                         this.newIndex = Object.keys(this.dataMaterial).length+1;    
 
@@ -606,6 +651,13 @@
                         });
                     })
                 }
+            },
+            'required_date': function(newValue){
+                this.dataMaterial.forEach(data =>{
+                    if(newValue != ''){
+                        data.required_date = newValue;
+                    }
+                })
             }
         },
         created: function() {
@@ -613,6 +665,8 @@
 
             var data = this.dataMaterial;
             data.forEach(prd => {
+                var date = prd.required_date;
+                prd.required_date = date.split("-").reverse().join("-");
                 prd.quantity = (prd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 if(prd.material_id != null){
                     prd.material_name = prd.material.name;
@@ -623,6 +677,8 @@
                 }
                 prd.prd_id = prd.id;
                 if(this.selectedProject){
+                    this.selectedProject.planned_start_date = this.selectedProject.planned_start_date.split("-").reverse().join("-");
+                    this.selectedProject.planned_end_date = this.selectedProject.planned_end_date.split("-").reverse().join("-");
                     if(prd.wbs == null){
 
                     }else{

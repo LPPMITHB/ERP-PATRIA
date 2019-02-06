@@ -9,11 +9,11 @@
 @if($route == "/purchase_requisition")
     @breadcrumb(
         [
-            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
+            'title' => 'Approve Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Purchase Requisition' => route('purchase_requisition.indexApprove'),
-                'View Purchase Requisition' => '',
+                'Approve Purchase Requisition' => '',
             ]
         ]
     )
@@ -21,11 +21,11 @@
 @elseif($route == "/purchase_requisition_repair")
     @breadcrumb(
         [
-            'title' => isset($modelPR->project) ? 'View Purchase Requisition - '.$type.' » '.$modelPR->project->number : 'View Purchase Requisition - '.$type,
+            'title' => 'Approve Purchase Requisition - '.$type,
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Purchase Requisition' => route('purchase_requisition_repair.indexApprove'),
-                'View Purchase Requisition' => '',
+                'Approve Purchase Requisition' => '',
             ]
         ]
     )
@@ -74,8 +74,6 @@
                             : <b> {{ isset($modelPR->project) ? $modelPR->project->ship->type : '-' }} </b>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
                             Customer Name
@@ -83,49 +81,54 @@
                         <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPR->project) ?$modelPR->project->customer->name : ''}}">
                             : <b> {{ isset($modelPR->project) ? $modelPR->project->customer->name : '-'}} </b>
                         </div>
-                        <div class="col-xs-5 col-md-5">
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
+                    <div class="row">
+                        
+                        <div class="col-xs-4 col-md-4">
                             Status
                         </div>
                         @if($modelPR->status == 1)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-xs-8 col-md-8">
                                 : <b>OPEN</b>
                             </div>
                         @elseif($modelPR->status == 2)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-xs-8 col-md-8">
                                 : <b>APPROVED</b>
                             </div>
                         @elseif($modelPR->status == 3)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-xs-8 col-md-8">
                                 : <b>NEEDS REVISION</b>
                             </div>
                         @elseif($modelPR->status == 4)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-xs-8 col-md-8">
                                 : <b>REVISED</b>
                             </div>
                         @elseif($modelPR->status == 5)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-xs-8 col-md-8">
                                 : <b>REJECTED</b>
                             </div>
                         @elseif($modelPR->status == 0 || $modelPR->status == 7)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-xs-8 col-md-8">
                                 : <b>ORDERED</b>
                             </div>
                         @elseif($modelPR->status == 6)
-                            <div class="col-xs-7 col-md-7">
+                            <div class="col-xs-8 col-md-8">
                                 : <b>CONSOLIDATED</b>
                             </div>
                         @endif
-                        <div class="col-xs-5 col-md-5">
+                        <div class="col-xs-4 col-md-4">
                             Created By
                         </div>
-                        <div class="col-xs-7 col-md-7">
+                        <div class="col-xs-8 col-md-8">
                             : <b> {{ $modelPR->user->name }} </b>
                         </div>
-                        <div class="col-xs-5 col-md-5">
+                        <div class="col-xs-4 col-md-4">
                             Created At
                         </div>
-                        <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelPR->created_at }} </b>
+                        <div class="col-xs-8 col-md-8">
+                            : <b> {{ $modelPR->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
                     </div>
                 </div>
@@ -135,10 +138,16 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
-                            <th width="15%">Quantity</th>
-                            <th width="30%">Work Name</th>
-                            <th width="15%">Alocation</th>
+                            @if($modelPR->type == 1)
+                                <th width="30%">Material Name</th>
+                            @else
+                                <th width="30%">Resource Name</th>
+                            @endif
+                            <th width="10%">Qty</th>
+                            <th width="10%">Unit</th>
+                            <th width="30%">WBS Name</th>
+                            <th width="10%">Alocation</th>
+                            <th width="15%">Required Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -146,13 +155,19 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 @if($modelPR->type == 1)
-                                    <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
+                                    <td class="tdEllipsis">{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
                                 @else
-                                    <td>{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
+                                    <td class="tdEllipsis">{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
                                 @endif
                                 <td>{{ number_format($PRD->quantity) }}</td>
-                                <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
+                                @if($modelPR->type == 1)
+                                    <td>{{ $PRD->material->uom->unit}}</td>
+                                @else
+                                    <td>Pcs</td>
+                                @endif
+                                <td class="tdEllipsis">{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
                                 <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
+                                <td>{{ isset($PRD->required_date) ? date('d-m-Y', strtotime($PRD->required_date)) : '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -185,7 +200,7 @@
         $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
         $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
+            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Qty" || title == "Unit"){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );

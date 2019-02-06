@@ -68,7 +68,7 @@
                                     <label for="">Required Date</label>
                                 </div>
                                 <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
-                                    <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Required Date">
+                                    <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
                                 </div>
                             </div>
                         </div>
@@ -356,6 +356,7 @@
         mounted(){
             $('.datepicker').datepicker({
                 autoclose : true,
+                format: 'dd-mm-yyyy',
             });
             $("#required_date").datepicker().on(
                 "changeDate", () => {
@@ -453,7 +454,6 @@
                 this.submittedForm.resource = this.resource;
                 this.submittedForm.description = this.description;
                 this.submittedForm.project_id = this.project_id;     
-                this.submittedForm.required_date = this.required_date;     
                 this.submittedForm.materials = this.dataMaterial;    
 
                 let struturesElem = document.createElement('input');
