@@ -61,6 +61,15 @@
 
                                     <div class="col-xs-5 no-padding">End Date</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
+
+                                    <div class="col-sm-3 no-padding p-t-15">
+                                        <label for="">Currency</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                        <selectize :disabled="currencyOk" v-model="currency" :settings="currencySettings">
+                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                        </selectize>
+                                    </div>
                                 </div>
                                     <div class="col-xs-12 col-md-4" v-else>
                                     <div class="col-xs-5 no-padding">PR Number</div>
@@ -80,20 +89,49 @@
 
                                     <div class="col-xs-5 no-padding">End Date</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+                                    
+                                    <div class="col-sm-3 no-padding p-t-15">
+                                        <label for="">Currency</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                        <selectize :disable="currencyOk" v-model="currency" :settings="currencySettings">
+                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                        </selectize>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
-                                        <div class="col-sm-12">
-                                            <label for="type">Vendor Name</label>
+                                        <div class="col-sm-5 p-t-7">
+                                            <label for="">Vendor Name</label>
+                                        </div>
+                                        <div class="col-sm-7 p-l-0">
                                             <selectize v-model="vendor_id" :settings="vendorSettings">
                                                 <option v-for="(vendor, index) in modelVendor" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                             </selectize>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-5 p-t-10">
                                             <label for="delivery_date">Delivery Date</label>
-                                            <input v-model="delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">  
+                                        </div>
+                                        <div class="col-sm-7 p-t-5 p-l-0">
+                                            <input v-model="delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="delivery_terms">Delivery Terms</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input class="form-control" v-model="delivery_terms" placeholder="Delivery Terms">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="payment_terms">Payment Terms</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input class="form-control" v-model="payment_terms" placeholder="Payment Terms">
                                         </div>
                                     </div>
                                 </div>
@@ -106,14 +144,22 @@
                                             <textarea class="form-control" rows="2" v-model="description"></textarea>
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
-                                        <div class="col-sm-3 p-t-20">
-                                            <label for="">Currency :</label>
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="estimated_freight">Estimated Freight ({{selectedCurrency}})</label>
                                         </div>
-                                        <div class="col-sm-9 p-t-15 p-l-0">
-                                            <selectize v-model="currency" :settings="currencySettings">
-                                                <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
-                                            </selectize>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input class="form-control" v-model="estimated_freight" placeholder="Estimated Freight">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="">Tax (%)</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input class="form-control" v-model="tax" placeholder="Tax">
                                         </div>
                                     </div>
                                 </div>
@@ -131,8 +177,9 @@
                                                 <th style="width: 7%">Qty</th>
                                                 <th style="width: 8%">Order</th>
                                                 <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
-                                                <th style="width: 25%">WBS Name</th>
-                                                <th style="width: 15%">Alocation</th>
+                                                <th style="width: 7%">Disc. (%)</th>
+                                                <th style="width: 23%">WBS Name</th>
+                                                <th style="width: 10%">Alocation</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -147,6 +194,9 @@
                                                 <td class="tdEllipsis no-padding">
                                                     <input v-if="modelPR.type == 1" class="form-control width100" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
                                                     <input v-else class="form-control width100" v-model="PRD.resource.cost_standard_price" placeholder="Please Input Total Price">
+                                                </td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control" v-model="PRD.discount" placeholder="Discount">
                                                 </td>
                                                 <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
@@ -181,7 +231,7 @@
         $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
         $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'No' || title == "Quantity" || title == "Order" || title == "Price / pcs (Rp.)"){
+            if(title == 'No' || title == "Qty" || title == "Order" || title == "Price / pcs (Rp)" || title == "Disc. (%)"){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -218,12 +268,15 @@
         vendorSettings: {
             placeholder: 'Please Select Vendor'
         },
-
         currencySettings: {
             placeholder: 'Please Select Currency'
         },
         selectedCurrency : "",
         currency : "",
+        tax : "",
+        estimated_freight : "",
+        delivery_terms : "",
+        payment_terms : "",
         vendor_id : "",
         delivery_date : "",
         description : "",
@@ -251,6 +304,15 @@
                 }
                 return isOk;
             },
+            currencyOk : function(){
+                let isOk = false;
+                this.PRDetail.forEach(PRD => {
+                    if(PRD.material.cost_standard_price != PRD.old_price){
+                        isOk = true;
+                    }
+                });
+                return isOk;
+            }
         },
         methods : {
             getVendor(){
@@ -283,6 +345,7 @@
                         PRD.resource.cost_standard_price = PRD.resource.cost_standard_price.replace(/,/g , '');      
                     });
                 }
+                this.estimated_freight = this.estimated_freight.replace(/,/g , '');      
 
                 this.submittedForm.PRD = data;
                 this.submittedForm.type = this.modelPR.type;
@@ -293,6 +356,10 @@
                 this.submittedForm.pr_id = this.modelPR.id;
                 this.submittedForm.project_id = this.modelPR.project_id;
                 this.submittedForm.currency = this.currency;
+                this.submittedForm.tax = this.tax;
+                this.submittedForm.estimated_freight = this.estimated_freight;
+                this.submittedForm.delivery_terms = this.delivery_terms;
+                this.submittedForm.payment_terms = this.payment_terms;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -320,6 +387,26 @@
                             }else{
                                 PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }    
+                            var discount = parseInt((PRD.discount+"").replace(/,/g, ''));
+                            if(discount > 100){
+                                iziToast.warning({
+                                    title: 'Discount cannot exceed 100% !',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                PRD.discount = 100;
+                            }
+                            var decimal = (PRD.discount+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    PRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    PRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                PRD.discount = (PRD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
                         });
                     }else{
                         data.forEach(PRD => {
@@ -334,11 +421,66 @@
                                 }
                             }else{
                                 PRD.resource.cost_standard_price = (PRD.resource.cost_standard_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                            var discount = parseInt((PRD.discount+"").replace(/,/g, ''));
+                            if(discount > 100){
+                                iziToast.warning({
+                                    title: 'Discount cannot exceed 100% !',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                PRD.discount = 100;
+                            }
+                            var decimal = (PRD.discount+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    PRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    PRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                PRD.discount = (PRD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             } 
                         });
                     }
                 },
                 deep: true
+            },
+            'tax' : function (newValue){
+                var tax = parseInt((newValue+"").replace(/,/g, ''));
+                if(newValue > 100){
+                    iziToast.warning({
+                        title: 'Tax cannot exceed 100% !',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    this.tax = 100;
+                }
+                var decimal = (newValue+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.tax = (this.tax+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'estimated_freight': function (newValue){
+                var decimal = (newValue+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.estimated_freight = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.estimated_freight = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.estimated_freight = (this.estimated_freight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
             },
             'currency':function (newValue) {
                 if(newValue == ''){
