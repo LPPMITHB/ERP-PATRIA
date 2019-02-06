@@ -23,7 +23,6 @@ class PurchaseOrderController extends Controller
     public function selectPR(Request $request)
     {
         $route = $request->route()->getPrefix();
-        // print_r($route);exit();
         if($route == "/purchase_order"){
             $business_unit_id = 1;
         }elseif($route == "/purchase_order_repair"){
