@@ -9,6 +9,7 @@ use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
 use App\Models\Project;
 use App\Models\GoodsIssueDetail;
+use App\Models\PurchaseRequisition;
 use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
 use App\Models\StorageLocation;
@@ -88,7 +89,9 @@ class GoodsIssueController extends Controller
         }elseif($menu == "repair"){
             $business_unit = 2;
         }
-        $modelGRs = GoodsReceipt::where('business_unit_id', $business_unit)->where('status',1)->get();
+        $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
+        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->pluck('id')->toArray();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id',$modelPOs)->where('business_unit_id', $business_unit)->where('status',1)->get();
 
         return view('goods_return.selectGR', compact('modelGRs','menu'));
     }
@@ -101,7 +104,8 @@ class GoodsIssueController extends Controller
         }else{
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
-        $modelPOs = PurchaseOrder::whereIn('project_id', $modelProject)->where('status',2)->get();
+        $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
+        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->whereIn('project_id', $modelProject)->where('status',2)->get();
 
         return view('goods_return.selectPO', compact('modelPOs','menu'));
     }

@@ -16,6 +16,7 @@ use App\Models\StorageLocation;
 use App\Models\Material;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
+use App\Models\PurchaseRequisition;
 use App\Models\Branch;
 use App\Models\Stock;
 use App\Models\Uom;
@@ -141,9 +142,11 @@ class GoodsReceiptController extends Controller
 
     public function index(Request $request){
         $route = $request->route()->getPrefix();
-        $modelGRs = GoodsReceipt::all();
+        $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
+        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->pluck('id')->toArray();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id',$modelPOs)->where('status',1)->get(); 
 
-        return view ('goods_receipt.index', compact('modelGRs','route'));
+        return view ('goods_receipt.index', compact('modelPRs','route','modelPOs','modelGRs'));
     }
 
     public function store(Request $request)
