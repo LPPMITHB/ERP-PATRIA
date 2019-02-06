@@ -962,6 +962,9 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
     Route::get('/', 'GoodsReceiptController@index')->name('index')->middleware('can:list-goods-receipt');
 
     Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt');
+
+    Route::get('/print/{id}', 'GoodsReceiptController@printPdf')->name('print')->middleware('can:show-goods-receipt');    
+
 });
 
 // Goods Receipt Repair Routes
@@ -983,6 +986,9 @@ Route::name('goods_receipt_repair.')->prefix('goods_receipt_repair')->group(func
     Route::get('/', 'GoodsReceiptController@index')->name('index')->middleware('can:list-goods-receipt-repair');
 
     Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt-repair');
+
+    Route::get('/print/{id}', 'GoodsReceiptController@printPdf')->name('print')->middleware('can:show-goods-receipt-repair');    
+
 });
 
 //Goods Return 

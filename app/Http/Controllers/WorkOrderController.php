@@ -98,7 +98,7 @@ class WorkOrderController extends Controller
         return view('work_order.selectWRD', compact('modelWR','modelWRD','menu'));
     }
 
-
+    
     public function store(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
@@ -139,7 +139,6 @@ class WorkOrderController extends Controller
                 }
                 $total_price += $WOD->total_price -($WOD->total_price * ($WOD->discount/100));
             }
-
             $WO->total_price = $total_price;
             $WO->save(); 
             $this->checkStatusWr($datas->wr_id,$status);

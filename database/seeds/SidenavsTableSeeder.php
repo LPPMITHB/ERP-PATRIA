@@ -592,6 +592,11 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $selectPO,
             'route_name' => 'goods_receipt.createGrWithRef',
         ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPO,
+            'route_name' => 'goods_receipt.createGrFromWo',
+        ]);
         
         $viewGr = Menu::where('route_name','goods_receipt.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
@@ -615,6 +620,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $selectPORepair,
             'route_name' => 'goods_receipt_repair.createGrWithRef',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPORepair,
+            'route_name' => 'goods_receipt_repair.createGrFromWo',
         ]);
         
         $viewGrRepair = Menu::where('route_name','goods_receipt_repair.index')->select('id')->first()->id;
