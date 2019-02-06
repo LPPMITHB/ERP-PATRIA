@@ -26,13 +26,20 @@
                 @csrf
                     @verbatim
                     <div id="pod">
-                                <div class="row p-l-0">
+                            <div class="row p-l-0">
                                 <div class="col-sm-4">
                                     <div class="col-sm-12 p-l-0">
                                         GR Description
                                     </div>
                                     <div class="col-sm-12 p-l-0">
                                         <textarea class="form-control" rows="3" v-model="description" style="width:326px"></textarea>                                                    
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-lg-3 col-md-12">
+                                    <div class="col-md-3 col-xs-3 no-padding">Ship Date:</div>
+
+                                    <div class="col-sm-12 col-lg-8 p-t-0 p-l-0">
+                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker width100" name="ship_date" id="ship_date" placeholder="Ship Date">
                                     </div>
                                 </div>
                             </div>
@@ -195,12 +202,23 @@
         material_id:[],
         material_id_modal:[],
         materials_modal :[],
-        submittedForm : {}
+        submittedForm : {},
+        ship_date: "",
     }
 
     var vm = new Vue({
         el : '#pod',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+            });
+            $("#ship_date").datepicker().on(
+                "changeDate", () => {
+                    this.ship_date = $('#ship_date').val();
+                }
+            );
+        },
         computed : {
 
             allOk: function(){
@@ -279,6 +297,7 @@
                 });
                 this.submittedForm.materials = this.dataMaterial;
                 this.submittedForm.description = this.description;
+                this.submittedForm.ship_date = this.ship_date;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');

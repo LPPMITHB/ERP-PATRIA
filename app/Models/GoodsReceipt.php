@@ -13,6 +13,11 @@ class GoodsReceipt extends Model
         return $this->belongsTo('App\Models\PurchaseOrder');
     }
 
+    public function workOrder()
+    {
+        return $this->belongsTo('App\Models\WorkOrder');
+    }
+
     public function goodsReceiptDetails()
     {
         return $this->hasMany('App\Models\GoodsReceiptDetail');
@@ -26,5 +31,10 @@ class GoodsReceipt extends Model
     public function vendor()
     {
         return $this->belongsTo('App\Models\Vendor');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
     }
 }

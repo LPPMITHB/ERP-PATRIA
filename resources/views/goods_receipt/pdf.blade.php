@@ -15,13 +15,13 @@
                 /** Define now the real margins of every page in the PDF **/
                 @page{
                     margin-top:310px;
-                    margin-bottom : 240px;
+                    margin-bottom : 130px;
                 }
 
                 /** Define the header rules **/
                 header {
                     position: fixed;
-                    top: -268px;
+                    top: -248px;
                     left: 0cm;
                     right: 0cm;
                 }
@@ -36,7 +36,7 @@
     <body>
         <script type="text/php">
             if (isset($pdf)) {
-                }
+            }
         </script>
         <header>
             <div class="row">
@@ -47,93 +47,121 @@
                         </div>
                         <div class="row" style="margin-left: -5px;">
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
-                                Kav.20 Dapur 12 Sei Lekop
+                                {{$branch->address}}
                             </div>
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
-                                Sagulung, Batam
+                                {{$branch->city}}
                             </div>
                             <div class="col-sm-12" style="font-size: 11px;line-height: 15px">
-                                T. 0778-7367111 F.0778-7367112
+                                T.{{$branch->phone_number}} F.{{$branch->fax}}
                             </div>
                         </div>
-                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Work Order</b></h2>
+                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Goods Receipt</b></h2>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                     <div>
-                        <div class="box-body">
+                        <div>
                             <div style="font-size: 11px;">Vendor   :</div>
                             <div class="p-l-5" style="word-wrap:break-word;width: 340px; border: black 1px solid; border-radius: 5px; margin-left: 65px; margin-top: -50px;">
-                                <b style="font-size: 12px;">{{$modelGR->vendor->name}}</b>
-                                <p style="font-size: 11px; margin-top:10px">{{$modelGR->vendor->address}} <br>T.{{$modelGR->vendor->phone_number_1}}</p>
+                                @if($modelGR->purchase_order_id != "")
+                                <b style="font-size: 12px;">{{$modelGR->purchaseOrder->vendor->name}}</b>
+                                <p style="font-size: 11px; margin-top:10px">{{$modelGR->purchaseOrder->vendor->address}} <br>
+                                    @if(isset($modelGR->purchaseOrder->vendor->phone_number_1))
+                                    T.{{$modelGR->purchaseOrder->vendor->phone_number_1}}
+                                    @else
+                                    @endif
+                                </p>
+                                @elseif($modelGR->work_order_id != "")
+                                <b style="font-size: 12px;">{{$modelGR->workOrder->vendor->name}}</b>
+                                <p style="font-size: 11px; margin-top:10px">{{$modelGR->workOrder->vendor->address}} <br>
+                                    @if(isset($modelGR->workOrder->vendor->phone_number_1))
+                                    T.{{$modelGR->workOrder->vendor->phone_number_1}}
+                                    @else
+                                    @endif
+                                </p>
+                                @elseif($modelGR->purchase_order_id == "" && $modelGR->work_order_id == "")
+                                -
+                                @endif
+                            </div>
+                            <div style="font-size: 11px;">Project  :</div>
+                            <div class="p-l-5" style="word-wrap:break-word;width: 340px; margin-left: 65px; margin-top: -50px;">
+                                @if($modelGR->purchase_order_id != "")
+                                <b style="font-size: 12px;">{{$modelGR->purchaseOrder->project->name}}</b>
+                                @elseif($modelGR->work_order_id != "")
+                                <b style="font-size: 12px;">{{$modelGR->workOrder->project->name}}</b>
+                                @elseif($modelGR->purchase_order_id == "" && $modelGR->work_order_id == "")
+                                -
+                                @endif
+                            </div>
+                            <div style="font-size: 11px;">Dept  :</div>
+                            <div class="p-l-5" style="word-wrap:break-word;width: 340px; margin-left: 65px; margin-top: -50px;">
+                                <b style="font-size: 12px;">{{$modelGR->user->role->name}}</b>
                             </div>
                         </div>
                     </div>
-                    <div style="margin-top:-155px">
-                        <div class="box-body" style="margin-left: 450px; margin-top:-20px">
+                    <div style="margin-top:-100px; padding-top: -10px">
+                        <div style="margin-left: 450px;">
                             <div style="font-size: 11px;">GR Number  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                {{$modelWO->number}}                    
+                                {{$modelGR->number}}                    
                             </div>
                         </div>
-                        <div class="box-body" style="margin-left: 450px; margin-top:-18px">
+                        <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">GR Date  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
                                 {{date("d-m-Y", strtotime($modelGR->created_at))}}                    
                             </div>
                         </div>
-                        <div class="box-body" style="margin-left: 450px; margin-top:-20px">
+                        <div  style="margin-left: 450px;">
+                            <div style="font-size: 11px;">FOB </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
+                                -                    
+                            </div>
+                        </div>
+                        <div  style="margin-left: 450px;">
+                            @if($modelGR->purchase_order_id != "")
                             <div style="font-size: 11px;">PO Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
                                 {{$modelGR->purchaseOrder->number}}                    
                             </div>
-                        </div>
-                        <div class="box-body" style="margin-left: 450px; margin-top:-20px">
-                            <div style="font-size: 11px;">Payment Terms  </div>
+                            @elseif($modelGR->work_order_id != "")
+                            <div style="font-size: 11px;">WO Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                -                    
+                                {{$modelGR->workOrder->number}}                    
                             </div>
-                        </div>
-                        <div class="box-body" style="margin-left: 450px; margin-top:-20px">
-                            <div style="font-size: 11px;">Delivery Date  </div>
+                            @else
+                            <div style="font-size: 11px;">PO Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                -                    
+                                -                   
                             </div>
+                            @endif
                         </div>
-                        <div class="box-body" style="margin-left: 450px; margin-top:-20px">
-                            <div style="font-size: 11px;">Job  </div>
-                            <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                -                 
-                            </div>
-                        </div>
-                        <div class="box-body" style="margin-left: 450px; margin-top:-20px">
-                            <div style="font-size: 11px;">Requestor  </div>
+                        <div  style="margin-left: 450px;">
+                            <div style="font-size: 11px;">Ship Date  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelWO->user->name}}                  
+                                @if($modelGR->ship_date != "")
+                                {{$modelGR->ship_date}}
+                                @else 
+                                -
+                                @endif
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <div style="line-height:11px;margin-left: -755px; margin-top: 241px; word-wrap:break-word;width: 720px;">
-                        <i style="font-size: 9px;"><b>Please deliver all the items mentioned to the above address according to agreed delivery date and according to the terms of payment as indicated. Please quote the PO number in all succeeding communications (DO and Invoice) for reference</b></i>
                     </div>
                 </div>
             </div>
         </header>
-        <main style="margin-top: -15px">
+        <main>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="box-body" >
-                        <table class="table-bordered" id="work_order_pdf" style="width: 103%; margin-left: -10px">
+                    <div>
+                        <table class="table-bordered" id="goods_receipt_pdf" style="width: 100%; margin-left: -10px">
                             <thead>
                                 <tr>
-                                    <th style="font-size: 11px" width="4%" class="text-center">No</th>
-                                    <th style="font-size: 11px" width="20%" class="text-center" >Material Name</th>
-                                    <th style="font-size: 11px" width="30%" class="text-center">Description</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center">Qty</th>
-                                    <th style="font-size: 11px" width="13%" class="text-center">Price / pcs</th>
-                                    <th style="font-size: 11px" width="6%" class="text-center">Disc (%)</th>
-                                    <th style="font-size: 11px" width="17%" class="text-center">Amount</th>
+                                    <th style="font-size: 11px" width="4%" class="text-center">NO</th>
+                                    <th style="font-size: 11px" width="22%" class="text-center" >ITEM NO</th>
+                                    <th style="font-size: 11px" width="33%" class="text-center">ITEM DESCRIPTION</th>
+                                    <th style="font-size: 11px" width="8%" class="text-center">QUANTITY</th>
+                                    <th style="font-size: 11px" width="8%" class="text-center">U/M</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -141,64 +169,39 @@
                                     @if($GRD->quantity > 0)
                                         <tr>
                                             <td style="font-size: 11px" width="4%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $GRD->material->code }} - {{ $GRD->material->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $GRD->goodsReceiptDetail->description }}</td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{ number_format($GRD->quantity) }}</td>
-                                            <td style="font-size: 11px" width="13%" class="tdBreakWord text-right">{{ number_format($GRD->total_price / $GRD->quantity,2) }}</td>
-                                            <td style="font-size: 11px" width="6%" class="tdBreakWord text-center">{{ number_format($GRD->discount,2) }}</td>
-                                            <td style="font-size: 11px" width="17%" class="tdBreakWord text-right">{{ number_format($GRD->total_price - ($GRD->total_price * ($GRD->discount/100)),2) }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="22%" class="tdBreakWord">{{ $GRD->material->code }} - {{ $GRD->material->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="30%" class="tdBreakWord">{{ $GRD->material->description }}</td>
+                                            <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ number_format($GRD->quantity) }}</td>
+                                            <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ $GRD->material->uom->unit }}</td>
                                         </tr>
                                     @endif
                                 @endforeach
                             </tbody>
                         </table>
-                        <div id="footer" style="page-break-inside:avoid;margin-left: -10px; ">
-                            <div style="font-size: 11px; margin-top:5px;">Say :</div>
-                            <div style="height: 20px; font-size: 9px; width:420px; padding-left:5px; margin-left:30px; margin-top:-16px; border: black 1px solid; border-radius: 5px;">
-                                    {{$words}} IDR
-                            </div>
-                            <div class="col-xs-12" style="margin-top:3px; width:435px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:80px;">
-                                <div style="font-size: 11px">Note</div>
-                                <div style="font-size: 11px">{{$modelWO->description}}</div>
-                            </div>
-                            <div style="margin-left: 430px; margin-top: -20px">
-                                <div style="width:265px; margin-left:30px; margin-top:-5px; border: black 1px solid; border-radius: 5px;">
-                                    <div style="margin-left: 48px; font-size: 12px">Sub Total</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($modelWO->workOrderDetails->sum('total_price'),2)}}</div>
-                                    <div style="margin-left: 52px; font-size: 12px">Discount</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($modelWO->workOrderDetails->sum('total_price') - $modelWO->total_price,2)}}</div>
-                                </div>
-                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
-                                    <div style="margin-left: 79px; font-size: 12px">Tax</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">0</div>
-                                </div>
-                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius:05px;">
-                                    <div style="margin-left: 6px; font-size: 12px">Estimated Freight</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">0</div>
-                                </div>
-                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
-                                    <div style="margin-left: 36px; font-size: 12px"><b>Total Order</b></div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px"><b>:</b></div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right"><b>IDR {{number_format($modelWO->total_price,2)}}</b></div>
-                                </div>
+                        <div id="footer" style="page-break-inside:avoid;margin-left: -10px;">
+                            <div class="col-xs-12" style="margin-top:3px; width:230px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:80px;">
+                                <div style="font-size: 11px"><b>Description</b></div>
+                                <div style="font-size: 11px">{{$modelGR->description}}</div>
                             </div>
                             <div>
-                                <div style="margin-top: 10px; font-size: 12px">Prepared by</div>
-                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-left: 290px; margin-top: 3px; font-size: 11px">Prepared By</div>
+                                <hr style="margin-left: 290px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-left: 290px;margin-top: -20px;font-size: 11px">Date</div>
                             </div>
-                            <div style="margin-left: 250px; margin-top:-150px">
-                                <div style="margin-top: 10px; font-size: 12px">Aproved by</div>
-                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                            </div>
-                            <div style="margin-left: 500px; margin-top:-150px">
-                                <div style="margin-top: 10px; font-size: 12px">Supplier Confirmation</div>
-                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px; font-size: 12px;">Chop and Sign</div>
-                                <div style=" font-size: 12px">Date</div>
+                            <div style="margin-left: 410px; margin-top:-150px">
+                                <div style="margin-top: 3px; font-size: 11px">Aproved By</div>
+                                <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                            </div>  
+                            <div style="margin-top:-60px; width:200px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:40px; margin-left:510px;">
+                                <div style="font-size: 11px"><b>Total Item</b></div>
+                                <div class="p-l-5" style="font-size: 11px;margin-left: 170px; margin-top:-20px">
+                                    {{$modelGR->goodsReceiptDetails->count('material')}}                    
+                                </div>
+                                <div style="font-size: 11px"><b>Total Quantity</b></div>
+                                <div class="p-l-5" style="font-size: 11px;margin-left: 170px; margin-top:-20px">
+                                    {{$modelGR->goodsReceiptDetails->sum('quantity')}}                    
+                                </div>
                             </div>
                         </div>
                     </div> 

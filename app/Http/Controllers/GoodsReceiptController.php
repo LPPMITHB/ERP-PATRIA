@@ -23,6 +23,7 @@ use App\Models\Uom;
 use App\Models\Project;
 use App\Models\StorageLocationDetail;
 use App\Models\Configuration;
+use DateTime;
 use DB;
 use Auth;
 
@@ -168,6 +169,10 @@ class GoodsReceiptController extends Controller
             $GR->purchase_order_id = $datas->purchase_order_id;
             $GR->type = 1;
             $GR->description = $datas->description;
+            if($datas->ship_date != ""){
+                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $GR->ship_date = $ship_date->format('Y-m-d');
+            }
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
@@ -219,6 +224,11 @@ class GoodsReceiptController extends Controller
             }
             $GR->type = 3;
             $GR->work_order_id = $datas->wo_id;
+            if($datas->ship_date != ""){
+                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $GR->ship_date = $ship_date->format('Y-m-d');
+            }
+            $GR->type = 3;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
@@ -269,6 +279,11 @@ class GoodsReceiptController extends Controller
             }
             $GR->type = 2;
             $GR->description = $datas->description;
+            $GR->type = 2;
+            if($datas->ship_date != ""){
+                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $GR->ship_date = $ship_date->format('Y-m-d');
+            }
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
@@ -300,6 +315,18 @@ class GoodsReceiptController extends Controller
             }
         }
     }
+
+    public function printPdf($id)
+    { 
+        $branch = Auth::user()->branch; 
+        $modelGR = GoodsReceipt::find($id);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('goods_receipt.pdf',['modelGR' => $modelGR,'branch'=>$branch]);
+        $now = date("Y_m_d_H_i_s");
+        return $pdf->download('Goods_Receipt_'.$now.'.pdf');
+    }
+
     public function updatePOD($purchase_order_id,$received){
         $modelPOD = PurchaseOrderDetail::findOrFail($purchase_order_id);
         if($modelPOD){
@@ -352,17 +379,6 @@ class GoodsReceiptController extends Controller
             $modelPO->status = 0;
             $modelPO->save();
         }
-    }
-
-    public function printPdf($id)
-    {
-        $modelGR = GoodsReceipt::find($id);
-        // $words = numberConverter::longform($modelGR->total_price);
-        $pdf = app('dompdf.wrapper');
-        $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('goods_receipt.pdf',['modelGR' => $modelGR]);
-        $now = date("Y_m_d_H_i_s");
-        return $pdf->stream('Goods_Receipt_'.$now.'.pdf');
     }
 
     public function generateGRNumber(){
