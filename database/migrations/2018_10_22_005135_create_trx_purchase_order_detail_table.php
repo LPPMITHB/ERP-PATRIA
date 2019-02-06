@@ -17,6 +17,7 @@ class CreateTrxPurchaseOrderDetailTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('purchase_order_id');
             $table->unsignedInteger('purchase_requisition_detail_id')->nullable();
+            $table->float('discount')->default(0);
             $table->integer('quantity');
             $table->integer('received')->default(0);
             $table->integer('returned')->default(0);
