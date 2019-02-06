@@ -324,7 +324,7 @@ class GoodsReceiptController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadView('goods_receipt.pdf',['modelGR' => $modelGR,'branch'=>$branch]);
         $now = date("Y_m_d_H_i_s");
-        return $pdf->stream('Goods_Receipt_'.$now.'.pdf');
+        return $pdf->download('Goods_Receipt_'.$now.'.pdf');
     }
 
     public function updatePOD($purchase_order_id,$received){
@@ -379,17 +379,6 @@ class GoodsReceiptController extends Controller
             $modelPO->status = 0;
             $modelPO->save();
         }
-    }
-
-    public function printPdf($id)
-    {
-        $modelGR = GoodsReceipt::find($id);
-        // $words = numberConverter::longform($modelGR->total_price);
-        $pdf = app('dompdf.wrapper');
-        $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('goods_receipt.pdf',['modelGR' => $modelGR]);
-        $now = date("Y_m_d_H_i_s");
-        return $pdf->stream('Goods_Receipt_'.$now.'.pdf');
     }
 
     public function generateGRNumber(){
