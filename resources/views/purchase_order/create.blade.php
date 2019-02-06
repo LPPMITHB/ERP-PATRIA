@@ -306,13 +306,32 @@
             },
             currencyOk : function(){
                 let isOk = false;
-                this.PRDetail.forEach(PRD => {
-                    if(PRD.material.cost_standard_price != PRD.old_price){
-                        isOk = true;
+                var currency_value = 1;
+                this.currencies.forEach(data => {
+                    if(this.modelPO.currency == data.name && this.modelPO.currency != "Rupiah"){
+                        currency_value = data.value;
                     }
                 });
+
+                this.PRDetail.forEach(PRD => {
+                    var ref = 0;
+                    var decimal = ((PRD.old_price / currency_value)+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            ref = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            ref = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        ref = (decimal[0]+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                    if(parseFloat(PRD.total_price.replace(/,/g , '')) != ref.replace(/,/g, '')){
+                        isOk = true;
+                    }   
+                });
                 return isOk;
-            }
+            },
         },
         methods : {
             getVendor(){

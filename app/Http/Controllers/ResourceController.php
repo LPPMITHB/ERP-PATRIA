@@ -262,7 +262,7 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelGRs = GoodsReceipt::all();
-
+        // print_r($modelGRs);exit();
         foreach($modelGRs as $key => $GR){
             if($GR->purchaseOrder->purchaseRequisition->type != 2){
                 $modelGRs->forget($key);
