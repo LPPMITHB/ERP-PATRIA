@@ -87,10 +87,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-xs-4">
-                            Required Date
+                            Delivery Date
                         </div>
                         <div class="col-md-8 col-xs-7">
-                            : <b> {{ $modelPO->required_date }} </b>
+                            : <b> {{ $modelPO->delivery_date }} </b>
                         </div>
                     </div>
                 </div>
