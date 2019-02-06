@@ -17,6 +17,7 @@ use App\Models\PurchaseRequisitionDetail;
 use DateTime;
 use Auth;
 use DB;
+use App\Providers\numberConverter;
 
 class PurchaseOrderController extends Controller
 {
@@ -499,6 +500,30 @@ class PurchaseOrderController extends Controller
             DB::rollback();
             return redirect()->route('purchase_order.show',$po_id);
         }
+    }
+
+    public function printPdf($id)
+    { 
+        $branch = Auth::user()->branch; 
+        $modelPO = PurchaseOrder::find($id);
+        $discount = 0;
+        $tax = 0;
+        $freight = 0;
+        foreach($modelPO->purchaseOrderDetails as $POD){
+            if($POD->quantity > 0){
+                $discount += $POD->total_price * (($POD->discount)/100);
+                $tax += $POD->total_price * (($POD->tax)/100);
+                $freight += $POD->estimated_freight;
+            }
+        }
+        $total_price = $modelPO->total_price - $discount + $tax + $freight;
+        $words = numberConverter::longform($total_price);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch]);
+        $now = date("Y_m_d_H_i_s");
+
+        return $pdf->stream('Purchase_Order_'.$now.'.pdf');
     }
 
     // function
