@@ -171,8 +171,8 @@
                                     @endif
                                     <td>{{ number_format($POD['quantity']) }}</td>
                                     <td>{{ number_format($POD['discount']) }}</td>
-                                    <td>{{ number_format($POD['price']) }}</td>
-                                    <td>{{ number_format($POD['sub_total']) }}</td>
+                                    <td>{{ number_format($POD['price'] / $modelPO['value'],2) }}</td>
+                                    <td>{{ number_format($POD['sub_total'] / $modelPO['value'],2) }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -181,17 +181,17 @@
                         <tr>
                             <td colspan="4" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Subtotal :</b></td>
-                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($datas->sum('sub_total'),2)}}</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($datas->sum('sub_total') / $modelPO['value'],2)}}</b></td>
                         </tr>
                         <tr>
                             <td colspan="4" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Discount :</b></td>
-                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($total_discount,2)}}</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($total_discount  / $modelPO['value'],2)}}</b></td>
                         </tr>
                         <tr>
                             <td colspan="4" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Tax ({{$modelPO->tax}}%) :</b></td>
-                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($tax,2)}}</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format($tax / $modelPO['value'],2)}}</b></td>
                         </tr>
                         <tr>
                             <td colspan="4" style="visibility:hidden"></td>
@@ -201,7 +201,7 @@
                         <tr>
                             <td colspan="4" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Total Order :</b></td>
-                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format(($datas->sum('sub_total') - $total_discount) + $tax + $modelPO->estimated_freight),2}}</b></td>
+                            <td class="text-right p-r-5"><b>{{$unit}} {{number_format( (($datas->sum('sub_total') - $total_discount) + $tax + $modelPO->estimated_freight)/ $modelPO['value'],2)}}</b></td>
                         </tr>
                     </tfoot>
                 </table>

@@ -423,14 +423,16 @@ class PurchaseOrderController extends Controller
         DB::beginTransaction();
         try {
             $PO = PurchaseOrder::findOrFail($datas->modelPO->id);
-            dd($datas);
             $status = 0;
             $total_price = 0;
+            if($datas->modelPO->currency != $PO->currency){
+                $PO->value = $value;
+            }
             foreach($datas->PODetail as $data){
                 $POD = PurchaseOrderDetail::findOrFail($data->id);
                 $diff = $data->quantity - $POD->quantity;
                 $POD->quantity = $data->quantity;
-                $POD->total_price = $data->quantity * $data->total_price;
+                $POD->total_price = $data->quantity * ($data->total_price * $PO->value);
                 $POD->save();
 
                 $statusPR = $this->updatePR($data->purchase_requisition_detail_id,$diff);
@@ -441,17 +443,18 @@ class PurchaseOrderController extends Controller
             }
             $PO->vendor_id = $datas->modelPO->vendor_id;
             $PO->description = $datas->modelPO->description;
-            $PO->currency = $datas->modelPO->currency;
             $PO->tax = $datas->modelPO->tax;
             $PO->estimated_freight = $datas->modelPO->estimated_freight;
             $PO->delivery_terms = $datas->modelPO->delivery_terms;
             $PO->payment_terms = $datas->modelPO->payment_terms;
-            $delivery_date = DateTime::createFromFormat('m/j/Y', $datas->modelPO->delivery_date);
+            $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->modelPO->delivery_date);
             $PO->delivery_date = $delivery_date->format('Y-m-d');
             
             if($datas->modelPO->currency != $PO->currency){
                 $PO->value = $value;
             }
+            $PO->currency = $datas->modelPO->currency;
+
             $PO->total_price = $total_price;
             if($PO->status == 3){
                 $PO->status = 4;
