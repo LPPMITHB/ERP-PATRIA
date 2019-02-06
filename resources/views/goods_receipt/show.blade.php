@@ -85,13 +85,20 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $GRD->material->code }} - {{ $GRD->material->name }}</td>
                                     <td>{{ number_format($GRD->quantity) }}</td>
-                                    <td>{{ $GRD->storageLocation->name }} </td>
+                                    <td>{{ isset($GRD->storageLocation->name) ? $GRD->storageLocation->name : '-' }} </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                            @if($route == "/goods_receipt")
+                                <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_receipt.print', ['id'=>$modelGR->id]) }}">DOWNLOAD</a>
+                            @elseif($route == "/goods_receipt_repair")
+                                <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_receipt_repair.print', ['id'=>$modelGR->id]) }}">DOWNLOAD</a>
+                            @endif
                         </div>
                     </div>
+                </div>
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>

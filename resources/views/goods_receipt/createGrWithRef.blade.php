@@ -60,10 +60,17 @@
                                 </div>
                                 <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
                                     <div class="box-body no-padding">
-                                            <div class="col-md-4 col-lg-7 col-xs-12 no-padding"> GR Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
-                                            </div>
+                                        <div class="col-md-4 col-lg-7 col-xs-12 no-padding"> GR Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
                                         </div>
-                            </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-lg-3 col-md-12 p-l-5">
+                                    <div class="col-md-3 col-xs-3 no-padding">Ship Date:</div>
+
+                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-0 ">
+                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker width100" name="ship_date" id="ship_date" placeholder="Ship Date">
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="row">
@@ -162,6 +169,7 @@
         },
         description:"",
         submittedForm :{},
+        ship_date: "",
     }
 
         Vue.directive('tooltip', function(el, binding){
@@ -174,6 +182,16 @@
     var app = new Vue({
         el : '#pod',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+            });
+            $("#ship_date").datepicker().on(
+                "changeDate", () => {
+                    this.ship_date = $('#ship_date').val();
+                }
+            );
+        },
         computed : {
             createOk: function(){
                 let isOk = true;
@@ -236,6 +254,7 @@
                     this.submittedForm.checkedPOD = jsonPod;            
                     this.submittedForm.purchase_order_id = this.modelPO.id;
                     this.submittedForm.description = this.description;
+                    this.submittedForm.ship_date = this.ship_date;
                     
                     let struturesElem = document.createElement('input');
                     struturesElem.setAttribute('type', 'hidden');
