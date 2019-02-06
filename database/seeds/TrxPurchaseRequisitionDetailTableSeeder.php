@@ -26,7 +26,7 @@ class TrxPurchaseRequisitionDetailTableSeeder extends Seeder
                 'material_id' => 5,
                 'resource_id' => NULL,
                 'wbs_id' => 12,
-                'alocation' => NULL,
+                'alocation' => 'Stock',
                 'created_at' => '2019-01-15 09:57:55',
                 'updated_at' => '2019-01-15 09:57:55',
             ),

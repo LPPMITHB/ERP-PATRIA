@@ -23,14 +23,13 @@ class PurchaseOrderController extends Controller
     public function selectPR(Request $request)
     {
         $route = $request->route()->getPrefix();
-        // print_r($route);exit();
         if($route == "/purchase_order"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+            $business_unit_id = 1;
         }elseif($route == "/purchase_order_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $business_unit_id = 2;
         }
 
-        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->whereIn('business_unit_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',$business_unit_id)->get();
         
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
@@ -38,7 +37,12 @@ class PurchaseOrderController extends Controller
     public function index(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPOs = PurchaseOrder::all();
+        if($route == "/purchase_order"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/purchase_order_repair"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
+        }
+        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.index', compact('modelPOs','route'));
     
@@ -47,7 +51,12 @@ class PurchaseOrderController extends Controller
     public function indexApprove(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPOs = PurchaseOrder::whereIn('status',[1,4])->get();
+        if($route == "/purchase_order"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/purchase_order_repair"){
+            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
+        }
+        $modelPOs = PurchaseOrder::whereIn('status',[1,4])->whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.indexApprove', compact('modelPOs','route'));
     
@@ -110,8 +119,8 @@ class PurchaseOrderController extends Controller
             $PO->vendor_id = $datas->vendor_id;
             $PO->currency = $datas->currency;
             $PO->value = $value;
-            $required_date = DateTime::createFromFormat('m/j/Y', $datas->required_date);
-            $PO->required_date = $required_date->format('Y-m-d');
+            $delivery_date = DateTime::createFromFormat('m/j/Y', $datas->delivery_date);
+            $PO->delivery_date = $delivery_date->format('Y-m-d');
             $PO->project_id = $datas->project_id;
             $PO->description = $datas->description;
             $PO->status = 1;

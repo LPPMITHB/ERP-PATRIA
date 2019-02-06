@@ -74,8 +74,6 @@
                             : <b> {{ isset($modelPR->project) ? $modelPR->project->ship->type : '-' }} </b>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
                             Customer Name
@@ -83,6 +81,11 @@
                         <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelPR->project) ?$modelPR->project->customer->name : ''}}">
                             : <b> {{ isset($modelPR->project) ? $modelPR->project->customer->name : '-'}} </b>
                         </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
+                    <div class="row">
+                        
                         <div class="col-xs-5 col-md-5">
                             Status
                         </div>
@@ -116,6 +119,12 @@
                             </div>
                         @endif
                         <div class="col-xs-5 col-md-5">
+                            Required Date
+                        </div>
+                        <div class="col-xs-7 col-md-7 tdEllipsis">
+                            : <b> {{ isset($modelPR->required_date) ? $modelPR->required_date : '-'}} </b>
+                        </div>
+                        <div class="col-xs-5 col-md-5">
                             Created By
                         </div>
                         <div class="col-xs-7 col-md-7">
@@ -136,13 +145,14 @@
                         <tr>
                             <th width="5%">No</th>
                             @if($modelPR->type == 1)
-                                <th width="35%">Material Name</th>
+                                <th width="25%">Material Name</th>
                             @else
-                                <th width="35%">Resource Name</th>
+                                <th width="25%">Resource Name</th>
                             @endif
                             <th width="15%">Quantity</th>
-                            <th width="30%">WBS Name</th>
+                            <th width="25%">WBS Name</th>
                             <th width="15%">Alocation</th>
+                            <th width="15%">Required Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,17 +160,25 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 @if($modelPR->type == 1)
-                                    <td>{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
+                                    <td class="tdEllipsis">{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
                                 @else
-                                    <td>{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
+                                    <td class="tdEllipsis">{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
                                 @endif
                                 <td>{{ number_format($PRD->quantity) }}</td>
-                                <td>{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
+                                <td class="tdEllipsis">{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
                                 <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
+                                <td>{{ isset($PRD->required_date) ? $PRD->required_date : '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                    @if($route == "/purchase_requisition")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
+                    @elseif($route == "/purchase_requisition_repair")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition_repair.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
+                    @endif
+                </div>
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>

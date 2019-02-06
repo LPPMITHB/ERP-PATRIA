@@ -56,9 +56,9 @@
                                     <td>REJECTED</td>
                                 @endif
                                 <td class="textCenter">
-                                    @if($menu == "building")
+                                    @if($route == "/work_order")
                                         <a href="{{ route('work_order.showApprove', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
-                                    @else
+                                    @elseif($route == "/work_order_repair")
                                         <a href="{{ route('work_order_repair.showApprove', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>

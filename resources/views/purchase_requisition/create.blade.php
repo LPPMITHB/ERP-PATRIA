@@ -58,12 +58,18 @@
                                 </selectize>  
                             </div>
                             <div class="col-xs-12 col-md-4 p-r-0">
-                                    <div class="col-sm-12 p-l-0">
-                                        <label for="">PR Description</label>
-                                    </div>
-                                    <div class="col-sm-12 p-l-0">
-                                        <textarea class="form-control" rows="4" v-model="description"></textarea>
-                                    </div>
+                                <div class="col-sm-12 p-l-0">
+                                    <label for="">PR Description</label>
+                                </div>
+                                <div class="col-sm-12 p-l-0">
+                                    <textarea class="form-control" rows="2" v-model="description"></textarea>
+                                </div>
+                                <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
+                                    <label for="">Required Date</label>
+                                </div>
+                                <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
+                                    <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Required Date">
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -72,11 +78,12 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th v-if="pr_type == 'Material'" style="width: 30%">Material Name</th>
-                                            <th v-else-if="pr_type == 'Resource'" style="width: 30%">Resource Name</th>
+                                            <th v-if="pr_type == 'Material'" style="width: 25%">Material Name</th>
+                                            <th v-else-if="pr_type == 'Resource'" style="width: 25%">Resource Name</th>
                                             <th style="width: 15%">Quantity</th>
-                                            <th style="width: 25%">WBS Name</th>
-                                            <th style="width: 15%">Alocation</th>
+                                            <th style="width: 22%">WBS Name</th>
+                                            <th style="width: 10%">Alocation</th>
+                                            <th style="width: 13%">Required Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -91,6 +98,7 @@
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td v-if="material.alocation != ''"class="tdEllipsis">{{ material.alocation }}</td>
                                             <td v-else class="tdEllipsis">-</td>
+                                            <td class="tdEllipsis">{{ material.required_date }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -135,6 +143,9 @@
                                                     <option value="Consumption">Consumption</option>
                                                     <option value="Stock">Stock</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
                                             <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -189,6 +200,10 @@
                                                     <option value="Stock">Stock</option>
                                                 </selectize>
                                             </div>
+                                            <div class="col-sm-12"> 
+                                                <label for="type" class="control-label">Required Date</label>
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -230,6 +245,10 @@
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
                                                     <option v-for="(work, index) in works" :value="work.id">{{ work.name }}</option>
                                                 </selectize>
+                                            </div>
+                                            <div class="col-sm-12"> 
+                                                <label for="type" class="control-label">Required Date</label>
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
                                             </div>
                                         </div>
                                     </div>
@@ -306,7 +325,8 @@
             quantityInt : 0,
             wbs_id : "",
             work_name : "",
-            alocation : "Stock"
+            alocation : "Stock",
+            required_date : "",
         },
         editInput : {
             old_material_id : "",
@@ -320,17 +340,39 @@
             quantityInt : 0,
             wbs_id : "",
             work_name : "",
-            alocation : ""
+            alocation : "",
+            required_date : "",
         },
         material_id:[],
         material_id_modal:[],
         materials_modal :[],
-        submittedForm : {}
+        submittedForm : {},
+        required_date : "",
     }
 
     var vm = new Vue({
         el : '#pr',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+            });
+            $("#required_date").datepicker().on(
+                "changeDate", () => {
+                    this.required_date = $('#required_date').val();
+                }
+            );
+            $("#input_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.dataInput.required_date = $('#input_required_date').val();
+                }
+            );
+            $("#edit_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.editInput.required_date = $('#edit_required_date').val();
+                }
+            );
+        },
         computed : {
             resourceOk: function(){
                 let isOk = false;
@@ -411,6 +453,7 @@
                 this.submittedForm.resource = this.resource;
                 this.submittedForm.description = this.description;
                 this.submittedForm.project_id = this.project_id;     
+                this.submittedForm.required_date = this.required_date;     
                 this.submittedForm.materials = this.dataMaterial;    
 
                 let struturesElem = document.createElement('input');
@@ -427,9 +470,9 @@
                             var material = this.dataMaterial[this.editInput.index];
                        
                             window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
-                                // console.log(data);
                                 material.material_name = data.name;
                                 material.material_code = data.code;
+                                material.required_date = this.editInput.required_date;
 
                                 // this.material_id.forEach(id => {
                                 //     if(id == old_material_id){
@@ -552,6 +595,7 @@
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.work_name = data.work_name;
                 this.editInput.alocation = data.alocation;
+                this.editInput.required_date = data.required_date;
                 this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
@@ -602,6 +646,7 @@
                         this.dataInput.wbs_id = "";
                         this.dataInput.work_name = "";
                         this.dataInput.alocation = "Stock";
+                        this.dataInput.required_date = "";
                         
                         this.newIndex = Object.keys(this.dataMaterial).length+1;
 
@@ -637,6 +682,7 @@
                         this.dataInput.resource_id = "";
                         this.dataInput.wbs_id = "";
                         this.dataInput.work_name = "";
+                        this.dataInput.required_date = "";
                         
                         this.newIndex = Object.keys(this.dataMaterial).length+1;
 
@@ -737,6 +783,13 @@
                 }else if(newValue == 'Resource'){
                     this.resource = "ok";
                 }
+            },
+            'required_date': function(newValue){
+                this.dataMaterial.forEach(data =>{
+                    if(newValue != ''){
+                        data.required_date = newValue;
+                    }
+                })
             }
         },
         created: function() {

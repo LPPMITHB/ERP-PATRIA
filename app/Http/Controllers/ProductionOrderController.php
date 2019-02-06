@@ -712,12 +712,12 @@ class ProductionOrderController extends Controller
         });
 
         $additionalItems = Collection::make();
-        foreach($prod_materials as $prod){
-            $prod_found = true;
+        //Materials
+        foreach($prod_materials as $keyProd => $prod){
             if(count($modelBOMD_material)> 0){
-                foreach ($modelBOMD_material as $bomD) {
-                    if($bomD->material->id == $prod->material->id && $bomD->source != "WIP"){
-                        if($prod->quantity - $bomD->quantity != 0){
+                foreach ($modelBOMD_material as $key => $bomD) {
+                    if($prod->material_id == $bomD->material_id){
+                        if($prod->quantity > $bomD->quantity){
                             $additionalItems->push([
                                 "code" => $prod->material->code , 
                                 "description" => $prod->material->description,
@@ -726,18 +726,9 @@ class ProductionOrderController extends Controller
                                 "quantity" => number_format($prod->quantity - $bomD->quantity),
                                 "type" => "Material",
                             ]);
-                            $prod_found =  false;
                         }
-                    }elseif($bomD->material->id != $prod->material->id && $bomD->source != "WIP" && $prod_found){
-                        $additionalItems->push([
-                            "code" => $prod->material->code , 
-                            "description" => $prod->material->description,
-                            "id" => $prod->material->id,
-                            "name" => $prod->material->name,
-                            "quantity" => number_format($prod->quantity),
-                            "type" => "Material",
-                        ]);
-                    }
+                        $prod_materials->forget($keyProd);
+                    }       
                 }
             }else{
                 $additionalItems->push([
@@ -748,15 +739,27 @@ class ProductionOrderController extends Controller
                     "quantity" => number_format($prod->quantity),
                     "type" => "Material",
                 ]);
+                $prod_materials->forget($keyProd);
             }
         }
 
-        foreach($prod_services as $prod){
-            $prod_found = true;
+        foreach($prod_materials as $prod){
+            $additionalItems->push([
+                "code" => $prod->material->code , 
+                "description" => $prod->material->description,
+                "id" => $prod->material->id,
+                "name" => $prod->material->name,
+                "quantity" => number_format($prod->quantity),
+                "type" => "Material",
+            ]);
+        }
+
+        //Services
+        foreach($prod_services as $keyProd => $prod){
             if(count($modelBOMD_service)> 0){
-                foreach ($modelBOMD_service as $bomD) {
-                    if($bomD->service->id == $prod->service->id){
-                        if($prod->quantity - $bomD->quantity != 0){
+                foreach ($modelBOMD_service as $key => $bomD) {
+                    if($prod->service_id == $bomD->service_id){
+                        if($prod->quantity > $bomD->quantity){
                             $additionalItems->push([
                                 "code" => $prod->service->code , 
                                 "description" => $prod->service->description,
@@ -765,18 +768,9 @@ class ProductionOrderController extends Controller
                                 "quantity" => number_format($prod->quantity - $bomD->quantity),
                                 "type" => "Service",
                             ]);
-                            $prod_found =  false;
                         }
-                    }elseif($bomD->service->id != $prod->service->id && $prod_found){
-                        $additionalItems->push([
-                            "code" => $prod->service->code , 
-                            "description" => $prod->service->description,
-                            "id" => $prod->service->id,
-                            "name" => $prod->service->name,
-                            "quantity" => number_format($prod->quantity),
-                            "type" => "Service",
-                        ]);
-                    }
+                        $prod_services->forget($keyProd);
+                    }       
                 }
             }else{
                 $additionalItems->push([
@@ -787,9 +781,22 @@ class ProductionOrderController extends Controller
                     "quantity" => number_format($prod->quantity),
                     "type" => "Service",
                 ]);
+                $prod_services->forget($keyProd);
             }
         }
-        
+
+        foreach($prod_services as $prod){
+            $additionalItems->push([
+                "code" => $prod->service->code , 
+                "description" => $prod->service->description,
+                "id" => $prod->service->id,
+                "name" => $prod->service->name,
+                "quantity" => number_format($prod->quantity),
+                "type" => "Service",
+            ]);
+        }
+
+        //Resources
         $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
         foreach($prod_resources as $prod){
             $prod_found = true;

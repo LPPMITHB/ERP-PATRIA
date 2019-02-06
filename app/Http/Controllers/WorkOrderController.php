@@ -25,47 +25,47 @@ class WorkOrderController extends Controller
 {
     public function selectWR(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
-        if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }else{
+        $route = $request->route()->getPrefix();    
+        if($route == "/work_order"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/work_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
         $modelWRs = WorkRequest::whereIn('status',[2,7])->whereIn('project_id',$modelProject)->get();
-        return view('work_order.selectWR', compact('modelWRs','menu'));
+        return view('work_order.selectWR', compact('modelWRs','route'));
     }
     
     public function index(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
-        if($menu == "repair"){
+        $route = $request->route()->getPrefix();    
+        if($route == "/work_order"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }else{
+        }elseif($route == "/work_order_repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
         $modelWOs = WorkOrder::whereIn('project_id',$modelProject)->get();
 
-        return view('work_order.index', compact('modelWOs','menu'));
+        return view('work_order.index', compact('modelWOs','route'));
     
     }
 
     public function indexApprove(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
-        if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }else{
+        $route = $request->route()->getPrefix();    
+        if($route == "/work_order"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/work_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
         $modelWOs = WorkOrder::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
 
-        return view('work_order.indexApprove', compact('modelWOs','menu'));
+        return view('work_order.indexApprove', compact('modelWOs','route'));
     
     }
 
     public function create(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         $datas = json_decode($request->datas);
         $modelWR = WorkRequest::where('id',$datas->id)->with('project')->first();
         $modelWRD = WorkRequestDetail::whereIn('id',$datas->checkedWRD)->with('material','wbs')->get();
@@ -80,12 +80,12 @@ class WorkOrderController extends Controller
 
         $modelProject = Project::where('id',$modelWR->project_id)->with('ship','customer')->first();
 
-        return view('work_order.create', compact('modelWR','modelWRD','modelProject','menu'));
+        return view('work_order.create', compact('modelWR','modelWRD','modelProject','route'));
     }
 
     public function selectWRD($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         $modelWR = WorkRequest::findOrFail($id);
         $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get();
         foreach($modelWRD as $key=>$WRD){
@@ -95,13 +95,13 @@ class WorkOrderController extends Controller
         }
         $modelWRD = $modelWRD->values();
         $modelWRD->all();
-        return view('work_order.selectWRD', compact('modelWR','modelWRD','menu'));
+        return view('work_order.selectWRD', compact('modelWR','modelWRD','route'));
     }
 
 
     public function store(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         $datas = json_decode($request->datas);
         $wo_number = $this->generateWONumber();
 
@@ -144,16 +144,16 @@ class WorkOrderController extends Controller
             $WO->save(); 
             $this->checkStatusWr($datas->wr_id,$status);
             DB::commit();
-            if($menu == "building"){
+            if($route == "/work_order"){
                 return redirect()->route('work_order.show',$WO->id)->with('success', 'Work Order Created');
-            }else{
+            }elseif($route == "/work_order_repair"){
                 return redirect()->route('work_order_repair.show',$WO->id)->with('success', 'Work Order Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($menu == "building"){
+            if($route == "/work_order"){
                 return redirect()->route('work_order.selectWRD',$datas->wr_id)->with('error', $e->getMessage());
-            }else{
+            }elseif($route == "/work_order_repair"){
                 return redirect()->route('work_order_repair.selectWRD',$datas->wr_id)->with('error', $e->getMessage());
             }
         }
@@ -162,32 +162,32 @@ class WorkOrderController extends Controller
     public function show($id,Request $request)
     {
         $modelWO = WorkOrder::findOrFail($id);
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
 
-        return view('work_order.show', compact('modelWO', 'menu'));
+        return view('work_order.show', compact('modelWO', 'route'));
     }
 
     public function showApprove($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         $modelWO = WorkOrder::findOrFail($id);
 
-        return view('work_order.showApprove', compact('modelWO','menu'));
+        return view('work_order.showApprove', compact('modelWO','route'));
     }
 
     public function edit($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         $modelWO = WorkOrder::where('id',$id)->with('workRequest')->first();
         $modelWOD = WorkOrderDetail::where('work_order_id',$id)->with('material','workRequestDetail','wbs')->get();
         $modelProject = Project::where('id',$modelWO->workRequest->project_id)->with('ship','customer')->first();
 
-        return view('work_order.edit', compact('modelWO','modelWOD','modelProject','menu'));
+        return view('work_order.edit', compact('modelWO','modelWOD','modelProject','route'));
     }
 
     public function update(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         $datas = json_decode($request->datas);
 
         DB::beginTransaction();
@@ -220,16 +220,16 @@ class WorkOrderController extends Controller
 
             $this->checkStatusWr($datas->modelWO->work_request_id,$status);
             DB::commit();
-            if($menu == "building"){
+            if($route == "/work_order"){
                 return redirect()->route('work_order.show',$WO->id)->with('success', 'Work Order Updated');
-            }else{
+            }elseif($route == "/work_order_repair"){
                 return redirect()->route('work_order_repair.show',$WO->id)->with('success', 'Work Order Updated');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($menu == "building"){
+            if($route == "/work_order"){
                 return redirect()->route('work_order.index')->with('error', $e->getMessage());
-            }else{
+            }elseif($route == "/work_order_repair"){
                 return redirect()->route('work_order_repair.index')->with('error', $e->getMessage());
             }
 
@@ -243,7 +243,7 @@ class WorkOrderController extends Controller
 
     public function approval($wo_id,$status, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/work_order" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();    
         DB::beginTransaction();
         try{
             $modelWO = WorkOrder::findOrFail($wo_id);
@@ -271,35 +271,35 @@ class WorkOrderController extends Controller
                     $MRD->save();
                 }
                 DB::commit();
-                if($menu == "building"){
+                if($route == "/work_order"){
                     return redirect()->route('work_order.showApprove',$wo_id)->with('success', 'Work Order Approved');                
-                }else{
+                }elseif($route == "/work_order_repair"){
                     return redirect()->route('work_order_repair.showApprove',$wo_id)->with('success', 'Work Order Approved');
                 }
             }elseif($status == "need-revision"){
                 $modelWO->status = 3;
                 $modelWO->update();
                 DB::commit();
-                if($menu == "building"){
+                if($route == "/work_order"){
                     return redirect()->route('work_order.showApprove',$wo_id)->with('success', 'Work Order Updated');
-                }else{
+                }elseif($route == "/work_order_repair"){
                     return redirect()->route('work_order_repair.showApprove',$wo_id)->with('success', 'Work Order Updated');
                 }
             }elseif($status == "reject"){
                 $modelWO->status = 5;
                 $modelWO->update();
                 DB::commit();
-                if($menu == "building"){
+                if($route == "/work_order"){
                     return redirect()->route('work_order.showApprove',$wo_id)->with('success', 'Work Order Rejected');
-                }else{
+                }elseif($route == "/work_order_repair"){
                     return redirect()->route('work_order_repair.showApprove',$wo_id)->with('success', 'Work Order Rejected');
                 }
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($menu == "building"){
+            if($route == "/work_order"){
                 return redirect()->route('work_order.show',$wo_id)->with('error', 'Please try again ..'.$e);
-            }else{
+            }elseif($route == "/work_order_repair"){
                 return redirect()->route('work_order_repair.show',$wo_id)->with('error', 'Please try again ..'.$e);
             }
         }
@@ -307,14 +307,15 @@ class WorkOrderController extends Controller
 
     // function
     public function printPdf($id)
-    {
+    { 
+        $branch = Auth::user()->branch; 
         $modelWO = WorkOrder::find($id);
         $words = numberConverter::longform($modelWO->total_price);
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words]);
+        $pdf->loadView('work_order.pdf',['modelWO' => $modelWO,'words'=>$words,'branch'=>$branch]);
         $now = date("Y_m_d_H_i_s");
-        return $pdf->stream('Work_Order_'.$now.'.pdf');
+        return $pdf->download('Work_Order_'.$now.'.pdf');
     }
 
     public function generateWONumber(){

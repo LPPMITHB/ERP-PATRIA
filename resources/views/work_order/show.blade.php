@@ -179,9 +179,9 @@
                     </tbody>
                 </table>
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                    @if($menu == "building")
+                    @if($route == "/work_order")
                         <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_order.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
-                    @else
+                    @elseif($route == "/work_order_repair")
                         <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('work_order_repair.print', ['id'=>$modelWO->id]) }}">DOWNLOAD</a>
                     @endif
                 </div>
@@ -197,7 +197,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').remove();
+        $('div.overlay').hide();
     });
 </script>
 @endpush
