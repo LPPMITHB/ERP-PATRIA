@@ -30,7 +30,7 @@ class PurchaseOrderController extends Controller
         }
 
         $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',$business_unit_id)->get();
-
+        
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
     
