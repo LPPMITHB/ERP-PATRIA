@@ -85,10 +85,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-xs-4 no-padding">
-                            Required Date
+                            Delivery Date
                         </div>
                         <div class="col-md-8 col-xs-8">
-                            : <b> {{ $modelWO->required_date }} </b>
+                            : <b> {{date("d-m-Y", strtotime($modelWO->delivery_date))}}</b>
                         </div>
                     </div>
                 </div>
@@ -177,6 +177,33 @@
                             @endif
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="2" class="text-right p-r-5"><b>Subtotal :</b></td>
+                            <td class="text-right p-r-5"><b>Rp {{number_format($modelWO->total_price,2)}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="2" class="text-right p-r-5"><b>Discount :</b></td>
+                            <td class="text-right p-r-5"><b>Rp {{number_format($total_discount ,2)}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="2" class="text-right p-r-5"><b>Tax ({{$modelWO->tax}}%) :</b></td>
+                            <td class="text-right p-r-5"><b>Rp {{number_format($tax,2)}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="2" class="text-right p-r-5"><b>Estimated Freight :</b></td>
+                            <td class="text-right p-r-5"><b>Rp {{number_format($modelWO->estimated_freight),2}}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="2" class="text-right p-r-5"><b>Total Order :</b></td>
+                            <td class="text-right p-r-5"><b>Rp {{number_format( (($modelWO->total_price - $total_discount) + $tax + $modelWO->estimated_freight),2)}}</b></td>
+                        </tr>
+                    </tfoot>
                 </table>
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($route == "/work_order")
