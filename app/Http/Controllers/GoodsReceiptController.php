@@ -123,8 +123,7 @@ class GoodsReceiptController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelGR = GoodsReceipt::findOrFail($id);
-        $modelGRD = $modelGR->GoodsReceiptDetails ;
-
+        $modelGRD = $modelGR->GoodsReceiptDetails;
         if($modelGRD[0]->material_id != ''){
             return view('goods_receipt.show', compact('modelGR','modelGRD','route'));
         }elseif($modelGRD[0]->resource_detail_id != ''){
@@ -143,11 +142,13 @@ class GoodsReceiptController extends Controller
 
     public function index(Request $request){
         $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
-        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->pluck('id')->toArray();
-        $modelGRs = GoodsReceipt::whereIn('purchase_order_id',$modelPOs)->where('status',1)->get(); 
-
-        return view ('goods_receipt.index', compact('modelPRs','route','modelPOs','modelGRs'));
+        if($route == "/goods_receipt"){
+            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',1)->get(); 
+        }elseif($route == "/goods_receipt_repair"){
+            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',2)->get();
+        }
+        
+        return view ('goods_receipt.index', compact('route','modelGRs'));
     }
 
     public function store(Request $request)
@@ -221,6 +222,7 @@ class GoodsReceiptController extends Controller
             }elseif($route == "/goods_receipt_repair"){
                 $GR->business_unit_id = 2;
             }
+            $GR->type = 3;
             $GR->work_order_id = $datas->wo_id;
             if($datas->ship_date != ""){
                 $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
@@ -275,6 +277,7 @@ class GoodsReceiptController extends Controller
             }elseif($route == "/goods_receipt_repair"){
                 $GR->business_unit_id = 2;
             }
+            $GR->type = 2;
             $GR->description = $datas->description;
             $GR->type = 2;
             if($datas->ship_date != ""){
@@ -376,6 +379,17 @@ class GoodsReceiptController extends Controller
             $modelPO->status = 0;
             $modelPO->save();
         }
+    }
+
+    public function printPdf($id)
+    {
+        $modelGR = GoodsReceipt::find($id);
+        // $words = numberConverter::longform($modelGR->total_price);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('goods_receipt.pdf',['modelGR' => $modelGR]);
+        $now = date("Y_m_d_H_i_s");
+        return $pdf->stream('Goods_Receipt_'.$now.'.pdf');
     }
 
     public function generateGRNumber(){

@@ -563,54 +563,55 @@ class ProjectController extends Controller
 
         $planned = Collection::make();
         $materialEvaluation = Collection::make();
-
+        
         $actual = Collection::make();
         foreach($project->wbss as $wbs){
             $actualCostPerWbs = 0;
             $plannedCostPerWbs = $wbs->bom != null ? $wbs->bom->rap != null ? $wbs->bom->rap->total_price : 0 : 0;
-
+            
             foreach($wbs->materialRequisitionDetails as $mrd){
                 $actualCostPerWbs = $mrd->material->cost_standard_price * $mrd->issued;
             }
-
+            
             $planned->push([
                 "wbs_name" => $wbs->name,
                 "cost" => $plannedCostPerWbs,                   
-            ]);
-
-            $actual->push([
-                "wbs_name" => $wbs->name,
-                "cost" => $actualCostPerWbs,                   
-            ]);
-        }
+                ]);
+                
+                $actual->push([
+                    "wbs_name" => $wbs->name,
+                    "cost" => $actualCostPerWbs,                   
+                    ]);
+                }
 
         $modelWBS = WBS::where('project_id',$id)->get();
         foreach($modelWBS as $wbs){
             if($wbs->bom){
                 foreach($wbs->bom->bomDetails as $bomDetail){
-                    if(count($bomDetail->material->materialRequisitionDetails)>0){
-                        $status = 0;
-                        foreach($materialEvaluation as $key => $data){
-                            $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
-                            if($material == $data['material']){
-                                $status = 1;
-                                $quantity = $bomDetail->quantity + $data['quantity'];
-                                $issued = $data['used'];
-    
-                                unset($materialEvaluation[$key]);
-                                $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
-    
-                                foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                                    if ($mrd->wbs_id == $id) {
-                                        $materialEvaluation->push([
-                                            "material" => $material,
-                                            "quantity" => $quantity,
-                                            "used" => $issued + $mrd->issued,
-                                        ]);
+                    if($bomDetail->material){
+                        if(count($bomDetail->material->materialRequisitionDetails)>0){
+                            $status = 0;
+                                foreach($materialEvaluation as $key => $data){
+                                    $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                                    if($material == $data['material']){
+                                        $status = 1;
+                                        $quantity = $bomDetail->quantity + $data['quantity'];
+                                        $issued = $data['used'];
+            
+                                        unset($materialEvaluation[$key]);
+                                        $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+            
+                                        foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                                            if ($mrd->wbs_id == $id) {
+                                                $materialEvaluation->push([
+                                                    "material" => $material,
+                                                    "quantity" => $quantity,
+                                                    "used" => $issued + $mrd->issued,
+                                                ]);
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
                         if($status == 0){
                             foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                                 if ($mrd->wbs_id == $id) {
@@ -651,6 +652,7 @@ class ProjectController extends Controller
                     }
                 }
             }
+        }
             
         return view('project.showPCE', compact('modelWBS','project','actual','planned','materialEvaluation','menu'));
     }
