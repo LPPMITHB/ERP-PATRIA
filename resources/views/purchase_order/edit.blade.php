@@ -169,7 +169,7 @@
                                                 <th v-else style="width: 30%">Resource Name</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
-                                                <th style="width: 15%">Price / pcs (Rp.)</th>
+                                                <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 30%">WBS Name</th>
                                                 <th style="width: 15%">Alocation</th>
                                             </tr>
@@ -240,6 +240,7 @@
         mounted(){
             $('.datepicker').datepicker({
                 autoclose : true,
+                format: 'dd-mm-yyyy',
             });
             $("#delivery_date").datepicker().on(
                 "changeDate", () => {
@@ -316,6 +317,7 @@
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
 
+                this.modelPO.estimated_freight = this.modelPO.estimated_freight.replace(/,/g , '');
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , '');      
                     POD.total_price = POD.total_price.replace(/,/g , '');      
@@ -397,13 +399,14 @@
                     if(newValue == data.name){
                         this.selectedCurrency = data.unit;
                         this.PODetail.forEach(pod => {
-                            pod.total_price = parseInt((pod.price+"").replace(/,/g , '')) / data.value;
+                            pod.total_price = parseFloat((pod.price+"").replace(/,/g , '')) / data.value;
                         });
                     }
                 });
             },
         },
         created: function() {
+            this.modelPO.delivery_date = this.modelPO.delivery_date.split("-").reverse().join("-");
             this.getVendor();
             var decimal = (this.modelPO.estimated_freight+"").replace(/,/g, '').split('.');
             if(decimal[1] != undefined){
@@ -416,16 +419,31 @@
             }else{
                 this.modelPO.estimated_freight = (this.modelPO.estimated_freight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
+
+            this.type = this.modelPO.purchase_requisition.type;
+
             var data = this.PODetail;
             data.forEach(POD => {
-                POD.total_price = POD.total_price / POD.quantity;        
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                POD.total_price = (POD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");       
+                POD.price = parseFloat((POD.total_price / POD.quantity+"").replace(/,/g , ''));
+                POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;        
+                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
+                var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        POD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        POD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                } 
             });
-            
-            this.type = this.modelPO.purchase_requisition.type;
-            this.PODetail.forEach(pod => {
-                pod.price = parseInt((pod.total_price+"").replace(/,/g , ''));
+
+            this.currencies.forEach(data => {
+                if(this.modelPO.currency == data.name){
+                    this.selectedCurrency = data.unit;
+                }
             });
         },
     });

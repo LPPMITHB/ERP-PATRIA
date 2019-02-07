@@ -17,6 +17,7 @@ use App\Models\PurchaseRequisitionDetail;
 use DateTime;
 use Auth;
 use DB;
+use App\Providers\numberConverter;
 
 class PurchaseOrderController extends Controller
 {
@@ -423,14 +424,16 @@ class PurchaseOrderController extends Controller
         DB::beginTransaction();
         try {
             $PO = PurchaseOrder::findOrFail($datas->modelPO->id);
-            dd($datas);
             $status = 0;
             $total_price = 0;
+            if($datas->modelPO->currency != $PO->currency){
+                $PO->value = $value;
+            }
             foreach($datas->PODetail as $data){
                 $POD = PurchaseOrderDetail::findOrFail($data->id);
                 $diff = $data->quantity - $POD->quantity;
                 $POD->quantity = $data->quantity;
-                $POD->total_price = $data->quantity * $data->total_price;
+                $POD->total_price = $data->quantity * ($data->total_price * $PO->value);
                 $POD->save();
 
                 $statusPR = $this->updatePR($data->purchase_requisition_detail_id,$diff);
@@ -441,17 +444,18 @@ class PurchaseOrderController extends Controller
             }
             $PO->vendor_id = $datas->modelPO->vendor_id;
             $PO->description = $datas->modelPO->description;
-            $PO->currency = $datas->modelPO->currency;
             $PO->tax = $datas->modelPO->tax;
             $PO->estimated_freight = $datas->modelPO->estimated_freight;
             $PO->delivery_terms = $datas->modelPO->delivery_terms;
             $PO->payment_terms = $datas->modelPO->payment_terms;
-            $delivery_date = DateTime::createFromFormat('m/j/Y', $datas->modelPO->delivery_date);
+            $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->modelPO->delivery_date);
             $PO->delivery_date = $delivery_date->format('Y-m-d');
             
             if($datas->modelPO->currency != $PO->currency){
                 $PO->value = $value;
             }
+            $PO->currency = $datas->modelPO->currency;
+
             $PO->total_price = $total_price;
             if($PO->status == 3){
                 $PO->status = 4;
@@ -518,6 +522,30 @@ class PurchaseOrderController extends Controller
             DB::rollback();
             return redirect()->route('purchase_order.show',$po_id);
         }
+    }
+
+    public function printPdf($id)
+    { 
+        $branch = Auth::user()->branch; 
+        $modelPO = PurchaseOrder::find($id);
+        $discount = 0;
+        $tax = 0;
+        $freight = 0;
+        foreach($modelPO->purchaseOrderDetails as $POD){
+            if($POD->quantity > 0){
+                $discount += $POD->total_price * (($POD->discount)/100);
+                $tax += $POD->total_price * (($POD->tax)/100);
+                $freight += $POD->estimated_freight;
+            }
+        }
+        $total_price = $modelPO->total_price - $discount + $tax + $freight;
+        $words = numberConverter::longform($total_price);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch]);
+        $now = date("Y_m_d_H_i_s");
+
+        return $pdf->stream('Purchase_Order_'.$now.'.pdf');
     }
 
     // function
