@@ -289,6 +289,7 @@
         mounted(){
             $('.datepicker').datepicker({
                 autoclose : true,
+                format: 'dd-mm-yyyy',
             });
             $("#delivery_date").datepicker().on(
                 "changeDate", () => {
@@ -308,7 +309,7 @@
                 let isOk = false;
                 var currency_value = 1;
                 this.currencies.forEach(data => {
-                    if(this.modelPO.currency == data.name && this.modelPO.currency != "Rupiah"){
+                    if(this.currency == data.name && this.currency != "Rupiah"){
                         currency_value = data.value;
                     }
                 });
