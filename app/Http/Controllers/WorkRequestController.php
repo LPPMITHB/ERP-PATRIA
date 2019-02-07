@@ -13,6 +13,7 @@ use App\Models\WBS;
 use App\Models\Bom;
 use App\Models\BomDetail;
 use App\Models\Project;
+use DateTime;
 use Auth;
 use DB;
 
@@ -79,16 +80,16 @@ class WorkRequestController extends Controller
         $datas = json_decode($request->datas);
 
         $wr_number = $this->generateWRNumber();
-        $current_date = today();
-        $valid_to = $current_date->addDays(7);
-        $valid_to = $valid_to->toDateString();
+        // $current_date = today();
+        // $valid_to = $current_date->addDays(7);
+        // $valid_to = $valid_to->toDateString();
 
         DB::beginTransaction();
         try {
 
             $WR = new WorkRequest;
             $WR->number = $wr_number;
-            $WR->valid_date = $valid_to;
+            // $WR->valid_date = $valid_to;
             $WR->description = $datas->description;
             if($datas->project_id != null){
                 $WR->project_id = $datas->project_id;
@@ -101,6 +102,12 @@ class WorkRequestController extends Controller
 
             foreach($datas->materials as $data){
                 $modelWRDs = WorkRequestDetail::where('work_request_id',$WR->id)->get();
+                $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
+                if($required_date){
+                    $required_date = $required_date->format('Y-m-d');
+                }else{
+                    $required_date = null;
+                }
                 if(count($modelWRDs)>0){
                     $status = 0;
                     foreach($modelWRDs as $WRD){
@@ -119,6 +126,7 @@ class WorkRequestController extends Controller
                         $WRD->quantity = $data->quantityInt;
                         $WRD->description = $data->description;
                         $WRD->material_id = $data->material_id;
+                        $WRD->required_date = $required_date;
                         $WRD->wbs_id = $data->wbs_id;
                         $WRD->save();
 
@@ -130,6 +138,7 @@ class WorkRequestController extends Controller
                     $WRD->quantity = $data->quantityInt;
                     $WRD->description = $data->description;
                     $WRD->material_id = $data->material_id;
+                    $WRD->required_date = $required_date;
                     $WRD->wbs_id = $data->wbs_id;
                     $WRD->save();
 
@@ -220,12 +229,19 @@ class WorkRequestController extends Controller
             $WR->update();
             
             foreach($datas->materials as $data){
+                $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
+                if($required_date){
+                    $required_date = $required_date->format('Y-m-d');
+                }else{
+                    $required_date = null;
+                }
                 if($data->wrd_id != null){
                     $WRD = WorkRequestDetail::find($data->wrd_id);
                     // $this->updateReserveStock($data->material_id, $WRD->quantity ,$data->quantityInt);
                     
                     $WRD->quantity = $data->quantityInt;
                     $WRD->description = $data->description;
+                    $WRD->required_date = $required_date;
                     $WRD->material_id = $data->material_id;
                     $WRD->wbs_id = $data->wbs_id;
                     $WRD->update();
@@ -248,6 +264,7 @@ class WorkRequestController extends Controller
                             $WRD->work_request_id = $WR->id;
                             $WRD->quantity = $data->quantityInt;
                             $WRD->description = $data->description;
+                            $WRD->required_date = $required_date;
                             $WRD->material_id = $data->material_id;
                             $WRD->wbs_id = $data->wbs_id;
                             $WRD->save();
@@ -259,6 +276,7 @@ class WorkRequestController extends Controller
                         $WRD->work_request_id = $WR->id;
                         $WRD->quantity = $data->quantityInt;
                         $WRD->description = $data->description;
+                        $WRD->required_date = $required_date;
                         $WRD->material_id = $data->material_id;
                         $WRD->wbs_id = $data->wbs_id;
                         $WRD->save();

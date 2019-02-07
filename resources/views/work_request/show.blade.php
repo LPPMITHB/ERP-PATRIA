@@ -125,10 +125,11 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
+                            <th width="30%">Material Name</th>
                             <th width="15%">Quantity</th>
-                            <th width="30%">Work Name</th>
+                            <th width="25%">Work Name</th>
                             <th width="15%">Description</th>
+                            <th width="10%">Required Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,6 +140,8 @@
                                 <td>{{ number_format($WRD->quantity) }}</td>
                                 <td>{{ isset($WRD->wbs) ? $WRD->wbs->name : '-' }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{ isset($WRD->description) ? $WRD->description : '-' }}</td>
+                                <td>{{ isset($WRD->required_date) ? date('d-m-Y', strtotime($WRD->required_date)) : '-' }}</td>
+
                             </tr>
                         @endforeach
                     </tbody>
