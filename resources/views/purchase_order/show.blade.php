@@ -205,6 +205,13 @@
                         </tr>
                     </tfoot>
                 </table>
+                <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                    @if($route == "/purchase_order")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_order.print', ['id'=>$modelPO->id]) }}">DOWNLOAD</a>
+                    @elseif($route == "/purchase_order_repair")
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_order_repair.print', ['id'=>$modelPO->id]) }}">DOWNLOAD</a>
+                    @endif
+                </div>
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
