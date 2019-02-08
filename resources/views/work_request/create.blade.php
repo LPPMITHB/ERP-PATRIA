@@ -52,6 +52,14 @@
                                 <selectize v-model="project_id" :settings="projectSettings" :disabled="dataOk">
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
+                                <template v-if="selectedProject.length > 0">
+                                    <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
+                                        <label for="">Required Date</label>
+                                    </div>
+                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
+                                        <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
+                                    </div>
+                                </template>
                             </div>
                             <template v-if="selectedProject.length > 0">
                                 <div class="col-xs-12 col-md-4 p-r-0">
@@ -64,17 +72,18 @@
                                 </div>
                             </template>
                         </div>
-                        <div class="row" v-show="selectedProject.length > 0">
+                        <div class="row" v-if="selectedProject.length > 0">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <table class="table table-bordered tableFixed" >
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 20%">WBS Name</th>
+                                            <th style="width: 15%">WBS Name</th>
                                             <th style="width: 25%">Material Name</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 10%">Available</th>
-                                            <th style="width: 20%">Description</th>
+                                            <th style="width: 15%">Description</th>
+                                            <th style="width: 10%">Required Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -89,6 +98,7 @@
                                             <td v-if="material.available != ''"class="tdEllipsis">{{ material.available }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis">{{ material.description}}</td>
+                                            <td class="tdEllipsis">{{ material.required_date}}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -132,6 +142,9 @@
                                             </td>
                                             <td class="p-l-0">
                                                 <input class="form-control" v-model="dataInput.description" placeholder="Please Fill in this Field">
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
                                             <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -190,6 +203,10 @@
                                             <div class="col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
                                                 <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input description">
+                                            </div>
+                                            <div class="col-sm-12"> 
+                                                <label for="type" class="control-label">Required Date</label>
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
                                             </div>
                                         </div>
                                     </div>
@@ -259,7 +276,8 @@
             wbs_id : "",
             wbs_name : "",
             available : "",
-            description : ""
+            description : "",
+            required_date : "",
         },
         editInput : {
             old_material_id : "",
@@ -271,12 +289,15 @@
             wbs_id : "",
             wbs_name : "",
             available : "",
-            description : ""
+            description : "",
+            required_date : "",
         },
         material_id:[],
         material_id_modal:[],
         materials_modal :[],
-        submittedForm : {}
+        submittedForm : {},
+        required_date : "",
+
     }
 
     var vm = new Vue({
@@ -371,6 +392,8 @@
                 window.axios.get('/api/getMaterialWr/'+new_material_id).then(({ data }) => {
                     material.material_name = data.name;
                     material.material_code = data.code;
+                    material.required_date = this.editInput.required_date;
+
 
                     if(this.editInput.wbs_id != ''){
                         window.axios.get('/api/getWbsWr/'+this.editInput.wbs_id).then(({ data }) => {
@@ -421,6 +444,7 @@
                 this.editInput.index = index;
                 this.editInput.available = data.available;
                 this.editInput.description = data.description;
+                this.editInput.required_date = data.required_date;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -451,6 +475,7 @@
                     this.dataInput.wbs_name = "";
                     this.dataInput.description = "";
                     this.dataInput.available = "";
+                    this.dataInput.required_date = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;
                     
@@ -604,6 +629,13 @@
                     this.dataInput.wbs_id = "";
                 }
             },
+            'required_date': function(newValue){
+                this.dataMaterial.forEach(data =>{
+                    if(newValue != ''){
+                        data.required_date = newValue;
+                    }
+                })
+            }
         },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
@@ -615,6 +647,27 @@
                 })
             })
         },
+        updated: function(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format: 'dd-mm-yyyy',
+            });
+            $("#required_date").datepicker().on(
+                "changeDate", () => {
+                    this.required_date = $('#required_date').val();
+                }
+            );
+            $("#input_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.dataInput.required_date = $('#input_required_date').val();
+                }
+            );
+            $("#edit_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.editInput.required_date = $('#edit_required_date').val();
+                }
+            );
+        }
     });
 </script>
 @endpush
