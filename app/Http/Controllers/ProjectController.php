@@ -212,6 +212,77 @@ class ProjectController extends Controller
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
 
+    public function copyProjectStructure($id, $newProject_id){
+        $project = Project::find($id);
+        $newProject = Project::find($newProject_id);
+        $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
+        $wbss = $project->wbss;
+        $dataWbs = Collection::make();
+
+        $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
+        $dataWbs->push([
+            "id" => $project->number, 
+            "parent" => "#",
+            "text" => $project->name. " | Weight : (".$totalWeightProject."% / 100%)",
+            "icon" => "fa fa-ship"
+        ]);
+    
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                if(count($wbs->activities)>0){
+                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)
+                        ",
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                    foreach($wbs->activities as $activity){
+                        $dataWbs->push([
+                            "id" => $activity->code , 
+                            "parent" => $activity->wbs->code,
+                            "text" => $activity->name. " | Weight : ".$activity->weight."% 
+                            ",
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : ".$wbs->weight."% 
+                        ",
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }
+            }else{
+                if(count($wbs->activities)>0){
+                    foreach($wbs->activities as $activity){
+                        $dataWbs->push([
+                            "id" => $activity->code , 
+                            "parent" => $activity->wbs->code,
+                            "text" => $activity->name. " | Weight : ".$activity->weight."% 
+                            ",
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+
+                $dataWbs->push([
+                    "id" => $wbs->code , 
+                    "parent" => $project->number,
+                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%) 
+                    ",
+                    "icon" => "fa fa-suitcase",
+                ]);
+            } 
+        }
+        
+        return view('project.copyProjectStructure', compact('dataWbs','project','mainMenu','newProject'));
+    }
+
     public function index(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
@@ -238,6 +309,29 @@ class ProjectController extends Controller
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
         return view('project.create', compact('customers','ships','project','menu'));
+    }
+
+    public function indexCopyProject(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        if($menu=="repair"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
+        }else if($menu == "building"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 1)->get();
+        }
+
+        return view('project.indexCopyProject', compact('projects','menu'));
+    }
+
+    public function copyProject(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $customers = Customer::all();
+        $ships = Ship::all();
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
+
+        
+        return view('project.copyProjectInfo', compact('project','customers','ships','menu'));
     }
   
 
@@ -277,6 +371,8 @@ class ProjectController extends Controller
             if($project->name == $request->name){
                 if($menu == "building"){
                     return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                }else{
+                    return redirect()->route('project_repair.create')->with('error','The project number has been taken')->withInput();
                 }
             }
             if($project->number == $request->number){
@@ -344,6 +440,108 @@ class ProjectController extends Controller
                 return redirect()->route('project.create')->with( 'error',$e->getMessage())->withInput();
             }elseif($menu == "repair"){
                 return redirect()->route('project_repair.create')->with( 'error',$e->getMessage())->withInput();
+            }
+        }
+    }
+
+    public function storeCopyProject(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        if($menu == "building"){
+            $this->validate($request, [
+                'number' => 'required',
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+                'flag' => 'required',
+                'class_name' => 'required'
+            ]);
+        }elseif($menu == "repair"){
+            $this->validate($request, [
+                'number' => 'required',
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+            ]);
+        } 
+        $projects = Project::all();
+        foreach ($projects as $project) {
+            if($project->name == $request->name){
+                if($menu == "building"){
+                    return redirect()->route('project.copyProject',$request->project_ref)->with('error','The project name has been taken')->withInput();
+                }else{
+                    return redirect()->route('project_repair.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
+                }
+            }
+            if($project->number == $request->number){
+                if($menu == "building"){
+                    return redirect()->route('project.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
+                }else{
+                    return redirect()->route('project_repair.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
+                }
+            }
+        }
+
+        DB::beginTransaction();
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->first();
+        try {
+            $project = new Project;
+            $project->number =  $request->number;
+            $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
+            $project->name = $request->name;
+            $project->description = $request->description;
+            $project->customer_id = $request->customer;
+            $project->ship_id = $request->ship;
+            $project->flag = $request->flag;
+            $project->class_name = $request->class_name;
+            $project->class_contact_person_name = $request->class_contact_person_name;
+            $project->class_contact_person_phone = $request->class_contact_person_phone;
+            $project->class_contact_person_email = $request->class_contact_person_email;
+
+            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
+            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
+
+            $project->planned_start_date = $planStartDate->format('Y-m-d');
+            $project->planned_end_date = $planEndDate->format('Y-m-d');
+            $project->planned_duration =  $request->planned_duration;
+            $project->progress = 0;
+            $project->business_unit_id = $request->business_unit_id;
+            $project->user_id = Auth::user()->id;
+            $project->branch_id = Auth::user()->branch->id;
+            if($request->hasFile('drawing')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('drawing')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('drawing')->storeAs('documents/project',$fileNameToStore);
+            }else{
+                $fileNameToStore =  null;
+            }
+            $project->drawing = $fileNameToStore;
+            $project->save();
+
+            
+            DB::commit();
+            if($menu == "building"){
+                return redirect()->route('project.copyProjectStructure', ['old_id' => $request->project_ref,'new_id' => $project->id])->with('success', 'Project Created');
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.copyProjectStructure', ['old_id' => $request->project_ref,'new_id' => $project->id])->with('success', 'Project Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($menu == "building"){
+                return redirect()->route('project.copyProject',$request->project_ref)->with( 'error',$e->getMessage())->withInput();
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.copyProject',$request->project_ref)->with( 'error',$e->getMessage())->withInput();
             }
         }
     }

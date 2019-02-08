@@ -433,6 +433,14 @@ Route::name('project.')->prefix('project')->group(function() {
     //Project
     Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project');
 
+    Route::get('/indexCopyProject', 'ProjectController@indexCopyProject')->name('indexCopyProject')->middleware('can:create-project');
+    
+    Route::get('/copyProject/{id}', 'ProjectController@copyProject')->name('copyProject')->middleware('can:create-project');
+
+    Route::post('/storeCopyProject', 'ProjectController@storeCopyProject')->name('storeCopyProject')->middleware('can:create-project');
+
+    Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project');
+
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project');
 
     Route::get('/{id}', 'ProjectController@show')->name('show')->middleware('can:show-project');

@@ -93,6 +93,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+
         //BOM
         $viewBOM = Menu::where('name','View BOM')->select('id')->first()->id;
         DB::table('permissions')->insert([
