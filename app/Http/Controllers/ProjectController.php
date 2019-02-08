@@ -234,16 +234,14 @@ class ProjectController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)
-                        ",
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%",
                         "icon" => "fa fa-suitcase",
                     ]);
                     foreach($wbs->activities as $activity){
                         $dataWbs->push([
                             "id" => $activity->code , 
                             "parent" => $activity->wbs->code,
-                            "text" => $activity->name. " | Weight : ".$activity->weight."% 
-                            ",
+                            "text" => $activity->name. " | Weight : ".$activity->weight."%",
                             "icon" => "fa fa-clock-o",
                         ]);
                     }
@@ -251,8 +249,7 @@ class ProjectController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name. " | Weight : ".$wbs->weight."% 
-                        ",
+                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
                         "icon" => "fa fa-suitcase",
                     ]);
                 }
@@ -262,8 +259,7 @@ class ProjectController extends Controller
                         $dataWbs->push([
                             "id" => $activity->code , 
                             "parent" => $activity->wbs->code,
-                            "text" => $activity->name. " | Weight : ".$activity->weight."% 
-                            ",
+                            "text" => $activity->name. " | Weight : ".$activity->weight."%",
                             "icon" => "fa fa-clock-o",
                         ]);
                     }
@@ -273,8 +269,7 @@ class ProjectController extends Controller
                 $dataWbs->push([
                     "id" => $wbs->code , 
                     "parent" => $project->number,
-                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%) 
-                    ",
+                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                     "icon" => "fa fa-suitcase",
                 ]);
             } 
@@ -333,7 +328,27 @@ class ProjectController extends Controller
         
         return view('project.copyProjectInfo', compact('project','customers','ships','menu'));
     }
-  
+    public function storeCopyProjectStructure(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        $datas = json_decode($request->structures);
+
+        
+    }
+
+    function storeProjectStructure($current_wbs, $parent_wbs){
+        if($wbs){
+            if(count($wbs->wbss)>0){
+                foreach($wbs->wbss as $wbs_child){
+                    
+                    return self::getEarliestActivity($wbs_child,$earliest_date);
+                }
+            }else{
+                return $earliest_date;
+            }
+        }
+    }
+
 
     /**
      * Store a newly created resource in storage.
