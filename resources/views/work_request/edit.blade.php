@@ -63,6 +63,14 @@
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_end_date}}</b></div>
                             </div>
                             <div class="col-xs-12 col-md-4 p-r-0">
+                                <div class="col-sm-12 col-lg-3 p-l-0 p-r-0 p-t-3">
+                                    <label for="">Required Date</label>
+                                </div>
+                                <div class="col-sm-12 col-lg-8 p-l-0">
+                                    <input v-model="required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-4 p-r-0">
                                 <div class="col-sm-12 p-l-0">
                                     <label for="">WR Description</label>
                                 </div>
@@ -77,11 +85,12 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 20%">WBS Name</th>
-                                            <th style="width: 25%">Material Name</th>
+                                            <th style="width: 15%">WBS Name</th>
+                                            <th style="width: 20%">Material Name</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 10%">Available</th>
                                             <th style="width: 20%">Description</th>
+                                            <th style="width: 10%">Required Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -95,6 +104,7 @@
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis">{{ material.available }}</td>
                                             <td class="tdEllipsis">{{ material.description}}</td>
+                                            <td class="tdEllipsis">{{ material.required_date }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -129,6 +139,9 @@
                                             </td>
                                             <td class="p-l-0">
                                                 <input class="form-control" v-model="dataInput.description">
+                                            </td>
+                                            <td class="no-padding p-l-0 textLeft">
+                                                <input v-model="dataInput.required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
                                             <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -171,6 +184,10 @@
                                             <div class="col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
                                                 <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input description">
+                                            </div>
+                                            <div class="col-sm-12"> 
+                                                <label for="type" class="control-label">Required Date</label>
+                                                <input v-model="editInput.required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
                                             </div>
                                         </div>
                                     </div>
@@ -265,6 +282,7 @@
             wbs_name : "",
             available : "",
             description : "",
+            required_date : "",
             wrd_id : null,
         },
         editInput : {
@@ -277,17 +295,41 @@
             wbs_id : "",
             wbs_name : "",
             available : "",
-            description : ""
+            description : "",
+            required_date : "",
         },
         material_id:[],
         material_id_modal:[],
         materials_modal :[],
-        submittedForm : {}
+        submittedForm : {},
+        required_date : "",
+
     }
 
     var vm = new Vue({
         el : '#wr',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format: 'dd-mm-yyyy',
+            });
+            $("#required_date").datepicker().on(
+                "changeDate", () => {
+                    this.required_date = $('#required_date').val();
+                }
+            );
+            $("#input_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.dataInput.required_date = $('#input_required_date').val();
+                }
+            );
+            $("#edit_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.editInput.required_date = $('#edit_required_date').val();
+                }
+            );
+        },
         computed : {
             materialOk: function(){
                 let isOk = false;
@@ -378,6 +420,7 @@
                 window.axios.get('/api/getMaterialWr/'+new_material_id).then(({ data }) => {
                     material.material_name = data.name;
                     material.material_code = data.code;
+                    material.required_date = this.editInput.required_date;
 
                     if(this.editInput.wbs_id != ''){
                         window.axios.get('/api/getWbsWr/'+this.editInput.wbs_id).then(({ data }) => {
@@ -415,6 +458,7 @@
                 })
             },
             openEditModal(data,index){
+                console.log();
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
@@ -425,6 +469,7 @@
                 this.editInput.wbs_name = data.wbs_name;
                 this.editInput.available = data.available;
                 this.editInput.description = data.description;
+                this.editInput.required_date = data.required_date;
                 this.editInput.index = index;
 
                 document.getElementById('materiall').value = data.material_code+" - "+data.material_name;
@@ -459,6 +504,7 @@
                     this.dataInput.wbs_name = "";
                     this.dataInput.description = "";
                     this.dataInput.available = "";
+                    this.dataInput.required_date = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;
                     $('div.overlay').hide();
@@ -502,33 +548,6 @@
                 }
             },
 
-            'editInput.material_id' : function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
-                        this.availableQuantity = data;
-
-                        this.editInput.available = data.quantity - data.reserved;
-                        this.editInput.available = (this.editInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..'+error,
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-
-                    this.editInput.quantity = "";
-                
-                }else{
-
-                }
-            },
-
             'dataInput.quantity': function(newValue){
                 this.dataInput.quantityInt = newValue;
                 var string_newValue = newValue+"";
@@ -562,6 +581,13 @@
                     this.dataInput.wbs_id = "";
                 }
             },
+            'required_date': function(newValue){
+                this.dataMaterial.forEach(data =>{
+                    if(newValue != ''){
+                        data.required_date = newValue;
+                    }
+                })
+            }
         },
 
         created: function() {
