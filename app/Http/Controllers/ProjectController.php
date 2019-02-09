@@ -18,7 +18,16 @@ use App\Models\ResourceDetail;
 use App\Models\BusinessUnit;
 use App\Models\MaterialRequisition;
 use App\Models\Bom;
+use App\Models\BomDetail;
+use App\Models\Material;
+use App\Models\Service;
 use App\Models\Cost;
+use App\Models\PurchaseRequisition;
+use App\Models\PurchaseRequisitionDetail;
+use App\Models\Rap;
+use App\Models\RapDetail;
+use App\Models\Stock;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use DB;
 use DateTime;
@@ -28,6 +37,12 @@ use Auth;
 class ProjectController extends Controller
 {
 
+    protected $pr;
+
+    public function __construct(PurchaseRequisitionController $pr)
+    {
+        $this->pr = $pr;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -332,21 +347,76 @@ class ProjectController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $datas = json_decode($request->structures);
+        $project_id = $request->project_id;
+        $actIdConverter = [];
+        $wbsIdConverter = [];
 
-        
-    }
-
-    function storeProjectStructure($current_wbs, $parent_wbs){
-        if($wbs){
-            if(count($wbs->wbss)>0){
-                foreach($wbs->wbss as $wbs_child){
-                    
-                    return self::getEarliestActivity($wbs_child,$earliest_date);
+        foreach ($datas as $dataTree) {
+            if(strpos($dataTree->id, 'WBS') !== false) {
+                $wbs_ref = WBS::where('code', $dataTree->id)->first();
+                $wbs = new WBS;
+                $wbs = $wbs_ref->replicate();
+                $wbs->code = self::generateWbsCode($project_id);
+                if(isset($wbsIdConverter[$dataTree->parent])){
+                    $wbs->wbs_id = $wbsIdConverter[$dataTree->parent];
                 }
-            }else{
-                return $earliest_date;
+                $wbs->project_id = $project_id;
+                $wbs->user_id = Auth::user()->id;
+                $wbs->branch_id = Auth::user()->branch->id;
+                $wbs->save();
+
+                $wbsIdConverter[$dataTree->id] = $wbs->id;
+                $bom_ref = Bom::where('wbs_id', $wbs_ref->id)->first();
+                if($bom_ref != null){
+                    $bom = new Bom;
+                    $bom = $bom_ref->replicate();
+                    $bom->code = self::generateBomCode($project_id);
+                    $bom->wbs_id = $wbs->id;
+                    $bom->project_id = $project_id;
+                    $bom->user_id = Auth::user()->id;
+                    $bom->branch_id = Auth::user()->branch->id;
+                    $bom->save();
+
+                    foreach ($bom_ref->bomDetails as $bomD) {
+                        $bom_detail = new BomDetail;
+                        $bom_detail = $bomD->replicate();
+                        $bom_detail->bom_id = $bom->id;
+                        $bom_detail->save();
+                    }
+                    self::createRap($project_id,$bom);
+                    self::checkStock($bom,$menu);
+                }
+            }elseif(strpos($dataTree->id, 'ACT') !== false){
+                $act_ref = Activity::where('code', $dataTree->id)->first();
+                $act = new Activity;
+                $act = $act_ref->replicate();
+                if(isset($wbsIdConverter[$dataTree->parent])){
+                    $act->code = self::generateActivityCode($wbsIdConverter[$dataTree->parent]);
+                    $act->wbs_id = $wbsIdConverter[$dataTree->parent];
+                }
+                $act->user_id = Auth::user()->id;
+                $act->branch_id = Auth::user()->branch->id;
+                if($act_ref->predecessor != null){
+                    $predecessor = json_decode($act_ref->predecessor);
+                    foreach($predecessor as $key => $id){
+                        $predecessor[$key] = $actIdConverter[$id];
+                    }
+                    $stringPredecessor = '['.implode(',', $predecessor).']';
+                    $act->predecessor = $stringPredecessor;
+                }
+                $act->save();
+
+                $actIdConverter[$act_ref->id] = $act->id;
+                
             }
         }
+
+        if($menu == "building"){
+            return redirect()->route('project.show', ['id' => $request->project_id])->with('success', 'Project Created');
+        }elseif($menu == "repair"){
+            return redirect()->route('project_repair.show', ['id' => $request->project_id])->with('success', 'Project Created');
+        }
+
     }
 
 
@@ -898,6 +968,207 @@ class ProjectController extends Controller
 		return $project_code;
     }
 
+    public function generateWbsCode($id){
+        $code = 'WBS';
+        $project = Project::find($id);
+        $projectSequence = $project->project_sequence;
+        $businessUnit = $project->business_unit_id;
+        $year = $project->created_at->year % 100;
+
+        $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
+        
+        $number = 1;
+		if(isset($modelWbs)){
+            $number += intval(substr($modelWbs->code, -4));
+		}
+
+        $wbs_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $wbs_code;
+    }
+
+    public function generateActivityCode($id){
+        $code = 'ACT';
+        $project = WBS::find($id)->project;
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+        $businessUnit = $project->business_unit_id;
+
+        $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
+        
+        $number = 1;
+		if(isset($modelActivity)){
+            $number += intval(substr($modelActivity->code, -4));
+		}
+
+        $activity_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $activity_code;
+    }
+
+    private function generateBomCode($project_id){
+        $code = 'BOM';
+        $project = Project::find($project_id);
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+
+        $modelBom = Bom::orderBy('code', 'desc')->where('project_id', $project_id)->first();
+        
+        $number = 1;
+		if(isset($modelBom)){
+            $number += intval(substr($modelBom->code, -4));
+		}
+
+        $bom_code = $code.sprintf('%02d', $year).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $bom_code;
+    }
+
+    private function generateRapNumber(){
+        $modelRap = Rap::orderBy('number','desc')->first();
+        $yearNow = date('y');
+        $number = 1;
+        if(isset($modelRap)){
+            $yearDoc = substr($modelRap->number, 4,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelRap->number, -5));
+            }
+        }
+        $year = date($yearNow.'00000');
+        $year = intval($year);
+
+		$rap_number = $year+$number;
+        $rap_number = 'RAP-'.$rap_number;
+        
+		return $rap_number;
+    }
+
+    public function createRap($project_id,$bom){
+        $rap_number = self::generateRapNumber();
+        $rap = new Rap;
+        $rap->number = $rap_number;
+        $rap->project_id = $project_id;
+        $rap->bom_id = $bom->id;
+        $rap->user_id = Auth::user()->id;
+        $rap->branch_id = Auth::user()->branch->id;
+        $rap->save();
+        self::saveRapDetail($rap->id,$bom->bomDetails);
+        $total_price = self::calculateTotalPrice($rap->id);
+
+        $modelRap = Rap::findOrFail($rap->id);
+        $modelRap->total_price = $total_price;
+        $modelRap->update();
+    }
+
+    public function saveRapDetail($rap_id,$bomDetails){
+        foreach($bomDetails as $bomDetail){
+            $rap_detail = new RapDetail;
+            $rap_detail->rap_id = $rap_id;
+            $rap_detail->material_id = $bomDetail->material_id;
+            $rap_detail->service_id = $bomDetail->service_id;
+            $rap_detail->quantity = $bomDetail->quantity;
+            if($bomDetail->material_id != null){
+                if($bomDetail->source == 'WIP'){
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price_service;
+                }else{
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+                }
+            }else{
+                $rap_detail->price = $bomDetail->quantity * $bomDetail->service->cost_standard_price;
+            }
+            $rap_detail->save();
+        }
+    }
+
+    public function calculateTotalPrice($id){
+        $modelRap = Rap::findOrFail($id);
+        $total_price = 0;
+        foreach($modelRap->RapDetails as $RapDetail){
+            $total_price += $RapDetail->price;
+        }
+        return $total_price;
+    }
+
+    public function checkStock($bom,$menu){
+        if($menu=="building"){
+            $business_unit = 1;
+        }elseif($menu == "repair"){
+            $business_unit = 2;
+        }
+        // create PR (optional)
+        $status = 0;
+        foreach($bom->bomDetails as $bomDetail){
+            if($bomDetail->source != 'WIP'){
+                if($bomDetail->material_id != null){
+                    $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
+                    $project_id = $bomDetail->bom->project_id;
+                    if(!isset($modelStock)){
+                        $status = 1;
+                    }else{
+                        $remaining = $modelStock->quantity - $modelStock->reserved;
+                        if($remaining < $bomDetail->quantity){
+                            $status = 1;
+                        }
+                    }
+                }
+            }
+        }
+        if($status == 1){
+            $pr_number = $this->pr->generatePRNumber();
+            $earliest_date_ref = null;
+            $earliest_date = self::getEarliestActivity($bom->wbs,$earliest_date_ref);
+            $modelProject = Project::findOrFail($project_id);
+
+            $PR = new PurchaseRequisition;
+            $PR->number = $pr_number;
+            $PR->business_unit_id = $business_unit;
+            $PR->required_date = $earliest_date;
+            $PR->type = 1;
+            $PR->project_id = $project_id;
+            $PR->bom_id = $bom->id;
+            $PR->description = 'AUTO PR FOR '.$modelProject->number;
+            $PR->status = 1;
+            $PR->user_id = Auth::user()->id;
+            $PR->branch_id = Auth::user()->branch->id;
+            $PR->save();
+        }
+
+        // reservasi & PR Detail
+        foreach($bom->bomDetails as $bomDetail){
+            if($bomDetail->source != 'WIP'){
+                if($bomDetail->material_id != null){
+                    $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
+                    
+                    if(isset($modelStock)){
+                        $remaining = $modelStock->quantity - $modelStock->reserved;
+                        if($remaining < $bomDetail->quantity){
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->material_id = $bomDetail->material_id;
+                            $PRD->wbs_id = $bomDetail->bom->wbs_id;
+                            $PRD->quantity = $bomDetail->quantity;
+                            $PRD->save();
+                        }
+                        $modelStock->reserved += $bomDetail->quantity;
+                        $modelStock->updated_at = Carbon::now();
+                        $modelStock->save();
+                    }else{
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $PR->id;
+                        $PRD->material_id = $bomDetail->material_id;
+                        $PRD->wbs_id = $bomDetail->bom->wbs_id;
+                        $PRD->quantity = $bomDetail->quantity;
+                        $PRD->save();
+
+                        $modelStock = new Stock;
+                        $modelStock->material_id = $bomDetail->material_id;
+                        $modelStock->quantity = 0;
+                        $modelStock->reserved = $bomDetail->quantity;
+                        $modelStock->branch_id = Auth::user()->branch->id;
+                        $modelStock->save();
+                    }
+                }
+            }
+        }
+    }
+
     function getOutstandingItem($wbss,$outstanding_item,$project,$today){
         foreach($wbss as $wbs){
             if($wbs->wbs){
@@ -1288,7 +1559,7 @@ class ProjectController extends Controller
         foreach($sorted as $date => $group){
             foreach($group as $wbs){
                 if($wbs->bom){
-                    if($wbs->bom->rap->total_price != 0){
+                    if($wbs->bom->rap->total_price != 0.0){
                         $tempPlanned->push([
                             "t" => $date, 
                             "y" => ($wbs->bom->rap->total_price/1000000)."",

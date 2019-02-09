@@ -565,7 +565,7 @@ class BOMController extends Controller
     }
     
     private function generateRapNumber(){
-        $modelRap = Rap::orderBy('created_at','desc')->first();
+        $modelRap = Rap::orderBy('number','desc')->first();
         $yearNow = date('y');
         
         $number = 1;

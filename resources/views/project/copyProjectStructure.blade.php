@@ -84,7 +84,7 @@
             <div id="myPopoverContent" style="display : none;">
                 
             </div>
-            <form id="create-project-structure" class="form-horizontal" method="POST" action="{{ route('project.storeCopyProjectStructure',$newProject->id) }}">
+            <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project.storeCopyProjectStructure') }}">
                 @csrf
                 <div class="box-footer">
                     <button type="button" class="btn btn-primary pull-right" onclick="submitForm()">CREATE</button>
@@ -99,9 +99,11 @@
 <script>
     var dataTree = @json($dataWbs);
     var project = @json($project);
+    var newProject = @json($newProject);
     const form = document.querySelector('form#create-project-structure');
+
     function submitForm() {
-        var treeData = $('#treeview').jstree(true).get_json('#', {flat:false})
+        var treeData = $('#treeview').jstree(true).get_json('#', {flat:true})
         // set flat:true to get all nodes in 1-level json
         var jsonData = JSON.stringify(treeData);
         let struturesElem = document.createElement('input');
@@ -109,6 +111,12 @@
         struturesElem.setAttribute('name', 'structures');
         struturesElem.setAttribute('value', jsonData);
         form.appendChild(struturesElem);
+
+        let project_id = document.createElement('input');
+        project_id.setAttribute('type', 'hidden');
+        project_id.setAttribute('name', 'project_id');
+        project_id.setAttribute('value', newProject.id);
+        form.appendChild(project_id);
         form.submit();
     }
     function deleteWbs(evt){
@@ -128,7 +136,10 @@
                 }
             }
         });
+        
     }
+
+
     $(document).ready(function(){     
            
         $('#treeview').jstree({
