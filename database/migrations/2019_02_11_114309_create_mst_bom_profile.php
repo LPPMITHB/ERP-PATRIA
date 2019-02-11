@@ -22,7 +22,7 @@ class CreateMstBomProfile extends Migration
             $table->string('source')->default('Stock');
             $table->timestamps();
 
-            $table->foreign('material_id')->references('id')->on('mst_wbs_profile');
+            $table->foreign('wbs_id')->references('id')->on('mst_wbs_profile');
             $table->foreign('material_id')->references('id')->on('mst_material');
             $table->foreign('service_id')->references('id')->on('mst_service');
         });
