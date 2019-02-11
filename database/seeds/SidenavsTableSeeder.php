@@ -165,10 +165,21 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'activity_repair.manageNetwork',
         ]);
 
-
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
             'route_name' => 'project_repair.projectCE',
+        ]);
+
+        $wbsProfile = Menu::where('route_name','wbs.indexWbsProfile')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfile,
+            'route_name' => 'wbs.indexWbsProfile',
+        ]);
+
+        $wbsProfileRepair = Menu::where('route_name','wbs_repair.indexWbsProfile')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfileRepair,
+            'route_name' => 'wbs_repair.indexWbsProfile',
         ]);
 
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;
