@@ -57,6 +57,15 @@
             
                                     <div class="col-xs-5 no-padding">Customer</div>
                                     <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(modelProject.customer.name)"><b>: {{modelProject.customer.name}}</b></div>
+                                    
+                                    <div class="col-sm-3 no-padding p-t-15">
+                                        <label for="">Currency</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                        <selectize :disabled="currencyOk" v-model="modelPO.currency" :settings="currencySettings">
+                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                        </selectize>
+                                    </div>
                                 </div>
                                 <div class="col-xs-12 col-md-4" v-else>
                                     <div class="col-xs-5 no-padding">PO Number</div>
@@ -73,24 +82,79 @@
             
                                     <div class="col-xs-5 no-padding">Customer</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
+
+                                    <div class="col-sm-3 no-padding p-t-15">
+                                        <label for="">Currency</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                        <selectize :disabled="currencyOk" v-model="modelPO.currency" :settings="currencySettings">
+                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                        </selectize>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
-                                        <div class="col-sm-12">
-                                            <label for="type">Vendor Name</label>
+                                        <div class="col-sm-5 p-t-7">
+                                            <label for="">Vendor Name</label>
+                                        </div>
+                                        <div class="col-sm-7 p-l-0">
                                             <selectize v-model="modelPO.vendor_id" :settings="vendorSettings">
                                                 <option v-for="(vendor, index) in modelVendor" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                             </selectize>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-10">
+                                            <label for="delivery_date">Delivery Date</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-5 p-l-0">
+                                            <input v-model="modelPO.delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="delivery_terms">Delivery Terms</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input class="form-control" v-model="modelPO.delivery_terms" placeholder="Delivery Terms">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="payment_terms">Payment Terms</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input class="form-control" v-model="modelPO.payment_terms" placeholder="Payment Terms">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
-                                    <div class="col-sm-12">
-                                        <label for="">PO Description</label>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <textarea class="form-control" rows="3" v-model="modelPO.description"></textarea>
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="">PO Description</label>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <textarea class="form-control" rows="2" v-model="modelPO.description"></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-sm-5 p-t-15">
+                                                <label for="estimated_freight">Estimated Freight ({{selectedCurrency}})</label>
+                                            </div>
+                                            <div class="col-sm-7 p-t-13 p-l-0">
+                                                <input class="form-control" v-model="modelPO.estimated_freight" placeholder="Estimated Freight">
+                                            </div>
+                                        </div>
+    
+                                        <div class="row">
+                                            <div class="col-sm-5 p-t-15">
+                                                <label for="">Tax (%)</label>
+                                            </div>
+                                            <div class="col-sm-7 p-t-13 p-l-0">
+                                                <input class="form-control" v-model="modelPO.tax" placeholder="Tax">
+                                            </div>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +169,7 @@
                                                 <th v-else style="width: 30%">Resource Name</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
-                                                <th style="width: 15%">Price / pcs (Rp.)</th>
+                                                <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 30%">WBS Name</th>
                                                 <th style="width: 15%">Alocation</th>
                                             </tr>
@@ -158,16 +222,32 @@
         modelPO : @json($modelPO),
         PODetail : @json($modelPOD),
         modelProject : @json($modelProject),
+        currencies : @json($currencies),
         modelVendor : [],
         vendorSettings: {
             placeholder: 'Please Select Vendor'
         },
+        currencySettings: {
+            placeholder: 'Please Select Currency'
+        },
+        selectedCurrency: "",
         submittedForm : {},
     }
 
     var vm = new Vue({
         el : '#po',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format: 'dd-mm-yyyy',
+            });
+            $("#delivery_date").datepicker().on(
+                "changeDate", () => {
+                    this.delivery_date = $('#delivery_date').val();
+                }
+            );
+        },
         computed : {
             dataOk: function(){
                 let isOk = false;
@@ -176,6 +256,34 @@
                 }
                 return isOk;
             },
+            currencyOk : function(){
+                let isOk = false;
+                var currency_value = 1;
+                this.currencies.forEach(data => {
+                    if(this.modelPO.currency == data.name && this.modelPO.currency != "Rupiah"){
+                        currency_value = data.value;
+                    }
+                });
+
+                this.PODetail.forEach(POD => {
+                    var ref = 0;
+                    var decimal = ((POD.old_price / currency_value)+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            ref = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            ref = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        ref = (decimal[0]+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                    if(parseFloat(POD.total_price.replace(/,/g , '')) != ref.replace(/,/g, '')){
+                        isOk = true;
+                    }   
+                });
+                return isOk;
+            }
         },
         methods : {
             tooltip(text){
@@ -209,6 +317,7 @@
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
 
+                this.modelPO.estimated_freight = this.modelPO.estimated_freight.replace(/,/g , '');
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , '');      
                     POD.total_price = POD.total_price.replace(/,/g , '');      
@@ -231,22 +340,111 @@
                 handler: function(newValue) {
                     var data = newValue;
                     data.forEach(POD => {
+                        var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                POD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                POD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
                         POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");     
-                        POD.total_price = (POD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                     });
                 },
                 deep: true
             },
+            'modelPO.tax' : function (newValue){
+                var tax = parseInt((newValue+"").replace(/,/g, ''));
+                if(newValue > 100){
+                    iziToast.warning({
+                        title: 'Tax cannot exceed 100% !',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    this.tax = 100;
+                }
+                var decimal = (newValue+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.tax = (this.tax+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'modelPO.estimated_freight': function (newValue){
+                var decimal = (newValue+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.modelPO.estimated_freight = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.modelPO.estimated_freight = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.modelPO.estimated_freight = (this.modelPO.estimated_freight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'modelPO.currency':function (newValue) {
+                if(newValue == ''){
+                    this.modelPO.currency = this.currencies[0].name;
+                }
+                this.currencies.forEach(data => {
+                    if(newValue == data.name){
+                        this.selectedCurrency = data.unit;
+                        this.PODetail.forEach(pod => {
+                            pod.total_price = parseFloat((pod.price+"").replace(/,/g , '')) / data.value;
+                        });
+                    }
+                });
+            },
         },
         created: function() {
+            this.modelPO.delivery_date = this.modelPO.delivery_date.split("-").reverse().join("-");
             this.getVendor();
+            var decimal = (this.modelPO.estimated_freight+"").replace(/,/g, '').split('.');
+            if(decimal[1] != undefined){
+                var maxDecimal = 2;
+                if((decimal[1]+"").length > maxDecimal){
+                    this.modelPO.estimated_freight = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                }else{
+                    this.modelPO.estimated_freight = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                }
+            }else{
+                this.modelPO.estimated_freight = (this.modelPO.estimated_freight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            this.type = this.modelPO.purchase_requisition.type;
+
             var data = this.PODetail;
             data.forEach(POD => {
-                POD.total_price = POD.total_price / POD.quantity;        
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
-                POD.total_price = (POD.total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                POD.price = parseFloat((POD.total_price / POD.quantity+"").replace(/,/g , ''));
+                POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;        
+                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
+                var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        POD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        POD.total_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                } 
             });
-            this.type = this.modelPO.purchase_requisition.type;
+
+            this.currencies.forEach(data => {
+                if(this.modelPO.currency == data.name){
+                    this.selectedCurrency = data.unit;
+                }
+            });
         },
     });
 </script>

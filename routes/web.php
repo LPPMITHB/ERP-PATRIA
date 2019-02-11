@@ -222,6 +222,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
 //Resource Management Routes
 Route::name('resource_repair.')->prefix('resource_repair')->group(function() {
+    Route::put('/updateDetail', 'ResourceController@updateDetail')->name('updateDetail')->middleware('can:show-resource');
+    
     Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource-repair');
 
     Route::get('/selectPO', 'ResourceController@selectPO')->name('selectPO')->middleware('can:create-receive-resource-repair');
@@ -431,6 +433,16 @@ Route::name('project.')->prefix('project')->group(function() {
     //Project
     Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project');
 
+    Route::get('/indexCopyProject', 'ProjectController@indexCopyProject')->name('indexCopyProject')->middleware('can:create-project');
+    
+    Route::get('/copyProject/{id}', 'ProjectController@copyProject')->name('copyProject')->middleware('can:create-project');
+
+    Route::post('/storeCopyProject', 'ProjectController@storeCopyProject')->name('storeCopyProject')->middleware('can:create-project');
+
+    Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project');
+
+    Route::post('/storeCopyProjectStructure', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project');
+
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project');
 
     Route::get('/{id}', 'ProjectController@show')->name('show')->middleware('can:show-project');
@@ -456,6 +468,16 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     //Project
     Route::get('/create', 'ProjectController@create')->name('create')->middleware('can:create-project-repair');
+
+    Route::get('/indexCopyProject', 'ProjectController@indexCopyProject')->name('indexCopyProject')->middleware('can:create-project-repair');
+    
+    Route::get('/copyProject/{id}', 'ProjectController@copyProject')->name('copyProject')->middleware('can:create-project-repair');
+
+    Route::post('/storeCopyProject', 'ProjectController@storeCopyProject')->name('storeCopyProject')->middleware('can:create-project-repair');
+
+    Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project-repair');
+
+    Route::post('/storeCopyProjectStructure/{new_id}', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project-repair');
 
@@ -803,6 +825,8 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
     Route::patch('/', 'PurchaseOrderController@update')->name('update')->middleware('can:edit-purchase-order');
 
     Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order');
+
+    Route::get('/print/{id}', 'PurchaseOrderController@printPdf')->name('print')->middleware('can:show-purchase-order');  
 });
 
 //Purchase Order Repair Routes
@@ -828,6 +852,8 @@ Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(fu
     Route::patch('/', 'PurchaseOrderController@update')->name('update')->middleware('can:edit-purchase-order-repair');
 
     Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order-repair');
+
+    Route::get('/print/{id}', 'PurchaseOrderController@printPdf')->name('print')->middleware('can:show-purchase-order-repair');  
 });
 
 //Work Order Routes
@@ -968,6 +994,9 @@ Route::name('goods_receipt.')->prefix('goods_receipt')->group(function() {
     Route::get('/', 'GoodsReceiptController@index')->name('index')->middleware('can:list-goods-receipt');
 
     Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt');
+
+    Route::get('/print/{id}', 'GoodsReceiptController@printPdf')->name('print')->middleware('can:show-goods-receipt');    
+
 });
 
 // Goods Receipt Repair Routes
@@ -989,6 +1018,9 @@ Route::name('goods_receipt_repair.')->prefix('goods_receipt_repair')->group(func
     Route::get('/', 'GoodsReceiptController@index')->name('index')->middleware('can:list-goods-receipt-repair');
 
     Route::get('/{id}', 'GoodsReceiptController@show')->name('show')->middleware('can:show-goods-receipt-repair');
+
+    Route::get('/print/{id}', 'GoodsReceiptController@printPdf')->name('print')->middleware('can:show-goods-receipt-repair');    
+
 });
 
 //Goods Return 

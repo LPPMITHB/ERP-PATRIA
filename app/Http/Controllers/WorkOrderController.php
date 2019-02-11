@@ -14,6 +14,7 @@ use App\Models\WorkRequest;
 use App\Models\WorkRequestDetail;
 use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
+use App\Models\Configuration;
 use DateTime;
 use Auth;
 use DB;
@@ -67,6 +68,7 @@ class WorkOrderController extends Controller
     {
         $route = $request->route()->getPrefix();    
         $datas = json_decode($request->datas);
+        $currencies = Configuration::get('currencies');
         $modelWR = WorkRequest::where('id',$datas->id)->with('project')->first();
         $modelWRD = WorkRequestDetail::whereIn('id',$datas->checkedWRD)->with('material','wbs')->get();
         foreach($modelWRD as $key=>$WRD){
@@ -80,7 +82,7 @@ class WorkOrderController extends Controller
 
         $modelProject = Project::where('id',$modelWR->project_id)->with('ship','customer')->first();
 
-        return view('work_order.create', compact('modelWR','modelWRD','modelProject','route'));
+        return view('work_order.create', compact('modelWR','modelWRD','modelProject','route','currencies'));
     }
 
     public function selectWRD($id, Request $request)
@@ -98,7 +100,7 @@ class WorkOrderController extends Controller
         return view('work_order.selectWRD', compact('modelWR','modelWRD','route'));
     }
 
-
+    
     public function store(Request $request)
     {
         $route = $request->route()->getPrefix();    
@@ -111,8 +113,11 @@ class WorkOrderController extends Controller
             $WO->number = $wo_number;
             $WO->work_request_id = $datas->wr_id;
             $WO->vendor_id = $datas->vendor_id;
-            $required_date = DateTime::createFromFormat('m/j/Y', $datas->required_date);
-            $WO->required_date = $required_date->format('Y-m-d');
+            $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->delivery_date);
+            $WO->delivery_date = $delivery_date->format('Y-m-d');
+            $WO->payment_terms = $datas->payment_terms;
+            $WO->estimated_freight = $datas->estimated_freight;
+            $WO->tax = $datas->tax;
             $WO->project_id = $datas->project_id;
             $WO->description = $datas->description;
             $WO->status = 1;
@@ -137,9 +142,8 @@ class WorkOrderController extends Controller
                 if($statusWR === true){
                     $status = 1;
                 }
-                $total_price += $WOD->total_price -($WOD->total_price * ($WOD->discount/100));
+                $total_price += $WOD->total_price;
             }
-
             $WO->total_price = $total_price;
             $WO->save(); 
             $this->checkStatusWr($datas->wr_id,$status);
@@ -162,9 +166,15 @@ class WorkOrderController extends Controller
     public function show($id,Request $request)
     {
         $modelWO = WorkOrder::findOrFail($id);
-        $route = $request->route()->getPrefix();    
+        $modelWOD = $modelWO->workOrderDetails;
+        $route = $request->route()->getPrefix(); 
+        $total_discount = 0;
+        foreach($modelWOD as $wod){
+            $total_discount += $wod->total_price * ($wod->discount/100);
+        }   
+        $tax = ($modelWO->total_price - $total_discount) * ($modelWO->tax/100);
 
-        return view('work_order.show', compact('modelWO', 'route'));
+        return view('work_order.show', compact('modelWO', 'route','total_discount','tax'));
     }
 
     public function showApprove($id, Request $request)

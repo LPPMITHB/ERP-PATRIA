@@ -15,13 +15,13 @@
                 /** Define now the real margins of every page in the PDF **/
                 @page{
                     margin-top:310px;
-                    margin-bottom : 240px;
+                    margin-bottom : 130px;
                 }
 
                 /** Define the header rules **/
                 header {
                     position: fixed;
-                    top: -268px;
+                    top: -248px;
                     left: 0cm;
                     right: 0cm;
                 }
@@ -82,21 +82,15 @@
                     </div>
                     <div style="margin-top:-100px; padding-top: -10px">
                         <div style="margin-left: 450px;">
-                            <div style="font-size: 11px;">WO Number  </div>
+                            <div style="font-size: 11px;">WR Number  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                -               
+                                {{$modelWR->number}}             
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
-                            <div style="font-size: 11px;">WO Date  </div>
+                            <div style="font-size: 11px;">WR Date  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                -                    
-                            </div>
-                        </div>
-                        <div  style="margin-left: 450px;">
-                            <div style="font-size: 11px;">PR Number  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelWR->number}}                    
+                                {{$modelWR->created_at}}                    
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
@@ -127,7 +121,7 @@
                 </div>
             </div>
         </header>
-        <main style="margin-top: -5px">
+        <main>
             <div class="row">
                 <div class="col-xs-12">
                     <div>
@@ -136,8 +130,9 @@
                                 <tr>
                                     <th style="font-size: 11px" width="4%" class="text-center">No</th>
                                     <th style="font-size: 11px" width="20%" class="text-center" >Material Name</th>
-                                    <th style="font-size: 11px" width="30%" class="text-center">Description</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center">Qty</th>
+                                    <th style="font-size: 11px" width="20%" class="text-center">Description</th>
+                                    <th style="font-size: 11px" width="12%" class="text-center">Required Date</th>
+                                    <th style="font-size: 11px" width="8%" class="text-center">Qty</th>
                                     <th style="font-size: 11px" width="13%" class="text-center">Price / pcs</th>
                                     <th style="font-size: 11px" width="6%" class="text-center">Disc (%)</th>
                                     <th style="font-size: 11px" width="17%" class="text-center">Amount</th>
@@ -148,9 +143,10 @@
                                     @if($WRD->quantity > 0)
                                         <tr>
                                             <td style="font-size: 11px" class="text-center" width="4%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $WRD->description }}</td>
-                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{ number_format($WRD->quantity) }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="20%" class="tdBreakWord">{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="30%" class="tdBreakWord">{{ $WRD->description }}</td>
+                                            <td style="font-size: 11px" width="12%" class="tdBreakWord text-center">{{ ($WRD->required_date != null) ? date("d-m-Y", strtotime($WRD->required_date)) : "-"}} </td>
+                                            <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ number_format($WRD->quantity) }}</td>
                                             <td style="font-size: 11px" width="13%" class="tdBreakWord text-center">-</td>
                                             <td style="font-size: 11px" width="6%" class="tdBreakWord text-center">-</td>
                                             <td style="font-size: 11px" width="17%" class="tdBreakWord text-center">-</td>
@@ -160,52 +156,25 @@
                             </tbody>
                         </table>
                         <div id="footer" style="page-break-inside:avoid;margin-left: -10px; ">
-                            <div style="font-size: 11px; margin-top:5px;">Say :</div>
-                            <div style="height: 20px; font-size: 9px; width:420px; padding-left:5px; margin-left:30px; margin-top:-16px; border: black 1px solid; border-radius: 5px;">
-                                    
-                            </div>
-                            <div class="col-xs-12" style="margin-top:3px; width:435px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:80px;">
-                                <div style="font-size: 11px">Description</div>
+                            <div class="col-xs-12" style="margin-top:3px; width:230px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:80px;">
+                                <div style="font-size: 11px"><b>Description</b></div>
                                 <div style="font-size: 11px">{{$modelWR->description}}</div>
                             </div>
-                            <div style="margin-left: 430px; margin-top: -20px">
-                                <div style="width:265px; margin-left:30px; margin-top:-5px; border: black 1px solid; border-radius: 5px;">
-                                    <div style="margin-left: 48px; font-size: 12px">Sub Total</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
-                                    <div style="margin-left: 52px; font-size: 12px">Discount</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
-                                </div>
-                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
-                                    <div style="margin-left: 79px; font-size: 12px">Tax</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
-                                </div>
-                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius:05px;">
-                                    <div style="margin-left: 6px; font-size: 12px">Estimated Freight</div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">-</div>
-                                </div>
-                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
-                                    <div style="margin-left: 36px; font-size: 12px"><b>Total Order</b></div>
-                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px"><b>:</b></div>
-                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right"><b>-</b></div>
-                                </div>
-                            </div>
                             <div>
-                                <div style="margin-top: 10px; font-size: 12px">Prepared by</div>
-                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-left: 300px; margin-top: 3px; font-size: 11px">Prepared By</div>
+                                <hr style="margin-left: 300px; margin-top: 45px; width:100px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-left: 300px;margin-top: -20px;font-size: 11px">Date</div>
                             </div>
-                            <div style="margin-left: 250px; margin-top:-150px">
-                                <div style="margin-top: 10px; font-size: 12px">Aproved by</div>
-                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                            <div style="margin-left: 440px; margin-top:-150px">
+                                <div style="margin-top: 3px; font-size: 11px">Aproved By</div>
+                                <hr style="margin-left: 0px; margin-top: 45px; width:100px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px;font-size: 11px">Date</div>
                             </div>
-                            <div style="margin-left: 500px; margin-top:-150px">
-                                <div style="margin-top: 10px; font-size: 12px">Supplier Confirmation</div>
-                                <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px; font-size: 12px;">Chop and Sign</div>
-                                <div style=" font-size: 12px">Date</div>
+                            <div style="margin-left: 580px; margin-top:-150px">
+                                <div style="margin-top: 3px; font-size: 11px">Supplier Confirmation</div>
+                                <hr style="margin-left: 0px; margin-top: 45px; width:100px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="font-size: 11px; margin-top: -20px;">Chop and Sign</div>
+                                <div style="font-size: 11px">Date</div>
                             </div>
                         </div>
                     </div> 

@@ -16,7 +16,7 @@ class CreateTrxWorkRequestTable extends Migration
         Schema::create('trx_work_request', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number')->unique();
-            $table->date('valid_date');
+            // $table->date('valid_date');
             $table->unsignedInteger('project_id')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->default(1);

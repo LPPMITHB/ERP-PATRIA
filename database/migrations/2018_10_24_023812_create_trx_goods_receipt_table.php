@@ -20,6 +20,7 @@ class CreateTrxGoodsReceiptTable extends Migration
             $table->unsignedInteger('purchase_order_id')->nullable();
             $table->unsignedInteger('work_order_id')->nullable();
             $table->unsignedInteger('vendor_id')->nullable();
+            $table->date('ship_date')->nullable();
             $table->text('description');
             $table->integer('type');
             $table->integer('status')->default(1);

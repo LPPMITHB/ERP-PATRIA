@@ -18,7 +18,16 @@ use App\Models\ResourceDetail;
 use App\Models\BusinessUnit;
 use App\Models\MaterialRequisition;
 use App\Models\Bom;
+use App\Models\BomDetail;
+use App\Models\Material;
+use App\Models\Service;
 use App\Models\Cost;
+use App\Models\PurchaseRequisition;
+use App\Models\PurchaseRequisitionDetail;
+use App\Models\Rap;
+use App\Models\RapDetail;
+use App\Models\Stock;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use DB;
 use DateTime;
@@ -28,6 +37,12 @@ use Auth;
 class ProjectController extends Controller
 {
 
+    protected $pr;
+
+    public function __construct(PurchaseRequisitionController $pr)
+    {
+        $this->pr = $pr;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -212,6 +227,72 @@ class ProjectController extends Controller
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
 
+    public function copyProjectStructure($id, $newProject_id){
+        $project = Project::find($id);
+        $newProject = Project::find($newProject_id);
+        $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
+        $wbss = $project->wbss;
+        $dataWbs = Collection::make();
+
+        $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
+        $dataWbs->push([
+            "id" => $project->number, 
+            "parent" => "#",
+            "text" => $project->name. " | Weight : (".$totalWeightProject."% / 100%)",
+            "icon" => "fa fa-ship"
+        ]);
+    
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                if(count($wbs->activities)>0){
+                    $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%",
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                    foreach($wbs->activities as $activity){
+                        $dataWbs->push([
+                            "id" => $activity->code , 
+                            "parent" => $activity->wbs->code,
+                            "text" => $activity->name. " | Weight : ".$activity->weight."%",
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }else{
+                    $dataWbs->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }
+            }else{
+                if(count($wbs->activities)>0){
+                    foreach($wbs->activities as $activity){
+                        $dataWbs->push([
+                            "id" => $activity->code , 
+                            "parent" => $activity->wbs->code,
+                            "text" => $activity->name. " | Weight : ".$activity->weight."%",
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }
+                $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
+
+                $dataWbs->push([
+                    "id" => $wbs->code , 
+                    "parent" => $project->number,
+                    "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                    "icon" => "fa fa-suitcase",
+                ]);
+            } 
+        }
+        
+        return view('project.copyProjectStructure', compact('dataWbs','project','mainMenu','newProject'));
+    }
+
     public function index(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
@@ -239,7 +320,105 @@ class ProjectController extends Controller
 
         return view('project.create', compact('customers','ships','project','menu'));
     }
-  
+
+    public function indexCopyProject(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        if($menu=="repair"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
+        }else if($menu == "building"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 1)->get();
+        }
+
+        return view('project.indexCopyProject', compact('projects','menu'));
+    }
+
+    public function copyProject(Request $request, $id)
+    {
+        $project = Project::findOrFail($id);
+        $customers = Customer::all();
+        $ships = Ship::all();
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
+
+        
+        return view('project.copyProjectInfo', compact('project','customers','ships','menu'));
+    }
+    public function storeCopyProjectStructure(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        $datas = json_decode($request->structures);
+        $project_id = $request->project_id;
+        $actIdConverter = [];
+        $wbsIdConverter = [];
+
+        foreach ($datas as $dataTree) {
+            if(strpos($dataTree->id, 'WBS') !== false) {
+                $wbs_ref = WBS::where('code', $dataTree->id)->first();
+                $wbs = new WBS;
+                $wbs = $wbs_ref->replicate();
+                $wbs->code = self::generateWbsCode($project_id);
+                if(isset($wbsIdConverter[$dataTree->parent])){
+                    $wbs->wbs_id = $wbsIdConverter[$dataTree->parent];
+                }
+                $wbs->project_id = $project_id;
+                $wbs->user_id = Auth::user()->id;
+                $wbs->branch_id = Auth::user()->branch->id;
+                $wbs->save();
+
+                $wbsIdConverter[$dataTree->id] = $wbs->id;
+                $bom_ref = Bom::where('wbs_id', $wbs_ref->id)->first();
+                if($bom_ref != null){
+                    $bom = new Bom;
+                    $bom = $bom_ref->replicate();
+                    $bom->code = self::generateBomCode($project_id);
+                    $bom->wbs_id = $wbs->id;
+                    $bom->project_id = $project_id;
+                    $bom->user_id = Auth::user()->id;
+                    $bom->branch_id = Auth::user()->branch->id;
+                    $bom->save();
+
+                    foreach ($bom_ref->bomDetails as $bomD) {
+                        $bom_detail = new BomDetail;
+                        $bom_detail = $bomD->replicate();
+                        $bom_detail->bom_id = $bom->id;
+                        $bom_detail->save();
+                    }
+                    self::createRap($project_id,$bom);
+                    self::checkStock($bom,$menu);
+                }
+            }elseif(strpos($dataTree->id, 'ACT') !== false){
+                $act_ref = Activity::where('code', $dataTree->id)->first();
+                $act = new Activity;
+                $act = $act_ref->replicate();
+                if(isset($wbsIdConverter[$dataTree->parent])){
+                    $act->code = self::generateActivityCode($wbsIdConverter[$dataTree->parent]);
+                    $act->wbs_id = $wbsIdConverter[$dataTree->parent];
+                }
+                $act->user_id = Auth::user()->id;
+                $act->branch_id = Auth::user()->branch->id;
+                if($act_ref->predecessor != null){
+                    $predecessor = json_decode($act_ref->predecessor);
+                    foreach($predecessor as $key => $id){
+                        $predecessor[$key] = $actIdConverter[$id];
+                    }
+                    $stringPredecessor = '['.implode(',', $predecessor).']';
+                    $act->predecessor = $stringPredecessor;
+                }
+                $act->save();
+
+                $actIdConverter[$act_ref->id] = $act->id;
+                
+            }
+        }
+
+        if($menu == "building"){
+            return redirect()->route('project.show', ['id' => $request->project_id])->with('success', 'Project Created');
+        }elseif($menu == "repair"){
+            return redirect()->route('project_repair.show', ['id' => $request->project_id])->with('success', 'Project Created');
+        }
+
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -277,6 +456,8 @@ class ProjectController extends Controller
             if($project->name == $request->name){
                 if($menu == "building"){
                     return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                }else{
+                    return redirect()->route('project_repair.create')->with('error','The project number has been taken')->withInput();
                 }
             }
             if($project->number == $request->number){
@@ -344,6 +525,108 @@ class ProjectController extends Controller
                 return redirect()->route('project.create')->with( 'error',$e->getMessage())->withInput();
             }elseif($menu == "repair"){
                 return redirect()->route('project_repair.create')->with( 'error',$e->getMessage())->withInput();
+            }
+        }
+    }
+
+    public function storeCopyProject(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        if($menu == "building"){
+            $this->validate($request, [
+                'number' => 'required',
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+                'flag' => 'required',
+                'class_name' => 'required'
+            ]);
+        }elseif($menu == "repair"){
+            $this->validate($request, [
+                'number' => 'required',
+                'customer' => 'required',
+                'ship' => 'required',
+                'planned_start_date' => 'required',
+                'planned_end_date' => 'required',
+                'planned_duration' => 'required',
+            ]);
+        } 
+        $projects = Project::all();
+        foreach ($projects as $project) {
+            if($project->name == $request->name){
+                if($menu == "building"){
+                    return redirect()->route('project.copyProject',$request->project_ref)->with('error','The project name has been taken')->withInput();
+                }else{
+                    return redirect()->route('project_repair.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
+                }
+            }
+            if($project->number == $request->number){
+                if($menu == "building"){
+                    return redirect()->route('project.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
+                }else{
+                    return redirect()->route('project_repair.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
+                }
+            }
+        }
+
+        DB::beginTransaction();
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->first();
+        try {
+            $project = new Project;
+            $project->number =  $request->number;
+            $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
+            $project->name = $request->name;
+            $project->description = $request->description;
+            $project->customer_id = $request->customer;
+            $project->ship_id = $request->ship;
+            $project->flag = $request->flag;
+            $project->class_name = $request->class_name;
+            $project->class_contact_person_name = $request->class_contact_person_name;
+            $project->class_contact_person_phone = $request->class_contact_person_phone;
+            $project->class_contact_person_email = $request->class_contact_person_email;
+
+            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
+            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
+
+            $project->planned_start_date = $planStartDate->format('Y-m-d');
+            $project->planned_end_date = $planEndDate->format('Y-m-d');
+            $project->planned_duration =  $request->planned_duration;
+            $project->progress = 0;
+            $project->business_unit_id = $request->business_unit_id;
+            $project->user_id = Auth::user()->id;
+            $project->branch_id = Auth::user()->branch->id;
+            if($request->hasFile('drawing')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('drawing')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('drawing')->storeAs('documents/project',$fileNameToStore);
+            }else{
+                $fileNameToStore =  null;
+            }
+            $project->drawing = $fileNameToStore;
+            $project->save();
+
+            
+            DB::commit();
+            if($menu == "building"){
+                return redirect()->route('project.copyProjectStructure', ['old_id' => $request->project_ref,'new_id' => $project->id])->with('success', 'Project Created');
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.copyProjectStructure', ['old_id' => $request->project_ref,'new_id' => $project->id])->with('success', 'Project Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($menu == "building"){
+                return redirect()->route('project.copyProject',$request->project_ref)->with( 'error',$e->getMessage())->withInput();
+            }elseif($menu == "repair"){
+                return redirect()->route('project_repair.copyProject',$request->project_ref)->with( 'error',$e->getMessage())->withInput();
             }
         }
     }
@@ -563,54 +846,55 @@ class ProjectController extends Controller
 
         $planned = Collection::make();
         $materialEvaluation = Collection::make();
-
+        
         $actual = Collection::make();
         foreach($project->wbss as $wbs){
             $actualCostPerWbs = 0;
             $plannedCostPerWbs = $wbs->bom != null ? $wbs->bom->rap != null ? $wbs->bom->rap->total_price : 0 : 0;
-
+            
             foreach($wbs->materialRequisitionDetails as $mrd){
                 $actualCostPerWbs = $mrd->material->cost_standard_price * $mrd->issued;
             }
-
+            
             $planned->push([
                 "wbs_name" => $wbs->name,
                 "cost" => $plannedCostPerWbs,                   
-            ]);
-
-            $actual->push([
-                "wbs_name" => $wbs->name,
-                "cost" => $actualCostPerWbs,                   
-            ]);
-        }
+                ]);
+                
+                $actual->push([
+                    "wbs_name" => $wbs->name,
+                    "cost" => $actualCostPerWbs,                   
+                    ]);
+                }
 
         $modelWBS = WBS::where('project_id',$id)->get();
         foreach($modelWBS as $wbs){
             if($wbs->bom){
                 foreach($wbs->bom->bomDetails as $bomDetail){
-                    if(count($bomDetail->material->materialRequisitionDetails)>0){
-                        $status = 0;
-                        foreach($materialEvaluation as $key => $data){
-                            $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
-                            if($material == $data['material']){
-                                $status = 1;
-                                $quantity = $bomDetail->quantity + $data['quantity'];
-                                $issued = $data['used'];
-    
-                                unset($materialEvaluation[$key]);
-                                $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
-    
-                                foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                                    if ($mrd->wbs_id == $id) {
-                                        $materialEvaluation->push([
-                                            "material" => $material,
-                                            "quantity" => $quantity,
-                                            "used" => $issued + $mrd->issued,
-                                        ]);
+                    if($bomDetail->material){
+                        if(count($bomDetail->material->materialRequisitionDetails)>0){
+                            $status = 0;
+                                foreach($materialEvaluation as $key => $data){
+                                    $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                                    if($material == $data['material']){
+                                        $status = 1;
+                                        $quantity = $bomDetail->quantity + $data['quantity'];
+                                        $issued = $data['used'];
+            
+                                        unset($materialEvaluation[$key]);
+                                        $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+            
+                                        foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                                            if ($mrd->wbs_id == $id) {
+                                                $materialEvaluation->push([
+                                                    "material" => $material,
+                                                    "quantity" => $quantity,
+                                                    "used" => $issued + $mrd->issued,
+                                                ]);
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
                         if($status == 0){
                             foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                                 if ($mrd->wbs_id == $id) {
@@ -651,6 +935,7 @@ class ProjectController extends Controller
                     }
                 }
             }
+        }
             
         return view('project.showPCE', compact('modelWBS','project','actual','planned','materialEvaluation','menu'));
     }
@@ -681,6 +966,207 @@ class ProjectController extends Controller
 
         $project_code = $code.'-'.sprintf('%02d', $number);
 		return $project_code;
+    }
+
+    public function generateWbsCode($id){
+        $code = 'WBS';
+        $project = Project::find($id);
+        $projectSequence = $project->project_sequence;
+        $businessUnit = $project->business_unit_id;
+        $year = $project->created_at->year % 100;
+
+        $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
+        
+        $number = 1;
+		if(isset($modelWbs)){
+            $number += intval(substr($modelWbs->code, -4));
+		}
+
+        $wbs_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $wbs_code;
+    }
+
+    public function generateActivityCode($id){
+        $code = 'ACT';
+        $project = WBS::find($id)->project;
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+        $businessUnit = $project->business_unit_id;
+
+        $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
+        
+        $number = 1;
+		if(isset($modelActivity)){
+            $number += intval(substr($modelActivity->code, -4));
+		}
+
+        $activity_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $activity_code;
+    }
+
+    private function generateBomCode($project_id){
+        $code = 'BOM';
+        $project = Project::find($project_id);
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+
+        $modelBom = Bom::orderBy('code', 'desc')->where('project_id', $project_id)->first();
+        
+        $number = 1;
+		if(isset($modelBom)){
+            $number += intval(substr($modelBom->code, -4));
+		}
+
+        $bom_code = $code.sprintf('%02d', $year).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $bom_code;
+    }
+
+    private function generateRapNumber(){
+        $modelRap = Rap::orderBy('number','desc')->first();
+        $yearNow = date('y');
+        $number = 1;
+        if(isset($modelRap)){
+            $yearDoc = substr($modelRap->number, 4,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelRap->number, -5));
+            }
+        }
+        $year = date($yearNow.'00000');
+        $year = intval($year);
+
+		$rap_number = $year+$number;
+        $rap_number = 'RAP-'.$rap_number;
+        
+		return $rap_number;
+    }
+
+    public function createRap($project_id,$bom){
+        $rap_number = self::generateRapNumber();
+        $rap = new Rap;
+        $rap->number = $rap_number;
+        $rap->project_id = $project_id;
+        $rap->bom_id = $bom->id;
+        $rap->user_id = Auth::user()->id;
+        $rap->branch_id = Auth::user()->branch->id;
+        $rap->save();
+        self::saveRapDetail($rap->id,$bom->bomDetails);
+        $total_price = self::calculateTotalPrice($rap->id);
+
+        $modelRap = Rap::findOrFail($rap->id);
+        $modelRap->total_price = $total_price;
+        $modelRap->update();
+    }
+
+    public function saveRapDetail($rap_id,$bomDetails){
+        foreach($bomDetails as $bomDetail){
+            $rap_detail = new RapDetail;
+            $rap_detail->rap_id = $rap_id;
+            $rap_detail->material_id = $bomDetail->material_id;
+            $rap_detail->service_id = $bomDetail->service_id;
+            $rap_detail->quantity = $bomDetail->quantity;
+            if($bomDetail->material_id != null){
+                if($bomDetail->source == 'WIP'){
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price_service;
+                }else{
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+                }
+            }else{
+                $rap_detail->price = $bomDetail->quantity * $bomDetail->service->cost_standard_price;
+            }
+            $rap_detail->save();
+        }
+    }
+
+    public function calculateTotalPrice($id){
+        $modelRap = Rap::findOrFail($id);
+        $total_price = 0;
+        foreach($modelRap->RapDetails as $RapDetail){
+            $total_price += $RapDetail->price;
+        }
+        return $total_price;
+    }
+
+    public function checkStock($bom,$menu){
+        if($menu=="building"){
+            $business_unit = 1;
+        }elseif($menu == "repair"){
+            $business_unit = 2;
+        }
+        // create PR (optional)
+        $status = 0;
+        foreach($bom->bomDetails as $bomDetail){
+            if($bomDetail->source != 'WIP'){
+                if($bomDetail->material_id != null){
+                    $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
+                    $project_id = $bomDetail->bom->project_id;
+                    if(!isset($modelStock)){
+                        $status = 1;
+                    }else{
+                        $remaining = $modelStock->quantity - $modelStock->reserved;
+                        if($remaining < $bomDetail->quantity){
+                            $status = 1;
+                        }
+                    }
+                }
+            }
+        }
+        if($status == 1){
+            $pr_number = $this->pr->generatePRNumber();
+            $earliest_date_ref = null;
+            $earliest_date = self::getEarliestActivity($bom->wbs,$earliest_date_ref);
+            $modelProject = Project::findOrFail($project_id);
+
+            $PR = new PurchaseRequisition;
+            $PR->number = $pr_number;
+            $PR->business_unit_id = $business_unit;
+            $PR->required_date = $earliest_date;
+            $PR->type = 1;
+            $PR->project_id = $project_id;
+            $PR->bom_id = $bom->id;
+            $PR->description = 'AUTO PR FOR '.$modelProject->number;
+            $PR->status = 1;
+            $PR->user_id = Auth::user()->id;
+            $PR->branch_id = Auth::user()->branch->id;
+            $PR->save();
+        }
+
+        // reservasi & PR Detail
+        foreach($bom->bomDetails as $bomDetail){
+            if($bomDetail->source != 'WIP'){
+                if($bomDetail->material_id != null){
+                    $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
+                    
+                    if(isset($modelStock)){
+                        $remaining = $modelStock->quantity - $modelStock->reserved;
+                        if($remaining < $bomDetail->quantity){
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->material_id = $bomDetail->material_id;
+                            $PRD->wbs_id = $bomDetail->bom->wbs_id;
+                            $PRD->quantity = $bomDetail->quantity;
+                            $PRD->save();
+                        }
+                        $modelStock->reserved += $bomDetail->quantity;
+                        $modelStock->updated_at = Carbon::now();
+                        $modelStock->save();
+                    }else{
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $PR->id;
+                        $PRD->material_id = $bomDetail->material_id;
+                        $PRD->wbs_id = $bomDetail->bom->wbs_id;
+                        $PRD->quantity = $bomDetail->quantity;
+                        $PRD->save();
+
+                        $modelStock = new Stock;
+                        $modelStock->material_id = $bomDetail->material_id;
+                        $modelStock->quantity = 0;
+                        $modelStock->reserved = $bomDetail->quantity;
+                        $modelStock->branch_id = Auth::user()->branch->id;
+                        $modelStock->save();
+                    }
+                }
+            }
+        }
     }
 
     function getOutstandingItem($wbss,$outstanding_item,$project,$today){
@@ -1073,7 +1559,7 @@ class ProjectController extends Controller
         foreach($sorted as $date => $group){
             foreach($group as $wbs){
                 if($wbs->bom){
-                    if($wbs->bom->rap->total_price != 0){
+                    if($wbs->bom->rap->total_price != 0.0){
                         $tempPlanned->push([
                             "t" => $date, 
                             "y" => ($wbs->bom->rap->total_price/1000000)."",

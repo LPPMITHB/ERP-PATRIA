@@ -23,6 +23,7 @@ use App\Models\Uom;
 use App\Models\Project;
 use App\Models\StorageLocationDetail;
 use App\Models\Configuration;
+use DateTime;
 use DB;
 use Auth;
 
@@ -122,8 +123,7 @@ class GoodsReceiptController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelGR = GoodsReceipt::findOrFail($id);
-        $modelGRD = $modelGR->GoodsReceiptDetails ;
-
+        $modelGRD = $modelGR->GoodsReceiptDetails;
         if($modelGRD[0]->material_id != ''){
             return view('goods_receipt.show', compact('modelGR','modelGRD','route'));
         }elseif($modelGRD[0]->resource_detail_id != ''){
@@ -142,11 +142,13 @@ class GoodsReceiptController extends Controller
 
     public function index(Request $request){
         $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
-        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->pluck('id')->toArray();
-        $modelGRs = GoodsReceipt::whereIn('purchase_order_id',$modelPOs)->where('status',1)->get(); 
-
-        return view ('goods_receipt.index', compact('modelPRs','route','modelPOs','modelGRs'));
+        if($route == "/goods_receipt"){
+            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',1)->get(); 
+        }elseif($route == "/goods_receipt_repair"){
+            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',2)->get();
+        }
+        
+        return view ('goods_receipt.index', compact('route','modelGRs'));
     }
 
     public function store(Request $request)
@@ -167,6 +169,10 @@ class GoodsReceiptController extends Controller
             $GR->purchase_order_id = $datas->purchase_order_id;
             $GR->type = 1;
             $GR->description = $datas->description;
+            if($datas->ship_date != ""){
+                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $GR->ship_date = $ship_date->format('Y-m-d');
+            }
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
@@ -216,7 +222,13 @@ class GoodsReceiptController extends Controller
             }elseif($route == "/goods_receipt_repair"){
                 $GR->business_unit_id = 2;
             }
+            $GR->type = 3;
             $GR->work_order_id = $datas->wo_id;
+            if($datas->ship_date != ""){
+                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $GR->ship_date = $ship_date->format('Y-m-d');
+            }
+            $GR->type = 3;
             $GR->description = $datas->description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
@@ -265,7 +277,13 @@ class GoodsReceiptController extends Controller
             }elseif($route == "/goods_receipt_repair"){
                 $GR->business_unit_id = 2;
             }
+            $GR->type = 2;
             $GR->description = $datas->description;
+            $GR->type = 2;
+            if($datas->ship_date != ""){
+                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $GR->ship_date = $ship_date->format('Y-m-d');
+            }
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
@@ -297,6 +315,18 @@ class GoodsReceiptController extends Controller
             }
         }
     }
+
+    public function printPdf($id)
+    { 
+        $branch = Auth::user()->branch; 
+        $modelGR = GoodsReceipt::find($id);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('goods_receipt.pdf',['modelGR' => $modelGR,'branch'=>$branch]);
+        $now = date("Y_m_d_H_i_s");
+        return $pdf->download('Goods_Receipt_'.$now.'.pdf');
+    }
+
     public function updatePOD($purchase_order_id,$received){
         $modelPOD = PurchaseOrderDetail::findOrFail($purchase_order_id);
         if($modelPOD){

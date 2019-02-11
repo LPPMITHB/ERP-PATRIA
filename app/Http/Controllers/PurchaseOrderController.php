@@ -17,6 +17,7 @@ use App\Models\PurchaseRequisitionDetail;
 use DateTime;
 use Auth;
 use DB;
+use App\Providers\numberConverter;
 
 class PurchaseOrderController extends Controller
 {
@@ -72,8 +73,12 @@ class PurchaseOrderController extends Controller
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
                 $modelPRD->forget($key);
+            }else{
+                $PRD['discount'] = 0;
+                $PRD['old_price'] = $PRD->material->cost_standard_price;
             }
         }
+        
         if($modelPR->project_id){
             $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
         }else{
@@ -118,6 +123,10 @@ class PurchaseOrderController extends Controller
             $PO->purchase_requisition_id = $datas->pr_id;
             $PO->vendor_id = $datas->vendor_id;
             $PO->currency = $datas->currency;
+            $PO->tax = $datas->tax;
+            $PO->estimated_freight = $datas->estimated_freight;
+            $PO->delivery_terms = $datas->delivery_terms;
+            $PO->payment_terms = $datas->payment_terms;
             $PO->value = $value;
             $delivery_date = DateTime::createFromFormat('m/j/Y', $datas->delivery_date);
             $PO->delivery_date = $delivery_date->format('Y-m-d');
@@ -143,6 +152,7 @@ class PurchaseOrderController extends Controller
                 }
                 $POD->purchase_requisition_detail_id = $data->id;
                 $POD->wbs_id = $data->wbs_id;
+                $POD->discount = $data->discount;
                 $POD->save();
 
                 $statusPR = $this->updatePR($data->id,$data->quantity);
@@ -182,6 +192,114 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::findOrFail($id);
         $datas = Collection::make();
+        $total_discount = 0;
+        $unit = "";
+        $unitCurrency = Configuration::get('currencies');
+        foreach($unitCurrency as $data){
+            if($data->name == $modelPO->currency){
+                $unit = $data->unit;
+            }
+        }
+
+        if($modelPO->purchaseRequisition->type == 1){
+            foreach($modelPO->purchaseOrderDetails as $POD){
+                if(count($datas) > 0){
+                    $status = 0;
+                    foreach($datas as $data){
+                         if($data['material_code'] == $POD->material->code){
+                            $quantity = $data['quantity'] + $POD->quantity;
+                            $sub_total = $data['sub_total'] + $POD->total_price;
+
+                            $datas->push([
+                                "material_code" => $POD->material->code , 
+                                "material_name" => $POD->material->name,
+                                "quantity" => $quantity,
+                                "price" => $POD->total_price / $POD->quantity,
+                                "sub_total" => $sub_total,
+                            ]);
+                            $status = 1;
+                            // $datas->forget($key);
+                        }
+                    }
+                    if($status == 0){
+                        $total_discount += $POD->total_price * ($POD->discount/100);
+                        $datas->push([
+                            "material_code" => $POD->material->code , 
+                            "material_name" => $POD->material->name,
+                            "quantity" => $POD->quantity,
+                            "discount" => $POD->discount,
+                            "price" => $POD->total_price / $POD->quantity,
+                            "sub_total" => $POD->total_price
+                        ]);
+                    }
+                }else{
+                    $total_discount += $POD->total_price * ($POD->discount/100);
+                    $datas->push([
+                        "material_code" => $POD->material->code , 
+                        "material_name" => $POD->material->name,
+                        "quantity" => $POD->quantity,
+                        "discount" => $POD->discount,
+                        "price" => $POD->total_price / $POD->quantity,
+                        "sub_total" => $POD->total_price
+                    ]);
+                }
+            }
+        }elseif($modelPO->purchaseRequisition->type == 2){
+            $count = 0;
+            foreach($modelPO->purchaseOrderDetails as $POD){
+                if(count($datas) > 0){
+                    $status = 0;
+                    foreach($datas as $key => $data){
+                        if($data['resource_code'] == $POD->resource->code){
+                            $quantity = $data['quantity'] + $POD->quantity;
+                            $sub_total = $data['sub_total'] + $POD->total_price;
+
+                            $datas->push([
+                                "resource_code" => $POD->resource->code , 
+                                "resource_name" => $POD->resource->name,
+                                "quantity" => $quantity,
+                                "price" => $POD->total_price / $POD->quantity,
+                                "sub_total" => $sub_total
+                            ]);
+                            $status = 1;
+                            // $datas->forget($key);
+                        }
+                    }
+                    if($status == 0){
+                        $total_discount += $POD->total_price * ($POD->discount/100);
+                        $datas->push([
+                            "resource_code" => $POD->resource->code , 
+                            "resource_name" => $POD->resource->name,
+                            "quantity" => $POD->quantity,
+                            "discount" => $POD->discount,
+                            "price" => $POD->total_price / $POD->quantity,
+                            "sub_total" => $POD->total_price
+                        ]);
+                    }
+                }else{
+                    $total_discount += $POD->total_price * ($POD->discount/100);
+                    $datas->push([
+                        "resource_code" => $POD->resource->code , 
+                        "resource_name" => $POD->resource->name,
+                        "quantity" => $POD->quantity,
+                        "discount" => $POD->discount,
+                        "price" => $POD->total_price / $POD->quantity,
+                        "sub_total" => $POD->total_price
+                    ]);
+
+                }
+            }
+        }
+        $tax = ($datas->sum('sub_total') - $total_discount) * ($modelPO->tax/100);
+        return view('purchase_order.show', compact('modelPO','unit','route','datas','total_discount','tax'));
+    }
+
+    public function showApprove(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $modelPO = PurchaseOrder::findOrFail($id);
+        $datas = Collection::make();
+        $total_discount = 0;
         $unit = "";
         $unitCurrency = Configuration::get('currencies');
         foreach($unitCurrency as $data){
@@ -215,6 +333,7 @@ class PurchaseOrderController extends Controller
                             "material_code" => $POD->material->code , 
                             "material_name" => $POD->material->name,
                             "quantity" => $POD->quantity,
+                            "discount" => $POD->discount,
                             "price" => $POD->total_price / $POD->quantity,
                             "sub_total" => $POD->total_price
                         ]);
@@ -224,6 +343,7 @@ class PurchaseOrderController extends Controller
                         "material_code" => $POD->material->code , 
                         "material_name" => $POD->material->name,
                         "quantity" => $POD->quantity,
+                        "discount" => $POD->discount,
                         "price" => $POD->total_price / $POD->quantity,
                         "sub_total" => $POD->total_price
                     ]);
@@ -254,6 +374,7 @@ class PurchaseOrderController extends Controller
                             "resource_code" => $POD->resource->code , 
                             "resource_name" => $POD->resource->name,
                             "quantity" => $POD->quantity,
+                            "discount" => $POD->discount,
                             "price" => $POD->total_price / $POD->quantity,
                             "sub_total" => $POD->total_price
                         ]);
@@ -263,6 +384,7 @@ class PurchaseOrderController extends Controller
                         "resource_code" => $POD->resource->code , 
                         "resource_name" => $POD->resource->name,
                         "quantity" => $POD->quantity,
+                        "discount" => $POD->discount,
                         "price" => $POD->total_price / $POD->quantity,
                         "sub_total" => $POD->total_price
                     ]);
@@ -270,96 +392,8 @@ class PurchaseOrderController extends Controller
                 }
             }
         }
-        return view('purchase_order.show', compact('modelPO','unit','route','datas'));
-    }
-
-    public function showApprove(Request $request, $id)
-    {
-        $route = $request->route()->getPrefix();
-        $modelPO = PurchaseOrder::findOrFail($id);
-        $datas = Collection::make();
-        
-        if($modelPO->purchaseRequisition->type == 1){
-            foreach($modelPO->purchaseOrderDetails as $POD){
-                if(count($datas) > 0){
-                    $status = 0;
-                    foreach($datas as $data){
-                         if($data['material_code'] == $POD->material->code){
-                            $quantity = $data['quantity'] + $POD->quantity;
-                            $sub_total = $data['sub_total'] + $POD->total_price;
-
-                            $datas->push([
-                                "material_code" => $POD->material->code , 
-                                "material_name" => $POD->material->name,
-                                "quantity" => $quantity,
-                                "price" => $POD->total_price / $POD->quantity,
-                                "sub_total" => $sub_total
-                            ]);
-                            $status = 1;
-                            $datas->forget($key);
-                        }
-                    }
-                    if($status == 0){
-                        $datas->push([
-                            "material_code" => $POD->material->code , 
-                            "material_name" => $POD->material->name,
-                            "quantity" => $POD->quantity,
-                            "price" => $POD->total_price / $POD->quantity,
-                            "sub_total" => $POD->total_price
-                        ]);
-                    }
-                }else{
-                    $datas->push([
-                        "material_code" => $POD->material->code , 
-                        "material_name" => $POD->material->name,
-                        "quantity" => $POD->quantity,
-                        "price" => $POD->total_price / $POD->quantity,
-                        "sub_total" => $POD->total_price
-                    ]);
-                }
-            }
-        }elseif($modelPO->purchaseRequisition->type == 2){
-            foreach($modelPO->purchaseOrderDetails as $POD){
-                if(count($datas) > 0){
-                    $status = 0;
-                    foreach($datas as $key => $data){
-                        if($data['resource_code'] == $POD->resource->code){
-                            $quantity = $data['quantity'] + $POD->quantity;
-                            $sub_total = $data['sub_total'] + $POD->total_price;
-
-                            $datas->push([
-                                "resource_code" => $POD->resource->code , 
-                                "resource_name" => $POD->resource->name,
-                                "quantity" => $quantity,
-                                "price" => $POD->total_price / $POD->quantity,
-                                "sub_total" => $sub_total
-                            ]);
-                            $status = 1;
-                            $datas->forget($key);
-                        }
-                    }
-                    if($status == 0){
-                        $datas->push([
-                            "resource_code" => $POD->resource->code , 
-                            "resource_name" => $POD->resource->name,
-                            "quantity" => $POD->quantity,
-                            "price" => $POD->total_price / $POD->quantity,
-                            "sub_total" => $POD->total_price
-                        ]);
-                    }
-                }else{
-                    $datas->push([
-                        "resource_code" => $POD->resource->code , 
-                        "resource_name" => $POD->resource->name,
-                        "quantity" => $POD->quantity,
-                        "price" => $POD->total_price / $POD->quantity,
-                        "sub_total" => $POD->total_price
-                    ]);
-
-                }
-            }
-        }
-        return view('purchase_order.showApprove', compact('modelPO','route','datas'));
+        $tax = ($datas->sum('sub_total') - $total_discount) * ($modelPO->tax/100);
+        return view('purchase_order.showApprove', compact('modelPO','route','datas','total_discount','tax','unit'));
     }
 
     public function edit(Request $request, $id)
@@ -368,25 +402,38 @@ class PurchaseOrderController extends Controller
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
         $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource')->get();
         $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
-
-        return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject','route'));
+        foreach($modelPOD as $POD){
+            $POD['old_price'] = $POD->total_price / $POD->quantity;
+        }
+        $currencies = Configuration::get('currencies');
+        return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject','route','currencies'));
     }
 
     public function update(Request $request)
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        $value = "";
+        $valueCurrency = Configuration::get('currencies');
+        foreach ($valueCurrency as $data) {
+            if($data->name == $datas->modelPO->currency){
+                $value = $data->value;
+            }
+        }
+
         DB::beginTransaction();
         try {
             $PO = PurchaseOrder::findOrFail($datas->modelPO->id);
-            
             $status = 0;
             $total_price = 0;
+            if($datas->modelPO->currency != $PO->currency){
+                $PO->value = $value;
+            }
             foreach($datas->PODetail as $data){
                 $POD = PurchaseOrderDetail::findOrFail($data->id);
                 $diff = $data->quantity - $POD->quantity;
                 $POD->quantity = $data->quantity;
-                $POD->total_price = $data->quantity * $data->total_price;
+                $POD->total_price = $data->quantity * ($data->total_price * $PO->value);
                 $POD->save();
 
                 $statusPR = $this->updatePR($data->purchase_requisition_detail_id,$diff);
@@ -397,6 +444,18 @@ class PurchaseOrderController extends Controller
             }
             $PO->vendor_id = $datas->modelPO->vendor_id;
             $PO->description = $datas->modelPO->description;
+            $PO->tax = $datas->modelPO->tax;
+            $PO->estimated_freight = $datas->modelPO->estimated_freight;
+            $PO->delivery_terms = $datas->modelPO->delivery_terms;
+            $PO->payment_terms = $datas->modelPO->payment_terms;
+            $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->modelPO->delivery_date);
+            $PO->delivery_date = $delivery_date->format('Y-m-d');
+            
+            if($datas->modelPO->currency != $PO->currency){
+                $PO->value = $value;
+            }
+            $PO->currency = $datas->modelPO->currency;
+
             $PO->total_price = $total_price;
             if($PO->status == 3){
                 $PO->status = 4;
@@ -463,6 +522,30 @@ class PurchaseOrderController extends Controller
             DB::rollback();
             return redirect()->route('purchase_order.show',$po_id);
         }
+    }
+
+    public function printPdf($id)
+    { 
+        $branch = Auth::user()->branch; 
+        $modelPO = PurchaseOrder::find($id);
+        $discount = 0;
+        $tax = 0;
+        $freight = 0;
+        foreach($modelPO->purchaseOrderDetails as $POD){
+            if($POD->quantity > 0){
+                $discount += $POD->total_price * (($POD->discount)/100);
+                $tax += $POD->total_price * (($POD->tax)/100);
+                $freight += $POD->estimated_freight;
+            }
+        }
+        $total_price = $modelPO->total_price - $discount + $tax + $freight;
+        $words = numberConverter::longform($total_price);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch]);
+        $now = date("Y_m_d_H_i_s");
+
+        return $pdf->stream('Purchase_Order_'.$now.'.pdf');
     }
 
     // function
