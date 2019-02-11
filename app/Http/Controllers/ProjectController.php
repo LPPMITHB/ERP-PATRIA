@@ -305,18 +305,6 @@ class ProjectController extends Controller
         return view('project.index', compact('projects','menu'));
     }
 
-    public function indexWbsProfile(Request $request)
-    {
-        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
-        if($menu=="repair"){
-            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
-        }else if($menu == "building"){
-            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 1)->get();
-        }
-
-        return view('project.indexWbsProfile', compact('projects','menu'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *

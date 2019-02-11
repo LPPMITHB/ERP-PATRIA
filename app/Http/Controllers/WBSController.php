@@ -10,12 +10,28 @@ use App\Models\Structure;
 use App\Models\Project;
 use App\Models\WBS;
 use App\Models\Category;
+use App\Models\WbsProfile;
+use App\Models\ActivityProfile;
+use App\Models\BomProfile;
+use App\Models\ResourceProfile;
 use DB;
 use DateTime;
 use Auth;
 
 class WBSController extends Controller
 {
+    public function indexWbsProfile(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        if($menu=="repair"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
+        }else if($menu == "building"){
+            $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 1)->get();
+        }
+
+        return view('wbs.indexWbsProfile', compact('projects','menu'));
+    }
+
     public function createWBS($id, Request $request)
     {
         $project = Project::find($id);
