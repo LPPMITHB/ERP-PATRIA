@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WBS extends Model
+class WbsProfile extends Model
 {
     protected $table = 'mst_wbs_profile';
   

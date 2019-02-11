@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BomDetail extends Model
+class BomProfile extends Model
 {
     protected $table = 'mst_bom_profile';
 

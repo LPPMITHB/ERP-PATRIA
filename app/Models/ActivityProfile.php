@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Activity extends Model
+class ActivityProfile extends Model
 {
     protected $table = 'mst_activity_profile';
 
