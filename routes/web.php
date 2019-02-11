@@ -424,6 +424,8 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
 //Project Routes
 Route::name('project.')->prefix('project')->group(function() {
+    Route::get('/indexWbsProfile', 'ProjectController@indexWbsProfile')->name('indexWbsProfile')->middleware('can:create-project');
+
     // Project Cost Evaluation
     Route::get('/projectCE/{id}', 'ProjectController@projectCE')->name('projectCE')->middleware('can:show-project');
     
@@ -455,11 +457,13 @@ Route::name('project.')->prefix('project')->group(function() {
 
     Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project');
     
-    Route::get('/listWBS/{id}/{menu}', 'ProjectController@listWBS')->name('listWBS')->middleware('can:show-project');
+    Route::get('/listWBS/{id}/{menu}', 'ProjectController@listWBS')->name('listWBS')->middleware('can:show-project');  
 });
 
 //Project Routes
 Route::name('project_repair.')->prefix('project_repair')->group(function() {
+    Route::get('/indexWbsProfile', 'ProjectController@indexWbsProfile')->name('indexWbsProfile')->middleware('can:create-project-repair');
+
     // Project Cost Evaluation
     Route::get('/projectCE/{id}', 'ProjectController@projectCE')->name('projectCE')->middleware('can:show-project-repair');
     
@@ -492,7 +496,6 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
     Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project-repair');   
     
     Route::get('/listWBS/{id}/{menu}', 'ProjectController@listWBS')->name('listWBS')->middleware('can:show-project-repair');
-
 });
 
 // WBS Routes
