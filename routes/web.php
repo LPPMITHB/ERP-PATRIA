@@ -496,8 +496,13 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
 // WBS Routes
 Route::name('wbs.')->prefix('wbs')->group(function() {
-    Route::get('/indexWbsProfile', 'ProjectController@indexWbsProfile')->name('indexWbsProfile')->middleware('can:create-project');
+    Route::get('/indexWbsProfile', 'WBSController@indexWbsProfile')->name('indexWbsProfile')->middleware('can:create-project');
 
+    Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:create-project');
+
+    Route::put('updateWbsProfile/{id}', 'WBSController@updateWbsProfile')->name('updateWbsProfile')->middleware('can:edit-project');  
+    
+    Route::get('/createSubWbsProfile/{id}', 'WBSController@createSubWbsProfile')->name('createSubWbsProfile')->middleware('can:create-project');
     // WBS & Estimator Configuration
     Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project');
 
@@ -521,7 +526,11 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
 // WBS Repair Routes
 Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
-    Route::get('/indexWbsProfile', 'ProjectController@indexWbsProfile')->name('indexWbsProfile')->middleware('can:create-project-repair');
+    Route::get('/indexWbsProfile', 'WBSController@indexWbsProfile')->name('indexWbsProfile')->middleware('can:create-project-repair');
+    
+    Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:create-project-repair');
+
+    Route::put('updateWbsProfile/{id}', 'WBSController@updateWbsProfile')->name('updateWbsProfile')->middleware('can:edit-project-repair');  
 
     // WBS & Estimator Configuration
     Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project-repair');
