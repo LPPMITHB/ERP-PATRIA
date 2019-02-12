@@ -126,7 +126,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update()">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -151,17 +151,12 @@
         $('div.overlay').hide();
     });
     var data = {
-        submit: "ok",
         route : @json($route),
         sources : ['Stock','WIP'],
         materials : @json($materials),
         wbs : @json($wbs),
         materialTable : @json($bom),
         newIndex : 0, 
-        submittedForm :{
-            wbs_id : "",
-            description : ""
-        },
         input : {
             wbs_id : @json($wbs->id),
             material_id : "",
@@ -312,6 +307,7 @@
                     }
                     // store to database
                     window.axios.post(url,data).then((response)=>{
+                        console.log(response);
                         iziToast.success({
                             title: 'Success add material !',
                             position: 'topRight',
@@ -397,7 +393,7 @@
                     ],
                 });
             },
-            update(old_material_id, new_material_id){
+            update(){
                 var data = JSON.stringify(this.editInput);
 
                 if(this.route == "/wbs"){

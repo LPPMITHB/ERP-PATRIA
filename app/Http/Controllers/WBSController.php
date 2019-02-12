@@ -43,28 +43,33 @@ class WBSController extends Controller
             if($wbs->business_unit_id == 1){
                 return view('wbs.createBomProfile', compact('wbs','route','materials','bom'));
             }else{
-                return redirect()->route('wbs.indexWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
+                return redirect()->route('wbs.createWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
             }
         }elseif($route == '/wbs_repair'){
             if($wbs->business_unit_id == 2){
                 $services = Service::orderBy('code')->get()->jsonSerialize();
                 return view('wbs.createBomRepairProfile', compact('wbs','route','materials','services','bom'));
             }else{
-                return redirect()->route('wbs_repair.indexWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
+                return redirect()->route('wbs_repair.createWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
             }
         }
     }
 
     public function storeBomProfile(Request $request){
+        $route = $request->route()->getPrefix();
         $data = $request->json()->all();
 
         DB::beginTransaction();
         try{
             $bom = new BomProfile;
             $bom->wbs_id = $data['wbs_id'];
-            $bom->material_id = $data['material_id'];
+            $bom->material_id = ($data['material_id'] != '') ? $data['material_id'] : null;
             $bom->quantity = $data['quantityInt'];
-            $bom->source = $data['source'];
+            if($route == "/wbs"){
+                $bom->source = $data['source'];
+            }else if($route == "/wbs_repair"){
+                $bom->service_id = ($data['service_id'] != '') ? $data['service_id'] : null;
+            }
             $bom->save();
 
             DB::commit();
@@ -76,14 +81,19 @@ class WBSController extends Controller
     }
 
     public function updateBomProfile(Request $request){
+        $route = $request->route()->getPrefix();
         $data = $request->json()->all();
 
         DB::beginTransaction();
         try{
             $bom = BomProfile::findOrFail($data['id']);
-            $bom->material_id = $data['material_id'];
+            $bom->material_id = ($data['material_id'] != '') ? $data['material_id'] : null;
             $bom->quantity = $data['quantityInt'];
-            $bom->source = $data['source'];
+            if($route == "/wbs"){
+                $bom->source = $data['source'];
+            }else if($route == "/wbs_repair"){
+                $bom->service_id = ($data['service_id'] != '') ? $data['service_id'] : null;
+            }
             $bom->update();
 
             DB::commit();
