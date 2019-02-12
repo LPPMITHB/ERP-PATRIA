@@ -70,7 +70,7 @@
             <div id="add_wbs">
                 <div class="box-body">
                     <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>100%</b>)</h4>
-                    <table id="wbs-table" class="table table-bordered tableFixed pxTable" style="border-collapse:collapse">
+                    <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse">
                         <thead>
                             <tr>
                                 <th style="width: 2px">No</th>
@@ -119,7 +119,7 @@
                                     <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight (%)">
                                 </td>
                                 <td align="center" class="p-l-0">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>

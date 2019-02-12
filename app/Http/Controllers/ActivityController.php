@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
+use App\Models\WbsProfile;
+use App\Models\ActivityProfile;
 use App\Models\User;
 use DB;
 use DateTime;
@@ -26,6 +28,14 @@ class ActivityController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('activity.create', compact('project', 'wbs','menu'));
+    }
+
+    public function createActivityProfile($id, Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/activity" ? "building" : "repair";
+        $wbs = WbsProfile::find($id);
+
+        return view('activity.createActivityProfile', compact('wbs','menu'));
     }
 
     public function store(Request $request)
@@ -75,6 +85,32 @@ class ActivityController extends Controller
         }
     }
 
+    public function storeActivityProfile(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $activity = new ActivityProfile;
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];
+            $activity->wbs_id = $data['wbs_id'];            
+            $activity->duration = $data['duration'];
+            $activity->user_id = Auth::user()->id;
+            $activity->branch_id = Auth::user()->branch->id;
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new activity profile"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function update(Request $request, $id)
     {
         $data = $request->json()->all();
@@ -104,6 +140,29 @@ class ActivityController extends Controller
             }else{
                 DB::commit();
                 return response(["response"=>"Success to update activity ".$activity->code],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function updateActivityProfile(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        
+        DB::beginTransaction();
+        try {
+            $activity = ActivityProfile::find($id);
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];         
+            $activity->duration = $data['duration'];
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to update activity profile ".$activity->name],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -240,6 +299,25 @@ class ActivityController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+
+    public function destroyActivityProfile(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $activityProfile = ActivityProfile::find($id);
+
+            if(!$activityProfile->delete()){
+                return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
     
     //Method
     public function generateActivityCode($id){
@@ -300,6 +378,11 @@ class ActivityController extends Controller
     //API
     public function getActivitiesAPI($wbs_id){
         $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($activities, Response::HTTP_OK);
+    }
+
+    public function getActivitiesProfileAPI($wbs_id){
+        $activities = ActivityProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

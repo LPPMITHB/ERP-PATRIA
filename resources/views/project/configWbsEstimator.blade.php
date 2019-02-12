@@ -91,7 +91,7 @@
                                     </selectize>    
                                 </td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="">SUBMIT</a>
+                                    <a class="btn btn-primary btn-xs" href="">CREATE</a>
                                 </td>
                             </tr>
                         </tbody>

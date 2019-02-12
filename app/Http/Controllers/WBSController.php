@@ -10,12 +10,124 @@ use App\Models\Structure;
 use App\Models\Project;
 use App\Models\WBS;
 use App\Models\Category;
+use App\Models\WbsProfile;
+use App\Models\ActivityProfile;
+use App\Models\BomProfile;
+use App\Models\ResourceProfile;
+use App\Models\Material;
+use App\Models\Service;
+use App\Models\Resource;
+use App\Models\ResourceDetail;
 use DB;
 use DateTime;
 use Auth;
 
 class WBSController extends Controller
 {
+    public function createWbsProfile(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
+        return view('wbs.createWbsProfile', compact('menu'));
+    }
+
+    public function createBomProfile($wbs_id, Request $request)
+    {
+        $wbs = WbsProfile::find($wbs_id);
+        $bom = BomProfile::where('wbs_id',$wbs_id)->with('material','service')->get();
+        $route = $request->route()->getPrefix();
+
+        $materials = Material::orderBy('code')->get();
+        
+        if($route == '/wbs'){
+            if($wbs->business_unit_id == 1){
+                return view('wbs.createBomProfile', compact('wbs','route','materials','bom'));
+            }else{
+                return redirect()->route('wbs.indexWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
+            }
+        }elseif($route == '/wbs_repair'){
+            if($wbs->business_unit_id == 2){
+                $services = Service::orderBy('code')->get()->jsonSerialize();
+                return view('wbs.createBomRepairProfile', compact('wbs','route','materials','services','bom'));
+            }else{
+                return redirect()->route('wbs_repair.indexWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
+            }
+        }
+    }
+
+    public function storeBomProfile(Request $request){
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $bom = new BomProfile;
+            $bom->wbs_id = $data['wbs_id'];
+            $bom->material_id = $data['material_id'];
+            $bom->quantity = $data['quantityInt'];
+            $bom->source = $data['source'];
+            $bom->save();
+
+            DB::commit();
+            return response(json_encode($bom),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createBomProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
+    }
+
+    public function updateBomProfile(Request $request){
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $bom = BomProfile::findOrFail($data['id']);
+            $bom->material_id = $data['material_id'];
+            $bom->quantity = $data['quantityInt'];
+            $bom->source = $data['source'];
+            $bom->update();
+
+            DB::commit();
+            return response(json_encode($bom),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createBomProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
+    }
+
+    public function createResourceProfile($wbs_id, Request $request)
+    {
+        $wbs = WbsProfile::find($wbs_id);
+        $route = $request->route()->getPrefix();
+        print_r($route);exit();
+
+        
+        return view('wbs.createResourceProfile', compact('wbs','route'));
+    }
+
+    public function createSubWbsProfile($wbs_id, Request $request)
+    {
+        $wbs = WbsProfile::find($wbs_id);
+        $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
+        if($menu=="building"){
+            $array = [
+                'Dashboard' => route('index'),
+                'Create WBS Profile' => route('wbs.createWbsProfile'),
+            ];
+        }else{
+            $array = [
+                'Dashboard' => route('index'),
+                'Create WBS Profile' => route('wbs.createWbsProfile'),
+            ];
+        }
+        $iteration = 0;
+        $array_reverse = [];
+        $array_reverse = array_reverse(self::getParentsWbsProfile($wbs,$array_reverse, $iteration, $menu));
+        foreach ($array_reverse as $key => $value) {
+            $array[$key] = $value;
+        }
+        $array[$wbs->name] = "";
+        return view('wbs.createSubWbsProfile', compact('wbs','array','menu'));
+    }
+
     public function createWBS($id, Request $request)
     {
         $project = Project::find($id);
@@ -50,6 +162,7 @@ class WBSController extends Controller
             $wbs->weight =  $data['weight'];
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
+            
 
             if(!$wbs->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -60,6 +173,63 @@ class WBSController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
                 return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeWbsProfile(Request $request)
+    {
+        $data = $request->json()->all();
+        $route = $request->route()->getPrefix();
+        if($route == "/wbs"){
+            $businessUnit = 1;
+        }elseif($route == "/wbs_repair"){
+            $businessUnit = 2;
+        }
+        DB::beginTransaction();
+        try {
+            $wbsProfile = new WbsProfile;
+            $wbsProfile->name = $data['name'];
+            $wbsProfile->description = $data['description'];
+            $wbsProfile->deliverables = $data['deliverables'];
+
+            if(isset($data['wbs_profile_id'])){
+                $wbsProfile->wbs_id = $data['wbs_profile_id'];
+            }
+            $wbsProfile->user_id = Auth::user()->id;
+            $wbsProfile->branch_id = Auth::user()->branch->id;
+            $wbsProfile->business_unit_id = $businessUnit;
+
+            if(!$wbsProfile->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new WBS Profile"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function updateWbsProfile(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        $wbs_ref = WbsProfile::find($id);
+        DB::beginTransaction();
+        try {
+            $wbs_ref->name = $data['name'];
+            $wbs_ref->description = $data['description'];
+            $wbs_ref->deliverables = $data['deliverables'];
+
+            if(!$wbs_ref->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to Update WBS ".$wbs_ref->code],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 
@@ -179,9 +349,39 @@ class WBSController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('wbs.show', compact('wbs','menu'));
-
     }
-    
+
+    public function destroyWbsProfile(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $wbsProfile = WbsProfile::find($id);
+            $error = [];
+            if(count($wbsProfile->wbss)>0){
+                array_push($error, ["Failed to delete, this WBS have child WBS"]);
+            }
+
+            if(count($wbsProfile->activities)>0){
+                array_push($error, ["Failed to delete, this WBS have activities"]);
+            }
+
+            if(count($error)>0){
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+            if(!$wbsProfile->delete()){
+                array_push($error, ["error"=>"Failed to delete, please try again!"]);
+                return response(["error"=> $error],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete WBS"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     //Methods
     public function generateWbsCode($id){
         $code = 'WBS';
@@ -199,6 +399,27 @@ class WBSController extends Controller
 
         $wbs_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $wbs_code;
+    }
+
+    //BUAT BREADCRUMB DINAMIS
+    function getParentsWbsProfile($wbs, $array_reverse, $iteration, $menu) {
+        if ($wbs) {
+            if($wbs->wbs){
+                if($menu == 'building'){
+                    $array_reverse[$wbs->name] = route('wbs.createSubWbsProfile',[$wbs->wbs->id]);
+                }else{
+                    $array_reverse[$wbs->name] = route('wbs_repair.createSubWbsProfile',[$wbs->wbs->id]);
+                }
+                return self::getParentsWbsProfile($wbs->wbs,$array_reverse, $iteration,$menu);
+            }else{
+                if($menu == 'building'){
+                    $array_reverse[$wbs->name] = route('wbs.createSubWbsProfile',[$wbs->id]);
+                }else{
+                    $array_reverse[$wbs->name] = route('wbs_repair.createSubWbsProfile',[$wbs->id]);
+                }
+                return $array_reverse;
+            }
+        }
     }
 
     //BUAT BREADCRUMB DINAMIS
@@ -223,6 +444,16 @@ class WBSController extends Controller
     }
 
     //API
+    public function getWbsProfileAPI(){
+        $wbss = WbsProfile::where('wbs_id', null)->get()->jsonSerialize();
+        return response($wbss, Response::HTTP_OK);
+    }
+
+    public function getSubWbsProfileAPI($wbs_id){
+        $wbss = WbsProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($wbss, Response::HTTP_OK);
+    }
+
     public function getWbsAPI($project_id){
         $wbss = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->where('wbs_id', null)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
@@ -250,5 +481,11 @@ class WBSController extends Controller
         $totalWeight = $project->wbss->where('wbs_id',null)->sum('weight');
 
         return response($totalWeight, Response::HTTP_OK);
+    }
+
+    public function getBomProfileAPI($wbs_id){
+        $bom = BomProfile::where('wbs_id',$wbs_id)->with('material','service')->get()->jsonSerialize();
+
+        return response($bom, Response::HTTP_OK);
     }
 }
