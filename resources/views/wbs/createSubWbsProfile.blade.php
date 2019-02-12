@@ -52,6 +52,9 @@
                                     <a class="btn btn-primary btn-xs" :href="createSubWBSRoute(data)">
                                         ADD WBS
                                     </a>
+                                    <a class="btn btn-primary btn-xs" :href="createActivity(data)">
+                                        ADD ACTIVITY
+                                    </a>
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
                                         EDIT
                                     </a>
@@ -206,6 +209,15 @@ var vm = new Vue({
                 url = "/wbs/createSubWbsProfile/"+data.id;
             }else{
                 url = "/wbs_repair/createSubWbsProfile/"+data.id;                
+            }
+            return url;
+        },
+        createActivity(data){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/activity/createActivityProfile/"+data.id;
+            }else{
+                url = "/activity_repair/createActivityProfile/"+data.id;                
             }
             return url;
         },

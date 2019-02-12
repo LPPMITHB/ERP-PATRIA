@@ -20,7 +20,7 @@ use Auth;
 
 class WBSController extends Controller
 {
-    public function indexWbsProfile(Request $request)
+    public function createWbsProfile(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
         return view('wbs.createWbsProfile', compact('menu'));
@@ -33,12 +33,12 @@ class WBSController extends Controller
         if($menu=="building"){
             $array = [
                 'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.indexWbsProfile'),
+                'Create WBS Profile' => route('wbs.createWbsProfile'),
             ];
         }else{
             $array = [
                 'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.indexWbsProfile'),
+                'Create WBS Profile' => route('wbs.createWbsProfile'),
             ];
         }
         $iteration = 0;

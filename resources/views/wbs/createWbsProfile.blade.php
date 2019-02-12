@@ -5,7 +5,7 @@
             'title' => 'Create WBS Profile',
             'items' => [
                 'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.indexWbsProfile'),
+                'Create WBS Profile' => route('wbs.createWbsProfile'),
             ]
         ]
     )
@@ -38,6 +38,9 @@
                                 <td class="p-l-0 p-r-0 textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createSubWBS(data)">
                                         ADD WBS
+                                    </a>
+                                    <a class="btn btn-primary btn-xs" :href="createActivity(data)">
+                                        ADD ACTIVITY
                                     </a>
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
                                         EDIT
@@ -183,6 +186,15 @@ var vm = new Vue({
                 url = "/wbs/createSubWbsProfile/"+data.id;
             }else{
                 url = "/wbs_repair/createSubWbsProfile/"+data.id;                
+            }
+            return url;
+        },
+        createActivity(data){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/activity/createActivityProfile/"+data.id;
+            }else{
+                url = "/activity_repair/createActivityProfile/"+data.id;                
             }
             return url;
         },
