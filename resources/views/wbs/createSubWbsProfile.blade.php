@@ -50,10 +50,16 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td class="textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createSubWBSRoute(data)">
-                                        ADD WBS
+                                        MANAGE WBS
+                                    </a>
+                                    <a class="btn btn-primary btn-xs" :href="createActivity(data)">
+                                        MANAGE ACTIVITY
                                     </a>
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
                                         EDIT
+                                    </a>
+                                    <a class="btn btn-danger btn-xs" @click="deleteWbs(data)" data-toggle="modal">
+                                        DELETE
                                     </a>
                                 </td>
                             </tr>
@@ -71,7 +77,7 @@
                                     <textarea v-model="newSubWbsProfile.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
                                 <td class="text-center" >
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -209,6 +215,15 @@ var vm = new Vue({
             }
             return url;
         },
+        createActivity(data){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/activity/createActivityProfile/"+data.id;
+            }else{
+                url = "/activity_repair/createActivityProfile/"+data.id;                
+            }
+            return url;
+        },
         getSubWBS(){
             window.axios.get('/api/getSubWbsProfile/'+this.newSubWbsProfile.wbs_profile_id).then(({ data }) => {
                 this.wbs = data;
@@ -228,6 +243,68 @@ var vm = new Vue({
                         ]
                     });
                 })
+            });
+        },
+        deleteWbs(data){
+            var menuTemp = this.menu;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this WBS?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(menuTemp == "building"){
+                            url = "/wbs/"+data.id;
+                        }else{
+                            url = "/wbs_repair/"+data.id;
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();
+                                vm.getSubWBS(); 
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');                        
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
             });
         },
         add(){            

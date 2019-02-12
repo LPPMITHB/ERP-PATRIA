@@ -688,15 +688,11 @@ class BOMController extends Controller
         }
         if($status == 1){
             $pr_number = $this->pr->generatePRNumber();
-            $current_date = today();
-            $valid_to = $current_date->addDays(7);
-            $valid_to = $valid_to->toDateString();
             $modelProject = Project::findOrFail($project_id);
 
             $PR = new PurchaseRequisition;
             $PR->number = $pr_number;
             $PR->business_unit_id = $business_unit;
-            $PR->valid_date = $valid_to;
             $PR->type = 1;
             $PR->project_id = $project_id;
             $PR->bom_id = $bom->id;
@@ -771,15 +767,11 @@ class BOMController extends Controller
                         $PR = PurchaseRequisition::where('bom_id',$data['bom_id'])->first();
                         if(!$PR){
                             $pr_number = $this->pr->generatePRNumber();
-                            $current_date = today();
-                            $valid_to = $current_date->addDays(7);
-                            $valid_to = $valid_to->toDateString();
                             $modelProject = Project::findOrFail($project_id);
     
                             $PR = new PurchaseRequisition;
                             $PR->number = $pr_number;
                             $PR->business_unit_id = $business_unit;
-                            $PR->valid_date = $valid_to;
                             $PR->type = 1;
                             $PR->project_id = $project_id;
                             $PR->bom_id = $data['bom_id'];
