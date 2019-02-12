@@ -18,15 +18,14 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <h4 class="box-title">WBS Profiles</h4>
-                    <table id="wbs-table" class="table table-bordered tableFixed pxTable" style="border-collapse:collapse">
+                    <table id="wbs-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
-                                <th style="width: 2px">No</th>
-                                <th style="width: 17%">Name</th>
-                                <th style="width: 17%">Description</th>
-                                <th style="width: 15%">Deliverables</th>
-                                <th style="width: 125px"></th>
+                                <th width=5%>No</th>
+                                <th width=25%>Name</th>
+                                <th width=25%>Description</th>
+                                <th width=25%>Deliverables</th>
+                                <th width=20%></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,6 +37,12 @@
                                 <td class="p-l-0 p-r-0 textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createSubWBS(data)">
                                         ADD WBS
+                                    </a>
+                                    <a class="btn btn-primary btn-xs" :href="createBom(data.id)">
+                                        ADD BOM
+                                    </a>
+                                    <a class="btn btn-primary btn-xs" :href="createResource(data.id)">
+                                        ADD RESOURCE
                                     </a>
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
                                         EDIT
@@ -58,7 +63,7 @@
                                     <textarea v-model="newWbsProfile.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
                                 <td align="center" class="p-l-0">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -183,6 +188,24 @@ var vm = new Vue({
                 url = "/wbs/createSubWbsProfile/"+data.id;
             }else{
                 url = "/wbs_repair/createSubWbsProfile/"+data.id;                
+            }
+            return url;
+        },
+        createBom(id){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createBomProfile/"+id;
+            }else{
+                url = "/wbs_repair/createBomProfile/"+id;                
+            }
+            return url;
+        },
+        createResource(id){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createResourceProfile/"+id;
+            }else{
+                url = "/wbs_repair/createResourceProfile/"+id;                
             }
             return url;
         },

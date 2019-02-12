@@ -153,4 +153,5 @@ Route::get('/getPredecessor/{id}', 'ActivityController@getPredecessorAPI')->name
 Route::get('/getProjectActivity/{id}', 'ActivityController@getProjectAPI')->name('api.activity.getProjectAPI');
 Route::get('/getLatestPredecessor/{id}', 'ActivityController@getLatestPredecessorAPI')->name('api.activity.getLatestPredecessorAPI');
 
-
+// bom profile
+Route::get('/getBomProfile/{id}', 'WBSController@getBomProfileAPI')->name('api.wbs.getBomProfileAPI');
