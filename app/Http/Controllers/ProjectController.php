@@ -433,17 +433,20 @@ class ProjectController extends Controller
         if($menu == "building"){
             $this->validate($request, [
                 'number' => 'required',
+                'name' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
                 'planned_duration' => 'required',
                 'flag' => 'required',
-                'class_name' => 'required'
+                'class_name' => 'required',
+                'class_contact_person_email' => 'nullable|email|max:255'
             ]);
         }elseif($menu == "repair"){
             $this->validate($request, [
                 'number' => 'required',
+                'name' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
                 'planned_start_date' => 'required',
@@ -754,17 +757,21 @@ class ProjectController extends Controller
             $this->validate($request, [
                 'number' => 'required',
                 'customer' => 'required',
+                'name' => 'required',
                 'ship' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
                 'planned_duration' => 'required',
                 'flag' => 'required',
-                'class_name' => 'required'
+                'class_name' => 'required',
+                'class_contact_person_email' => 'nullable|email|max:255'
+
             ]);
         }elseif($menu == "repair"){
             $this->validate($request, [
                 'number' => 'required',
                 'customer' => 'required',
+                'name' => 'required',
                 'ship' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',

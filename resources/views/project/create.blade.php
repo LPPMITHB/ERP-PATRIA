@@ -139,7 +139,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_phone" name="class_contact_person_phone" v-model="project.class_cp_phone" >
+                                    <input type="text" class="form-control" id="class_contact_person_phone" minlength="10" maxlength="13" name="class_contact_person_phone" v-model="project.class_cp_phone" >
                                 </div>
                             </div>
 
@@ -147,7 +147,7 @@
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person E-Mail</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_email" name="class_contact_person_email" v-model="project.class_cp_email">
+                                    <input type="email" class="form-control" id="class_contact_person_email" name="class_contact_person_email" v-model="project.class_cp_email">
                                 </div>
                             </div>
 
@@ -344,7 +344,7 @@ $(document).ready(function(){
             if(this.oldData.class_name !=null) {
                 this.project.class_name=this.oldData.class_name;
             }
-            if(this.oldData.class_cp_name !=null) {
+        if(this.oldData.class_cp_name !=null) {
                 this.project.class_cp_name=this.oldData.class_cp_name;
             }
             if(this.oldData.class_cp_phone !=null) {
