@@ -514,6 +514,8 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
     Route::get('/createWBS/{id}', 'WBSController@createWBS')->name('createWBS')->middleware('can:create-project');
 
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project');
+
+    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project');
     
     Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');  
       
@@ -546,6 +548,8 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
 
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
     
+    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project');
+
     Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
       
     Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project-repair');    

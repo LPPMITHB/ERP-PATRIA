@@ -383,8 +383,6 @@ class ProjectController extends Controller
                         $bom_detail->bom_id = $bom->id;
                         $bom_detail->save();
                     }
-                    self::createRap($project_id,$bom);
-                    self::checkStock($bom,$menu);
                 }
             }elseif(strpos($dataTree->id, 'ACT') !== false){
                 $act_ref = Activity::where('code', $dataTree->id)->first();

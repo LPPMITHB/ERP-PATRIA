@@ -199,7 +199,7 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $wbsProfileRepair,
-            'route_name' => 'activity.createActivityProfile',
+            'route_name' => 'activity_repair.createActivityProfile',
         ]);
 
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;

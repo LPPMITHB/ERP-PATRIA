@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Structure;
 use App\Models\Project;
 use App\Models\WBS;
+use App\Models\Activity;
 use App\Models\Category;
 use App\Models\WbsProfile;
 use App\Models\ActivityProfile;
@@ -55,19 +56,15 @@ class WBSController extends Controller
     {
         $project = Project::find($id);
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->get()->jsonSerialize();
 
-        return view('wbs.createWBS', compact('project','menu'));
+        return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
 
     public function store(Request $request)
     {
         $data = $request->json()->all();
-        $wbss = WBS::where('project_id',$data['project_id'])->get();
-        foreach ($wbss as $wbs) {
-            if($wbs->name == $data['name']){
-                return response(["error"=>"WBS Name must be UNIQUE"],Response::HTTP_OK);
-            }
-        }
+        
         DB::beginTransaction();
         try {
             $wbs = new WBS;
@@ -134,6 +131,36 @@ class WBSController extends Controller
         }
     }
 
+    public function adoptWbs(Request $request)
+    {
+        $data = $request->json()->all();
+        DB::beginTransaction();
+        try {
+            $wbsProfile = WbsProfile::find($data['selected_wbs_profile']);
+
+            $wbs = new WBS;
+            $wbs->code = self::generateWbsCode($data['project_id']);
+            $wbs->name = $wbsProfile->name;
+            $wbs->description = $wbsProfile->description;
+            $wbs->deliverables = $wbsProfile->deliverables;
+            $wbs->project_id = $data['project_id'];
+
+            if(isset($data['parent_wbs'])){
+                $wbs->wbs_id = $data['parent_wbs'];
+            }
+            $wbs->user_id = Auth::user()->id;
+            $wbs->branch_id = Auth::user()->branch->id;
+            $wbs->save();
+            self::adoptWbsStructure($wbsProfile->wbss, $wbs->id,$data['project_id']);
+
+            DB::commit();
+            return response(["response"=>"Success to create adopt WBS"],Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function updateWbsProfile(Request $request, $id)
     {
         $data = $request->json()->all();
@@ -161,6 +188,7 @@ class WBSController extends Controller
         $wbs = WBS::find($wbs_id);
         $project = Project::find($project_id);
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->get()->jsonSerialize();
 
         if($menu=="building"){
             $array = [
@@ -184,7 +212,7 @@ class WBSController extends Controller
             $array[$key] = $value;
         }
         $array[$wbs->code] = "";
-        return view('wbs.createSubWBS', compact('project', 'wbs','array','menu'));
+        return view('wbs.createSubWBS', compact('project', 'wbs','array','menu','wbs_profiles'));
     }
 
     public function update(Request $request, $id)
@@ -324,6 +352,24 @@ class WBSController extends Controller
 		return $wbs_code;
     }
 
+    public function generateActivityCode($id){
+        $code = 'ACT';
+        $project = WBS::find($id)->project;
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+        $businessUnit = $project->business_unit_id;
+
+        $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
+        
+        $number = 1;
+		if(isset($modelActivity)){
+            $number += intval(substr($modelActivity->code, -4));
+		}
+
+        $activity_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $activity_code;
+    }
+
     //BUAT BREADCRUMB DINAMIS
     function getParentsWbsProfile($wbs, $array_reverse, $iteration, $menu) {
         if ($wbs) {
@@ -366,6 +412,141 @@ class WBSController extends Controller
         }
     }
 
+    public function getWbsProfileTree($dataWbsProfile, $wbss, $parent)
+    {
+        foreach($wbss as $wbs){
+            if($wbs->wbss){
+                if(count($wbs->activities)>0){
+                    $dataWbsProfile->push([
+                        "id" => "WBS".$wbs->id, 
+                        "parent" => $parent,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                    foreach($wbs->activities as $activity){
+                        $dataWbsProfile->push([
+                            "id" => "ACT".$activity->id, 
+                            "parent" => "WBS".$activity->wbs_id,
+                            "text" => $activity->name,
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }else{
+                    $dataWbsProfile->push([
+                        "id" => "WBS".$wbs->id, 
+                        "parent" => $parent,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }
+                self::getWbsProfileTree($dataWbsProfile, $wbs->wbss, "WBS".$wbs->id);
+            }else{
+                if(count($wbs->activities)>0){
+                    $dataWbsProfile->push([
+                        "id" => "WBS".$wbs->id, 
+                        "parent" => $parent,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                    foreach($wbs->activities as $activity){
+                        $dataWbsProfile->push([
+                            "id" => "ACT".$activity->id, 
+                            "parent" => "WBS".$activity->wbs_id,
+                            "text" => $activity->name,
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }else{
+                    $dataWbsProfile->push([
+                        "id" => "WBS".$wbs->id, 
+                        "parent" => $parent,
+                        "text" => $wbs->name,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }
+            } 
+        }
+    }
+
+    public function adoptWbsStructure($wbss, $parent, $project_id)
+    {
+        foreach($wbss as $wbs){
+            if($wbs->wbss){
+                if(count($wbs->activities)>0){
+                    $wbsInput = new WBS;
+                    $wbsInput->code = self::generateWbsCode($project_id);
+                    $wbsInput->name = $wbs->name;
+                    $wbsInput->description = $wbs->description;
+                    $wbsInput->deliverables = $wbs->deliverables;
+                    $wbsInput->project_id = $project_id;
+                    $wbsInput->wbs_id = $parent;
+                    $wbsInput->user_id = Auth::user()->id;
+                    $wbsInput->branch_id = Auth::user()->branch->id;
+                    $wbsInput->save();
+
+                    foreach($wbs->activities as $activity){
+                        $activityInput = new Activity;
+                        $activityInput->code = self::generateActivityCode($wbsInput->id);
+                        $activityInput->name = $activity->name;
+                        $activityInput->description = $activity->description;
+                        $activityInput->planned_duration = $activity->duration;
+                        $activityInput->wbs_id = $wbsInput->id;
+                        $activityInput->user_id = Auth::user()->id;
+                        $activityInput->branch_id = Auth::user()->branch->id;
+                        $activityInput->save();
+                    }
+                }else{
+                    $wbsInput = new WBS;
+                    $wbsInput->code = self::generateWbsCode($project_id);
+                    $wbsInput->name = $wbs->name;
+                    $wbsInput->description = $wbs->description;
+                    $wbsInput->deliverables = $wbs->deliverables;
+                    $wbsInput->project_id = $project_id;
+                    $wbsInput->wbs_id = $parent;
+                    $wbsInput->user_id = Auth::user()->id;
+                    $wbsInput->branch_id = Auth::user()->branch->id;
+                    $wbsInput->save();
+                }
+                self::adoptWbsStructure($wbs->wbss, $wbs->id,$project_id);
+            }else{
+                if(count($wbs->activities)>0){
+                    $wbsInput = new WBS;
+                    $wbsInput->code = self::generateWbsCode($project_id);
+                    $wbsInput->name = $wbs->name;
+                    $wbsInput->description = $wbs->description;
+                    $wbsInput->deliverables = $wbs->deliverables;
+                    $wbsInput->project_id = $project_id;
+                    $wbsInput->wbs_id = $parent;
+                    $wbsInput->user_id = Auth::user()->id;
+                    $wbsInput->branch_id = Auth::user()->branch->id;
+                    $wbsInput->save();
+                    foreach($wbs->activities as $activity){
+                        $activityInput = new Activity;
+                        $activityInput->code = self::generateActivityCode($wbsInput->id);
+                        $activityInput->name = $activity->name;
+                        $activityInput->description = $activity->description;
+                        $activityInput->planned_duration = $activity->duration;
+                        $activityInput->wbs_id = $wbsInput->id;
+                        $activityInput->user_id = Auth::user()->id;
+                        $activityInput->branch_id = Auth::user()->branch->id;
+                        $activityInput->save();
+                    }
+                }else{
+                    $wbsInput = new WBS;
+                    $wbsInput->code = self::generateWbsCode($project_id);
+                    $wbsInput->name = $wbs->name;
+                    $wbsInput->description = $wbs->description;
+                    $wbsInput->deliverables = $wbs->deliverables;
+                    $wbsInput->project_id = $project_id;
+                    $wbsInput->wbs_id = $parent;
+                    $wbsInput->user_id = Auth::user()->id;
+                    $wbsInput->branch_id = Auth::user()->branch->id;
+                    $wbsInput->save();
+                }
+            } 
+        }
+    }
+
     //API
     public function getWbsProfileAPI(){
         $wbss = WbsProfile::where('wbs_id', null)->get()->jsonSerialize();
@@ -404,5 +585,37 @@ class WBSController extends Controller
         $totalWeight = $project->wbss->where('wbs_id',null)->sum('weight');
 
         return response($totalWeight, Response::HTTP_OK);
+    }
+
+    public function getDataProfileJstreeAPI($id){
+        $wbs_profile_ref = WbsProfile::find($id);
+
+        $dataWbsProfile = Collection::make();
+
+        $dataWbsProfile->push([
+            "id" => "WBS".$wbs_profile_ref->id, 
+            "parent" => "#",
+            "text" => $wbs_profile_ref->name,
+            "icon" => "fa fa-suitcase"
+        ]);
+
+        if(count($wbs_profile_ref->activities)>0){
+            foreach ($wbs_profile_ref->activities as $activity) {
+                $dataWbsProfile->push([
+                    "id" => "ACT".$activity->id, 
+                    "parent" => "WBS".$wbs_profile_ref->id,
+                    "text" => $activity->name,
+                    "icon" => "fa fa-clock-o"
+                ]);
+            }
+        }
+
+        $parent = "WBS".$wbs_profile_ref->id;
+        if(count($wbs_profile_ref->wbss)>0){
+            self::getWbsProfileTree($dataWbsProfile, $wbs_profile_ref->wbss, $parent);
+        }
+
+        return response($dataWbsProfile, Response::HTTP_OK);
+    
     }
 }
