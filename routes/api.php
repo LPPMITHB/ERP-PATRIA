@@ -143,6 +143,7 @@ Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('api.wbs.getSu
 Route::get('/getSubWbsProfile/{id}', 'WBSController@getSubWbsProfileAPI')->name('api.wbs.getSubWbsProfileAPI');
 Route::get('/getWeightWbs/{id}', 'WBSController@getWeightWbsAPI')->name('api.wbs.getWeightWbsAPI');
 Route::get('/getWeightProject/{id}', 'WBSController@getWeightProjectAPI')->name('api.wbs.getWeightProjectAPI');
+Route::get('/getDataProfileJstree/{id}', 'WBSController@getDataProfileJstreeAPI')->name('api.project.getDataProfileJstreeAPI');
 
 // activity
 Route::get('/getActivities/{id}', 'ActivityController@getActivitiesAPI')->name('api.activity.getActivitiesAPI');

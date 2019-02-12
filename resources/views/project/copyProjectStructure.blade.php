@@ -150,7 +150,7 @@
                 "dblclick_toggle": false,
                 "keep_selected_style": false
             },
-            "plugins": ["dnd", "contextmenu","crrm"],
+            "plugins": ["dnd", "contextmenu"],
             "contextmenu": {
                 "select_node": false, 
                 "show_at_node": false,

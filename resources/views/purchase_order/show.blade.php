@@ -149,14 +149,15 @@
                         <tr>
                             <th width="5%">No</th>
                             @if($modelPO->purchaseRequisition->type == 1)
-                                <th width="35%">Material Name</th>
+                                <th width="29%">Material Name</th>
                             @elseif($modelPO->purchaseRequisition->type == 2)
-                                <th width="35%">Resource Name</th>
+                                <th width="29%">Resource Name</th>
                             @endif
                             <th width="10%">Quantity</th>
                             <th width="10%">Disc. (%)</th>
-                            <th width="20%">Price / pcs ({{$unit}})</th>
-                            <th width="20%">Sub Total Price ({{$unit}})</th>
+                            <th width="18%">Price / pcs ({{$unit}})</th>
+                            <th width="18%">Sub Total Price ({{$unit}})</th>
+                            <th width="10%">Remark</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -173,33 +174,34 @@
                                     <td>{{ number_format($POD['discount']) }}</td>
                                     <td>{{ number_format($POD['price'] / $modelPO['value'],2) }}</td>
                                     <td>{{ number_format($POD['sub_total'] / $modelPO['value'],2) }}</td>
+                                    <td>{{ $POD['remark'] }}</td>
                                 </tr>
                             @endif
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="5" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Subtotal :</b></td>
                             <td class="text-right p-r-5"><b>{{$unit}} {{number_format($datas->sum('sub_total') / $modelPO['value'],2)}}</b></td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="5" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Discount :</b></td>
                             <td class="text-right p-r-5"><b>{{$unit}} {{number_format($total_discount  / $modelPO['value'],2)}}</b></td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="5" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Tax ({{$modelPO->tax}}%) :</b></td>
                             <td class="text-right p-r-5"><b>{{$unit}} {{number_format($tax / $modelPO['value'],2)}}</b></td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="5" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Estimated Freight :</b></td>
                             <td class="text-right p-r-5"><b>{{$unit}} {{number_format($modelPO->estimated_freight),2}}</b></td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="visibility:hidden"></td>
+                            <td colspan="5" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Total Order :</b></td>
                             <td class="text-right p-r-5"><b>{{$unit}} {{number_format( (($datas->sum('sub_total') - $total_discount) + $tax + $modelPO->estimated_freight)/ $modelPO['value'],2)}}</b></td>
                         </tr>
