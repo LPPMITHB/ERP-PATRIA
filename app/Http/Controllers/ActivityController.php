@@ -299,6 +299,25 @@ class ActivityController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+
+    public function destroyActivityProfile(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $activityProfile = ActivityProfile::find($id);
+
+            if(!$activityProfile->delete()){
+                return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
     
     //Method
     public function generateActivityCode($id){

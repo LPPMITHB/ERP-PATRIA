@@ -272,9 +272,39 @@ class WBSController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('wbs.show', compact('wbs','menu'));
-
     }
-    
+
+    public function destroyWbsProfile(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $wbsProfile = WbsProfile::find($id);
+            $error = [];
+            if(count($wbsProfile->wbss)>0){
+                array_push($error, ["Failed to delete, this WBS have child WBS"]);
+            }
+
+            if(count($wbsProfile->activities)>0){
+                array_push($error, ["Failed to delete, this WBS have activities"]);
+            }
+
+            if(count($error)>0){
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+            if(!$wbsProfile->delete()){
+                array_push($error, ["error"=>"Failed to delete, please try again!"]);
+                return response(["error"=> $error],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete WBS"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     //Methods
     public function generateWbsCode($id){
         $code = 'WBS';

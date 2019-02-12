@@ -108,6 +108,9 @@
                                 <td>{{ data.duration }} Day(s)</td>
                                 <td class="textCenter">
                                     <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data)">EDIT</button>
+                                    <a class="btn btn-danger btn-xs" @click="deleteWbs(data)" data-toggle="modal">
+                                        DELETE
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -269,6 +272,68 @@ var vm = new Vue({
             });
 
         },
+        deleteWbs(data){
+            var menuTemp = this.menu;
+            var deleted = false;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this Activity?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(menuTemp == "building"){
+                            url = "/activity/"+data.id;
+                        }else{
+                            url = "/activity_repair/"+data.id;
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: error,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();   
+                                vm.getActivities();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
+            });
+        },
         add(){            
             var newActivityProfile = this.newActivityProfile;
             newActivityProfile = JSON.stringify(newActivityProfile);
@@ -351,7 +416,7 @@ var vm = new Vue({
                 $('div.overlay').hide();            
             })
 
-        }
+        },
     },
     watch: {
         newActivityProfile:{

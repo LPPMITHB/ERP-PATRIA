@@ -522,6 +522,8 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
     Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
         
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');    
+    
+    Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
 });
 
 // WBS Repair Routes
@@ -551,6 +553,8 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project-repair');
         
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project-repair');    
+
+    Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
 });
 
 // Activity Routes
@@ -580,6 +584,8 @@ Route::name('activity.')->prefix('activity')->group(function() {
     Route::get('/index/{id}', 'ActivityController@index')->name('index')->middleware('can:show-project');
 
     Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project');
+
+    Route::delete('/{id}', 'ActivityController@destroyActivityProfile')->name('destroyActivityProfile');
     
     //Network
     Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
@@ -614,6 +620,8 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
     Route::get('/index/{id}', 'ActivityController@index')->name('index')->middleware('can:show-project-repair');
 
     Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project-repair');
+
+    Route::delete('/{id}', 'ActivityController@destroyActivityProfile')->name('destroyActivityProfile');
     
     //Network
     Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project-repair');

@@ -2,7 +2,7 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'Create WBS Profile',
+            'title' => 'Manage WBS Profile',
             'items' => [
                 'Dashboard' => route('index'),
                 'Create WBS Profile' => route('wbs.createWbsProfile'),
@@ -37,13 +37,16 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     <a class="btn btn-primary btn-xs" :href="createSubWBS(data)">
-                                        ADD WBS
+                                        MANAGE WBS
                                     </a>
                                     <a class="btn btn-primary btn-xs" :href="createActivity(data)">
-                                        ADD ACTIVITY
+                                        MANAGE ACTIVITY
                                     </a>
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
                                         EDIT
+                                    </a>
+                                    <a class="btn btn-danger btn-xs" @click="deleteWbs(data)" data-toggle="modal">
+                                        DELETE
                                     </a>
                                 </td>
                             </tr>
@@ -171,6 +174,70 @@ var vm = new Vue({
     methods:{
         tooltipText: function(text) {
             return text
+        },
+        deleteWbs(data){
+            var menuTemp = this.menu;
+            var deleted = false;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this WBS?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(menuTemp == "building"){
+                            url = "/wbs/"+data.id;
+                        }else{
+                            url = "/wbs_repair/"+data.id;
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();   
+                                vm.getWBSProfile();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
+            });
         },
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;
