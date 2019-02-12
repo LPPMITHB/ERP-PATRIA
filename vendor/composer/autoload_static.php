@@ -2276,6 +2276,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'Monolog\\ResettableInterface' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/ResettableInterface.php',
         'Monolog\\SignalHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/SignalHandler.php',
         'Monolog\\Utils' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Utils.php',
+        'MstActivityProfileTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstActivityProfileTableSeeder.php',
         'MstBomDetailTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstBomDetailTableSeeder.php',
         'MstBomTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstBomTableSeeder.php',
         'MstCustomerTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstCustomerTableSeeder.php',

@@ -89,7 +89,11 @@
 
                     @if(isset($modelPR))
                         <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis"  data-container="body" data-toggle="tooltip" title="{{$modelPR->number}}"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$modelPR->number}}</b></a></div>
+                        @if($route == "/bom")
+                            <div class="col-md-7 col-xs-8 no-padding tdEllipsis"  data-container="body" data-toggle="tooltip" title="{{$modelPR->number}}"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$modelPR->number}}</b></a></div>
+                        @elseif($route == "/bom_repair")
+                            <div class="col-md-7 col-xs-8 no-padding tdEllipsis"  data-container="body" data-toggle="tooltip" title="{{$modelPR->number}}"><a href="{{ route('purchase_requisition_repair.show',$modelPR->id) }}" class="text-primary"><b>: {{$modelPR->number}}</b></a></div>
+                        @endif
                     @else
                         <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>

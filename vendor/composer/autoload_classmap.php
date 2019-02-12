@@ -1920,6 +1920,7 @@ return array(
     'Monolog\\ResettableInterface' => $vendorDir . '/monolog/monolog/src/Monolog/ResettableInterface.php',
     'Monolog\\SignalHandler' => $vendorDir . '/monolog/monolog/src/Monolog/SignalHandler.php',
     'Monolog\\Utils' => $vendorDir . '/monolog/monolog/src/Monolog/Utils.php',
+    'MstActivityProfileTableSeeder' => $baseDir . '/database/seeds/MstActivityProfileTableSeeder.php',
     'MstBomDetailTableSeeder' => $baseDir . '/database/seeds/MstBomDetailTableSeeder.php',
     'MstBomTableSeeder' => $baseDir . '/database/seeds/MstBomTableSeeder.php',
     'MstCustomerTableSeeder' => $baseDir . '/database/seeds/MstCustomerTableSeeder.php',
