@@ -20,6 +20,7 @@ class CreateTrxWorkRequestDetailTable extends Migration
             $table->integer('quantity');
             $table->integer('reserved')->default(0);            
             $table->text('description')->nullable();
+            $table->integer('type');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
             $table->timestamps();

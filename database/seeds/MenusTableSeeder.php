@@ -1451,113 +1451,113 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]); 
 
-        DB::table('menus')->insert([
-            'level' => 2,
-            'name' => 'WIP',
-            'icon' => 'fa-database',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $repair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 2,
+        //     'name' => 'WIP',
+        //     'icon' => 'fa-database',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=> $repair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
         
-        $wipRepair = Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Work Request',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$wipRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // $wipRepair = Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Work Request',
+        //     'icon' => 'fa-file-text-o',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$wipRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        $workRequestRepair =  Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Create WR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_request_repair.create',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workRequestRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // $workRequestRepair =  Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Create WR',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_request_repair.create',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workRequestRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Approve WR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_request_repair.indexApprove',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workRequestRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Approve WR',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_request_repair.indexApprove',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workRequestRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'View & Edit WR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_request_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workRequestRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'View & Edit WR',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_request_repair.index',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workRequestRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Work Order',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$wipRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Work Order',
+        //     'icon' => 'fa-file-text-o',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$wipRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        $workOrderRepair =  Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Create WO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_order_repair.selectWR',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workOrderRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // $workOrderRepair =  Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Create WO',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_order_repair.selectWR',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workOrderRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Approve WO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_order_repair.indexApprove',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workOrderRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Approve WO',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_order_repair.indexApprove',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workOrderRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'View & Edit WO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_order_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workOrderRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'View & Edit WO',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_order_repair.index',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workOrderRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
         DB::table('menus')->insert([
             'level' => 2,
