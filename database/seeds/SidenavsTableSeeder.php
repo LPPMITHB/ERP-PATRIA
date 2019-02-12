@@ -26,6 +26,16 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
+            'route_name' => 'project.indexCopyProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProject,
+            'route_name' => 'project.copyProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProject,
             'route_name' => 'project.create',
         ]);
 
@@ -88,6 +98,16 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
             'route_name' => 'project_repair.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProjectRepair,
+            'route_name' => 'project_repair.indexCopyProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProjectRepair,
+            'route_name' => 'project_repair.copyProject',
         ]);
 
         DB::table('sidenav')->insert([

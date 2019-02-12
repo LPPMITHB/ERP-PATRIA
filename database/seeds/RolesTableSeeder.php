@@ -41,7 +41,7 @@ class RolesTableSeeder extends Seeder
                 'list-rap-repair' => true,'show-rap-repair' => true,'edit-rap-repair' => true,
                 'create-other-cost' => true,'create-actual-other-cost'=> true,'view-planned-cost' => true,'view-remaining-material' => true,
                 'create-other-cost-repair' => true,'create-actual-other-cost-repair'=> true,'view-planned-cost-repair' => true,'view-remaining-material-repair' => true,
-                'create-project' => true,'list-project' => true,'show-project' => true,'edit-project' => true,
+                'create-project' => true,'list-project' => true,'show-project' => true,'edit-project' => true,'destroy-project' => true,
                 'create-project-repair' => true,'list-project-repair' => true,'show-project-repair' => true,'edit-project-repair' => true,
                 'create-purchase-requisition' => true,'list-purchase-requisition' => true,'show-purchase-requisition' => true,'edit-purchase-requisition' => true,'approve-purchase-requisition' => true,'consolidation-purchase-requisition' => true,
                 'create-purchase-requisition-repair' => true,'list-purchase-requisition-repair' => true,'show-purchase-requisition-repair' => true,'edit-purchase-requisition-repair' => true,'approve-purchase-requisition-repair' => true,'consolidation-purchase-requisition-repair' => true,
