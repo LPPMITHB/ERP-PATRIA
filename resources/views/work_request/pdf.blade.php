@@ -130,7 +130,8 @@
                                 <tr>
                                     <th style="font-size: 11px" width="4%" class="text-center">No</th>
                                     <th style="font-size: 11px" width="20%" class="text-center" >Material Name</th>
-                                    <th style="font-size: 11px" width="20%" class="text-center">Description</th>
+                                    <th style="font-size: 11px" width="10%" class="text-center">Description</th>
+                                    <th style="font-size: 11px" width="10%" class="text-center">Type</th>
                                     <th style="font-size: 11px" width="12%" class="text-center">Required Date</th>
                                     <th style="font-size: 11px" width="8%" class="text-center">Qty</th>
                                     <th style="font-size: 11px" width="13%" class="text-center">Price / pcs</th>
@@ -145,6 +146,7 @@
                                             <td style="font-size: 11px" class="text-center" width="4%">{{ $loop->iteration }}</td>
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="20%" class="tdBreakWord">{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="30%" class="tdBreakWord">{{ $WRD->description }}</td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{ ($WRD->type == 0) ? "Raw Material" : "Finished Goods"}} </td>
                                             <td style="font-size: 11px" width="12%" class="tdBreakWord text-center">{{ ($WRD->required_date != null) ? date("d-m-Y", strtotime($WRD->required_date)) : "-"}} </td>
                                             <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ number_format($WRD->quantity) }}</td>
                                             <td style="font-size: 11px" width="13%" class="tdBreakWord text-center">-</td>
