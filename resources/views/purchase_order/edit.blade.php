@@ -165,13 +165,14 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th v-if="type == 1" style="width: 30%">Material Name</th>
-                                                <th v-else style="width: 30%">Resource Name</th>
+                                                <th v-if="type == 1" style="width: 23%">Material Name</th>
+                                                <th v-else style="width: 23%">Resource Name</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
-                                                <th style="width: 30%">WBS Name</th>
+                                                <th style="width: 27%">WBS Name</th>
                                                 <th style="width: 15%">Alocation</th>
+                                                <th style="width: 10%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -188,7 +189,13 @@
                                                 </td>
                                                 <td v-if="POD.wbs != null" class="tdEllipsis">{{ POD.wbs.name }}</td>
                                                 <td v-else class="tdEllipsis">-</td>
-                                                <td class="tdEllipsis">{{ POD.purchase_requisition_detail.alocation }}</td>
+                                                <td v-if="POD.purchase_requisition_detail.alocation != null" class="tdEllipsis">{{ POD.purchase_requisition_detail.alocation }}</td>
+                                                <td v-else class="tdEllipsis">-</td>
+                                                <td class="textCenter">
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(POD,index)">
+                                                        REMARK
+                                                    </a>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -196,6 +203,29 @@
                             </div>
                             <div class="col-md-12 p-r-0">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="dataOk">SAVE</button>
+                            </div>
+                            <div class="modal fade" id="edit_item">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title">Input Remark</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <label for="remark" class="control-label">Remark</label>
+                                                    <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -232,6 +262,9 @@
         },
         selectedCurrency: "",
         submittedForm : {},
+        editRemark : {
+            remark : "",
+        },
     }
 
     var vm = new Vue({
@@ -254,6 +287,13 @@
                 if(this.vendor_id == ""){
                     isOk = true;
                 }
+                return isOk;
+            },
+            updateOk: function(){
+                let isOk = false;
+                    if(this.editRemark.remark == null || this.editRemark.remark == ""){
+                        isOk = true;
+                    }
                 return isOk;
             },
             currencyOk : function(){
@@ -311,6 +351,17 @@
                     });
                     $('div.overlay').hide();
                 })
+            },
+            openEditModal(POD,index){
+                this.editRemark.remark = POD.remark;
+                this.editRemark.index = index;
+            },
+            update(){
+
+                var pod = this.PODetail[this.editRemark.index];
+
+                pod.remark = this.editRemark.remark;
+
             },
             submitForm(){
                 var data = this.PODetail;
