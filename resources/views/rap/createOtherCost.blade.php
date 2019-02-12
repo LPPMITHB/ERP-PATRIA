@@ -104,7 +104,7 @@
                                     </selectize>
                                 </td>
                                 <td class="no-padding textCenter">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>

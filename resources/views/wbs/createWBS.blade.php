@@ -119,7 +119,7 @@
                                     <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight (%)">
                                 </td>
                                 <td align="center" class="p-l-0">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>

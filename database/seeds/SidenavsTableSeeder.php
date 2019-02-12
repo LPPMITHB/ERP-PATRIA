@@ -178,6 +178,11 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $wbsProfile,
+            'route_name' => 'wbs.createSubWbsProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfile,
             'route_name' => 'activity.createActivityProfile',
         ]);
 
@@ -185,6 +190,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $wbsProfileRepair,
             'route_name' => 'wbs_repair.createWbsProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfileRepair,
+            'route_name' => 'wbs_repair.createSubWbsProfile',
         ]);
 
         DB::table('sidenav')->insert([

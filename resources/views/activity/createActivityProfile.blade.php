@@ -124,7 +124,7 @@
                                     <input v-model="newActivityProfile.duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
                                 </td>
                                 <td>
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>
