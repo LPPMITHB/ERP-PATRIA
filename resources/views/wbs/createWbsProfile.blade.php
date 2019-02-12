@@ -18,15 +18,14 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <h4 class="box-title">WBS Profiles</h4>
-                    <table id="wbs-table" class="table table-bordered tableFixed pxTable" style="border-collapse:collapse">
+                    <table id="wbs-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
-                                <th style="width: 2px">No</th>
-                                <th style="width: 17%">Name</th>
-                                <th style="width: 17%">Description</th>
-                                <th style="width: 15%">Deliverables</th>
-                                <th style="width: 125px"></th>
+                                <th width=5%>No</th>
+                                <th width=25%>Name</th>
+                                <th width=25%>Description</th>
+                                <th width=25%>Deliverables</th>
+                                <th width=20%></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,6 +40,12 @@
                                     </a>
                                     <a class="btn btn-primary btn-xs" :href="createActivity(data)">
                                         MANAGE ACTIVITY
+                                    </a>
+                                    <a class="btn btn-primary btn-xs" :href="createBom(data.id)">
+                                        MANAGE BOM
+                                    </a>
+                                    <a class="btn btn-primary btn-xs" :href="createResource(data.id)">
+                                        MANAGE RESOURCE
                                     </a>
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
                                         EDIT
@@ -265,6 +270,24 @@ var vm = new Vue({
             }
             return url;
         },
+        createBom(id){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createBomProfile/"+id;
+            }else{
+                url = "/wbs_repair/createBomProfile/"+id;                
+            }
+            return url;
+        },
+        createResource(id){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createResourceProfile/"+id;
+            }else{
+                url = "/wbs_repair/createResourceProfile/"+id;  
+            }
+            return url;
+        },              
         getWBSProfile(){
             window.axios.get('/api/getWbsProfile').then(({ data }) => {
                 this.wbs = data;

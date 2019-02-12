@@ -523,9 +523,21 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
     
     Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
         
-    Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');    
-    
+    Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');   
+
     Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
+    
+    // BOM Profile
+    Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:create-project');
+
+    Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:create-project');
+
+    Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project');  
+
+    // Resource Profile
+    Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project');
+
+    Route::post('/storeResourceProfile', 'WBSController@storeResourceProfile')->name('storeResourceProfile')->middleware('can:create-project');
 });
 
 // WBS Repair Routes
@@ -559,6 +571,18 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project-repair');    
 
     Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
+
+    // BOM Profile
+    Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:create-project-repair');
+
+    Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:create-project-repair');
+
+    Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project-repair');  
+
+    // Resource Profile
+    Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project-repair');
+
+    Route::post('/storeResourceProfile', 'WBSController@storeResourceProfile')->name('storeResourceProfile')->middleware('can:create-project-repair');
 });
 
 // Activity Routes

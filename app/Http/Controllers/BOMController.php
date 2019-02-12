@@ -846,13 +846,13 @@ class BOMController extends Controller
     public function getMaterialsAPI($ids){
         $ids = json_decode($ids);
 
-        return response(Material::orderBy('name')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::orderBy('code')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getServicesAPI($ids){
         $ids = json_decode($ids);
 
-        return response(Service::orderBy('name')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(Service::orderBy('code')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getPRAPI($id){

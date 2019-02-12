@@ -172,14 +172,15 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th v-if="modelPR.type == 1" style="width: 25%">Material Name</th>
-                                                <th v-else style="width: 25%">Resource Name</th>
+                                                <th v-if="modelPR.type == 1" style="width: 20%">Material Name</th>
+                                                <th v-else style="width: 20%">Resource Name</th>
                                                 <th style="width: 7%">Qty</th>
                                                 <th style="width: 8%">Order</th>
                                                 <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 7%">Disc. (%)</th>
-                                                <th style="width: 23%">WBS Name</th>
-                                                <th style="width: 10%">Alocation</th>
+                                                <th style="width: 20%">WBS Name</th>
+                                                <th style="width: 8%">Alocation</th>
+                                                <th style="width: 10%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -202,6 +203,11 @@
                                                 <td class="tdEllipsis" v-else>-</td>
                                                 <td class="tdEllipsis" v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
+                                                <td class="textCenter">
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(PRD,index)">
+                                                        REMARK
+                                                    </a>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -210,6 +216,29 @@
                             <div class="col-md-12 p-r-0">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="dataOk">CREATE</button>
                             </div>
+                            <div class="modal fade" id="edit_item">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                                <h4 class="modal-title">Input Remark</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <label for="remark" class="control-label">Remark</label>
+                                                        <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 @endverbatim
@@ -280,6 +309,9 @@
         vendor_id : "",
         delivery_date : "",
         description : "",
+        editRemark : {
+            remark : "",
+        },
         submittedForm : {},
     }
 
@@ -305,6 +337,13 @@
                 }
                 return isOk;
             },
+            updateOk: function(){
+                let isOk = false;
+                    if(this.editRemark.remark == null || this.editRemark.remark == ""){
+                        isOk = true;
+                    }
+                return isOk;
+            },
             currencyOk : function(){
                 let isOk = false;
                 var currency_value = 1;
@@ -327,7 +366,7 @@
                     }else{
                         ref = (decimal[0]+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                    if(parseFloat(PRD.total_price.replace(/,/g , '')) != ref.replace(/,/g, '')){
+                    if(parseFloat((PRD.total_price+"").replace(/,/g , '')) != ref.replace(/,/g, '')){
                         isOk = true;
                     }   
                 });
@@ -349,6 +388,17 @@
                     });
                     $('div.overlay').hide();
                 })
+            },
+            openEditModal(PRD,index){
+                this.editRemark.remark = PRD.remark;
+                this.editRemark.index = index;
+            },
+            update(){
+
+                var prd = this.PRDetail[this.editRemark.index];
+
+                prd.remark = this.editRemark.remark;
+
             },
             submitForm(){
                 var data = this.PRDetail;

@@ -15,6 +15,10 @@ use App\Models\WbsProfile;
 use App\Models\ActivityProfile;
 use App\Models\BomProfile;
 use App\Models\ResourceProfile;
+use App\Models\Material;
+use App\Models\Service;
+use App\Models\Resource;
+use App\Models\ResourceDetail;
 use DB;
 use DateTime;
 use Auth;
@@ -25,6 +29,79 @@ class WBSController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
         return view('wbs.createWbsProfile', compact('menu'));
+    }
+
+    public function createBomProfile($wbs_id, Request $request)
+    {
+        $wbs = WbsProfile::find($wbs_id);
+        $bom = BomProfile::where('wbs_id',$wbs_id)->with('material','service')->get();
+        $route = $request->route()->getPrefix();
+
+        $materials = Material::orderBy('code')->get();
+        
+        if($route == '/wbs'){
+            if($wbs->business_unit_id == 1){
+                return view('wbs.createBomProfile', compact('wbs','route','materials','bom'));
+            }else{
+                return redirect()->route('wbs.indexWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
+            }
+        }elseif($route == '/wbs_repair'){
+            if($wbs->business_unit_id == 2){
+                $services = Service::orderBy('code')->get()->jsonSerialize();
+                return view('wbs.createBomRepairProfile', compact('wbs','route','materials','services','bom'));
+            }else{
+                return redirect()->route('wbs_repair.indexWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
+            }
+        }
+    }
+
+    public function storeBomProfile(Request $request){
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $bom = new BomProfile;
+            $bom->wbs_id = $data['wbs_id'];
+            $bom->material_id = $data['material_id'];
+            $bom->quantity = $data['quantityInt'];
+            $bom->source = $data['source'];
+            $bom->save();
+
+            DB::commit();
+            return response(json_encode($bom),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createBomProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
+    }
+
+    public function updateBomProfile(Request $request){
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $bom = BomProfile::findOrFail($data['id']);
+            $bom->material_id = $data['material_id'];
+            $bom->quantity = $data['quantityInt'];
+            $bom->source = $data['source'];
+            $bom->update();
+
+            DB::commit();
+            return response(json_encode($bom),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createBomProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
+    }
+
+    public function createResourceProfile($wbs_id, Request $request)
+    {
+        $wbs = WbsProfile::find($wbs_id);
+        $route = $request->route()->getPrefix();
+        print_r($route);exit();
+
+        
+        return view('wbs.createResourceProfile', compact('wbs','route'));
     }
 
     public function createSubWbsProfile($wbs_id, Request $request)
@@ -616,6 +693,11 @@ class WBSController extends Controller
         }
 
         return response($dataWbsProfile, Response::HTTP_OK);
+    }
     
+    public function getBomProfileAPI($wbs_id){
+        $bom = BomProfile::where('wbs_id',$wbs_id)->with('material','service')->get()->jsonSerialize();
+
+        return response($bom, Response::HTTP_OK);
     }
 }

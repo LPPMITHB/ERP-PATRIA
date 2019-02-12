@@ -457,33 +457,33 @@ class SidenavsTableSeeder extends Seeder
 
 
         // WR REPAIR
-        $createWrRepair = Menu::where('route_name','work_request_repair.create')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $createWrRepair,
-            'route_name' => 'work_request_repair.create',
-        ]);
+        // $createWrRepair = Menu::where('route_name','work_request_repair.create')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createWrRepair,
+        //     'route_name' => 'work_request_repair.create',
+        // ]);
 
-        $indexApproveWRRepair = Menu::where('route_name','work_request_repair.indexApprove')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $indexApproveWRRepair,
-            'route_name' => 'work_request_repair.indexApprove',
-        ]);
+        // $indexApproveWRRepair = Menu::where('route_name','work_request_repair.indexApprove')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $indexApproveWRRepair,
+        //     'route_name' => 'work_request_repair.indexApprove',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $indexApproveWRRepair,
-            'route_name' => 'work_request_repair.showApprove',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $indexApproveWRRepair,
+        //     'route_name' => 'work_request_repair.showApprove',
+        // ]);
 
-        $viewWrRepair = Menu::where('route_name','work_request_repair.index')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewWrRepair,
-            'route_name' => 'work_request_repair.index',
-        ]);
+        // $viewWrRepair = Menu::where('route_name','work_request_repair.index')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewWrRepair,
+        //     'route_name' => 'work_request_repair.index',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewWrRepair,
-            'route_name' => 'work_request_repair.edit',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewWrRepair,
+        //     'route_name' => 'work_request_repair.edit',
+        // ]);
 
         // Purchase Requisition
         $createPr = Menu::where('route_name','purchase_requisition.create')->select('id')->first()->id;
@@ -989,38 +989,38 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         //WO REPAIR
-        $createWORepair = Menu::where('route_name','work_order_repair.selectWR')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $createWORepair,
-            'route_name' => 'work_order_repair.selectWR',
-        ]);
+        // $createWORepair = Menu::where('route_name','work_order_repair.selectWR')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createWORepair,
+        //     'route_name' => 'work_order_repair.selectWR',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $createWORepair,
-            'route_name' => 'work_order_repair.selectWRD',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createWORepair,
+        //     'route_name' => 'work_order_repair.selectWRD',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $createWORepair,
-            'route_name' => 'work_order_repair.create',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createWORepair,
+        //     'route_name' => 'work_order_repair.create',
+        // ]);
 
-        $approveWORepair = Menu::where('route_name','work_order_repair.indexApprove')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $approveWORepair,
-            'route_name' => 'work_order_repair.indexApprove',
-        ]);
+        // $approveWORepair = Menu::where('route_name','work_order_repair.indexApprove')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $approveWORepair,
+        //     'route_name' => 'work_order_repair.indexApprove',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $approveWORepair,
-            'route_name' => 'work_order_repair.showApprove',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $approveWORepair,
+        //     'route_name' => 'work_order_repair.showApprove',
+        // ]);
         
-        $viewWORepair = Menu::where('route_name','work_order_repair.index')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewWORepair,
-            'route_name' => 'work_order_repair.index',
-        ]);
+        // $viewWORepair = Menu::where('route_name','work_order_repair.index')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewWORepair,
+        //     'route_name' => 'work_order_repair.index',
+        // ]);
 
         // production order
         $createProductionOrder = Menu::where('route_name','production_order.selectProject')->select('id')->first()->id;
