@@ -60,7 +60,7 @@
                                         <td>{{ data.quantity }}</td>
                                         <td>{{ data.source }}</td>
                                         <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
+                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(data,index)">
                                                 EDIT
                                             </a>
                                             <a href="#" @click="removeRow(data.id)" class="btn btn-danger btn-xs">
@@ -267,6 +267,7 @@
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
                     this.materials_modal = data;
                     $('div.overlay').hide();
+                    $('#edit_item').modal();
                 })
                 .catch((error) => {
                     iziToast.warning({
@@ -278,6 +279,7 @@
                 })
             },
             openEditModal(data,index){
+                $('div.overlay').show();
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
                 
@@ -346,9 +348,9 @@
                     buttons: [
                         ['<button><b>YES</b></button>', function (instance, toast) {
                             var url = "";
-                            if(this.route == "/wbs"){
+                            if(vm.route == "/wbs"){
                                 url = "/wbs/deleteBomProfile/"+id;
-                            }else{
+                            }else if(vm.route == "/wbs_repair"){
                                 url = "/wbs_repair/deleteBomProfile/"+id;
                             }
                             $('div.overlay').show();            
