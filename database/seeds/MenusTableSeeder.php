@@ -64,7 +64,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-briefcase',
             'route_name'=> 'wbs.createWbsProfile',
             'is_active' => true,
-            'roles' => 'ADMIN, PMP',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=> $projectManagementBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
