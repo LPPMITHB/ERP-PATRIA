@@ -50,6 +50,12 @@
                                                       <h4> : {{$project->progress}} %</h4>  
                                                   </div>
                                                   <div class="col-md-2 col-xs-5 col-sm-4">
+                                                      <h4>Actual Start Date</h4>
+                                                  </div>
+                                                  <div class="col-md-4 col-xs-7 col-sm-8">
+                                                      <h4> : {{date("d-m-Y", strtotime($project->actual_start_date))}}</h4>                
+                                                  </div>
+                                                  <div class="col-md-2 col-xs-5 col-sm-4">
                                                       <h4>Planned Start Date</h4>
                                                   </div>
                                                   <div class="col-md-4 col-xs-7 col-sm-8">
