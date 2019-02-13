@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => "Create Sub WBS Profile",
+        'title' => "Manage Sub WBS Profile",
         'items' => $array
     ]
 )
@@ -12,9 +12,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box">
-            <div class="box-header">
-                <div class="box-header">
-                    <div class="col-xs-12 col-lg-4 col-md-12">    
+            <div class="box-header no-padding">
+                <div class="box-header p-b-0">
+                    <div class="col-xs-12 col-lg-4 col-md-12 p-l-5">    
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Name</div>
@@ -31,15 +31,14 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <h4 class="box-title">Sub WBS Profiles</h4>
                     <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 17%">Name</th>
-                                <th style="width: 17%">Description</th>
-                                <th style="width: 15%">Deliverables</th>
-                                <th style="width: 12%"></th>
+                                <th width=5%>No</th>
+                                <th width=20%>Name</th>
+                                <th width=25%>Description</th>
+                                <th width=23%>Deliverables</th>
+                                <th width=27%></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,19 +47,43 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
-                                <td class="textCenter">
-                                    <a class="btn btn-primary btn-xs" :href="createSubWBSRoute(data)">
-                                        MANAGE WBS
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" :href="createActivity(data)">
-                                        MANAGE ACTIVITY
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
-                                        EDIT
-                                    </a>
-                                    <a class="btn btn-danger btn-xs" @click="deleteWbs(data)" data-toggle="modal">
-                                        DELETE
-                                    </a>
+                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBSRoute(data)">
+                                                MANAGE WBS
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createActivity(data)">
+                                                MANAGE ACTIVITY
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createBom(data.id)">
+                                                MANAGE BOM
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createResource(data.id)">
+                                                MANAGE RESOURCE
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                                EDIT
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteWbs(data)" data-toggle="modal">
+                                                DELETE
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -183,16 +206,6 @@ var vm = new Vue({
                 }
             return isOk;
         },
-        // updateOk: function(){
-        //     let isOk = false;
-        //         if(this.dataUpd.uom_id == ""
-        //         || this.dataUpd.standard_price.replace(/,/g , '') < 1)
-        //         {
-        //             isOk = true;
-        //         }
-        //     return isOk;
-        // },
-
     }, 
     methods:{
         tooltipText: function(text) {
@@ -224,6 +237,24 @@ var vm = new Vue({
             }
             return url;
         },
+        createBom(id){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createBomProfile/"+id;
+            }else{
+                url = "/wbs_repair/createBomProfile/"+id;                
+            }
+            return url;
+        },
+        createResource(id){
+            var url = "";
+            if(this.menu == "building"){
+                url = "/wbs/createResourceProfile/"+id;
+            }else{
+                url = "/wbs_repair/createResourceProfile/"+id;  
+            }
+            return url;
+        }, 
         getSubWBS(){
             window.axios.get('/api/getSubWbsProfile/'+this.newSubWbsProfile.wbs_profile_id).then(({ data }) => {
                 this.wbs = data;

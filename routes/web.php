@@ -514,6 +514,8 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
     Route::get('/createWBS/{id}', 'WBSController@createWBS')->name('createWBS')->middleware('can:create-project');
 
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project');
+
+    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project');
     
     Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project');  
       
@@ -524,6 +526,8 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');   
 
     Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
+
+    Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
     
     // BOM Profile
     Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:create-project');
@@ -531,6 +535,8 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
     Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:create-project');
 
     Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project');  
+
+    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile');
 
     // Resource Profile
     Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project');
@@ -558,6 +564,8 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
 
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
     
+    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project');
+
     Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
       
     Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project-repair');    
@@ -568,12 +576,16 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
 
     Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
 
+    Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
+
     // BOM Profile
     Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:create-project-repair');
 
     Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:create-project-repair');
 
     Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project-repair');  
+
+    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile');
 
     // Resource Profile
     Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project-repair');
@@ -611,6 +623,8 @@ Route::name('activity.')->prefix('activity')->group(function() {
 
     Route::delete('/{id}', 'ActivityController@destroyActivityProfile')->name('destroyActivityProfile');
     
+    Route::delete('/deleteActivity/{id}', 'ActivityController@destroyActivity')->name('destroyActivity');
+    
     //Network
     Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
     
@@ -646,6 +660,8 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
     Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project-repair');
 
     Route::delete('/{id}', 'ActivityController@destroyActivityProfile')->name('destroyActivityProfile');
+
+    Route::delete('/deleteActivity/{id}', 'ActivityController@destroyActivity')->name('destroyActivity');
     
     //Network
     Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project-repair');
@@ -1255,6 +1271,8 @@ Route::name('goods_movement_repair.')->prefix('goods_movement_repair')->group(fu
 
 //Production Order Routes
 Route::name('production_order.')->prefix('production_order')->group(function() {
+    Route::patch('/checkProdOrder/{wbs_id}', 'ProductionOrderController@checkProdOrder')->name('checkProdOrder')->middleware('can:create-production-order');
+
     Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order');
 
     Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order');
@@ -1302,6 +1320,8 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
 
 //Production Order Repair Routes
 Route::name('production_order_repair.')->prefix('production_order_repair')->group(function() {
+    Route::patch('/checkProdOrder/{wbs_id}', 'ProductionOrderController@checkProdOrder')->name('checkProdOrder')->middleware('can:create-production-order-repair');
+
     Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order-repair');
 
     Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order-repair');

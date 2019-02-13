@@ -105,6 +105,7 @@
             "contextmenu": {
                 "select_node": false, 
                 "show_at_node": false,
+                'items' : null
             }
         }).bind("changed.jstree", function (e, data) {
             if(data.node) {

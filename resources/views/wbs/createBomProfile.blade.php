@@ -6,7 +6,7 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Create WBS Profile' => route('wbs.indexWbsProfile'),
+            'Create WBS Profile' => route('wbs.createWbsProfile'),
             'Manage BOM Profile' => '',
         ]
     ]
@@ -48,7 +48,7 @@
                                         <th width="33%">Description</th>
                                         <th width="10%">Quantity</th>
                                         <th width="10%">Source</th>
-                                        <th width="12%" ></th>
+                                        <th width="12%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -298,7 +298,7 @@
 
                 this.editInput.material_id = data.material_id;
                 this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = data.quantityInt;
+                this.editInput.quantityInt = parseInt((data.quantity+"").replace(/,/g , ''));
                 this.editInput.source = data.source;
                 this.editInput.id = data.id;
             },
@@ -336,27 +336,66 @@
                     })
                 }
             },
-            removeRow: function(materialId) {
-                var index_materialId = "";
-                var index_materialTable = "";
+            removeRow: function(id) {
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this material?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            var url = "";
+                            if(this.route == "/wbs"){
+                                url = "/wbs/deleteBomProfile/"+id;
+                            }else{
+                                url = "/wbs_repair/deleteBomProfile/"+id;
+                            }
+                            $('div.overlay').show();            
+                            window.axios.delete(url).then((response) => {
+                                if(response.data.error != undefined){
+                                    response.data.error.forEach(error => {
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: error,
+                                            position: 'topRight',
+                                        });
+                                    });
+                                    $('div.overlay').hide();
+                                }else{
+                                    iziToast.success({
+                                        displayMode: 'replace',
+                                        title: response.data.response,
+                                        position: 'topRight',
+                                    });
+                                    $('div.overlay').hide();   
+                                    vm.getBomProfile(vm.wbs.id);
+                                }
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: "Please try again.. ",
+                                    position: 'topRight',
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();            
+                            })
 
-                this.material_id.forEach(id => {
-                    if(id == materialId){
-                        index_materialId = this.material_id.indexOf(id);
-                    }
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }],
+                    ],
                 });
-                for (var i in this.materialTable) { 
-                    if(this.materialTable[i].material_id == materialId){
-                        index_materialTable = i;
-                    }
-                }
-
-                this.materialTable.splice(index_materialTable, 1);
-                this.material_id.splice(index_materialId, 1);
-                this.newIndex = this.materialTable.length + 1;
-
-                var jsonMaterialId = JSON.stringify(this.material_id);
-                this.getNewMaterials(jsonMaterialId);
             },
             update(old_material_id, new_material_id){
                 var data = JSON.stringify(this.editInput);
