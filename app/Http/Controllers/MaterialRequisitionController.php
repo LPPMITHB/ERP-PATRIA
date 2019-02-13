@@ -363,4 +363,10 @@ class MaterialRequisitionController extends Controller
         
         return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function getStockAPI($id){
+        $stock = Stock::where('material_id',$id)->first()->jsonSerialize();
+        
+        return response($stock, Response::HTTP_OK);
+    }
 }
