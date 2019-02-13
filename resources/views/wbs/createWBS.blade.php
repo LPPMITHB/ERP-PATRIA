@@ -69,6 +69,11 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
+                    <div class="pull-right m-t-10">
+                        <a class="btn btn-primary btn-xs" data-toggle="modal" href="#adopt_wbs">
+                            ADOPT FROM WBS PROFILE
+                        </a>
+                    </div>
                     <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>100%</b>)</h4>
                     <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse">
                         <thead>
@@ -170,6 +175,40 @@
                         </div>
                         <!-- /.modal-dialog -->
                     </div>
+                    
+                    <div class="modal fade" id="adopt_wbs">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Adopt from WBS Profiles</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="form-group col-sm-12">
+                                            <label for="">WBS Profiles</label>
+                                            <selectize v-model="selected_wbs_profile" :settings="wbsProfilesSettings">
+                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.name }}</option>
+                                            </selectize>
+                                        </div>
+                                        <div class="form-group col-sm-12" v-show="selected_wbs_profile != ''">
+                                            <label for="">WBS Profile Structure</label>
+                                            <div id="treeview">
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" :disabled="profileOk" data-dismiss="modal" @click.prevent="adoptWbs">ADOPT</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
                 </div>
             </div>
             @endverbatim
@@ -215,6 +254,11 @@ var data = {
     maxWeight : 0,
     totalWeight : 0,
     active_id : "",
+    wbs_profiles : @json($wbs_profiles),
+    selected_wbs_profile : "",
+    wbsProfilesSettings: {
+        placeholder: 'WBS Profiles',
+    },
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -266,7 +310,14 @@ var vm = new Vue({
                 }
             return isOk;
         },
-
+        profileOk: function(){
+            let isOk = false;
+                if(this.selected_wbs_profile == "")
+                {
+                    isOk = true;
+                }
+            return isOk;
+        }
     }, 
     methods:{
         tooltipText: function(text) {
@@ -314,6 +365,44 @@ var vm = new Vue({
                     });
                 })
             });
+        },
+        adoptWbs(){
+            var data = {};
+            data.selected_wbs_profile = this.selected_wbs_profile;
+            data.project_id = this.newWbs.project_id;
+            data = JSON.stringify(data);
+            var url = "";
+            if(this.menu == "building"){
+                url = "{{ route('wbs.adoptWbs') }}";
+            }else{
+                url = "{{ route('wbs_repair.adoptWbs') }}";              
+            }
+            $('div.overlay').show();            
+            window.axios.post(url,data)
+            .then((response) => {
+                if(response.data.error != undefined){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: response.data.error,
+                        position: 'topRight',
+                    });
+                    $('div.overlay').hide();            
+                }else{
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: response.data.response,
+                        position: 'topRight',
+                    });
+                    $('div.overlay').hide();            
+                }
+                
+                this.getWBS();
+                this.selected_wbs_profile = "";                
+            })
+            .catch((error) => {
+                console.log(error);
+                $('div.overlay').hide();            
+            })
         },
         add(){            
             var newWbs = this.newWbs;
@@ -480,6 +569,31 @@ var vm = new Vue({
                 });
             }
         },
+        selected_wbs_profile : function(newValue){
+            if(newValue != ""){
+                window.axios.get('/api/getDataProfileJstree/'+newValue).then(({ data }) => {
+                    $('#treeview').jstree("destroy");
+                    $('#treeview').jstree({
+                        "core": {
+                            'data': data,
+                            "check_callback": true,
+                            "animation": 200,
+                            "dblclick_toggle": false,
+                            "keep_selected_style": false
+                        },
+                        "plugins": ["dnd", "contextmenu"],
+                        "contextmenu": {
+                            "select_node": false, 
+                            "show_at_node": false,
+                            'items' : null
+                        }
+                    }).bind("changed.jstree", function (e, data) {
+                    }).bind("loaded.jstree", function (event, data) {
+                        // you get two params - event & data - check the core docs for a detailed description
+                    });
+                });
+            }
+        }
     },
     created: function() {
         this.getWBS();

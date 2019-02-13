@@ -4,11 +4,11 @@
         @if($wbs->wbs != null)
             @breadcrumb(
                 [
-                    'title' => "Add Activities",
+                    'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
                         $wbs->name => route('wbs.createSubWbsProfile', $wbs->wbs->id),
-                        "Add Activities" => ""
+                        "Manage Activities" => ""
                     ]
                 ]
             )
@@ -16,11 +16,11 @@
         @else
             @breadcrumb(
                 [
-                    'title' => "Add Activities",
+                    'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
                         $wbs->name => route('wbs.createWbsProfile'),
-                        "Add Activities" => ""
+                        "Manage Activities" => ""
                     ]
                 ]
             )
@@ -30,7 +30,7 @@
         @if($wbs->wbs != null)
             @breadcrumb(
                 [
-                    'title' => "Add Activities",
+                    'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
                         $wbs->name => route('wbs_repair.createSubWbsProfile', $wbs->wbs->id)
@@ -41,7 +41,7 @@
         @else
             @breadcrumb(
                 [
-                    'title' => "Add Activities",
+                    'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
                         $wbs->name => route('wbs_repair.createWbsProfile')
@@ -56,48 +56,33 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
-            <div class="box-header">
-                <div class="col-sm-6">
-                    <table>
-                        <thead>
-                            <th>WBS Information</th>
-                            <th></th>
-                            <th></th>
-                        </thead>
-                    </table>
-                    <table class="tableFixed width100">
-                        <tbody>
-                            <tr>
-                                <td style="width: 25%">Name</td>
-                                <td style="width: 3%">:</td>
-                                <td><b>{{$wbs->name}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Description</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->description}}</b></td>
-                            </tr>
-                            <tr>
-                                <td class="valignTop">Deliverables</td>
-                                <td class="valignTop">:</td>
-                                <td class="valignTop" style="overflow-wrap: break-word;"><b >{{$wbs->deliverables}}</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="box-header no-padding">
+                <div class="box-header p-b-0">
+                    <div class="col-xs-12 col-lg-4 col-md-12 p-l-5">    
+                        <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Name</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Description</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Deliverable</div>
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
+                    </div>
                 </div>
             </div>
             @verbatim
             <div id="add_activity">
                 <div class="box-body">
-                    <h4 class="box-title">List of Activities Profile</h4>
                     <table id="activity-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th style="width: 4%">No</th>
+                                <th style="width: 5%">No</th>
                                 <th style="width: 20%">Name</th>
                                 <th style="width: 50%">Description</th>
-                                <th style="width: 10%">Duration</th>
-                                <th style="width: 10%"></th>
+                                <th style="width: 11%">Duration</th>
+                                <th style="width: 14%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -106,8 +91,11 @@
                                 <td class="tdEllipsis">{{ data.name }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td>{{ data.duration }} Day(s)</td>
-                                <td class="textCenter">
+                                <td class="textCenter p-l-0 p-r-0">
                                     <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data)">EDIT</button>
+                                    <a class="btn btn-danger btn-xs" @click="deleteWbs(data)" data-toggle="modal">
+                                        DELETE
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -121,10 +109,10 @@
                                     <textarea v-model="newActivityProfile.description" class="form-control width100" rows="3" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newActivityProfile.duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
+                                    <textarea v-model="newActivityProfile.duration" rows="3" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>                                        
                                 </td>
-                                <td>
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">CREATE</button>
+                                <td class="textCenter p-l-0">
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -152,7 +140,7 @@
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="duration" class=" control-label">Duration</label>
-                                        <input v-model="editActivityProfile.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
+                                        <input v-model="editActivityProfile.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
                                     </div>                             
                                 </div>
                                 <div class="modal-footer">
@@ -269,7 +257,70 @@ var vm = new Vue({
             });
 
         },
-        add(){            
+        deleteWbs(data){
+            var menuTemp = this.menu;
+            var deleted = false;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this Activity?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(menuTemp == "building"){
+                            url = "/activity/"+data.id;
+                        }else{
+                            url = "/activity_repair/"+data.id;
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: error,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();   
+                                vm.getActivities();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
+            });
+        },
+        add(){      
+            this.newActivityProfile.duration = parseInt((this.newActivityProfile.duration+"").replace(/,/g , ''));
             var newActivityProfile = this.newActivityProfile;
             newActivityProfile = JSON.stringify(newActivityProfile);
             var url = "";
@@ -351,7 +402,7 @@ var vm = new Vue({
                 $('div.overlay').hide();            
             })
 
-        }
+        },
     },
     watch: {
         newActivityProfile:{
@@ -359,6 +410,9 @@ var vm = new Vue({
             },
             deep: true
         },
+        'newActivityProfile.duration':function(newValue){
+            this.newActivityProfile.duration = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+        }
     },
     created: function() {
         this.getActivities();

@@ -186,6 +186,16 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'activity.createActivityProfile',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfile,
+            'route_name' => 'wbs.createBomProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfile,
+            'route_name' => 'wbs.createResourceProfile',
+        ]);
+
         $wbsProfileRepair = Menu::where('route_name','wbs_repair.createWbsProfile')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $wbsProfileRepair,
@@ -199,7 +209,17 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $wbsProfileRepair,
-            'route_name' => 'activity.createActivityProfile',
+            'route_name' => 'activity_repair.createActivityProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfileRepair,
+            'route_name' => 'wbs_repair.createBomProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsProfileRepair,
+            'route_name' => 'wbs_repair.createResourceProfile',
         ]);
 
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;

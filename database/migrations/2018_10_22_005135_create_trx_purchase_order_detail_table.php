@@ -21,6 +21,7 @@ class CreateTrxPurchaseOrderDetailTable extends Migration
             $table->integer('quantity');
             $table->integer('received')->default(0);
             $table->integer('returned')->default(0);
+            $table->text('remark')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
