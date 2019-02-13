@@ -148,7 +148,12 @@ class WBSController extends Controller
     {
         $project = Project::find($id);
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-        $wbs_profiles = WbsProfile::where('wbs_id', null)->get()->jsonSerialize();
+        if($menu == "building"){
+            $businessUnit = 1;
+        }elseif($menu == "repair"){
+            $businessUnit = 2;
+        }
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->get()->jsonSerialize();
 
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
@@ -280,7 +285,12 @@ class WBSController extends Controller
         $wbs = WBS::find($wbs_id);
         $project = Project::find($project_id);
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-        $wbs_profiles = WbsProfile::where('wbs_id', null)->get()->jsonSerialize();
+        if($menu == "building"){
+            $businessUnit = 1;
+        }elseif($menu == "repair"){
+            $businessUnit = 2;
+        }
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->get()->jsonSerialize();
 
         if($menu=="building"){
             $array = [
@@ -413,7 +423,51 @@ class WBSController extends Controller
                 return response(["error"=> $error],Response::HTTP_OK);
             }
             if(!$wbsProfile->delete()){
-                array_push($error, ["error"=>"Failed to delete, please try again!"]);
+                array_push($error, ["Failed to delete, please try again!"]);
+                return response(["error"=> $error],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete WBS"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function destroyWbs(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $wbs = WBS::find($id);
+            $error = [];
+            if($wbs->productionOrder != null){
+                array_push($error, ["Failed to delete, this WBS already have Production Order"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+
+            if(count($wbs->wbss)>0){
+                array_push($error, ["Failed to delete, this WBS have child WBS"]);
+            }
+
+            if(count($wbs->activities)>0){
+                array_push($error, ["Failed to delete, this WBS have activities"]);
+            }
+
+            if(count($wbs->resourceTrxs)>0){
+                array_push($error, ["Failed to delete, this WBS have assigned resource"]);
+            }
+
+            if($wbs->bom != null){
+                array_push($error, ["Failed to delete, this WBS have BOM"]);
+            }
+            
+            if(count($error)>0){
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+            if(!$wbs->delete()){
+                array_push($error, ["Failed to delete, please try again!"]);
                 return response(["error"=> $error],Response::HTTP_OK);
             }else{
                 DB::commit();

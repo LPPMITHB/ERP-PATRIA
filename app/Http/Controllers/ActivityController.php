@@ -318,6 +318,42 @@ class ActivityController extends Controller
                 return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+
+    public function destroyActivity(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        $error = [];
+        try {
+            $activity = Activity::find($id);
+            if($activity->progress > 0){
+                array_push($error, ["Failed to delete, this activity already have ".$activity->progress." % progress"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+
+            $activity_ref = Activity::whereNotIn('id',[$activity->id])->get();
+            foreach($activity_ref as $act){
+                if($act->predecessor != null){
+                    $predecessor = json_decode($act->predecessor);
+                    if(in_array($activity->id,$predecessor)){
+                        array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
+                        return response(["error"=> $error],Response::HTTP_OK);
+                    }
+                }
+            }
+            if(!$activity->delete()){
+                array_push($error, ["Failed to delete, please try again!"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            array_push($error, [$e->getMessage()]);                
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
     
     //Method
     public function generateActivityCode($id){

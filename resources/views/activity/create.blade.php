@@ -141,8 +141,8 @@
                                 <th style="width: 10%">End Date</th>
                                 <th >Duration</th>
                                 <th >Weight</th>
-                                <th style="width: 19%">Predecessor</th> 
-                                <th style="width: 10%"></th>
+                                <th style="width: 17%">Predecessor</th> 
+                                <th style="width: 11%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -155,15 +155,28 @@
                                 <td>{{ data.planned_duration }} Day(s)</td>
                                 <td>{{ data.weight }} %</td>
                                 <template v-if="data.predecessor != null">
-                                    <td class="p-l-5">
-                                        <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#predecessor_activity"  @click="openModalPredecessor(data)">VIEW PREDECESSOR ACTIVITIES</button>
+                                    <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                        <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                            <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                                <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" data-target="#predecessor_activity"  @click="openModalPredecessor(data)">VIEW PREDECESSOR ACTIVITIES</button>
+                                            </div>
+                                        </div>
                                     </td>
                                 </template>
                                 <template v-else>
                                     <td>-</td>
                                 </template>
-                                <td class="textCenter">
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data)">EDIT</button>
+                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data)">EDIT</button>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteActivity(data)" data-toggle="modal">
+                                                DELETE
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -191,7 +204,7 @@
                                 <td class="p-l-0 textCenter">
                                     <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
                                 </td>
-                                <td>
+                                <td class="textCenter">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
@@ -593,7 +606,15 @@ var vm = new Vue({
             window.axios.get('/api/getActivities/'+this.newActivity.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.newIndex = Object.keys(this.activities).length+1;
+                this.activities.forEach(data => {
+                    if(data.planned_start_date != null){
+                        data.planned_start_date = data.planned_start_date.split("-").reverse().join("-");   
+                    }
 
+                    if(data.planned_end_date != null){
+                        data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");   
+                    }
+                });
                 this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
                 $('#activity-table').DataTable().destroy();
                 this.$nextTick(function() {
@@ -699,8 +720,71 @@ var vm = new Vue({
                 console.log(error);
                 $('div.overlay').hide();            
             })
+        },
+        deleteActivity(data){
+            var menuTemp = this.menu;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 9999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this Activity?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(menuTemp == "building"){
+                            url = "/activity/deleteActivity/"+data.id;
+                        }else{
+                            url = "/activity_repair/deleteActivity/"+data.id;
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();
+                                vm.getActivities();
+                                vm.getAllActivities();   
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
 
-        }
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
+            });
+        },
     },
     watch: {
         newActivity:{
