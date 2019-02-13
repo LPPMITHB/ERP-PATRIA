@@ -534,6 +534,8 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
     Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project');  
 
+    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile');
+
     // Resource Profile
     Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project');
 
@@ -578,6 +580,8 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:create-project-repair');
 
     Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project-repair');  
+
+    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile');
 
     // Resource Profile
     Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project-repair');

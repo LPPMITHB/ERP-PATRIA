@@ -22,10 +22,10 @@
                         <thead>
                             <tr>
                                 <th width=5%>No</th>
-                                <th width=25%>Name</th>
+                                <th width=20%>Name</th>
                                 <th width=25%>Description</th>
-                                <th width=25%>Deliverables</th>
-                                <th width=20%></th>
+                                <th width=23%>Deliverables</th>
+                                <th width=27%></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,25 +34,43 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
-                                <td class="p-l-0 p-r-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" :href="createSubWBS(data)">
-                                        MANAGE WBS
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" :href="createActivity(data)">
-                                        MANAGE ACTIVITY
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" :href="createBom(data.id)">
-                                        MANAGE BOM
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" :href="createResource(data.id)">
-                                        MANAGE RESOURCE
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
-                                        EDIT
-                                    </a>
-                                    <a class="btn btn-danger btn-xs" @click="deleteWbs(data)" data-toggle="modal">
-                                        DELETE
-                                    </a>
+                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                                MANAGE WBS
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createActivity(data)">
+                                                MANAGE ACTIVITY
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createBom(data.id)">
+                                                MANAGE BOM
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createResource(data.id)">
+                                                MANAGE RESOURCE
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                                EDIT
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteWbs(data)" data-toggle="modal">
+                                                DELETE
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -60,7 +78,7 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
-                                    <input v-model="newWbsProfile.name" type="text" class="form-control width100" id="name" name="name" placeholder="Name">
+                                    <textarea v-model="newWbsProfile.name" class="form-control width100" rows="2" name="description" placeholder="Name"></textarea>
                                 </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newWbsProfile.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
@@ -182,14 +200,13 @@ var vm = new Vue({
         },
         deleteWbs(data){
             var menuTemp = this.menu;
-            var deleted = false;
             iziToast.question({
                 close: false,
                 overlay: true,
                 timeout : 0,
                 displayMode: 'once',
                 id: 'question',
-                zindex: 999,
+                zindex: 9999,
                 title: 'Confirm',
                 message: 'Are you sure you want to delete this WBS?',
                 position: 'center',

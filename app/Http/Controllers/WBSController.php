@@ -94,6 +94,21 @@ class WBSController extends Controller
         }
     }
 
+    public function destroyBomProfile(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $bomProfile = BomProfile::findOrFail($id);
+            $bomProfile->delete();
+
+            DB::commit();
+            return response(["response"=>"Success to delete material"],Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function createResourceProfile($wbs_id, Request $request)
     {
         $wbs = WbsProfile::find($wbs_id);
