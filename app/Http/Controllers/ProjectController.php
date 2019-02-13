@@ -1322,7 +1322,8 @@ class ProjectController extends Controller
                         "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
                         "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  ,
                         "parent" => $activity->wbs->code,
-                        "color" => "red"
+                        "color" => "red",
+                        "progressColor" => "red",
                     ]);
                 }
             }else if($today==$activity->planned_end_date){
@@ -1335,7 +1336,8 @@ class ProjectController extends Controller
                         "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
                         "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  , 
                         "parent" => $activity->wbs->code, 
-                        "color" => "green"
+                        "color" => "green",
+                        "progressColor" => "green",
                     ]);
                 }else{
                     $data->push([
@@ -1346,7 +1348,8 @@ class ProjectController extends Controller
                         "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
                         "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  ,
                         "parent" => $activity->wbs->code,
-                        "color" => "yellow"
+                        "color" => "yellow",
+                        "progressColor" => "yellow",
                     ]);
                 }
             }else{
@@ -1359,7 +1362,8 @@ class ProjectController extends Controller
                         "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
                         "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  , 
                         "parent" => $activity->wbs->code, 
-                        "color" => "green"
+                        "color" => "green",
+                        "progressColor" => "green",
                     ]);
                 }else{
                     $data->push([
@@ -1370,6 +1374,7 @@ class ProjectController extends Controller
                         "start_date" =>  date_format($start_date_activity,"d-m-Y"), 
                         "duration" => $activity->actual_duration != null ? $activity->actual_duration : $activity->planned_duration  ,
                         "parent" => $activity->wbs->code,  
+                        "progressColor" => "#3db9d3",
                     ]);
                 }
             }
@@ -1398,7 +1403,8 @@ class ProjectController extends Controller
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
                             "parent" => $wbs->wbs->code,
-                            "color" => "red"
+                            "color" => "red",
+                            "progressColor" => $wbs->progress == 0 ? "red" : "green",
                         ]);
                     }else{
                         $data->push([
@@ -1408,7 +1414,8 @@ class ProjectController extends Controller
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration, 
                             "parent" => $wbs->wbs->code, 
-                            "color" => "green"
+                            "color" => "green",
+                            "progressColor" => $wbs->progress == 0 ? "green" : "green",
                         ]);
                     }
                 }else if($today==$wbs->planned_deadline){
@@ -1420,7 +1427,8 @@ class ProjectController extends Controller
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
                             "parent" => $wbs->wbs->code,
-                            "color" => "yellow"
+                            "color" => "yellow",
+                            "progressColor" => $wbs->progress == 0 ? "yellow" : "green",
                         ]);
                     }else{
                         $data->push([
@@ -1430,7 +1438,8 @@ class ProjectController extends Controller
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration, 
                             "parent" => $wbs->wbs->code, 
-                            "color" => "green"
+                            "color" => "green",
+                            "progressColor" => $wbs->progress == 0 ? "green" : "green",
                         ]);
                     }
                 }else{
@@ -1442,7 +1451,8 @@ class ProjectController extends Controller
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
                             "parent" => $wbs->wbs->code,
-                            "color" => "green"
+                            "color" => "green",
+                            "progressColor" => $wbs->progress == 0 ? "green" : "green",
                         ]);
                     }else{
                         $data->push([
@@ -1451,7 +1461,8 @@ class ProjectController extends Controller
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
-                            "parent" => $wbs->wbs->code,  
+                            "parent" => $wbs->wbs->code,
+                            "progressColor" => $wbs->progress == 0 ? "#3db9d3" : "green",
                         ]);
                     }
                 } 
@@ -1464,7 +1475,8 @@ class ProjectController extends Controller
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
-                            "color" => "red"
+                            "color" => "red",
+                            "progressColor" => $wbs->progress == 0 ? "red" : "green",
                         ]);
                     }else{
                         $data->push([
@@ -1473,7 +1485,8 @@ class ProjectController extends Controller
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
-                            "color" => "green"
+                            "color" => "green",
+                            "progressColor" => $wbs->progress == 0 ? "green" : "green",
                         ]);
                     }
                 }else if($today==$wbs->planned_deadline){
@@ -1484,7 +1497,8 @@ class ProjectController extends Controller
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
-                            "color" => "yellow"
+                            "color" => "yellow",
+                            "progressColor" => $wbs->progress == 0 ? "yellow" : "green",
                         ]);
                     }else{
                         $data->push([
@@ -1493,7 +1507,8 @@ class ProjectController extends Controller
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
-                            "color" => "green"
+                            "color" => "green",
+                            "progressColor" => $wbs->progress == 0 ? "green" : "green",
                         ]);
                     }
                 }else{
@@ -1504,7 +1519,8 @@ class ProjectController extends Controller
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
-                            "color" => "green"
+                            "color" => "green",
+                            "progressColor" => "green",
                         ]);
                     }else{
                         $data->push([
@@ -1512,7 +1528,8 @@ class ProjectController extends Controller
                             "text" => $wbs->name." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
-                            "duration" => $duration,  
+                            "duration" => $duration,
+                            "progressColor" => $wbs->progress == 0 ? "#3db9d3" : "green",
                         ]);
                     }
                 } 

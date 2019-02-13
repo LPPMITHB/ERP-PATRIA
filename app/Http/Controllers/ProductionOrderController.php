@@ -15,6 +15,7 @@ use App\Models\Uom;
 use App\Models\Material;
 use App\Models\Resource;
 use App\Models\Service;
+use App\Models\Activity;
 use App\Models\ResourceTrx;
 use App\Models\Stock;
 use App\Models\ProjectInventory;
@@ -352,6 +353,99 @@ class ProductionOrderController extends Controller
         $uoms = Uom::all()->jsonSerialize();
 
         return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms'));
+    }
+
+    public function checkProdOrder(Request $request,$code){
+        $route = $request->route()->getPrefix();
+
+        if (strpos($code, 'WBS') !== false) {
+            $wbs = WBS::where('code',$code)->first();
+            $prod_order = $wbs->productionOrder;
+            if($prod_order != null){
+                if($prod_order->status == 0){
+                    if($route == "/production_order"){
+                        return redirect()->route('production_order.show',$prod_order->id);
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('production_order.show',$prod_order->id);
+                    }
+                }else if($prod_order->status == 1){
+                    if($route == "/production_order"){
+                        return redirect()->route('production_order.release',$prod_order->id);
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('production_order.release',$prod_order->id);
+                    }
+                }else if($prod_order->status == 2){
+                    if($route == "/production_order"){
+                        return redirect()->route('production_order.confirm',$prod_order->id);
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('production_order.confirm',$prod_order->id);
+                    }
+                }
+            }else{
+                $project = Project::findOrFail($wbs->project_id);
+                $materials = Material::all()->jsonSerialize();
+                $resources = Resource::all()->jsonSerialize();
+                $services = Service::all()->jsonSerialize();
+                $modelActivities = $wbs->activities;
+                
+                $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
+                $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
+                if($modelBOM != null){
+                    return view('production_order.create', compact('wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+                }else{
+                    if($route == "/production_order"){
+                        return redirect()->route('project.show',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('project.show',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+                    }
+                }
+            }
+        }else if(strpos($code, 'ACT') !== false){
+            $act = Activity::where('code',$code)->first(); 
+            $wbs = $act->wbs;
+            $prod_order = $wbs->productionOrder;
+            if($prod_order != null){
+                if($prod_order->status == 0){
+                    if($route == "/production_order"){
+                        return redirect()->route('production_order.show',$prod_order->id);
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('production_order.show',$prod_order->id);
+                    }
+                }else if($prod_order->status == 1){
+                    if($route == "/production_order"){
+                        return redirect()->route('production_order.release',$prod_order->id);
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('production_order.release',$prod_order->id);
+                    }
+                }else if($prod_order->status == 2){
+                    if($route == "/production_order"){
+                        return redirect()->route('production_order.confirm',$prod_order->id);
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('production_order.confirm',$prod_order->id);
+                    }
+                }
+            }else{
+                $project = Project::findOrFail($wbs->project_id);
+                $materials = Material::all()->jsonSerialize();
+                $resources = Resource::all()->jsonSerialize();
+                $services = Service::all()->jsonSerialize();
+                $modelActivities = $wbs->activities;
+                
+                $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
+                $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
+                if($modelBOM != null){
+                    return view('production_order.create', compact('wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+                }else{
+                    if($route == "/production_order"){
+                        return redirect()->route('project.show',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+                    }elseif($route == "/production_order_repair"){
+                        return redirect()->route('project.show',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+                    }
+                }
+            }
+        }
+
+        
     }
 
     /**

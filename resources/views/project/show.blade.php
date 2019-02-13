@@ -194,6 +194,8 @@
             </div>
         </div>
     </div>
+
+    <!-- unused -->
     <div class="modal fade" id="confirm_activity_modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -404,8 +406,10 @@
     </div>
 </div>
 
-
-
+<form id="form" class="form-horizontal" method="POST">
+    <input type="hidden" name="_method" value="PATCH">
+    @csrf
+</form>
 
 
 
@@ -1044,13 +1048,19 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            if(id.indexOf("ACT") !== -1){
-                $("#confirm_activity_modal").modal('show');
-                vm.openConfirmModal(id);
-                return true;
+            if(vm.menu == "building"){
+                var url = "/production_order/checkProdOrder/"+id;
+
+                const form = document.getElementById('form');
+                form.setAttribute('action', url);
+                form.submit();
             }else{
-                return true;
+                var url = "/production_order_repair/checkProdOrder/"+id;
+                const form = document.getElementById('form');
+                form.setAttribute('action', url);
+                form.submit();
             }
+            return true;
         });
     });
     
