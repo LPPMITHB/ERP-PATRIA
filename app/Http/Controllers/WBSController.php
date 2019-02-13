@@ -640,8 +640,15 @@ class WBSController extends Controller
     }
 
     //API
-    public function getWbsProfileAPI(){
-        $wbss = WbsProfile::where('wbs_id', null)->get()->jsonSerialize();
+    public function getWbsProfileAPI($menu){
+        $businessUnit = 0;
+        if($menu == "building"){
+            $businessUnit = 1;
+        }else if($menu == "repair"){
+            $businessUnit = 2;
+        }
+
+        $wbss = WbsProfile::where('wbs_id', null)->where('business_unit_id',$businessUnit)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 
