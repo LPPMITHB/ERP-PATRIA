@@ -137,7 +137,7 @@ Route::get('/getActualStartDate/{id}', 'ProjectController@getActualStartDateAPI'
 
 // wbs
 Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI');
-Route::get('/getWbsProfile', 'WBSController@getWbsProfileAPI')->name('api.wbs.getWbsProfileAPI');
+Route::get('/getWbsProfile/{menu}', 'WBSController@getWbsProfileAPI')->name('api.wbs.getWbsProfileAPI');
 Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('api.wbs.getAllWbsAPI');
 Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('api.wbs.getSubWbsAPI');
 Route::get('/getSubWbsProfile/{id}', 'WBSController@getSubWbsProfileAPI')->name('api.wbs.getSubWbsProfileAPI');

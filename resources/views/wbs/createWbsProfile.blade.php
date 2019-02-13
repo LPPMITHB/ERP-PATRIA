@@ -306,7 +306,7 @@ var vm = new Vue({
             return url;
         },              
         getWBSProfile(){
-            window.axios.get('/api/getWbsProfile').then(({ data }) => {
+            window.axios.get('/api/getWbsProfile/'+this.menu).then(({ data }) => {
                 this.wbs = data;
                 this.newIndex = Object.keys(this.wbs).length+1;
                 $('#wbs-table').DataTable().destroy();
