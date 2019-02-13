@@ -244,75 +244,75 @@ class RAPController extends Controller
         foreach($costs as $cost){
             $totalCost += $cost->plan_cost;
         }
-
+        
         $data = Collection::make();
-
+        
         $data->push([
             "id" => $project->number , 
             "parent" => "#",
             "text" => $project->name.' <b>| Total Cost : Rp.'.number_format($totalCost).'</b>',
             "icon" => "fa fa-ship"
-        ]);
-
-        foreach($wbss as $wbs){
-            $RapCost = 0;
-            foreach($raps as $rap){
-                if($rap->bom->wbs_id == $wbs->id){
-                    foreach($rap->RapDetails as $RD){
-                        $RapCost += $RD->quantity * $RD->price;
-                    }
-                }
-            }
-            $otherCost = 0;
-            foreach($costs as $cost){
-                if($cost->wbs_id == $wbs->id){
-                    $otherCost += $cost->plan_cost;
-                }
-            }
-            $TempwbsCost = 0;
-            $wbsCost = self::getwbsCost($wbs,$TempwbsCost,$raps,$costs);
-
-            $totalCost = $wbsCost;
-
-            if($wbs->wbs){
-                $data->push([
-                    "id" => $wbs->code , 
-                    "parent" => $wbs->wbs->code,
-                    "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
-                    "icon" => "fa fa-suitcase"
-                ]);
-            }else{
-                $data->push([
-                    "id" => $wbs->code , 
-                    "parent" => $project->number,
-                    "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
-                    "icon" => "fa fa-suitcase"
-                ]);
-            }  
-        }
-
-        foreach($raps as $rap){
-            $wbss = [];
-            array_push($wbss,$rap->bom->wbs_id);
-            $wbss = array_unique($wbss);
+            ]);
+            
             foreach($wbss as $wbs){
                 $RapCost = 0;
-                if($rap->bom->wbs_id == $wbs){
-                    $wbs_code = $rap->bom->wbs->code;
-                    foreach($rap->RapDetails as $RD){
-                        $RapCost += $RD->price;
+                foreach($raps as $rap){
+                    if($rap->bom->wbs_id == $wbs->id){
+                        foreach($rap->RapDetails as $RD){
+                            $RapCost += $RD->quantity * $RD->price;
+                        }
                     }
                 }
-                $data->push([
-                    "id" => 'WBS'.$wbs.'COST'.$RapCost.'RAP'.$rap->id , 
-                    "parent" => $wbs_code,
-                    "text" => $rap->number. ' - <b>Rp.'.number_format($RapCost).'</b>' ,
-                    "icon" => "fa fa-money"
-                ]);
-            }
-        }
+                $otherCost = 0;
+                foreach($costs as $cost){
+                    if($cost->wbs_id == $wbs->id){
+                        $otherCost += $cost->plan_cost;
+                    }
+                }
+                $TempwbsCost = 0;
+                $wbsCost = self::getwbsCost($wbs,$TempwbsCost,$raps,$costs);
+                
+                $totalCost = $wbsCost;
 
-        foreach($costs as $cost){
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                        "icon" => "fa fa-suitcase"
+                        ]);
+                    }else{
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $project->number,
+                            "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                            "icon" => "fa fa-suitcase"
+                            ]);
+                        }  
+                    }
+                    
+                    foreach($raps as $rap){
+                        $wbss = [];
+                        array_push($wbss,$rap->bom->wbs_id);
+                        $wbss = array_unique($wbss);
+                        foreach($wbss as $wbs){
+                            $RapCost = 0;
+                            if($rap->bom->wbs_id == $wbs){
+                                $wbs_code = $rap->bom->wbs->code;
+                                foreach($rap->RapDetails as $RD){
+                                    $RapCost += $RD->price;
+                                }
+                            }
+                            $data->push([
+                                "id" => 'WBS'.$wbs.'COST'.$RapCost.'RAP'.$rap->id , 
+                                "parent" => $wbs_code,
+                                "text" => $rap->number. ' - <b>Rp.'.number_format($RapCost).'</b>' ,
+                                "icon" => "fa fa-money"
+                                ]);
+                            }
+                        }
+                        
+                        foreach($costs as $cost){
             if($cost->wbs_id == null){
                 $data->push([
                     "id" => 'COST'.$cost->id , 

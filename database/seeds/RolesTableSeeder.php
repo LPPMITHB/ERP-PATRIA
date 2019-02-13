@@ -32,6 +32,8 @@ class RolesTableSeeder extends Seeder
                 'create-resource' => true,'list-resource' => true,'show-resource' => true,'edit-resource' => true,
                 'create-receive-resource' => true,'list-receive-resource' => true,'show-receive-resource' => true,
                 'create-issue-resource' => true, 'list-issue-resource' => true,'show-issue-resource' => true,'edit-issue-resource' => true,
+                'create-resource-repair' => true,'list-resource-repair' => true,'show-resource-repair' => true,'edit-resource-repair' => true,
+                'create-receive-resource-repair' => true,'list-receive-resource-repair' => true,'show-receive-resource-repair' => true,
                 'create-service' => true,'list-service' => true,'show-service' => true,'edit-service' => true,
                 'create-unit-of-measurement' => true,'list-unit-of-measurement' => true,'show-unit-of-measurement' => true,'edit-unit-of-measurement' => true,
                 'create-vendor' => true,'list-vendor' => true,'show-vendor' => true,'edit-vendor' => true,

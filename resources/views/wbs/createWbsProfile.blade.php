@@ -19,7 +19,7 @@
             <div id="add_wbs">
                 <div class="box-body">
                     <h4 class="box-title">WBS Profiles</h4>
-                    <table id="wbs-table" class="table table-bordered tableFixed pxTable" style="border-collapse:collapse">
+                    <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse">
                         <thead>
                             <tr>
                                 <th style="width: 2px">No</th>
