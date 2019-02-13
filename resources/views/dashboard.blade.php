@@ -16,23 +16,32 @@
                   <div class="tab-pane active" id="individual">
                       <div class="box-body">
                           @foreach ($modelProject as $project)
-                              <div class="row">    
+                              <div class="row">   
                                   <div class="col-lg-12 col-xs-12">
                                       <!-- small box -->
                                       @if(date("Y-m-d") > $project->planned_end_date && $project->progress != 100)
+                                          <div class="m-b-0 small-box bg-red p-r-5 p-l-5" style="display: inline-block">
+                                              <label>Project Code : {{$project->number}}</label>
+                                          </div>
                                           <div class="small-box bg-red">
                                       @elseif(date("Y-m-d") == $project->planned_end_date  && $project->progress != 100)
+                                          <div class="m-b-0 small-box bg-yellow p-r-5 p-l-5" style="display: inline-block">
+                                              <label>Project Code : {{$project->number}}</label>
+                                          </div>
                                           <div class="small-box bg-yellow">
                                       @else
+                                          <div class="m-b-0 small-box bg-aqua p-r-5 p-l-5" style="display: inline-block">
+                                              <label>Project Code : {{$project->number}}</label>
+                                          </div>
                                           <div class="small-box bg-aqua">
                                       @endif
                                           <div class="inner">
                                               <div class="row">
                                                   <div class="col-md-2 col-xs-5 col-sm-4">
-                                                      <h4>Project Code</h4>
+                                                      <h4>Ship</h4>
                                                   </div>
                                                   <div class="col-md-4 col-xs-7 col-sm-8">
-                                                      <h4> : {{$project->number}}</h4>                
+                                                      <h4> : {{$project->ship->type}}</h4>                
                                                   </div>
                                                   <div class="col-md-2 col-xs-5 col-sm-4">
                                                       <h4>Progress </h4>
@@ -41,10 +50,10 @@
                                                       <h4> : {{$project->progress}} %</h4>  
                                                   </div>
                                                   <div class="col-md-2 col-xs-5 col-sm-4">
-                                                      <h4>Ship</h4>
+                                                      <h4>Planned Start Date</h4>
                                                   </div>
                                                   <div class="col-md-4 col-xs-7 col-sm-8">
-                                                      <h4> : {{$project->ship->type}}</h4>                
+                                                      <h4> : {{date("d-m-Y", strtotime($project->planned_start_date))}}</h4>                
                                                   </div>
                                                   <div class="col-md-2 col-xs-5 col-sm-4">
                                                       <h4>Days Left </h4>
