@@ -66,6 +66,7 @@
                                     <tr>
                                         <th width="5%">No</th>
                                         <th width="45%">Material</th>
+                                        <th width="10%">Type</th>
                                         <th width="13%">Quantity</th>
                                         <th width="13%">Issued</th>
                                         <th width="14%">Manage Picking</th>
@@ -75,6 +76,10 @@
                                     <tr v-for="(MRD,index) in modelMRD">
                                         <td>{{ index+1 }}</td>
                                         <td>{{ MRD.material.code }} - {{ MRD.material.name }}</td>
+                                        <td v-if="MRD.type == 3">Bulk Part</td>
+                                        <td v-else-if="MRD.type == 2">Component</td>
+                                        <td v-else-if="MRD.type == 1">Consumable</td>
+                                        <td v-else>-</td>
                                         <td>{{ MRD.quantity - MRD.already_issued }}</td>
                                         <td>{{ total[index] }}</td>
                                         <td class="p-l-0 p-r-0 textCenter">
