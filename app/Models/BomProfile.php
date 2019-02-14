@@ -30,6 +30,6 @@ class BomProfile extends Model
 
     public function wbs()
     {
-        return $this->belongsTo('App\Models\WbsProfile', 'wbs_id');
+        return $this->hasOne('App\Models\WbsProfile', 'wbs_id');
     }
 }
