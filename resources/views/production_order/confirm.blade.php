@@ -822,9 +822,9 @@
                     document.getElementById("actual_duration").disabled = false;
                 }
                 document.getElementById("confirm_activity_code").innerHTML= data.code;
-                document.getElementById("planned_start_date").innerHTML= data.planned_start_date.split("-").reverse().join("-");;
-                document.getElementById("planned_end_date").innerHTML= data.planned_end_date.split("-").reverse().join("-");;
-                document.getElementById("planned_duration").innerHTML= data.planned_duration+" Days";
+                document.getElementById("planned_start_date").innerHTML= data.planned_start_date.split("-").reverse().join("-");
+                document.getElementById("planned_end_date").innerHTML= data.planned_end_date.split("-").reverse().join("-");
+                document.getElementById("planned_duration").innerHTML= data.planned_duration+" Day(s)";
 
 
                 this.confirmActivity.activity_id = data.id;
@@ -836,7 +836,7 @@
                 if(this.confirmActivity.actual_duration != "" && this.confirmActivity.actual_start_date != ""){
                     var actual_duration = parseInt(this.confirmActivity.actual_duration);
                     var actual_start_date = this.confirmActivity.actual_start_date;
-                    var actual_end_date = new Date(actual_start_date);
+                    var actual_end_date = new Date(actual_start_date.split("-").reverse().join("-"));
                     
                     actual_end_date.setDate(actual_end_date.getDate() + actual_duration-1);
                     $('#actual_end_date').datepicker('setDate', actual_end_date);
@@ -935,7 +935,8 @@
                 }
             },
             'confirmActivity.actual_duration' : function(newValue){
-                this.confirmActivity.actual_duration = newValue+"".replace(/\D/g, "");
+                if(newValue != ""){
+                    this.confirmActivity.actual_duration = newValue+"".replace(/\D/g, "");
                     if(parseInt(newValue) < 1 ){
                         iziToast.warning({
                             displayMode: 'replace',
@@ -945,6 +946,7 @@
                         this.confirmActivity.actual_duration = "";
                         this.confirmActivity.actual_end_date = "";
                     }
+                }
             },
             'editInput.performance' : function(newValue){
                 this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
@@ -1007,8 +1009,9 @@
         },
     });
     function parseDate(str) {
-        var mdy = str.split('/');
-        return new Date(mdy[2], mdy[0]-1, mdy[1]);
+        var mdy = str.split('-');
+        var date = new Date(mdy[2], mdy[1]-1, mdy[0]);
+        return date;
     }
 
     function datediff(first, second) {
