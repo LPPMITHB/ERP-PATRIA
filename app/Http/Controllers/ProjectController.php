@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Models\SalesOrder;
 use App\Models\Project;
 use App\Models\Customer;
+use App\Models\Configuration;
 use App\Models\Ship;
 use App\Models\WBS;
 use App\Models\ProductionOrder;
@@ -314,11 +315,12 @@ class ProjectController extends Controller
     {
         $customers = Customer::all();
         $ships = Ship::all();
+        $projectType = Configuration::get('project_type');
         // $project_code = self::generateProjectCode();
         $project = new Project;
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
-        return view('project.create', compact('customers','ships','project','menu'));
+        return view('project.create', compact('customers','ships','project','menu','projectType'));
     }
 
     public function indexCopyProject(Request $request)
@@ -338,10 +340,11 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $customers = Customer::all();
         $ships = Ship::all();
+        $projectType = Configuration::get('project_type');
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         
-        return view('project.copyProjectInfo', compact('project','customers','ships','menu'));
+        return view('project.copyProjectInfo', compact('project','customers','ships','menu','projectType'));
     }
     public function storeCopyProjectStructure(Request $request)
     {
@@ -434,6 +437,7 @@ class ProjectController extends Controller
                 'name' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
+                'project_type' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
                 'planned_duration' => 'required',
@@ -447,6 +451,7 @@ class ProjectController extends Controller
                 'name' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
+                'project_type' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
                 'planned_duration' => 'required',
@@ -480,6 +485,7 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
+            $project->project_type = $request->project_type;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->class_contact_person_name = $request->class_contact_person_name;
@@ -538,6 +544,7 @@ class ProjectController extends Controller
                 'number' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
+                'project_type' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
                 'planned_duration' => 'required',
@@ -549,6 +556,7 @@ class ProjectController extends Controller
                 'number' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
+                'project_type' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
                 'planned_duration' => 'required',
@@ -582,6 +590,7 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
+            $project->project_type = $request->project_type;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->class_contact_person_name = $request->class_contact_person_name;

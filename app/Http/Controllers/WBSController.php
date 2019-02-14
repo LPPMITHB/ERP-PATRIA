@@ -28,8 +28,10 @@ class WBSController extends Controller
 {
     public function createWbsProfile(Request $request)
     {
+        $project_type = Configuration::get('project_type');
+
         $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
-        return view('wbs.createWbsProfile', compact('menu'));
+        return view('wbs.createWbsProfile', compact('menu','project_type'));
     }
 
     public function createBomProfile($wbs_id, Request $request)
@@ -200,7 +202,7 @@ class WBSController extends Controller
         }else{
             $array = [
                 'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.createWbsProfile'),
+                'Create WBS Profile' => route('wbs_repair.createWbsProfile'),
             ];
         }
         $iteration = 0;
@@ -222,7 +224,7 @@ class WBSController extends Controller
         }elseif($menu == "repair"){
             $businessUnit = 2;
         }
-        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->get()->jsonSerialize();
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
 
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
@@ -281,6 +283,11 @@ class WBSController extends Controller
             if(isset($data['wbs_profile_id'])){
                 $wbsProfile->wbs_id = $data['wbs_profile_id'];
             }
+
+            if(isset($data['project_type'])){
+                $wbsProfile->project_type_id = $data['project_type'];
+            }
+
             $wbsProfile->user_id = Auth::user()->id;
             $wbsProfile->branch_id = Auth::user()->branch->id;
             $wbsProfile->business_unit_id = $businessUnit;
@@ -486,6 +493,13 @@ class WBSController extends Controller
 
             if(count($wbsProfile->activities)>0){
                 array_push($error, ["Failed to delete, this WBS have activities"]);
+            }
+            if($wbsProfile->bom != null){
+                array_push($error, ["Failed to delete, this WBS have BOM"]);
+            }
+
+            if(count($wbsProfile->resource)>0){
+                array_push($error, ["Failed to delete, this WBS have resource"]);
             }
 
             if(count($error)>0){
@@ -763,7 +777,7 @@ class WBSController extends Controller
     }
 
     //API
-    public function getWbsProfileAPI($menu){
+    public function getWbsProfileAPI($menu, $project_type){
         $businessUnit = 0;
         if($menu == "building"){
             $businessUnit = 1;
@@ -771,7 +785,7 @@ class WBSController extends Controller
             $businessUnit = 2;
         }
 
-        $wbss = WbsProfile::where('wbs_id', null)->where('business_unit_id',$businessUnit)->get()->jsonSerialize();
+        $wbss = WbsProfile::where('wbs_id', null)->where('business_unit_id',$businessUnit)->where('project_type_id',$project_type)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 

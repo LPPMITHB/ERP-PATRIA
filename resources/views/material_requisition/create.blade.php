@@ -49,7 +49,7 @@
                             </template>
                             <div class="col-xs-12 col-md-4">
                                 <label for="" >Project Name</label>
-                                <selectize id="material" v-model="project_id" :settings="projectSettings" :disabled="dataOk">
+                                <selectize v-model="project_id" :settings="projectSettings" :disabled="dataOk">
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
@@ -369,8 +369,6 @@
                             displayMode: 'replace'
                         });
 
-                    }else{
-
                     }
 
                     $('div.overlay').hide();
@@ -454,8 +452,6 @@
                             position: 'topRight',
                             displayMode: 'replace'
                         });
-
-                    }else{
 
                     }
 

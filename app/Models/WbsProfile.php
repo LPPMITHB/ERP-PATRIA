@@ -22,4 +22,14 @@ class WbsProfile extends Model
     {
         return $this->belongsTo(self::class, 'wbs_id');
     }
+
+    public function bom()
+    {
+        return $this->hasOne('App\Models\BomProfile', 'wbs_id');
+    }
+
+    public function resource()
+    {
+        return $this->hasMany('App\Models\ResourceProfile', 'wbs_id');
+    }
 }
