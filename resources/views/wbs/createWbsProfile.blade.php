@@ -1,15 +1,28 @@
 @extends('layouts.main')
 @section('content-header')
-    @breadcrumb(
-        [
-            'title' => 'Manage WBS Profile',
-            'items' => [
-                'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.createWbsProfile'),
+    @if($menu == "building")
+        @breadcrumb(
+            [
+                'title' => 'Manage WBS Profile',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'Create WBS Profile' => route('wbs.createWbsProfile'),
+                ]
             ]
-        ]
-    )
-    @endbreadcrumb
+        )
+        @endbreadcrumb
+    @else
+        @breadcrumb(
+            [
+                'title' => 'Manage WBS Profile',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'Create WBS Profile' => route('wbs_repair.createWbsProfile'),
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 @endsection
 @section('content')
 <div class="row">

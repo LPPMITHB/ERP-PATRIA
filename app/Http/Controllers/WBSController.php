@@ -182,7 +182,7 @@ class WBSController extends Controller
         }else{
             $array = [
                 'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.createWbsProfile'),
+                'Create WBS Profile' => route('wbs_repair.createWbsProfile'),
             ];
         }
         $iteration = 0;
@@ -204,7 +204,7 @@ class WBSController extends Controller
         }elseif($menu == "repair"){
             $businessUnit = 2;
         }
-        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->get()->jsonSerialize();
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
 
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
@@ -259,11 +259,15 @@ class WBSController extends Controller
             $wbsProfile->name = $data['name'];
             $wbsProfile->description = $data['description'];
             $wbsProfile->deliverables = $data['deliverables'];
-            $wbsProfile->project_type_id = $data['project_type'];
 
             if(isset($data['wbs_profile_id'])){
                 $wbsProfile->wbs_id = $data['wbs_profile_id'];
             }
+
+            if(isset($data['project_type'])){
+                $wbsProfile->project_type_id = $data['project_type'];
+            }
+
             $wbsProfile->user_id = Auth::user()->id;
             $wbsProfile->branch_id = Auth::user()->branch->id;
             $wbsProfile->business_unit_id = $businessUnit;
