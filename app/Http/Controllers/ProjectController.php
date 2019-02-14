@@ -1591,11 +1591,13 @@ class ProjectController extends Controller
         foreach($sorted as $date => $group){
             foreach($group as $wbs){
                 if($wbs->bom){
-                    if($wbs->bom->rap->total_price != 0.0){
-                        $tempPlanned->push([
-                            "t" => $date, 
-                            "y" => ($wbs->bom->rap->total_price/1000000)."",
-                        ]);
+                    if($wbs->bom->rap){
+                        if($wbs->bom->rap->total_price != 0.0){
+                            $tempPlanned->push([
+                                "t" => $date, 
+                                "y" => ($wbs->bom->rap->total_price/1000000)."",
+                            ]);
+                        }
                     }
                 }
             }

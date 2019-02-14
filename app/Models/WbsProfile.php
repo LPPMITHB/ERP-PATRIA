@@ -25,10 +25,10 @@ class WbsProfile extends Model
 
     public function bom()
     {
-        return $this->hasOne('App\Models\BomProfile', 'wbs_id');
+        return $this->hasMany('App\Models\BomProfile', 'wbs_id');
     }
 
-    public function resource()
+    public function resources()
     {
         return $this->hasMany('App\Models\ResourceProfile', 'wbs_id');
     }

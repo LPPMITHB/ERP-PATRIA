@@ -15,13 +15,16 @@ class CreateTrxResourceTable extends Migration
     {
          Schema::create('trx_resource', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('resource_id')->nullable();  
+            $table->unsignedInteger('resource_id')->nullable();
+            $table->unsignedInteger('resource_detail_id')->nullable();
+            $table->integer('category_id'); 
             $table->unsignedInteger('project_id')->nullable();           
             $table->unsignedInteger('wbs_id')->nullable();       
             $table->integer('quantity')->default(1);
             $table->timestamps();
 
             $table->foreign('resource_id')->references('id')->on('mst_resource');
+            $table->foreign('resource_detail_id')->references('id')->on('mst_resource_detail');
             $table->foreign('project_id')->references('id')->on('pro_project');          
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');          
         });
