@@ -623,10 +623,25 @@
         gantt.templates.rightside_text = function(start, end, task){
             if(task.status != undefined){
                 if(task.status == 0){
-                    return "<b>Completed</b>"
+                    var text = task.text.replace('[Actual]','');
+                    return "<b>"+text+" Completed</b>"
+                }else{
+                    return "<b>"+task.text+"</b>"
                 }
             }else{
-                return "Progress: <b>" + task.progress*100+ "%</b>";
+                if(task.$level != 0){
+                    return "<b>"+task.text+"</b> | Progress: <b>" + task.progress*100+ "%</b>"
+                }else{
+                    return "Progress: <b>" + task.progress*100+ "%</b>";
+                }
+            }
+        };
+
+        gantt.templates.task_text=function(start,end,task){
+            if(task.$level == 0){
+                return "<b>"+task.text+"</b>";
+            }else{
+                return "";
             }
         };
         

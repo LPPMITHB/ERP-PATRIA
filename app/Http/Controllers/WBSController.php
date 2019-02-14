@@ -19,6 +19,7 @@ use App\Models\Material;
 use App\Models\Service;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
+use App\Models\Configuration;
 use DB;
 use DateTime;
 use Auth;
@@ -27,8 +28,10 @@ class WBSController extends Controller
 {
     public function createWbsProfile(Request $request)
     {
+        $project_type = Configuration::get('project_type');
+
         $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
-        return view('wbs.createWbsProfile', compact('menu'));
+        return view('wbs.createWbsProfile', compact('menu','project_type'));
     }
 
     public function createBomProfile($wbs_id, Request $request)
@@ -123,10 +126,48 @@ class WBSController extends Controller
     {
         $wbs = WbsProfile::find($wbs_id);
         $route = $request->route()->getPrefix();
-        print_r($route);exit();
+        $resources = Resource::all()->jsonSerialize();
+        $resourceDetails = ResourceDetail::where('status','!=',0)->get()->jsonSerialize();
+        $resource_categories = Configuration::get('resource_category');
 
-        
-        return view('wbs.createResourceProfile', compact('wbs','route'));
+        return view('wbs.createResourceProfile', compact('wbs','route','resources','resourceDetails','resource_categories'));
+    }
+
+    public function destroyResourceProfile(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $resourceProfile = ResourceProfile::findOrFail($id);
+            $resourceProfile->delete();
+
+            DB::commit();
+            return response(["response"=>"Success to delete resource"],Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeResourceProfile(Request $request){
+        $route = $request->route()->getPrefix();
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $resource_profile = new ResourceProfile;
+            $resource_profile->wbs_id = $data['wbs_id'];
+            $resource_profile->category_id = $data['category_id'];
+            $resource_profile->resource_id = $data['resource_id'];
+            $resource_profile->resource_detail_id = ($data['resource_detail_id'] != '') ? $data['resource_detail_id'] : null;
+            $resource_profile->quantity = $data['quantity'];
+            $resource_profile->save();
+
+            DB::commit();
+            return response(json_encode($resource_profile),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createResourceProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
     }
 
     public function createSubWbsProfile($wbs_id, Request $request)
@@ -141,7 +182,7 @@ class WBSController extends Controller
         }else{
             $array = [
                 'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.createWbsProfile'),
+                'Create WBS Profile' => route('wbs_repair.createWbsProfile'),
             ];
         }
         $iteration = 0;
@@ -163,7 +204,7 @@ class WBSController extends Controller
         }elseif($menu == "repair"){
             $businessUnit = 2;
         }
-        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->get()->jsonSerialize();
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
 
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
@@ -222,6 +263,11 @@ class WBSController extends Controller
             if(isset($data['wbs_profile_id'])){
                 $wbsProfile->wbs_id = $data['wbs_profile_id'];
             }
+
+            if(isset($data['project_type'])){
+                $wbsProfile->project_type_id = $data['project_type'];
+            }
+
             $wbsProfile->user_id = Auth::user()->id;
             $wbsProfile->branch_id = Auth::user()->branch->id;
             $wbsProfile->business_unit_id = $businessUnit;
@@ -704,7 +750,7 @@ class WBSController extends Controller
     }
 
     //API
-    public function getWbsProfileAPI($menu){
+    public function getWbsProfileAPI($menu, $project_type){
         $businessUnit = 0;
         if($menu == "building"){
             $businessUnit = 1;
@@ -712,7 +758,7 @@ class WBSController extends Controller
             $businessUnit = 2;
         }
 
-        $wbss = WbsProfile::where('wbs_id', null)->where('business_unit_id',$businessUnit)->get()->jsonSerialize();
+        $wbss = WbsProfile::where('wbs_id', null)->where('business_unit_id',$businessUnit)->where('project_type_id',$project_type)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 
@@ -785,5 +831,16 @@ class WBSController extends Controller
         $bom = BomProfile::where('wbs_id',$wbs_id)->with('material','service')->get()->jsonSerialize();
 
         return response($bom, Response::HTTP_OK);
+    }
+
+    public function getResourceProfileAPI($wbs_id){
+        $resource = ResourceProfile::where('wbs_id',$wbs_id)->with('resource','resourceDetail')->get()->jsonSerialize();
+
+        return response($resource, Response::HTTP_OK);
+    }
+
+    public function getRdProfilesAPI($ids){
+        $ids = json_decode($ids);       
+        return response(ResourceDetail::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 }
