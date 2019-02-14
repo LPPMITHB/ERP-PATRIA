@@ -18,80 +18,88 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <table id="wbs-table" class="table table-bordered tableFixed">
-                        <thead>
-                            <tr>
-                                <th width=5%>No</th>
-                                <th width=20%>Name</th>
-                                <th width=25%>Description</th>
-                                <th width=23%>Deliverables</th>
-                                <th width=27%></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data,index) in wbs">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
-                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
-                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
-                                                MANAGE WBS
-                                            </a>
+                    <div class="col-xs-12 col-md-4 p-l-0">
+                        <label for="" >Project Type</label>
+                        <selectize v-model="newWbsProfile.project_type" :settings="projectTypeSettings">
+                            <option v-for="(project_type, index) in project_types" :value="project_type.id">{{ project_type.name }}</option>
+                        </selectize>  
+                    </div>
+                    <div v-show="newWbsProfile.project_type != ''" >
+                        <table id="wbs-table" class="table table-bordered tableFixed">
+                            <thead>
+                                <tr>
+                                    <th width=5%>No</th>
+                                    <th width=20%>Name</th>
+                                    <th width=25%>Description</th>
+                                    <th width=23%>Deliverables</th>
+                                    <th width=27%></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(data,index) in wbs">
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
+                                    <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                        <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                            <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                                    MANAGE WBS
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                <a class="btn btn-primary btn-xs col-xs-12" :href="createActivity(data)">
+                                                    MANAGE ACTIVITY
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createActivity(data)">
-                                                MANAGE ACTIVITY
-                                            </a>
+                                        <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                            <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                <a class="btn btn-primary btn-xs col-xs-12" :href="createBom(data.id)">
+                                                    MANAGE BOM
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                <a class="btn btn-primary btn-xs col-xs-12" :href="createResource(data.id)">
+                                                    MANAGE RESOURCE
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createBom(data.id)">
-                                                MANAGE BOM
-                                            </a>
+                                        <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                            <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                                    EDIT
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                <a class="btn btn-danger btn-xs col-xs-12" @click="deleteWbs(data)" data-toggle="modal">
+                                                    DELETE
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createResource(data.id)">
-                                                MANAGE RESOURCE
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
-                                                EDIT
-                                            </a>
-                                        </div>
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteWbs(data)" data-toggle="modal">
-                                                DELETE
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0">
-                                    <textarea v-model="newWbsProfile.name" class="form-control width100" rows="2" name="description" placeholder="Name"></textarea>
-                                </td>
-                                <td class="p-l-0">
-                                    <textarea v-model="newWbsProfile.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
-                                </td>
-                                <td class="p-l-0">
-                                    <textarea v-model="newWbsProfile.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
-                                </td>
-                                <td align="center" class="p-l-0">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="p-l-10">{{newIndex}}</td>
+                                    <td class="p-l-0">
+                                        <textarea v-model="newWbsProfile.name" class="form-control width100" rows="2" name="description" placeholder="Name"></textarea>
+                                    </td>
+                                    <td class="p-l-0">
+                                        <textarea v-model="newWbsProfile.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
+                                    </td>
+                                    <td class="p-l-0">
+                                        <textarea v-model="newWbsProfile.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
+                                    </td>
+                                    <td align="center" class="p-l-0">
+                                        <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                     <div class="modal fade" id="edit_wbs">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -146,12 +154,14 @@ $(document).ready(function(){
 
 var data = {
     menu : @json($menu),
+    project_types : @json($project_type),
     wbs : "",
     newIndex : "",
     newWbsProfile : {
         name : "",
         description : "",
         deliverables : "",
+        project_type : "",
     },
     editWbsProfile : {
         wbs_id: "",
@@ -160,6 +170,9 @@ var data = {
         deliverables : "",
     },
     active_id : "",
+    projectTypeSettings: {
+        placeholder: 'Please Select Project Type'
+    },
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -306,7 +319,7 @@ var vm = new Vue({
             return url;
         },              
         getWBSProfile(){
-            window.axios.get('/api/getWbsProfile/'+this.menu).then(({ data }) => {
+            window.axios.get('/api/getWbsProfile/'+this.menu+'/'+this.newWbsProfile.project_type).then(({ data }) => {
                 this.wbs = data;
                 this.newIndex = Object.keys(this.wbs).length+1;
                 $('#wbs-table').DataTable().destroy();
@@ -404,6 +417,11 @@ var vm = new Vue({
         }
     },
     watch : {
+        'newWbsProfile.project_type' : function(newValue){
+            if(newValue != ""){
+                this.getWBSProfile();
+            }
+        },
         // 'editWbsProfile.process_cost_string': function(newValue) {
         //     var string_newValue = newValue+"";
         //     this.editWbsProfile.process_cost = newValue;
@@ -418,7 +436,7 @@ var vm = new Vue({
         // },
     },
     created: function() {
-        this.getWBSProfile();
+        // this.getWBSProfile();
     },
     
 });

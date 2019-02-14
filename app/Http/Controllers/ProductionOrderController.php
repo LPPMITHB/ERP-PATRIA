@@ -382,16 +382,9 @@ class ProductionOrderController extends Controller
                     }
                 }
             }else{
-                $project = Project::findOrFail($wbs->project_id);
-                $materials = Material::all()->jsonSerialize();
-                $resources = Resource::all()->jsonSerialize();
-                $services = Service::all()->jsonSerialize();
-                $modelActivities = $wbs->activities;
-                
                 $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
-                $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
                 if($modelBOM != null){
-                    return view('production_order.create', compact('wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+                    return redirect()->route('production_order.create',$wbs->id);
                 }else{
                     if($route == "/production_order"){
                         return redirect()->route('project.show',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
@@ -434,7 +427,7 @@ class ProductionOrderController extends Controller
                 $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
                 $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
                 if($modelBOM != null){
-                    return view('production_order.create', compact('wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+                        return redirect()->route('production_order.create',$wbs->id);
                 }else{
                     if($route == "/production_order"){
                         return redirect()->route('project.show',$wbs->project_id)->with('error', "This WBS doesn't have BOM");

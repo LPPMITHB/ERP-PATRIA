@@ -63,8 +63,8 @@
                                             <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                                 EDIT
                                             </a>
-                                            <a class="btn btn-danger btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                                DELETE
+                                            <a href="#" @click="removeRow(data.id)" class="btn btn-danger btn-xs">
+                                                <div class="btn-group">DELETE</div>
                                             </a>
                                         </td>
                                     </tr>
@@ -76,8 +76,9 @@
                                             <option v-for="(category,index) in resource_categories" :value="category.id">{{ category.name }}</option>
                                         </selectize>
                                     </td>
+
                                     <td class="no-padding" v-show="dataInput.category_id == ''">
-                                        <selectize id="material" v-model="dataInput.resource_id" :settings="nullSettings" disabled>
+                                        <selectize id="material" v-model="dataInput.null" :settings="nullSettings" disabled>
                                             <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                         </selectize>
                                     </td>
@@ -86,18 +87,30 @@
                                             <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                         </selectize>
                                     </td>
-                                    <td class="no-padding" v-show="dataInput.resource_id == ''">
-                                        <selectize id="material" v-model="dataInput.resource_id" :settings="nullResourceSettings" disabled>
+
+                                    <td class="no-padding" v-show="dataInput.category_id == 3 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
+                                        <selectize id="material" v-model="dataInput.null" :settings="nullResourceSettings" disabled>
                                             <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                         </selectize>
                                     </td>
-                                    <td class="p-l-0 textLeft" v-show="dataInput.resource_id != ''">
+                                    <td class="no-padding" v-show="dataInput.category_id != 3 && dataInput.category_id != ''">
+                                        <selectize id="material" v-model="dataInput.null" :settings="otherSettings" disabled>
+                                            <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                        </selectize>
+                                    </td>
+                                    <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length < 1">
+                                        <selectize v-model="dataInput.null" :settings="nullRdSettings" disabled>
+                                            <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                        </selectize>
+                                    </td>
+                                    <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
                                         <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
                                             <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
                                         </selectize>
                                     </td>
+
                                     <td class="p-l-0 textLeft">
-                                        <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                        <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled='resourceDetail'>
                                     </td>
                                     <td class="p-l-0 textCenter">
                                         <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -168,7 +181,7 @@
         resources : @json($resources),
         resourceDetails : @json($resourceDetails),
         resource_categories : @json($resource_categories),
-        resourceProfile : @json($resource),
+        resourceProfile : [],
         selectedRD : [],
         newIndex : "",
         dataInput : {
@@ -177,6 +190,7 @@
             quantity : "",
             category_id : "",
             resource_detail_id : "",
+            null : ""
         },
         editInput : {
             resource_id :"",
@@ -187,7 +201,7 @@
             placeholder: 'Please Select Resource'
         },
         resourceDetailSettings: {
-            placeholder: 'Please Select Resource Detail (Optional)'
+            placeholder: 'Select Resource Detail (Optional)'
         },
         nullSettings: {
             placeholder: 'Please Select Category First'
@@ -195,8 +209,14 @@
         nullResourceSettings: {
             placeholder: 'Please Select Resource First'
         },
+        nullRdSettings: {
+            placeholder: 'Resource Detail Not Available !'
+        },
         categorySettings: {
             placeholder: 'Please Select Category'
+        },
+        otherSettings: {
+            placeholder: '-'
         },
         resource_detail_id : []
     }
@@ -213,6 +233,14 @@
         el : '#resource',
         data : data,
         computed : {
+            resourceDetail : function(){
+                let isOk = false;
+
+                if(this.dataInput.resource_detail_id != ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
             createOk: function(){
                 let isOk = false;
 
@@ -277,35 +305,64 @@
             },
             add(){
                 $('div.overlay').show(); 
-                this.dataInput.quantity = parseInt((this.dataInput.quantity+"").replace(/,/g , ''));           
-                var data = this.dataInput;
-                data = JSON.stringify(data);
-                if(this.route == "/wbs"){
-                    var url = "{{ route('wbs.storeResourceProfile') }}";
-                }else if(this.route == "/wbs_repair"){
-                    var url = "{{ route('wbs_repair.storeResourceProfile') }}";
-                }
-                window.axios.post(url,data).then((response) => {
-                    iziToast.success({
+                let status = 0;
+
+                this.resourceProfile.forEach(data=>{
+                    if(data.resource_detail_id == null){
+                        data.resource_detail_id = "";
+                    }
+                    if(data.category_id == this.dataInput.category_id && data.resource_id == this.dataInput.resource_id && data.resource_detail_id == this.dataInput.resource_detail_id){
+                        status = 1;
+                    }
+                })
+
+                if(status == 0){
+                    this.dataInput.quantity = parseInt((this.dataInput.quantity+"").replace(/,/g , ''));           
+                    var data = this.dataInput;
+                    data = JSON.stringify(data);
+                    if(this.route == "/wbs"){
+                        var url = "{{ route('wbs.storeResourceProfile') }}";
+                    }else if(this.route == "/wbs_repair"){
+                        var url = "{{ route('wbs_repair.storeResourceProfile') }}";
+                    }
+                    window.axios.post(url,data).then((response) => {
+                        iziToast.success({
+                            displayMode: 'replace',
+                            title: 'Success add resource !',
+                            position: 'topRight',
+                        });
+
+                        this.dataInput.category_id = "";
+                        this.dataInput.resource_id = "";
+                        this.dataInput.resource_detail_id = "";
+                        this.dataInput.quantity = "";
+                        this.dataInput.quantity = "";   
+                        this.getResourceProfile(this.wbs.id);
+                        $('div.overlay').hide();            
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: 'Please Try Again !',
+                            position: 'topRight',
+                        });
+                        console.log(error);
+                        $('div.overlay').hide();            
+                    })
+                }else{
+                    iziToast.warning({
                         displayMode: 'replace',
-                        title: 'Success add resource !',
+                        title: 'Cannot Add Same Resource !',
                         position: 'topRight',
                     });
-
-                    this.dataInput.category_id = "";
-                    this.dataInput.resource_id = "";
-                    this.dataInput.resource_detail_id = "";
-                    this.dataInput.quantity = "";
-                    this.dataInput.wbs_id = "";             
-                    this.dataInput.quantity = "";   
-                    this.getResourceProfile(this.wbs.id);
                     $('div.overlay').hide();            
-                })
-                .catch((error) => {
-                    console.log(error);
-                    $('div.overlay').hide();            
-                })
-                
+                }
+            },
+            openEditModal(data,index){
+                this.editInput.id = data.id
+                this.editInput.resource_id = data.resource_id;
+                this.editInput.wbs_id = data.wbs_id;
+                this.editInput.quantity = data.quantity;
             },
             update(){
                 $('div.overlay').show();   
@@ -339,11 +396,66 @@
                     $('div.overlay').hide();            
                 })
             },
-            openEditModal(data,index){
-                this.editInput.id = data.id
-                this.editInput.resource_id = data.resource_id;
-                this.editInput.wbs_id = data.wbs_id;
-                this.editInput.quantity = data.quantity;
+            removeRow: function(id) {
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this resource?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            var url = "";
+                            if(vm.route == "/wbs"){
+                                url = "/wbs/deleteResourceProfile/"+id;
+                            }else if(vm.route == "/wbs_repair"){
+                                url = "/wbs_repair/deleteResourceProfile/"+id;
+                            }
+                            $('div.overlay').show();            
+                            window.axios.delete(url).then((response) => {
+                                if(response.data.error != undefined){
+                                    response.data.error.forEach(error => {
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: error,
+                                            position: 'topRight',
+                                        });
+                                    });
+                                    $('div.overlay').hide();
+                                }else{
+                                    iziToast.success({
+                                        displayMode: 'replace',
+                                        title: response.data.response,
+                                        position: 'topRight',
+                                    });
+                                    $('div.overlay').hide();   
+                                    vm.getResourceProfile(vm.wbs.id);
+                                }
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: "Please try again.. ",
+                                    position: 'topRight',
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();            
+                            })
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }],
+                    ],
+                });
             },
         },
         watch : {
@@ -356,11 +468,25 @@
             'dataInput.resource_id' : function(newValue){
                 this.selectedRD = [];
                 this.dataInput.resource_detail_id = '';
+                this.dataInput.quantity = '';
                 this.resourceDetails.forEach(data => {
                     if(data.resource_id == newValue){
                         this.selectedRD.push(data);
                     }
                 })
+            },
+            'dataInput.category_id' : function(newValue){
+                this.selectedRD = [];
+                this.dataInput.resource_id = '';
+                this.dataInput.resource_detail_id = '';
+                this.dataInput.quantity = '';
+            },
+            'dataInput.resource_detail_id': function(newValue){
+                if(newValue != ''){
+                    this.dataInput.quantity = 1;
+                }else{
+                    this.dataInput.quantity = '';
+                }
             }
         },
         created: function() {
