@@ -19,6 +19,7 @@ use App\Models\Material;
 use App\Models\Service;
 use App\Models\Resource;
 use App\Models\ResourceDetail;
+use App\Models\Configuration;
 use DB;
 use DateTime;
 use Auth;
@@ -123,10 +124,34 @@ class WBSController extends Controller
     {
         $wbs = WbsProfile::find($wbs_id);
         $route = $request->route()->getPrefix();
-        print_r($route);exit();
+        $resources = Resource::all()->jsonSerialize();
+        $resourceDetails = ResourceDetail::where('status','!=',0)->get()->jsonSerialize();
+        $resource_categories = Configuration::get('resource_category');
+        $resource = ResourceProfile::where('wbs_id',$wbs_id)->with('resource','resourceDetail')->get();
 
-        
-        return view('wbs.createResourceProfile', compact('wbs','route'));
+        return view('wbs.createResourceProfile', compact('wbs','route','resources','resourceDetails','resource_categories','resource'));
+    }
+
+    public function storeResourceProfile(Request $request){
+        $route = $request->route()->getPrefix();
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $resource_profile = new ResourceProfile;
+            $resource_profile->wbs_id = $data['wbs_id'];
+            $resource_profile->category_id = $data['category_id'];
+            $resource_profile->resource_id = $data['resource_id'];
+            $resource_profile->resource_detail_id = ($data['resource_detail_id'] != '') ? $data['resource_detail_id'] : null;
+            $resource_profile->quantity = $data['quantity'];
+            $resource_profile->save();
+
+            DB::commit();
+            return response(json_encode($resource_profile),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createResourceProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
     }
 
     public function createSubWbsProfile($wbs_id, Request $request)
@@ -731,5 +756,16 @@ class WBSController extends Controller
         $bom = BomProfile::where('wbs_id',$wbs_id)->with('material','service')->get()->jsonSerialize();
 
         return response($bom, Response::HTTP_OK);
+    }
+
+    public function getResourceProfileAPI($wbs_id){
+        $resource = ResourceProfile::where('wbs_id',$wbs_id)->with('resource','resourceDetail')->get()->jsonSerialize();
+
+        return response($resource, Response::HTTP_OK);
+    }
+
+    public function getRdProfilesAPI($ids){
+        $ids = json_decode($ids);       
+        return response(ResourceDetail::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 }
