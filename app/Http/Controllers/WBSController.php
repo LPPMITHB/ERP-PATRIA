@@ -28,8 +28,10 @@ class WBSController extends Controller
 {
     public function createWbsProfile(Request $request)
     {
+        $project_type = Configuration::get('project_type');
+
         $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
-        return view('wbs.createWbsProfile', compact('menu'));
+        return view('wbs.createWbsProfile', compact('menu','project_type'));
     }
 
     public function createBomProfile($wbs_id, Request $request)
@@ -257,6 +259,7 @@ class WBSController extends Controller
             $wbsProfile->name = $data['name'];
             $wbsProfile->description = $data['description'];
             $wbsProfile->deliverables = $data['deliverables'];
+            $wbsProfile->project_type_id = $data['project_type'];
 
             if(isset($data['wbs_profile_id'])){
                 $wbsProfile->wbs_id = $data['wbs_profile_id'];
@@ -743,7 +746,7 @@ class WBSController extends Controller
     }
 
     //API
-    public function getWbsProfileAPI($menu){
+    public function getWbsProfileAPI($menu, $project_type){
         $businessUnit = 0;
         if($menu == "building"){
             $businessUnit = 1;
@@ -751,7 +754,7 @@ class WBSController extends Controller
             $businessUnit = 2;
         }
 
-        $wbss = WbsProfile::where('wbs_id', null)->where('business_unit_id',$businessUnit)->get()->jsonSerialize();
+        $wbss = WbsProfile::where('wbs_id', null)->where('business_unit_id',$businessUnit)->where('project_type_id',$project_type)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 

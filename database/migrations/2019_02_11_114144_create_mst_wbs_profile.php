@@ -13,6 +13,7 @@ class CreateMstWbsProfile extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('deliverables');
+            $table->unsignedInteger('project_type_id');
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  
