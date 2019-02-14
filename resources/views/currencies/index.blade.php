@@ -128,9 +128,17 @@
         el : '#currencies',
         data : data,
         methods: {
+            clearData(){
+                this.input.name = "";
+                this.input.unit = "";
+                this.input.value = "";
+            },
             add(){
                 $('div.overlay').show();
-                this.currencies.push(this.input);
+                var input = JSON.stringify(this.input);
+                input = JSON.parse(input);
+
+                this.currencies.push(input);
                 this.currencies.forEach(currency => {
                     currency.value = parseInt((currency.value+"").replace(/,/g , ''));
                 });
@@ -145,6 +153,9 @@
                         position: 'topRight',
                         displayMode: 'replace'
                     });
+                    this.clearData();
+                    $('#current_currency').collapse();
+                    $('#new_currency').collapse("hide");
                 })
                 .catch((error) => {
                     iziToast.warning({

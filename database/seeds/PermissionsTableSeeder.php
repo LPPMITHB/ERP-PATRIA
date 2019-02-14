@@ -56,6 +56,40 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // WBS Profile
+        $manageWbsProfile = Menu::where('name','Manage WBS Profile')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Wbs Profile',
+            'menu_id' => $manageWbsProfile,
+            'middleware' => 'manage-wbs-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Activity Profile',
+            'menu_id' => $manageWbsProfile,
+            'middleware' => 'manage-activity-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Bom Profile',
+            'menu_id' => $manageWbsProfile,
+            'middleware' => 'manage-bom-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Resource Profile',
+            'menu_id' => $manageWbsProfile,
+            'middleware' => 'manage-resource-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Project Repair
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $projectManagementRepair =  Menu::where('name','Project Management')->where('menu_id',$repair)->select('id')->first()->id;
@@ -93,6 +127,39 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // WBS Profile Repair
+        $manageWbsProfileRepair = Menu::where('name','Manage WBS Profile')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Wbs Profile Repair',
+            'menu_id' => $manageWbsProfileRepair,
+            'middleware' => 'manage-wbs-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Activity Profile Repair',
+            'menu_id' => $manageWbsProfileRepair,
+            'middleware' => 'manage-activity-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Bom Profile Repair',
+            'menu_id' => $manageWbsProfileRepair,
+            'middleware' => 'manage-bom-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Resource Profile Repair',
+            'menu_id' => $manageWbsProfileRepair,
+            'middleware' => 'manage-resource-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
         //BOM
         $viewBOM = Menu::where('name','View BOM')->select('id')->first()->id;

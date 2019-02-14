@@ -140,5 +140,38 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $project_type = array(
+            
+            0 => array(
+                'id' => 1,
+                'name' => 'Special Service',
+            ),
+            1 => array(
+                'id' => 2,
+                'name' => 'Intermediate',
+            ),
+            2 => array(
+                'id' => 3,
+                'name' => 'Occasional',
+            ),
+            3 => array(
+                'id' => 4,
+                'name' => 'Onboard',
+            ),
+            4 => array(
+                'id' => 5,
+                'name' => 'Spot',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'project_type',
+            'title' => 'Project Type',
+            'value' => json_encode($project_type),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

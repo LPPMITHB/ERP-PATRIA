@@ -496,13 +496,6 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
 // WBS Routes
 Route::name('wbs.')->prefix('wbs')->group(function() {
-    Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:create-project');
-
-    Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:create-project');
-
-    Route::put('updateWbsProfile/{id}', 'WBSController@updateWbsProfile')->name('updateWbsProfile')->middleware('can:edit-project');  
-    
-    Route::get('/createSubWbsProfile/{id}', 'WBSController@createSubWbsProfile')->name('createSubWbsProfile')->middleware('can:create-project');
     // WBS & Estimator Configuration
     Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project');
 
@@ -525,72 +518,92 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
         
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');   
 
-    Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
-
     Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
+
+    // WBS Profile
+    Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile');
+
+    Route::get('/createSubWbsProfile/{id}', 'WBSController@createSubWbsProfile')->name('createSubWbsProfile')->middleware('can:manage-wbs-profile');
+
+    Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:manage-wbs-profile');
+
+    Route::put('updateWbsProfile/{id}', 'WBSController@updateWbsProfile')->name('updateWbsProfile')->middleware('can:manage-wbs-profile');
+    
+    Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile')->middleware('can:manage-wbs-profile');
     
     // BOM Profile
-    Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:create-project');
+    Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:manage-bom-profile');
 
-    Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:create-project');
+    Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:manage-bom-profile');
 
-    Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project');  
+    Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:manage-bom-profile');
 
-    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile');
+    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile')->middleware('can:manage-bom-profile');
 
     // Resource Profile
-    Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project');
+    Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:manage-resource-profile');
 
-    Route::post('/storeResourceProfile', 'WBSController@storeResourceProfile')->name('storeResourceProfile')->middleware('can:create-project');
+    Route::post('/storeResourceProfile', 'WBSController@storeResourceProfile')->name('storeResourceProfile')->middleware('can:manage-resource-profile');
+    
+    Route::put('/updateResourceProfile', 'WBSController@updateResourceProfile')->name('updateResourceProfile')->middleware('can:manage-resource-profile');
+
+    Route::delete('/deleteResourceProfile/{id}', 'WBSController@destroyResourceProfile')->name('destroyResourceProfile')->middleware('can:manage-resource-profile');
 });
 
 // WBS Repair Routes
 Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
-    Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:create-project-repair');
-    
-    Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:create-project-repair');
-
-    Route::put('updateWbsProfile/{id}', 'WBSController@updateWbsProfile')->name('updateWbsProfile')->middleware('can:edit-project-repair');  
-
     // WBS & Estimator Configuration
     Route::get('/selectProjectConfig', 'WBSController@selectProjectConfig')->name('selectProjectConfig')->middleware('can:create-project-repair');
-
+    
     Route::get('/configWbsEstimator/{id}', 'WBSController@configWbsEstimator')->name('configWbsEstimator')->middleware('can:create-project-repair');
     
     //WBS
     Route::get('/listWBS/{id}/{menu}', 'WBSController@listWBS')->name('listWBS')->middleware('can:show-project-repair');
-
+    
     Route::get('/createWBS/{id}', 'WBSController@createWBS')->name('createWBS')->middleware('can:create-project-repair');
-
+    
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
     
     Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project');
-
+    
     Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
-      
+    
     Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project-repair');    
     
     Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project-repair');
-        
+    
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project-repair');    
-
-    Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile');
-
+    
     Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
+    
+    // WBS Profile
+    Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile-repair');
+    
+    Route::get('/createSubWbsProfile/{id}', 'WBSController@createSubWbsProfile')->name('createSubWbsProfile')->middleware('can:manage-wbs-profile-repair');
+    
+    Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:manage-wbs-profile-repair');
+
+    Route::put('updateWbsProfile/{id}', 'WBSController@updateWbsProfile')->name('updateWbsProfile')->middleware('can:manage-wbs-profile-repair'); 
+
+    Route::delete('/{id}', 'WBSController@destroyWbsProfile')->name('destroyWbsProfile')->middleware('can:manage-wbs-profile-repair');
 
     // BOM Profile
-    Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:create-project-repair');
+    Route::get('/createBomProfile/{id}', 'WBSController@createBomProfile')->name('createBomProfile')->middleware('can:manage-bom-profile-repair');
 
-    Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:create-project-repair');
+    Route::post('/storeBomProfile', 'WBSController@storeBomProfile')->name('storeBomProfile')->middleware('can:manage-bom-profile-repair');
 
-    Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:edit-project-repair');  
+    Route::put('/updateBomProfile', 'WBSController@updateBomProfile')->name('updateBomProfile')->middleware('can:manage-bom-profile-repair');
 
-    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile');
+    Route::delete('/deleteBomProfile/{id}', 'WBSController@destroyBomProfile')->name('destroyBomProfile')->middleware('can:manage-bom-profile-repair');
 
     // Resource Profile
-    Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:create-project-repair');
+    Route::get('/createResourceProfile/{id}', 'WBSController@createResourceProfile')->name('createResourceProfile')->middleware('can:manage-resource-profile-repair');
 
-    Route::post('/storeResourceProfile', 'WBSController@storeResourceProfile')->name('storeResourceProfile')->middleware('can:create-project-repair');
+    Route::post('/storeResourceProfile', 'WBSController@storeResourceProfile')->name('storeResourceProfile')->middleware('can:manage-resource-profile-repair');
+
+    Route::put('/updateResourceProfile', 'WBSController@updateResourceProfile')->name('updateResourceProfile')->middleware('can:manage-resource-profile-repair');
+
+    Route::delete('/deleteResourceProfile/{id}', 'WBSController@destroyResourceProfile')->name('destroyResourceProfile')->middleware('can:manage-resource-profile-repair');
 });
 
 // Activity Routes
