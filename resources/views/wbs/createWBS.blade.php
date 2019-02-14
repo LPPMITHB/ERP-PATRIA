@@ -95,13 +95,26 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.planned_deadline)">{{ data.planned_deadline }}</td>
                                 <td>{{ data.weight }} %</td>
-                                <td class="p-l-0 p-r-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" :href="createSubWBS(data)">
-                                        ADD WBS
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
-                                        EDIT
-                                    </a>
+                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                                MANAGE WBS
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                                EDIT
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteWbs(data)" data-toggle="modal">
+                                                DELETE
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -230,7 +243,7 @@ $(document).ready(function(){
 
 var data = {
     menu : @json($menu),
-    wbs : "",
+    wbs : [],
     newIndex : "", 
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
@@ -330,9 +343,11 @@ var vm = new Vue({
             this.editWbs.name = data.name;
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
-            this.editWbs.planned_deadline = data.planned_deadline;
             this.editWbs.weight = data.weight;
-            $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
+            if(data.planned_deadline != null){
+                this.editWbs.planned_deadline = data.planned_deadline;
+                $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
+            }
         },
         createSubWBS(data){
             var url = "";
@@ -349,6 +364,9 @@ var vm = new Vue({
                 this.newIndex = Object.keys(this.wbs).length+1;
                 this.totalWeight = 0;
                 this.wbs.forEach(data => {
+                    if(data.planned_deadline != null){
+                        data.planned_deadline = data.planned_deadline.split("-").reverse().join("-");   
+                    }
                     this.totalWeight += data.weight;
                 });
                 this.totalWeight = roundNumber(this.totalWeight,2);
@@ -485,7 +503,70 @@ var vm = new Vue({
                 $('div.overlay').hide();            
             })
 
-        }
+        },
+        deleteWbs(data){
+            var menuTemp = this.menu;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 9999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this WBS?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(menuTemp == "building"){
+                            url = "/wbs/deleteWbs/"+data.id;
+                        }else{
+                            url = "/wbs_repair/deleteWbs/"+data.id;
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();   
+                                vm.getWBS();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
+            });
+        },
     },
     watch : {
         // 'editWbs.process_cost_string': function(newValue) {
