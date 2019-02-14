@@ -1281,6 +1281,7 @@ class ProjectController extends Controller
             }
         }
     }
+    
     function getDataForGantt($project, $data, $links, $today){
         $index = 0;
         $wbss_id = $project->wbss->pluck('id')->toArray();

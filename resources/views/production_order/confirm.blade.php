@@ -182,22 +182,22 @@
                                             <tr>
                                                 <td>Planned Start Date</td>
                                                 <td>:</td>
-                                                <td>&ensp;<b id="planned_start_date"></b></td>
+                                                <td>&nbsp;<b id="planned_start_date"></b></td>
                                             </tr>
                                             <tr>
                                                 <td>Planned End Date</td>
                                                 <td>:</td>
-                                                <td>&ensp;<b id="planned_end_date"></b></td>
+                                                <td>&nbsp;<b id="planned_end_date"></b></td>
                                             </tr>
                                             <tr>
                                                 <td>Planned Duration</td>
                                                 <td>:</td>
-                                                <td>&ensp;<b id="planned_duration"></b></td>
+                                                <td>&nbsp;<b id="planned_duration"></b></td>
                                             </tr>
                                             <tr>
                                                 <td>Predecessor</td>
                                                 <td>:</td>
-                                                <td>&ensp;<template v-if="havePredecessor == false">-</template></td>
+                                                <td>&nbsp;<template v-if="havePredecessor == false">-</template></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -523,7 +523,6 @@
 
     $(document).ready(function(){
         $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
             autoclose : true,
         });
         $('div.overlay').hide();
@@ -584,6 +583,7 @@
         mounted() {
             $('.datepicker').datepicker({
                 autoclose : true,
+                format: 'dd-mm-yyyy',
             });
 
             $("#actual_start_date").datepicker().on(
@@ -822,8 +822,8 @@
                     document.getElementById("actual_duration").disabled = false;
                 }
                 document.getElementById("confirm_activity_code").innerHTML= data.code;
-                document.getElementById("planned_start_date").innerHTML= data.planned_start_date;
-                document.getElementById("planned_end_date").innerHTML= data.planned_end_date;
+                document.getElementById("planned_start_date").innerHTML= data.planned_start_date.split("-").reverse().join("-");;
+                document.getElementById("planned_end_date").innerHTML= data.planned_end_date.split("-").reverse().join("-");;
                 document.getElementById("planned_duration").innerHTML= data.planned_duration+" Days";
 
 
