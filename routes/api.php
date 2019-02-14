@@ -158,3 +158,6 @@ Route::get('/getLatestPredecessor/{id}', 'ActivityController@getLatestPredecesso
 
 // bom profile
 Route::get('/getBomProfile/{id}', 'WBSController@getBomProfileAPI')->name('api.wbs.getBomProfileAPI');
+Route::get('/getResourceProfile/{id}', 'WBSController@getResourceProfileAPI')->name('api.wbs.getResourceProfileAPI');
+Route::get('/getRdProfiles/{id}', 'WBSController@getRdProfilesAPI')->name('api.wbs.getRdProfilesAPI');
+

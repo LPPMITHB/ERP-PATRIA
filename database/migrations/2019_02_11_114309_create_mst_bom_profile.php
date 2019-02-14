@@ -19,7 +19,7 @@ class CreateMstBomProfile extends Migration
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
             $table->integer('quantity');
-            $table->string('source')->default('Stock');
+            $table->string('source')->nullable();
             $table->timestamps();
 
             $table->foreign('wbs_id')->references('id')->on('mst_wbs_profile');
