@@ -168,6 +168,10 @@
     </div>
 </div>
 @endverbatim
+<form id="form" class="form-horizontal" method="POST">
+    <input type="hidden" name="_method" value="PATCH">
+    @csrf
+</form>
 @endsection
 
 @push('script')
@@ -544,13 +548,19 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            if(id.indexOf("ACT") !== -1){
-                vm.openConfirmModal(id);
-                $("#confirm_activity_modal").modal('show');
-                return true;
+            if(vm.menu == "building"){
+                var url = "/production_order/checkProdOrder/"+id;
+
+                const form = document.getElementById('form');
+                form.setAttribute('action', url);
+                form.submit();
             }else{
-                return true;
+                var url = "/production_order_repair/checkProdOrder/"+id;
+                const form = document.getElementById('form');
+                form.setAttribute('action', url);
+                form.submit();
             }
+            return true;
         });
     });
 </script>
