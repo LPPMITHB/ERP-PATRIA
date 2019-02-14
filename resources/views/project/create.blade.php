@@ -90,7 +90,7 @@
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Ship Name</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="name" name="name"  required v-model="project.name">
+                                    <input type="text" class="form-control" id="name" name="name" v-model="project.name">
                                 </div>
                             </div>
 
