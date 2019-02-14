@@ -351,6 +351,39 @@
                 material.material_id = new_material_id;
                 material.wbs_id = this.editInput.wbs_id;
 
+                var quantity = this.editInput.quantityInt;
+
+                window.axios.get('/api/getStockMR/'+material.material_id).then(({ data }) => {
+                    var temp = data.quantity - data.reserved;
+
+                    if(temp < 0){
+                        var available = 0;
+                    }else if(temp > 0){
+                        var available = data.quantity - data.reserved;
+                    }
+
+                    if(quantity > available){
+                        iziToast.warning({
+                            title: 'This material only have '+ available + ' in stocks',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+
+                    }else{
+
+                    }
+
+                    $('div.overlay').hide();
+
+                }).catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+
                 window.axios.get('/api/getMaterialMR/'+new_material_id).then(({ data }) => {
                     material.material_name = data.name;
                     material.material_code = data.code;
@@ -402,7 +435,41 @@
             },
             add(){
                 var material_id = this.dataInput.material_id;
+                var quantity = this.dataInput.quantityInt;
+
                 $('div.overlay').show();
+
+                window.axios.get('/api/getStockMR/'+material_id).then(({ data }) => {
+                    var temp = data.quantity - data.reserved;
+
+                    if(temp < 0){
+                        var available = 0;
+                    }else if(temp > 0){
+                        var available = data.quantity - data.reserved;
+                    }
+
+                    if(quantity > available){
+                        iziToast.warning({
+                            title: 'This material only have '+ available + ' in stocks',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+
+                    }else{
+
+                    }
+
+                    $('div.overlay').hide();
+
+                }).catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+                
                 window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
                     this.dataInput.material_name = data.name;
                     this.dataInput.material_code = data.code;

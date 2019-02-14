@@ -262,24 +262,30 @@ class ActivityController extends Controller
             }else{
                 $activity->status = 0;
                 $activity->progress = 100;
-                $actualEndDate = DateTime::createFromFormat('m/j/Y', $data['actual_end_date']);
+                $actualEndDate = DateTime::createFromFormat('d-m-Y', $data['actual_end_date']);
                 $activity->actual_end_date = $actualEndDate->format('Y-m-d');
                 $activity->actual_duration = $data['actual_duration'];
             }
-            $actualStartDate = DateTime::createFromFormat('m/j/Y', $data['actual_start_date']);
+            $actualStartDate = DateTime::createFromFormat('d-m-Y', $data['actual_start_date']);
             $activity->actual_start_date = $actualStartDate->format('Y-m-d');
-            $project = $activity->wbs->project;
-            if($project->actual_start_date != null){
-                if($project->actual_start_date > $activity->actual_start_date){
-                    $project->actual_start_date = $activity->actual_start_date;                    
-                }
-            }else{
-                $project->actual_start_date = $activity->actual_start_date;
-            }
             $activity->save();
 
-            $wbs = $activity->wbs;
+            $project = $activity->wbs->project;
+            $wbss = $project->wbss->where('wbs_id',null);
+            $earliest_date = null;
+            foreach($wbss as $wbs){
+                $temp = self::getEarliestActivity($wbs,$earliest_date);
+                if($earliest_date == null){
+                    $earliest_date = $temp;
+                }else{
+                    if($earliest_date > $temp){
+                        $earliest_date = $temp;
+                    }
+                }
+            }
+            $project->actual_start_date = $earliest_date;
 
+            $wbs = $activity->wbs;
             self::changeWbsProgress($wbs);
 
             $project = $wbs->project;
@@ -318,6 +324,42 @@ class ActivityController extends Controller
                 return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+
+    public function destroyActivity(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        $error = [];
+        try {
+            $activity = Activity::find($id);
+            if($activity->progress > 0){
+                array_push($error, ["Failed to delete, this activity already have ".$activity->progress." % progress"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+
+            $activity_ref = Activity::whereNotIn('id',[$activity->id])->get();
+            foreach($activity_ref as $act){
+                if($act->predecessor != null){
+                    $predecessor = json_decode($act->predecessor);
+                    if(in_array($activity->id,$predecessor)){
+                        array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
+                        return response(["error"=> $error],Response::HTTP_OK);
+                    }
+                }
+            }
+            if(!$activity->delete()){
+                array_push($error, ["Failed to delete, please try again!"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            array_push($error, [$e->getMessage()]);                
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
     
     //Method
     public function generateActivityCode($id){
@@ -336,6 +378,48 @@ class ActivityController extends Controller
 
         $activity_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $activity_code;
+    }
+
+    function getEarliestActivity($wbs, $earliest_date){
+        if($wbs){
+            if(count($wbs->wbss)>0){
+                foreach($wbs->wbss as $wbs_child){
+                    if(count($wbs_child->activities)>0){
+                        $activityRef = Activity::where('wbs_id',$wbs_child->id)->whereRaw('actual_start_date is not null')->orderBy('actual_start_date','asc')->first();
+                        if($activityRef != null){
+                            $earliest_date_ref = $activityRef->actual_start_date;
+                            if($earliest_date != null){
+                                if($earliest_date > $earliest_date_ref){
+                                    $earliest_date = $earliest_date_ref;
+                                }
+                            }else{
+                                $earliest_date = $earliest_date_ref;
+                            }
+                        }else{
+                            $earliest_date = $earliest_date;
+                        }
+                    }
+                    return self::getEarliestActivity($wbs_child,$earliest_date);
+                }
+            }else{
+                if(count($wbs->activities)>0){
+                    $activityRef = Activity::where('wbs_id',$wbs->id)->whereRaw('actual_start_date is not null')->orderBy('actual_start_date','asc')->first();
+                    if($activityRef != null){
+                        $earliest_date_ref = $activityRef->actual_start_date;
+                        if($earliest_date != null){
+                            if($earliest_date > $earliest_date_ref){
+                                $earliest_date = $earliest_date_ref;
+                            }
+                        }else{
+                            $earliest_date = $earliest_date_ref;
+                        }
+                    }else{
+                        $earliest_date = $earliest_date;
+                    }
+                }
+                return $earliest_date;
+            }
+        }
     }
 
     function changeWbsProgress($wbs){
