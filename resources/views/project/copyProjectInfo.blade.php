@@ -58,6 +58,16 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="project_type" class="col-sm-2 control-label">Project Type</label>
+                
+                                <div class="col-sm-10">
+                                    <selectize name="project_type" id="project_type" required>
+                                        <option v-for="(data, index) in projectType" :value="data.id">{{ data.name }}</option>
+                                    </selectize>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="customer" class="col-sm-2 control-label">Customer Name</label>
                 
                                 <div class="col-sm-10">
@@ -215,6 +225,7 @@ $(document).ready(function(){
         projectRef:  @json($project->id== null ? "": $project->id),
         customers : @json($customers),
         ships : @json($ships),
+        projectType : @json($projectType),
         ownerRep : "",
         project : {
             number : "",
@@ -329,7 +340,7 @@ $(document).ready(function(){
 
     });
     $('div.overlay').hide();
-    $('#customer,#ship').selectize();
+    $('#customer,#ship,#project_type').selectize();
     $('.datepicker').datepicker({
         autoclose : true,
     });
@@ -427,6 +438,10 @@ $(document).ready(function(){
         var $selectShip = $("#ship").selectize();
         var selectizeShip = $selectShip[0].selectize;
         selectizeShip.setValue(@JSON($project->ship_id));
+
+        var $selectProjectType = $("#project_type").selectize();
+        var selectizeProjectType = $selectProjectType[0].selectize;
+        selectizeProjectType.setValue(@JSON($project->project_type));
     }
 
     if(@JSON(Request::old('planned_start_date')) != null){
@@ -447,6 +462,11 @@ $(document).ready(function(){
         var $selectShip = $("#ship").selectize();
         var selectizeShip = $selectShip[0].selectize;
         selectizeShip.setValue(@JSON(Request::old('ship')));
+    }
+    if(@JSON(Request::old('project_type')) != null){
+        var $selectProjectType = $("#project_type").selectize();
+        var selectizeProjectType = $selectProjectType[0].selectize;
+        selectizeProjectType.setValue(@JSON(Request::old('project_type')));
     }
 
 

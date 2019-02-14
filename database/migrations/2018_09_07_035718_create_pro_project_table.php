@@ -37,6 +37,7 @@ class CreateProProjectTable extends Migration
             $table->string('class_contact_person_name')->nullable();
             $table->string('class_contact_person_phone')->nullable();
             $table->string('class_contact_person_email')->nullable();
+            $table->unsignedInteger('project_type');
             $table->integer('status')->default(1);
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');            
