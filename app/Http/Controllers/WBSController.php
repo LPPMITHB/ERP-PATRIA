@@ -131,6 +131,26 @@ class WBSController extends Controller
         return view('wbs.createResourceProfile', compact('wbs','route','resources','resourceDetails','resource_categories'));
     }
 
+    public function updateResourceProfile(Request $request){
+        $route = $request->route()->getPrefix();
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $resource = ResourceProfile::findOrFail($data['id']);
+            $resource->resource_id = $data['resource_id'];
+            $resource->resource_detail_id = ($data['resource_detail_id'] != '') ? $data['resource_detail_id'] : null;
+            $resource->quantity = $data['quantity'];
+            $resource->update();
+
+            DB::commit();
+            return response(json_encode($resource),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createResourceProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
+    }
+
     public function destroyResourceProfile(Request $request, $id)
     {
         DB::beginTransaction();
