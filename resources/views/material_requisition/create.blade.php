@@ -369,8 +369,6 @@
                             displayMode: 'replace'
                         });
 
-                    }else{
-
                     }
 
                     $('div.overlay').hide();
@@ -454,8 +452,6 @@
                             position: 'topRight',
                             displayMode: 'replace'
                         });
-
-                    }else{
 
                     }
 
