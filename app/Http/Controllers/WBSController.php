@@ -127,9 +127,23 @@ class WBSController extends Controller
         $resources = Resource::all()->jsonSerialize();
         $resourceDetails = ResourceDetail::where('status','!=',0)->get()->jsonSerialize();
         $resource_categories = Configuration::get('resource_category');
-        $resource = ResourceProfile::where('wbs_id',$wbs_id)->with('resource','resourceDetail')->get();
 
-        return view('wbs.createResourceProfile', compact('wbs','route','resources','resourceDetails','resource_categories','resource'));
+        return view('wbs.createResourceProfile', compact('wbs','route','resources','resourceDetails','resource_categories'));
+    }
+
+    public function destroyResourceProfile(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $resourceProfile = ResourceProfile::findOrFail($id);
+            $resourceProfile->delete();
+
+            DB::commit();
+            return response(["response"=>"Success to delete resource"],Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
     }
 
     public function storeResourceProfile(Request $request){
