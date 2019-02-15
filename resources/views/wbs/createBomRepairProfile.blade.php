@@ -36,8 +36,8 @@
     
                         </div>
                     </div> <!-- /.box-header -->
-                    <div class="col-md-12 p-t-20">
-                        <table class="table table-bordered tableFixed m-b-0">
+                    <div class="col-md-12 p-t-5">
+                        <table class="table table-bordered tableFixed m-b-0" id="bom-profile">
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
@@ -67,6 +67,8 @@
                                         </a>
                                     </td>
                                 </tr>
+                            </tbody>
+                            <tfoot>
                                 <tr>
                                     <td>{{newIndex}}</td>
                                     <td class="no-padding">
@@ -74,30 +76,32 @@
                                             <option v-for="(type, index) in types" :value="type">{{ type }}</option>
                                         </selectize>    
                                     </td>
-                                    <td class="no-padding" v-show="input.type == ''">
-                                        <selectize id="material" v-model="input.material_id" :settings="nullSettings" disabled>
-                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
-                                        </selectize>
+                                    <td class="no-padding">
+                                        <template v-if="input.type == ''">
+                                            <selectize id="material" v-model="input.material_id" :settings="mixSettings" disabled>
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                            </selectize>
+                                        </template>
+                                        <template v-else-if="input.type == 'Material'">
+                                            <selectize id="material" v-model="input.material_id" :settings="mixSettings">
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                            </selectize>    
+                                        </template>
+                                        <template v-else-if="input.type == 'Service'">
+                                            <selectize id="service" v-model="input.service_id" :settings="mixSettings">
+                                                <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
+                                            </selectize>    
+                                        </template>
                                     </td>
-                                    <td class="no-padding" v-show="input.type == 'Material'">
-                                        <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
-                                        </selectize>    
-                                    </td>
-                                    <td class="no-padding" v-show="input.type == 'Service'">
-                                        <selectize id="service" v-model="input.service_id" :settings="serviceSettings">
-                                            <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
-                                        </selectize>    
-                                    </td>
-                                    <td class="no-padding"><input class="form-control" type="text" :value="input.description" disabled></td>
-                                    <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
+                                    <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
                                     <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                         <div class="btn-group">
                                             ADD
                                         </div></a>
                                     </td>
                                 </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                     </div>
 
@@ -186,8 +190,8 @@
             description : "",
             id : ""
         },
-        nullSettings: {
-            placeholder: 'Please select type first'
+        mixSettings: {
+            placeholder: 'Please Select Material / Service'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
@@ -258,11 +262,26 @@
             }
         },
         methods: {
+            buildTable(){
+                $('#bom-profile').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#bom-profile').DataTable({
+                        'paging'      : true,
+                        'lengthChange': false,
+                        'searching'   : false,
+                        'ordering'    : true,
+                        'info'        : true,
+                        'autoWidth'   : false,
+                    });
+                })
+            },
             getBomProfile(wbs_id){
                 window.axios.get('/api/getBomProfile/'+wbs_id).then(({data}) =>{
                     this.material_id = [];
                     this.service_id = [];
                     this.materialTable = data;
+                    this.newIndex = this.materialTable.length + 1;
+                    this.buildTable();
 
                     this.materialTable.forEach(data =>{
                         if(data.material_id != null){
@@ -277,7 +296,6 @@
                     var jsonServiceId = JSON.stringify(this.service_id);
                     this.getNewMaterials(jsonMaterialId); 
                     this.getNewServices(jsonServiceId); 
-                    this.newIndex = this.materialTable.length + 1;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -286,6 +304,7 @@
                         position: 'topRight',
                         displayMode: 'replace'
                     });
+                    console.log(error);
                     $('div.overlay').hide();
                 })
             },
@@ -577,7 +596,6 @@
                             this.editInput.description = '-';
                         }else{
                             this.editInput.description = data.description;
-
                         }
                     });
                 }else{
@@ -585,6 +603,8 @@
                 }
             },
             'input.type' : function(newValue){
+                this.mixSettings.placeholder = "asd";
+                this.buildTable();
                 this.input.material_id = "";
                 this.input.material_name = "";
                 this.input.description = "";
@@ -594,7 +614,6 @@
         },
         created: function() {
             this.getBomProfile(this.wbs.id);
-
         }
     });
        
