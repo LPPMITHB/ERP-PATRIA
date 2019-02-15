@@ -341,7 +341,7 @@ var vm = new Vue({
                         'paging'      : true,
                         'lengthChange': false,
                         'searching'   : false,
-                        'ordering'    : false,
+                        'ordering'    : true,
                         'info'        : true,
                         'autoWidth'   : false,
                     });

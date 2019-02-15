@@ -36,8 +36,8 @@
     
                         </div>
                     </div> <!-- /.box-header -->
-                    <div class="col-md-12 p-t-20">
-                        <table class="table table-bordered tableFixed m-b-0">
+                    <div class="col-md-12 p-t-0">
+                        <table class="table table-bordered tableFixed m-b-0" id="bom-profile">
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
@@ -65,6 +65,8 @@
                                         </a>
                                     </td>
                                 </tr>
+                            </tbody>
+                            <tfoot>
                                 <tr>
                                     <td>{{newIndex}}</td>
                                     <td class="no-padding">
@@ -72,7 +74,7 @@
                                             <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
                                         </selectize>    
                                     </td>
-                                    <td class="no-padding"><input class="form-control" type="text" :value="input.description" disabled></td>
+                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
                                     <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
                                     <td class="no-padding">
                                         <selectize v-model="input.source" :settings="sourceSettings">
@@ -85,7 +87,7 @@
                                         </div></a>
                                     </td>
                                 </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                     </div>
 
@@ -146,6 +148,7 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+    
     var data = {
         route : @json($route),
         sources : ['Stock','WIP'],
@@ -218,10 +221,25 @@
             }
         },
         methods: {
+            buildTable(){
+                $('#bom-profile').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#bom-profile').DataTable({
+                        'paging'      : true,
+                        'lengthChange': false,
+                        'searching'   : false,
+                        'ordering'    : true,
+                        'info'        : true,
+                        'autoWidth'   : false,
+                    });
+                })
+            },
             getBomProfile(wbs_id){
                 window.axios.get('/api/getBomProfile/'+wbs_id).then(({data}) =>{
                     this.material_id = [];
                     this.materialTable = data;
+                    this.newIndex = this.materialTable.length + 1;
+                    this.buildTable();
 
                     this.materialTable.forEach(data =>{
                         this.material_id.push(data.material_id);
@@ -230,7 +248,6 @@
 
                     var jsonMaterialId = JSON.stringify(this.material_id);
                     this.getNewMaterials(jsonMaterialId); 
-                    this.newIndex = this.materialTable.length + 1;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {

@@ -47261,6 +47261,7 @@ function clean(options) {
       }
     }, this.settings));
     this.makeOptions(true);
+
     this.toggleDisabled(this.disabled);
   },
   destroyed: function destroyed() {
