@@ -89,7 +89,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 17%">Name</th>
+                                <th style="width: 17%">Item Number</th>
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>

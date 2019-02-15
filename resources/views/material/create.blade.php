@@ -53,7 +53,7 @@
                         @verbatim
                         <div id="material">
                         <div class="form-group">
-                            <label for="code" class="col-sm-2 control-label">Code</label>
+                            <label for="code" class="col-sm-2 control-label">Item Number</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="code" name="code" required autofocus v-model="submittedForm.code">
