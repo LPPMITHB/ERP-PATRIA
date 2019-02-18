@@ -16,7 +16,7 @@ class CreateProWbsTable extends Migration
         Schema::create('pro_wbs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
-            $table->string('name');
+            $table->text('number');
             $table->text('description');
             $table->string('deliverables');
             $table->unsignedInteger('project_id')->nullable();
