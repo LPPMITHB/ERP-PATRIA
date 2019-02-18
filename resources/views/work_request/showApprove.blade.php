@@ -142,7 +142,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->code}} - {{ $WRD->material->name }}">{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
                                 <td>{{ number_format($WRD->quantity) }}</td>
-                                <td>{{ isset($WRD->wbs) ? $WRD->wbs->name : '-' }}</td>
+                                <td>{{ isset($WRD->wbs) ? $WRD->wbs->number : '-' }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{$WRD->description}}</td>
                                 <td>{{ ($WRD->type == 0) ? 'Raw Material' : 'Finished Goods' }}</td>
                                 <td>{{ isset($WRD->required_date) ? $WRD->required_date : '-' }}</td>

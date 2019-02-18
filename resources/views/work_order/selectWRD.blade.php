@@ -62,7 +62,7 @@
                                     <td>{{ WRD.quantity }}</td>
                                     <td>{{ WRD.reserved }}</td>
                                     <td>{{ WRD.remaining }}</td>
-                                    <td v-if="WRD.wbs != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.wbs.name)">{{ WRD.wbs.name }}</td>
+                                    <td v-if="WRD.wbs != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.wbs.number)">{{ WRD.wbs.number }}</td>
                                     <td v-else>-</td>
                                     <td class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedWRD" :value="WRD.id">

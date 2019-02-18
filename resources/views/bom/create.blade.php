@@ -43,12 +43,9 @@
                             
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                            
-                                <div class="col-xs-4 no-padding">Code</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
                                 
-                                <div class="col-xs-4 no-padding">Name</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+                                <div class="col-xs-4 no-padding">Number</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.number)"><b>: {{wbs.number}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Description</div>
                                 <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
@@ -308,7 +305,7 @@
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_name = data.wbs_name;
+                this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
                 this.editInput.source = data.source;
 

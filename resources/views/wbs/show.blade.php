@@ -88,7 +88,7 @@
                                 <tr>
                                     <td>6</td>
                                     <td>Parent WBS</td>
-                                    <td v-if="wbsDisplay.parent_wbs != null">[{{ wbsDisplay.parent_wbs.code+"] - "+wbsDisplay.parent_wbs.name }}</td>
+                                    <td v-if="wbsDisplay.parent_wbs != null">[{{ wbsDisplay.parent_wbs.code+"] - "+wbsDisplay.parent_wbs.number }}</td>
                                     <td v-else>-</td>
                                 </tr>
                                 <tr>
@@ -200,7 +200,7 @@ var data = {
     editWbs : {
         wbs_id: @json($wbs->id),
         code: @json($wbs->code),
-        name : @json($wbs->name),
+        name : @json($wbs->number),
         description : @json($wbs->description),
         deliverables : @json($wbs->deliverables),
         planned_deadline : "",
@@ -213,7 +213,7 @@ var data = {
     wbsDisplay : {
         wbs_id: @json($wbs->id),
         code: @json($wbs->code),
-        name : @json($wbs->name),
+        name : @json($wbs->number),
         description : @json($wbs->description),
         deliverables : @json($wbs->deliverables),
         planned_deadline : @json($wbs->planned_deadline),

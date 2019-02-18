@@ -265,7 +265,7 @@
                                                     <a href="{{ route('production_order.show',$prod->productionOrder->id) }}" class="text-primary">{{$prod->productionOrder->number}}</a>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('wbs.show',$prod->productionOrder->wbs->id) }}" class="text-primary">{{$prod->productionOrder->wbs->name}}</a>
+                                                    <a href="{{ route('wbs.show',$prod->productionOrder->wbs->id) }}" class="text-primary">{{$prod->productionOrder->wbs->number}}</a>
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('project.show',$prod->productionOrder->wbs->project->id) }}" class="text-primary">{{$prod->productionOrder->wbs->project->number}} - {{$prod->productionOrder->wbs->project->name}}</a>
@@ -306,8 +306,8 @@
                                                     <td>
                                                         <a href="{{ route('production_order.show',$prod->productionOrder->id) }}" class="text-primary">{{$prod->productionOrder->number}}</a>
                                                     </td>
-                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$prod->productionOrder->wbs->name}}">
-                                                        <a href="{{ route('wbs.show',$prod->productionOrder->wbs->id) }}" class="text-primary">{{$prod->productionOrder->wbs->name}}</a>
+                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$prod->productionOrder->wbs->number}}">
+                                                        <a href="{{ route('wbs.show',$prod->productionOrder->wbs->id) }}" class="text-primary">{{$prod->productionOrder->wbs->number}}</a>
                                                     </td>
                                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$prod->productionOrder->wbs->project->number}} - {{$prod->productionOrder->wbs->project->name}}">
                                                         <a href="{{ route('project.show',$prod->productionOrder->wbs->project->id) }}" class="text-primary">{{$prod->productionOrder->wbs->project->number}} - {{$prod->productionOrder->wbs->project->name}}</a>

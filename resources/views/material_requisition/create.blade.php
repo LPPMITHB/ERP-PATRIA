@@ -79,7 +79,7 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_number }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="p-l-0 textCenter">
@@ -97,7 +97,7 @@
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length > 0">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length == 0">
@@ -147,7 +147,7 @@
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12" v-show="editInput.wbs_id != '' && materialsEdit.length > 0">
@@ -235,7 +235,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : ""
+            wbs_number : ""
         },
         editInput : {
             old_material_id : "",
@@ -246,7 +246,7 @@
             quantityInt : 0,
             wbs_id : "",
             old_wbs_id : "",
-            wbs_name : ""
+            wbs_number : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -387,7 +387,7 @@
                     material.material_code = data.code;
 
                         window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
-                        material.wbs_name = data.wbs.name;
+                        material.wbs_number = data.wbs.number;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -419,7 +419,7 @@
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.old_wbs_id = data.wbs_id;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_name = data.wbs_name;
+                this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
@@ -480,7 +480,7 @@
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
-                    this.dataInput.wbs_name = "";
+                    this.dataInput.wbs_number = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;                    
                     $('div.overlay').hide();
@@ -539,7 +539,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
-                        this.dataInput.wbs_name = data.wbs.name;
+                        this.dataInput.wbs_number = data.wbs.number;
                         this.materials = data.materials;
                         $('div.overlay').hide();
                     })

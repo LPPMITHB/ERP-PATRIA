@@ -199,7 +199,7 @@
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="PRD.discount" placeholder="Discount">
                                                 </td>
-                                                <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
+                                                <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.number }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
                                                 <td class="tdEllipsis" v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
                                                 <td class="tdEllipsis" v-else>-</td>

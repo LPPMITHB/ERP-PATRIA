@@ -167,7 +167,7 @@ class MaterialRequisitionController extends Controller
                 "quantity" => number_format($mrd->quantity),
                 "quantityInt" => $mrd->quantity,
                 "wbs_id" => $mrd->wbs_id,
-                "wbs_name" => $mrd->wbs->name,
+                "wbs_number" => $mrd->wbs->number,
             ]);
         }
         return view('material_requisition.edit', compact('menu','modelMR','modelMRD','modelMaterial','modelProject','modelWBS'));

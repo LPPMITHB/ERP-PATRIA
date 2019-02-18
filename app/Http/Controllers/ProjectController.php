@@ -867,12 +867,12 @@ class ProjectController extends Controller
             }
             
             $planned->push([
-                "wbs_name" => $wbs->number,
+                "wbs_number" => $wbs->number,
                 "cost" => $plannedCostPerWbs,                   
                 ]);
                 
                 $actual->push([
-                    "wbs_name" => $wbs->number,
+                    "wbs_number" => $wbs->number,
                     "cost" => $actualCostPerWbs,                   
                     ]);
                 }
