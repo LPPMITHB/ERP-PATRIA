@@ -89,7 +89,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 17%">Name</th>
+                                <th style="width: 17%">Item Number</th>
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
@@ -657,6 +657,7 @@ var vm = new Vue({
                     title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
+                this.newSubWBS.weight = this.maxWeight;
             }
         },
         'editWbs.weight': function(newValue){
@@ -674,6 +675,7 @@ var vm = new Vue({
                     title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
+                this.editWbs.weight = maxWeightEdit;
             }
         },
         selected_wbs_profile : function(newValue){

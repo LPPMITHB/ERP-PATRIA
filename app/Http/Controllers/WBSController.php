@@ -18,8 +18,11 @@ use App\Models\ResourceProfile;
 use App\Models\Material;
 use App\Models\Service;
 use App\Models\Resource;
+use App\Models\Bom;
+use App\Models\BomDetail;
 use App\Models\ResourceDetail;
 use App\Models\Configuration;
+use App\Models\ResourceTrx;
 use DB;
 use DateTime;
 use Auth;
@@ -133,6 +136,26 @@ class WBSController extends Controller
         return view('wbs.createResourceProfile', compact('wbs','route','resources','resourceDetails','resource_categories'));
     }
 
+    public function updateResourceProfile(Request $request){
+        $route = $request->route()->getPrefix();
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try{
+            $resource = ResourceProfile::findOrFail($data['id']);
+            $resource->resource_id = $data['resource_id'];
+            $resource->resource_detail_id = ($data['resource_detail_id'] != '') ? $data['resource_detail_id'] : null;
+            $resource->quantity = $data['quantity'];
+            $resource->update();
+
+            DB::commit();
+            return response(json_encode($resource),Response::HTTP_OK);
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('wbs.createResourceProfile',$data['wbs_id'])->with('error',$e->getMessage());
+        }
+    }
+
     public function destroyResourceProfile(Request $request, $id)
     {
         DB::beginTransaction();
@@ -182,7 +205,7 @@ class WBSController extends Controller
         }else{
             $array = [
                 'Dashboard' => route('index'),
-                'Create WBS Profile' => route('wbs.createWbsProfile'),
+                'Create WBS Profile' => route('wbs_repair.createWbsProfile'),
             ];
         }
         $iteration = 0;
@@ -204,8 +227,7 @@ class WBSController extends Controller
         }elseif($menu == "repair"){
             $businessUnit = 2;
         }
-        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->get()->jsonSerialize();
-
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
 
@@ -259,11 +281,15 @@ class WBSController extends Controller
             $wbsProfile->name = $data['name'];
             $wbsProfile->description = $data['description'];
             $wbsProfile->deliverables = $data['deliverables'];
-            $wbsProfile->project_type_id = $data['project_type'];
 
             if(isset($data['wbs_profile_id'])){
                 $wbsProfile->wbs_id = $data['wbs_profile_id'];
             }
+
+            if(isset($data['project_type'])){
+                $wbsProfile->project_type_id = $data['project_type'];
+            }
+
             $wbsProfile->user_id = Auth::user()->id;
             $wbsProfile->branch_id = Auth::user()->branch->id;
             $wbsProfile->business_unit_id = $businessUnit;
@@ -300,6 +326,43 @@ class WBSController extends Controller
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
             $wbs->save();
+            
+            $bomProfile = $wbsProfile->bom;
+            if(count($bomProfile)>0){
+                $bom = new Bom;
+                $bom->code = self::generateBomCode($data['project_id']);
+                $bom->description = "AUTO GENERATED FROM ADOPT WBS PROFILE";
+                $bom->project_id = $data['project_id'];
+                $bom->wbs_id = $wbs->id;
+                $bom->branch_id = Auth::user()->branch->id;
+                $bom->user_id = Auth::user()->id;
+                $bom->save();
+    
+                foreach($bomProfile as $material){
+                    $bom_detail = new BomDetail;
+                    $bom_detail->bom_id = $bom->id;
+                    $bom_detail->material_id = $material->material_id;
+                    $bom_detail->quantity = $material->quantity;
+                    $bom_detail->source = $material->source;
+                    if(!$bom_detail->save()){
+                        return response(["error"=> 'Failed Save Bom Detail !']);
+                    }
+                }
+            }
+
+            $resourceProfile = $wbsProfile->resources;
+            if(count($resourceProfile)>0){
+                foreach($resourceProfile as $resource){
+                    $resourceInput = new ResourceTrx;
+                    $resourceInput->resource_id = $resource->resource_id;
+                    $resourceInput->resource_detail_id = $resource->resource_detail_id;
+                    $resourceInput->category_id = $resource->category_id;
+                    $resourceInput->project_id = $data['project_id'];
+                    $resourceInput->wbs_id = $wbs->id;
+                    $resourceInput->quantity = $resource->quantity;
+                    $resourceInput->save();
+                }
+            }
             self::adoptWbsStructure($wbsProfile->wbss, $wbs->id,$data['project_id']);
 
             DB::commit();
@@ -470,6 +533,13 @@ class WBSController extends Controller
             if(count($wbsProfile->activities)>0){
                 array_push($error, ["Failed to delete, this WBS have activities"]);
             }
+            if($wbsProfile->bom != null){
+                array_push($error, ["Failed to delete, this WBS have BOM"]);
+            }
+
+            if(count($wbsProfile->resource)>0){
+                array_push($error, ["Failed to delete, this WBS have resource"]);
+            }
 
             if(count($error)>0){
                 return response(["error"=> $error],Response::HTTP_OK);
@@ -566,6 +636,23 @@ class WBSController extends Controller
 
         $activity_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $activity_code;
+    }
+
+    private function generateBomCode($project_id){
+        $code = 'BOM';
+        $project = Project::find($project_id);
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+
+        $modelBom = Bom::orderBy('code', 'desc')->where('project_id', $project_id)->first();
+        
+        $number = 1;
+		if(isset($modelBom)){
+            $number += intval(substr($modelBom->code, -4));
+		}
+
+        $bom_code = $code.sprintf('%02d', $year).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $bom_code;
     }
 
     //BUAT BREADCRUMB DINAMIS
@@ -693,6 +780,43 @@ class WBSController extends Controller
                         $activityInput->branch_id = Auth::user()->branch->id;
                         $activityInput->save();
                     }
+
+                    if(count($wbs->bom)>0){
+                        $bomProfile = $wbs->bom;
+                        $bomInput = new Bom;
+                        $bomInput->code = self::generateBomCode($project_id);
+                        $bomInput->description = "AUTO GENERATED FROM ADOPT WBS PROFILE";
+                        $bomInput->project_id = $project_id;
+                        $bomInput->wbs_id = $wbsInput->id;
+                        $bomInput->branch_id = Auth::user()->branch->id;
+                        $bomInput->user_id = Auth::user()->id;
+                        $bomInput->save();
+    
+                        foreach($bomProfile as $material){
+                            $bom_detail = new BomDetail;
+                            $bom_detail->bom_id = $bomInput->id;
+                            $bom_detail->material_id = $material->material_id;
+                            $bom_detail->quantity = $material->quantity;
+                            $bom_detail->source = $material->source;
+                            if(!$bom_detail->save()){
+                                return response(["error"=> 'Failed Save Bom Detail !']);
+                            }
+                        }
+                    }
+
+                    $resourceProfile = $wbs->resources;
+                    if(count($resourceProfile)>0){
+                        foreach($resourceProfile as $resource){
+                            $resourceInput = new ResourceTrx;
+                            $resourceInput->resource_id = $resource->resource_id;
+                            $resourceInput->resource_detail_id = $resource->resource_detail_id;
+                            $resourceInput->category_id = $resource->category_id;
+                            $resourceInput->project_id = $data['project_id'];
+                            $resourceInput->wbs_id = $wbsInput->id;
+                            $resourceInput->quantity = $resource->quantity;
+                            $resourceInput->save();
+                        }
+                    }
                 }else{
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
@@ -704,6 +828,43 @@ class WBSController extends Controller
                     $wbsInput->user_id = Auth::user()->id;
                     $wbsInput->branch_id = Auth::user()->branch->id;
                     $wbsInput->save();
+
+                    if(count($wbs->bom)>0){
+                        $bomProfile = $wbs->bom;
+                        $bomInput = new Bom;
+                        $bomInput->code = self::generateBomCode($project_id);
+                        $bomInput->description = "AUTO GENERATED FROM ADOPT WBS PROFILE";
+                        $bomInput->project_id = $project_id;
+                        $bomInput->wbs_id = $wbsInput->id;
+                        $bomInput->branch_id = Auth::user()->branch->id;
+                        $bomInput->user_id = Auth::user()->id;
+                        $bomInput->save();
+    
+                        foreach($bomProfile as $material){
+                            $bom_detail = new BomDetail;
+                            $bom_detail->bom_id = $bomInput->id;
+                            $bom_detail->material_id = $material->material_id;
+                            $bom_detail->quantity = $material->quantity;
+                            $bom_detail->source = $material->source;
+                            if(!$bom_detail->save()){
+                                return response(["error"=> 'Failed Save Bom Detail !']);
+                            }
+                        }
+                    }
+
+                    $resourceProfile = $wbs->resources;
+                    if(count($resourceProfile)>0){
+                        foreach($resourceProfile as $resource){
+                            $resourceInput = new ResourceTrx;
+                            $resourceInput->resource_id = $resource->resource_id;
+                            $resourceInput->resource_detail_id = $resource->resource_detail_id;
+                            $resourceInput->category_id = $resource->category_id;
+                            $resourceInput->project_id = $data['project_id'];
+                            $resourceInput->wbs_id = $wbsInput->id;
+                            $resourceInput->quantity = $resource->quantity;
+                            $resourceInput->save();
+                        }
+                    }
                 }
                 self::adoptWbsStructure($wbs->wbss, $wbs->id,$project_id);
             }else{
@@ -729,6 +890,43 @@ class WBSController extends Controller
                         $activityInput->branch_id = Auth::user()->branch->id;
                         $activityInput->save();
                     }
+
+                    if(count($wbs->bom)>0){
+                        $bomProfile = $wbsProfile->bom;
+                        $bomInput = new Bom;
+                        $bomInput->code = self::generateBomCode($project_id);
+                        $bomInput->description = "AUTO GENERATED FROM ADOPT WBS PROFILE";
+                        $bomInput->project_id = $project_id;
+                        $bomInput->wbs_id = $wbsInput->id;
+                        $bomInput->branch_id = Auth::user()->branch->id;
+                        $bomInput->user_id = Auth::user()->id;
+                        $bomInput->save();
+    
+                        foreach($bomProfile as $material){
+                            $bom_detail = new BomDetail;
+                            $bom_detail->bom_id = $bomInput->id;
+                            $bom_detail->material_id = $material->material_id;
+                            $bom_detail->quantity = $material->quantity;
+                            $bom_detail->source = $material->source;
+                            if(!$bom_detail->save()){
+                                return response(["error"=> 'Failed Save Bom Detail !']);
+                            }
+                        }
+                    }
+
+                    $resourceProfile = $wbs->resources;
+                    if(count($resourceProfile)>0){
+                        foreach($resourceProfile as $resource){
+                            $resourceInput = new ResourceTrx;
+                            $resourceInput->resource_id = $resource->resource_id;
+                            $resourceInput->resource_detail_id = $resource->resource_detail_id;
+                            $resourceInput->category_id = $resource->category_id;
+                            $resourceInput->project_id = $data['project_id'];
+                            $resourceInput->wbs_id = $wbsInput->id;
+                            $resourceInput->quantity = $resource->quantity;
+                            $resourceInput->save();
+                        }
+                    }
                 }else{
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
@@ -740,6 +938,43 @@ class WBSController extends Controller
                     $wbsInput->user_id = Auth::user()->id;
                     $wbsInput->branch_id = Auth::user()->branch->id;
                     $wbsInput->save();
+
+                    if(count($wbs->bom)>0){
+                        $bomProfile = $wbsProfile->bom;
+                        $bomInput = new Bom;
+                        $bomInput->code = self::generateBomCode($project_id);
+                        $bomInput->description = "AUTO GENERATED FROM ADOPT WBS PROFILE";
+                        $bomInput->project_id = $project_id;
+                        $bomInput->wbs_id = $wbsInput->id;
+                        $bomInput->branch_id = Auth::user()->branch->id;
+                        $bomInput->user_id = Auth::user()->id;
+                        $bomInput->save();
+    
+                        foreach($bomProfile as $material){
+                            $bom_detail = new BomDetail;
+                            $bom_detail->bom_id = $bomInput->id;
+                            $bom_detail->material_id = $material->material_id;
+                            $bom_detail->quantity = $material->quantity;
+                            $bom_detail->source = $material->source;
+                            if(!$bom_detail->save()){
+                                return response(["error"=> 'Failed Save Bom Detail !']);
+                            }
+                        }
+                    }
+
+                    $resourceProfile = $wbs->resources;
+                    if(count($resourceProfile)>0){
+                        foreach($resourceProfile as $resource){
+                            $resourceInput = new ResourceTrx;
+                            $resourceInput->resource_id = $resource->resource_id;
+                            $resourceInput->resource_detail_id = $resource->resource_detail_id;
+                            $resourceInput->category_id = $resource->category_id;
+                            $resourceInput->project_id = $data['project_id'];
+                            $resourceInput->wbs_id = $wbsInput->id;
+                            $resourceInput->quantity = $resource->quantity;
+                            $resourceInput->save();
+                        }
+                    }
                 }
             } 
         }

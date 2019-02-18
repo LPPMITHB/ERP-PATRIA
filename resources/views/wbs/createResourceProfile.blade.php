@@ -21,136 +21,154 @@
                 @verbatim
                 <div id="resource">
                     <div class="box-header p-b-0">                          
-                            <div class="col-xs-12 col-md-4">
-                                <div class="col-sm-12 no-padding"><b>WBS Profile Information</b></div>
-                            
-                                <div class="col-xs-4 no-padding">Name</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
-        
-                                <div class="col-xs-4 no-padding">Description</div>
-                                <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
-                                <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
-        
-                                <div class="col-xs-4 no-padding">Deliverable</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
-        
-                            </div>
-                        </div> <!-- /.box-header -->
-                        <div class="col-md-12 p-t-20">
-                            <table id="assign-rsc" class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 5%">No</th>
-                                        <th style="width: 15%">Category</th>
-                                        <th style="width: 25%">Resource</th>
-                                        <th style="width: 25%">Resource Detail</th>
-                                        <th style="width: 10%">Quantity</th>
-                                        <th style="width: 12%"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(data,index) in resourceProfile">
-                                        <td>{{ index + 1 }}</td>
-                                        <td v-if="data.category_id == 0">Sub Con</td>
-                                        <td v-else-if="data.category_id == 1">Others</td>
-                                        <td v-else-if="data.category_id == 2">External Equipment</td>
-                                        <td v-else-if="data.category_id == 3">Internal Equipment</td>
-                                        <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                        <td v-if="data.resource_detail != null">{{ data.resource_detail.code }}</td>
-                                        <td v-else>-</td>
-                                        <td>{{ data.quantity }}</td>
-                                        <td class="p-l-3 textCenter">
-                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                                EDIT
-                                            </a>
-                                            <a href="#" @click="removeRow(data.id)" class="btn btn-danger btn-xs">
-                                                <div class="btn-group">DELETE</div>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <td class="p-l-10">{{newIndex}}</td>
-                                    <td class="p-l-0 textLeft">
-                                        <selectize v-model="dataInput.category_id" :settings="categorySettings">
-                                            <option v-for="(category,index) in resource_categories" :value="category.id">{{ category.name }}</option>
-                                        </selectize>
-                                    </td>
-
-                                    <td class="no-padding" v-show="dataInput.category_id == ''">
-                                        <selectize id="material" v-model="dataInput.null" :settings="nullSettings" disabled>
-                                            <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                        </selectize>
-                                    </td>
-                                    <td class="p-l-0 textLeft" v-show="dataInput.category_id != ''">
-                                        <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
-                                            <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                        </selectize>
-                                    </td>
-
-                                    <td class="no-padding" v-show="dataInput.category_id == 3 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
-                                        <selectize id="material" v-model="dataInput.null" :settings="nullResourceSettings" disabled>
-                                            <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                        </selectize>
-                                    </td>
-                                    <td class="no-padding" v-show="dataInput.category_id != 3 && dataInput.category_id != ''">
-                                        <selectize id="material" v-model="dataInput.null" :settings="otherSettings" disabled>
-                                            <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                        </selectize>
-                                    </td>
-                                    <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length < 1">
-                                        <selectize v-model="dataInput.null" :settings="nullRdSettings" disabled>
-                                            <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
-                                        </selectize>
-                                    </td>
-                                    <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
-                                        <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
-                                            <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
-                                        </selectize>
-                                    </td>
-
-                                    <td class="p-l-0 textLeft">
-                                        <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled='resourceDetail'>
-                                    </td>
-                                    <td class="p-l-0 textCenter">
-                                        <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
-                                    </td>
-                                </tfoot>
-                            </table>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="col-sm-12 no-padding"><b>WBS Profile Information</b></div>
+                        
+                            <div class="col-xs-4 no-padding">Name</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Description</div>
+                            <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
+                            <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
+    
+                            <div class="col-xs-4 no-padding">Deliverable</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
+    
                         </div>
+                    </div> <!-- /.box-header -->
+                    <div class="col-md-12 p-t-5">
+                        <table id="assign-rsc" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">No</th>
+                                    <th style="width: 15%">Category</th>
+                                    <th style="width: 25%">Resource</th>
+                                    <th style="width: 25%">Resource Detail</th>
+                                    <th style="width: 10%">Quantity</th>
+                                    <th style="width: 12%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(data,index) in resourceProfile">
+                                    <td>{{ index + 1 }}</td>
+                                    <td v-if="data.category_id == 0">Sub Con</td>
+                                    <td v-else-if="data.category_id == 1">Others</td>
+                                    <td v-else-if="data.category_id == 2">External Equipment</td>
+                                    <td v-else-if="data.category_id == 3">Internal Equipment</td>
+                                    <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                    <td v-if="data.resource_detail != null">{{ data.resource_detail.code }}</td>
+                                    <td v-else>-</td>
+                                    <td>{{ data.quantity }}</td>
+                                    <td class="p-l-3 textCenter">
+                                        <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
+                                            EDIT
+                                        </a>
+                                        <a href="#" @click="removeRow(data.id)" class="btn btn-danger btn-xs">
+                                            <div class="btn-group">DELETE</div>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <td class="p-l-10">{{newIndex}}</td>
+                                <td class="p-l-0 textLeft">
+                                    <selectize v-model="dataInput.category_id" :settings="categorySettings">
+                                        <option v-for="(category,index) in resource_categories" :value="category.id">{{ category.name }}</option>
+                                    </selectize>
+                                </td>
 
-                        <div class="modal fade" id="edit_item">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                        <h4 class="modal-title">Edit Assign Resource</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <label class="control-label">Resource</label>
-                                                <selectize v-model="editInput.resource_id" :settings="resourceSettings">
-                                                    <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <label class="control-label">Resource Detail</label>
-                                                <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
-                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <label class="control-label">Quantity</label>
-                                                <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
-                                            </div>
+                                <td class="no-padding" v-show="dataInput.category_id == ''">
+                                    <selectize id="material" v-model="dataInput.null" :settings="nullSettings" disabled>
+                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                    </selectize>
+                                </td>
+                                <td class="p-l-0 textLeft" v-show="dataInput.category_id != ''">
+                                    <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
+                                        <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                    </selectize>
+                                </td>
+
+                                <td class="no-padding" v-show="dataInput.category_id == 3 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
+                                    <selectize id="material" v-model="dataInput.null" :settings="nullResourceSettings" disabled>
+                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                    </selectize>
+                                </td>
+                                <td class="no-padding" v-show="dataInput.category_id != 3 && dataInput.category_id != ''">
+                                    <selectize id="material" v-model="dataInput.null" :settings="otherSettings" disabled>
+                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                    </selectize>
+                                </td>
+                                <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length < 1">
+                                    <selectize v-model="dataInput.null" :settings="nullRdSettings" disabled>
+                                        <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                    </selectize>
+                                </td>
+                                <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
+                                    <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
+                                        <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                    </selectize>
+                                </td>
+
+                                <td class="p-l-0 textLeft">
+                                    <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled='resourceDetail'>
+                                </td>
+                                <td class="p-l-0 textCenter">
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                </td>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="modal fade" id="edit_item">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Edit Resource Profile</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label class="control-label">Category</label>
+                                            <selectize v-model="editInput.category_id" :settings="categorySettings" disabled>
+                                                <option v-for="(category,index) in resource_categories" :value="category.id">{{ category.name }}</option>
+                                            </selectize>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <label class="control-label">Resource</label>
+                                            <selectize v-model="editInput.resource_id" :settings="resourceSettings">
+                                                <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                            </selectize>
+                                        </div>
+
+                                        <div class="col-sm-12" v-show="editInput.category_id == 3 && resource_detail_modal.length > 0">
+                                            <label class="control-label">Resource Detail</label>
+                                            <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
+                                                <option v-for="(rd, index) in selectedRDModal" :value="rd.id">{{ rd.code }}</option>
+                                            </selectize>
+                                        </div>
+                                        <div class="col-sm-12" v-show="editInput.category_id == 3 && resource_detail_modal.length < 1">
+                                            <label class="control-label">Resource Detail</label>
+                                            <selectize v-model="editInput.null" :settings="nullRdSettings" disabled>
+                                                <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                            </selectize>
+                                        </div>
+                                        <div class="col-sm-12" v-show="editInput.category_id != 3">
+                                            <label class="control-label">Resource Detail</label>
+                                            <selectize id="material" v-model="editInput.null" :settings="otherSettings" disabled>
+                                                <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                            </selectize>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <label class="control-label">Quantity</label>
+                                            <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
-                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
                                 </div>
                             </div>
                         </div>
@@ -193,9 +211,14 @@
             null : ""
         },
         editInput : {
+            wbs_id : @json($wbs->id),
+            category_id : "",
             resource_id :"",
-            wbs_id : "",
+            resource_detail_id : "",
+            old_resource_detail_id : "",
             quantity : "",
+            null : "",
+            id : ""
         },
         resourceSettings: {
             placeholder: 'Please Select Resource'
@@ -218,7 +241,10 @@
         otherSettings: {
             placeholder: '-'
         },
-        resource_detail_id : []
+        resource_detail_id : [],
+        resource_detail_id_modal : [],
+        resource_detail_modal : [],
+        selectedRDModal : [],
     }
 
     Vue.directive('tooltip', function(el, binding){
@@ -252,9 +278,9 @@
             updateOk: function(){
                 let isOk = false;
 
-                // if(this.editInput.resource_id == "" || this.editInput.wbs_id == "" || this.editInput.quantity == ""){
-                //     isOk = true;
-                // }
+                if(this.editInput.resource_id == "" || this.editInput.quantity == "" || this.editInput.category_id == ""){
+                    isOk = true;
+                }
                 return isOk;
             }
         },
@@ -271,6 +297,29 @@
                         position: 'topRight',
                         displayMode: 'replace'
                     });
+                    $('div.overlay').hide();
+                })
+            },
+            getNewModalRds(jsonRdId,newValue){
+                window.axios.get('/api/getRdProfiles/'+jsonRdId).then(({ data }) => {
+                    this.resource_detail_modal = data;
+
+                    this.selectedRDModal = [];
+                    this.resource_detail_modal.forEach(data => {
+                        if(data.resource_id == newValue){
+                            this.selectedRDModal.push(data);
+                        }
+                    })
+
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
                     $('div.overlay').hide();
                 })
             },
@@ -359,38 +408,31 @@
                 }
             },
             openEditModal(data,index){
-                this.editInput.id = data.id
+                $('div.overlay').show();
+                this.editInput.category_id = data.category_id;
                 this.editInput.resource_id = data.resource_id;
-                this.editInput.wbs_id = data.wbs_id;
+                this.editInput.resource_detail_id = data.resource_detail_id;
+                this.editInput.old_resource_detail_id = data.resource_detail_id;
                 this.editInput.quantity = data.quantity;
+                this.editInput.id = data.id;
             },
             update(){
                 $('div.overlay').show();   
-                if(this.route == "/resource"){
-                    var url = "/resource/updateAssignResource/"+this.editInput.id;
-                }else if(this.route == "/resource_repair"){
-                    var url = "/resource_repair/updateAssignResource/"+this.editInput.id;
+                if(this.route == "/wbs"){
+                    var url = "/wbs/updateResourceProfile";
+                }else if(this.route == "/wbs_repair"){
+                    var url = "/wbs_repair/updateResourceProfile";
                 }         
                 let editInput = JSON.stringify(this.editInput);
 
                 window.axios.put(url,editInput).then((response) => {
-                    if(response.data.error != undefined){
-                        iziToast.warning({
-                            displayMode: 'replace',
-                            title: response.data.error,
-                            position: 'topRight',
-                        });
-                        $('div.overlay').hide();            
-                    }else{
-                        iziToast.success({
-                            displayMode: 'replace',
-                            title: response.data.response,
-                            position: 'topRight',
-                        });
-                        $('div.overlay').hide();            
-                    }
-                    
-                    this.getResource();   
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: 'Success update resource',
+                        position: 'topRight',
+                    });
+                    $('div.overlay').hide();            
+                    this.getResourceProfile(this.wbs.id);
                 })
                 .catch((error) => {
                     $('div.overlay').hide();            
@@ -487,7 +529,27 @@
                 }else{
                     this.dataInput.quantity = '';
                 }
-            }
+            },
+            'editInput.resource_id' : function(newValue){
+                if(newValue == ""){
+                    this.editInput.resource_detail_id = "";
+                }else{
+                    var resource_detail_id = JSON.stringify(this.resource_detail_id);
+                    resource_detail_id = JSON.parse(resource_detail_id);
+
+                    this.resource_detail_id_modal = resource_detail_id;
+                    if(this.editInput.resource_detail_id != null || this.editInput.resource_detail_id != ''){
+                        this.resource_detail_id_modal.forEach(id => {
+                            if(id == this.editInput.resource_detail_id){
+                                var index = this.resource_detail_id_modal.indexOf(id);
+                                this.resource_detail_id_modal.splice(index, 1);
+                            }
+                        });
+                    }
+                    var jsonRdId = JSON.stringify(this.resource_detail_id_modal);
+                    this.getNewModalRds(jsonRdId,newValue);
+                }
+            },
         },
         created: function() {
             this.getResourceProfile(this.wbs.id);

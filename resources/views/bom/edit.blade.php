@@ -70,7 +70,8 @@
                                 <div class="col-md-7 col-xs-8 no-padding"><b>: {{bom.code}}</b></div>
                                 
                                 <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                                <div class="col-md-7 col-xs-8 no-padding"><a :href="showRapRoute(rap.id)" class="text-primary"><b>: {{rap.number}}</b></a></div>
+                                <div v-if="rap != null" class="col-md-7 col-xs-8 no-padding"><a :href="showRapRoute(rap.id)" class="text-primary"><b>: {{rap.number}}</b></a></div>
+                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
 
                                 <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
                                 <div v-if="pr == null" class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>

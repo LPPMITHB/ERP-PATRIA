@@ -41,7 +41,7 @@ export default {
   },
   mounted () {
     if (this.settings.create) {
-      const create = this.settings.create
+      let create = this.settings.create
       this.settings.create = input => {
         let option = null
         if (create === true) {
@@ -67,6 +67,7 @@ export default {
       ...this.settings
     })
     this.makeOptions(true)
+
     this.toggleDisabled(this.disabled)
   },
   destroyed () {
