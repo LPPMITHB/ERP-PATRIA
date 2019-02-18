@@ -48,10 +48,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-xs-5">
-                            WBS Code
+                            WBS Number
                         </div>
                         <div class="col-md-8 col-xs-7">
-                            : <b> {{ $modelPrO->wbs->code }} </b>
+                            : <b> {{ $modelPrO->wbs->number }} </b>
                         </div>
                     </div>
                 </div>

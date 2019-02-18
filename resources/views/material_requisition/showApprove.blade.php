@@ -122,7 +122,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $MRD->material->name }}</td>
                                 <td>{{ number_format($MRD->quantity) }}</td>
-                                <td>{{ $MRD->wbs != null ? $MRD->wbs->name : "-" }}</td>
+                                <td>{{ $MRD->wbs != null ? $MRD->wbs->number : "-" }}</td>
                             </tr>
                         @endforeach
                     </tbody>

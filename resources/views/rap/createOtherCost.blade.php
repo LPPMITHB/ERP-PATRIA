@@ -80,7 +80,7 @@
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
-                                <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.name }}</td>
+                                <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.number }}</td>
                                 <td v-else class="tdEllipsis">-</td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">

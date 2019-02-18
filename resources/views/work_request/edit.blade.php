@@ -98,7 +98,7 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_name != ''">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
@@ -116,7 +116,7 @@
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
@@ -167,7 +167,7 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterialFG">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_name != ''">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
@@ -184,7 +184,7 @@
                                             <td class="p-l-10">{{newIndexFG}}</td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length > 0">
                                                 <selectize v-model="dataInputFG.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInputFG.wbs_id == ''">
@@ -383,7 +383,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
+            wbs_number : "",
             available : "",
             description : "",
             required_date : "",
@@ -397,7 +397,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
+            wbs_number : "",
             available : "",
             description : "",
             required_date : "",
@@ -409,7 +409,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
+            wbs_number : "",
             description : "",
             required_date : "",
             wrd_id : null,
@@ -422,7 +422,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
+            wbs_number : "",
             description : "",
             required_date : "",
         },
@@ -602,7 +602,7 @@
 
                     if(this.editInput.wbs_id != ''){
                         window.axios.get('/api/getWbsWr/'+this.editInput.wbs_id).then(({ data }) => {
-                            material.wbs_name = data.name;
+                            material.wbs_number = data.name;
                             material.quantityInt = this.editInput.quantity;
                             material.quantity = this.editInput.quantity;
                             material.material_id = new_material_id;
@@ -645,7 +645,7 @@
 
                     if(this.editInputFG.wbs_id != ''){
                         window.axios.get('/api/getWbsWr/'+this.editInputFG.wbs_id).then(({ data }) => {
-                            material.wbs_name = data.name;
+                            material.wbs_number = data.name;
                             material.quantityInt = this.editInputFG.quantity;
                             material.quantity = this.editInputFG.quantity;
                             material.material_id = new_material_id;
@@ -687,14 +687,14 @@
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_name = data.wbs_name;
+                this.editInput.wbs_number = data.wbs_number;
                 this.editInput.available = data.available;
                 this.editInput.description = data.description;
                 this.editInput.required_date = data.required_date;
                 this.editInput.index = index;
 
                 document.getElementById('materiall').value = data.material_code+" - "+data.material_name;
-                document.getElementById('wbs').value = data.wbs_name;
+                document.getElementById('wbs').value = data.wbs_number;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -714,13 +714,13 @@
                 this.editInputFG.quantity = data.quantity;
                 this.editInputFG.quantityInt = data.quantityInt;
                 this.editInputFG.wbs_id = data.wbs_id;
-                this.editInputFG.wbs_name = data.wbs_name;
+                this.editInputFG.wbs_number = data.wbs_number;
                 this.editInputFG.description = data.description;
                 this.editInputFG.required_date = data.required_date;
                 this.editInputFG.index = index;
 
                 document.getElementById('materiallFG').value = data.material_code+" - "+data.material_name;
-                document.getElementById('wbsFG').value = data.wbs_name;
+                document.getElementById('wbsFG').value = data.wbs_number;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -748,7 +748,7 @@
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
-                    this.dataInput.wbs_name = "";
+                    this.dataInput.wbs_number = "";
                     this.dataInput.description = "";
                     this.dataInput.available = "";
                     this.dataInput.required_date = "";
@@ -782,7 +782,7 @@
                     this.dataInputFG.quantity = "";
                     this.dataInputFG.material_id = "";
                     this.dataInputFG.wbs_id = "";
-                    this.dataInputFG.wbs_name = "";
+                    this.dataInputFG.wbs_number = "";
                     this.dataInputFG.description = "";
                     this.dataInputFG.required_date = "";
                     
@@ -857,7 +857,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsWREdit/'+newValue+'/'+this.wr_id).then(({ data }) => {
-                        this.dataInput.wbs_name = data.wbs.name;
+                        this.dataInput.wbs_number = data.wbs.number;
                         this.materials = data.materials;
                         $('div.overlay').hide();
                     })
@@ -878,7 +878,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsWREdit/'+newValue+'/'+this.wr_id).then(({ data }) => {
-                        this.dataInputFG.wbs_name = data.wbs.name;
+                        this.dataInputFG.wbs_number = data.wbs.number;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -919,7 +919,7 @@
                 wrd.material_code = wrd.material.code;
                 wrd.quantityInt = wrd.quantity;
                 wrd.wrd_id = wrd.id;
-                wrd.wbs_name = wrd.wbs.name;
+                wrd.wbs_number = wrd.wbs.number;
 
             });
 
@@ -930,7 +930,7 @@
                 wrd.material_code = wrd.material.code;
                 wrd.quantityInt = wrd.quantity;
                 wrd.wrd_id = wrd.id;
-                wrd.wbs_name = wrd.wbs.name;
+                wrd.wbs_number = wrd.wbs.number;
 
             });
 

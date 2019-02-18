@@ -179,6 +179,8 @@
         mounted(){
             $('.datepicker').datepicker({
                 autoclose : true,
+                format : "dd-mm-yyyy"
+
             });
             $("#ship_date").datepicker().on(
                 "changeDate", () => {

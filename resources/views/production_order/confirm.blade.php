@@ -97,7 +97,7 @@
                             <tr>
                                 <td>Name</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$modelPrO->wbs->name}}</b></td>
+                                <td>&ensp;<b>{{$modelPrO->wbs->number}}</b></td>
                             </tr>
                             <tr>
                                 <td>Description</td>
@@ -210,7 +210,7 @@
                                                     <th style="width: 15%">Code</th>
                                                     <th style="width: 29%">Name</th>
                                                     <th style="width: 29%">Description</th>
-                                                    <th style="width: 15%">WBS Code</th>
+                                                    <th style="width: 15%">WBS Number</th>
                                                     <th style="width: 12%">Status</th>
                                                 </tr>
                                             </thead>
@@ -220,7 +220,7 @@
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.code)">{{ data.wbs.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
                                                     <td class="textCenter">
                                                         <template v-if="data.status == 0">
                                                             <i class='fa fa-check'></i>

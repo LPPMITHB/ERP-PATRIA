@@ -101,7 +101,7 @@
                                             <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td v-else class="tdEllipsis">{{ material.resource_code }} - {{ material.resource_name }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_name != null">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_number != null">{{ material.wbs_number }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.alocation }}</td>
                                             <td v-else class="tdEllipsis">-</td>
@@ -135,12 +135,12 @@
                                             </td>
                                             <td class="no-padding  textLeft" v-show="selectedProject != null">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="no-padding textLeft" v-show="selectedProject == null">
                                                 <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="no-padding textLeft">
@@ -185,13 +185,13 @@
                                             <div class="col-sm-12" v-show="selectedProject != null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12" v-show="selectedProject == null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12"> 
@@ -236,13 +236,13 @@
                                             <div class="col-sm-12" v-show="selectedProject != null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12" v-show="selectedProject == null"> 
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </div>
                                         </div>
@@ -337,7 +337,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
+            wbs_number : "",
             alocation : "Stock",
             required_date : ""
         },
@@ -349,7 +349,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : "",
+            wbs_number : "",
             alocation : "",
             required_date : ""
         },
@@ -482,7 +482,7 @@
                 $('div.overlay').show();
                 var material = this.dataMaterial[this.editInput.index];
                 if(this.editInput.wbs_id != null){
-                    material.wbs_name = this.editInput.wbs_name;
+                    material.wbs_number = this.editInput.wbs_number;
                     material.quantityInt = this.editInput.quantityInt;
                     material.quantity = this.editInput.quantity;
                     material.wbs_id = this.editInput.wbs_id;
@@ -506,7 +506,7 @@
                     this.editInput.quantity = data.quantity;
                     this.editInput.quantityInt = data.quantityInt;
                     this.editInput.wbs_id = data.wbs_id;
-                    this.editInput.wbs_name = data.wbs_name;
+                    this.editInput.wbs_number = data.wbs_number;
                     this.editInput.alocation = data.alocation;
                     this.editInput.index = index;
                     this.editInput.required_date = data.required_date;
@@ -527,7 +527,7 @@
                     this.editInput.quantity = data.quantity;
                     this.editInput.quantityInt = data.quantityInt;
                     this.editInput.wbs_id = data.wbs_id;
-                    this.editInput.wbs_name = data.wbs_name;
+                    this.editInput.wbs_number = data.wbs_number;
                     this.editInput.index = index;
                     console.log(data.resource_code)
                     document.getElementById('resource').value = data.resource_code+" - "+data.resource_name;
@@ -552,7 +552,7 @@
                         this.dataInput.quantity = "";
                         this.dataInput.material_id = "";
                         this.dataInput.wbs_id = "";
-                        this.dataInput.wbs_name = "";
+                        this.dataInput.wbs_number = "";
                         this.dataInput.alocation = "Stock";
                         this.dataInput.required_date = "";
 
@@ -583,7 +583,7 @@
                         this.dataInput.resource_code = "";
                         this.dataInput.resource_id = "";
                         this.dataInput.wbs_id = "";
-                        this.dataInput.wbs_name = "";
+                        this.dataInput.wbs_number = "";
                         this.dataInput.quantity = "";
                         this.dataInput.required_date = "";
 
@@ -624,7 +624,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
-                        this.dataInput.wbs_name = data.name;
+                        this.dataInput.wbs_number = data.name;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -640,7 +640,7 @@
             'editInput.wbs_id': function(newValue){
                 if(newValue != '' && newValue != null){
                     window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
-                        this.editInput.wbs_name = data.name;
+                        this.editInput.wbs_number = data.name;
                         this.editInput.wbs_id = data.id;
                     })
                     .catch((error) => {
@@ -682,7 +682,7 @@
                     if(prd.wbs == null){
 
                     }else{
-                        prd.wbs_name = prd.wbs.name;
+                        prd.wbs_number = prd.wbs.number;
                     }
                 }else{
 

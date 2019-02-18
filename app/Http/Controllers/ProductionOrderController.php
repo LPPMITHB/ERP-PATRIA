@@ -120,7 +120,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
                         ]);
@@ -133,7 +133,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
                         ]);
@@ -143,7 +143,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
                         ]);
@@ -156,7 +156,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->name. " | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
                         ]);  
@@ -169,7 +169,7 @@ class ProductionOrderController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
-                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $routes.$wbs->id],
                     ]);
@@ -182,7 +182,7 @@ class ProductionOrderController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
-                        "text" => $wbs->name. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
                     ]);

@@ -116,8 +116,16 @@ class WorkOrderController extends Controller
             $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->delivery_date);
             $WO->delivery_date = $delivery_date->format('Y-m-d');
             $WO->payment_terms = $datas->payment_terms;
-            $WO->estimated_freight = $datas->estimated_freight;
-            $WO->tax = $datas->tax;
+            if($datas->estimated_freight == ""){
+                $WO->estimated_freight = 0;
+            }elseif($datas->estimated_freight != ""){
+                $WO->estimated_freight = $datas->estimated_freight;
+            }
+            if($datas->tax == ""){
+                $WO->tax = 0;
+            }elseif($datas->tax != ""){
+                $WO->tax = $datas->tax;
+            }
             $WO->project_id = $datas->project_id;
             $WO->description = $datas->description;
             $WO->status = 1;

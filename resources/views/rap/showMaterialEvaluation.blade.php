@@ -61,7 +61,7 @@
                     <div class="col-xs-8 no-padding"><b>: {{$wbs->code}}</b></div>
                     
                     <div class="col-xs-4 no-padding">Name</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                    <div class="col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
 
                     <div class="col-xs-4 no-padding">Description</div>
                     <div class="col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
