@@ -21,7 +21,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 1,
                 'code' => 'WBS181010001',
-                'name' => 'Dummy - Hull',
+                'number' => 'H01',
                 'description' => 'Dummy - Hull',
                 'deliverables' => 'Dummy - Hull',
                 'project_id' => 1,
@@ -42,7 +42,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 2,
                 'code' => 'WBS181010002',
-                'name' => 'Dummy - Superstructure',
+                'number' => 'H02',
                 'description' => 'Dummy - Superstructure',
                 'deliverables' => 'Dummy - Superstructure',
                 'project_id' => 1,
@@ -63,7 +63,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 3,
                 'code' => 'WBS181010003',
-                'name' => 'Dummy - Outfitting',
+                'number' => 'H03',
                 'description' => 'Dummy - Outfitting',
                 'deliverables' => 'Dummy - Outfitting',
                 'project_id' => 1,
@@ -84,7 +84,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 4,
                 'code' => 'WBS181010004',
-                'name' => 'Dummy - Mengelas 1',
+                'number' => 'H04',
                 'description' => 'Dummy - Mengelas 1',
                 'deliverables' => 'Dummy - Mengelas 1',
                 'project_id' => 1,
@@ -105,7 +105,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 5,
                 'code' => 'WBS181010005',
-                'name' => 'Dummy - Bending 1',
+                'number' => 'H05',
                 'description' => 'Dummy - Bending 1',
                 'deliverables' => 'Dummy - Bending 1',
                 'project_id' => 1,
@@ -126,7 +126,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 6,
                 'code' => 'WBS181010006',
-                'name' => 'Dummy - Mengelas 2',
+                'number' => 'H06',
                 'description' => 'Dummy - Mengelas 2',
                 'deliverables' => 'Dummy - Mengelas 2',
                 'project_id' => 1,
@@ -147,7 +147,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 7,
                 'code' => 'WBS181010007',
-                'name' => 'Dummy - Bending 2',
+                'number' => 'H07',
                 'description' => 'Dummy - Bending 2',
                 'deliverables' => 'Dummy - Bending 2',
                 'project_id' => 1,
@@ -168,7 +168,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 8,
                 'code' => 'WBS181010008',
-                'name' => 'Dummy - Coating',
+                'number' => 'H08',
                 'description' => 'Dummy - Coating',
                 'deliverables' => 'Dummy - Coating',
                 'project_id' => 1,
@@ -189,7 +189,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 9,
                 'code' => 'WBS181010009',
-                'name' => 'Dummy - Painting',
+                'number' => 'H09',
                 'description' => 'Dummy - Painting',
                 'deliverables' => 'Dummy - Painting',
                 'project_id' => 1,
@@ -210,7 +210,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 10,
                 'code' => 'WBS182020001',
-                'name' => 'Repair Dummy - WBS 1',
+                'number' => 'H10',
                 'description' => 'Repair Dummy - WBS 1',
                 'deliverables' => 'Repair Dummy - WBS 1',
                 'project_id' => 2,
@@ -231,7 +231,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 11,
                 'code' => 'WBS182020002',
-                'name' => 'Repair Dummy - WBS 2',
+                'number' => 'H11',
                 'description' => 'Repair Dummy - WBS 2',
                 'deliverables' => 'Repair Dummy - WBS 2',
                 'project_id' => 2,
@@ -252,7 +252,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 12,
                 'code' => 'WBS182020003',
-                'name' => 'Repair Dummy - WBS 1.1',
+                'number' => 'H12',
                 'description' => 'Repair Dummy - WBS 1.1',
                 'deliverables' => 'Repair Dummy - WBS 1.1',
                 'project_id' => 2,
@@ -273,7 +273,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 13,
                 'code' => 'WBS182020004',
-                'name' => 'Repair Dummy - WBS 1.2',
+                'number' => 'H13',
                 'description' => 'Repair Dummy - WBS 1.2',
                 'deliverables' => 'Repair Dummy - WBS 1.2',
                 'project_id' => 2,
@@ -294,7 +294,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 14,
                 'code' => 'WBS182020005',
-                'name' => 'Repair Dummy - WBS 2.1',
+                'number' => 'H14',
                 'description' => 'Repair Dummy - WBS 2.1',
                 'deliverables' => 'Repair Dummy - WBS 2.1',
                 'project_id' => 2,
@@ -315,7 +315,7 @@ class ProWbsTableSeeder extends Seeder
             array (
                 'id' => 15,
                 'code' => 'WBS182020006',
-                'name' => 'Repair Dummy - WBS 2.2',
+                'number' => 'H15',
                 'description' => 'Repair Dummy - WBS 2.2',
                 'deliverables' => 'Repair Dummy - WBS 2.2',
                 'project_id' => 2,
