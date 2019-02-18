@@ -30,7 +30,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 10%">Code</th>
+                                <th style="width: 10%">Item Number</th>
                                 <th style="width: 30%">Name</th>
                                 <th style="width: 35%">Description</th>
                                 <th style="width: 10%">Type</th>

@@ -434,7 +434,6 @@ class ProjectController extends Controller
         if($menu == "building"){
             $this->validate($request, [
                 'number' => 'required',
-                'name' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
                 'project_type' => 'required',
@@ -448,7 +447,6 @@ class ProjectController extends Controller
         }elseif($menu == "repair"){
             $this->validate($request, [
                 'number' => 'required',
-                'name' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
                 'project_type' => 'required',
@@ -764,7 +762,6 @@ class ProjectController extends Controller
             $this->validate($request, [
                 'number' => 'required',
                 'customer' => 'required',
-                'name' => 'required',
                 'ship' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
@@ -778,7 +775,6 @@ class ProjectController extends Controller
             $this->validate($request, [
                 'number' => 'required',
                 'customer' => 'required',
-                'name' => 'required',
                 'ship' => 'required',
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
@@ -1591,11 +1587,13 @@ class ProjectController extends Controller
         foreach($sorted as $date => $group){
             foreach($group as $wbs){
                 if($wbs->bom){
-                    if($wbs->bom->rap->total_price != 0.0){
-                        $tempPlanned->push([
-                            "t" => $date, 
-                            "y" => ($wbs->bom->rap->total_price/1000000)."",
-                        ]);
+                    if($wbs->bom->rap){
+                        if($wbs->bom->rap->total_price != 0.0){
+                            $tempPlanned->push([
+                                "t" => $date, 
+                                "y" => ($wbs->bom->rap->total_price/1000000)."",
+                            ]);
+                        }
                     }
                 }
             }

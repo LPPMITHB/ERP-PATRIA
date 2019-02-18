@@ -90,7 +90,7 @@
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Ship Name</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="name" name="name"  required v-model="project.name">
+                                    <input type="text" class="form-control" id="name" name="name" v-model="project.name">
                                 </div>
                             </div>
 
@@ -206,6 +206,20 @@
                                 <label for="planned_duration" class="col-sm-2 control-label">Duration (Days)</label>
                                 <div class="col-sm-5">
                                     <input required type="number" class="form-control" id="planned_duration" name="planned_duration" placeholder="Duration" >                                        
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="upload" class="col-sm-2 control-label">Upload Drawing</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <label class="input-group-btn">
+                                            <span class="btn btn-primary">
+                                                Browse&hellip; <input type="file" style="display: none;" multiple id="drawing" name="drawing">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control" readonly>
+                                    </div>
                                 </div>
                             </div>
 
