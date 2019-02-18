@@ -141,8 +141,8 @@
                                 <th style="width: 10%">End Date</th>
                                 <th >Duration</th>
                                 <th >Weight</th>
-                                <th style="width: 17%">Predecessor</th> 
-                                <th style="width: 11%"></th>
+                                <th style="width: 19%">Predecessor</th> 
+                                <th style="width: 13%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -201,8 +201,8 @@
                                 <td class="p-l-0">
                                     <input v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
                                 </td>
-                                <td class="p-l-0 textCenter">
-                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
+                                <td class="p-l-0 textCenter p-r-5 p-l-5">
+                                    <button class="btn btn-primary btn-xs col-xs-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
                                 </td>
                                 <td class="textCenter">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">CREATE</button>
@@ -472,6 +472,7 @@ var vm = new Vue({
     mounted() {
         $('.datepicker').datepicker({
             autoclose : true,
+            format : "dd-mm-yyyy"
         });
         $("#planned_start_date").datepicker().on(
             "changeDate", () => {
@@ -574,7 +575,7 @@ var vm = new Vue({
             if(this.newActivity.planned_duration != "" && this.newActivity.planned_start_date != ""){
                 var planned_duration = parseInt(this.newActivity.planned_duration);
                 var planned_start_date = this.newActivity.planned_start_date;
-                var planned_end_date = new Date(planned_start_date);
+                var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
                 
                 planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                 $('#planned_end_date').datepicker('setDate', planned_end_date);
@@ -586,7 +587,7 @@ var vm = new Vue({
             if(this.editActivity.planned_duration != "" && this.editActivity.planned_start_date != ""){
                 var planned_duration = parseInt(this.editActivity.planned_duration);
                 var planned_start_date = this.editActivity.planned_start_date;
-                var planned_end_date = new Date(planned_start_date);
+                var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
                 
                 planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                 $('#edit_planned_end_date').datepicker('setDate', planned_end_date);
@@ -602,35 +603,35 @@ var vm = new Vue({
         getActivities(){
             window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
                 this.totalWeight = data;
-            })
-            window.axios.get('/api/getActivities/'+this.newActivity.wbs_id).then(({ data }) => {
-                this.activities = data;
-                this.newIndex = Object.keys(this.activities).length+1;
-                this.activities.forEach(data => {
-                    if(data.planned_start_date != null){
-                        data.planned_start_date = data.planned_start_date.split("-").reverse().join("-");   
-                    }
+                window.axios.get('/api/getActivities/'+this.newActivity.wbs_id).then(({ data }) => {
+                    this.activities = data;
+                    this.newIndex = Object.keys(this.activities).length+1;
+                    this.activities.forEach(data => {
+                        if(data.planned_start_date != null){
+                            data.planned_start_date = data.planned_start_date.split("-").reverse().join("-");   
+                        }
 
-                    if(data.planned_end_date != null){
-                        data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");   
-                    }
-                });
-                this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
-                $('#activity-table').DataTable().destroy();
-                this.$nextTick(function() {
-                    $('#activity-table').DataTable({
-                        'paging'      : true,
-                        'lengthChange': false,
-                        'searching'   : false,
-                        'ordering'    : false,
-                        'info'        : true,
-                        'autoWidth'   : false,
-                        columnDefs : [
-                            { targets: 0, sortable: false},
-                        ]
+                        if(data.planned_end_date != null){
+                            data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");   
+                        }
                     });
-                })
-            });
+                    this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
+                    $('#activity-table').DataTable().destroy();
+                    this.$nextTick(function() {
+                        $('#activity-table').DataTable({
+                            'paging'      : true,
+                            'lengthChange': false,
+                            'searching'   : false,
+                            'ordering'    : false,
+                            'info'        : true,
+                            'autoWidth'   : false,
+                            columnDefs : [
+                                { targets: 0, sortable: false},
+                            ]
+                        });
+                    })
+                });
+            })
 
         },
         add(){            
@@ -896,8 +897,9 @@ var vm = new Vue({
 });
 
 function parseDate(str) {
-    var mdy = str.split('/');
-    return new Date(mdy[2], mdy[0]-1, mdy[1]);
+    var mdy = str.split('-');
+    var date = new Date(mdy[2], mdy[1]-1, mdy[0]);
+    return date;
 }
 
 function datediff(first, second) {

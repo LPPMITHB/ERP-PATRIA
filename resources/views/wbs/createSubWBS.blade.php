@@ -301,6 +301,7 @@ var vm = new Vue({
     mounted() {
         $('.datepicker').datepicker({
             autoclose : true,
+            format : "dd-mm-yyyy"
         });
         $("#planned_deadline").datepicker().on(
             "changeDate", () => {
@@ -369,7 +370,7 @@ var vm = new Vue({
             this.editWbs.weight = data.weight;
             if(data.planned_deadline != null){
                 this.editWbs.planned_deadline = data.planned_deadline;
-                $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
+                $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline.split("-").reverse().join("-")));
             }
             
         },
@@ -385,30 +386,30 @@ var vm = new Vue({
         getSubWBS(){
             window.axios.get('/api/getWeightWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
                 this.totalWeight = data;
-            });
-            window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
-                this.wbs = data;
-                this.newIndex = Object.keys(this.wbs).length+1;
-                this.wbs.forEach(data => {
-                    if(data.planned_deadline != null){
-                        data.planned_deadline = data.planned_deadline.split("-").reverse().join("-");   
-                    }
-                });
-                this.maxWeight = roundNumber((this.parentWbsWeight-this.totalWeight),2);
-                $('#wbs-table').DataTable().destroy();
-                this.$nextTick(function() {
-                    $('#wbs-table').DataTable({
-                        'paging'      : true,
-                        'lengthChange': false,
-                        'searching'   : false,
-                        'ordering'    : false,
-                        'info'        : true,
-                        'autoWidth'   : false,
-                        columnDefs : [
-                            { targets: 0, sortable: false},
-                        ]
+                window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
+                    this.wbs = data;
+                    this.newIndex = Object.keys(this.wbs).length+1;
+                    this.wbs.forEach(data => {
+                        if(data.planned_deadline != null){
+                            data.planned_deadline = data.planned_deadline.split("-").reverse().join("-");   
+                        }
                     });
-                })
+                    this.maxWeight = roundNumber((this.parentWbsWeight-this.totalWeight),2);
+                    $('#wbs-table').DataTable().destroy();
+                    this.$nextTick(function() {
+                        $('#wbs-table').DataTable({
+                            'paging'      : true,
+                            'lengthChange': false,
+                            'searching'   : false,
+                            'ordering'    : false,
+                            'info'        : true,
+                            'autoWidth'   : false,
+                            columnDefs : [
+                                { targets: 0, sortable: false},
+                            ]
+                        });
+                    })
+                });
             });
         },
         adoptWbs(){
