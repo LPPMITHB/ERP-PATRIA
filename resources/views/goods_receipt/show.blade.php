@@ -57,7 +57,7 @@
                                     <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->vendor->name : '-'}} </b></div>
 
                                     <div class="col-md-4 col-xs-4 no-padding">Ship Date</div>
-                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->ship_date) ? $modelGR->ship_date : '-'}} </b></div>
+                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->ship_date) ? date('d-m-Y', strtotime($modelGR->ship_date)) : '-'}} </b></div>
                                 </div>
                             </div>
                     </div>
@@ -77,7 +77,8 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="40%">Material Name</th>
+                                    <th width="20%">Material Code</th>
+                                    <th width="20%">Material Description</th>
                                     <th width="15%">Quantity</th>
                                     <th width="30%">Storage Location</th>
                                     <th width="10%">Received Date</th>
@@ -87,7 +88,8 @@
                                 @foreach ($modelGRD as $GRD)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $GRD->material->code }} - {{ $GRD->material->name }}</td>
+                                    <td>{{ $GRD->material->code }}</td>
+                                    <td>{{ $GRD->material->description }}</td>
                                     <td>{{ number_format($GRD->quantity) }}</td>
                                     <td>{{ isset($GRD->storageLocation->name) ? $GRD->storageLocation->name : '-' }} </td>
                                     <td>{{ isset($GRD->received_date) ? date('d-m-Y', strtotime($GRD->received_date)) : '-' }}</td>
