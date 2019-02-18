@@ -49,8 +49,8 @@
                     <div class="col-xs-12 col-lg-4 col-md-12">    
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
-                        <div class="col-md-3 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                        <div class="col-md-3 col-xs-4 no-padding">Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Description</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
@@ -89,7 +89,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 17%">Item Number</th>
+                                <th style="width: 17%">Number</th>
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
@@ -100,7 +100,7 @@
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td>{{ data.planned_deadline }}</td>
@@ -132,7 +132,7 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="textLeft p-l-0">
-                                    <textarea v-model="newSubWBS.name" class="form-control width100" rows="2" name="name" placeholder="Name"></textarea>
+                                    <textarea v-model="newSubWBS.number" class="form-control width100" rows="2" name="number" placeholder="Name"></textarea>
                                 </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newSubWBS.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
@@ -165,7 +165,7 @@
                                     <div class="row m-t-15">
                                         <div class="form-group col-sm-12">
                                             <label for="name" class="control-label">Name</label>
-                                            <input id="name" type="text" class="form-control" v-model="editWbs.name" placeholder="Insert Name here..." >
+                                            <input id="name" type="text" class="form-control" v-model="editWbs.number" placeholder="Insert Name here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
@@ -260,7 +260,7 @@ var data = {
     project_end_date : @json($project->planned_end_date),
     wbs_deadline : @json($wbs->planned_deadline),
     newSubWBS : {
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
@@ -270,7 +270,7 @@ var data = {
     },
     editWbs : {
         wbs_id: "",
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
@@ -317,7 +317,7 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newSubWBS.name == ""
+                if(this.newSubWBS.number == ""
                 || this.newSubWBS.deliverables == ""
                 || this.newSubWBS.weight == ""
                 || this.newSubWBS.planned_deadline == "")
@@ -328,7 +328,7 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editWbs.name == ""
+                if(this.editWbs.number == ""
                 || this.editWbs.deliverables == ""
                 || this.editWbs.weight == ""
                 || this.editWbs.planned_deadline == "")
@@ -364,7 +364,7 @@ var vm = new Vue({
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
             this.active_id = data.id;
-            this.editWbs.name = data.name;
+            this.editWbs.number = data.number;
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
             this.editWbs.weight = data.weight;
@@ -479,7 +479,7 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 this.getSubWBS();
-                this.newSubWBS.name = "";
+                this.newSubWBS.number = "";
                 this.newSubWBS.description = "";
                 this.newSubWBS.deliverables = "";
                 this.newSubWBS.planned_deadline = "";

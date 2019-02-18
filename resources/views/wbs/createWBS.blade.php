@@ -79,7 +79,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 2px">No</th>
-                                <th style="width: 17%">Item Number</th>
+                                <th style="width: 17%">Number</th>
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 40px">Deadline</th>
@@ -90,7 +90,7 @@
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.planned_deadline)">{{ data.planned_deadline }}</td>
@@ -122,7 +122,7 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
-                                    <input v-model="newWbs.name" type="text" class="form-control width100" id="name" name="name" placeholder="Name">
+                                    <input v-model="newWbs.number" type="text" class="form-control width100" id="number" name="number" placeholder="Number">
                                 </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newWbs.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
@@ -154,8 +154,8 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="form-group col-sm-12">
-                                            <label for="name" class="control-label">Name</label>
-                                            <input id="name" type="text" class="form-control" v-model="editWbs.name" placeholder="Insert Name here..." >
+                                            <label for="number" class="control-label">Number</label>
+                                            <input id="number" type="text" class="form-control" v-model="editWbs.number" placeholder="Insert Number here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
@@ -203,7 +203,7 @@
                                         <div class="form-group col-sm-12">
                                             <label for="">WBS Profiles</label>
                                             <selectize v-model="selected_wbs_profile" :settings="wbsProfilesSettings">
-                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.name }}</option>
+                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.number }}</option>
                                             </selectize>
                                         </div>
                                         <div class="form-group col-sm-12" v-show="selected_wbs_profile != ''">
@@ -248,7 +248,7 @@ var data = {
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
     newWbs : {
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
@@ -257,7 +257,7 @@ var data = {
     },
     editWbs : {
         wbs_id: "",
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
@@ -304,7 +304,7 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newWbs.name == ""
+                if(this.newWbs.number == ""
                 || this.newWbs.deliverables == ""
                 || this.newWbs.weight == ""
                 || this.newWbs.planned_deadline == "")
@@ -315,7 +315,7 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editWbs.name == ""
+                if(this.editWbs.number == ""
                 || this.editWbs.deliverables == ""
                 || this.editWbs.weight == ""
                 || this.editWbs.planned_deadline == "")
@@ -341,7 +341,7 @@ var vm = new Vue({
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
             this.active_id = data.id;
-            this.editWbs.name = data.name;
+            this.editWbs.number = data.number;
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
             this.editWbs.weight = data.weight;
@@ -452,7 +452,7 @@ var vm = new Vue({
                 }
                 
                 this.getWBS();
-                this.newWbs.name = "";
+                this.newWbs.number = "";
                 this.newWbs.description = "";
                 this.newWbs.deliverables = "";
                 this.newWbs.planned_deadline = "";                

@@ -95,7 +95,7 @@
                             <tr>
                                 <td style="width: 25%">Name</td>
                                 <td style="width: 3%">:</td>
-                                <td><b>{{$wbs->name}}</b></td>
+                                <td><b>{{$wbs->number}}</b></td>
                             </tr>
                             <tr>
                                 <td class="valignTop">Description</td>

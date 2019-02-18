@@ -507,7 +507,7 @@ class ActivityController extends Controller
         $allActivities = Collection::make();
         foreach ($project->wbss as $wbsData) {
             foreach($wbsData->activities as $activity){
-                $activity->push('wbs_name', $activity->wbs->name);
+                $activity->push('wbs_name', $activity->wbs->number);
                 $allActivities->push($activity);
             }
         }
@@ -521,7 +521,7 @@ class ActivityController extends Controller
         foreach ($project->wbss as $wbsData) {
             foreach($wbsData->activities as $activity){
                 if($activity->id != $activity_id){
-                    $activity->push('wbs_name', $activity->wbs->name);
+                    $activity->push('wbs_name', $activity->wbs->number);
                     $allActivities->push($activity);
                 }
             }
