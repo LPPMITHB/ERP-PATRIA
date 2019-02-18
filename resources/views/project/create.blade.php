@@ -209,6 +209,20 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label for="upload" class="col-sm-2 control-label">Upload Drawing</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <label class="input-group-btn">
+                                            <span class="btn btn-primary">
+                                                Browse&hellip; <input type="file" style="display: none;" multiple id="drawing" name="drawing">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="box-footer">
                                 <button v-if="projectUpdate!=''" type="submit" class="btn btn-primary pull-right">SAVE</button>
                                 <button v-else @click.prevent="submitForm()" type="button" class="btn btn-primary pull-right">CREATE</button>
