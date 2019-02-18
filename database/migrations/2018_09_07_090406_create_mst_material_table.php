@@ -16,8 +16,7 @@ class CreateMstMaterialTable extends Migration
         Schema::create('mst_material', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
-            $table->text('name');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->integer('cost_standard_price')->default(0);
             $table->integer('cost_standard_price_service')->default(0);
             $table->integer('latest_price')->default(0);

@@ -845,6 +845,7 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                 }
+                this.editActivity.weight = maxWeightEdit;                  
             });
         },
         'newActivity.weight': function(newValue){
@@ -855,6 +856,7 @@ var vm = new Vue({
                     title: 'Total weight cannot exceed '+this.wbsWeight+'%',
                     position: 'topRight',
                 });
+                this.newActivity.weight = this.maxWeight;
             }
         },
         'editActivity.predecessor': function(newValue){
