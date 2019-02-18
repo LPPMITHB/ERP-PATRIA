@@ -472,7 +472,7 @@ class WBSController extends Controller
         $wbss = WBS::where('project_id',$data->project_id)->get();
         foreach ($wbss as $wbs) {
             if($wbs->number == $data->number && $wbs_ref->number != $data->number ){
-                return response(["error"=>"WBS Name must be UNIQUE"],Response::HTTP_OK);
+                return response(["error"=>"WBS Number must be UNIQUE"],Response::HTTP_OK);
             }
         }
         DB::beginTransaction();

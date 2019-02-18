@@ -276,7 +276,7 @@
                                                 <th style="width: 16%">Code</th>
                                                 <th style="width: 26%">Name</th>
                                                 <th style="width: 30%">Description</th>
-                                                <th style="width: 23%">WBS Code</th>
+                                                <th style="width: 23%">WBS Number</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -367,7 +367,7 @@
                                                 <th style="width: 16%">Code</th>
                                                 <th style="width: 26%">Name</th>
                                                 <th style="width: 30%">Description</th>
-                                                <th style="width: 23%">WBS Code</th>
+                                                <th style="width: 23%">WBS Number</th>
                                             </tr>
                                         </thead>
                                         <tbody>
