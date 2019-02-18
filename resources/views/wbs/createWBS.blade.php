@@ -134,7 +134,7 @@
                                     <input v-model="newWbs.planned_deadline" type="text" class="form-control datepicker width100" id="planned_deadline" name="planned_deadline" placeholder="Deadline">
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight (%)">
+                                    <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
                                 </td>
                                 <td align="center" class="p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -631,6 +631,7 @@ var vm = new Vue({
                     title: 'Total weight cannot exceed 100%',
                     position: 'topRight',
                 });
+                this.newWbs.weight = this.maxWeight;
             }
         },
         'editWbs.weight': function(newValue){
@@ -648,6 +649,7 @@ var vm = new Vue({
                     title: 'Total weight cannot exceed 100%',
                     position: 'topRight',
                 });
+                this.editWbs.weight = maxWeightEdit;
             }
         },
         selected_wbs_profile : function(newValue){
