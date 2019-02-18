@@ -288,6 +288,7 @@ var vm = new Vue({
     mounted() {
         $('.datepicker').datepicker({
             autoclose : true,
+            format : "dd-mm-yyyy",
         });
         $("#planned_deadline").datepicker().on(
             "changeDate", () => {
@@ -346,7 +347,7 @@ var vm = new Vue({
             this.editWbs.weight = data.weight;
             if(data.planned_deadline != null){
                 this.editWbs.planned_deadline = data.planned_deadline;
-                $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
+                $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline.split("-").reverse().join("-")));
             }
         },
         createSubWBS(data){

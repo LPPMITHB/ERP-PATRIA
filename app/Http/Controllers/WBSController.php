@@ -247,7 +247,7 @@ class WBSController extends Controller
             if(isset($data['wbs_id'])){
                 $wbs->wbs_id = $data['wbs_id'];
             }
-            $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data['planned_deadline']);
+            $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data['planned_deadline']);
             $wbs->planned_deadline =  $plannedDeadline->format('Y-m-d');
             $wbs->weight =  $data['weight'];
             $wbs->user_id = Auth::user()->id;
@@ -447,7 +447,7 @@ class WBSController extends Controller
             $wbs_ref->name = $data['name'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
-            $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data['planned_deadline']);
+            $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data['planned_deadline']);
             $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
             $wbs_ref->weight =  $data['weight'];
 
@@ -480,7 +480,7 @@ class WBSController extends Controller
             $wbs_ref->name = $data->name;
             $wbs_ref->description = $data->description;
             $wbs_ref->deliverables = $data->deliverables;
-            $plannedDeadline = DateTime::createFromFormat('m/j/Y', $data->planned_deadline);
+            $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data->planned_deadline);
             $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
             $wbs_ref->weight =  $data->weight;
 
