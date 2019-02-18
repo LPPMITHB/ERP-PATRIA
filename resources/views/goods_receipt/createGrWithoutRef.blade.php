@@ -49,8 +49,9 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 30%">Material Name</th>
-                                            <th style="width: 17%">Received</th>
+                                            <th style="width: 17%">Material Code</th>
+                                            <th style="width: 20%">Material Description</th>
+                                            <th style="width: 10%">Received</th>
                                             <th style="width: 28%">Storage Location</th>
                                             <th style="width: 10%">Received Date</th>
                                             <th style="width: 10%"></th>
@@ -59,7 +60,8 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }}</td>
+                                            <td class="tdEllipsis">{{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="tdEllipsis">{{ material.sloc_name }}</td>
                                             <td class="tdEllipsis">{{ material.received_date }}</td>
@@ -76,9 +78,9 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft">
+                                            <td class="p-l-0 textLeft" colspan="2">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
@@ -119,7 +121,7 @@
                                                 <div class="col-sm-12">
                                                     <label for="type" class="control-label">Material</label>
                                                     <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                     </selectize>
                                                 </div>
                                                 <div class="col-sm-12">
@@ -295,7 +297,6 @@
             },
             'dataInput.sloc_id': function(newValue){
                 if(newValue != ""){
-                    console.log(newValue);
                     $('div.overlay').show();
                     window.axios.get('/api/getSlocGR/'+newValue).then(({ data }) => {
                         this.dataInput.sloc_name = data.name;
@@ -340,7 +341,7 @@
                         material.sloc_id = this.editInput.sloc_id;
 
                         window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
-                            material.material_name = data.name;
+                            material.material_name = data.description;
                             material.material_code = data.code;
                             material.received_date = this.editInput.received_date;
 
@@ -397,7 +398,7 @@
                 var material_id = this.dataInput.material_id;
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterialGR/'+material_id).then(({ data }) => {
-                    this.dataInput.material_name = data.name;
+                    this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
 
 

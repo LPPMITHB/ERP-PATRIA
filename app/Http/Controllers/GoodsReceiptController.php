@@ -51,7 +51,7 @@ class GoodsReceiptController extends Controller
                     "received" => $POD->received,
                     "material_id" => $POD->material_id,
                     "material_code" => $POD->material->code,
-                    "material_name" => $POD->material->name,
+                    "material_name" => $POD->material->description,
                     "resource_id" => $POD->resource_id,
                     "wbs_id" => $POD->wbs_id,
                     "total_price" => $POD->total_price,
@@ -174,10 +174,6 @@ class GoodsReceiptController extends Controller
                 $ship_date = DateTime::createFromFormat('d-m-Y', $datas->ship_date);
                 $GR->ship_date = $ship_date->format('Y-m-d');
             }
-            if($datas->received_date != ""){
-                $received_date = DateTime::createFromFormat('d-m-Y', $datas->received_date);
-                $GR->received_date = $received_date->format('Y-m-d');
-            }
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
@@ -188,6 +184,10 @@ class GoodsReceiptController extends Controller
                     $GRD->quantity = $data->received; 
                     $GRD->material_id = $data->material_id;
                     $GRD->storage_location_id = $data->sloc_id;
+                    if($data->received_date != ""){
+                        $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
+                        $GRD->received_date = $received_date->format('Y-m-d');
+                    }
                     $GRD->item_OK = $data->item_OK;
                     $GRD->save();
                     
@@ -243,8 +243,8 @@ class GoodsReceiptController extends Controller
                 $GRD->goods_receipt_id = $GR->id;
                 $GRD->quantity = $data->received;
                 $GRD->material_id = $data->material_id;
-                if(isset($data->received_date)){
-                    $received_date = DateTime::createFromFormat('m/j/Y', $data->received_date);
+                if($data->received_date != ""){
+                    $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
                     $GRD->received_date = $received_date->format('Y-m-d');
                 }
                 $GRD->save();
@@ -293,10 +293,6 @@ class GoodsReceiptController extends Controller
                 $ship_date = DateTime::createFromFormat('d-m-Y', $datas->ship_date);
                 $GR->ship_date = $ship_date->format('Y-m-d');
             }
-            if($datas->received_date != ""){
-                $received_date = DateTime::createFromFormat('d-m-Y', $datas->received_date);
-                $GR->received_date = $received_date->format('Y-m-d');
-            }
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
@@ -308,7 +304,7 @@ class GoodsReceiptController extends Controller
                     $GRD->material_id = $data->material_id;
                     $GRD->storage_location_id = $data->sloc_id;
                     if($data->received_date != ""){
-                        $received_date = DateTime::createFromFormat('m/j/Y', $data->received_date);
+                        $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
                         $GRD->received_date = $received_date->format('Y-m-d');
                     }
                     $GRD->save();
