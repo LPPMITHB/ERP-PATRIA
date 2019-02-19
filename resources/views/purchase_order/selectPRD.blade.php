@@ -68,7 +68,7 @@
                                     <td>{{ PRD.quantity }}</td>
                                     <td>{{ PRD.reserved }}</td>
                                     <td>{{ PRD.remaining }}</td>
-                                    <td v-if="PRD.wbs != null">{{ PRD.wbs.name }}</td>
+                                    <td v-if="PRD.wbs != null">{{ PRD.wbs.number }}</td>
                                     <td v-else>-</td>
                                     <td v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
                                     <td v-else>-</td>

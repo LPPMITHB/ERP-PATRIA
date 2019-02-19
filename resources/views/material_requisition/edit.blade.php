@@ -70,7 +70,7 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_number }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="p-l-0 textCenter">
@@ -85,7 +85,7 @@
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
@@ -200,7 +200,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : ""
+            wbs_number : ""
         },
         editInput : {
             mrd_id :"",
@@ -211,7 +211,7 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : ""
+            wbs_number : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -315,7 +315,7 @@
                 material.wbs_id = this.editInput.wbs_id;
 
                 window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
-                    material.wbs_name = data.wbs.name;
+                    material.wbs_number = data.wbs.number;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -338,11 +338,11 @@
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_name = data.wbs_name;
+                this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
 
                 document.getElementById('material').value = data.material_code+" - "+data.material_name;
-                document.getElementById('wbs').value = data.wbs_name;
+                document.getElementById('wbs').value = data.wbs_number;
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
                 
@@ -369,7 +369,7 @@
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
-                    this.dataInput.wbs_name = "";
+                    this.dataInput.wbs_number = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;                    
                     $('div.overlay').hide();
@@ -402,7 +402,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMREdit/'+newValue+'/'+this.mr_id).then(({ data }) => {
-                        this.dataInput.wbs_name = data.wbs.name;
+                        this.dataInput.wbs_number = data.wbs.number;
                         this.materials = data.materials;
                         $('div.overlay').hide();
                     })

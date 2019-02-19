@@ -50,7 +50,7 @@
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
                                 
                                 <div class="col-xs-4 no-padding">Name</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.number)"><b>: {{wbs.number}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Description</div>
                                 <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>

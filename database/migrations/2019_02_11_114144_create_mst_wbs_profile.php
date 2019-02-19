@@ -10,7 +10,7 @@ class CreateMstWbsProfile extends Migration
     {
         Schema::create('mst_wbs_profile', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('number');
             $table->text('description');
             $table->string('deliverables');
             $table->unsignedInteger('project_type_id')->nullable();

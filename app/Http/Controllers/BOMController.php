@@ -82,7 +82,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                             ]);
@@ -90,7 +90,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                             ]);
@@ -100,7 +100,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                             ]);
@@ -108,7 +108,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                             ]);
@@ -129,7 +129,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
                             ]);
@@ -137,7 +137,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
                             ]);
@@ -147,7 +147,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
                             ]);
@@ -155,7 +155,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->name. ''.$bom_code,
+                                "text" => $wbs->number. ''.$bom_code,
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
                             ]);
@@ -282,7 +282,7 @@ class BOMController extends Controller
         $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::where('id',$wbs->project_id)->with('ship','customer')->first();
-        $materials = Material::orderBy('name')->get()->jsonSerialize();
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
         
         if($route == '/bom'){
             if($project->business_unit_id == 1){
@@ -322,14 +322,14 @@ class BOMController extends Controller
                 }else{
                     if($route == "/bom"){
                         self::saveBomDetail($bom,$datas->materials);
-                        self::createRap($datas,$bom);
-                        self::checkStock($bom,$route);
+                        // self::createRap($datas,$bom);
+                        // self::checkStock($bom,$route);
                         DB::commit();
                         return redirect()->route('bom.show', ['id' => $bom->id])->with('success', 'Bill Of Material Created');
                     }else{
                         self::saveBomDetailRepair($bom,$datas->materials);
-                        self::createRap($datas,$bom);
-                        self::checkStock($bom,$route);
+                        // self::createRap($datas,$bom);
+                        // self::checkStock($bom,$route);
                         DB::commit();
                         return redirect()->route('bom_repair.show', ['id' => $bom->id])->with('success', 'BOM/BOS Created');
                     }
@@ -344,9 +344,9 @@ class BOMController extends Controller
             }
         }else{
             if($route == "/bom"){
-                return redirect()->route('bom.indexProject')->with('error', 'WBS '.$modelBom->wbs->name.' already have BOM !');
+                return redirect()->route('bom.indexProject')->with('error', 'WBS '.$modelBom->wbs->number.' already have BOM !');
             }else{
-                return redirect()->route('bom_repair.indexProject')->with('error', 'WBS '.$modelBom->wbs->name.' already have BOM !');
+                return redirect()->route('bom_repair.indexProject')->with('error', 'WBS '.$modelBom->wbs->number.' already have BOM !');
             }
         }
     }
@@ -820,7 +820,7 @@ class BOMController extends Controller
 
     public function getMaterialAPI($id){
 
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getServiceAPI($id){

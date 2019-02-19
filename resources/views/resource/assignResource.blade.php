@@ -66,7 +66,7 @@
                                             <tr v-for="(data,index) in modelAssignResource">
                                                 <td>{{ index + 1 }}</td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                                <td>{{ data.wbs.name }}</td>
+                                                <td>{{ data.wbs.number }}</td>
                                                 <td>{{ data.quantity }}</td>
                                                 <td v-if="data.wbs_id == null">{{ "Not Assigned" }}</td>
                                                 <td v-else>{{ "Assigned" }}</td>
@@ -86,7 +86,7 @@
                                             </td>
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft">
@@ -123,7 +123,7 @@
                                             <div class="col-sm-12">
                                                 <label class="control-label">WBS Name</label>
                                                 <selectize v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">

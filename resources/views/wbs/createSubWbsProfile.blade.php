@@ -18,7 +18,7 @@
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Description</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
@@ -35,7 +35,7 @@
                         <thead>
                             <tr>
                                 <th width=5%>No</th>
-                                <th width=20%>Name</th>
+                                <th width=20%>Number</th>
                                 <th width=25%>Description</th>
                                 <th width=23%>Deliverables</th>
                                 <th width=27%></th>
@@ -44,7 +44,7 @@
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
@@ -91,7 +91,7 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="textLeft p-l-0">
-                                    <textarea v-model="newSubWbsProfile.name" class="form-control width100" rows="2" name="name" placeholder="Name"></textarea>
+                                    <textarea v-model="newSubWbsProfile.number" class="form-control width100" rows="2" name="number" placeholder="Number"></textarea>
                                 </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newSubWbsProfile.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
@@ -117,8 +117,8 @@
                                 <div class="modal-body">
                                     <div class="row m-t-15">
                                         <div class="form-group col-sm-12">
-                                            <label for="name" class="control-label">Name</label>
-                                            <input id="name" type="text" class="form-control" v-model="editWbsProfile.name" placeholder="Insert Name here..." >
+                                            <label for="number" class="control-label">Number</label>
+                                            <input id="number" type="text" class="form-control" v-model="editWbsProfile.number" placeholder="Insert Number here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
@@ -162,14 +162,14 @@ var data = {
     wbs : "",
     newIndex : "", 
     newSubWbsProfile : {
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
         wbs_profile_id : @json($wbs->id),
     },
     editWbsProfile : {
         wbs_profile_id: "",
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
     },
@@ -190,7 +190,7 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newSubWbsProfile.name == ""
+                if(this.newSubWbsProfile.number == ""
                 || this.newSubWbsProfile.deliverables == "")
                 {
                     isOk = true;
@@ -199,7 +199,7 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editWbsProfile.name == ""
+                if(this.editWbsProfile.number == ""
                 || this.editWbsProfile.deliverables == "")
                 {
                     isOk = true;
@@ -215,7 +215,7 @@ var vm = new Vue({
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbsProfile.wbs_profile_id = data.id;
             this.active_id = data.id;
-            this.editWbsProfile.name = data.name;
+            this.editWbsProfile.number = data.number;
             this.editWbsProfile.description = data.description;
             this.editWbsProfile.deliverables = data.deliverables;
         },
@@ -366,7 +366,7 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 this.getSubWBS();
-                this.newSubWbsProfile.name = "";
+                this.newSubWbsProfile.number = "";
                 this.newSubWbsProfile.description = "";
                 this.newSubWbsProfile.deliverables = "";
             })

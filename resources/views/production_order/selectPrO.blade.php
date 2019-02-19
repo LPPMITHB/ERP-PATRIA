@@ -82,7 +82,7 @@
                             <tr>
                                 <td class="p-l-10">{{ $loop->iteration }}</td>
                                 <td class="tdEllipsis p-l-10" data-container="body" data-toggle="tooltip" title="{{$pro->name}}">{{ $pro->number }}</td>
-                                <td class="tdEllipsis p-l-10" data-container="body" data-toggle="tooltip" title="{{$pro->wbs->code}} - {{$pro->wbs->name}}">{{ $pro->wbs->code }} - {{ $pro->wbs->name }}</td>
+                                <td class="tdEllipsis p-l-10" data-container="body" data-toggle="tooltip" title="{{$pro->wbs->code}} - {{$pro->wbs->number}}">{{ $pro->wbs->code }} - {{ $pro->wbs->number }}</td>
                                 <td class="tdEllipsis p-l-10" data-container="body" data-toggle="tooltip" title="{{$pro->user->name}}">{{ $pro->user->name }}</td>
                                 @if($pro->status == 1)
                                     <td class="p-l-10">{{ 'UNRELEASED' }}</td>

@@ -126,7 +126,7 @@
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="WOD.discount" placeholder="Discount">
                                                 </td>
-                                                <td v-if="WOD.wbs != null" class="tdEllipsis">{{ WOD.wbs.name }}</td>
+                                                <td v-if="WOD.wbs != null" class="tdEllipsis">{{ WOD.wbs.number }}</td>
                                                 <td v-else class="tdEllipsis">-</td>
                                             </tr>
                                         </tbody>

@@ -84,10 +84,10 @@
                 <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
                         <div class="col-md-4 col-xs-4">
-                            WBS Code
+                            WBS Number
                         </div>
                         <div class="col-md-8 col-xs-7">
-                            : <b> {{ $modelPrO->wbs->code }} </b>
+                            : <b> {{ $modelPrO->wbs->number }} </b>
                         </div>
                     </div>
                     <div class="row">

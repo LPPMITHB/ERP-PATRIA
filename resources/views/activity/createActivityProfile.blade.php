@@ -7,7 +7,7 @@
                     'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
-                        $wbs->name => route('wbs.createSubWbsProfile', $wbs->wbs->id),
+                        $wbs->number => route('wbs.createSubWbsProfile', $wbs->wbs->id),
                         "Manage Activities" => ""
                     ]
                 ]
@@ -19,7 +19,7 @@
                     'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
-                        $wbs->name => route('wbs.createWbsProfile'),
+                        $wbs->number => route('wbs.createWbsProfile'),
                         "Manage Activities" => ""
                     ]
                 ]
@@ -33,7 +33,7 @@
                     'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
-                        $wbs->name => route('wbs_repair.createSubWbsProfile', $wbs->wbs->id)
+                        $wbs->number => route('wbs_repair.createSubWbsProfile', $wbs->wbs->id)
                     ]
                 ]
             )
@@ -44,7 +44,7 @@
                     'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
-                        $wbs->name => route('wbs_repair.createWbsProfile')
+                        $wbs->number => route('wbs_repair.createWbsProfile')
                     ]
                 ]
             )
@@ -62,7 +62,7 @@
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Description</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>

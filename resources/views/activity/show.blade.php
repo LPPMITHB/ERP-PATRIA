@@ -56,7 +56,7 @@
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->progress}} %</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">WBS</div>
-                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->wbs->code}} - {{$activity->wbs->name}}"><b>: {{$activity->wbs->code}} - {{$activity->wbs->name}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->wbs->code}} - {{$activity->wbs->number}}"><b>: {{$activity->wbs->code}} - {{$activity->wbs->number}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Status</div>
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->status == 1 ? 'Open' : 'Done'}} </b></div>
@@ -134,7 +134,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $activity->code }}</td>
                                 <td>{{ $activity->name }}</td>
-                                <td>{{$activity->wbs->code}} - {{$activity->wbs->name}}</td>
+                                <td>{{$activity->wbs->code}} - {{$activity->wbs->number}}</td>
                                 <td>{{$activity->progress}} %</td>
                                 <td class="textCenter">
                                     @if($activity->status == 0)

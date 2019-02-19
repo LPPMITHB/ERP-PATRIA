@@ -89,7 +89,7 @@
                                         <tbody>   
                                             @foreach ($planned as $data)
                                                 <tr>
-                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_name']}}">{{$data['wbs_name']}}</td>
+                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_number']}}">{{$data['wbs_number']}}</td>
                                                     <td>Rp {{number_format($data['cost'])}}</td>
                                                 </tr>    
                                             @endforeach
@@ -108,7 +108,7 @@
                                         <tbody>   
                                             @foreach ($actual as $data)
                                                 <tr>
-                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_name']}}">{{$data['wbs_name']}}</td>
+                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_number']}}">{{$data['wbs_number']}}</td>
                                                     <td>Rp {{number_format($data['cost'])}}</td>
                                                 </tr>    
                                             @endforeach

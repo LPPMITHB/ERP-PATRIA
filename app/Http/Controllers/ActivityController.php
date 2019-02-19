@@ -53,12 +53,12 @@ class ActivityController extends Controller
             $activity->planned_duration = $data['planned_duration'];
 
             if($data['planned_start_date'] != ""){
-                $planStartDate = DateTime::createFromFormat('m/j/Y', $data['planned_start_date']);
+                $planStartDate = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
                 $activity->planned_start_date = $planStartDate->format('Y-m-d');
             }
 
             if($data['planned_end_date'] != ""){
-                $planEndDate = DateTime::createFromFormat('m/j/Y', $data['planned_end_date']);
+                $planEndDate = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
                 $activity->planned_end_date = $planEndDate->format('Y-m-d');
             }
 
@@ -71,7 +71,7 @@ class ActivityController extends Controller
             $activity->branch_id = Auth::user()->branch->id;
 
             $users = User::whereIn('role_id',[1])->get();
-            Notification::send($users, new ProjectActivity($activity));
+            // Notification::send($users, new ProjectActivity($activity));
 
             if(!$activity->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -122,8 +122,8 @@ class ActivityController extends Controller
             $activity->description = $data['description'];         
             $activity->planned_duration = $data['planned_duration'];
 
-            $planStartDate = DateTime::createFromFormat('m/j/Y', $data['planned_start_date']);
-            $planEndDate = DateTime::createFromFormat('m/j/Y', $data['planned_end_date']);
+            $planStartDate = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $planEndDate = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
 
             $activity->planned_start_date = $planStartDate->format('Y-m-d');
             $activity->planned_end_date = $planEndDate->format('Y-m-d');
@@ -507,7 +507,7 @@ class ActivityController extends Controller
         $allActivities = Collection::make();
         foreach ($project->wbss as $wbsData) {
             foreach($wbsData->activities as $activity){
-                $activity->push('wbs_name', $activity->wbs->name);
+                $activity->push('wbs_number', $activity->wbs->number);
                 $allActivities->push($activity);
             }
         }
@@ -521,7 +521,7 @@ class ActivityController extends Controller
         foreach ($project->wbss as $wbsData) {
             foreach($wbsData->activities as $activity){
                 if($activity->id != $activity_id){
-                    $activity->push('wbs_name', $activity->wbs->name);
+                    $activity->push('wbs_number', $activity->wbs->number);
                     $allActivities->push($activity);
                 }
             }

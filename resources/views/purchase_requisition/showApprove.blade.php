@@ -165,7 +165,7 @@
                                 @else
                                     <td>Pcs</td>
                                 @endif
-                                <td class="tdEllipsis">{{ isset($PRD->wbs) ? $PRD->wbs->name : '-' }}</td>
+                                <td class="tdEllipsis">{{ isset($PRD->wbs) ? $PRD->wbs->number : '-' }}</td>
                                 <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
                                 <td>{{ isset($PRD->required_date) ? date('d-m-Y', strtotime($PRD->required_date)) : '-' }}</td>
                             </tr>

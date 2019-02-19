@@ -88,6 +88,13 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="name" class="col-sm-2 control-label">Person In Charge (PIC)</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="name" name="name" v-model="project.person_in_charge">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Ship Name</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="name" name="name" v-model="project.name">
@@ -273,6 +280,7 @@ $(document).ready(function(){
             class_cp_phone : @json(Request::old('class_contact_person_phone')),
             class_cp_email :@json(Request::old('class_contact_person_email')),
             description : @json(Request::old('description')),
+            person_in_charge : @json(Request::old('person_in_charge')),
         },
         projectUpdate:  @json($project->id== null ? "": $project->id),
         customers : @json($customers),
@@ -288,6 +296,7 @@ $(document).ready(function(){
             class_cp_phone : @json($project->class_contact_person_phone == null ? "": $project->class_contact_person_phone),
             class_cp_email : @json($project->class_contact_person_email == null ? "": $project->class_contact_person_email),
             description : @json($project->description == null ? "": $project->description),
+            person_in_charge : @json($project->person_in_charge == null ? "": $project->person_in_charge),
         },
         customer: "",
         menu : @json($menu),
