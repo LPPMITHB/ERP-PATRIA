@@ -435,6 +435,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Approve Goods Return',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Material Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -1240,6 +1252,66 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsReceipt,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Goods Return',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $goodsReturn =  Menu::where('name','Goods Return')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Based On Goods Receipt',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.selectGR',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Based On Purchase Order',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.selectPO',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Goods Return',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Approve Goods Return',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

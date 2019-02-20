@@ -187,7 +187,7 @@
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="POD.total_price" placeholder="Please Input Price / pcs">
                                                 </td>
-                                                <td v-if="POD.wbs != null" class="tdEllipsis">{{ POD.wbs.name }}</td>
+                                                <td v-if="POD.wbs != null" class="tdEllipsis">{{ POD.wbs.number }}</td>
                                                 <td v-else class="tdEllipsis">-</td>
                                                 <td v-if="POD.purchase_requisition_detail.alocation != null" class="tdEllipsis">{{ POD.purchase_requisition_detail.alocation }}</td>
                                                 <td v-else class="tdEllipsis">-</td>

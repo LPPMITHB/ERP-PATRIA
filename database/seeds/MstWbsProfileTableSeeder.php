@@ -20,7 +20,7 @@ class MstWbsProfileTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 2,
-                'name' => 'WBS Profile 1',
+                'number' => 'H1',
                 'description' => 'WBS Profile 1',
                 'deliverables' => 'WBS Profile 1',
                 'wbs_id' => NULL,
@@ -34,7 +34,7 @@ class MstWbsProfileTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 3,
-                'name' => 'WBS Profile 1.1',
+                'number' => 'H1.1',
                 'description' => 'WBS Profile 1.1',
                 'deliverables' => 'WBS Profile 1.1',
                 'wbs_id' => 2,

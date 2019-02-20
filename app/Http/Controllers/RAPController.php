@@ -124,7 +124,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
                     ]);
@@ -132,7 +132,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap.showMaterialEvaluation',$wbs->id)],
                     ]);
@@ -144,7 +144,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation',$wbs->id)],
                     ]);
@@ -152,7 +152,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation',$wbs->id)],
                     ]);
@@ -178,7 +178,8 @@ class RAPController extends Controller
                         foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                             if ($mrd->wbs_id == $id) {
                                 $materialEvaluation->push([
-                                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                    "material_code" => $bomDetail->material->code,
+                                    "material_description" => $bomDetail->material->description,
                                     "quantity" => $bomDetail->quantity,
                                     "used" => $mrd->issued,
                                 ]);
@@ -186,7 +187,8 @@ class RAPController extends Controller
                         }
                     }else{
                         $materialEvaluation->push([
-                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                            "material_code" => $bomDetail->material->code,
+                            "material_description" => $bomDetail->material->description,
                             "quantity" => $bomDetail->quantity,
                             "used" => 0,
                         ]);
@@ -278,14 +280,14 @@ class RAPController extends Controller
                 $data->push([
                     "id" => $wbs->code , 
                     "parent" => $wbs->wbs->code,
-                    "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                    "text" => $wbs->number.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
                     "icon" => "fa fa-suitcase"
                 ]);
             }else{
                 $data->push([
                     "id" => $wbs->code , 
                     "parent" => $project->number,
-                    "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                    "text" => $wbs->number.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
                     "icon" => "fa fa-suitcase"
                 ]);
             }  

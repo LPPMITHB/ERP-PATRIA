@@ -72,7 +72,7 @@
                     <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
 
                     <div class="col-md-4 col-xs-4 no-padding">Name</div>
-                    <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                    <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
                     
                     <div class="col-md-4 col-xs-4 no-padding">Description</div>
                     <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>

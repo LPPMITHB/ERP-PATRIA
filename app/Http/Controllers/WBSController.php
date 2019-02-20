@@ -214,7 +214,7 @@ class WBSController extends Controller
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
-        $array[$wbs->name] = "";
+        $array[$wbs->number] = "";
         return view('wbs.createSubWbsProfile', compact('wbs','array','menu'));
     }
 
@@ -239,7 +239,7 @@ class WBSController extends Controller
         try {
             $wbs = new WBS;
             $wbs->code = self::generateWbsCode($data['project_id']);
-            $wbs->name = $data['name'];
+            $wbs->number = $data['number'];
             $wbs->description = $data['description'];
             $wbs->deliverables = $data['deliverables'];
             $wbs->project_id = $data['project_id'];
@@ -278,7 +278,7 @@ class WBSController extends Controller
         DB::beginTransaction();
         try {
             $wbsProfile = new WbsProfile;
-            $wbsProfile->name = $data['name'];
+            $wbsProfile->number = $data['number'];
             $wbsProfile->description = $data['description'];
             $wbsProfile->deliverables = $data['deliverables'];
 
@@ -315,7 +315,7 @@ class WBSController extends Controller
 
             $wbs = new WBS;
             $wbs->code = self::generateWbsCode($data['project_id']);
-            $wbs->name = $wbsProfile->name;
+            $wbs->number = $wbsProfile->number;
             $wbs->description = $wbsProfile->description;
             $wbs->deliverables = $wbsProfile->deliverables;
             $wbs->project_id = $data['project_id'];
@@ -379,7 +379,7 @@ class WBSController extends Controller
         $wbs_ref = WbsProfile::find($id);
         DB::beginTransaction();
         try {
-            $wbs_ref->name = $data['name'];
+            $wbs_ref->number = $data['number'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
 
@@ -428,7 +428,7 @@ class WBSController extends Controller
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
-        $array[$wbs->code] = "";
+        $array[$wbs->number] = "";
         return view('wbs.createSubWBS', compact('project', 'wbs','array','menu','wbs_profiles'));
     }
 
@@ -438,13 +438,13 @@ class WBSController extends Controller
         $wbs_ref = WBS::find($id);
         $wbss = WBS::where('project_id',$data['project_id'])->get();
         foreach ($wbss as $wbs) {
-            if($wbs->name == $data['name'] && $wbs_ref->name != $data['name'] ){
+            if($wbs->number == $data['number'] && $wbs_ref->number != $data['number'] ){
                 return response(["error"=>"WBS Name must be UNIQUE"],Response::HTTP_OK);
             }
         }
         DB::beginTransaction();
         try {
-            $wbs_ref->name = $data['name'];
+            $wbs_ref->number = $data['number'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
             $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data['planned_deadline']);
@@ -471,13 +471,13 @@ class WBSController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = WBS::where('project_id',$data->project_id)->get();
         foreach ($wbss as $wbs) {
-            if($wbs->name == $data->name && $wbs_ref->name != $data->name ){
-                return response(["error"=>"WBS Name must be UNIQUE"],Response::HTTP_OK);
+            if($wbs->number == $data->number && $wbs_ref->number != $data->number ){
+                return response(["error"=>"WBS Number must be UNIQUE"],Response::HTTP_OK);
             }
         }
         DB::beginTransaction();
         try {
-            $wbs_ref->name = $data->name;
+            $wbs_ref->number = $data->number;
             $wbs_ref->description = $data->description;
             $wbs_ref->deliverables = $data->deliverables;
             $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data->planned_deadline);
@@ -660,16 +660,16 @@ class WBSController extends Controller
         if ($wbs) {
             if($wbs->wbs){
                 if($menu == 'building'){
-                    $array_reverse[$wbs->name] = route('wbs.createSubWbsProfile',[$wbs->wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs.createSubWbsProfile',[$wbs->wbs->id]);
                 }else{
-                    $array_reverse[$wbs->name] = route('wbs_repair.createSubWbsProfile',[$wbs->wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsProfile',[$wbs->wbs->id]);
                 }
                 return self::getParentsWbsProfile($wbs->wbs,$array_reverse, $iteration,$menu);
             }else{
                 if($menu == 'building'){
-                    $array_reverse[$wbs->name] = route('wbs.createSubWbsProfile',[$wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs.createSubWbsProfile',[$wbs->id]);
                 }else{
-                    $array_reverse[$wbs->name] = route('wbs_repair.createSubWbsProfile',[$wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsProfile',[$wbs->id]);
                 }
                 return $array_reverse;
             }
@@ -681,16 +681,16 @@ class WBSController extends Controller
         if ($wbs) {
             if($wbs->wbs){
                 if($menu == 'building'){
-                    $array_reverse[$wbs->code] = route('wbs.createSubWBS',[$project_id,$wbs->wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs.createSubWBS',[$project_id,$wbs->wbs->id]);
                 }else{
-                    $array_reverse[$wbs->code] = route('wbs_repair.createSubWBS',[$project_id,$wbs->wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs_repair.createSubWBS',[$project_id,$wbs->wbs->id]);
                 }
                 return self::getParents($wbs->wbs,$array_reverse, $project_id, $iteration,$menu);
             }else{
                 if($menu == 'building'){
-                    $array_reverse[$wbs->code] = route('wbs.createSubWBS',[$project_id,$wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs.createSubWBS',[$project_id,$wbs->id]);
                 }else{
-                    $array_reverse[$wbs->code] = route('wbs_repair.createSubWBS',[$project_id,$wbs->id]);
+                    $array_reverse[$wbs->number] = route('wbs_repair.createSubWBS',[$project_id,$wbs->id]);
                 }
                 return $array_reverse;
             }
@@ -705,7 +705,7 @@ class WBSController extends Controller
                     $dataWbsProfile->push([
                         "id" => "WBS".$wbs->id, 
                         "parent" => $parent,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                     ]);
                     foreach($wbs->activities as $activity){
@@ -720,7 +720,7 @@ class WBSController extends Controller
                     $dataWbsProfile->push([
                         "id" => "WBS".$wbs->id, 
                         "parent" => $parent,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                     ]);
                 }
@@ -730,7 +730,7 @@ class WBSController extends Controller
                     $dataWbsProfile->push([
                         "id" => "WBS".$wbs->id, 
                         "parent" => $parent,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                     ]);
                     foreach($wbs->activities as $activity){
@@ -745,7 +745,7 @@ class WBSController extends Controller
                     $dataWbsProfile->push([
                         "id" => "WBS".$wbs->id, 
                         "parent" => $parent,
-                        "text" => $wbs->name,
+                        "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                     ]);
                 }
@@ -760,7 +760,7 @@ class WBSController extends Controller
                 if(count($wbs->activities)>0){
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->name;
+                    $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
                     $wbsInput->project_id = $project_id;
@@ -820,7 +820,7 @@ class WBSController extends Controller
                 }else{
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->name;
+                    $wbsInput->name = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
                     $wbsInput->project_id = $project_id;
@@ -871,7 +871,7 @@ class WBSController extends Controller
                 if(count($wbs->activities)>0){
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->name;
+                    $wbsInput->name = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
                     $wbsInput->project_id = $project_id;
@@ -930,7 +930,7 @@ class WBSController extends Controller
                 }else{
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->name;
+                    $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
                     $wbsInput->project_id = $project_id;
@@ -1035,7 +1035,7 @@ class WBSController extends Controller
         $dataWbsProfile->push([
             "id" => "WBS".$wbs_profile_ref->id, 
             "parent" => "#",
-            "text" => $wbs_profile_ref->name,
+            "text" => $wbs_profile_ref->number,
             "icon" => "fa fa-suitcase"
         ]);
 

@@ -79,8 +79,8 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_name }}</td>
-                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_number }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_description }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
@@ -97,7 +97,7 @@
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length > 0">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length == 0">
@@ -114,7 +114,7 @@
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length > 0">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
@@ -147,13 +147,13 @@
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">WBS Name</label>
                                                 <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.name }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12" v-show="editInput.wbs_id != '' && materialsEdit.length > 0">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materialsEdit" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materialsEdit" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12" v-show="editInput.wbs_id != '' && materialsEdit.length == 0">
@@ -231,22 +231,22 @@
         dataInput : {
             material_id :"",
             material_code : "",
-            material_name : "",
+            material_description : "",
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_name : ""
+            wbs_number : ""
         },
         editInput : {
             old_material_id : "",
             material_id : "",
             material_code : "",
-            material_name : "",
+            material_description : "",
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
             old_wbs_id : "",
-            wbs_name : ""
+            wbs_number : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -383,11 +383,11 @@
                 })
 
                 window.axios.get('/api/getMaterialMR/'+new_material_id).then(({ data }) => {
-                    material.material_name = data.name;
+                    material.material_description = data.description;
                     material.material_code = data.code;
 
                         window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
-                        material.wbs_name = data.wbs.name;
+                        material.wbs_number = data.wbs.number;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -414,12 +414,12 @@
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
-                this.editInput.material_name = data.material_name;
+                this.editInput.material_description = data.material_description;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.old_wbs_id = data.wbs_id;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_name = data.wbs_name;
+                this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
@@ -467,7 +467,7 @@
                 })
                 
                 window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
-                    this.dataInput.material_name = data.name;
+                    this.dataInput.material_description = data.description;
                     this.dataInput.material_code = data.code;
 
                     var temp_data = JSON.stringify(this.dataInput);
@@ -475,12 +475,12 @@
 
                     this.dataMaterial.push(temp_data);
 
-                    this.dataInput.material_name = "";
+                    this.dataInput.material_description = "";
                     this.dataInput.material_code = "";
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
-                    this.dataInput.wbs_name = "";
+                    this.dataInput.wbs_number = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;                    
                     $('div.overlay').hide();
@@ -539,7 +539,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
-                        this.dataInput.wbs_name = data.wbs.name;
+                        this.dataInput.wbs_number = data.wbs.number;
                         this.materials = data.materials;
                         $('div.overlay').hide();
                     })

@@ -80,7 +80,7 @@
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
-                                <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.code }} - {{ data.wbs.number }}</td>
+                                <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                 <td v-else class="tdEllipsis">-</td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
@@ -100,7 +100,7 @@
                                 </td>
                                 <td class="no-padding">
                                     <selectize v-model="newCost.wbs_id" :settings="workSettings">
-                                        <option v-for="(work, index) in wbss" :value="work.id">{{ work.code }} - {{ work.number }}</option>
+                                        <option v-for="(work, index) in wbss" :value="work.id">{{ work.number }} - {{ work.description }}</option>
                                     </selectize>
                                 </td>
                                 <td class="no-padding textCenter">
@@ -131,7 +131,7 @@
                                         <div class="form-group col-sm-12">
                                             <label for="wbs" class="control-label">Work Breakdown Structure</label>
                                             <selectize v-model="editCost.wbs_id" :settings="workSettings">
-                                                <option v-for="(work, index) in wbss" :value="work.id">{{ work.code }} - {{ work.number }}</option>
+                                                <option v-for="(work, index) in wbss" :value="work.id">{{ work.number }} - {{ work.description }}</option>
                                             </selectize>
                                         </div>
                                     </div>

@@ -21,17 +21,17 @@
                                       <!-- small box -->
                                       @if(date("Y-m-d") > $project->planned_end_date && $project->progress != 100)
                                           <div style="display: inline-block; margin-bottom: -2px" class="small-box bg-red p-r-5 p-l-5">
-                                              <label>Project Code : {{$project->number}}</label>
+                                            <label>Project Code : {{$project->number}} - {{$project->person_in_charge}}</label>
                                           </div>
                                           <div class="small-box bg-red">
                                       @elseif(date("Y-m-d") == $project->planned_end_date  && $project->progress != 100)
                                           <div style="display: inline-block; margin-bottom: -2px" class="small-box bg-yellow p-r-5 p-l-5">
-                                              <label>Project Code : {{$project->number}}</label>
+                                              <label>Project Code : {{$project->number}} - {{$project->person_in_charge}}</label>
                                           </div>
                                           <div class="small-box bg-yellow">
                                       @else
                                           <div style="display: inline-block; margin-bottom: -2px" class="small-box bg-aqua p-r-5 p-l-5">
-                                              <label>Project Code : {{$project->number}}</label>
+                                              <label>Project Code : {{$project->number}} - {{$project->person_in_charge}}</label>
                                           </div>
                                           <div class="small-box bg-aqua">
                                       @endif

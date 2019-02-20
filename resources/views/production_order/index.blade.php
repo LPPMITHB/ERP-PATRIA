@@ -49,7 +49,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPrO->number }}</td>
                                 <td>{{ $modelPrO->project->name }}</td>
-                                <td class="tdEllipsis">{{ $modelPrO->wbs->name }}</td>
+                                <td class="tdEllipsis">{{ $modelPrO->wbs->number }}</td>
                                 <td class="textCenter">
                                     @if($route == "/production_order" && $modelPrO->status == 1)
                                         <a href="{{route('production_order.show',$modelPrO->id)}}" class="btn btn-primary btn-xs">VIEW</a>

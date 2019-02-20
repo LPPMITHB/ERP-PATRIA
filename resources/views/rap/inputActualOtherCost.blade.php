@@ -84,7 +84,7 @@
                                     <td>{{ index + 1 }}</td>
                                     <td class="tdEllipsis">{{ data.description }}</td>
                                     <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
-                                    <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.name }}</td>
+                                    <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                     <td v-else class="tdEllipsis">-</td>
                                     <td v-if="data.actual_cost != ''" class="tdEllipsis">Rp.{{ data.actual_cost }}</td>
                                     <td v-else class="tdEllipsis">-</td>
@@ -202,7 +202,7 @@
                 this.editCost.description = data.description;
                 if(data.wbs_id != null){
                     this.editCost.wbs_id = data.wbs_id;
-                    this.editCost.wbs = data.wbs.name;
+                    this.editCost.wbs = data.wbs.number +' - '+ data.wbs.description;
                 }else{
                     this.editCost.wbs = '-';
                 }
