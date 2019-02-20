@@ -49,7 +49,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $rap->number }}</td>
-                                <td>{{ $rap->bom->wbs->code }}</td>
+                                <td>{{ $rap->bom->wbs->number }} - {{ $rap->bom->wbs->description }}</td>
                                 <td>{{ $rap->bom->code }}</td>
                                 <td>Rp.{{ number_format($rap->total_price) }}</td>
                                 <td class="p-l-5 p-r-5" align="center">

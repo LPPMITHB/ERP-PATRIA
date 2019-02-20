@@ -80,9 +80,10 @@
                                                 <th width="5%">No</th>
                                                 <th width="17%">Material Number</th>
                                                 <th width="18%">Material Description</th>
+                                                <th width="5%">Unit</th>
                                                 <th width="10%">Quantity</th>
                                                 <th width="10%">Received</th>
-                                                <th width="20%">Storage Location</th>
+                                                <th width="15%">Storage Location</th>
                                                 <th width="10%">Received Date</th>
                                                 <th width="10%">Item OK</th>
                                             </tr>
@@ -92,6 +93,7 @@
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ POD.material_code }}</td>
                                                 <td>{{ POD.material_name }}</td>
+                                                <td>{{ POD.unit }}</td>
                                                 <td>{{ POD.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">

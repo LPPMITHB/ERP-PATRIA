@@ -180,6 +180,7 @@ class RAPController extends Controller
                                 $materialEvaluation->push([
                                     "material_code" => $bomDetail->material->code,
                                     "material_description" => $bomDetail->material->description,
+                                    "unit" => $bomDetail->material->uom->unit,
                                     "quantity" => $bomDetail->quantity,
                                     "used" => $mrd->issued,
                                 ]);
@@ -189,6 +190,7 @@ class RAPController extends Controller
                         $materialEvaluation->push([
                             "material_code" => $bomDetail->material->code,
                             "material_description" => $bomDetail->material->description,
+                            "unit" => $bomDetail->material->uom->unit,
                             "quantity" => $bomDetail->quantity,
                             "used" => 0,
                         ]);
@@ -536,11 +538,11 @@ class RAPController extends Controller
     public function edit(Request $request,$id)
     {
         $modelRap = Rap::findOrFail($id);
-        $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material','service')->get();
+        $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material','service','material.uom')->get();
         $modelBOM = Bom::where('id',$modelRap->bom_id)->first();
         $project = Project::where('id',$modelRap->project_id)->first();
         $route = $request->route()->getPrefix();
-        
+
         if($route == "/rap"){
             return view('rap.edit', compact('modelRap','project','modelRAPD','modelBOM'));
         }elseif($route == "/rap_repair"){

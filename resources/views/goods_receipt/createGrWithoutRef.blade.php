@@ -130,6 +130,10 @@
                                                     </selectize>
                                                 </div>
                                                 <div class="col-sm-12">
+                                                    <label for="unit" class="control-label">Unit</label>
+                                                    <input type="text" id="unit" v-model="editInput.unit" class="form-control" disabled>
+                                                </div>
+                                                <div class="col-sm-12">
                                                     <label for="quantity" class="control-label">Quantity</label>
                                                     <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                                 </div>
@@ -322,6 +326,20 @@
                     this.dataInput.sloc_id = "";
                 }
             },
+            'dataInput.material_id': function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getMaterialGR/'+newValue).then(({ data }) => {
+                        this.dataInput.unit = data.uom.unit;
+                    });
+                }
+            },
+            'editInput.material_id': function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getMaterialGR/'+newValue).then(({ data }) => {
+                        this.editInput.unit = data.uom.unit;
+                    });
+                }
+            },
         },
         methods : {
             
@@ -347,6 +365,7 @@
                         material.quantity = this.editInput.quantity;
                         material.material_id = new_material_id;
                         material.sloc_id = this.editInput.sloc_id;
+                        material.unit = this.editInput.unit;
 
                         window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
                             material.material_name = data.description;

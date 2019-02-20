@@ -141,6 +141,9 @@ class PhysicalInventoryController extends Controller
         ->with(array('material'=>function($query){
                 $query->select('id','code','description');
             }))
+        ->with(array('material.uom'=>function($query){
+            $query->select('id','unit');
+        }))
         ->with(array('storageLocation'=>function($query){
             $query->select('id','name');
         }))->get();
