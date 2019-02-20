@@ -13,7 +13,7 @@ class TrxRapTableSeeder extends Seeder
     public function run()
     {
         
-
+        
         \DB::table('trx_rap')->delete();
         
         \DB::table('trx_rap')->insert(array (
@@ -28,7 +28,7 @@ class TrxRapTableSeeder extends Seeder
                 'branch_id' => 1,
                 'created_at' => '2019-01-15 09:56:21',
                 'updated_at' => '2019-01-15 09:56:22',
-            ),
+            ), /*
             1 => 
             array (
                 'id' => 2,
@@ -88,7 +88,7 @@ class TrxRapTableSeeder extends Seeder
                 'branch_id' => 1,
                 'created_at' => '2019-01-15 09:58:45',
                 'updated_at' => '2019-01-15 09:58:46',
-            ),
+            ), */
         ));
         
         

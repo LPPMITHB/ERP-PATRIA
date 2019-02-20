@@ -1295,9 +1295,9 @@ class ProjectController extends Controller
         $wbss = $project->wbss;
         foreach($activities as $activity){
             if($activity->predecessor != null){
-                $predecessor = json_decode($activity->predecessor);
-                foreach($predecessor as $activity_id){
-                    $activityPredecessor = Activity::find($activity_id);
+                $predecessors = json_decode($activity->predecessor);
+                foreach($predecessors as $predecessor){
+                    $activityPredecessor = Activity::find($predecessor[0]);
                     $links->push([
                         "id" => $index, 
                         "source"=>$activityPredecessor->code,

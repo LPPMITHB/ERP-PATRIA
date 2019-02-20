@@ -45,6 +45,7 @@
                                     <th width="30%">Material / Service</th>
                                     <th width="33%">Description</th>
                                     <th width="10%">Quantity</th>
+                                    <th width="10%">Unit</th>
                                     <th width="12%"></th>
                                 </tr>
                             </thead>
@@ -53,11 +54,14 @@
                                     <td>{{ index + 1 }}</td>
                                     <td v-if="data.material_id != null">Material</td>
                                     <td v-else-if="data.service_id != null">Service</td>
-                                    <td v-if="data.material_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.name)">{{ data.material.code }} - {{ data.material.name }}</td>
-                                    <td v-else-if="data.service_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.service.name)">{{ data.service.code }} - {{ data.service.name }}</td>
+                                    <td v-if="data.material_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.description)">{{ data.material.code }} - {{ data.material.description }}</td>
+                                    <td v-else-if="data.service_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.service.description)">{{ data.service.code }} - {{ data.service.description }}</td>
                                     <td v-if="data.material_id != null">{{ data.material.description }}</td>
                                     <td v-else-if="data.service_id != null">{{ data.service.description }}</td>
                                     <td>{{ data.quantity }}</td>
+                                    <td v-if="data.material_id != null && data.material.uom != null">{{ data.material.uom.unit }}</td>
+                                    <td v-else-if="data.service_id != null">-</td>
+                                    <td v-else>-</td>
                                     <td class="p-l-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(data,index)">
                                             EDIT
@@ -76,25 +80,25 @@
                                             <option v-for="(type, index) in types" :value="type">{{ type }}</option>
                                         </selectize>    
                                     </td>
-                                    <td class="no-padding">
+                                    <td colspan="2" class="no-padding">
                                         <template v-if="input.type == ''">
                                             <selectize id="material" v-model="input.material_id" :settings="mixSettings" disabled>
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>
                                         </template>
                                         <template v-else-if="input.type == 'Material'">
                                             <selectize id="material" v-model="input.material_id" :settings="mixSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>    
                                         </template>
                                         <template v-else-if="input.type == 'Service'">
                                             <selectize id="service" v-model="input.service_id" :settings="mixSettings">
-                                                <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
+                                                <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
                                             </selectize>    
                                         </template>
                                     </td>
-                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
                                     <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
+                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
                                     <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                         <div class="btn-group">
                                             ADD
@@ -120,22 +124,22 @@
                                         <div class="col-sm-12" v-show="editInput.type == 'Material'">
                                             <label for="type" class="control-label">Material</label>
                                             <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>
                                         </div>
                                         <div class="col-sm-12" v-show="editInput.type == 'Service'">
                                             <label for="type" class="control-label">Service</label>
                                             <selectize id="edit_modal" v-model="editInput.service_id" :settings="serviceSettings">
-                                                <option v-for="(service, index) in services_modal" :value="service.id">{{ service.code }} - {{ service.name }}</option>
+                                                <option v-for="(service, index) in services_modal" :value="service.id">{{ service.code }} - {{ service.description }}</option>
                                             </selectize>
                                         </div>
-                                        <div class="col-sm-12">
-                                            <label for="description" class="control-label">Description</label>
-                                            <input type="text" id="description" v-model="editInput.description" class="form-control" disabled>
-                                        </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-6">
                                             <label for="quantity" class="control-label">Quantity</label>
                                             <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="quantity" class="control-label">Unit</label>
+                                            <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -179,6 +183,7 @@
             quantity : "",
             quantityInt : 0,
             type : "",
+            unit: "",
         },
         editInput : {
             wbs_id : @json($wbs->id),
@@ -188,7 +193,8 @@
             quantity : "",
             quantityInt : 0,
             description : "",
-            id : ""
+            id : "",
+            unit: "",
         },
         mixSettings: {
             placeholder: 'Please Select Material / Service'
@@ -386,6 +392,7 @@
                     this.getNewModalMaterials(jsonMaterialId);
                     this.editInput.material_id = data.material_id;
                     this.editInput.type = 'Material';
+                    this.editInput.unit = data.material.uom.unit;
                 }else if(data.service_id != null){
                     var service_id = JSON.stringify(this.service_id);
                     service_id = JSON.parse(service_id);
@@ -401,6 +408,8 @@
                     this.getNewModalServices(jsonServiceId);
                     this.editInput.service_id = data.service_id;
                     this.editInput.type = 'Service';
+                    this.editInput.unit = "-";
+
                 }
 
                 this.editInput.quantity = data.quantity;
@@ -549,9 +558,11 @@
                         }else{
                             this.input.description = data.description;
                         }
+                        this.input.unit = data.uom.unit;
                     });
                 }else{
                     this.input.description = "";
+                    this.input.unit = "";
                 }
             },
             'input.service_id': function(newValue){
@@ -562,9 +573,11 @@
                         }else{
                             this.input.description = data.description;
                         }
+                        this.input.unit = "-";
                     });
                 }else{
                     this.input.description = "";
+                    this.input.unit = "";
                 }
             },
             'input.quantity': function(newValue){

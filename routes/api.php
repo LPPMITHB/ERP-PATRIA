@@ -34,6 +34,7 @@ Route::get('/getBomDetail/{id}', 'BOMController@getBomDetailAPI')->name('api.bom
 Route::get('/getMaterialsBOM/{id}', 'BOMController@getMaterialsAPI')->name('api.bom.getMaterialsAPI');
 Route::get('/getServicesBOM/{id}', 'BOMController@getServicesAPI')->name('api.bom.getServicesAPI');
 Route::get('/getPRBom/{id}', 'BOMController@getPRAPI')->name('api.bom.getPRAPI');
+Route::get('/getBomHeader/{id}', 'BOMController@getBomHeaderAPI')->name('api.bom.getBomHeaderAPI');
 
 // bos
 Route::get('/getServiceBOS/{id}', 'BOSController@getServiceAPI')->name('api.bos.getServiceAPI');

@@ -26,7 +26,7 @@ class MstBomTableSeeder extends Seeder
                 'wbs_id' => 4,
                 'branch_id' => 1,
                 'user_id' => 5,
-                'status' => 1,
+                'status' => 0,
                 'created_at' => '2019-01-15 09:56:21',
                 'updated_at' => '2019-01-15 09:56:21',
             ),

@@ -196,6 +196,14 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Confirm Bom',
+            'menu_id' => $manageBOM,
+            'middleware' => 'confirm-bom',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //BOM Repair
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $bomRepair =  Menu::where('name','BOM / BOS')->where('menu_id',$repair)->select('id')->first()->id;
@@ -230,6 +238,14 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Bom Repair',
             'menu_id' => $manageBOMRepair,
             'middleware' => 'edit-bom-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Confirm Bom Repair',
+            'menu_id' => $manageBOMRepair,
+            'middleware' => 'confirm-bom-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
