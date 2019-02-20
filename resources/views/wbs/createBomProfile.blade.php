@@ -107,16 +107,16 @@
                                         <div class="col-sm-12">
                                             <label for="type" class="control-label">Material</label>
                                             <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>
                                         </div>
-                                        <div class="col-sm-12">
-                                            <label for="description" class="control-label">Description</label>
-                                            <input type="text" id="description" v-model="editInput.description" class="form-control" disabled>
-                                        </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-6">
                                             <label for="quantity" class="control-label">Quantity</label>
                                             <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="quantity" class="control-label">Unit</label>
+                                            <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
                                         </div>
                                         <div class="col-sm-12">
                                             <label for="type" class="control-label">Source</label>
@@ -125,7 +125,6 @@
                                             </selectize>
                                         </div>
                                     </div>
-                                </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update()">SAVE</button>
                                 </div>
@@ -223,6 +222,25 @@
             }
         },
         methods: {
+            refreshTooltip: function(code,description){
+                Vue.directive('tooltip', function(el, binding){
+                    if(el.id == code){
+                        $(el).tooltip('destroy');
+                        $(el).tooltip({
+                            title: el.id,
+                            placement: binding.arg,
+                            trigger: 'hover'             
+                        })
+                    }else if(el.id == description){
+                        $(el).tooltip('destroy');
+                        $(el).tooltip({
+                            title: el.id,
+                            placement: binding.arg,
+                            trigger: 'hover'             
+                        })
+                    }
+                })
+            },
             buildTable(){
                 $('#bom-profile').DataTable().destroy();
                 this.$nextTick(function() {
@@ -313,6 +331,7 @@
                 this.editInput.quantityInt = parseInt((data.quantity+"").replace(/,/g , ''));
                 this.editInput.source = data.source;
                 this.editInput.id = data.id;
+                this.editInput.unit = data.material.uom.unit;
             },
             submitToTable(){
                 if(this.input.material_id != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
