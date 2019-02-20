@@ -111,7 +111,7 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Material Name</th>
+                            <th width="40%">Material Desc.</th>
                             <th width="25%">Quantity</th>
                             <th width="30%">WBS Name</th>
                         </tr>
@@ -120,7 +120,7 @@
                         @foreach($modelMR->MaterialRequisitionDetails as $MRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td> {{ $MRD->material->code }} - {{ $MRD->material->name }}</td>
+                                <td> {{ $MRD->material->code }} - {{ $MRD->material->description }}</td>
                                 <td>{{ number_format($MRD->quantity) }}</td>
                                 <td>{{ $MRD->wbs != null ? $MRD->wbs->number : "-" }}</td>
                             </tr>

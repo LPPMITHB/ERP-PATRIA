@@ -486,6 +486,7 @@ class ProjectController extends Controller
             $project->project_type = $request->project_type;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
+            $project->person_in_charge = $request->person_in_charge;
             $project->class_contact_person_name = $request->class_contact_person_name;
             $project->class_contact_person_phone = $request->class_contact_person_phone;
             $project->class_contact_person_email = $request->class_contact_person_email;
