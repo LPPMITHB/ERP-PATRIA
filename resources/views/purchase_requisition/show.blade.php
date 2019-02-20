@@ -154,7 +154,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 @if($modelPR->type == 1)
-                                    <td class="tdEllipsis">{{ $PRD->material->code }} - {{ $PRD->material->name }}</td>
+                                    <td class="tdEllipsis">{{ $PRD->material->code }} - {{ $PRD->material->description }}</td>
                                 @else
                                     <td class="tdEllipsis">{{ $PRD->resource->code }} - {{ $PRD->resource->name }}</td>
                                 @endif
@@ -164,7 +164,7 @@
                                 @else
                                     <td>Pcs</td>
                                 @endif
-                                <td class="tdEllipsis">{{ isset($PRD->wbs) ? $PRD->wbs->number : '-' }}</td>
+                                <td class="tdEllipsis">{{ isset($PRD->wbs) ? $PRD->wbs->number." - ".$PRD->wbs->description : '-' }}</td>
                                 <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
                                 <td>{{ isset($PRD->required_date) ? date('d-m-Y', strtotime($PRD->required_date)) : '-' }}</td>
                             </tr>
