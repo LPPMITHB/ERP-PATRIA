@@ -585,10 +585,11 @@ var vm = new Vue({
         'newWbs.planned_deadline': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
-            
-            var deadline = new Date(newValue);
+
+            var deadline = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
+            
             if(deadline < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -607,9 +608,10 @@ var vm = new Vue({
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
             
-            var deadline = new Date(newValue);
+            var deadline = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
+
             if(deadline < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
