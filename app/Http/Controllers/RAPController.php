@@ -272,9 +272,12 @@ class RAPController extends Controller
                 }
             }
             $TempwbsCost = 0;
-            $wbsCost = self::getwbsCost($wbs,$TempwbsCost,$raps,$costs);
-
-            $totalCost = $wbsCost;
+            $wbsCost = Collection::make();
+            self::getWbsCost($wbs,$TempwbsCost,$raps,$costs, $wbsCost);
+            $totalCost = 0;
+            foreach($wbsCost as $cost){
+                $totalCost += $cost;
+            }
 
             if($wbs->wbs){
                 $data->push([
@@ -334,34 +337,30 @@ class RAPController extends Controller
         return view('rap.viewPlannedCost', compact('project','costs','data','route'));
     }
 
-    public function getWbsCost($wbs,$wbsCost,$raps,$costs){
+    public function getWbsCost($wbs,$wbsCost,$raps,$costs, $finalCost){
         if(count($wbs->wbss)>0){
             $RapCost = 0;
             foreach($raps as $rap){
                 if($rap->bom->wbs_id == $wbs->id){
-                    foreach($rap->rapDetails as $RD){
-                        $RapCost += $RD->price;
-                    }
+                    $RapCost += $rap->total_price;
                 }
             }
-
             $otherCost = 0;
             foreach($costs as $cost){
                 if($cost->wbs_id == $wbs->id){
                     $otherCost += $cost->plan_cost;
                 }
             } 
-            $wbsCost += $RapCost + $otherCost;
+            $wbsCost = $RapCost + $otherCost;
+            $finalCost->push($wbsCost);
             foreach($wbs->wbss as $wbs){
-                return self::getWbsCost($wbs,$wbsCost,$raps,$costs);
+                self::getWbsCost($wbs,$wbsCost,$raps,$costs,$finalCost);
             }
         }else{
             $RapCost = 0;
             foreach($raps as $rap){
                 if($rap->bom->wbs_id == $wbs->id){
-                    foreach($rap->rapDetails as $RD){
-                        $RapCost += $RD->price;
-                    }
+                    $RapCost += $rap->total_price;
                 }
             }
 
@@ -371,9 +370,8 @@ class RAPController extends Controller
                     $otherCost += $cost->plan_cost;
                 }
             } 
-            $wbsCost += $RapCost + $otherCost;
-            return $wbsCost;
-            exit();
+            $wbsCost = $RapCost + $otherCost;
+            $finalCost->push($wbsCost);
         }
     }
 

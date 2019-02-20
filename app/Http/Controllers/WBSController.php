@@ -428,7 +428,8 @@ class WBSController extends Controller
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
-        $array[$wbs->number] = "";
+        
+        $array["WBS ".$wbs->number] = "";
         return view('wbs.createSubWBS', compact('project', 'wbs','array','menu','wbs_profiles'));
     }
 
@@ -681,16 +682,16 @@ class WBSController extends Controller
         if ($wbs) {
             if($wbs->wbs){
                 if($menu == 'building'){
-                    $array_reverse[$wbs->number] = route('wbs.createSubWBS',[$project_id,$wbs->wbs->id]);
+                    $array_reverse["WBS ".$wbs->number] = route('wbs.createSubWBS',[$project_id,$wbs->wbs->id]);
                 }else{
-                    $array_reverse[$wbs->number] = route('wbs_repair.createSubWBS',[$project_id,$wbs->wbs->id]);
+                    $array_reverse["WBS ".$wbs->number] = route('wbs_repair.createSubWBS',[$project_id,$wbs->wbs->id]);
                 }
                 return self::getParents($wbs->wbs,$array_reverse, $project_id, $iteration,$menu);
             }else{
                 if($menu == 'building'){
-                    $array_reverse[$wbs->number] = route('wbs.createSubWBS',[$project_id,$wbs->id]);
+                    $array_reverse["WBS ".$wbs->number] = route('wbs.createSubWBS',[$project_id,$wbs->id]);
                 }else{
-                    $array_reverse[$wbs->number] = route('wbs_repair.createSubWBS',[$project_id,$wbs->id]);
+                    $array_reverse["WBS ".$wbs->number] = route('wbs_repair.createSubWBS',[$project_id,$wbs->id]);
                 }
                 return $array_reverse;
             }
