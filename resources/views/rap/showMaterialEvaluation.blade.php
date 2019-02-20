@@ -78,7 +78,7 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="25%">Material Code</th>
+                            <th width="25%">Material Number</th>
                             <th width="25%">Material Description</th>
                             <th width="15%">Quantity</th>
                             <th width="15%">Used</th>

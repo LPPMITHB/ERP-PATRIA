@@ -79,7 +79,7 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material Code</th>
+                                    <th width="30%">Material Number</th>
                                     <th width="30%">Material Description</th>
                                     <th width="15%">Quantity</th>
                                     <th width="25%">Cost per pcs (Rp.)</th>
