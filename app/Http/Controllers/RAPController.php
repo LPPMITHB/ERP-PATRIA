@@ -178,7 +178,8 @@ class RAPController extends Controller
                         foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                             if ($mrd->wbs_id == $id) {
                                 $materialEvaluation->push([
-                                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                    "material_code" => $bomDetail->material->code,
+                                    "material_description" => $bomDetail->material->description,
                                     "quantity" => $bomDetail->quantity,
                                     "used" => $mrd->issued,
                                 ]);
@@ -186,7 +187,8 @@ class RAPController extends Controller
                         }
                     }else{
                         $materialEvaluation->push([
-                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                            "material_code" => $bomDetail->material->code,
+                            "material_description" => $bomDetail->material->description,
                             "quantity" => $bomDetail->quantity,
                             "used" => 0,
                         ]);
@@ -721,7 +723,7 @@ class RAPController extends Controller
         return response(Cost::where('project_id',$id)->with('wbs')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getAllWorksCostAPI($project_id){
+    public function getAllWbssCostAPI($project_id){
         $works = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
         return response($works, Response::HTTP_OK);
     }

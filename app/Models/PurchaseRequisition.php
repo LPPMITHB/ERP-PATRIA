@@ -33,4 +33,8 @@ class PurchaseRequisition extends Model
         return $this->belongsTo('App\Models\BusinessUnit');
     }
 
+    public function bom()
+    {
+        return $this->belongsTo('App\Models\Bom');
+    }
 }

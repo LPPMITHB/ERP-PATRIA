@@ -16,8 +16,7 @@ class CreateMstServiceTable extends Migration
         Schema::create('mst_service', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->string('cost_standard_price');
             $table->string('status')->default(1);
             $table->timestamps();
