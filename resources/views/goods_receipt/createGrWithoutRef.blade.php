@@ -49,8 +49,9 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 17%">Material Code</th>
+                                            <th style="width: 17%">Material Number</th>
                                             <th style="width: 20%">Material Description</th>
+                                            <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Received</th>
                                             <th style="width: 28%">Storage Location</th>
                                             <th style="width: 10%">Received Date</th>
@@ -62,6 +63,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }}</td>
                                             <td class="tdEllipsis">{{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="tdEllipsis">{{ material.sloc_name }}</td>
                                             <td class="tdEllipsis">{{ material.received_date }}</td>
@@ -82,6 +84,9 @@
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control width100" v-model="dataInput.unit" disabled>
                                             </td>
                                             <td class="p-l-0">
                                                 <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Received Quantity">
@@ -200,6 +205,7 @@
             sloc_id : "",
             sloc_name : "",
             received_date: "",
+            unit:"",
 
         },
         editInput : {
@@ -212,6 +218,8 @@
             sloc_id : "",
             sloc_name : "",
             received_date: "",
+            unit:"",
+
         },
         material_id:[],
         material_id_modal:[],
@@ -398,6 +406,7 @@
                 var material_id = this.dataInput.material_id;
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterialGR/'+material_id).then(({ data }) => {
+                    // this.dataInput.unit = data.uom.unit;
                     this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
 
@@ -414,6 +423,7 @@
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
                     this.dataInput.sloc_id = "";
+                    this.dataInput.unit = "";
                     this.dataInput.sloc_name = "";
                     this.dataInput.received_date = "";
                     

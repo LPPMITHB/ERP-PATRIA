@@ -126,7 +126,7 @@
                                     @if($GID->quantity > 0)
                                         <tr>
                                             <td style="font-size: 11px" width="4%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $GID->material->code }} - {{ $GID->material->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $GID->material->code }}</td>
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $GID->material->description }}</td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord">{{ $GID->material->uom->unit     }}</td>
                                             <td style="font-size: 11px" width="13%" class="tdBreakWord">{{ number_format($GID->quantity) }}</td>

@@ -119,7 +119,7 @@
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="5%" class="text-center">No.</th>
-                                    <th style="font-size: 11px" width="15%" class="text-center" >Material Code</th>
+                                    <th style="font-size: 11px" width="15%" class="text-center" >Material Number</th>
                                     <th style="font-size: 11px" width="25%" class="text-center">Material Name</th>
                                     <th style="font-size: 11px" width="8%" class="text-center">Qty</th>
                                     <th style="font-size: 11px" width="7%" class="text-center">Unit</th>

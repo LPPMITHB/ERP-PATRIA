@@ -41,9 +41,10 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material</th>
-                                    <th width="33%">Description</th>
+                                    <th width="25%">Material Number</th>
+                                    <th width="28%">Material Description</th>
                                     <th width="10%">Quantity</th>
+                                    <th width="10%">Unit</th>
                                     <th width="10%">Source</th>
                                     <th width="12%"></th>
                                 </tr>
@@ -51,10 +52,11 @@
                             <tbody>
                                 <tr v-for="(data, index) in materialTable">
                                     <td>{{ index + 1 }}</td>
-                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.name)">{{ data.material.code }} - {{ data.material.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.name)">{{ data.material.code }}</td>
                                     <td v-if="data.material.description != null">{{ data.material.description }}</td>
                                     <td v-else>-</td>
                                     <td>{{ data.quantity }}</td>
+                                    <td>{{ data.material.uom.unit }}</td>
                                     <td>{{ data.source }}</td>
                                     <td class="p-l-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(data,index)">
@@ -69,13 +71,13 @@
                             <tfoot>
                                 <tr>
                                     <td>{{newIndex}}</td>
-                                    <td class="no-padding">
+                                    <td colspan="2" class="no-padding">
                                         <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                         </selectize>    
                                     </td>
-                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
                                     <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                    <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
                                     <td class="no-padding">
                                         <selectize v-model="input.source" :settings="sourceSettings">
                                             <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
@@ -105,16 +107,16 @@
                                         <div class="col-sm-12">
                                             <label for="type" class="control-label">Material</label>
                                             <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>
                                         </div>
-                                        <div class="col-sm-12">
-                                            <label for="description" class="control-label">Description</label>
-                                            <input type="text" id="description" v-model="editInput.description" class="form-control" disabled>
-                                        </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-6">
                                             <label for="quantity" class="control-label">Quantity</label>
                                             <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="quantity" class="control-label">Unit</label>
+                                            <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
                                         </div>
                                         <div class="col-sm-12">
                                             <label for="type" class="control-label">Source</label>
@@ -123,7 +125,6 @@
                                             </selectize>
                                         </div>
                                     </div>
-                                </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update()">SAVE</button>
                                 </div>
@@ -221,6 +222,25 @@
             }
         },
         methods: {
+            refreshTooltip: function(code,description){
+                Vue.directive('tooltip', function(el, binding){
+                    if(el.id == code){
+                        $(el).tooltip('destroy');
+                        $(el).tooltip({
+                            title: el.id,
+                            placement: binding.arg,
+                            trigger: 'hover'             
+                        })
+                    }else if(el.id == description){
+                        $(el).tooltip('destroy');
+                        $(el).tooltip({
+                            title: el.id,
+                            placement: binding.arg,
+                            trigger: 'hover'             
+                        })
+                    }
+                })
+            },
             buildTable(){
                 $('#bom-profile').DataTable().destroy();
                 this.$nextTick(function() {
@@ -311,6 +331,7 @@
                 this.editInput.quantityInt = parseInt((data.quantity+"").replace(/,/g , ''));
                 this.editInput.source = data.source;
                 this.editInput.id = data.id;
+                this.editInput.unit = data.material.uom.unit;
             },
             submitToTable(){
                 if(this.input.material_id != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
@@ -446,9 +467,12 @@
                         }else{
                             this.input.description = data.description;
                         }
+                        this.input.unit = data.uom.unit;
+
                     });
                 }else{
                     this.input.description = "";
+                    this.input.unit = "";
                 }
             },
             'input.quantity': function(newValue){

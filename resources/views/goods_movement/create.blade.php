@@ -79,8 +79,8 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width: 5%">No</th>
-                                                    <th style="width: 20%">Material Code</th>
-                                                    <th style="width: 45%">Material Name</th>
+                                                    <th style="width: 20%">Material Number</th>
+                                                    <th style="width: 45%">Material Description</th>
                                                     <th style="width: 15%">Avaiable Qty</th>
                                                     <th style="width: 15%">Transfer Qty</th>
                                                 </tr>
@@ -89,7 +89,7 @@
                                                 <tr v-for="(sld,index) in dataSLD" v-if="sld.available > 0">
                                                     <td>{{ index + 1 }}</td>
                                                     <td class="tdEllipsis">{{ sld.material.code }}</td>
-                                                    <td class="tdEllipsis">{{ sld.material.name }}</td>
+                                                    <td class="tdEllipsis">{{ sld.material.description }}</td>
                                                     <td class="tdEllipsis">{{ sld.quantity_rn }}</td>
                                                     <td class="no-padding">
                                                         <input class="form-control width100" v-model="sld.quantity" placeholder="Please Input Quantity">

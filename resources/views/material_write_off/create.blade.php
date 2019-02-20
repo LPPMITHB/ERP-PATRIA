@@ -71,7 +71,7 @@
                                     </td>
                                     <td class="p-l-0 textLeft no-padding">
                                         <selectize id="material" v-model="dataInput.material_id" :settings="materialSettings">
-                                            <option v-for="(slocDetail,index) in slocDetails" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.name }}</option>
+                                            <option v-for="(slocDetail,index) in slocDetails" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                         </selectize>
                                     </td>
                                     <td>
@@ -109,7 +109,7 @@
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="materialedit" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(slocDetail,index) in slocDetails" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.name }}</option>
+                                                    <option v-for="(slocDetail,index) in slocDetails" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
@@ -240,7 +240,7 @@ var vm = new Vue({
             $('div.overlay').show();
                 window.axios.get('/api/getMaterials/'+material_id).then(({ data }) => {
                     
-                    this.dataInput.material_name = data.name;
+                    this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
 
                     window.axios.get('/api/getSloc/'+sloc_id).then(({ data }) => {
@@ -292,7 +292,7 @@ var vm = new Vue({
             material.available = this.editInput.available;
 
             window.axios.get('/api/getMaterials/'+this.editInput.material_id).then(({ data }) => {
-                material.material_name = data.name;
+                material.material_name = data.description;
                 material.material_code = data.code;
 
                     window.axios.get('/api/getSloc/'+this.editInput.sloc_id).then(({ data }) => {

@@ -151,7 +151,7 @@ class ProjectController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "text" => $wbs->number." - ".$wbs->description." | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $route.$wbs->id],
                     ]);
@@ -187,7 +187,7 @@ class ProjectController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                        "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $route.$wbs->id],
                     ]);
@@ -218,7 +218,7 @@ class ProjectController extends Controller
                 $dataWbs->push([
                     "id" => $wbs->code , 
                     "parent" => $project->number,
-                    "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                    "text" => $wbs->number." - ".$wbs->description." | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                     "icon" => "fa fa-suitcase",
                     "a_attr" =>  ["href" => $route.$wbs->id],
                 ]);
@@ -250,7 +250,7 @@ class ProjectController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%",
+                        "text" => $wbs->number." - ".$wbs->description." | Weight : (".$totalWeight."% / ".$wbs->weight."%",
                         "icon" => "fa fa-suitcase",
                     ]);
                     foreach($wbs->activities as $activity){
@@ -265,7 +265,7 @@ class ProjectController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                        "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                         "icon" => "fa fa-suitcase",
                     ]);
                 }
@@ -285,7 +285,7 @@ class ProjectController extends Controller
                 $dataWbs->push([
                     "id" => $wbs->code , 
                     "parent" => $project->number,
-                    "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                    "text" => $wbs->number." - ".$wbs->description." | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                     "icon" => "fa fa-suitcase",
                 ]);
             } 
@@ -868,15 +868,15 @@ class ProjectController extends Controller
             }
             
             $planned->push([
-                "wbs_number" => $wbs->number,
+                "wbs_number" => $wbs->number." - ".$wbs->description,
                 "cost" => $plannedCostPerWbs,                   
-                ]);
+            ]);
                 
-                $actual->push([
-                    "wbs_number" => $wbs->number,
-                    "cost" => $actualCostPerWbs,                   
-                    ]);
-                }
+            $actual->push([
+                "wbs_number" => $wbs->number." - ".$wbs->description,
+                "cost" => $actualCostPerWbs,                   
+            ]);
+        }
 
         $modelWBS = WBS::where('project_id',$id)->get();
         foreach($modelWBS as $wbs){
@@ -1187,7 +1187,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#0b710b; font-weight:bold; color:white;"], 
                     ]);
@@ -1195,7 +1195,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:red; font-weight:bold; color:white;"],
                     ]);
@@ -1203,7 +1203,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#f39c12; font-weight:bold; color:white;"],
                     ]);
@@ -1211,7 +1211,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#3db9d3; font-weight:bold; color:white;"],
                     ]);
@@ -1221,7 +1221,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#0b710b; font-weight:bold; color:white;"],
                     ]);
@@ -1229,7 +1229,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:red; font-weight:bold; color:white;"],
                     ]);
@@ -1237,7 +1237,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#f39c12; font-weight:bold; color:white;"],
                     ]);
@@ -1245,7 +1245,7 @@ class ProjectController extends Controller
                     $outstanding_item->push([
                         "id" => $wbs->code , 
                         "parent" => $project->number,
-                        "text" => $wbs->number.' <b>| Progress : '.$wbs->progress.' %</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>| Progress : '.$wbs->progress.' %</b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["style" => "background-color:#3db9d3; font-weight:bold; color:white;"],
                     ]);
@@ -1295,9 +1295,9 @@ class ProjectController extends Controller
         $wbss = $project->wbss;
         foreach($activities as $activity){
             if($activity->predecessor != null){
-                $predecessor = json_decode($activity->predecessor);
-                foreach($predecessor as $activity_id){
-                    $activityPredecessor = Activity::find($activity_id);
+                $predecessors = json_decode($activity->predecessor);
+                foreach($predecessors as $predecessor){
+                    $activityPredecessor = Activity::find($predecessor[0]);
                     $links->push([
                         "id" => $index, 
                         "source"=>$activityPredecessor->code,
@@ -1405,7 +1405,7 @@ class ProjectController extends Controller
                     if($wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -1416,7 +1416,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration, 
@@ -1429,7 +1429,7 @@ class ProjectController extends Controller
                     if($wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -1440,7 +1440,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration, 
@@ -1453,7 +1453,7 @@ class ProjectController extends Controller
                     if($wbs->progress == 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -1464,7 +1464,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -1478,7 +1478,7 @@ class ProjectController extends Controller
                     if($wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -1488,7 +1488,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
@@ -1500,7 +1500,7 @@ class ProjectController extends Controller
                     if($wbs->progress != 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -1510,7 +1510,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,  
@@ -1522,7 +1522,7 @@ class ProjectController extends Controller
                     if($wbs->progress == 100){
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
@@ -1532,7 +1532,7 @@ class ProjectController extends Controller
                     }else{
                         $data->push([
                             "id" => $wbs->code , 
-                            "text" => $wbs->number." | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
                             "duration" => $duration,
