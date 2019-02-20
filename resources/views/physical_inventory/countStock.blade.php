@@ -70,7 +70,8 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 45%">Material Name</th>
+                                <th style="width: 20%">Material Number</th>
+                                <th style="width: 25%">Material Description</th>
                                 <th style="width: 30%">Storage Location</th>
                                 <th style="width: 10%">Count</th>
                                 <th style="width: 10%">Difference</th>
@@ -79,7 +80,8 @@
                         <tbody>
                             <tr v-for="(data,index) in snapshotDetails">
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ data.material.name }}</td>
+                                <td>{{ data.material.code }}</td>
+                                <td>{{ data.material.description }}</td>
                                 <td>{{ data.storage_location.name }}</td>
                                 <td class="p-l-0">
                                     <input  v-on:keyup="count(index)" v-on:keydown="count(index)" v-model="snapshotDetails[index].count" type="text" class="form-control width100" name="diff">

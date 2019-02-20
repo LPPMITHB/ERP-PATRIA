@@ -77,8 +77,8 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="30%">Material Code</th>
-                            <th width="40%">Material Name</th>
+                            <th width="30%">Material Number</th>
+                            <th width="40%">Material Description</th>
                             <th width="25%">Quantity</th>
                         </tr>
                     </thead>
@@ -87,7 +87,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $GMD->material->code }}</td>
-                                <td>{{ $GMD->material->name }}</td>
+                                <td>{{ $GMD->material->description }}</td>
                                 <td>{{ number_format($GMD->quantity) }}</td>
                             </tr>
                         @endforeach
