@@ -37,4 +37,9 @@ class Bom extends Model
     {
         return $this->hasOne('App\Models\Rap');
     }
+
+    public function purchaseRequisition()
+    {
+        return $this->hasOne('App\Models\PurchaseRequisition');
+    }
 }

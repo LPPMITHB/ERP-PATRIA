@@ -372,6 +372,8 @@ Route::name('yard.')->prefix('yard')->group(function() {
 
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
+    Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom');
+
     Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
 
     Route::put('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
@@ -393,11 +395,15 @@ Route::name('bom.')->prefix('bom')->group(function() {
     Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom');
+
+    Route::delete('/deleteMaterial/{id}', 'BOMController@deleteMaterial')->name('deleteMaterial')->middleware('can:edit-bom');
 });
 
 //BOM Repair Routes
 Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
+
+    Route::put('/confirmBom', 'BOMController@confirmBom')->name('confirmBom')->middleware('can:confirm-bom-repair');
 
     Route::put('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
 
@@ -419,7 +425,7 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
 
-    Route::patch('/destroy', 'BOMController@destroy')->name('destroy')->middleware('can:destroy-bom-repair');
+    Route::delete('/deleteMaterial/{id}', 'BOMController@deleteMaterial')->name('deleteMaterial')->middleware('can:edit-bom-repair');
 });
 
 //Project Routes

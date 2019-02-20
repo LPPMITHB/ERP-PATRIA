@@ -17,7 +17,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 p-b-50">
         <div class="box">
             <div class="box-body no-padding p-b-10">
                 <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.store') }}">
@@ -65,7 +65,7 @@
                             </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-5">
-                            <table class="table table-bordered tableFixed m-b-0">
+                            <table class="table table-bordered tableFixed m-b-0 tablePagingVue">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -94,6 +94,8 @@
                                             </a>
                                         </td>
                                     </tr>
+                                </tbody>
+                                <tfoot>
                                     <tr>
                                         <td>{{newIndex}}</td>
                                         <td colspan="2" class="no-padding">
@@ -114,10 +116,10 @@
                                             </div></a>
                                         </td>
                                     </tr>
-                                </tbody>
+                                </tfoot>
                             </table>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12 p-t-5">
                             <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                         </div>
                         <div class="modal fade" id="edit_item">
@@ -137,9 +139,13 @@
                                                     <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="quantity" class="control-label">Unit</label>
+                                                <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Source</label>
@@ -174,6 +180,7 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+
     var data = {
         submit: "ok",
         sources : ['Stock','WIP'],
@@ -330,6 +337,7 @@
                 this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
                 this.editInput.source = data.source;
+                this.editInput.unit = data.unit;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -357,6 +365,8 @@
             },
             submitToTable(){
                 if(this.input.material_id != "" && this.input.material_name != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                    $('div.overlay').show();
+
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
                     this.materialTable.push(data);
@@ -382,10 +392,10 @@
                     this.input.unit = "";
                     this.input.source = "Stock";
                     this.input.quantityInt = 0;
-
                 }
             },
             removeRow: function(materialId) {
+                $('div.overlay').show();
                 var index_materialId = "";
                 var index_materialTable = "";
 
@@ -413,6 +423,7 @@
                         var material = this.materialTable[this.editInput.index];
                         material.quantityInt = this.editInput.quantityInt;
                         material.quantity = this.editInput.quantity;
+                        material.unit = this.editInput.unit;
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
                         material.source = this.editInput.source;
