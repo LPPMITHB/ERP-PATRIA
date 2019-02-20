@@ -79,7 +79,8 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material Name</th>
+                                    <th width="30%">Material Code</th>
+                                    <th width="30%">Material Description</th>
                                     <th width="15%">Quantity</th>
                                     <th width="25%">Cost per pcs (Rp.)</th>
                                     <th width="25%">Sub Total Cost (Rp.)</th>
@@ -88,7 +89,8 @@
                             <tbody>
                                 <tr v-for="(rapd, index) in modelRAPD">
                                     <td>{{ index+1 }}</td>
-                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.name)">{{ rapd.material.code }} - {{ rapd.material.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.name)">{{ rapd.material.code }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.name)">{{ rapd.material.description }}</td>
                                     <td class="">{{ rapd.quantity }}</td>
                                     <td class="no-padding">
                                         <input v-model="rapd.price" class="form-control width100">
