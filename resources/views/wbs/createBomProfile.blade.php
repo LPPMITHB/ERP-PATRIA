@@ -41,9 +41,10 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material</th>
-                                    <th width="33%">Description</th>
+                                    <th width="25%">Material Number</th>
+                                    <th width="28%">Material Description</th>
                                     <th width="10%">Quantity</th>
+                                    <th width="10%">Unit</th>
                                     <th width="10%">Source</th>
                                     <th width="12%"></th>
                                 </tr>
@@ -51,10 +52,11 @@
                             <tbody>
                                 <tr v-for="(data, index) in materialTable">
                                     <td>{{ index + 1 }}</td>
-                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.name)">{{ data.material.code }} - {{ data.material.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.name)">{{ data.material.code }}</td>
                                     <td v-if="data.material.description != null">{{ data.material.description }}</td>
                                     <td v-else>-</td>
                                     <td>{{ data.quantity }}</td>
+                                    <td>{{ data.material.uom.unit }}</td>
                                     <td>{{ data.source }}</td>
                                     <td class="p-l-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(data,index)">
@@ -69,13 +71,13 @@
                             <tfoot>
                                 <tr>
                                     <td>{{newIndex}}</td>
-                                    <td class="no-padding">
+                                    <td colspan="2" class="no-padding">
                                         <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                         </selectize>    
                                     </td>
-                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
                                     <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                    <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
                                     <td class="no-padding">
                                         <selectize v-model="input.source" :settings="sourceSettings">
                                             <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
@@ -446,9 +448,12 @@
                         }else{
                             this.input.description = data.description;
                         }
+                        this.input.unit = data.uom.unit;
+
                     });
                 }else{
                     this.input.description = "";
+                    this.input.unit = "";
                 }
             },
             'input.quantity': function(newValue){

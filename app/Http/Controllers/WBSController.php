@@ -1059,7 +1059,7 @@ class WBSController extends Controller
     }
     
     public function getBomProfileAPI($wbs_id){
-        $bom = BomProfile::where('wbs_id',$wbs_id)->with('material','service')->get()->jsonSerialize();
+        $bom = BomProfile::where('wbs_id',$wbs_id)->with('material.uom','service')->get()->jsonSerialize();
 
         return response($bom, Response::HTTP_OK);
     }
