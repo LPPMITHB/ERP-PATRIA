@@ -127,27 +127,29 @@
                                 <tr>
                                     <th width="5%">No</th>
                                     <th width="10%">Type</th>
-                                    <th width="35%">Material Name</th>
-                                    <th width="40%">Description</th>
+                                    <th width="20%">Material Number</th>
+                                    <th width="45%">Material Description</th>
                                     <th width="10%">Quantity</th>
+                                    <th width="10%">Unit</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(bomDetail,index) in bomDetail">
                                     <td class="p-t-15 p-b-15">{{ index+1 }}</td>
                                     <template v-if="bomDetail.material_id != null">
-                                        <td >Material</td>
-                                        <td >{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
-                                        <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
-                                        <td v-else>-</td>
+                                        <td>Material</td>
+                                        <td>{{ bomDetail.material.code }}</td>
+                                        <td>{{ bomDetail.material.description }}</td>
+                                        <td>{{ bomDetail.quantity }}</td>
+                                        <td>{{ bomDetail.material.uom.unit }}</td>
                                     </template>
                                     <template v-else-if="bomDetail.service_id != null">
-                                        <td >Service</td>
-                                        <td >{{ bomDetail.service.code }} - {{ bomDetail.service.name }}</td>
-                                        <td v-if="bomDetail.service.description != null">{{ bomDetail.service.description }}</td>
-                                        <td v-else>-</td>
+                                        <td>Service</td>
+                                        <td>{{ bomDetail.service.code }}</td>
+                                        <td>{{ bomDetail.service.description }}</td>
+                                        <td>{{ bomDetail.quantity }}</td>
+                                        <td>-</td>
                                     </template>
-                                    <td>{{ bomDetail.quantity }}</td>
                                 </tr>
                             </tbody>
                         </table>

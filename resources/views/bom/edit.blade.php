@@ -9,7 +9,7 @@
             'Manage Bill Of Materials' => route('bom.indexProject'),
             'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
             'View Bill Of Material' => route('bom.show', ['id' => $modelBOM->id]),
-            'Edit Bill Of Material' => route('bom.edit', ['id' => $modelBOM->id]),
+            'Edit Bill Of Material' => ,
         ]
     ]
 )
@@ -46,10 +46,7 @@
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>WBS Information </b></div>
                                 
-                                <div class="col-xs-4 no-padding">Code</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.code)"><b>: {{wbs.code}}</b></div>
-                                
-                                <div class="col-xs-4 no-padding">Name</div>
+                                <div class="col-xs-4 no-padding">Number</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.number)"><b>: {{wbs.number}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Description</div>
@@ -345,14 +342,10 @@
                 var data = this.editInput;
                 data = JSON.stringify(data);
                 var bom_id = this.bom.id;
-
-                if(this.menu == "building"){
-                    var url = "{{ route('bom.update') }}";
-                }else{
-                    var url = "{{ route('bom_repair.update') }}";
-                }
+                var url = "{{ route('bom.update') }}";
 
                 window.axios.put(url,data).then((response) => {
+                    console.log(response.material_id)
                     iziToast.success({
                         title: 'Success Edit Material !',
                         position: 'topRight',
