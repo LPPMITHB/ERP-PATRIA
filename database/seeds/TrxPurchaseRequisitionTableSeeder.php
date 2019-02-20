@@ -23,7 +23,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'number' => 'PR-1900001',
                 'type' => 1,
                 'project_id' => 2,
-                'bom_id' => 4,
+                'bom_id' => NULL, // 4
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 2,
                 'description' => 'AUTO PR FOR PRO2-DUMMY2',
