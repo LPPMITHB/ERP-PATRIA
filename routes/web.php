@@ -403,7 +403,7 @@ Route::name('bom.')->prefix('bom')->group(function() {
 Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
 
-    Route::put('/confirmBom', 'BOMController@confirmBom')->name('confirmBom')->middleware('can:confirm-bom-repair');
+    Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom-repair');
 
     Route::put('/', 'BOMController@update')->name('update')->middleware('can:edit-bom-repair');
 

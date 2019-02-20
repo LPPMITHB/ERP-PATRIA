@@ -282,7 +282,7 @@ class BOMController extends Controller
         $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::where('id',$wbs->project_id)->with('ship','customer')->first();
-        $materials = Material::orderBy('code')->get()->jsonSerialize();
+        $materials = Material::orderBy('description')->get()->jsonSerialize();
         
         if($route == '/bom'){
             if($project->business_unit_id == 1){
@@ -292,7 +292,7 @@ class BOMController extends Controller
             }
         }elseif($route == '/bom_repair'){
             if($project->business_unit_id == 2){
-                $services = Service::orderBy('name')->get()->jsonSerialize();
+                $services = Service::orderBy('description')->get()->jsonSerialize();
                 return view('bom.createRepair', compact('project','materials','wbs','services'));
             }else{
                 return redirect()->route('bom_repair.indexProject')->with('error', 'WBS isn\'t exist, Please try again !');
@@ -498,9 +498,9 @@ class BOMController extends Controller
             $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
             $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
             $modelBOMDetail->quantity = $data['quantityInt'];
-            $modelBOMDetail->material_id = $data['material_id'];
-            $modelBOMDetail->material_id = $data['material_id'];
-            $modelBOMDetail->source = $data['source'];
+            $modelBOMDetail->material_id = ($data['material_id'] != '') ? $data['material_id'] : null;
+            $modelBOMDetail->service_id = ($data['service_id'] != '') ? $data['service_id'] : null;
+            $modelBOMDetail->source = isset($data['source']) ? $data['source'] : null ;
 
             if(!$modelBOMDetail->update()){
                 return redirect()->route('bom.edit',$modelBOMDetail->bom_id)->with('error','Failed to save, please try again !');
