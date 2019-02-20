@@ -35,7 +35,7 @@ class RolesTableSeeder extends Seeder
                 'create-service' => true,'list-service' => true,'show-service' => true,'edit-service' => true,
                 'create-unit-of-measurement' => true,'list-unit-of-measurement' => true,'show-unit-of-measurement' => true,'edit-unit-of-measurement' => true,
                 'create-vendor' => true,'list-vendor' => true,'show-vendor' => true,'edit-vendor' => true,
-                'create-bom' => true,'list-bom' => true,'show-bom' => true,'edit-bom' => true, 'confirm-bom' => true, 'delete-bom'
+                'create-bom' => true,'list-bom' => true,'show-bom' => true,'edit-bom' => true, 'confirm-bom' => true, 'delete-bom',
                 'create-bom-repair' => true,'list-bom-repair' => true,'show-bom-repair' => true,'edit-bom-repair' => true, 'confirm-bom-repair' => true,
                 'list-rap' => true,'show-rap' => true,'edit-rap' => true,
                 'list-rap-repair' => true,'show-rap-repair' => true,'edit-rap-repair' => true,
