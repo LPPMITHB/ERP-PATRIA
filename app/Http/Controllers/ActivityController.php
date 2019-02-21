@@ -41,8 +41,14 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
         $data = $request->json()->all();
-        $stringPredecessor = '['.implode(',', $data['predecessor']).']';
-
+        $predecessorArray = [];
+        foreach($data['allPredecessor'] as $predecessor){
+            $temp = [];
+            array_push($temp, $predecessor[0]);
+            array_push($temp, $predecessor[1]);
+            array_push($predecessorArray, $temp);
+            
+        }
         DB::beginTransaction();
         try {
             $activity = new Activity;
@@ -62,9 +68,8 @@ class ActivityController extends Controller
                 $activity->planned_end_date = $planEndDate->format('Y-m-d');
             }
 
-            if(count($data['predecessor']) >0){
-                $activity->predecessor = $stringPredecessor;
-                $refActivity = Activity::whereIn('id', json_decode($activity->predecessor))->orderBy('planned_end_date', 'desc')->first();
+            if(count($predecessorArray) >0){
+                $activity->predecessor = json_encode($predecessorArray);
             }
             $activity->weight = $data['weight']; 
             $activity->user_id = Auth::user()->id;
@@ -128,9 +133,16 @@ class ActivityController extends Controller
             $activity->planned_start_date = $planStartDate->format('Y-m-d');
             $activity->planned_end_date = $planEndDate->format('Y-m-d');
             $activity->weight = $data['weight']; 
-            if($data['predecessor'] != null){
-                $stringPredecessor = '['.implode(',', $data['predecessor']).']';
-                $activity->predecessor = $stringPredecessor;
+            if($data['allPredecessor'] != null){
+                $predecessorArray = [];
+                foreach($data['allPredecessor'] as $predecessor){
+                    $temp = [];
+                    array_push($temp, $predecessor[0]);
+                    array_push($temp, $predecessor[1]);
+                    array_push($predecessorArray, $temp);
+                    
+                }
+                $activity->predecessor = json_encode($predecessorArray);
             }else{
                 $activity->predecessor = null;
             }
@@ -543,8 +555,12 @@ class ActivityController extends Controller
 
     public function getLatestPredecessorAPI($id)
     {
-        $predecessor = json_decode($id);
-        $latestActivity = Activity::orderBy('planned_end_date', 'desc')->whereIn('id', $predecessor)->first()->jsonSerialize();
+        $predecessors = json_decode($id);
+        $arrayPredecessor = [];
+        foreach($predecessors as $predecessor){
+            array_push($arrayPredecessor, $predecessor[0]);
+        }
+        $latestActivity = Activity::orderBy('planned_end_date', 'desc')->whereIn('id', $arrayPredecessor)->first()->jsonSerialize();
 
         return response($latestActivity, Response::HTTP_OK);
 

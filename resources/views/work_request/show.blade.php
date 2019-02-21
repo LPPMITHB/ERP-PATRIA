@@ -125,10 +125,12 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="25%">Material Name</th>
+                            <th width="10%">Material Number</th>
+                            <th width="15%">Material Description</th>
+                            <th width="5%">Unit</th>
                             <th width="10%">Quantity</th>
                             <th width="23%">Work Name</th>
-                            <th width="15%">Description</th>
+                            <th width="10%">Description</th>
                             <th width="12%">Type</th>
                             <th width="10%">Required Date</th>
                         </tr>
@@ -137,7 +139,9 @@
                         @foreach($modelWR->workRequestDetails as $WRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->code}} - {{ $WRD->material->name }}">{{ $WRD->material->code }} - {{ $WRD->material->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->code}}">{{ $WRD->material->code }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->description}}">{{ $WRD->material->description }}</td>
+                                <td>{{ $WRD->material->uom->unit }}</td>
                                 <td>{{ number_format($WRD->quantity) }}</td>
                                 <td>{{ isset($WRD->wbs) ? $WRD->wbs->number : '-' }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{ isset($WRD->description) ? $WRD->description : '-' }}</td>

@@ -29,7 +29,7 @@ class StockManagementController extends Controller
         $storage_locations = StorageLocation::all();
         $warehouses = Warehouse::all();
         $materials = Material::all();
-        $stocks = Stock::with('material')->get();
+        $stocks = Stock::with('material','material.uom')->get();
 
         return view('stock_management.index', compact('storage_locations','materials','warehouses','stocks'));
     }
@@ -84,7 +84,7 @@ class StockManagementController extends Controller
         $data = array();
         
         $sloc = StorageLocation::where('id',$id)->first();
-        $slocDetails = StorageLocationDetail::where('storage_location_id',$sloc->id)->with('material')->get();
+        $slocDetails = StorageLocationDetail::where('storage_location_id',$sloc->id)->with('material','material.uom')->get();
         $data['sloc'] = $sloc;
         $data['slocDetail'] = $slocDetails;
         
@@ -145,7 +145,7 @@ class StockManagementController extends Controller
         $slocs = $warehouse->storageLocations;
         $sloc_ids = $slocs->pluck('id')->toArray();
 
-        $sloc_details = StorageLocationDetail::whereIn('storage_location_id',$sloc_ids)->with('material')->get();
+        $sloc_details = StorageLocationDetail::whereIn('storage_location_id',$sloc_ids)->with('material','material.uom')->get();
 
         return response($sloc_details, Response::HTTP_OK);
     } 

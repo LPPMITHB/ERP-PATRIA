@@ -178,7 +178,9 @@ class RAPController extends Controller
                         foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                             if ($mrd->wbs_id == $id) {
                                 $materialEvaluation->push([
-                                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                    "material_code" => $bomDetail->material->code,
+                                    "material_description" => $bomDetail->material->description,
+                                    "unit" => $bomDetail->material->uom->unit,
                                     "quantity" => $bomDetail->quantity,
                                     "used" => $mrd->issued,
                                 ]);
@@ -186,7 +188,9 @@ class RAPController extends Controller
                         }
                     }else{
                         $materialEvaluation->push([
-                            "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                            "material_code" => $bomDetail->material->code,
+                            "material_description" => $bomDetail->material->description,
+                            "unit" => $bomDetail->material->uom->unit,
                             "quantity" => $bomDetail->quantity,
                             "used" => 0,
                         ]);
@@ -244,9 +248,9 @@ class RAPController extends Controller
         foreach($costs as $cost){
             $totalCost += $cost->plan_cost;
         }
-        
+
         $data = Collection::make();
-        
+
         $data->push([
             "id" => $project->number , 
             "parent" => "#",
@@ -270,22 +274,25 @@ class RAPController extends Controller
                 }
             }
             $TempwbsCost = 0;
-            $wbsCost = self::getwbsCost($wbs,$TempwbsCost,$raps,$costs);
-
-            $totalCost = $wbsCost;
+            $wbsCost = Collection::make();
+            self::getWbsCost($wbs,$TempwbsCost,$raps,$costs, $wbsCost);
+            $totalCost = 0;
+            foreach($wbsCost as $cost){
+                $totalCost += $cost;
+            }
 
             if($wbs->wbs){
                 $data->push([
                     "id" => $wbs->code , 
                     "parent" => $wbs->wbs->code,
-                    "text" => $wbs->number.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
                     "icon" => "fa fa-suitcase"
                 ]);
             }else{
                 $data->push([
                     "id" => $wbs->code , 
                     "parent" => $project->number,
-                    "text" => $wbs->number.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
                     "icon" => "fa fa-suitcase"
                 ]);
             }  
@@ -297,63 +304,22 @@ class RAPController extends Controller
             $wbss = array_unique($wbss);
             foreach($wbss as $wbs){
                 $RapCost = 0;
-                foreach($raps as $rap){
-                    if($rap->bom->wbs_id == $wbs->id){
-                        foreach($rap->RapDetails as $RD){
-                            $RapCost += $RD->quantity * $RD->price;
-                        }
+                if($rap->bom->wbs_id == $wbs){
+                    $wbs_code = $rap->bom->wbs->code;
+                    foreach($rap->RapDetails as $RD){
+                        $RapCost += $RD->price;
                     }
                 }
-                $otherCost = 0;
-                foreach($costs as $cost){
-                    if($cost->wbs_id == $wbs->id){
-                        $otherCost += $cost->plan_cost;
-                    }
-                }
-                $TempwbsCost = 0;
-                $wbsCost = self::getwbsCost($wbs,$TempwbsCost,$raps,$costs);
-                
-                $totalCost = $wbsCost;
+                $data->push([
+                    "id" => 'WBS'.$wbs.'COST'.$RapCost.'RAP'.$rap->id , 
+                    "parent" => $wbs_code,
+                    "text" => $rap->number. ' - <b>Rp.'.number_format($RapCost).'</b>' ,
+                    "icon" => "fa fa-money"
+                ]);
+            }
+        }
 
-                if($wbs->wbs){
-                    $data->push([
-                        "id" => $wbs->code , 
-                        "parent" => $wbs->wbs->code,
-                        "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
-                        "icon" => "fa fa-suitcase"
-                        ]);
-                    }else{
-                        $data->push([
-                            "id" => $wbs->code , 
-                            "parent" => $project->number,
-                            "text" => $wbs->name.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
-                            "icon" => "fa fa-suitcase"
-                            ]);
-                        }  
-                    }
-                    
-                    foreach($raps as $rap){
-                        $wbss = [];
-                        array_push($wbss,$rap->bom->wbs_id);
-                        $wbss = array_unique($wbss);
-                        foreach($wbss as $wbs){
-                            $RapCost = 0;
-                            if($rap->bom->wbs_id == $wbs){
-                                $wbs_code = $rap->bom->wbs->code;
-                                foreach($rap->RapDetails as $RD){
-                                    $RapCost += $RD->price;
-                                }
-                            }
-                            $data->push([
-                                "id" => 'WBS'.$wbs.'COST'.$RapCost.'RAP'.$rap->id , 
-                                "parent" => $wbs_code,
-                                "text" => $rap->number. ' - <b>Rp.'.number_format($RapCost).'</b>' ,
-                                "icon" => "fa fa-money"
-                                ]);
-                            }
-                        }
-                        
-                        foreach($costs as $cost){
+        foreach($costs as $cost){
             if($cost->wbs_id == null){
                 $data->push([
                     "id" => 'COST'.$cost->id , 
@@ -371,36 +337,32 @@ class RAPController extends Controller
             }
         }
         return view('rap.viewPlannedCost', compact('project','costs','data','route'));
-        }
     }
-    public function getWbsCost($wbs,$wbsCost,$raps,$costs){
+
+    public function getWbsCost($wbs,$wbsCost,$raps,$costs, $finalCost){
         if(count($wbs->wbss)>0){
             $RapCost = 0;
             foreach($raps as $rap){
                 if($rap->bom->wbs_id == $wbs->id){
-                    foreach($rap->rapDetails as $RD){
-                        $RapCost += $RD->price;
-                    }
+                    $RapCost += $rap->total_price;
                 }
             }
-
             $otherCost = 0;
             foreach($costs as $cost){
                 if($cost->wbs_id == $wbs->id){
                     $otherCost += $cost->plan_cost;
                 }
             } 
-            $wbsCost += $RapCost + $otherCost;
+            $wbsCost = $RapCost + $otherCost;
+            $finalCost->push($wbsCost);
             foreach($wbs->wbss as $wbs){
-                return self::getWbsCost($wbs,$wbsCost,$raps,$costs);
+                self::getWbsCost($wbs,$wbsCost,$raps,$costs,$finalCost);
             }
         }else{
             $RapCost = 0;
             foreach($raps as $rap){
                 if($rap->bom->wbs_id == $wbs->id){
-                    foreach($rap->rapDetails as $RD){
-                        $RapCost += $RD->price;
-                    }
+                    $RapCost += $rap->total_price;
                 }
             }
 
@@ -410,9 +372,8 @@ class RAPController extends Controller
                     $otherCost += $cost->plan_cost;
                 }
             } 
-            $wbsCost += $RapCost + $otherCost;
-            return $wbsCost;
-            exit();
+            $wbsCost = $RapCost + $otherCost;
+            $finalCost->push($wbsCost);
         }
     }
 
@@ -575,11 +536,11 @@ class RAPController extends Controller
     public function edit(Request $request,$id)
     {
         $modelRap = Rap::findOrFail($id);
-        $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material','service')->get();
+        $modelRAPD = RapDetail::where('rap_id',$modelRap->id)->with('bom','material','service','material.uom')->get();
         $modelBOM = Bom::where('id',$modelRap->bom_id)->first();
         $project = Project::where('id',$modelRap->project_id)->first();
         $route = $request->route()->getPrefix();
-        
+
         if($route == "/rap"){
             return view('rap.edit', compact('modelRap','project','modelRAPD','modelBOM'));
         }elseif($route == "/rap_repair"){
@@ -762,7 +723,7 @@ class RAPController extends Controller
         return response(Cost::where('project_id',$id)->with('wbs')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getAllWorksCostAPI($project_id){
+    public function getAllWbssCostAPI($project_id){
         $works = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
         return response($works, Response::HTTP_OK);
     }

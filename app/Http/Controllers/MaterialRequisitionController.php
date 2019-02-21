@@ -163,7 +163,7 @@ class MaterialRequisitionController extends Controller
                 "mrd_id" => $mrd->id,
                 "material_id" => $mrd->material_id,
                 "material_code" => $mrd->material->code,
-                "material_name" => $mrd->material->name,
+                "material_description" => $mrd->material->description,
                 "quantity" => number_format($mrd->quantity),
                 "quantityInt" => $mrd->quantity,
                 "wbs_id" => $mrd->wbs_id,

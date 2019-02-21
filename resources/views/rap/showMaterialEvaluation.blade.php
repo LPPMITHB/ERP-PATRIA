@@ -78,7 +78,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="50%">Material Name</th>
+                            <th width="20%">Material Number</th>
+                            <th width="25%">Material Description</th>
+                            <th width="5%">Unit</th>
                             <th width="15%">Quantity</th>
                             <th width="15%">Used</th>
                             <th width="15%">Remaining</th>
@@ -89,7 +91,9 @@
                         @foreach ($materialEvaluation as $data)
                             <tr>
                                 <td>{{ $counter++ }}</td>
-                                <td>{{$data['material']}}</td>
+                                <td>{{$data['material_code']}}</td>
+                                <td>{{$data['material_description']}}</td>
+                                <td>{{$data['unit']}}</td>
                                 <td>{{number_format($data['quantity'])}}</td>
                                 <td>{{number_format($data['used'])}}</td>
                                 <td>{{number_format($data['quantity'] - $data['used'])}}</td>

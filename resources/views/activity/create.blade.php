@@ -212,7 +212,7 @@
                     </table>
 
                     <div class="modal fade" id="add_dependent_activity">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modalPredecessor">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -221,13 +221,21 @@
                                     <h4 class="modal-title">Dependent Activity</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="p-l-0 form-group col-sm-10">
+                                    <div class="p-l-0 form-group col-sm-12">
                                         <selectize v-model="newActivity.predecessor" :settings="activitiesSettings">
-                                            <option v-for="(activity, index) in allActivities" :value="activity.id">{{ activity.name }}</option>
+                                            <option v-for="(activity, index) in allActivities" v-if="activity.selected != true" :value="activity.id">{{ activity.name }}</option>
                                         </selectize>
                                     </div>
-                                    <div class="p-l-2 form-group col-sm-2">
-                                        <button  type="button" class="btn btn-primary" @click="refresh">RESET</button>
+                                    <div class="p-l-0 form-group col-sm-12">
+                                        <selectize v-model="newActivity.predecessorType" :settings="typeSettings">
+                                            <option value="fs">Finish to Start</option>
+                                            <option value="ss">Start to Start</option>
+                                            <option value="ff">Finish to Finish</option>
+                                            <option value="sf">Start to Finish</option>
+                                        </selectize>
+                                    </div>
+                                    <div class="p-l-0 form-group col-sm-2">
+                                        <button  :disabled="predecessorOk" type="button" class="btn btn-primary" @click="addPredecessor">ADD PREDECESSOR</button>
                                     </div>
                                     <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
                                         <thead>
@@ -237,6 +245,8 @@
                                                 <th style="width: 26%">Name</th>
                                                 <th style="width: 30%">Description</th>
                                                 <th style="width: 23%">WBS Number</th>
+                                                <th style="width: 23%">Pred. Type</th>
+                                                <th style="width: 15%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -246,6 +256,17 @@
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
+                                                <td v-if="data.type == 'fs'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Start')">Finish to Start</td>
+                                                <td v-else-if="data.type == 'ss'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Start')">Start to Start</td>
+                                                <td v-else-if="data.type == 'ff'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Finish')">Finish to Finish</td>
+                                                <td v-else-if="data.type == 'sf'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Finish')">Start to Finish</td>
+                                                <td>
+                                                    <div class="col-sm-12 col-xs-12 no-padding p-r-2">
+                                                        <a class="btn btn-danger btn-xs col-xs-12" @click="removePredecessor(data)" data-toggle="modal">
+                                                            DELETE
+                                                        </a>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -260,7 +281,7 @@
                     </div>
 
                     <div class="modal fade" id="predecessor_activity">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modalPredecessor">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -277,6 +298,7 @@
                                                 <th style="width: 26%">Name</th>
                                                 <th style="width: 30%">Description</th>
                                                 <th style="width: 23%">WBS Number</th>
+                                                <th style="width: 23%">Pred. Type</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -286,6 +308,10 @@
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
+                                                <td v-if="data.type == 'fs'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Start')">Finish to Start</td>
+                                                <td v-else-if="data.type == 'ss'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Start')">Start to Start</td>
+                                                <td v-else-if="data.type == 'ff'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Finish')">Finish to Finish</td>
+                                                <td v-else-if="data.type == 'sf'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Finish')">Start to Finish</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -300,7 +326,7 @@
                     </div>
 
                     <div class="modal fade" id="edit_activity">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modalPredecessor">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -349,16 +375,22 @@
                                         <input v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
                                     </div>
 
-                                    <div class="p-l-0 form-group col-sm-10">
-                                        <label for="predecessor" class="control-label">Predecessor</label>
-                                        <selectize id="predecessor" v-model="editActivity.predecessor" :settings="indexActivitiesSettings">
-                                            <option v-for="(activity, index) in allActivitiesEdit" :value="activity.id">{{ activity.name }}</option>
+                                    <div class="p-l-0 form-group col-sm-12">
+                                        <selectize v-model="editActivity.predecessor" :settings="activitiesSettings">
+                                            <option v-for="(activity, index) in allActivitiesEdit" v-if="activity.selected != true" :value="activity.id">{{ activity.name }}</option>
                                         </selectize>
-                                    </div>  
-                                    <div class="p-l-0 form-group col-sm-2 m-t-25">
-                                        <button type="button" class="btn btn-primary" @click="refreshEdit">RESET</button>
-                                    </div> 
-
+                                    </div>
+                                    <div class="p-l-0 form-group col-sm-12">
+                                        <selectize v-model="editActivity.predecessorType" :settings="typeSettings">
+                                            <option value="fs">Finish to Start</option>
+                                            <option value="ss">Start to Start</option>
+                                            <option value="ff">Finish to Finish</option>
+                                            <option value="sf">Start to Finish</option>
+                                        </selectize>
+                                    </div>
+                                    <div class="p-l-0 form-group col-sm-2">
+                                        <button  :disabled="predecessoreEditOk" type="button" class="btn btn-primary" @click="addPredecessorEdit">ADD PREDECESSOR</button>
+                                    </div>
                                             
                                     <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
                                         <thead>
@@ -368,6 +400,8 @@
                                                 <th style="width: 26%">Name</th>
                                                 <th style="width: 30%">Description</th>
                                                 <th style="width: 23%">WBS Number</th>
+                                                <th style="width: 23%">Pred. Type</th>
+                                                <th style="width: 15%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -377,6 +411,17 @@
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
+                                                <td v-if="data.type == 'fs'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Start')">Finish to Start</td>
+                                                <td v-else-if="data.type == 'ss'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Start')">Start to Start</td>
+                                                <td v-else-if="data.type == 'ff'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Finish')">Finish to Finish</td>
+                                                <td v-else-if="data.type == 'sf'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Finish')">Start to Finish</td>
+                                                <td>
+                                                    <div class="col-sm-12 col-xs-12 no-padding p-r-2">
+                                                        <a class="btn btn-danger btn-xs col-xs-12" @click="removePredecessorEdit(data)" data-toggle="modal">
+                                                            DELETE
+                                                        </a>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>                                
@@ -425,9 +470,11 @@ var data = {
         planned_end_date : "",
         planned_duration : "",
         wbs_id : @json($wbs->id), 
-        predecessor : [],
+        predecessor : "",
+        predecessorType : "",
         weight : "",
         latest_predecessor : "",
+        allPredecessor : [],
     },
     editActivity : {
         activity_id : "",
@@ -436,19 +483,20 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
-        predecessor : [],
+        predecessor : "",
+        predecessorType : "",
         weight : "",
         latest_predecessor : "",
+        allPredecessor : [],
     },
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
-        maxItems : null,
-        plugins: ['remove_button'],
     },
     indexActivitiesSettings: {
         placeholder: 'Insert Predecessor Here...',
-        maxItems : null,
-        plugins: ['remove_button'],
+    },
+    typeSettings:{
+        placeholder: 'Predecessor Type',
     },
     maxWeight : 0,
     totalWeight : 0,
@@ -456,6 +504,7 @@ var data = {
     predecessorTableView :[],
     predecessorTableEdit:[],
     constWeightAct : 0,
+    oldValueWeight : "",
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -531,13 +580,121 @@ var vm = new Vue({
                 }
             return isOk;
         },
+        predecessorOk: function(){
+            let isOk = false;
+                if(this.newActivity.predecessor == ""
+                || this.newActivity.predecessorType == "")
+                {
+                    isOk = true;
+                }
+            return isOk;
+        },
+        predecessoreEditOk: function(){
+            let isOk = false;
+                if(this.editActivity.predecessor == ""
+                || this.editActivity.predecessorType == "")
+                {
+                    isOk = true;
+                }
+            return isOk;
+        },
     }, 
     methods:{
-        refresh() {
-            this.newActivity.predecessor = [];
+        addPredecessor() {
+            this.allActivities.forEach(elementAllActivities => {
+                if(this.newActivity.predecessor == elementAllActivities.id){
+                    elementAllActivities.selected = true;
+                    elementAllActivities['type'] = this.newActivity.predecessorType;
+                    this.predecessorTable.push(elementAllActivities);
+                    var obj = [];
+                    obj[0] = elementAllActivities.id;
+                    obj[1] = this.newActivity.predecessorType;
+                    this.newActivity.allPredecessor.push(obj);
+                }
+            });
+
+            if(this.newActivity.allPredecessor.length != 0){
+                window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(this.newActivity.allPredecessor)).then(({ data }) => {
+                    this.newActivity.latest_predecessor = data;
+                    // Create new Date instance
+                    var dateRef = new Date(data.planned_end_date);
+
+                    var startDate = new Date(data.planned_end_date);
+                    var endDate = new Date(data.planned_end_date);
+                    var tempDuration = parseInt(this.newActivity.planned_duration)-1;
+                    // Add a day
+                    startDate.setDate(startDate.getDate());
+                    $('#planned_start_date').datepicker('setDate', startDate);
+
+                    if(this.newActivity.planned_duration != ""){
+                        endDate.setDate(startDate.getDate() + tempDuration);
+                        $('#planned_end_date').datepicker('setDate', endDate);
+                    }
+                })
+            }
+            this.newActivity.predecessor = "";
+            this.newActivity.predecessorType = "";
         },
-        refreshEdit() {
-            this.editActivity.predecessor = [];
+        addPredecessorEdit() {
+            this.allActivitiesEdit.forEach(elementAllActivities => {
+                if(this.editActivity.predecessor == elementAllActivities.id){
+                    elementAllActivities.selected = true;
+                    elementAllActivities['type'] = this.editActivity.predecessorType;
+                    this.predecessorTableEdit.push(elementAllActivities);
+                    var obj = [];
+                    obj[0] = elementAllActivities.id;
+                    obj[1] = this.editActivity.predecessorType;
+                    this.editActivity.allPredecessor.push(obj);
+                }
+            });
+
+            if(this.editActivity.allPredecessor.length != 0){
+                window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(this.editActivity.allPredecessor)).then(({ data }) => {
+                    this.editActivity.latest_predecessor = data;
+                    // Create new Date instance
+                    var dateRef = new Date(data.planned_end_date);
+
+                    var startDate = new Date(data.planned_end_date);
+                    var endDate = new Date(data.planned_end_date);
+                    var tempDuration = parseInt(this.editActivity.planned_duration)-1;
+                    // Add a day
+                    startDate.setDate(startDate.getDate());
+                    $('#edit_planned_start_date').datepicker('setDate', startDate);
+
+                    if(this.editActivity.planned_duration != ""){
+                        endDate.setDate(startDate.getDate() + tempDuration);
+                        $('#edit_planned_end_date').datepicker('setDate', endDate);
+                    }
+                })
+            }
+            this.editActivity.predecessor = "";
+            this.editActivity.predecessorType = "";
+        },
+        removePredecessor(data){
+            for (let x = 0; x < this.predecessorTable.length; x++) {
+                if(this.predecessorTable[x].id == data.id){
+                    this.predecessorTable.splice(x,1);
+                    this.newActivity.allPredecessor.splice(x,1);
+                }
+            }
+            this.allActivities.forEach(activities => {
+                if(activities.id == data.id){
+                    activities.selected = false;
+                }
+            });
+        },
+        removePredecessorEdit(data){
+            for (let x = 0; x < this.predecessorTableEdit.length; x++) {
+                if(this.predecessorTableEdit[x].id == data.id){
+                    this.predecessorTableEdit.splice(x,1);
+                    this.editActivity.allPredecessor.splice(x,1);
+                }
+            }
+            this.allActivitiesEdit.forEach(activities => {
+                if(activities.id == data.id){
+                    activities.selected = false;
+                }
+            });
         },
         tooltipText: function(text) {
             return text
@@ -549,7 +706,8 @@ var vm = new Vue({
             if(predecessorObj.length > 0){
                 predecessorObj.forEach(predecessor => {
                     this.allActivities.forEach(activityRef => {
-                        if(predecessor==activityRef.id){
+                        if(predecessor[0]==activityRef.id){
+                            activityRef["type"] = predecessor[1];
                             this.predecessorTableView.push(activityRef);
                         } 
                     });
@@ -557,19 +715,39 @@ var vm = new Vue({
             }
         },
         openModalEditActivity(data){
-            window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
-                this.allActivitiesEdit = data;
-            });
             document.getElementById("edit_activity_code").innerHTML= data.code;
             this.editActivity.activity_id = data.id;
             this.editActivity.name = data.name;
             this.editActivity.description = data.description;
             this.editActivity.weight = data.weight;
+            if(JSON.parse(data.predecessor) != null){
+                this.editActivity.allPredecessor = JSON.parse(data.predecessor);
+            }
             this.constWeightAct = data.weight;
             $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date));
             $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date));
-            var predecessorObj = JSON.parse(data.predecessor);
-            this.editActivity.predecessor  = predecessorObj;
+
+            window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
+                this.allActivitiesEdit = data;
+
+                this.allActivitiesEdit.forEach(activity => {
+                    activity['selected'] = false;
+                });
+
+                this.predecessorTableEdit = [];
+                if(this.editActivity.allPredecessor.length > 0){
+                    this.editActivity.allPredecessor.forEach(elementpredecessor => {
+                        this.allActivitiesEdit.forEach(elementAllActivities => {
+                            if(elementpredecessor[0] == elementAllActivities.id){
+                                elementAllActivities['type'] = elementpredecessor[1];
+                                elementAllActivities.selected = true;
+                                this.predecessorTableEdit.push(elementAllActivities);
+                            }
+                        });
+                    });
+                }
+            });
+            
         },
         setEndDateNew(){
             if(this.newActivity.planned_duration != "" && this.newActivity.planned_start_date != ""){
@@ -598,6 +776,10 @@ var vm = new Vue({
         getAllActivities(){
             window.axios.get('/api/getAllActivities/'+this.project_id).then(({ data }) => {
                 this.allActivities = data;
+
+                this.allActivities.forEach(activity => {
+                    activity['selected'] = false;
+                });
             });
         },
         getActivities(){
@@ -668,7 +850,7 @@ var vm = new Vue({
                     this.newActivity.planned_end_date = "";
                     this.newActivity.planned_duration = "";
                     this.newActivity.weight = "";
-                    this.newActivity.predecessor = [];                     
+                    this.newActivity.allPredecessor = [];                     
                 }
             })
             .catch((error) => {
@@ -804,50 +986,70 @@ var vm = new Vue({
             },
             deep: true
         },
-        'newActivity.predecessor': function(newValue){
-            this.predecessorTable = [];
-            if(newValue != "" && newValue != null){
-                newValue.forEach(elementpredecessor => {
-                    this.allActivities.forEach(elementAllActivities => {
-                        if(elementpredecessor == elementAllActivities.id){
-                            this.predecessorTable.push(elementAllActivities);
-                        }
-                    });
-                });
-                window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(newValue)).then(({ data }) => {
-                    this.newActivity.latest_predecessor = data;
-                    // Create new Date instance
-                    var dateRef = new Date(data.planned_end_date);
+        // 'newActivity.predecessor': function(newValue){
+        //     this.predecessorTable = [];
+        //     if(newValue != "" && newValue != null){
+        //         newValue.forEach(elementpredecessor => {
+        //             this.allActivities.forEach(elementAllActivities => {
+        //                 if(elementpredecessor == elementAllActivities.id){
+        //                     this.predecessorTable.push(elementAllActivities);
+        //                 }
+        //             });
+        //         });
+        //         window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(newValue)).then(({ data }) => {
+        //             this.newActivity.latest_predecessor = data;
+        //             // Create new Date instance
+        //             var dateRef = new Date(data.planned_end_date);
 
-                    var startDate = new Date(data.planned_end_date);
-                    var endDate = new Date(data.planned_end_date);
-                    var tempDuration = parseInt(this.newActivity.planned_duration)-1;
-                    // Add a day
-                    startDate.setDate(startDate.getDate());
-                    $('#planned_start_date').datepicker('setDate', startDate);
+        //             var startDate = new Date(data.planned_end_date);
+        //             var endDate = new Date(data.planned_end_date);
+        //             var tempDuration = parseInt(this.newActivity.planned_duration)-1;
+        //             // Add a day
+        //             startDate.setDate(startDate.getDate());
+        //             $('#planned_start_date').datepicker('setDate', startDate);
 
-                    if(this.newActivity.planned_duration != ""){
-                        endDate.setDate(startDate.getDate() + tempDuration);
-                        $('#planned_end_date').datepicker('setDate', endDate);
-                    }
-                })
-            }
-        },
+        //             if(this.newActivity.planned_duration != ""){
+        //                 endDate.setDate(startDate.getDate() + tempDuration);
+        //                 $('#planned_end_date').datepicker('setDate', endDate);
+        //             }
+        //         })
+        //     }
+        // },
         'editActivity.weight': function(newValue){
             this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");  
-            window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
-                this.totalWeight = data;
-                var totalEdit = roundNumber(data - this.constWeightAct,2);
-                maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
-                if(this.editActivity.weight>maxWeightEdit){
-                    iziToast.warning({
-                        displayMode: 'replace',
-                        title: 'Total weight cannot exceed '+this.wbsWeight+'%',
-                        position: 'topRight',
+            if(newValue != ""){
+                if(this.oldValueWeight == ""){
+                    this.oldValueWeight = this.editActivity.weight;
+                    window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
+                        this.totalWeight = data;
+                        var totalEdit = roundNumber(data - this.constWeightAct,2);
+                        maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
+                        if(this.editActivity.weight>maxWeightEdit){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: 'Total weight cannot exceed '+this.wbsWeight+'%',
+                                position: 'topRight',
+                            });
+                            this.editActivity.weight = maxWeightEdit;                  
+                        }
+                    });
+                }else if(this.oldValueWeight != this.editActivity.weight){
+                    this.oldValueWeight = this.editActivity.weight;
+                    window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
+                        this.totalWeight = data;
+                        var totalEdit = roundNumber(data - this.constWeightAct,2);
+                        maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
+                        if(this.editActivity.weight>maxWeightEdit){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: 'Total weight cannot exceed '+this.wbsWeight+'%',
+                                position: 'topRight',
+                            });
+                            this.editActivity.weight = maxWeightEdit;                  
+                        }
                     });
                 }
-                this.editActivity.weight = maxWeightEdit;                  
-            });
+            }
         },
         'newActivity.weight': function(newValue){
             this.newActivity.weight = (this.newActivity.weight+"").replace(/[^0-9.]/g, "");  
@@ -860,35 +1062,35 @@ var vm = new Vue({
                 this.newActivity.weight = this.maxWeight;
             }
         },
-        'editActivity.predecessor': function(newValue){
-            this.predecessorTableEdit = [];
-            if(newValue != "" && newValue != null){
-                newValue.forEach(elementpredecessor => {
-                    this.allActivities.forEach(elementAllActivities => {
-                        if(elementpredecessor == elementAllActivities.id){
-                            this.predecessorTableEdit.push(elementAllActivities);
-                        }
-                    });
-                });
-                window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(newValue)).then(({ data }) => {
-                    this.editActivity.latest_predecessor = data;
-                    // Create new Date instance
-                    var dateRef = new Date(data.planned_end_date);
+        // 'editActivity.predecessor': function(newValue){
+        //     this.predecessorTableEdit = [];
+        //     if(newValue != "" && newValue != null){
+        //         newValue.forEach(elementpredecessor => {
+        //             this.allActivities.forEach(elementAllActivities => {
+        //                 if(elementpredecessor == elementAllActivities.id){
+        //                     this.predecessorTableEdit.push(elementAllActivities);
+        //                 }
+        //             });
+        //         });
+        //         window.axios.get('/api/getLatestPredecessor/'+JSON.stringify(newValue)).then(({ data }) => {
+        //             this.editActivity.latest_predecessor = data;
+        //             // Create new Date instance
+        //             var dateRef = new Date(data.planned_end_date);
 
-                    var startDate = new Date(data.planned_end_date);
-                    var endDate = new Date(data.planned_end_date);
-                    var tempDuration = parseInt(this.editActivity.planned_duration)-1;
-                    // Add a day
-                    startDate.setDate(startDate.getDate());
-                    $('#edit_planned_start_date').datepicker('setDate', startDate);
+        //             var startDate = new Date(data.planned_end_date);
+        //             var endDate = new Date(data.planned_end_date);
+        //             var tempDuration = parseInt(this.editActivity.planned_duration)-1;
+        //             // Add a day
+        //             startDate.setDate(startDate.getDate());
+        //             $('#edit_planned_start_date').datepicker('setDate', startDate);
 
-                    if(this.editActivity.planned_duration != ""){
-                        endDate.setDate(startDate.getDate() + tempDuration);
-                        $('#edit_planned_end_date').datepicker('setDate', endDate);
-                    }
-                })
-            }
-        },
+        //             if(this.editActivity.planned_duration != ""){
+        //                 endDate.setDate(startDate.getDate() + tempDuration);
+        //                 $('#edit_planned_end_date').datepicker('setDate', endDate);
+        //             }
+        //         })
+        //     }
+        // },
     },
     created: function() {
         this.getActivities();

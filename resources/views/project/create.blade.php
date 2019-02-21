@@ -88,9 +88,9 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="name" class="col-sm-2 control-label">Person In Charge (PIC)</label>
+                                <label for="person_in_charge" class="col-sm-2 control-label">Person In Charge (PIC)</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="name" name="name" v-model="project.person_in_charge">
+                                    <input type="text" class="form-control" id="person_in_charge" name="person_in_charge" v-model="project.person_in_charge">
                                 </div>
                             </div>
 

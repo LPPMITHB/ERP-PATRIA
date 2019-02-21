@@ -77,10 +77,11 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="20%">Material Code</th>
+                                    <th width="20%">Material Number</th>
                                     <th width="20%">Material Description</th>
+                                    <th width="5%">Unit</th>
                                     <th width="15%">Quantity</th>
-                                    <th width="30%">Storage Location</th>
+                                    <th width="25%">Storage Location</th>
                                     <th width="10%">Received Date</th>
                                 </tr>
                             </thead>
@@ -90,6 +91,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $GRD->material->code }}</td>
                                     <td>{{ $GRD->material->description }}</td>
+                                    <td>{{ $GRD->material->uom->unit }}</td>
                                     <td>{{ number_format($GRD->quantity) }}</td>
                                     <td>{{ isset($GRD->storageLocation->name) ? $GRD->storageLocation->name : '-' }} </td>
                                     <td>{{ isset($GRD->received_date) ? date('d-m-Y', strtotime($GRD->received_date)) : '-' }}</td>
