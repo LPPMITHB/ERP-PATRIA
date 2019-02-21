@@ -576,7 +576,7 @@ class WorkRequestController extends Controller
 
     public function getMaterialWrAPI($id){
         
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getWbsWrAPI($id){
@@ -602,5 +602,6 @@ class WorkRequestController extends Controller
 
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
+    
 
 }
