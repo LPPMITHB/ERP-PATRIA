@@ -45,7 +45,7 @@
                                 <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                                 
                                 <div class="col-xs-4 no-padding">Number</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.name)"><b>: {{wbs.number}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.number)"><b>: {{wbs.number}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Description</div>
                                 <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: {{wbs.description}}</b></div>
