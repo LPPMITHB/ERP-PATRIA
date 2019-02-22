@@ -41,11 +41,11 @@ class GoodsReturnController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
         if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('business_unit_id')->toArray();
+            $business_unit_id = 2;
         }elseif($menu == "building"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('business_unit_id')->toArray();
+            $business_unit_id = 1;
         }
-        $modelGoodsReturns = GoodsIssue::whereIn('status',[1,4])->whereIn('business_unit_id',$modelProject)->where('type',4)->get();
+        $modelGoodsReturns = GoodsIssue::whereIn('status',[1,4])->where('business_unit_id',$business_unit_id)->where('type',4)->get();
 
         return view('goods_return.indexApprove', compact('modelGoodsReturns','menu'));
     }
@@ -133,7 +133,7 @@ class GoodsReturnController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($menu == "building"){
-                return redirect()->route('goods_return.selectGR',$datas->goods_receipt_id)->with('error', $e->getMessage());
+                return redirect()->route('goods_return.selectGR')->with('error', $e->getMessage());
             }else{
                 // return redirect()->route('goods_issue_repair.selectMR',$datas->mr_id)->with('error', $e->getMessage());
             }
@@ -158,6 +158,7 @@ class GoodsReturnController extends Controller
                 $GI->business_unit_id = 2;
             }
             $GI->type = 4;
+            $GI->status = 1;
             $GI->branch_id = Auth::user()->branch->id;
             $GI->user_id = Auth::user()->id;
             $GI->save();
@@ -185,7 +186,7 @@ class GoodsReturnController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($menu == "building"){
-                return redirect()->route('goods_return.selectGR',$datas->goods_receipt_id)->with('error', $e->getMessage());
+                return redirect()->route('goods_return.selectPO')->with('error', $e->getMessage());
             }else{
                 // return redirect()->route('goods_issue_repair.selectMR',$datas->mr_id)->with('error', $e->getMessage());
             }
@@ -225,9 +226,58 @@ class GoodsReturnController extends Controller
     {
         $route = $request->route()->getPrefix();    
         $modelGR = GoodsIssue::findOrFail($id);
-        $modelGRD = $modelGR->GoodsReturnDetails;
+        $modelGRD = $modelGR->GoodsIssueDetails;
         $approve = FALSE;
 
         return view('goods_return.show', compact('modelGR','modelGRD','approve','route'));
+    }
+
+    public function generateGINumber(){
+        $modelGI = GoodsIssue::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
+		$number = 1;
+        if(isset($modelGI)){
+            $yearDoc = substr($modelGI->number, 3,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelGI->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'000000');
+        $year = intval($year);
+
+		$gi_number = $year+$number;
+        $gi_number = 'GI-'.$gi_number;
+
+        return $gi_number;
+    }
+
+    public function checkStatusPO($po_id){
+        $modelPO = PurchaseOrder::findOrFail($po_id);
+        $status = 0;
+        foreach($modelPO->purchaseOrderDetails as $POD){
+            if($POD->returned + $POD->received < $POD->quantity){
+                $status = 2;
+            }
+        }
+        if($status == 0){
+            $modelPO->status = 0;
+            $modelPO->save();
+        }
+    }
+
+    public function checkStatusGR($gr_id){
+        $modelGR = GoodsReceipt::findOrFail($gr_id);
+        $status = 0;
+        foreach($modelGR->goodsReceiptDetails as $GRD){
+            if($GRD->returned < $GRD->quantity){
+                $status = 1;
+            }
+        }
+        if($status == 0){
+            $modelGR->status = 0;
+            $modelGR->save();
+        }
     }
 }
