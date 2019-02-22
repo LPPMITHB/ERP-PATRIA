@@ -141,6 +141,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }else{
@@ -153,6 +154,7 @@ class PurchaseRequisitionController extends Controller
                         if($data->project_id != null){
                             $PRD->project_id = $data->project_id;
                         }
+                        $PRD->user_id = Auth::user()->id;
                         $PRD->save();
                     }
                 }
@@ -198,6 +200,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }else{
@@ -209,6 +212,7 @@ class PurchaseRequisitionController extends Controller
                         if($data->project_id != null){
                             $PRD->project_id = $data->project_id;
                         }
+                        $PRD->user_id = Auth::user()->id;
                         $PRD->save();
                     }
                 }
@@ -504,6 +508,7 @@ class PurchaseRequisitionController extends Controller
                                 if($data->project_id != null){
                                     $PRD->project_id = $data->project_id;
                                 }
+                                $PRD->user_id = Auth::user()->id;
                                 $PRD->save();
                                 array_push($prd_id,$PurchaseRD->id,$data->id);
     
@@ -547,6 +552,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }
@@ -575,6 +581,7 @@ class PurchaseRequisitionController extends Controller
                                 if($data->project_id != null){
                                     $PRD->project_id = $data->project_id;
                                 }
+                                $PRD->user_id = Auth::user()->id;
                                 $PRD->save();
                                 array_push($prd_id,$PurchaseRD->id,$data->id);
     
@@ -617,6 +624,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }

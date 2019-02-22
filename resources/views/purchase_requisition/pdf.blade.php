@@ -119,8 +119,13 @@
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="5%" class="text-center">No.</th>
-                                    <th style="font-size: 11px" width="15%" class="text-center" >Material Number</th>
-                                    <th style="font-size: 11px" width="25%" class="text-center">Material Name</th>
+                                    @if($modelPR->type == 1)
+                                        <th style="font-size: 11px" width="15%" class="text-center" >Material Number</th>
+                                        <th style="font-size: 11px" width="25%" class="text-center">Material Description</th>
+                                    @elseif($modelPR->type == 2)
+                                        <th style="font-size: 11px" width="15%" class="text-center" >Resource Number</th>
+                                        <th style="font-size: 11px" width="25%" class="text-center">Resource Description</th>
+                                    @endif
                                     <th style="font-size: 11px" width="8%" class="text-center">Qty</th>
                                     <th style="font-size: 11px" width="7%" class="text-center">Unit</th>
                                     <th style="font-size: 11px" width="13%" class="text-center">Required Date</th>
@@ -133,10 +138,19 @@
                                     @if($PRD->quantity > 0)
                                         <tr>
                                             <td class="text-center" style="font-size: 11px" width="5%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $PRD->material->code }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $PRD->material->name }}</td>
+                                            @if($modelPR->type == 1)
+                                                <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $PRD->material->code }}</td>
+                                                <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $PRD->material->description }}</td>
+                                            @elseif($modelPR->type == 2)
+                                                <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $PRD->resource->code }}</td>
+                                                <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="30%" class="tdBreakWord">{{ $PRD->resource->name }}</td>
+                                            @endif
                                             <td style="font-size: 11px" width="8%" class="tdBreakWord text-center">{{ number_format($PRD->quantity) }}</td>
-                                            <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{$PRD->material->uom->unit}}</td>
+                                            @if($modelPR->type == 1)
+                                                <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{$PRD->material->uom->unit}}</td>
+                                            @elseif($modelPR->type == 2)
+                                                <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">-</td>
+                                            @endif
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{($PRD->required_date != null) ? date("d-m-Y", strtotime($PRD->required_date)) : "-"}} </td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord">{{$PRD->user->role->name}}</td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord">{{($PRD->project_id != null) ? $PRD->project->number : ""}}</td>
