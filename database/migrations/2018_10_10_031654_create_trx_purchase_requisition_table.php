@@ -18,7 +18,6 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->string('number')->unique();
             $table->date('required_date')->nullable();
             $table->unsignedInteger('type');
-            $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('bom_id')->nullable();
             $table->unsignedInteger('purchase_requisition_id')->nullable();
             $table->unsignedInteger('business_unit_id');
@@ -28,7 +27,6 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('project_id')->references('id')->on('pro_project');
             $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
             $table->foreign('bom_id')->references('id')->on('mst_bom');
