@@ -70,7 +70,7 @@
             <div id="add_wbs">
                 <div class="box-body">
                     <div class="pull-right m-t-10">
-                        <a class="btn btn-primary btn-xs" data-toggle="modal" href="#adopt_wbs">
+                        <a class="btn btn-primary btn-xs" @click="openAdoptModal">
                             ADOPT FROM WBS PROFILE
                         </a>
                     </div>
@@ -203,7 +203,7 @@
                                         <div class="form-group col-sm-12">
                                             <label for="">WBS Profiles</label>
                                             <selectize v-model="selected_wbs_profile" :settings="wbsProfilesSettings">
-                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.number }}</option>
+                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.number }} - {{ wbs_profile.description }}</option>
                                             </selectize>
                                         </div>
                                         <div class="form-group col-sm-12" v-show="selected_wbs_profile != ''">
@@ -336,6 +336,17 @@ var vm = new Vue({
     methods:{
         tooltipText: function(text) {
             return text
+        },
+        openAdoptModal(){
+            if(this.wbs_profiles.length > 0){
+                $('#adopt_wbs').modal();            
+            }else{
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This project type doesn't have WBS Profiles",
+                    position: 'topRight',
+                });
+            }
         },
         openEditModal(data){
             document.getElementById("wbs_code").innerHTML= data.code;

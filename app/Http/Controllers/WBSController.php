@@ -228,6 +228,7 @@ class WBSController extends Controller
             $businessUnit = 2;
         }
         $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
+
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
 
