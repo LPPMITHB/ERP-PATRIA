@@ -750,6 +750,34 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_return.index',
         ]);
 
+        $selectGRRepair = Menu::where('route_name','goods_return_repair.selectGR')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGRRepair,
+            'route_name' => 'goods_return_repair.selectGR',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGRRepair,
+            'route_name' => 'goods_return_repair.createGoodsReturnGR',
+        ]);
+
+        $selectPORepair = Menu::where('route_name','goods_return_repair.selectPO')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPORepair,
+            'route_name' => 'goods_return_repair.selectPO',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPORepair,
+            'route_name' => 'goods_return_repair.createGoodsReturnPO',
+        ]);
+
+        $viewReturnRepair = Menu::where('route_name','goods_return_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewReturnRepair,
+            'route_name' => 'goods_return_repair.index',
+        ]);
+
         //Goods Issue
         $selectMR = Menu::where('route_name','goods_issue.selectMR')->select('id')->first()->id;
         DB::table('sidenav')->insert([

@@ -1297,7 +1297,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Goods Return',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
