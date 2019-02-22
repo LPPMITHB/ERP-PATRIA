@@ -3,7 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
+use App\Models\GoodsIssue;
+use App\Models\GoodsReceipt;
+use App\Models\GoodsReceiptDetail;
+use App\Models\Project;
+use App\Models\GoodsIssueDetail;
+use App\Models\PurchaseRequisition;
+use App\Models\MaterialRequisition;
+use App\Models\MaterialRequisitionDetail;
+use App\Models\StorageLocation;
+use App\Models\Stock;
+use App\Models\StorageLocationDetail;
+use App\Models\Branch;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderDetail;
+use DB;
+use Auth;
+// use App\Http\Controllers\Controller;
 
 class GoodsReturnController extends Controller
 {
@@ -24,12 +41,11 @@ class GoodsReturnController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
         if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('business_unit_id')->toArray();
         }elseif($menu == "building"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('business_unit_id')->toArray();
         }
-
-        $modelGoodsReturns = GoodsIssue::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->where('type',4)->get();
+        $modelGoodsReturns = GoodsIssue::whereIn('status',[1,4])->whereIn('business_unit_id',$modelProject)->where('type',4)->get();
 
         return view('goods_return.indexApprove', compact('modelGoodsReturns','menu'));
     }
