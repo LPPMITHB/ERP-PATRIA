@@ -51,6 +51,29 @@ class GoodsIssueController extends Controller
 
         return view ('goods_return.index', compact('modelGIs','menu'));
     }
+
+    public function indexApproveGoodsReturn(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        }elseif($menu == "building"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }
+
+        $modelMRs = GoodsReturn::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
+
+        return view('material_requisition.indexApprove', compact('modelMRs','menu'));
+    }
+
+    public function showApproveGoodsReturn($id, Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+
+        $modelMR = GoodsReturn::findOrFail($id);
+
+        return view('material_requisition.showApprove', compact('modelMR','menu'));
+    }
     
     public function createGiWithRef($id,Request $request)
     {
@@ -243,25 +266,6 @@ class GoodsIssueController extends Controller
         }
     }
 
-    public function approval($gi_id,$status){
-        $modelGI = GoodsIssue::findOrFail($gi_id);
-        
-        if($status == "approve"){
-            $modelGI->status = 2;
-            foreach($modelGI->goodsIssueDetails as $data){
-                $this->updateSlocDetailApproved($data);
-                $this->updateStockApproved($data);
-            }
-            $modelGI->update();
-        }elseif($status == "need-revision"){
-            $modelGI->status = 3;
-            $modelGI->update();
-        }elseif($status == "reject"){
-            $modelGI->status = 4;
-            $modelGI->update();
-        }
-        return redirect()->route('goods_issue.show',$gi_id);
-    }
 
     public function store(Request $request)
     {
@@ -381,18 +385,6 @@ class GoodsIssueController extends Controller
         }else{
 
         }
-    }
-
-    public function updateStockApproved($data){
-        $modelStock = Stock::where('material_id',$data->material_id)->first();
-        $modelStock->quantity -= $data->quantity;
-        $modelStock->save();
-    }
-
-    public function updateSlocDetailApproved($data){
-        $modelSlocDetail = StorageLocationDetail::where('material_id',$data->material_id)->where('storage_location_id',$data->storage_location_id)->first();
-        $modelSlocDetail->quantity -= $data->quantity;
-        $modelSlocDetail->save();
     }
 
     public function checkStatusMR($mr_id){

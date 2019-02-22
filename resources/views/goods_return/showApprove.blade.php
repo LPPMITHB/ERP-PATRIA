@@ -6,7 +6,7 @@
         'title' => 'View Material Requisition » '.$modelMR->project->name,
         'items' => [
             'Dashboard' => route('index'),
-            'View Material Requisition' => route('purchase_requisition.show',$modelMR->id),
+            'View Purchase Requisition' => route('purchase_requisition.show',$modelMR->id),
         ]
     ]
 )

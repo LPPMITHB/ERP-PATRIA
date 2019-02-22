@@ -1231,8 +1231,6 @@ Route::name('goods_issue.')->prefix('goods_issue')->group(function() {
     Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue');
 
     Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue');
-
-    Route::get('/showApproval/{id}', 'GoodsIssueController@showApprove')->name('showApprove')->middleware('can:show-goods-issue');
     
     Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-goods-issue');
 
@@ -1258,8 +1256,6 @@ Route::name('goods_issue_repair.')->prefix('goods_issue_repair')->group(function
     Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue-repair');
 
     Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue-repair');
-
-    Route::get('/showApproval/{id}', 'GoodsIssueController@showApprove')->name('showApprove')->middleware('can:show-goods-issue-repair');
     
     Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-goods-issue-repair');
 
@@ -1275,17 +1271,45 @@ Route::name('goods_issue_repair.')->prefix('goods_issue_repair')->group(function
 
 //Material Write Off Routes
 Route::name('material_write_off.')->prefix('material_write_off')->group(function() {
+    Route::get('/indexApprove', 'MaterialWriteOffController@indexApprove')->name('indexApprove')->middleware('can:approve-material-write-off');
 
+    Route::get('/showApprove/{id}', 'MaterialWriteOffController@showApprove')->name('showApprove')->middleware('can:approve-material-write-off');
+
+    Route::get('/approval/{id}/{status}', 'MaterialWriteOffController@approval')->name('approval');
+    
     Route::get('/create', 'MaterialWriteOffController@create')->name('create')->middleware('can:create-material-write-off');
+    
+    Route::get('/', 'MaterialWriteOffController@index')->name('index')->middleware('can:list-material-write-off');
+ 
+    Route::get('/{id}', 'MaterialWriteOffController@show')->name('show')->middleware('can:show-material-write-off');
 
+    Route::get('/{id}/edit', 'MaterialWriteOffController@edit')->name('edit')->middleware('can:edit-material-write-off');
+
+    Route::patch('/{id}', 'MaterialWriteOffController@update')->name('update')->middleware('can:edit-material-write-off');
+    
     Route::post('/', 'MaterialWriteOffController@store')->name('store')->middleware('can:create-material-write-off');
+
+
 });
 
-//Material Write Off Routes
+//Material Write Off Repair Routes
 Route::name('material_write_off_repair.')->prefix('material_write_off_repair')->group(function() {
+    Route::get('/indexApprove', 'MaterialWriteOffController@indexApprove')->name('indexApprove')->middleware('can:approve-material-write-off');
+
+    Route::get('/showApprove/{id}', 'MaterialWriteOffController@showApprove')->name('showApprove')->middleware('can:approve-material-write-off');
+
+    Route::get('/approval/{id}/{status}', 'MaterialWriteOffController@approval')->name('approval');
 
     Route::get('/create', 'MaterialWriteOffController@create')->name('create')->middleware('can:create-material-write-off-repair');
+    
+    Route::get('/', 'MaterialWriteOffController@index')->name('index')->middleware('can:list-material-write-off-repair');
+    
+    Route::get('/{id}', 'MaterialWriteOffController@show')->name('show')->middleware('can:show-material-write-off-repair');
 
+    Route::get('/{id}/edit', 'MaterialWriteOffController@edit')->name('edit')->middleware('can:edit-material-write-off-repair');
+
+    Route::patch('/{id}', 'MaterialWriteOffController@update')->name('update')->middleware('can:edit-material-write-off-repair');
+    
     Route::post('/', 'MaterialWriteOffController@store')->name('store')->middleware('can:create-material-write-off-repair');
 });
 

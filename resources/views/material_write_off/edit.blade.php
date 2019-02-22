@@ -2,10 +2,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Material Write Off',
+        'title' => 'Edit Material Write Off',
         'items' => [
             'Dashboard' => route('index'),
-            'Create Material Write Off' => ""
+            'Edit Material Write Off' => ""
         ]
     ]
 )
@@ -17,12 +17,13 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-body">
-                @if($menu == "building")
-                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.store') }}">
+                @if($route == "/material_write_off")
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.update',['id'=>$modelGI->id]) }}">
                 @else
-                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off_repair.store') }}">
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off_repair.update',['id'=>$modelGI->id]) }}">
                 @endif
-                    @csrf
+                <input type="hidden" name="_method" value="PATCH">
+                @csrf
                     @verbatim
                     <div id="mwo">
                         <div class="row">
@@ -86,7 +87,7 @@
                                 </tfoot>
                             </table><br>
                             <div class="col-md-12">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
+                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">SAVE</button>
                             </div>
                         </div>
                         <div class="modal fade" id="edit_item">
@@ -150,7 +151,7 @@ $(document).ready(function(){
 });
 
 var data = {
-    description : "",
+    description : @json($modelGI->description),
     slocDetails : [],
     newIndex : "",
     slocs : @json($storageLocations),
@@ -186,8 +187,9 @@ var data = {
         placeholder: 'Please Select Material'
     },
 
-    dataMaterial : [],
-    submittedForm : {}
+    dataMaterial : @json($materials),
+    submittedForm : {},
+    gid_deleted : [],
 
 };
 
@@ -322,6 +324,7 @@ var vm = new Vue({
         submitForm(){
             this.submittedForm.description = this.description;
             this.submittedForm.materials = this.dataMaterial;    
+            this.submittedForm.gid_deleted = this.gid_deleted;    
 
             let struturesElem = document.createElement('input');
             struturesElem.setAttribute('type', 'hidden');
@@ -347,6 +350,7 @@ var vm = new Vue({
         },
 
         removeRow(index){
+            this.gid_deleted.push(this.dataMaterial[index].gid_id);
             this.dataMaterial.splice(index, 1);
             // this.material_id.splice(index, 1);
 
@@ -486,8 +490,8 @@ var vm = new Vue({
                 
                 this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 this.editInput.quantityInt = newValue;
-                this.editInput.quantityInt = parseInt(this.editInput.quantityInt.replace(/,/g , ''));
-                if(this.editInput.quantityInt >  parseInt(this.editInput.available.replace(/,/g , ''))){
+                this.editInput.quantityInt = parseInt(this.editInput.quantityInt+"".replace(/,/g , ''));
+                if(this.editInput.quantityInt >  parseInt(this.editInput.available+"".replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
                         position: 'topRight',
