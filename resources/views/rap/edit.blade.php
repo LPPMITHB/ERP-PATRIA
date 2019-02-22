@@ -163,6 +163,12 @@
         data: data,
         methods:{
             update(){
+                this.modelRAPD.forEach(data=>{
+                    if(data.price == ""){
+                        data.price = 0;
+                        data.priceTotal = 0;
+                    }
+                })
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
@@ -181,7 +187,6 @@
                     this.modelRAPD.forEach(rapDetail => {
                         rapDetail.price = (rapDetail.price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                         rapDetail.priceTotal = parseInt((rapDetail.price+"").replace(/,/g , '')) * rapDetail.quantity;
-                        rapDetail.priceTotal = (rapDetail.priceTotal+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                     });
                 },
                 deep: true
