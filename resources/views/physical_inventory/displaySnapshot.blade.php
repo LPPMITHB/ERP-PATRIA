@@ -40,7 +40,8 @@
                             <th style="width: 5%">No</th>
                             <th style="width: 20%">Material Number</th>
                             <th style="width: 25%">Material Description</th>
-                            <th style="width: 40%">Storage Location</th>
+                            <th style="width: 5%">Unit</th>
+                            <th style="width: 35%">Storage Location</th>
                             <th style="width: 10%">Quantity</th>
                         </tr>
                     </thead>
@@ -51,6 +52,7 @@
                                 <td class="p-l-10">{{ $counter++ }}</td>
                                 <td class="p-l-10">{{ $stock->material->code }}</td>
                                 <td class="p-l-10">{{ $stock->material->description }}</td>
+                                <td class="p-l-10">{{ $stock->material->uom->unit }}</td>
                                 <td class="p-l-10">{{ $stock->storageLocation->name }}</td>
                                 <td class="p-l-10">{{ $stock->quantity }}</td>
                             </tr>

@@ -52,6 +52,7 @@ class GoodsReceiptController extends Controller
                     "material_id" => $POD->material_id,
                     "material_code" => $POD->material->code,
                     "material_name" => $POD->material->description,
+                    "unit" => $POD->material->uom->unit,
                     "resource_id" => $POD->resource_id,
                     "wbs_id" => $POD->wbs_id,
                     "total_price" => $POD->total_price,
@@ -93,7 +94,7 @@ class GoodsReceiptController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelWO = WorkOrder::where('id',$id)->with('vendor')->first();
-        $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material')->get();
+        $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material','material.uom')->get();
         $modelSloc = StorageLocation::all();
         
         
@@ -419,7 +420,7 @@ class GoodsReceiptController extends Controller
 
     public function getMaterialAPI($id){
         
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getMaterialsAPI($ids){

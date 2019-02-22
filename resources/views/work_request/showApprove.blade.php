@@ -146,7 +146,9 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->description}}">{{ $WRD->material->description }}</td>
                                 <td>{{ $WRD->material->uom->unit }}</td>
                                 <td>{{ number_format($WRD->quantity) }}</td>
-                                <td>{{ isset($WRD->wbs) ? $WRD->wbs->number : '-' }}</td>
+                                @if(isset($WRD->wbs))
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}">{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}</td>
+                                @endif
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{$WRD->description}}</td>
                                 <td>{{ ($WRD->type == 0) ? 'Raw Material' : 'Finished Goods' }}</td>
                                 <td>{{ isset($WRD->required_date) ? $WRD->required_date : '-' }}</td>

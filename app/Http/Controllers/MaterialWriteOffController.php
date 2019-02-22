@@ -304,9 +304,9 @@ class MaterialWriteOffController extends Controller
         return response($materials, Response::HTTP_OK);
     }
 
-    public function getMaterialsApi($id){
+    public function getMaterialsMWOApi($id){
         
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getSlocApi($id){

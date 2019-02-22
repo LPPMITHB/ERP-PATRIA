@@ -93,8 +93,9 @@
                                     <table class="table table-bordered showTable tablePagingVue tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 20%">Material Number</th>
+                                            <th style="width: 15%">Material Number</th>
                                             <th style="width: 25%">Material Description</th>
+                                            <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 10%">Reserved</th>
                                             <th style="width: 15%">Total Value</th>
@@ -105,6 +106,7 @@
                                                 <td>{{ index + 1 }}</td>
                                                 <td class="tdEllipsis">{{ stock.material.code }}</td>
                                                 <td class="tdEllipsis">{{ stock.material.description }}</td>
+                                                <td class="tdEllipsis">{{ stock.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ stock.quantity }}</td>
                                                 <td class="tdEllipsis">{{ stock.reserved }}</td>
                                                 <td class="tdEllipsis">Rp {{ (stock.material.cost_standard_price * stock.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
@@ -119,8 +121,9 @@
                                     <table id="tablePagingVue2" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 20%">Material Number</th>
+                                            <th style="width: 15%">Material Number</th>
                                             <th style="width: 25%">Material Description</th>
+                                            <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 15%">Total Value</th>
                                             <th style="width: 10%">Aging</th>
@@ -130,6 +133,7 @@
                                                 <td>{{ index + 1 }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.material.code }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.material.description }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity }}</td>
                                                 <td class="tdEllipsis">Rp {{ (selectedDetail.material.cost_standard_price * selectedDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity + 0 }} Days</td>
@@ -218,6 +222,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getSlocSM/'+newValue).then(({ data }) => {
+                        console.log(data);
                         this.selectedSloc.push(data.sloc);
                         this.selectedSlocDetail = data.slocDetail;
                         this.slocValue = "Rp "+data.slocValue;

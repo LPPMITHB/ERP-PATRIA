@@ -82,7 +82,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                             ]);
@@ -90,7 +90,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
                             ]);
@@ -100,7 +100,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                             ]);
@@ -108,7 +108,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
                             ]);
@@ -129,7 +129,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
                             ]);
@@ -137,7 +137,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
                             ]);
@@ -147,7 +147,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
                             ]);
@@ -155,7 +155,7 @@ class BOMController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->number. ''.$bom_code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
                             ]);
@@ -192,7 +192,7 @@ class BOMController extends Controller
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $work->wbs->code,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => route('bom.show',$bom->id)],
                         ]);
@@ -200,7 +200,7 @@ class BOMController extends Controller
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $project->number,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => route('bom.show',$bom->id)],
                         ]);
@@ -210,14 +210,14 @@ class BOMController extends Controller
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $work->wbs->code,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                         ]);
                     }else{
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $project->number,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                         ]);
                     } 
@@ -233,7 +233,7 @@ class BOMController extends Controller
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $work->wbs->code,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => route('bom_repair.show',$bom->id)],
                         ]);
@@ -241,7 +241,7 @@ class BOMController extends Controller
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $project->number,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => route('bom_repair.show',$bom->id)],
                         ]);
@@ -251,14 +251,14 @@ class BOMController extends Controller
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $work->wbs->code,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                         ]);
                     }else{
                         $data->push([
                             "id" => $work->code , 
                             "parent" => $project->number,
-                            "text" => $work->number.' - '.$work->description.' '.$bom_code,
+                            "text" => $work->number.' - '.$work->description.'<b>'.$bom_code.'</b>',
                             "icon" => "fa fa-suitcase",
                         ]);
                     } 

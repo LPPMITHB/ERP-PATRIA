@@ -175,7 +175,7 @@ class GoodsMovementController extends Controller
     }
 
     public function getSlocDetailAPI($id){
-        $sld = StorageLocationDetail::where('storage_location_id',$id)->with('material')->get();
+        $sld = StorageLocationDetail::where('storage_location_id',$id)->with('material','material.uom')->get();
         foreach($sld as $key => $data){
             if($data->quantity < 1){
                 unset($data[$key]);
