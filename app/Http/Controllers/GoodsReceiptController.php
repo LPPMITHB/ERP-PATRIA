@@ -94,7 +94,7 @@ class GoodsReceiptController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelWO = WorkOrder::where('id',$id)->with('vendor')->first();
-        $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material')->get();
+        $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material','material.uom')->get();
         $modelSloc = StorageLocation::all();
         
         
