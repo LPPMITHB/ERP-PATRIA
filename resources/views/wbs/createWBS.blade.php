@@ -407,7 +407,6 @@ var vm = new Vue({
             data.project_id = this.newWbs.project_id;
             data = JSON.stringify(data);
             var url = "";
-            console.log(this.menu);
             if(this.menu == "building"){
                 url = "{{ route('wbs.adoptWbs') }}";
             }else{
