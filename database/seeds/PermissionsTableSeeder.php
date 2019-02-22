@@ -1106,7 +1106,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Return
-        $createGR = Menu::where('name','Create GR')->select('id')->first()->id;
+        $createGR = Menu::where('name','Based On Goods Receipt')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Return',
             'menu_id' => $createGR,
@@ -1153,7 +1153,7 @@ class PermissionsTableSeeder extends Seeder
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
         $grRepair = Menu::where('name','Goods Return')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createGRRepair = Menu::where('name','Create GR')->where('menu_id',$grRepair)->select('id')->first()->id;
+        $createGRRepair = Menu::where('name','Based On Goods Receipt')->where('menu_id',$grRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Return',
             'menu_id' => $createGRRepair,
@@ -1162,7 +1162,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGRRepair = Menu::where('name','View Goods Return')->where('menu_id',$giRepair)->select('id')->first()->id;
+        $viewGRRepair = Menu::where('name','View Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Return',
             'menu_id' => $viewGRRepair,
