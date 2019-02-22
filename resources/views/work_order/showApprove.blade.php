@@ -146,11 +146,13 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
+                            <th width="15%">Material Number</th>
+                            <th width="20%">Material Description</th>
+                            <th width="4%">Unit</th>
                             <th width="10%">Quantity</th>
                             <th width="20%">Price / pcs</th>
                             <th width="10%">Discount (%)</th>
-                            <th width="20%">Sub Total Price</th>
+                            <th width="16%">Sub Total Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,7 +160,9 @@
                             @if($WOD->quantity > 0)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $WOD->material->code }} - {{ $WOD->material->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WOD->material->code }}">{{ $WOD->material->code }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WOD->material->description }}">{{ $WOD->material->description }}</td>
+                                    <td>{{ $WOD->material->uom->unit }}</td>
                                     <td>{{ number_format($WOD->quantity) }}</td>
                                     <td>{{ number_format($WOD->total_price / $WOD->quantity) }}</td>
                                     <td>{{ number_format($WOD->discount,2) }}</td>
