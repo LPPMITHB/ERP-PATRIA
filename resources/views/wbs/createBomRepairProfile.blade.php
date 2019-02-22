@@ -5,7 +5,7 @@
         'title' => 'Manage BOM / BOS Profile',
         'items' => [
             'Dashboard' => route('index'),
-            'Create WBS Profile' => route('wbs.createWbsProfile'),
+            'Create WBS Profile' => route('wbs_repair.createWbsProfile'),
             'Manage BOM / BOS Profile' => '',
         ]
     ]
