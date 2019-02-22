@@ -22,6 +22,7 @@ class CreateTrxGoodsIssueTable extends Migration
             $table->unsignedInteger('goods_receipt_id')->nullable();
             $table->text('description');
             $table->integer('type')->default(1);
+            $table->integer('status')->default(0);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();

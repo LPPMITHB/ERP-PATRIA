@@ -80,7 +80,7 @@
             <div id="add_wbs">
                 <div class="box-body">
                     <div class="pull-right m-t-10">
-                        <a class="btn btn-primary btn-xs" data-toggle="modal" href="#adopt_wbs">
+                        <a class="btn btn-primary btn-xs" @click="openAdoptModal">
                             ADOPT FROM WBS PROFILE
                         </a>
                     </div>
@@ -191,7 +191,7 @@
                                     </div>                                
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                    <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
                                 </div>
                             </div>
                             <!-- /.modal-content -->
@@ -213,7 +213,7 @@
                                         <div class="form-group col-sm-12">
                                             <label for="">WBS Profiles</label>
                                             <selectize v-model="selected_wbs_profile" :settings="wbsProfilesSettings">
-                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.name }}</option>
+                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.number }} - {{ wbs_profile.description }}</option>
                                             </selectize>
                                         </div>
                                         <div class="form-group col-sm-12" v-show="selected_wbs_profile != ''">
@@ -360,7 +360,23 @@ var vm = new Vue({
         tooltipText: function(text) {
             return text
         },
+        openAdoptModal(){
+            if(this.wbs_profiles.length > 0){
+                $('#adopt_wbs').modal();            
+            }else{
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This project type doesn't have WBS Profiles",
+                    position: 'topRight',
+                });
+            }
+        },
         openEditModal(data){
+            this.editWbs.number = "";
+            this.editWbs.description = "";
+            this.editWbs.deliverables = "";
+            this.editWbs.planned_deadline = "";                
+            this.editWbs.weight = ""; 
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
             this.active_id = data.id;
@@ -519,7 +535,12 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 
-                this.getSubWBS();   
+                this.getSubWBS(); 
+                this.editWbs.number = "";
+                this.editWbs.description = "";
+                this.editWbs.deliverables = "";
+                this.editWbs.planned_deadline = "";                
+                this.editWbs.weight = "";   
             })
             .catch((error) => {
                 console.log(error);

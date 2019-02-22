@@ -123,12 +123,6 @@
                                 {{($modelPO->project) ? $modelPO->project->number : '-'}}                 
                             </div>
                         </div>
-                        <div  style="margin-left: 450px;">
-                            <div style="font-size: 11px;">Request By  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelPO->user->name}}                  
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="col-xs-12">

@@ -228,6 +228,7 @@ class WBSController extends Controller
             $businessUnit = 2;
         }
         $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
+
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
 
@@ -343,7 +344,7 @@ class WBSController extends Controller
                     $bom_detail->bom_id = $bom->id;
                     $bom_detail->material_id = $material->material_id;
                     $bom_detail->quantity = $material->quantity;
-                    $bom_detail->source = $material->source;
+                    $bom_detail->source = "Stock";
                     if(!$bom_detail->save()){
                         return response(["error"=> 'Failed Save Bom Detail !']);
                     }
@@ -534,11 +535,10 @@ class WBSController extends Controller
             if(count($wbsProfile->activities)>0){
                 array_push($error, ["Failed to delete, this WBS have activities"]);
             }
-            if($wbsProfile->bom != null){
+            if(count($wbsProfile->bom) > 0){
                 array_push($error, ["Failed to delete, this WBS have BOM"]);
             }
-
-            if(count($wbsProfile->resource)>0){
+            if(count($wbsProfile->resources)>0){
                 array_push($error, ["Failed to delete, this WBS have resource"]);
             }
 
@@ -798,7 +798,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = $material->source;
+                            $bom_detail->source = "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }
@@ -846,7 +846,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = $material->source;
+                            $bom_detail->source = "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }
@@ -908,7 +908,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = $material->source;
+                            $bom_detail->source = "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }
@@ -956,7 +956,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = $material->source;
+                            $bom_detail->source = "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }

@@ -35,7 +35,7 @@ class MaterialRequisitionController extends Controller
 
     public function indexApprove(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
         if($menu == "repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }elseif($menu == "building"){

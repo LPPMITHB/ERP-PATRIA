@@ -400,10 +400,12 @@ class ProjectController extends Controller
                 if($act_ref->predecessor != null){
                     $predecessor = json_decode($act_ref->predecessor);
                     foreach($predecessor as $key => $id){
-                        $predecessor[$key] = $actIdConverter[$id];
+                        $temp_array = [];
+                        array_push($temp_array, $actIdConverter[$id[0]]);
+                        array_push($temp_array, $id[1]);
+                        $predecessor[$key] = $temp_array;
                     }
-                    $stringPredecessor = '['.implode(',', $predecessor).']';
-                    $act->predecessor = $stringPredecessor;
+                    $act->predecessor = json_encode($predecessor);
                 }
                 $act->save();
 
@@ -563,13 +565,6 @@ class ProjectController extends Controller
         } 
         $projects = Project::all();
         foreach ($projects as $project) {
-            if($project->name == $request->name){
-                if($menu == "building"){
-                    return redirect()->route('project.copyProject',$request->project_ref)->with('error','The project name has been taken')->withInput();
-                }else{
-                    return redirect()->route('project_repair.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
-                }
-            }
             if($project->number == $request->number){
                 if($menu == "building"){
                     return redirect()->route('project.copyProject',$request->project_ref)->with('error','The project number has been taken')->withInput();
@@ -742,10 +737,12 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $customers = Customer::all();
         $ships = Ship::all();
+        $projectType = Configuration::get('project_type');
+
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         
-        return view('project.create', compact('project','customers','ships','menu'));
+        return view('project.create', compact('project','projectType','customers','ships','menu'));
     }
 
     /**

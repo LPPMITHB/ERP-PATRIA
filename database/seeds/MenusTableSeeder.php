@@ -608,16 +608,52 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 3,
+            'level' => 2,
             'name' => 'Material Write Off',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'material_write_off.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]); 
+
+        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]); 
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Approve Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -1512,16 +1548,52 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 3,
+            'level' => 2,
             'name' => 'Material Write Off',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'material_write_off_repair.create',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]); 
+
+        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off_repair.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]); 
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Approve Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         // DB::table('menus')->insert([
         //     'level' => 2,
