@@ -713,7 +713,6 @@ class BOMController extends Controller
             $PR->number = $pr_number;
             $PR->business_unit_id = $business_unit;
             $PR->type = 1;
-            $PR->project_id = $project_id;
             $PR->bom_id = $bom->id;
             $PR->description = 'AUTO PR FOR '.$modelProject->number;
             $PR->status = 1;
@@ -734,8 +733,8 @@ class BOMController extends Controller
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->material_id = $bomDetail->material_id;
-                            $PRD->wbs_id = $bomDetail->bom->wbs_id;
-                            $PRD->quantity = $bomDetail->quantity;
+                            $PRD->quantity = $bomDetail->quantity - $remaining;
+                            $PRD->project_id = $project_id;
                             $PRD->save();
                         }
                         $modelStock->reserved += $bomDetail->quantity;
@@ -745,8 +744,8 @@ class BOMController extends Controller
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->material_id = $bomDetail->material_id;
-                        $PRD->wbs_id = $bomDetail->bom->wbs_id;
                         $PRD->quantity = $bomDetail->quantity;
+                        $PRD->project_id = $project_id;
                         $PRD->save();
 
                         $modelStock = new Stock;
@@ -792,7 +791,6 @@ class BOMController extends Controller
                             $PR->number = $pr_number;
                             $PR->business_unit_id = $business_unit;
                             $PR->type = 1;
-                            $PR->project_id = $project_id;
                             $PR->bom_id = $data['bom_id'];
                             $PR->description = 'AUTO PR FOR '.$modelProject->number;
                             $PR->status = 1;
@@ -810,9 +808,9 @@ class BOMController extends Controller
                         if($remaining < $data['quantityInt']){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->project_id = $project_id;
                             $PRD->material_id = $data['material_id'];
-                            $PRD->wbs_id = $modelBom->wbs_id;
-                            $PRD->quantity = $data['quantityInt'];
+                            $PRD->quantity = $data['quantityInt'] - $remaining;
                             $PRD->save();
                         }
                         $modelStock->reserved += $data['quantityInt'];
@@ -821,7 +819,6 @@ class BOMController extends Controller
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->material_id = $data['material_id'];
-                        $PRD->wbs_id = $modelBom->wbs_id;
                         $PRD->quantity = $data['quantityInt'];
                         $PRD->save();
     
