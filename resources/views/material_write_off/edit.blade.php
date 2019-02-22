@@ -2,10 +2,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Material Write Off',
+        'title' => 'Edit Material Write Off',
         'items' => [
             'Dashboard' => route('index'),
-            'Create Material Write Off' => ""
+            'Edit Material Write Off' => ""
         ]
     ]
 )
@@ -17,12 +17,13 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-body">
-                @if($menu == "building")
-                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.store') }}">
+                @if($route == "/material_write_off")
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.update',['id'=>$modelGI->id]) }}">
                 @else
-                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off_repair.store') }}">
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off_repair.update',['id'=>$modelGI->id]) }}">
                 @endif
-                    @csrf
+                <input type="hidden" name="_method" value="PATCH">
+                @csrf
                     @verbatim
                     <div id="mwo">
                         <div class="row">
@@ -38,10 +39,8 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 5%">No</th>
-                                        <th style="width: 15%">Storage Location</th>
-                                        <th style="width: 20%">Material Number</th>
-                                        <th style="width: 20%">Material Description</th>
-                                        <th style="width: 5%">Unit</th>
+                                        <th style="width: 30%">Storage Location</th>
+                                        <th style="width: 30%">Material</th>
                                         <th style="width: 10%">Available</th>
                                         <th style="width: 10%">Quantity</th>
                                         <th style="width: 15%"></th>
@@ -51,9 +50,7 @@
                                     <tr v-for="(material,index) in dataMaterial">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ material.sloc_name }}</td>
-                                        <td class="tdEllipsis">{{ material.material_code }}</td>
-                                        <td class="tdEllipsis">{{ material.material_name }}</td>
-                                        <td class="tdEllipsis">{{ material.unit }}</td>
+                                        <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
                                         <td class="tdEllipsis">{{ material.available }}</td>
                                         <td class="tdEllipsis">{{ material.quantity }}</td>
                                         <td class="p-l-3 textCenter">
@@ -73,13 +70,10 @@
                                             <option v-for="(sloc,index) in slocs" :value="sloc.id">{{ sloc.name }}</option>
                                         </selectize>
                                     </td>
-                                    <td colspan="2" class="p-l-0 textLeft no-padding">
+                                    <td class="p-l-0 textLeft no-padding">
                                         <selectize id="material" v-model="dataInput.material_id" :settings="materialSettings">
                                             <option v-for="(slocDetail,index) in slocDetails" v-if="slocDetail.selected != true" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                         </selectize>
-                                    </td>
-                                    <td class="no-padding">
-                                        <input type="text" class="form-control" v-model="dataInput.unit" disabled>
                                     </td>
                                     <td>
                                         {{ dataInput.available }}
@@ -93,7 +87,7 @@
                                 </tfoot>
                             </table><br>
                             <div class="col-md-12">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
+                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">SAVE</button>
                             </div>
                         </div>
                         <div class="modal fade" id="edit_item">
@@ -118,10 +112,6 @@
                                                 <selectize id="materialedit" v-model="editInput.material_id" :settings="materialSettings">
                                                     <option v-for="(slocDetail,index) in slocDetails" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                                 </selectize>
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <label for="unit" class="control-label">Unit</label>
-                                                <input type="text" v-model="editInput.unit" class="form-control" disabled  >
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="available" class="control-label">Available</label>
@@ -161,7 +151,7 @@ $(document).ready(function(){
 });
 
 var data = {
-    description : "",
+    description : @json($modelGI->description),
     slocDetails : [],
     newIndex : "",
     slocs : @json($storageLocations),
@@ -174,7 +164,6 @@ var data = {
         quantity : "",
         quantityInt : 0,
         available : "",
-        unit : "",
     },
 
     editInput :{
@@ -187,7 +176,6 @@ var data = {
         quantity : "",
         quantityInt : 0,
         available : "",
-        unit : "",
         old_material_id : "",
     },
 
@@ -199,8 +187,9 @@ var data = {
         placeholder: 'Please Select Material'
     },
 
-    dataMaterial : [],
-    submittedForm : {}
+    dataMaterial : @json($materials),
+    submittedForm : {},
+    gid_deleted : [],
 
 };
 
@@ -251,7 +240,7 @@ var vm = new Vue({
             var material_id = this.dataInput.material_id;
             var sloc_id = this.dataInput.sloc_id;
             $('div.overlay').show();
-                window.axios.get('/api/getMaterialsMWO/'+material_id).then(({ data }) => {
+                window.axios.get('/api/getMaterials/'+material_id).then(({ data }) => {
                     
                     this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
@@ -302,9 +291,8 @@ var vm = new Vue({
             material.quantity = this.editInput.quantity;
             material.material_id = this.editInput.material_id;
             material.available = this.editInput.available;
-            material.unit = this.editInput.unit;
 
-            window.axios.get('/api/getMaterialsMWO/'+this.editInput.material_id).then(({ data }) => {
+            window.axios.get('/api/getMaterials/'+this.editInput.material_id).then(({ data }) => {
                 material.material_name = data.description;
                 material.material_code = data.code;
 
@@ -336,6 +324,7 @@ var vm = new Vue({
         submitForm(){
             this.submittedForm.description = this.description;
             this.submittedForm.materials = this.dataMaterial;    
+            this.submittedForm.gid_deleted = this.gid_deleted;    
 
             let struturesElem = document.createElement('input');
             struturesElem.setAttribute('type', 'hidden');
@@ -361,6 +350,7 @@ var vm = new Vue({
         },
 
         removeRow(index){
+            this.gid_deleted.push(this.dataMaterial[index].gid_id);
             this.dataMaterial.splice(index, 1);
             // this.material_id.splice(index, 1);
 
@@ -408,7 +398,6 @@ var vm = new Vue({
 
             this.dataInput.quantity = "";
             this.dataInput.available = "";
-            this.dataInput.unit = "";
 
 
         },
@@ -442,20 +431,6 @@ var vm = new Vue({
 
         'dataInput.material_id' : function(newValue){
             if(newValue != ""){
-
-                window.axios.get('/api/getMaterialsMWO/'+newValue).then(({ data }) => {
-                    this.dataInput.unit = data.uom.unit;
-
-                    $('div.overlay').hide();
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
                 
                 this.slocDetails.forEach(element => {
                     if(element.storage_location_id == this.dataInput.sloc_id && this.dataInput.material_id == element.material_id){
@@ -473,20 +448,6 @@ var vm = new Vue({
 
         'editInput.material_id' : function(newValue){
             if(newValue != ""){
-
-                window.axios.get('/api/getMaterialsMWO/'+newValue).then(({ data }) => {
-                    this.editInput.unit = data.uom.unit;
-
-                    $('div.overlay').hide();
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
                 
                 this.slocDetails.forEach(element => {
                     if(element.storage_location_id == this.editInput.sloc_id && this.editInput.material_id == element.material_id){
@@ -529,8 +490,8 @@ var vm = new Vue({
                 
                 this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 this.editInput.quantityInt = newValue;
-                this.editInput.quantityInt = parseInt(this.editInput.quantityInt.replace(/,/g , ''));
-                if(this.editInput.quantityInt >  parseInt(this.editInput.available.replace(/,/g , ''))){
+                this.editInput.quantityInt = parseInt(this.editInput.quantityInt+"".replace(/,/g , ''));
+                if(this.editInput.quantityInt >  parseInt(this.editInput.available+"".replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
                         position: 'topRight',

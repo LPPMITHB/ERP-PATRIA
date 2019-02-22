@@ -742,10 +742,12 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $customers = Customer::all();
         $ships = Ship::all();
+        $projectType = Configuration::get('project_type');
+
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         
-        return view('project.create', compact('project','customers','ships','menu'));
+        return view('project.create', compact('project','projectType','customers','ships','menu'));
     }
 
     /**
