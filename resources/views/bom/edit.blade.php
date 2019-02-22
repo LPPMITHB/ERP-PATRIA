@@ -9,7 +9,7 @@
             'Manage Bill Of Materials' => route('bom.indexProject'),
             'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
             'View Bill Of Material' => route('bom.show', ['id' => $modelBOM->id]),
-            'Edit Bill Of Material' => ,
+            'Edit Bill Of Material' => '',
         ]
     ]
 )
