@@ -385,7 +385,7 @@
 
                 var quantityInt = parseInt((this.editInput.quantity+"").replace(/,/g , ''));
                 if(this.pr_type == 'Material'){
-                    if(this.editInput.material_id == "" || quantityInt < 1 || this.editInput.quantity == "" || this.dataInput.alocation == ""){
+                    if(this.editInput.material_id == "" || quantityInt < 1 || this.editInput.quantity == "" || this.editInput.alocation == ""){
                         isOk = true;
                     }
                 }else if(this.pr_type == 'Resource'){
@@ -393,7 +393,6 @@
                         isOk = true;
                     }
                 }
-
                 return isOk;
             }
         },
