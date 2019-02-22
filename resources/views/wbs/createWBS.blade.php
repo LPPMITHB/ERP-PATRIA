@@ -349,6 +349,11 @@ var vm = new Vue({
             }
         },
         openEditModal(data){
+            this.newWbs.number = "";
+            this.newWbs.description = "";
+            this.newWbs.deliverables = "";
+            this.newWbs.planned_deadline = "";                
+            this.newWbs.weight = ""; 
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
             this.active_id = data.id;
@@ -402,6 +407,7 @@ var vm = new Vue({
             data.project_id = this.newWbs.project_id;
             data = JSON.stringify(data);
             var url = "";
+            console.log(this.menu);
             if(this.menu == "building"){
                 url = "{{ route('wbs.adoptWbs') }}";
             }else{
@@ -504,6 +510,11 @@ var vm = new Vue({
                 }
                 
                 this.getWBS();   
+                this.editWbs.number = "";
+                this.editWbs.description = "";
+                this.editWbs.deliverables = "";
+                this.editWbs.planned_deadline = "";                
+                this.editWbs.weight = ""; 
             })
             .catch((error) => {
                 iziToast.warning({

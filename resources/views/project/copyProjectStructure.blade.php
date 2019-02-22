@@ -84,7 +84,11 @@
             <div id="myPopoverContent" style="display : none;">
                 
             </div>
-            <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project.storeCopyProjectStructure') }}">
+            @if($mainMenu == "building")
+                <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project.storeCopyProjectStructure') }}">
+            @else
+                <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project_repair.storeCopyProjectStructure') }}">
+            @endif
                 @csrf
                 <div class="box-footer">
                     <button type="button" class="btn btn-primary pull-right" onclick="submitForm()">CREATE</button>
