@@ -535,11 +535,10 @@ class WBSController extends Controller
             if(count($wbsProfile->activities)>0){
                 array_push($error, ["Failed to delete, this WBS have activities"]);
             }
-            if($wbsProfile->bom != null){
+            if(count($wbsProfile->bom) > 0){
                 array_push($error, ["Failed to delete, this WBS have BOM"]);
             }
-
-            if(count($wbsProfile->resource)>0){
+            if(count($wbsProfile->resources)>0){
                 array_push($error, ["Failed to delete, this WBS have resource"]);
             }
 
