@@ -47,36 +47,28 @@
                     @verbatim
                     <div id="pr">
                         <div class="box-header no-padding">
-                            <div class="col-xs-12 col-md-4" v-if="selectedProject != null">
-                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-        
-                                <div class="col-xs-5 no-padding">Project Number</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.number}}</b></div>
-                                
-                                <div class="col-xs-5 no-padding">Ship Type</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.ship.type}}</b></div>
-        
-                                <div class="col-xs-5 no-padding">Customer</div>
-                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject.customer.name)"><b>: {{selectedProject.customer.name}}</b></div>
-
-                                <div class="col-xs-5 no-padding">Start Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_start_date}}</b></div>
-
-                                <div class="col-xs-5 no-padding">End Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_end_date}}</b></div>
-                            </div>
                             <div class="col-xs-12 col-md-4 p-r-0">
                                 <div class="col-sm-12 p-l-0">
                                     <label for="">PR Description</label>
                                 </div>
                                 <div class="col-sm-12 p-l-0">
-                                    <textarea class="form-control" rows="2" v-model="modelPR.description"></textarea>
+                                    <textarea class="form-control" rows="3" v-model="modelPR.description"></textarea>
                                 </div>
-                                <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
+                            </div>
+                            <div class="col-xs-12 col-md-4">
+                                <div class="col-sm-12 p-l-0">
                                     <label for="">Required Date</label>
                                 </div>
-                                <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
+                                <div class="col-sm-12 p-l-0">
                                     <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-4" v-if="modelPR.status == 3">
+                                <div class="col-sm-12 p-l-0">
+                                    <label for="">Revision Description</label>
+                                </div>
+                                <div class="col-sm-12 p-l-0">
+                                    <textarea class="form-control" rows="3" v-model="modelPR.revision_description"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -86,46 +78,63 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th v-if="modelPR.type == 1" style="width: 25%">Material Name</th>
-                                            <th v-else style="width: 25%">Resource Name</th>
-                                            <th style="width: 15%">Quantity</th>
-                                            <th style="width: 22%">WBS Name</th>
-                                            <th style="width: 10%">Alocation</th>
+                                            <template v-if="modelPR.type == 1">
+                                                <th style="width: 25%">Material Number</th>
+                                                <th style="width: 25%">Material Description</th>
+                                            </template>
+                                            <template v-else-if="modelPR.type == 2">
+                                                <th style="width: 25%">Resource Number</th>
+                                                <th style="width: 25%">Resource Description</th>
+                                            </template>
+                                            <th style="width: 9%">Quantity</th>
+                                            <th style="width: 8%">Unit</th>
+                                            <th style="width: 15%">Project Number</th>
                                             <th style="width: 13%">Required Date</th>
-                                            <th style="width: 10%"></th>
+                                            <th style="width: 15%">Alocation</th>
+                                            <th style="width: 13%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(material,index) in dataMaterial">
+                                        <tr v-for="(data,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
-                                            <td v-else class="tdEllipsis">{{ material.resource_code }} - {{ material.resource_name }}</td>
-                                            <td class="tdEllipsis">{{ material.quantity }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_number != null">{{ material.wbs_number }}</td>
-                                            <td class="tdEllipsis" v-else>-</td>
-                                            <td v-if="modelPR.type == 1" class="tdEllipsis">{{ material.alocation }}</td>
-                                            <td v-else class="tdEllipsis">-</td>
-                                            <td class="tdEllipsis">{{ material.required_date }}</td>
+                                            <template v-if="modelPR.type == 1">
+                                                <td class="tdEllipsis">{{ data.material_code }}</td>
+                                                <td class="tdEllipsis">{{ data.material_name }}</td>
+                                            </template>
+                                            <template v-else-if="modelPR.type == 2">
+                                                <td class="tdEllipsis">{{ data.resource_code }}</td>
+                                                <td class="tdEllipsis">{{ data.resource_name }}</td>
+                                            </template>
+                                            <td class="tdEllipsis">{{ data.quantity }}</td>
+                                            <td class="tdEllipsis">{{ data.unit }}</td>
+                                            <td class="tdEllipsis">{{ data.project_number }}</td>
+                                            <td class="tdEllipsis">{{ data.required_date }}</td>
+                                            <td class="tdEllipsis">{{ data.alocation }}</td>
                                             <td class="p-l-0 textCenter">
-                                                <a v-if="modelPR.type == 1" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                                <a v-if="modelPR.type == 1" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                                     EDIT
                                                 </a>
-                                                <a v-else class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(material,index)">
+                                                <a v-else class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(data,index)">
                                                     EDIT
                                                 </a>
-                                                <a v-show="material.prd_id == null" href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                <a v-show="data.prd_id != null" href="#" @click="removeRowDb(index,data.id)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                                <a v-show="data.prd_id == null" href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
                                                     DELETE
                                                 </a>
                                             </td>
                                         </tr>
+                                    </tbody>
+                                    <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td v-show="modelPR.type == 1" class="no-padding textLeft">
+                                            <td v-show="modelPR.type == 1" class="no-padding textLeft" colspan="2">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td v-show="modelPR.type == 2" class="no-padding textLeft">
+                                            <td v-show="modelPR.type == 2" class="no-padding textLeft" colspan="2">
                                                 <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
                                                     <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
@@ -133,15 +142,16 @@
                                             <td class="no-padding ">
                                                 <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
-                                            <td class="no-padding  textLeft" v-show="selectedProject != null">
-                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
-                                                </selectize>
+                                            <td class="no-padding ">
+                                                <input class="form-control width100" v-model="dataInput.unit" disabled>
                                             </td>
-                                            <td class="no-padding textLeft" v-show="selectedProject == null">
-                                                <selectize v-model="dataInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
-                                                </selectize>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.project_id" :settings="projectSettings">
+                                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="no-padding p-l-0 textLeft">
+                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
                                             <td class="no-padding textLeft">
                                                 <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
@@ -149,14 +159,11 @@
                                                     <option value="Stock">Stock</option>
                                                 </selectize>
                                             </td>
-                                            <td class="no-padding p-l-0 textLeft">
-                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
-                                            </td>
                                             <td class="no-padding textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
-                                    </tbody>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -175,40 +182,40 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="material" class="control-label">Material</label>
-                                                <input type="text" id="material" class="form-control" disabled >
+                                                <label for="type" class="control-label">Material</label>
+                                                <selectize v-model="editInput.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                </selectize>
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
-                                            <div class="col-sm-12" v-show="selectedProject != null"> 
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
-                                                </selectize>
+                                            <div class="col-sm-6">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" id="unit" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
-                                            <div class="col-sm-12" v-show="selectedProject == null"> 
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
-                                                </selectize>
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Project Number</label>
+                                                <selectize v-model="editInput.project_id" :settings="projectSettings">
+                                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                                </selectize> 
                                             </div>
                                             <div class="col-sm-12"> 
-                                                <label for="type" class="control-label">Alocation</label>
-                                                <selectize id="edit_modal" v-model="editInput.alocation" :settings="alocationSettings">
+                                                <label for="type" class="control-label">Required Date</label>
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="alocation" class="control-label">Alocation</label>
+                                                <selectize v-model="editInput.alocation" :settings="alocationSettings">
                                                     <option value="Consumption">Consumption</option>
                                                     <option value="Stock">Stock</option>
                                                 </selectize>
                                             </div>
-                                             <div class="col-sm-12"> 
-                                                <label for="type" class="control-label">Required Date</label>
-                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
-                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update()">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -226,29 +233,29 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="resource" class="control-label">Resource</label>
-                                                <input type="text" id="resource" class="form-control" disabled >
+                                                <label for="type" class="control-label">Resource</label>
+                                                <selectize id="edit_modal" v-model="editInput.resource_id" :settings="resourceSettings">
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
-                                            <div class="col-sm-12" v-show="selectedProject != null"> 
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
-                                                </selectize>
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Project Number</label>
+                                                <selectize v-model="editInput.project_id" :settings="projectSettings">
+                                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                                </selectize> 
                                             </div>
-                                            <div class="col-sm-12" v-show="selectedProject == null"> 
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="nullSettings" disabled>
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
-                                                </selectize>
+                                            <div class="col-sm-12"> 
+                                                <label for="type" class="control-label">Required Date</label>
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update()">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -269,36 +276,8 @@
 @push('script')
 <script>
     const form = document.querySelector('form#edit-pr');
-    console.log(form)
 
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == 'Quantity' || title == ""){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-            }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tableNonPagingVue.column(i).search() !== this.value ) {
-                    tableNonPagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
-        });
-
-        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-        });
-
         $('div.overlay').hide();
     });
 
@@ -306,13 +285,13 @@
         newIndex : "",
         resource : "",
         modelPR : @json($modelPR),
-        selectedProject : @json($project),
-        dataMaterial : @json($modelPRD),
+        modelPRD : @json($modelPRD),
+        dataMaterial : [],
         materials : @json($materials),
         resources : @json($resources),
-        wbss : @json($wbss),
-        wbsSettings: {
-            placeholder: 'Please Select WBS'
+        projects : @json($modelProject),
+        projectSettings: {
+            placeholder: 'Please Select Project'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
@@ -329,35 +308,36 @@
         dataInput : {
             prd_id :null,
             material_id :"",
-            resource_id : "",
             material_code : "",
             material_name : "",
+            resource_id :"",
             resource_code : "",
             resource_name : "",
             quantity : "",
-            quantityInt : 0,
-            wbs_id : "",
-            wbs_number : "",
+            unit : "",
+            project_id : "",
+            project_number : "-",
+            required_date : "",
             alocation : "Stock",
-            required_date : ""
         },
         editInput : {
-            old_material_id : "",
-            material_id : "",
+            material_id :"",
             material_code : "",
             material_name : "",
+            resource_id :"",
+            resource_code : "",
+            resource_name : "",
             quantity : "",
-            quantityInt : 0,
-            wbs_id : "",
-            wbs_number : "",
+            unit : "",
+            project_id : "",
+            project_number : "-",
+            required_date : "",
             alocation : "",
-            required_date : ""
         },
         material_id:[],
-        material_id_modal:[],
-        materials_modal :[],
         required_date : "",
-        submittedForm : {}
+        submittedForm : {},
+        deletedId : []
     }
 
     var vm = new Vue({
@@ -416,32 +396,28 @@
             createOk: function(){
                 let isOk = false;
 
+                var quantityInt = parseInt((this.dataInput.quantity+"").replace(/,/g , ''));
                 if(this.modelPR.type == 1){
-                    var string_newValue = this.dataInput.quantityInt+"";
-                    this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                    if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt)){
+                    if(this.dataInput.material_id == "" || quantityInt < 1 || this.dataInput.quantity == "" || this.dataInput.alocation == ""){
                         isOk = true;
                     }
-                }else{
-                    if(this.dataInput.resource_id == ""){
+                }else if(this.modelPR.type == 2){
+                    if(this.dataInput.resource_id == "" || quantityInt < 1 || this.dataInput.quantity == ""){
                         isOk = true;
                     }
                 }
-
                 return isOk;
             },
             updateOk: function(){
                 let isOk = false;
-                if(this.modelPR.type == 1){
-                    var string_newValue = this.editInput.quantityInt+"";
-                    this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                    if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
+                var quantityInt = parseInt((this.editInput.quantity+"").replace(/,/g , ''));
+                if(this.modelPR.type == 1){
+                    if(this.editInput.material_id == "" || quantityInt < 1 || this.editInput.quantity == "" || this.editInput.alocation == ""){
                         isOk = true;
                     }
-                }else{
-                    if(this.editInput.resource_id == ""){
+                }else if(this.modelPR.type == 2){
+                    if(this.editInput.resource_id == "" || quantityInt < 1 || this.editInput.quantity == ""){
                         isOk = true;
                     }
                 }
@@ -449,27 +425,31 @@
             },
         },
         methods : {
-            tooltip(text){
-                Vue.directive('tooltip', function(el, binding){
-                    $(el).tooltip('destroy');
-                    $(el).tooltip({
-                        title: text,
-                        placement: binding.arg,
-                        trigger: 'hover'             
-                    })
-                })
-                return text
+            clearData(){
+                this.dataInput.material_id = "";
+                this.dataInput.material_code = "";
+                this.dataInput.material_name = "";
+                this.dataInput.resource_id = "";
+                this.dataInput.resource_code = "";
+                this.dataInput.resource_name = "";
+                this.dataInput.quantity = "";
+                this.dataInput.unit = "";
+                this.dataInput.project_id = "";
+                this.dataInput.project_number = "-";
+                this.dataInput.required_date = "";
+                this.dataInput.alocation = "Stock";
+
+                this.newIndex = Object.keys(this.dataMaterial).length+1;
             },
             submitForm(){
-                this.submittedForm.description = this.modelPR.description;
-                this.submittedForm.project_id = this.project_id;    
-                
-                var data = this.dataMaterial;
-                data.forEach(prd => {
+                this.dataMaterial.forEach(prd => {
                     prd.quantity = parseInt((prd.quantity+"").replace(/,/g , ''));
                 });
 
-                this.submittedForm.materials = this.dataMaterial;  
+                this.submittedForm.datas = this.dataMaterial;  
+                this.submittedForm.description = this.modelPR.description;
+                this.submittedForm.deletedId = this.deletedId;
+                this.submittedForm.pr_id = this.modelPR.id;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -478,179 +458,79 @@
                 form.appendChild(struturesElem);
                 form.submit();
             },
-            update(old_material_id, new_material_id){
+            update(){
                 $('div.overlay').show();
-                var material = this.dataMaterial[this.editInput.index];
-                if(this.editInput.wbs_id != null){
-                    material.wbs_number = this.editInput.wbs_number;
-                    material.quantityInt = this.editInput.quantityInt;
-                    material.quantity = this.editInput.quantity;
-                    material.wbs_id = this.editInput.wbs_id;
-                    material.alocation = this.editInput.alocation;
-                    material.required_date = this.editInput.required_date;
-                }else{
-                    material.quantityInt = this.editInput.quantityInt;
-                    material.quantity = this.editInput.quantity;
-                    material.alocation = this.editInput.alocation;
-                    material.required_date = this.editInput.required_date;
+                var data = this.dataMaterial[this.editInput.index];
+
+                data.material_id = this.editInput.material_id;
+                data.material_name = this.editInput.material_name;
+                data.material_code = this.editInput.material_code;
+                data.resource_id = this.editInput.resource_id;
+                data.resource_code = this.editInput.resource_code;
+                data.resource_name = this.editInput.resource_name;
+                data.quantity = this.editInput.quantity 
+                data.unit = this.editInput.unit 
+                data.project_id = this.editInput.project_id 
+                data.project_number = this.editInput.project_number 
+                data.required_date = this.editInput.required_date 
+                data.alocation = this.editInput.alocation 
+                
+                if(this.modelPR.type == 1){
+                    var type = "Material";
+                }else if(this.modelPR.type == 2){
+                    var type = "Resource";
                 }
-                console.log(material)
+                iziToast.success({
+                    title: type+' Updated !',
+                    position: 'topRight',
+                    displayMode: 'replace'
+                });
+
                 $('div.overlay').hide();
             },
             openEditModal(data,index){
-                if(data.material_id != null && data.material_id != ''){
-                    this.editInput.material_id = data.material_id;
-                    this.editInput.old_material_id = data.material_id;
-                    this.editInput.material_code = data.material_code;
-                    this.editInput.material_name = data.material_name;
-                    this.editInput.quantity = data.quantity;
-                    this.editInput.quantityInt = data.quantityInt;
-                    this.editInput.wbs_id = data.wbs_id;
-                    this.editInput.wbs_number = data.wbs_number;
-                    this.editInput.alocation = data.alocation;
-                    this.editInput.index = index;
-                    this.editInput.required_date = data.required_date;
-
-                    document.getElementById('material').value = data.material_code+" - "+data.material_name;
-                    var material_id = JSON.stringify(this.material_id);
-                    material_id = JSON.parse(material_id);
-                    
-                    this.material_id_modal.forEach(id => {
-                        if(id == data.material_id){
-                            var index = this.material_id_modal.indexOf(id);
-                        }
-                    });
-                }else{
-                    this.editInput.resource_id = data.resource_id;
-                    this.editInput.resource_code = data.resource_code;
-                    this.editInput.resource_name = data.resource_name;
-                    this.editInput.quantity = data.quantity;
-                    this.editInput.quantityInt = data.quantityInt;
-                    this.editInput.wbs_id = data.wbs_id;
-                    this.editInput.wbs_number = data.wbs_number;
-                    this.editInput.index = index;
-                    console.log(data.resource_code)
-                    document.getElementById('resource').value = data.resource_code+" - "+data.resource_name;
-                }
-                
+                this.editInput.material_id = data.material_id;
+                this.editInput.material_code = data.material_code;
+                this.editInput.material_name = data.material_name;
+                this.editInput.resource_id = data.resource_id;
+                this.editInput.resource_code = data.resource_code;
+                this.editInput.resource_name = data.resource_name;
+                this.editInput.quantity = data.quantity;
+                this.editInput.unit = data.unit;
+                this.editInput.project_id = data.project_id;
+                this.editInput.project_number = data.project_number;
+                this.editInput.required_date = data.required_date;
+                this.editInput.alocation = data.alocation;
+                this.editInput.index = index;                
             },
             add(){
                 $('div.overlay').show();
-                if(this.modelPR.type == 1){
-                    var material_id = this.dataInput.material_id;
-                    window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
-                        this.dataInput.material_name = data.name;
-                        this.dataInput.material_code = data.code;
+                var data = JSON.stringify(this.dataInput);
+                data = JSON.parse(data);
 
-                        var temp_data = JSON.stringify(this.dataInput);
-                        temp_data = JSON.parse(temp_data);
+                this.dataMaterial.push(data);
 
-                        this.dataMaterial.push(temp_data);
-
-                        this.dataInput.material_name = "";
-                        this.dataInput.material_code = "";
-                        this.dataInput.quantity = "";
-                        this.dataInput.material_id = "";
-                        this.dataInput.wbs_id = "";
-                        this.dataInput.wbs_number = "";
-                        this.dataInput.alocation = "Stock";
-                        this.dataInput.required_date = "";
-
-                        this.newIndex = Object.keys(this.dataMaterial).length+1;    
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    var resource_id = this.dataInput.resource_id;
-                    window.axios.get('/api/getResourcePR/'+resource_id).then(({ data }) => {
-                        this.dataInput.resource_name = data.name;
-                        this.dataInput.resource_code = data.code;
-
-                        var temp_data = JSON.stringify(this.dataInput);
-                        temp_data = JSON.parse(temp_data);
-
-                        this.dataMaterial.push(temp_data);
-
-                        this.dataInput.resource_name = "";
-                        this.dataInput.resource_code = "";
-                        this.dataInput.resource_id = "";
-                        this.dataInput.wbs_id = "";
-                        this.dataInput.wbs_number = "";
-                        this.dataInput.quantity = "";
-                        this.dataInput.required_date = "";
-
-                        this.newIndex = Object.keys(this.dataMaterial).length+1;    
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }
+                this.clearData();
+                $('div.overlay').hide();
             },
             removeRow(index){
                 this.dataMaterial.splice(index, 1);
                 
                 this.newIndex = this.dataMaterial.length + 1;
+            },
+            removeRowDb(index,id){
+                this.dataMaterial.splice(index, 1);
+                this.deletedId.push(id);
+
+                this.newIndex = this.dataMaterial.length + 1;
             }
         },
         watch : {
             'dataInput.quantity': function(newValue){
-                this.dataInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.dataInput.quantity = quantity_string;
+                this.dataInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                Vue.nextTick(() => this.editInput.quantity = quantity_string);
-            },
-            'dataInput.wbs_id': function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
-                        this.dataInput.wbs_number = data.name;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }
-            },
-            'editInput.wbs_id': function(newValue){
-                if(newValue != '' && newValue != null){
-                    window.axios.get('/api/getWbsPR/'+newValue).then(({ data }) => {
-                        this.editInput.wbs_number = data.name;
-                        this.editInput.wbs_id = data.id;
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                    })
-                }
+                this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             },
             'required_date': function(newValue){
                 this.dataMaterial.forEach(data =>{
@@ -658,35 +538,90 @@
                         data.required_date = newValue;
                     }
                 })
+            },
+            'dataInput.material_id': function(newValue){
+                if(newValue != "" && newValue != null){
+                    window.axios.get('/api/getMaterialPR/'+newValue).then(({ data }) => {
+                        this.dataInput.material_name = data.description;
+                        this.dataInput.material_code = data.code;
+                        this.dataInput.unit = data.uom.unit;
+                    });
+                }else{
+                    this.dataInput.material_name = "";
+                    this.dataInput.material_code = "";
+                    this.dataInput.unit = "";
+                }
+            },
+            'dataInput.resource_id': function(newValue){
+                if(newValue != "" && newValue != null){
+                    window.axios.get('/api/getResourcePR/'+newValue).then(({ data }) => {
+                        this.dataInput.resource_name = data.name;
+                        this.dataInput.resource_code = data.code;
+                        this.dataInput.unit = "-";
+                    });
+                }else{
+                    this.dataInput.resource_name = "";
+                    this.dataInput.resource_code = "";
+                    this.dataInput.unit = "";
+                }
+            },
+            'dataInput.project_id': function(newValue){
+                if(newValue != "" && newValue != null){
+                    window.axios.get('/api/getProjectPR/'+newValue).then(({ data }) => {
+                        this.dataInput.project_number = data.number;
+                    });
+                }else{
+                    this.dataInput.project_number = "-";
+                }
+            },
+            'editInput.material_id': function(newValue){
+                if(newValue != "" && newValue != null){
+                    window.axios.get('/api/getMaterialPR/'+newValue).then(({ data }) => {
+                        this.editInput.material_name = data.description;
+                        this.editInput.material_code = data.code;
+                        this.editInput.unit = data.uom.unit;
+                    });
+                }else{
+                    this.editInput.material_name = "";
+                    this.editInput.material_code = "";
+                    this.editInput.unit = "";
+                }
+            },
+            'editInput.resource_id': function(newValue){
+                if(newValue != "" && newValue != null){
+                    window.axios.get('/api/getResourcePR/'+newValue).then(({ data }) => {
+                        this.editInput.resource_name = data.name;
+                        this.editInput.resource_code = data.code;
+                        this.editInput.unit = "-";
+                    });
+                }else{
+                    this.editInput.resource_name = "";
+                    this.editInput.resource_code = "";
+                    this.editInput.unit = "";
+                }
+            },
+            'editInput.project_id': function(newValue){
+                if(newValue != "" && newValue != null){
+                    window.axios.get('/api/getProjectPR/'+newValue).then(({ data }) => {
+                        this.editInput.project_number = data.number;
+                    });
+                }else{
+                    this.editInput.project_number = "-";
+                }
             }
         },
         created: function() {
-            this.newIndex = Object.keys(this.dataMaterial).length+1;
-
-            var data = this.dataMaterial;
+            var data = this.modelPRD;
             data.forEach(prd => {
-                var date = prd.required_date;
-                prd.required_date = date.split("-").reverse().join("-");
+                if(prd.required_date != null && prd.required_date != ''){
+                    var date = prd.required_date;
+                    prd.required_date = date.split("-").reverse().join("-");
+                }
                 prd.quantity = (prd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                if(prd.material_id != null){
-                    prd.material_name = prd.material.name;
-                    prd.material_code = prd.material.code;
-                }else{
-                    prd.resource_name = prd.resource.name;
-                    prd.resource_code = prd.resource.code;
-                }
+                
                 prd.prd_id = prd.id;
-                if(this.selectedProject){
-                    this.selectedProject.planned_start_date = this.selectedProject.planned_start_date.split("-").reverse().join("-");
-                    this.selectedProject.planned_end_date = this.selectedProject.planned_end_date.split("-").reverse().join("-");
-                    if(prd.wbs == null){
 
-                    }else{
-                        prd.wbs_number = prd.wbs.number;
-                    }
-                }else{
-
-                }
+                this.dataMaterial.push(prd);
             });
 
             if(this.modelPR.type == 1){
@@ -694,6 +629,8 @@
             }else if(this.modelPR.type == 2){
                 this.resource = "ok";
             }
+
+            this.clearData();
         },
     });
 </script>

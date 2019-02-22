@@ -18,11 +18,6 @@ class PurchaseRequisitionDetail extends Model
         return $this->belongsTo('App\Models\Resource');
     }
 
-    public function wbs()
-    {
-        return $this->belongsTo('App\Models\WBS');
-    }
-
     public function purchaseRequisition()
     {
         return $this->belongsTo('App\Models\PurchaseRequisition');
