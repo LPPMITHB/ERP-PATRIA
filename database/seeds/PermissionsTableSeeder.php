@@ -1105,6 +1105,97 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Goods Return
+        $createGR = Menu::where('name','Create GR')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Return',
+            'menu_id' => $createGR,
+            'middleware' => 'create-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGR = Menu::where('name','View Goods Return')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Return',
+            'menu_id' => $viewGR,
+            'middleware' => 'list-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Goods Return',
+            'menu_id' => $viewGR,
+            'middleware' => 'show-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Goods Return',
+            'menu_id' => $viewGR,
+            'middleware' => 'edit-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveGR = Menu::where('name','Approve Goods Return')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Goods Return',
+            'menu_id' => $approveGR,
+            'middleware' => 'approve-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Goods Return Repair
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
+        $grRepair = Menu::where('name','Goods Return')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createGRRepair = Menu::where('name','Create GR')->where('menu_id',$grRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Return',
+            'menu_id' => $createGRRepair,
+            'middleware' => 'create-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGRRepair = Menu::where('name','View Goods Return')->where('menu_id',$giRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Return',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'list-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Goods Return',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'show-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Goods Return',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'edit-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveGRRepair = Menu::where('name','Approve Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Goods Return',
+            'menu_id' => $approveGRRepair,
+            'middleware' => 'approve-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Ship
         $ship = Menu::where('name','Ship')->select('id')->first()->id;
         DB::table('permissions')->insert([

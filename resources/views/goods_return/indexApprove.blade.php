@@ -37,9 +37,9 @@
                                 <td>{{ $modelGoodsReturn->project->name }}</td>
                                 <td class="textCenter">
                                     @if($menu == "building")
-                                        <a href="{{ route('material_requisition.showApprove', ['id'=>$modelGoodsReturn->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('goods_return.showApprove', ['id'=>$modelGoodsReturn->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @else
-                                        <a href="{{ route('material_requisition_repair.showApprove', ['id'=>$modelGoodsReturn->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('goods_return_repair.showApprove', ['id'=>$modelGoodsReturn->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>

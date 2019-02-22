@@ -72,6 +72,8 @@ class RolesTableSeeder extends Seeder
                 'create-material-write-off-repair' => true,'list-material-write-off-repair' => true, 'edit-material-write-off-repair' => true, 'show-material-write-off-repair' => true, 'approve-material-write-off-repair' => true,
                 'manage-wbs-profile' => true,'manage-bom-profile' => true,'manage-activity-profile' => true,'manage-resource-profile' => true,
                 'manage-wbs-profile-repair' => true,'manage-bom-profile-repair' => true,'manage-activity-profile-repair' => true,'manage-resource-profile-repair' => true,
+                'create-goods-return' => true,'list-goods-return' => true,'show-goods-return' => true,'edit-goods-return' => true, 'approve-goods-return' => true,
+                'create-goods-return-repair' => true,'list-goods-return-repair' => true,'show-goods-return-repair' => true,'edit-goods-return-repair' => true, 'approve-goods-return-repair' => true,
                 ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -142,6 +144,7 @@ class RolesTableSeeder extends Seeder
                 'create-receive-resource' => true,'list-receive-resource' => true,'show-receive-resource' => true,
                 'create-issue-resource' => true, 'list-issue-resource' => true,'show-issue-resource' => true,'edit-issue-resource' => true,
                 'manage-wbs-profile' => true,'manage-bom-profile' => true,'manage-activity-profile' => true,'manage-resource-profile' => true,
+                'create-goods-return' => true,'list-goods-return' => true,'show-goods-return' => true,'edit-goods-return' => true, 'approve-goods-return' => true,
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -188,6 +191,8 @@ class RolesTableSeeder extends Seeder
                 'create-receive-resource-repair' => true,'list-receive-resource-repair' => true,'show-receive-resource-repair' => true,
                 'create-issue-resource-repair' => true, 'list-issue-resource-repair' => true,'show-issue-resource-repair' => true,'edit-issue-resource-repair' => true,
                 'manage-wbs-profile-repair' => true,'manage-bom-profile-repair' => true,'manage-activity-profile-repair' => true,'manage-resource-profile-repair' => true,
+                'create-goods-return-repair' => true,'list-goods-return-repair' => true,'show-goods-return-repair' => true,'edit-goods-return-repair' => true, 'approve-goods-return-repair' => true,
+                
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
