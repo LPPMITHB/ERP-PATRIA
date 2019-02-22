@@ -718,6 +718,7 @@ var vm = new Vue({
             }
         },
         openModalEditActivity(data){
+            this.predecessorTableEdit = [];
             document.getElementById("edit_activity_code").innerHTML= data.code;
             this.editActivity.activity_id = data.id;
             this.editActivity.name = data.name;
@@ -725,6 +726,8 @@ var vm = new Vue({
             this.editActivity.weight = data.weight;
             if(JSON.parse(data.predecessor) != null){
                 this.editActivity.allPredecessor = JSON.parse(data.predecessor);
+            }else{
+                this.editActivity.allPredecessor = [];
             }
             this.constWeightAct = data.weight;
             $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date.split("-").reverse().join("-")));
@@ -737,7 +740,6 @@ var vm = new Vue({
                     activity['selected'] = false;
                 });
 
-                this.predecessorTableEdit = [];
                 if(this.editActivity.allPredecessor.length > 0){
                     this.editActivity.allPredecessor.forEach(elementpredecessor => {
                         this.allActivitiesEdit.forEach(elementAllActivities => {
