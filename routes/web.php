@@ -483,7 +483,7 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project-repair');
 
-    Route::post('/storeCopyProjectStructure/{new_id}', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
+    Route::post('/storeCopyProjectStructure', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project-repair');
 
@@ -570,7 +570,7 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
     
-    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project');
+    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project-repair');
     
     Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
     

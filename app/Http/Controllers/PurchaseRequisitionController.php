@@ -73,11 +73,10 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_requisition"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get()->jsonSerialize();
         }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get()->jsonSerialize();
         }
-
         $modelMaterial = Material::all()->jsonSerialize();
         $modelResource = Resource::all()->jsonSerialize();
 
@@ -102,9 +101,6 @@ class PurchaseRequisitionController extends Controller
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
-                if($datas->project_id != null){
-                    $PR->project_id = $datas->project_id;
-                }
                 if($route == '/purchase_requisition'){
                     $PR->business_unit_id = 1;
                 }else if($route == '/purchase_requisition_repair'){
@@ -116,7 +112,7 @@ class PurchaseRequisitionController extends Controller
                 $PR->branch_id = Auth::user()->branch->id;
                 $PR->save();
 
-                foreach($datas->materials as $data){
+                foreach($datas->datas as $data){
                     $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
                     $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
                     if($required_date){
@@ -127,8 +123,8 @@ class PurchaseRequisitionController extends Controller
                     if(count($modelPRD)>0){
                         $status = 0;
                         foreach($modelPRD as $PurchaseRD){
-                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date){
-                                $PurchaseRD->quantity +=$data->quantityInt;
+                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date){
+                                $PurchaseRD->quantity +=$data->quantity;
                                 $PurchaseRD->update();
 
                                 $status = 1;
@@ -137,24 +133,24 @@ class PurchaseRequisitionController extends Controller
                         if($status == 0){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
-                            $PRD->quantity = $data->quantityInt;
+                            $PRD->quantity = $data->quantity;
                             $PRD->material_id = $data->material_id;
                             $PRD->alocation = $data->alocation;
                             $PRD->required_date = $required_date;
-                            if($data->wbs_id != null){
-                                $PRD->wbs_id = $data->wbs_id;
+                            if($data->project_id != null){
+                                $PRD->project_id = $data->project_id;
                             }
                             $PRD->save();
                         }
                     }else{
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
-                        $PRD->quantity = $data->quantityInt;
+                        $PRD->quantity = $data->quantity;
                         $PRD->material_id = $data->material_id;
                         $PRD->alocation = $data->alocation;
                         $PRD->required_date = $required_date;
-                        if($data->wbs_id != null){
-                            $PRD->wbs_id = $data->wbs_id;
+                        if($data->project_id != null){
+                            $PRD->project_id = $data->project_id;
                         }
                         $PRD->save();
                     }
@@ -163,9 +159,6 @@ class PurchaseRequisitionController extends Controller
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
-                if($datas->project_id != null){
-                    $PR->project_id = $datas->project_id;
-                }
                 if($route == '/purchase_requisition'){
                     $PR->business_unit_id = 1;
                 }else if($route == '/purchase_requisition_repair'){
@@ -188,8 +181,8 @@ class PurchaseRequisitionController extends Controller
                     if(count($modelPRD)>0){
                         $status = 0;
                         foreach($modelPRD as $PurchaseRD){
-                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->wbs_id == $data->wbs_id && $PurchaseRD->required_date == $required_date){
-                                $PurchaseRD->quantity +=$data->quantityInt;
+                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->required_date == $required_date){
+                                $PurchaseRD->quantity +=$data->quantity;
                                 $PurchaseRD->update();
 
                                 $status = 1;
@@ -198,22 +191,22 @@ class PurchaseRequisitionController extends Controller
                         if($status == 0){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
-                            $PRD->quantity = $data->quantityInt;
+                            $PRD->quantity = $data->quantity;
                             $PRD->resource_id = $data->resource_id;
                             $PRD->required_date = $required_date;
-                            if($data->wbs_id != null){
-                                $PRD->wbs_id = $data->wbs_id;
+                            if($data->project_id != null){
+                                $PRD->project_id = $data->project_id;
                             }
                             $PRD->save();
                         }
                     }else{
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
-                        $PRD->quantity = $data->quantityInt;
+                        $PRD->quantity = $data->quantity;
                         $PRD->resource_id = $data->resource_id;
                         $PRD->required_date = $required_date;
-                        if($data->wbs_id != null){
-                            $PRD->wbs_id = $data->wbs_id;
+                        if($data->project_id != null){
+                            $PRD->project_id = $data->project_id;
                         }
                         $PRD->save();
                     }
@@ -662,14 +655,13 @@ class PurchaseRequisitionController extends Controller
     }
 
     public function getProjectApi($id){
-        $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
 
-        return response($project, Response::HTTP_OK);
+        return response(Project::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getMaterialAPI($id){
         
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getResourceAPI($id){

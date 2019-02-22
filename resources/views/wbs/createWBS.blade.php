@@ -349,6 +349,11 @@ var vm = new Vue({
             }
         },
         openEditModal(data){
+            this.newWbs.number = "";
+            this.newWbs.description = "";
+            this.newWbs.deliverables = "";
+            this.newWbs.planned_deadline = "";                
+            this.newWbs.weight = ""; 
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
             this.active_id = data.id;
@@ -504,6 +509,11 @@ var vm = new Vue({
                 }
                 
                 this.getWBS();   
+                this.editWbs.number = "";
+                this.editWbs.description = "";
+                this.editWbs.deliverables = "";
+                this.editWbs.planned_deadline = "";                
+                this.editWbs.weight = ""; 
             })
             .catch((error) => {
                 iziToast.warning({

@@ -133,7 +133,7 @@ class ActivityController extends Controller
             $activity->planned_start_date = $planStartDate->format('Y-m-d');
             $activity->planned_end_date = $planEndDate->format('Y-m-d');
             $activity->weight = $data['weight']; 
-            if($data['allPredecessor'] != null){
+            if(count($data['allPredecessor']) > 0){
                 $predecessorArray = [];
                 foreach($data['allPredecessor'] as $predecessor){
                     $temp = [];
@@ -222,8 +222,16 @@ class ActivityController extends Controller
         DB::beginTransaction();
         try {
             $activity = Activity::find($id);
-            if($data['predecessor'] != "[]"){
-                $activity->predecessor = $data['predecessor'];
+            if(count($data['allPredecessor']) > 0){
+                $predecessorArray = [];
+                foreach($data['allPredecessor'] as $predecessor){
+                    $temp = [];
+                    array_push($temp, $predecessor[0]);
+                    array_push($temp, $predecessor[1]);
+                    array_push($predecessorArray, $temp);
+                    
+                }
+                $activity->predecessor = json_encode($predecessorArray);
             }else{
                 $activity->predecessor = null;
             }
@@ -493,23 +501,6 @@ class ActivityController extends Controller
             }
         }
 
-        foreach($activities as $activity){
-            $predecessorObj = json_decode($activity->predecessor);
-            $activity['predecessorText'] = "-";
-            if($predecessorObj != null){
-                foreach($predecessorObj as $predecessorTo){
-                    foreach($allActivities as $refAct){
-                        if($predecessorTo==$refAct->id){
-                            if($activity->predecessorText == "-"){
-                                $activity->predecessorText = $refAct->name;
-                            }else{
-                                $activity->predecessorText =  $activity->predecessorText.", ".$refAct->code;
-                            }
-                        }
-                    }
-                }
-            }
-        }
         return response($activities->jsonSerialize(), Response::HTTP_OK);
     }
 
