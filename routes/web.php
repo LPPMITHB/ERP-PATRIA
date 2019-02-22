@@ -479,7 +479,7 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
     
     Route::get('/copyProject/{id}', 'ProjectController@copyProject')->name('copyProject')->middleware('can:create-project-repair');
 
-    Route::post('/storeCopyProject', 'ProjectController@storeCopyProject')->name('storeCopyProject')->middleware('can:create-project');
+    Route::post('/storeCopyProject', 'ProjectController@storeCopyProject')->name('storeCopyProject')->middleware('can:create-project-repair');
 
     Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project-repair');
 
