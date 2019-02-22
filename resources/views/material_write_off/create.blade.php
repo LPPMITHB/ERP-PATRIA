@@ -38,8 +38,10 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 5%">No</th>
-                                        <th style="width: 30%">Storage Location</th>
-                                        <th style="width: 30%">Material</th>
+                                        <th style="width: 15%">Storage Location</th>
+                                        <th style="width: 20%">Material Number</th>
+                                        <th style="width: 20%">Material Description</th>
+                                        <th style="width: 5%">Unit</th>
                                         <th style="width: 10%">Available</th>
                                         <th style="width: 10%">Quantity</th>
                                         <th style="width: 15%"></th>
@@ -49,7 +51,9 @@
                                     <tr v-for="(material,index) in dataMaterial">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ material.sloc_name }}</td>
-                                        <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                        <td class="tdEllipsis">{{ material.material_code }}</td>
+                                        <td class="tdEllipsis">{{ material.material_name }}</td>
+                                        <td class="tdEllipsis">{{ material.unit }}</td>
                                         <td class="tdEllipsis">{{ material.available }}</td>
                                         <td class="tdEllipsis">{{ material.quantity }}</td>
                                         <td class="p-l-3 textCenter">
@@ -69,10 +73,13 @@
                                             <option v-for="(sloc,index) in slocs" :value="sloc.id">{{ sloc.name }}</option>
                                         </selectize>
                                     </td>
-                                    <td class="p-l-0 textLeft no-padding">
+                                    <td colspan="2" class="p-l-0 textLeft no-padding">
                                         <selectize id="material" v-model="dataInput.material_id" :settings="materialSettings">
                                             <option v-for="(slocDetail,index) in slocDetails" v-if="slocDetail.selected != true" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                         </selectize>
+                                    </td>
+                                    <td class="no-padding">
+                                        <input type="text" class="form-control" v-model="dataInput.unit" disabled>
                                     </td>
                                     <td>
                                         {{ dataInput.available }}
@@ -111,6 +118,10 @@
                                                 <selectize id="materialedit" v-model="editInput.material_id" :settings="materialSettings">
                                                     <option v-for="(slocDetail,index) in slocDetails" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                                 </selectize>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" v-model="editInput.unit" class="form-control" disabled  >
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="available" class="control-label">Available</label>
@@ -163,6 +174,7 @@ var data = {
         quantity : "",
         quantityInt : 0,
         available : "",
+        unit : "",
     },
 
     editInput :{
@@ -176,6 +188,8 @@ var data = {
         quantityInt : 0,
         available : "",
         old_material_id : "",
+        unit : "",
+
     },
 
     slocSettings: {
@@ -238,7 +252,7 @@ var vm = new Vue({
             var material_id = this.dataInput.material_id;
             var sloc_id = this.dataInput.sloc_id;
             $('div.overlay').show();
-                window.axios.get('/api/getMaterials/'+material_id).then(({ data }) => {
+                window.axios.get('/api/getMaterialsMWO/'+material_id).then(({ data }) => {
                     
                     this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
@@ -289,8 +303,9 @@ var vm = new Vue({
             material.quantity = this.editInput.quantity;
             material.material_id = this.editInput.material_id;
             material.available = this.editInput.available;
+            material.unit = this.editInput.unit;
 
-            window.axios.get('/api/getMaterials/'+this.editInput.material_id).then(({ data }) => {
+            window.axios.get('/api/getMaterialsMWO/'+this.editInput.material_id).then(({ data }) => {
                 material.material_name = data.description;
                 material.material_code = data.code;
 
@@ -394,6 +409,7 @@ var vm = new Vue({
 
             this.dataInput.quantity = "";
             this.dataInput.available = "";
+            this.dataInput.unit = "";
 
 
         },
@@ -427,6 +443,20 @@ var vm = new Vue({
 
         'dataInput.material_id' : function(newValue){
             if(newValue != ""){
+
+                window.axios.get('/api/getMaterialsMWO/'+newValue).then(({ data }) => {
+                    this.dataInput.unit = data.uom.unit;
+
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
                 
                 this.slocDetails.forEach(element => {
                     if(element.storage_location_id == this.dataInput.sloc_id && this.dataInput.material_id == element.material_id){
@@ -444,6 +474,20 @@ var vm = new Vue({
 
         'editInput.material_id' : function(newValue){
             if(newValue != ""){
+
+                window.axios.get('/api/getMaterialsMWO/'+newValue).then(({ data }) => {
+                    this.editInput.unit = data.uom.unit;
+
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
                 
                 this.slocDetails.forEach(element => {
                     if(element.storage_location_id == this.editInput.sloc_id && this.editInput.material_id == element.material_id){

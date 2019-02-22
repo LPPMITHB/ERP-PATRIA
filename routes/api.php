@@ -90,7 +90,7 @@ Route::get('/getWbsWREdit/{id}/{wr_id}', 'WorkRequestController@getWbsEditAPI')-
 
 // material write off
 Route::get('/getMaterialMwo/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');
-Route::get('/getMaterials/{id}', 'MaterialWriteOffController@getMaterialsApi')->name('api.material_write_off.getMaterialsApi');
+Route::get('/getMaterialsMWO/{id}', 'MaterialWriteOffController@getMaterialsMWOApi')->name('api.material_write_off.getMaterialsMWOApi');
 Route::get('/getSloc/{id}', 'MaterialWriteOffController@getSlocApi')->name('api.material_write_off.getSlocApi');
 
 // goods movement
