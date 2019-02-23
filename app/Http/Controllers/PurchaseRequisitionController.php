@@ -656,7 +656,7 @@ class PurchaseRequisitionController extends Controller
 
     public function getProjectApi($id){
 
-        return response(Project::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Project::where('id',$id)->with('ship', 'customer')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getMaterialAPI($id){

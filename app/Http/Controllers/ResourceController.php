@@ -53,8 +53,10 @@ class ResourceController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
         }
         $resources = Resource::all();
+        $resource_categories = Configuration::get('resource_category');
+        $resourceDetails = ResourceDetail::where('status','!=',0)->get()->jsonSerialize();
 
-        return view('resource.assignResource', compact('resources','modelProject','route'));
+        return view('resource.assignResource', compact('resourceDetails','resource_categories','resources','modelProject','route'));
     }
 
     public function create(Request $request)
@@ -527,6 +529,7 @@ class ResourceController extends Controller
         DB::beginTransaction();
         try {
             $resource = new ResourceTrx;
+            $resource->category_id = 1;
             $resource->resource_id = $data['resource_id'];
             $resource->project_id = $data['project_id'];
             $resource->wbs_id = $data['wbs_id'];
