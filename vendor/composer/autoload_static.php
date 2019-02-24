@@ -379,6 +379,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\Controllers\\GoodsIssueController' => __DIR__ . '/../..' . '/app/Http/Controllers/GoodsIssueController.php',
         'App\\Http\\Controllers\\GoodsMovementController' => __DIR__ . '/../..' . '/app/Http/Controllers/GoodsMovementController.php',
         'App\\Http\\Controllers\\GoodsReceiptController' => __DIR__ . '/../..' . '/app/Http/Controllers/GoodsReceiptController.php',
+        'App\\Http\\Controllers\\GoodsReturnController' => __DIR__ . '/../..' . '/app/Http/Controllers/GoodsReturnController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\MaterialController' => __DIR__ . '/../..' . '/app/Http/Controllers/MaterialController.php',
         'App\\Http\\Controllers\\MaterialRequisitionController' => __DIR__ . '/../..' . '/app/Http/Controllers/MaterialRequisitionController.php',
