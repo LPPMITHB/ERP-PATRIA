@@ -344,7 +344,7 @@ class WBSController extends Controller
                     $bom_detail->bom_id = $bom->id;
                     $bom_detail->material_id = $material->material_id;
                     $bom_detail->quantity = $material->quantity;
-                    $bom_detail->source = "Stock";
+                    $bom_detail->source = isset($material->source) ? $material->source : "Stock";
                     if(!$bom_detail->save()){
                         return response(["error"=> 'Failed Save Bom Detail !']);
                     }
@@ -798,7 +798,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = "Stock";
+                            $bom_detail->source = isset($material->source) ? $material->source : "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }
@@ -846,7 +846,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = "Stock";
+                            $bom_detail->source = isset($material->source) ? $material->source : "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }
@@ -908,7 +908,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = "Stock";
+                            $bom_detail->source = isset($material->source) ? $material->source : "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }
@@ -956,7 +956,7 @@ class WBSController extends Controller
                             $bom_detail->bom_id = $bomInput->id;
                             $bom_detail->material_id = $material->material_id;
                             $bom_detail->quantity = $material->quantity;
-                            $bom_detail->source = "Stock";
+                            $bom_detail->source = isset($material->source) ? $material->source : "Stock";
                             if(!$bom_detail->save()){
                                 return response(["error"=> 'Failed Save Bom Detail !']);
                             }
