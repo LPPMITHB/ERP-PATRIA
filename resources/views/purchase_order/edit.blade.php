@@ -3,7 +3,7 @@
 @if($route == "/purchase_order")
     @breadcrumb(
         [
-            'title' => 'Edit Purchase Order',
+            'title' => 'Edit Purchase Order » '.$modelPO->number,
             'items' => [
                 'Dashboard' => route('index'),
                 'View All Purchase Order' => route('purchase_order.index'),
@@ -15,7 +15,7 @@
 @elseif($route == "/purchase_order_repair")
     @breadcrumb(
         [
-            'title' => 'Edit Purchase Order',
+            'title' => 'Edit Purchase Order » '.$modelPO->number,
             'items' => [
                 'Dashboard' => route('index'),
                 'View All Purchase Order' => route('purchase_order_repair.index'),
@@ -40,53 +40,30 @@
             @csrf
                 @verbatim
                     <div id="po">
-                        <div class="box-header">
+                        <div class="box-header p-b-0">
                             <div class="row">
-                                <div class="col-xs-12 col-md-4" v-if="modelProject != null">
-                                    <div class="col-xs-5 no-padding">PO Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.number}}</b></div>
-
+                                <div class="col-xs-12 col-md-4">
                                     <div class="col-xs-5 no-padding">PR Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.purchase_requisition.number}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.number}}</b></div>
                                     
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.ship.type}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(modelProject.customer.name)"><b>: {{modelProject.customer.name}}</b></div>
-                                    
-                                    <div class="col-sm-3 no-padding p-t-15">
+                                    <div class="col-sm-5 no-padding p-t-15">
+                                        <label for="estimated_freight">Estimated Freight </label>
+                                    </div>
+                                    <div class="col-sm-7 p-t-13 p-l-0">
+                                        <input class="form-control" v-model="modelPO.estimated_freight" placeholder="Estimated Freight">
+                                    </div>
+
+                                    <div class="col-sm-5 no-padding p-t-15">
+                                        <label for="">Tax (%)</label>
+                                    </div>
+                                    <div class="col-sm-7 p-t-13 p-l-0">
+                                        <input class="form-control" v-model="modelPO.tax" placeholder="Tax">
+                                    </div>
+
+                                    <div class="col-sm-5 no-padding p-t-15">
                                         <label for="">Currency</label>
                                     </div>
-                                    <div class="col-sm-9 p-t-13 p-l-0">
-                                        <selectize :disabled="currencyOk" v-model="modelPO.currency" :settings="currencySettings">
-                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-md-4" v-else>
-                                    <div class="col-xs-5 no-padding">PO Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.number}}</b></div>
-
-                                    <div class="col-xs-5 no-padding">PR Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.purchase_requisition.number}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-                                    
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-
-                                    <div class="col-sm-3 no-padding p-t-15">
-                                        <label for="">Currency</label>
-                                    </div>
-                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                    <div class="col-sm-7 p-t-13 p-l-0">
                                         <selectize :disabled="currencyOk" v-model="modelPO.currency" :settings="currencySettings">
                                             <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
                                         </selectize>
@@ -101,14 +78,6 @@
                                             <selectize v-model="modelPO.vendor_id" :settings="vendorSettings">
                                                 <option v-for="(vendor, index) in modelVendor" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                             </selectize>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5 p-t-10">
-                                            <label for="delivery_date">Delivery Date</label>
-                                        </div>
-                                        <div class="col-sm-7 p-t-5 p-l-0">
-                                            <input v-model="modelPO.delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -129,32 +98,22 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
-                                        <div class="row">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label for="">PO Description</label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <textarea class="form-control" rows="2" v-model="modelPO.description"></textarea>
+                                        </div>
+                                        <template v-if="modelPO.status == 3">
                                             <div class="col-sm-12">
-                                                <label for="">PO Description</label>
+                                                <label for="">Revision Description</label>
                                             </div>
                                             <div class="col-sm-12">
-                                                <textarea class="form-control" rows="2" v-model="modelPO.description"></textarea>
+                                                <textarea class="form-control" rows="2" v-model="modelPO.revision_description"></textarea>
                                             </div>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-sm-5 p-t-15">
-                                                <label for="estimated_freight">Estimated Freight ({{selectedCurrency}})</label>
-                                            </div>
-                                            <div class="col-sm-7 p-t-13 p-l-0">
-                                                <input class="form-control" v-model="modelPO.estimated_freight" placeholder="Estimated Freight">
-                                            </div>
-                                        </div>
-    
-                                        <div class="row">
-                                            <div class="col-sm-5 p-t-15">
-                                                <label for="">Tax (%)</label>
-                                            </div>
-                                            <div class="col-sm-7 p-t-13 p-l-0">
-                                                <input class="form-control" v-model="modelPO.tax" placeholder="Tax">
-                                            </div>
-                                        </div>
+                                        </template>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -165,32 +124,49 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th v-if="type == 1" style="width: 23%">Material Name</th>
-                                                <th v-else style="width: 23%">Resource Name</th>
-                                                <th style="width: 10%">Quantity</th>
-                                                <th style="width: 10%">Order</th>
-                                                <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
-                                                <th style="width: 27%">WBS Name</th>
-                                                <th style="width: 15%">Alocation</th>
-                                                <th style="width: 10%"></th>
+                                                <template v-if="modelPO.purchase_requisition.type == 1">
+                                                    <th width="15%">Material Number</th>
+                                                    <th width="25%">Material Description</th>
+                                                </template>
+                                                <template v-else>
+                                                    <th width="15%">Resource Number</th>
+                                                    <th width="25%">Resource Description</th>
+                                                </template>
+                                                <th style="width: 7%">Qty</th>
+                                                <th style="width: 7%">Order</th>
+                                                <th style="width: 6%">Unit</th>
+                                                <th style="width: 12%">Price / pcs ({{selectedCurrency}})</th>
+                                                <th style="width: 7%">Disc. (%)</th>
+                                                <th style="width: 10%">Delivery Date</th>
+                                                <th style="width: 8%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(POD,index) in PODetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td v-if="type == 1" class="tdEllipsis">{{ POD.material.code }} - {{ POD.material.name }}</td>
-                                                <td v-else class="tdEllipsis">{{ POD.resource.code }} - {{ POD.resource.name }}</td>
+                                                <template v-if="modelPO.purchase_requisition.type == 1">
+                                                    <td class="tdEllipsis">{{ POD.material.code }}</td>
+                                                    <td class="tdEllipsis">{{ POD.material.description }}</td>
+                                                </template>
+                                                <template v-else>
+                                                    <td class="tdEllipsis">{{ POD.resource.code }}</td>
+                                                    <td class="tdEllipsis">{{ POD.resource.name }}</td>
+                                                </template>
                                                 <td class="tdEllipsis">{{ POD.purchase_requisition_detail.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="POD.quantity" placeholder="Please Input Quantity">
+                                                    <input class="form-control width100" v-model="POD.quantity" placeholder="Please Input Quantity">
+                                                </td>
+                                                <td class="tdEllipsis" v-if="modelPO.purchase_requisition.type == 1">{{ POD.material.uom.unit }}</td>
+                                                <td class="tdEllipsis" v-else>-</td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control width100" v-model="POD.total_price" placeholder="Please Input Total Price">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="POD.total_price" placeholder="Please Input Price / pcs">
+                                                    <input class="form-control width100" v-model="POD.discount" placeholder="Discount">
                                                 </td>
-                                                <td v-if="POD.wbs != null" class="tdEllipsis">{{ POD.wbs.number }}</td>
-                                                <td v-else class="tdEllipsis">-</td>
-                                                <td v-if="POD.purchase_requisition_detail.alocation != null" class="tdEllipsis">{{ POD.purchase_requisition_detail.alocation }}</td>
-                                                <td v-else class="tdEllipsis">-</td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input v-model="POD.delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100 delivery_date" name="delivery_date" :id="makeId(POD.id)" placeholder="Delivery Date">
+                                                </td>
                                                 <td class="textCenter">
                                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(POD,index)">
                                                         REMARK
@@ -265,6 +241,7 @@
         editRemark : {
             remark : "",
         },
+        delivery_date : "",
     }
 
     var vm = new Vue({
@@ -275,16 +252,18 @@
                 autoclose : true,
                 format: 'dd-mm-yyyy',
             });
-            $("#delivery_date").datepicker().on(
+            $(".delivery_date").datepicker().on(
                 "changeDate", () => {
-                    this.delivery_date = $('#delivery_date').val();
+                    this.PODetail.forEach(POD => { 
+                        POD.delivery_date = $('#datepicker'+POD.id).val();
+                    });
                 }
             );
         },
         computed : {
             dataOk: function(){
                 let isOk = false;
-                if(this.vendor_id == ""){
+                if(this.modelPO.vendor_id == "" || this.modelPO.currency == "" || this.delivery_date == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -326,6 +305,9 @@
             }
         },
         methods : {
+            makeId(id){
+                return "datepicker"+id;
+            },
             tooltip(text){
                 Vue.directive('tooltip', function(el, binding){
                     $(el).tooltip('destroy');
@@ -390,6 +372,7 @@
             PODetail:{
                 handler: function(newValue) {
                     var data = newValue;
+                    var status = 0;
                     data.forEach(POD => {
                         var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
@@ -402,7 +385,14 @@
                         }else{
                             POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
-                        POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");     
+                        POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+                        if(POD.delivery_date == null || POD.delivery_date == ""){
+                            this.delivery_date = "";
+                            status = 1;
+                        }
+                        if(status == 0){
+                            this.delivery_date = "ok";
+                        }
                     });
                 },
                 deep: true
@@ -457,8 +447,8 @@
             },
         },
         created: function() {
-            this.modelPO.delivery_date = this.modelPO.delivery_date.split("-").reverse().join("-");
             this.getVendor();
+            this.modelPO.estimated_freight = this.modelPO.estimated_freight / this.modelPO.value
             var decimal = (this.modelPO.estimated_freight+"").replace(/,/g, '').split('.');
             if(decimal[1] != undefined){
                 var maxDecimal = 2;
@@ -475,9 +465,11 @@
 
             var data = this.PODetail;
             data.forEach(POD => {
+                POD.delivery_date = POD.delivery_date.split("-").reverse().join("-");
                 POD.price = parseFloat((POD.total_price / POD.quantity+"").replace(/,/g , ''));
                 POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;        
                 POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
+                POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
                 var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
                     var maxDecimal = 2;
@@ -489,6 +481,14 @@
                 }else{
                     POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 } 
+
+                if(POD.delivery_date == null || POD.delivery_date == ""){
+                    this.delivery_date = "";
+                    status = 1;
+                }
+                if(status == 0){
+                    this.delivery_date = "ok";
+                }
             });
 
             this.currencies.forEach(data => {

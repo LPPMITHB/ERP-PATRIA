@@ -841,7 +841,7 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition');
 
-    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition');
+    Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
@@ -872,7 +872,7 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 
     Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
-    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
+    Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition-repair');
 
@@ -897,7 +897,7 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
     Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order');
 
-    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order');
+    Route::get('/approval', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order');
     
     Route::get('/selectPR', 'PurchaseOrderController@selectPR')->name('selectPR')->middleware('can:create-purchase-order');
     
@@ -924,7 +924,7 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(function() {
     Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order-repair');
 
-    Route::get('/approval/{id}/{status}', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order-repair');
+    Route::get('/approval', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order-repair');
     
     Route::get('/selectPR', 'PurchaseOrderController@selectPR')->name('selectPR')->middleware('can:create-purchase-order-repair');
     
