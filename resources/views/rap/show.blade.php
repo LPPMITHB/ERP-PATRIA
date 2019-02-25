@@ -121,7 +121,9 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Material Name</th>
+                                <th width="15%">Material Number</th>
+                                <th width="30%">Material Description</th>
+                                <th width="5%">Unit</th>
                                 <th width="10%">Quantity</th>
                                 <th width="15%">Cost per pcs</th>
                                 <th width="20%">Sub Total Cost</th>
@@ -131,7 +133,9 @@
                             @foreach($modelRap->rapDetails as $rapDetail)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $rapDetail->material->name }}</td>
+                                    <td>{{ $rapDetail->material->code }}</td>
+                                    <td>{{ $rapDetail->material->description }}</td>
+                                    <td>{{ $rapDetail->material->uom->unit }}</td>
                                     <td>{{ number_format($rapDetail->quantity) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price) }}</td>

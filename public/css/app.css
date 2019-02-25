@@ -22767,11 +22767,11 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 
 .content-wrapper,
 .main-footer {
-  -webkit-transition: -webkit-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
-  -webkit-transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
-  transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out,margin 0.3s ease-in-out !important;
+  -webkit-transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out !important;
+  transition: margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out !important;
+  transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out !important;
+  transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out !important;
   margin-left: 210px;
   z-index: 820;
 }
@@ -22811,8 +22811,8 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
  */
 
 .main-header .logo {
-  -webkit-transition: width 0.3s ease-in-out;
-  transition: width 0.3s ease-in-out;
+  -webkit-transition: width 0.3s ease-in-out !important;
+  transition: width 0.3s ease-in-out !important;
   display: block;
   float: left;
   height: 50px;
@@ -22827,8 +22827,8 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 }
 
 .main-header .navbar {
-  -webkit-transition: margin-left 0.3s ease-in-out;
-  transition: margin-left 0.3s ease-in-out;
+  -webkit-transition: margin-left 0.3s ease-in-out !important;
+  transition: margin-left 0.3s ease-in-out !important;
   margin-bottom: 0;
   margin-left: 210px;
   border: none;
@@ -22938,11 +22938,11 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   min-height: 100%;
   width: 210px;
   z-index: 810;
-  -webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
-  -webkit-transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
-  transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out,width 0.3s ease-in-out !important;
+  -webkit-transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out !important;
+  transition: width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out !important;
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out !important;
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out !important;
 }
 
 @media (max-width: 767px) {
@@ -23087,8 +23087,8 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   top: 0;
   right: -210px;
   width: 210px;
-  -webkit-transition: right 0.3s ease-in-out;
-  transition: right 0.3s ease-in-out;
+  -webkit-transition: right 0.3s ease-in-out !important;
+  transition: right 0.3s ease-in-out !important;
 }
 
 @media (max-width: 767px) {
@@ -23292,8 +23292,8 @@ textarea {
 }
 
 .small-box .icon {
-  -webkit-transition: all 0.3s linear;
-  transition: all 0.3s linear;
+  -webkit-transition: all 0.3s linear !important;
+  transition: all 0.3s linear !important;
   position: absolute;
   top: -10px;
   right: 10px;
@@ -23500,6 +23500,10 @@ textarea {
 #work_order_pdf > tbody > tr > td {
   padding: 4px;
   padding-left: 5px;
+}
+
+.modalPredecessor {
+  width: 50em;
 }
 
 /*!

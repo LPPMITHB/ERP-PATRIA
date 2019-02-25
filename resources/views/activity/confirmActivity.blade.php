@@ -71,7 +71,7 @@
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
                         
                         <div class="col-md-4 col-xs-4 no-padding">Description</div>
                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->description}}"><b>: {{$wbs->description}}</b></div>
@@ -177,7 +177,7 @@
                                                     <th style="width: 15%">Code</th>
                                                     <th style="width: 29%">Name</th>
                                                     <th style="width: 29%">Description</th>
-                                                    <th style="width: 15%">WBS Code</th>
+                                                    <th style="width: 15%">WBS Number</th>
                                                     <th style="width: 12%">Status</th>
                                                 </tr>
                                             </thead>
@@ -187,7 +187,7 @@
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.code)">{{ data.wbs.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
                                                     <td class="textCenter">
                                                         <template v-if="data.status == 0">
                                                             <i class='fa fa-check'></i>

@@ -45,7 +45,9 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="17%">Material</th>
+                                    <th width="10%">Material Number</th>
+                                    <th width="16%">Material Description</th>
+                                    <th width="5%">Unit</th>
                                     <th width="17%">Description</th>
                                     <th width="7%">Quantity</th>
                                     <th width="7%">Ordered</th>
@@ -57,12 +59,14 @@
                             <tbody>
                                 <tr v-for="(WRD,index) in modelWRD">
                                     <td>{{ index+1 }}</td>
-                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.material.code+' - '+WRD.material.name)">{{ WRD.material.code }} - {{ WRD.material.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.material.code)">{{ WRD.material.code }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.material.description)">{{ WRD.material.description }}</td>
+                                    <td>{{ WRD.material.uom.unit }}</td>
                                     <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.description)">{{ WRD.description }}</td>
                                     <td>{{ WRD.quantity }}</td>
                                     <td>{{ WRD.reserved }}</td>
                                     <td>{{ WRD.remaining }}</td>
-                                    <td v-if="WRD.wbs != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.wbs.name)">{{ WRD.wbs.name }}</td>
+                                    <td v-if="WRD.wbs != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.wbs.number)">{{ WRD.wbs.number }} - {{ WRD.wbs.description }}</td>
                                     <td v-else>-</td>
                                     <td class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedWRD" :value="WRD.id">

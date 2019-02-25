@@ -48,5 +48,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TrxProductionOrderDetailTableSeeder::class);
         $this->call(WorkRequestTableSeeder::class); 
         $this->call(WorkRequestDetailTableSeeder::class); 
+        $this->call(MstWbsProfileTableSeeder::class);
+        $this->call(MstActivityProfileTableSeeder::class);
+        $this->call(MstBomProfileTableSeeder::class);
+        $this->call(MstResourceProfileTableSeeder::class);
     }
 }

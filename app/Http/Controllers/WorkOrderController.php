@@ -40,9 +40,9 @@ class WorkOrderController extends Controller
     {
         $route = $request->route()->getPrefix();    
         if($route == "/work_order"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }elseif($route == "/work_order_repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        }elseif($route == "/work_order_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
         $modelWOs = WorkOrder::whereIn('project_id',$modelProject)->get();
 
@@ -70,7 +70,7 @@ class WorkOrderController extends Controller
         $datas = json_decode($request->datas);
         $currencies = Configuration::get('currencies');
         $modelWR = WorkRequest::where('id',$datas->id)->with('project')->first();
-        $modelWRD = WorkRequestDetail::whereIn('id',$datas->checkedWRD)->with('material','wbs')->get();
+        $modelWRD = WorkRequestDetail::whereIn('id',$datas->checkedWRD)->with('material','wbs','material.uom')->get();
         foreach($modelWRD as $key=>$WRD){
             if($WRD->reserved >= $WRD->quantity){
                 $modelWRD->forget($key);
@@ -89,7 +89,7 @@ class WorkOrderController extends Controller
     {
         $route = $request->route()->getPrefix();    
         $modelWR = WorkRequest::findOrFail($id);
-        $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs')->get();
+        $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->with('material','wbs','material.uom')->get();
         foreach($modelWRD as $key=>$WRD){
             if($WRD->received == $WRD->quantity){
                 $modelWRD->forget($key);
@@ -116,8 +116,16 @@ class WorkOrderController extends Controller
             $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->delivery_date);
             $WO->delivery_date = $delivery_date->format('Y-m-d');
             $WO->payment_terms = $datas->payment_terms;
-            $WO->estimated_freight = $datas->estimated_freight;
-            $WO->tax = $datas->tax;
+            if($datas->estimated_freight == ""){
+                $WO->estimated_freight = 0;
+            }elseif($datas->estimated_freight != ""){
+                $WO->estimated_freight = $datas->estimated_freight;
+            }
+            if($datas->tax == ""){
+                $WO->tax = 0;
+            }elseif($datas->tax != ""){
+                $WO->tax = $datas->tax;
+            }
             $WO->project_id = $datas->project_id;
             $WO->description = $datas->description;
             $WO->status = 1;

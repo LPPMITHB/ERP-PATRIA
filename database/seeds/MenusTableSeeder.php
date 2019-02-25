@@ -60,6 +60,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Manage WBS Profile',
+            'icon' => 'fa-briefcase',
+            'route_name'=> 'wbs.createWbsProfile',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $projectManagementBuilding,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'WBS & Estimator Configuration',
             'icon' => 'fa-clock-o',
             'route_name'=> 'project.selectProjectConfig',
@@ -423,6 +435,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Approve Goods Return',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Material Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -584,16 +608,52 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 3,
+            'level' => 2,
             'name' => 'Material Write Off',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'material_write_off.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP',
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]); 
+
+        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]); 
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Approve Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -944,6 +1004,18 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage WBS Profile',
+            'icon' => 'fa-briefcase',
+            'route_name'=> 'wbs_repair.createWbsProfile',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 2,
             'name' => 'BOM / BOS',
             'icon' => 'fa-file-text-o',
@@ -1222,6 +1294,66 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Goods Return',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $goodsReturn =  Menu::where('name','Goods Return')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Based On Goods Receipt',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.selectGR',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Based On Purchase Order',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.selectPO',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Goods Return',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Approve Goods Return',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Material Requisition',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
@@ -1416,10 +1548,9 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
-            'level' => 3,
+            'level' => 2,
             'name' => 'Material Write Off',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'material_write_off_repair.create',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$materialManagement,
@@ -1427,113 +1558,150 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]); 
 
+        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;        
         DB::table('menus')->insert([
-            'level' => 2,
-            'name' => 'WIP',
-            'icon' => 'fa-database',
+            'level' => 3,
+            'name' => 'Create Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off_repair.create',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $repair,
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]); 
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Approve Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$materialWriteOff,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit Material Write Off',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'material_write_off_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$materialWriteOff,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // DB::table('menus')->insert([
+        //     'level' => 2,
+        //     'name' => 'WIP',
+        //     'icon' => 'fa-database',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=> $repair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
         
-        $wipRepair = Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Work Request',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$wipRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // $wipRepair = Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Work Request',
+        //     'icon' => 'fa-file-text-o',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$wipRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        $workRequestRepair =  Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Create WR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_request_repair.create',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workRequestRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // $workRequestRepair =  Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Create WR',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_request_repair.create',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workRequestRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Approve WR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_request_repair.indexApprove',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workRequestRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Approve WR',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_request_repair.indexApprove',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workRequestRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'View & Edit WR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_request_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workRequestRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'View & Edit WR',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_request_repair.index',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workRequestRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Work Order',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$wipRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Work Order',
+        //     'icon' => 'fa-file-text-o',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$wipRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        $workOrderRepair =  Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Create WO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_order_repair.selectWR',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workOrderRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // $workOrderRepair =  Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Create WO',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_order_repair.selectWR',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workOrderRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Approve WO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_order_repair.indexApprove',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workOrderRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Approve WO',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_order_repair.indexApprove',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workOrderRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'View & Edit WO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'work_order_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$workOrderRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'View & Edit WO',
+        //     'icon' => 'fa-file-text-o',
+        //     'route_name'=> 'work_order_repair.index',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=>$workOrderRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
         DB::table('menus')->insert([
             'level' => 2,

@@ -194,6 +194,8 @@
             </div>
         </div>
     </div>
+
+    <!-- unused -->
     <div class="modal fade" id="confirm_activity_modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -240,7 +242,7 @@
                                     <th style="width: 15%">Code</th>
                                     <th style="width: 29%">Name</th>
                                     <th style="width: 29%">Description</th>
-                                    <th style="width: 15%">WBS Code</th>
+                                    <th style="width: 15%">WBS Number</th>
                                     <th style="width: 12%">Status</th>
                                 </tr>
                             </thead>
@@ -250,7 +252,7 @@
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.code)">{{ data.wbs.code }}</td>
+                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
                                     <td class="textCenter">
                                         <template v-if="data.status == 0">
                                             <i class='fa fa-check'></i>
@@ -404,8 +406,10 @@
     </div>
 </div>
 
-
-
+<form id="form" class="form-horizontal" method="POST">
+    <input type="hidden" name="_method" value="PATCH">
+    @csrf
+</form>
 
 
 
@@ -619,10 +623,25 @@
         gantt.templates.rightside_text = function(start, end, task){
             if(task.status != undefined){
                 if(task.status == 0){
-                    return "<b>Completed</b>"
+                    var text = task.text.replace('[Actual]','');
+                    return "<b>"+text+" Completed</b>"
+                }else{
+                    return "<b>"+task.text+"</b>"
                 }
             }else{
-                return "Progress: <b>" + task.progress*100+ "%</b>";
+                if(task.$level != 0){
+                    return "<b>"+task.text+"</b> | Progress: <b>" + task.progress*100+ "%</b>"
+                }else{
+                    return "Progress: <b>" + task.progress*100+ "%</b>";
+                }
+            }
+        };
+
+        gantt.templates.task_text=function(start,end,task){
+            if(task.$level == 0){
+                return "<b>"+task.text+"</b>";
+            }else{
+                return "";
             }
         };
         
@@ -1044,13 +1063,19 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            if(id.indexOf("ACT") !== -1){
-                $("#confirm_activity_modal").modal('show');
-                vm.openConfirmModal(id);
-                return true;
+            if(vm.menu == "building"){
+                var url = "/production_order/checkProdOrder/"+id;
+
+                const form = document.getElementById('form');
+                form.setAttribute('action', url);
+                form.submit();
             }else{
-                return true;
+                var url = "/production_order_repair/checkProdOrder/"+id;
+                const form = document.getElementById('form');
+                form.setAttribute('action', url);
+                form.submit();
             }
+            return true;
         });
     });
     

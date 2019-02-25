@@ -17,7 +17,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 p-b-50">
         <div class="box">
             <div class="box-body no-padding p-b-10">
                 <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.store') }}">
@@ -28,37 +28,34 @@
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
-                                <div class="col-xs-4 no-padding">Project Code</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.number)"><b>: {{project.number}}</b></div>
+                                <div class="col-xs-4 no-padding">Project Number</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.number)"><b>: {{project.number}}</b></div>
                                 
                                 <div class="col-xs-4 no-padding">Ship Name</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.name)"><b>: {{project.name}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.name)"><b>: {{project.name}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Ship Type</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.ship.type)"><b>: {{project.ship.type}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.ship.type)"><b>: {{project.ship.type}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Customer</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.customer.name)"><b>: {{project.customer.name}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.customer.name)"><b>: {{project.customer.name}}</b></div>
                             </div>
                             
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                            
-                                <div class="col-xs-4 no-padding">Code</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
                                 
-                                <div class="col-xs-4 no-padding">Name</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+                                <div class="col-xs-4 no-padding">Number</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.number)"><b>: {{wbs.number}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Description</div>
-                                <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
-                                <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
+                                <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: {{wbs.description}}</b></div>
+                                <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: -</b></div>
         
                                 <div class="col-xs-4 no-padding">Deliverable</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Progress</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-xs-12 no-padding"><b>BOM Description</b></div>
@@ -67,28 +64,29 @@
                                 </div>
                             </div>
                         </div> <!-- /.box-header -->
-                        <div class="col-md-12 p-t-20">
-                            <table class="table table-bordered tableFixed m-b-0">
+                        <div class="col-md-12 p-t-5">
+                            <table class="table table-bordered tableFixed m-b-0 tablePagingVue">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="30%">Material</th>
-                                        <th width="33%">Description</th>
+                                        <th width="25%">Material Number</th>
+                                        <th width="28%">Material Description</th>
                                         <th width="10%">Quantity</th>
+                                        <th width="10%">Unit</th>
                                         <th width="10%">Source</th>
-                                        <th width="12%" ></th>
+                                        <th width="12%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(material, index) in materialTable">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(material.material_name)">{{ material.material_code }} - {{ material.material_name }}</td>
-                                        <td v-if="material.description != null">{{ material.description }}</td>
-                                        <td v-else>-</td>
+                                        <td :id="material.material_code" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipCode(material.material_code)">{{ material.material_code}}</td>
+                                        <td :id="material.material_name" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
                                         <td>{{ material.quantity }}</td>
+                                        <td>{{ material.unit }}</td>
                                         <td>{{ material.source }}</td>
                                         <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
                                             <a href="#" @click="removeRow(material.material_id)" class="btn btn-danger btn-xs">
@@ -96,15 +94,17 @@
                                             </a>
                                         </td>
                                     </tr>
+                                </tbody>
+                                <tfoot>
                                     <tr>
                                         <td>{{newIndex}}</td>
-                                        <td class="no-padding">
+                                        <td colspan="2" class="no-padding">
                                             <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control" type="text" :value="input.description" disabled></td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
                                         <td class="no-padding">
                                             <selectize v-model="input.source" :settings="sourceSettings">
                                                 <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
@@ -116,10 +116,10 @@
                                             </div></a>
                                         </td>
                                     </tr>
-                                </tbody>
+                                </tfoot>
                             </table>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12 p-t-5">
                             <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                         </div>
                         <div class="modal fade" id="edit_item">
@@ -136,16 +136,16 @@
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12">
-                                                <label for="description" class="control-label">Description</label>
-                                                <input type="text" id="description" v-model="editInput.description" class="form-control" disabled>
-                                            </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="quantity" class="control-label">Unit</label>
+                                                <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Source</label>
@@ -180,6 +180,7 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+
     var data = {
         submit: "ok",
         sources : ['Stock','WIP'],
@@ -199,7 +200,8 @@
             description : "",
             quantity : "",
             quantityInt : 0,
-            source : "Stock"
+            source : "Stock",
+            unit : "",
         },
         editInput : {
             old_material_id : "",
@@ -268,8 +270,30 @@
             }
         },
         methods: {
-            tooltipText: function(text) {
-                return text
+            refreshTooltip: function(code,description){
+                Vue.directive('tooltip', function(el, binding){
+                    if(el.id == code){
+                        $(el).tooltip('destroy');
+                        $(el).tooltip({
+                            title: el.id,
+                            placement: binding.arg,
+                            trigger: 'hover'             
+                        })
+                    }else if(el.id == description){
+                        $(el).tooltip('destroy');
+                        $(el).tooltip({
+                            title: el.id,
+                            placement: binding.arg,
+                            trigger: 'hover'             
+                        })
+                    }
+                })
+            },
+            tooltipCode: function(code) {
+                return code;
+            },
+            tooltipDesc: function(desc) {
+                return desc;
             },
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
@@ -288,6 +312,7 @@
             getNewModalMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
                     this.materials_modal = data;
+                    $('#edit_item').modal();
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -300,6 +325,7 @@
                 })
             },
             openEditModal(data,index){
+                $('div.overlay').show();
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
@@ -308,9 +334,10 @@
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_name = data.wbs_name;
+                this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
                 this.editInput.source = data.source;
+                this.editInput.unit = data.unit;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -326,7 +353,6 @@
                 this.getNewModalMaterials(jsonMaterialId);
             },
             submitForm(){
-                console.log('a')
                 this.submit = "";
                 this.submittedForm.materials = this.materialTable;
 
@@ -338,7 +364,9 @@
                 form.submit();
             },
             submitToTable(){
-                if(this.input.material_id != "" && this.input.material_name != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                if(this.input.material_id != "" && this.input.material_name != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                    $('div.overlay').show();
+
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
                     this.materialTable.push(data);
@@ -350,15 +378,24 @@
 
                     this.newIndex = this.materialTable.length + 1;  
 
-                    this.input.description = "";
+                    // refresh tooltip
+                    let datas = [];
+                    datas.push(this.input.material_code,this.input.material_name);
+                    datas = JSON.stringify(datas);
+                    datas = JSON.parse(datas);
+                    this.refreshTooltip(datas[0],datas[1]);
+
                     this.input.material_id = "";
+                    this.input.material_code = "";
                     this.input.material_name = "";
                     this.input.quantity = "";
+                    this.input.unit = "";
                     this.input.source = "Stock";
                     this.input.quantityInt = 0;
                 }
             },
             removeRow: function(materialId) {
+                $('div.overlay').show();
                 var index_materialId = "";
                 var index_materialTable = "";
 
@@ -386,14 +423,17 @@
                         var material = this.materialTable[this.editInput.index];
                         material.quantityInt = this.editInput.quantityInt;
                         material.quantity = this.editInput.quantity;
+                        material.unit = this.editInput.unit;
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
                         material.source = this.editInput.source;
 
+                        var elemCode = document.getElementById(material.material_code);
+                        var elemDesc = document.getElementById(material.material_name);
+
                         window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
-                            material.material_name = data.name;
+                            material.material_name = data.description;
                             material.material_code = data.code;
-                            material.description = data.description;
 
                             this.material_id.forEach(id => {
                                 if(id == old_material_id){
@@ -405,6 +445,11 @@
 
                             var jsonMaterialId = JSON.stringify(this.material_id);
                             this.getNewMaterials(jsonMaterialId);
+
+                            // refresh tooltip
+                            elemCode.id = data.code;
+                            elemDesc.id = data.description;
+                            this.refreshTooltip(elemCode.id,elemDesc.id);
 
                             $('div.overlay').hide();
                         })
@@ -430,11 +475,13 @@
                             this.input.description = data.description;
 
                         }
-                        this.input.material_name = data.name;
+                        this.input.material_name = data.description;
                         this.input.material_code = data.code;
+                        this.input.unit = data.uom.unit;
                     });
                 }else{
                     this.input.description = "";
+                    this.input.unit = "";
                 }
             },
             'input.quantity': function(newValue){
@@ -452,7 +499,6 @@
                             this.editInput.description = '-';
                         }else{
                             this.editInput.description = data.description;
-
                         }
                     });
                 }else{

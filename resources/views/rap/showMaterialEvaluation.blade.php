@@ -61,7 +61,7 @@
                     <div class="col-xs-8 no-padding"><b>: {{$wbs->code}}</b></div>
                     
                     <div class="col-xs-4 no-padding">Name</div>
-                    <div class="col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                    <div class="col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
 
                     <div class="col-xs-4 no-padding">Description</div>
                     <div class="col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
@@ -78,7 +78,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="50%">Material Name</th>
+                            <th width="20%">Material Number</th>
+                            <th width="25%">Material Description</th>
+                            <th width="5%">Unit</th>
                             <th width="15%">Quantity</th>
                             <th width="15%">Used</th>
                             <th width="15%">Remaining</th>
@@ -89,7 +91,9 @@
                         @foreach ($materialEvaluation as $data)
                             <tr>
                                 <td>{{ $counter++ }}</td>
-                                <td>{{$data['material']}}</td>
+                                <td>{{$data['material_code']}}</td>
+                                <td>{{$data['material_description']}}</td>
+                                <td>{{$data['unit']}}</td>
                                 <td>{{number_format($data['quantity'])}}</td>
                                 <td>{{number_format($data['used'])}}</td>
                                 <td>{{number_format($data['quantity'] - $data['used'])}}</td>

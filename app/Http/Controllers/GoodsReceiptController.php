@@ -51,11 +51,13 @@ class GoodsReceiptController extends Controller
                     "received" => $POD->received,
                     "material_id" => $POD->material_id,
                     "material_code" => $POD->material->code,
-                    "material_name" => $POD->material->name,
+                    "material_name" => $POD->material->description,
+                    "unit" => $POD->material->uom->unit,
                     "resource_id" => $POD->resource_id,
                     "wbs_id" => $POD->wbs_id,
                     "total_price" => $POD->total_price,
                     "sloc_id" => "",
+                    "received_date" => "",
                     "item_OK" => 0,
                     ]);
                 }
@@ -92,7 +94,7 @@ class GoodsReceiptController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelWO = WorkOrder::where('id',$id)->with('vendor')->first();
-        $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material')->get();
+        $modelWODs = WorkOrderDetail::where('work_order_id',$modelWO->id)->with('material','material.uom')->get();
         $modelSloc = StorageLocation::all();
         
         
@@ -170,7 +172,7 @@ class GoodsReceiptController extends Controller
             $GR->type = 1;
             $GR->description = $datas->description;
             if($datas->ship_date != ""){
-                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $ship_date = DateTime::createFromFormat('d-m-Y', $datas->ship_date);
                 $GR->ship_date = $ship_date->format('Y-m-d');
             }
             $GR->branch_id = Auth::user()->branch->id;
@@ -183,6 +185,10 @@ class GoodsReceiptController extends Controller
                     $GRD->quantity = $data->received; 
                     $GRD->material_id = $data->material_id;
                     $GRD->storage_location_id = $data->sloc_id;
+                    if($data->received_date != ""){
+                        $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
+                        $GRD->received_date = $received_date->format('Y-m-d');
+                    }
                     $GRD->item_OK = $data->item_OK;
                     $GRD->save();
                     
@@ -225,7 +231,7 @@ class GoodsReceiptController extends Controller
             $GR->type = 3;
             $GR->work_order_id = $datas->wo_id;
             if($datas->ship_date != ""){
-                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $ship_date = DateTime::createFromFormat('d-m-Y', $datas->ship_date);
                 $GR->ship_date = $ship_date->format('Y-m-d');
             }
             $GR->type = 3;
@@ -238,6 +244,10 @@ class GoodsReceiptController extends Controller
                 $GRD->goods_receipt_id = $GR->id;
                 $GRD->quantity = $data->received;
                 $GRD->material_id = $data->material_id;
+                if($data->received_date != ""){
+                    $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
+                    $GRD->received_date = $received_date->format('Y-m-d');
+                }
                 $GRD->save();
 
                 $PI = new ProjectInventory;
@@ -281,7 +291,7 @@ class GoodsReceiptController extends Controller
             $GR->description = $datas->description;
             $GR->type = 2;
             if($datas->ship_date != ""){
-                $ship_date = DateTime::createFromFormat('m/j/Y', $datas->ship_date);
+                $ship_date = DateTime::createFromFormat('d-m-Y', $datas->ship_date);
                 $GR->ship_date = $ship_date->format('Y-m-d');
             }
             $GR->branch_id = Auth::user()->branch->id;
@@ -294,6 +304,10 @@ class GoodsReceiptController extends Controller
                     $GRD->quantity = $data->quantity;
                     $GRD->material_id = $data->material_id;
                     $GRD->storage_location_id = $data->sloc_id;
+                    if($data->received_date != ""){
+                        $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
+                        $GRD->received_date = $received_date->format('Y-m-d');
+                    }
                     $GRD->save();
                 
                     $this->updateStock($data->material_id, $data->quantity);
@@ -406,7 +420,7 @@ class GoodsReceiptController extends Controller
 
     public function getMaterialAPI($id){
         
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getMaterialsAPI($ids){

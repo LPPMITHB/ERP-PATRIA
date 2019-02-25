@@ -49,8 +49,8 @@
                     <div class="col-xs-12 col-lg-4 col-md-12">    
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
-                        <div class="col-md-3 col-xs-4 no-padding">Name</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->name}}</b></div>
+                        <div class="col-md-3 col-xs-4 no-padding">Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Description</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
@@ -60,9 +60,13 @@
 
                         <div class="col-md-3 col-xs-4 no-padding">Deadline</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
-                                $date = $date->format('d-m-Y');
-                                echo $date;
+                                if($wbs->planned_deadline != null){
+                                    $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                }else{
+                                    echo "-";
+                                }
                             @endphp
                             </b>
                         </div>
@@ -75,12 +79,17 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
+                    <div class="pull-right m-t-10">
+                        <a class="btn btn-primary btn-xs" @click="openAdoptModal">
+                            ADOPT FROM WBS PROFILE
+                        </a>
+                    </div>
                     <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>{{parentWbsWeight}}%</b>)</h4>
                     <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 17%">Name</th>
+                                <th style="width: 17%">Number</th>
                                 <th style="width: 17%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 11%">Deadline</th>
@@ -91,18 +100,31 @@
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td>{{ data.planned_deadline }}</td>
                                 <td>{{ data.weight }} %</td>
-                                <td class="textCenter">
-                                    <a class="btn btn-primary btn-xs" :href="createSubWBSRoute(data)">
-                                        ADD WBS
-                                    </a>
-                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
-                                        EDIT
-                                    </a>
+                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBSRoute(data)">
+                                                MANAGE WBS
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                                EDIT
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteWbs(data)" data-toggle="modal">
+                                                DELETE
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -110,7 +132,7 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="textLeft p-l-0">
-                                    <textarea v-model="newSubWBS.name" class="form-control width100" rows="2" name="name" placeholder="Name"></textarea>
+                                    <textarea v-model="newSubWBS.number" class="form-control width100" rows="2" name="number" placeholder="Name"></textarea>
                                 </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newSubWBS.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
@@ -125,7 +147,7 @@
                                     <input v-model="newSubWBS.weight" type="text" class="form-control width100" id="weight" weight="weight" placeholder="Weight (%)">
                                 </td>
                                 <td >
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -143,7 +165,7 @@
                                     <div class="row m-t-15">
                                         <div class="form-group col-sm-12">
                                             <label for="name" class="control-label">Name</label>
-                                            <input id="name" type="text" class="form-control" v-model="editWbs.name" placeholder="Insert Name here..." >
+                                            <input id="name" type="text" class="form-control" v-model="editWbs.number" placeholder="Insert Name here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
@@ -169,7 +191,41 @@
                                     </div>                                
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                    <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+
+                    <div class="modal fade" id="adopt_wbs">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Adopt from WBS Profiles</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="form-group col-sm-12">
+                                            <label for="">WBS Profiles</label>
+                                            <selectize v-model="selected_wbs_profile" :settings="wbsProfilesSettings">
+                                                <option v-for="(wbs_profile, index) in wbs_profiles" :value="wbs_profile.id">{{ wbs_profile.number }} - {{ wbs_profile.description }}</option>
+                                            </selectize>
+                                        </div>
+                                        <div class="form-group col-sm-12" v-show="selected_wbs_profile != ''">
+                                            <label for="">WBS Profile Structure</label>
+                                            <div id="treeview">
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" :disabled="profileOk" data-dismiss="modal" @click.prevent="adoptWbs">ADOPT</button>
                                 </div>
                             </div>
                             <!-- /.modal-content -->
@@ -197,14 +253,14 @@ $(document).ready(function(){
 
 var data = {
     menu : @json($menu),
-    wbs : "",
+    wbs : [],
     newIndex : "", 
     parentWbsWeight : @json($wbs->weight),
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
     wbs_deadline : @json($wbs->planned_deadline),
     newSubWBS : {
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
@@ -214,7 +270,7 @@ var data = {
     },
     editWbs : {
         wbs_id: "",
-        name : "",
+        number : "",
         description : "",
         deliverables : "",
         planned_deadline : "",
@@ -224,6 +280,11 @@ var data = {
     maxWeight : 0,
     totalWeight : 0,
     active_id : "",
+    wbs_profiles : @json($wbs_profiles),
+    selected_wbs_profile : "",
+    wbsProfilesSettings: {
+        placeholder: 'WBS Profiles',
+    },
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -240,6 +301,7 @@ var vm = new Vue({
     mounted() {
         $('.datepicker').datepicker({
             autoclose : true,
+            format : "dd-mm-yyyy"
         });
         $("#planned_deadline").datepicker().on(
             "changeDate", () => {
@@ -255,7 +317,7 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newSubWBS.name == ""
+                if(this.newSubWBS.number == ""
                 || this.newSubWBS.deliverables == ""
                 || this.newSubWBS.weight == ""
                 || this.newSubWBS.planned_deadline == "")
@@ -266,7 +328,7 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editWbs.name == ""
+                if(this.editWbs.number == ""
                 || this.editWbs.deliverables == ""
                 || this.editWbs.weight == ""
                 || this.editWbs.planned_deadline == "")
@@ -275,6 +337,14 @@ var vm = new Vue({
                 }
             return isOk;
         },
+        profileOk: function(){
+            let isOk = false;
+                if(this.selected_wbs_profile == "")
+                {
+                    isOk = true;
+                }
+            return isOk;
+        }
         // updateOk: function(){
         //     let isOk = false;
         //         if(this.dataUpd.uom_id == ""
@@ -290,16 +360,35 @@ var vm = new Vue({
         tooltipText: function(text) {
             return text
         },
+        openAdoptModal(){
+            if(this.wbs_profiles.length > 0){
+                $('#adopt_wbs').modal();            
+            }else{
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This project type doesn't have WBS Profiles",
+                    position: 'topRight',
+                });
+            }
+        },
         openEditModal(data){
+            this.editWbs.number = "";
+            this.editWbs.description = "";
+            this.editWbs.deliverables = "";
+            this.editWbs.planned_deadline = "";                
+            this.editWbs.weight = ""; 
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
             this.active_id = data.id;
-            this.editWbs.name = data.name;
+            this.editWbs.number = data.number;
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
-            this.editWbs.planned_deadline = data.planned_deadline;
             this.editWbs.weight = data.weight;
-            $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline));
+            if(data.planned_deadline != null){
+                this.editWbs.planned_deadline = data.planned_deadline;
+                $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline.split("-").reverse().join("-")));
+            }
+            
         },
         createSubWBSRoute(data){
             var url = "";
@@ -313,27 +402,70 @@ var vm = new Vue({
         getSubWBS(){
             window.axios.get('/api/getWeightWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
                 this.totalWeight = data;
-            });
-            window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
-                this.wbs = data;
-                this.newIndex = Object.keys(this.wbs).length+1;
-
-                this.maxWeight = roundNumber((this.parentWbsWeight-this.totalWeight),2);
-                $('#wbs-table').DataTable().destroy();
-                this.$nextTick(function() {
-                    $('#wbs-table').DataTable({
-                        'paging'      : true,
-                        'lengthChange': false,
-                        'searching'   : false,
-                        'ordering'    : false,
-                        'info'        : true,
-                        'autoWidth'   : false,
-                        columnDefs : [
-                            { targets: 0, sortable: false},
-                        ]
+                window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
+                    this.wbs = data;
+                    this.newIndex = Object.keys(this.wbs).length+1;
+                    this.wbs.forEach(data => {
+                        if(data.planned_deadline != null){
+                            data.planned_deadline = data.planned_deadline.split("-").reverse().join("-");   
+                        }
                     });
-                })
+                    this.maxWeight = roundNumber((this.parentWbsWeight-this.totalWeight),2);
+                    $('#wbs-table').DataTable().destroy();
+                    this.$nextTick(function() {
+                        $('#wbs-table').DataTable({
+                            'paging'      : true,
+                            'lengthChange': false,
+                            'searching'   : false,
+                            'ordering'    : false,
+                            'info'        : true,
+                            'autoWidth'   : false,
+                            columnDefs : [
+                                { targets: 0, sortable: false},
+                            ]
+                        });
+                    })
+                });
             });
+        },
+        adoptWbs(){
+            var data = {};
+            data.selected_wbs_profile = this.selected_wbs_profile;
+            data.project_id = this.newSubWBS.project_id;
+            data.parent_wbs = this.newSubWBS.wbs_id;
+            data = JSON.stringify(data);
+            var url = "";
+            if(this.menu == "building"){
+                url = "{{ route('wbs.adoptWbs') }}";
+            }else{
+                url = "{{ route('wbs_repair.adoptWbs') }}";              
+            }
+            $('div.overlay').show();            
+            window.axios.post(url,data)
+            .then((response) => {
+                if(response.data.error != undefined){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: response.data.error,
+                        position: 'topRight',
+                    });
+                    $('div.overlay').hide();            
+                }else{
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: response.data.response,
+                        position: 'topRight',
+                    });
+                    $('div.overlay').hide();            
+                }
+                
+                this.getSubWBS();
+                this.selected_wbs_profile = "";                
+            })
+            .catch((error) => {
+                console.log(error);
+                $('div.overlay').hide();            
+            })
         },
         add(){            
             var newSubWBS = this.newSubWBS;
@@ -363,7 +495,7 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 this.getSubWBS();
-                this.newSubWBS.name = "";
+                this.newSubWBS.number = "";
                 this.newSubWBS.description = "";
                 this.newSubWBS.deliverables = "";
                 this.newSubWBS.planned_deadline = "";
@@ -403,14 +535,82 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 
-                this.getSubWBS();   
+                this.getSubWBS(); 
+                this.editWbs.number = "";
+                this.editWbs.description = "";
+                this.editWbs.deliverables = "";
+                this.editWbs.planned_deadline = "";                
+                this.editWbs.weight = "";   
             })
             .catch((error) => {
                 console.log(error);
                 $('div.overlay').hide();            
             })
 
-        }
+        },
+        deleteWbs(data){
+            var menuTemp = this.menu;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 9999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this WBS?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(menuTemp == "building"){
+                            url = "/wbs/deleteWbs/"+data.id;
+                        }else{
+                            url = "/wbs_repair/deleteWbs/"+data.id;
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();   
+                                vm.getSubWBS();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
+
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
+            });
+        },
     },
     watch: {
         'newSubWBS.planned_deadline': function(newValue){
@@ -418,10 +618,11 @@ var vm = new Vue({
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
             var deadline_parent_wbs = new Date(this.wbs_deadline).toDateString();
 
-            var deadline = new Date(newValue);
+            var deadline = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
             var deadline_parent_wbs = new Date(deadline_parent_wbs);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
+
             if(deadline > deadline_parent_wbs){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -447,7 +648,7 @@ var vm = new Vue({
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
             var deadline_parent_wbs = new Date(this.wbs_deadline).toDateString();
             
-            var deadline = new Date(newValue);
+            var deadline = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
             var deadline_parent_wbs = new Date(deadline_parent_wbs);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
@@ -479,6 +680,7 @@ var vm = new Vue({
                     title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
+                this.newSubWBS.weight = this.maxWeight;
             }
         },
         'editWbs.weight': function(newValue){
@@ -496,8 +698,34 @@ var vm = new Vue({
                     title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
+                this.editWbs.weight = maxWeightEdit;
             }
         },
+        selected_wbs_profile : function(newValue){
+            if(newValue != ""){
+                window.axios.get('/api/getDataProfileJstree/'+newValue).then(({ data }) => {
+                    $('#treeview').jstree("destroy");
+                    $('#treeview').jstree({
+                        "core": {
+                            'data': data,
+                            "check_callback": true,
+                            "animation": 200,
+                            "dblclick_toggle": false,
+                            "keep_selected_style": false
+                        },
+                        "plugins": ["dnd", "contextmenu"],
+                        "contextmenu": {
+                            "select_node": false, 
+                            "show_at_node": false,
+                            'items' : null
+                        }
+                    }).bind("changed.jstree", function (e, data) {
+                    }).bind("loaded.jstree", function (event, data) {
+                        // you get two params - event & data - check the core docs for a detailed description
+                    });
+                });
+            }
+        }
     },
     created: function() {
         this.getSubWBS();

@@ -25,141 +25,137 @@
                 'View BOM / BOS' => '',
             ]
         ]
-    )
+        )
     @endbreadcrumb
-@endif
-@endsection
+    @endif
+    @endsection
+    
+    @section('content')
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box">
+                @verbatim
+                <div class="box-body p-t-0" id="show-bom">
+                    <div class="box-header p-l-0 p-r-0 p-b-0">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+    
+                            <div class="col-xs-4 no-padding">Project Number</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.project.number)"><b>: {{bom.project.number}}</b></div>
+                            
+                            <div class="col-xs-4 no-padding">Ship Name</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.project.name)"><b>: {{bom.project.name}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Ship Type</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.project.ship.type)"><b>: {{bom.project.ship.type}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Customer</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.project.customer.name)"><b>: {{bom.project.customer.name}}</b></div>
+                        </div>
 
-@section('content')
+                        <div class="col-xs-12 col-md-3">
+                            <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                            
+                            <div class="col-xs-4 no-padding">Number</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.wbs.number)"><b>: {{bom.wbs.number}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Description</div>
+                            <div v-if="bom.wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.wbs.description)"><b>: {{bom.wbs.description}}</b></div>
+                            <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.wbs.description)"><b>: -</b></div>
+    
+                            <div class="col-xs-4 no-padding">Deliverable</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.wbs.deliverables)"><b>: {{bom.wbs.deliverables}}</b></div>
+    
+                            <div class="col-xs-4 no-padding">Progress</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.wbs.progress)"><b>: {{bom.wbs.progress}}%</b></div>
+                        </div>
 
-<div class="row">
-    <div class="col-sm-12">
-        <div class="box ">
-            <div class="box-header p-l-0 p-r-0 p-b-0">
-                <div class="col-xs-12 col-md-4">
-                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-
-                    <div class="col-xs-4 no-padding">Project Code</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->number}}"><b>: {{$modelBOM->project->number}}</b></div>
+                        <div class="col-xs-12 col-md-3 p-b-10">
+                            <div class="col-sm-12 no-padding"><b>BOM Information - {{status}}</b></div>
                     
-                    <div class="col-xs-4 no-padding">Ship Name</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->name}}"><b>: {{$modelBOM->project->name}}</b></div>
+                            <div class="col-md-5 col-xs-4 no-padding">Code</div>
+                            <div class="col-md-7 col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.code)"><b>: {{bom.code}}</b></div>
+                            
+                            <div class="col-md-5 col-xs-4 no-padding">Description</div>
+                            <div v-if="bom.description != ''" class="col-md-7 col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.description)"><b>: {{bom.description}}</b></div>
+                            <div v-else class="col-md-7 col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.wbs.description)"><b>: -</b></div>
 
-                    <div class="col-xs-4 no-padding">Ship Type</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->ship->type}}"><b>: {{$modelBOM->project->ship->type}}</b></div>
+                            <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
+                            <div v-if="bom.rap != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showRap(bom.rap.id)" class="text-primary"><b>: {{bom.rap.number}}</b></a></div>
+                            <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>        
+                            
+                            <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                            <div v-if="bom.purchase_requisition != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
+                            <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
 
-                    <div class="col-xs-4 no-padding">Customer</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->customer->name}}"><b>: {{$modelBOM->project->customer->name}}</b></div>
+                        </div>
+
+                        <div class="col-md-2 col-xs-12">
+                            <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">EDIT</a>
+                            <a v-else-if="bom.status == 0" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">ADD ADDITIONAL</a>
+                            <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmBom(bom.id)">CONFIRM</a>
+                        </div>    
+                    </div>
+                    <template v-if="route == '/bom'">
+                        <table class="table table-bordered tablePagingVue">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="20%">Material Number</th>
+                                    <th width="45%">Material Description</th>
+                                    <th width="10%">Quantity</th>
+                                    <th width="10%">Unit</th>
+                                    <th width="10%">Source</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(bomDetail,index) in bomDetail">
+                                    <td class="p-t-15 p-b-15">{{ index+1 }}</td>
+                                    <td>{{ bomDetail.material.code }}</td>
+                                    <td>{{ bomDetail.material.description }}</td>
+                                    <td>{{ bomDetail.quantity }}</td>
+                                    <td>{{ bomDetail.material.uom.unit }}</td>
+                                    <td>{{ bomDetail.source}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                    <template v-else-if="route == '/bom_repair'">
+                        <table class="table table-bordered tablePagingVue">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="10%">Type</th>
+                                    <th width="20%">Material Number</th>
+                                    <th width="45%">Material Description</th>
+                                    <th width="10%">Quantity</th>
+                                    <th width="10%">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(bomDetail,index) in bomDetail">
+                                    <td class="p-t-15 p-b-15">{{ index+1 }}</td>
+                                    <template v-if="bomDetail.material_id != null">
+                                        <td>Material</td>
+                                        <td>{{ bomDetail.material.code }}</td>
+                                        <td>{{ bomDetail.material.description }}</td>
+                                        <td>{{ bomDetail.quantity }}</td>
+                                        <td>{{ bomDetail.material.uom.unit }}</td>
+                                    </template>
+                                    <template v-else-if="bomDetail.service_id != null">
+                                        <td>Service</td>
+                                        <td>{{ bomDetail.service.code }}</td>
+                                        <td>{{ bomDetail.service.description }}</td>
+                                        <td>{{ bomDetail.quantity }}</td>
+                                        <td>-</td>
+                                    </template>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
                 </div>
-
-                <div class="col-xs-12 col-md-4">
-                    <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                
-                    <div class="col-xs-4 no-padding">Code</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->code}}"><b>: {{$modelBOM->wbs->code}}</b></div>
-                    
-                    <div class="col-xs-4 no-padding">Name</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->name}}"><b>: {{$modelBOM->wbs->name}}</b></div>
-
-                    <div class="col-xs-4 no-padding">Description</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->description}}"><b>: {{$modelBOM->wbs->description}}</b></div>
-
-                    <div class="col-xs-4 no-padding">Deliverable</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->deliverables}}"><b>: {{$modelBOM->wbs->deliverables}}</b></div>
-
-                    <div class="col-xs-4 no-padding">Progress</div>
-                    <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->progress}}%"><b>: {{$modelBOM->wbs->progress}}%</b></div>
-                </div>
-
-                <div class="col-xs-12 col-md-3 p-b-10">
-                    <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
-            
-                    <div class="col-md-5 col-xs-4 no-padding">Code</div>
-                    <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->code}}"><b>: {{$modelBOM->code}}</b></div>
-                    
-                    <div class="col-md-5 col-xs-4 no-padding">Description</div>
-                    <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->description}}"><b>: {{$modelBOM->description}}</b></div>
-
-                    <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                    @if($route == "/bom")
-                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
-                    @elseif($route == "/bom_repair")
-                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRAP->number}}"><a href="{{ route('rap_repair.show',$modelRAP->id) }}" class="text-primary"><b>: {{$modelRAP->number}}</b></a></div>
-                    @endif
-
-                    @if(isset($modelPR))
-                        <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis"  data-container="body" data-toggle="tooltip" title="{{$modelPR->number}}"><a href="{{ route('purchase_requisition.show',$modelPR->id) }}" class="text-primary"><b>: {{$modelPR->number}}</b></a></div>
-                    @else
-                        <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
-                    @endif
-                </div>
-                
-                <div class="col-md-1 col-xs-12">
-                    @if($route == '/bom')
-                        <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bom.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
-                    @elseif($route == '/bom_repair')
-                        <a class="btn btn-sm btn-primary pull-right btn-block" href="{{ route('bom_repair.edit',['id'=>$modelBOM->id]) }}">EDIT</a>
-                    @endif
-                </div>
-            </div>
-            @verbatim
-            <div class="box-body p-t-0" id="show-bom">
-                <template v-if="route == '/bom'">
-                <table class="table table-bordered tablePagingVue">
-                        <thead>
-                            <tr>
-                                <th width="5%">No</th>
-                                <th width="35%">Material Name</th>
-                                <th width="45%">Description</th>
-                                <th width="15%">Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(bomDetail,index) in bomDetail">
-                                <td class="p-t-15 p-b-15">{{ index+1 }}</td>
-                                <td>{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
-                                <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
-                                <td v-else>-</td>
-                                <td>{{ bomDetail.quantity }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </template>
-                <template v-else-if="route == '/bom_repair'">
-                    <table class="table table-bordered tablePagingVue">
-                        <thead>
-                            <tr>
-                                <th width="5%">No</th>
-                                <th width="10%">Type</th>
-                                <th width="35%">Material Name</th>
-                                <th width="40%">Description</th>
-                                <th width="10%">Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(bomDetail,index) in bomDetail">
-                                <td class="p-t-15 p-b-15">{{ index+1 }}</td>
-                                <template v-if="bomDetail.material_id != null">
-                                    <td >Material</td>
-                                    <td >{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
-                                    <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
-                                    <td v-else>-</td>
-                                </template>
-                                <template v-else-if="bomDetail.service_id != null">
-                                    <td >Service</td>
-                                    <td >{{ bomDetail.service.code }} - {{ bomDetail.service.name }}</td>
-                                    <td v-if="bomDetail.service.description != null">{{ bomDetail.service.description }}</td>
-                                    <td v-else>-</td>
-                                </template>
-                                <td>{{ bomDetail.quantity }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </template>
-            </div>
-            @endverbatim
+                @endverbatim
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
@@ -174,7 +170,7 @@
         $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
         $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'Status' || title == 'No' || title == ""){
+            if(title == 'Unit' || title == 'Quantity' || title == 'No' || title == ""){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -194,21 +190,120 @@
             orderCellsTop   : true,
             fixedHeader     : true,
             paging          : true,
-            autoWidth       : true,
+            autoWidth       : false,
             lengthChange    : false,
         });
         $('div.overlay').hide();
     });
 
     var data = {
+        status : @json(($modelBOM->status == 0) ? 'CONFIRMED' : 'OPEN'),
         bom : @json($modelBOM),
         bomDetail : @json($modelBOMDetail),
-        route : @json($route)
+        route : @json($route),
     }
+
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
 
     var vm = new Vue({
         el : '#show-bom',
         data : data,
+        methods:{
+            showRap(id){
+                var url = "";
+                if(this.route == "/bom"){
+                    url = "/rap/"+id;
+                }else{
+                    url = "/rap_repair/"+id;                
+                }
+                return url;
+            },
+            showPr(id){
+                var url = "";
+                if(this.route == "/bom"){
+                    url = "/purchase_requisition/"+id;
+                }else{
+                    url = "/purchase_requisition_repair/"+id;                
+                }
+                return url;
+            },
+            editBom(id){
+                var url = "";
+                if(this.route == "/bom"){
+                    url = "/bom/"+id+"/edit";
+                }else{
+                    url = "/bom_repair/"+id+"/edit";
+                }
+                return url;
+            },
+            confirm(id){
+                $('div.overlay').show();
+                if(this.route == "/bom"){
+                    var url = "{{ route('bom.confirmBom') }}"
+                }else if(this.route == "/bom_repair"){
+                    var url = "{{ route('bom_repair.confirmBom') }}"
+                }
+                // update to database
+                window.axios.put(url,this.bom.id).then((response)=>{
+                    window.axios.get('/api/getBomHeader/'+this.bom.id).then(({ data }) => {
+                        this.bom = data;
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                    iziToast.success({
+                        title: 'BOM Confirmed !',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
+            },
+            confirmBom(id){
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to confirm this BOM?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            vm.confirm(id)
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }],
+                    ],
+                });
+            },
+        },
         created: function() {
             var data = this.bomDetail;
             data.forEach(bomDetail => {

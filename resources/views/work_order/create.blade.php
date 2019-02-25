@@ -164,18 +164,22 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th style="width: 30%">Material Name</th>
+                                                <th style="width: 15%">Material Number</th>
+                                                <th style="width: 15%">Material Description</th>
+                                                <th style="width: 5%">Unit</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
                                                 <th style="width: 10%">Discount (%)</th>
-                                                <th style="width: 30%">WBS Name</th>
+                                                <th style="width: 25%">WBS Name</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(WRD,index) in WRDetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ WRD.material.code }} - {{ WRD.material.name }}</td>
+                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.material.code)">{{ WRD.material.code }} </td>
+                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(WRD.material.description)">{{ WRD.material.description }}</td>
+                                                <td class="tdEllipsis">{{ WRD.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ WRD.sugQuantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="WRD.quantity" placeholder="Please Input Quantity">
@@ -186,7 +190,7 @@
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="WRD.discount" placeholder="Discount">
                                                 </td>
-                                                <td class="tdEllipsis" v-if="WRD.wbs != null">{{ WRD.wbs.name }}</td>
+                                                <td class="tdEllipsis" v-if="WRD.wbs != null">{{ WRD.wbs.number }} - {{ WRD.wbs.description}}</td>
                                                 <td class="tdEllipsis" v-else>-</td>
                                             </tr>
                                         </tbody>
@@ -301,6 +305,9 @@
             },
         },
         methods : {
+            tooltipText: function(text) {
+                return text
+            },
             getVendor(){
                 $('div.overlay').show();
                 window.axios.get('/api/getVendor').then(({ data }) => {

@@ -78,19 +78,27 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%">No</th>
-                                                <th width="40%">Material Name</th>
+                                                <th width="15%">Material Number</th>
+                                                <th width="20%">Material Description</th>
+                                                <th width="5%">Unit</th>
                                                 <th width="20%">Quantity</th>
                                                 <th width="20%">Received</th>
+                                                <th width="10%">Received Date</th>
                                                 <th width="15%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(WOD,index) in modelWOD">
+                                            <tr v-for="(WOD,index) in modelWOD" :id="getId(WOD.id)">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ WOD.material_code }} - {{ WOD.material_name }}</td>
+                                                <td>{{ WOD.material_code }}</td>
+                                                <td>{{ WOD.material_name }}</td>
+                                                <td>{{ WOD.unit }}</td>
                                                 <td>{{ WOD.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="WOD.received" placeholder="Please Input Received Quantity">
+                                                </td>
+                                                <td class="p-l-0 textLeft">
+                                                    <input v-model="WOD.received_date" required autocomplete="off" type="text" class="form-control datepicker width100 received_date" name="input_received_date" :id="makeId(WOD.id)" placeholder="Received Date">  
                                                 </td>
                                                 <td class="p-l-5" align="center">
                                                     <a href="#" @click="removeRow(WOD.material_id)" class="btn btn-danger btn-xs">
@@ -100,16 +108,22 @@
                                             </tr>
                                             <tr>
                                                 <td>{{newIndex}}</td>
-                                                <td class="no-padding">
+                                                <td colspan="2" class="no-padding">
                                                     <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                     </selectize>    
+                                                </td>
+                                                <td class="no-padding">
+                                                    <input class="form-control width100" v-model="input.unit" disabled>
                                                 </td>
                                                 <td class="no-padding">
                                                     <input class="form-control width100" disabled>
                                                 </td>
                                                 <td class="no-padding">
                                                     <input class="form-control width100" v-model="input.received" placeholder="Please Input Received Quantity">
+                                                </td>
+                                                <td class="p-l-0 textLeft">
+                                                    <input v-model="input.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_received_date" id="input_received_date" placeholder="Received Date">  
                                                 </td>
                                                 <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                                     <div class="btn-group">
@@ -167,7 +181,9 @@
             received : 0,
             quantity : "",
             material_name : "",
-            material_code : ""
+            material_code : "",
+            unit : "",
+            received_date : "",
         },
         material_id:[],
         ship_date : "",
@@ -179,10 +195,25 @@
         mounted(){
             $('.datepicker').datepicker({
                 autoclose : true,
+                format : "dd-mm-yyyy"
+
             });
             $("#ship_date").datepicker().on(
                 "changeDate", () => {
                     this.ship_date = $('#ship_date').val();
+                }
+            );
+            $("#input_received_date").datepicker().on(
+                "changeDate", () => {
+                    this.input.received_date = $('#input_received_date').val();
+                }
+            );
+            $(".received_date").datepicker().on(
+                "changeDate", () => {
+
+                    this.modelWOD.forEach(WOD => { 
+                        WOD.received_date = $('#datepicker'+WOD.id).val();
+                    });
                 }
             );
         },
@@ -205,6 +236,12 @@
             },
         },
         methods : {
+            makeId(id){
+                return "datepicker"+id;
+            },
+            getId: function(id){
+                return id;
+            },
             changeText(){
                 if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
                     if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelPO.vendor.address ){
@@ -250,24 +287,34 @@
             },
             submitToTable(){
                 if(this.input.material_id != "" && this.input.received != ""){
-                    var data = JSON.stringify(this.input);
-                    data = JSON.parse(data);
-                    this.modelWOD.push(data);
-                    var WOD = JSON.stringify(this.modelWOD);
-                    this.modelWOD = [];
 
-                    this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+                    var material_id = this.input.material_id;
 
-                    var jsonMaterialId = JSON.stringify(this.material_id);
-                    this.getNewMaterials(jsonMaterialId);             
+                    window.axios.get('/api/getMaterialGR/'+material_id).then(({ data }) => {
+                        this.input.material_name = data.description;
+                        this.input.material_code = data.code;
 
-                    this.newIndex = this.modelWOD.length + 1;  
+                        var data = JSON.stringify(this.input);
+                        data = JSON.parse(data);
+                        this.modelWOD.push(data);
+                        var WOD = JSON.stringify(this.modelWOD);
+                        this.modelWOD = [];
 
-                    this.input.material_id = "";
-                    this.input.received = 0;
-                    WOD = JSON.parse(WOD);
-                    this.modelWOD = WOD;
-                    console.log(this.modelWOD);
+                        this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+
+                        var jsonMaterialId = JSON.stringify(this.material_id);
+                        this.getNewMaterials(jsonMaterialId);             
+
+                        this.newIndex = this.modelWOD.length + 1;  
+
+                        this.input.material_id = "";
+                        this.input.unit = "";
+                        this.input.received_date = "";
+                        this.input.received = 0;
+                        WOD = JSON.parse(WOD);
+                        this.modelWOD = WOD;
+                    });
+
                 }
             },
             submitForm(){
@@ -297,6 +344,11 @@
         watch: {
             'input.material_id': function(newValue){
                 if(newValue != ""){
+                    window.axios.get('/api/getMaterialGR/'+newValue).then(({ data }) => {
+                        this.input.unit = data.uom.unit;
+
+                        $('div.overlay').hide();
+                    })
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         if(data.description == "" || data.description == null){
                             this.input.description = '-';
@@ -322,11 +374,13 @@
                 this.material_id.push(POD.material_id); //ini buat nambahin material_id terpilih
 
                 var x = {};
+                x.id = POD.id;
                 x.material_id = POD.material_id;
                 x.received = POD.received;
                 x.quantity = POD.quantity;
-                x.material_name = POD.material.name;
+                x.material_name = POD.material.description;
                 x.material_code = POD.material.code;
+                x.unit = POD.material.uom.unit;
 
                 this.modelWOD.push(x);
             });

@@ -93,7 +93,9 @@
                                     <table class="table table-bordered showTable tablePagingVue tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 45%">Material</th>
+                                            <th style="width: 15%">Material Number</th>
+                                            <th style="width: 25%">Material Description</th>
+                                            <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 10%">Reserved</th>
                                             <th style="width: 15%">Total Value</th>
@@ -102,7 +104,9 @@
                                         <tbody>
                                             <tr v-for="(stock,index) in stocks">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ stock.material.code }} - {{ stock.material.name }}</td>
+                                                <td class="tdEllipsis">{{ stock.material.code }}</td>
+                                                <td class="tdEllipsis">{{ stock.material.description }}</td>
+                                                <td class="tdEllipsis">{{ stock.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ stock.quantity }}</td>
                                                 <td class="tdEllipsis">{{ stock.reserved }}</td>
                                                 <td class="tdEllipsis">Rp {{ (stock.material.cost_standard_price * stock.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
@@ -117,7 +121,9 @@
                                     <table id="tablePagingVue2" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 45%">Material</th>
+                                            <th style="width: 15%">Material Number</th>
+                                            <th style="width: 25%">Material Description</th>
+                                            <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 15%">Total Value</th>
                                             <th style="width: 10%">Aging</th>
@@ -125,7 +131,9 @@
                                         <tbody>
                                             <tr v-for="(selectedDetail,index) in selectedSlocDetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ selectedDetail.material.code }} - {{ selectedDetail.material.name }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.material.code }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.material.description }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity }}</td>
                                                 <td class="tdEllipsis">Rp {{ (selectedDetail.material.cost_standard_price * selectedDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity + 0 }} Days</td>
@@ -156,7 +164,7 @@
         $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
         $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title != 'Material'){
+            if(title != 'Material Number' && title != 'Material Description'){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -232,7 +240,7 @@
                             $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                             $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                 var title = $(this).text();
-                                if(title != 'Material'){
+                                if(title != 'Material Number' && title != 'Material Description'){
                                     $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                 }else{
                                     $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -287,7 +295,7 @@
                                 $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                                 $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                     var title = $(this).text();
-                                    if(title != 'Material'){
+                                    if(title != 'Material Number' && title != 'Material Description'){
                                         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                     }else{
                                         $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -351,7 +359,7 @@
                                 $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                                 $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                     var title = $(this).text();
-                                    if(title != 'Material'){
+                                    if(title != 'Material Number' && title != 'Material Description'){
                                         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                     }else{
                                         $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -381,7 +389,7 @@
                                 $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                                 $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                     var title = $(this).text();
-                                    if(title != 'Material'){
+                                    if(title != 'Material Number' && title != 'Material Description'){
                                         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                     }else{
                                         $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );

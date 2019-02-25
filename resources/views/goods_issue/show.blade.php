@@ -84,7 +84,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Material Name</th>
+                            <th width="15%">Material Number</th>
+                            <th width="20%">Material Description</th>
+                            <th width="5%">Unit</th>
                             <th width="25%">Quantity</th>
                             <th width="30%">Storage Location</th>
                         </tr>
@@ -93,7 +95,9 @@
                         @foreach ($modelGID as $GID)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $GID->material->name }}</td>
+                            <td>{{ $GID->material->code }}</td>
+                            <td>{{ $GID->material->description }}</td>
+                            <td>{{ $GID->material->uom->unit }}</td>
                             <td>{{ number_format($GID->quantity) }}</td>
                             <td>{{ $GID->storageLocation != null ? $GID->storageLocation->name : "-" }} </td>
                         </tr>

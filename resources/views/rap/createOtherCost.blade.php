@@ -80,7 +80,7 @@
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
-                                <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.name }}</td>
+                                <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                 <td v-else class="tdEllipsis">-</td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
@@ -100,11 +100,11 @@
                                 </td>
                                 <td class="no-padding">
                                     <selectize v-model="newCost.wbs_id" :settings="workSettings">
-                                        <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
+                                        <option v-for="(work, index) in wbss" :value="work.id">{{ work.number }} - {{ work.description }}</option>
                                     </selectize>
                                 </td>
                                 <td class="no-padding textCenter">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">SUBMIT</button>
+                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -131,7 +131,7 @@
                                         <div class="form-group col-sm-12">
                                             <label for="wbs" class="control-label">Work Breakdown Structure</label>
                                             <selectize v-model="editCost.wbs_id" :settings="workSettings">
-                                                <option v-for="(work, index) in wbss" :value="work.id">{{ work.name }}</option>
+                                                <option v-for="(work, index) in wbss" :value="work.id">{{ work.number }} - {{ work.description }}</option>
                                             </selectize>
                                         </div>
                                     </div>
@@ -221,7 +221,7 @@ var vm = new Vue({
             this.editCost.cost = data.plan_cost;
         },
         getWbss(){
-            window.axios.get('/api/getAllWbs/'+this.newCost.project_id).then(({ data }) => {
+            window.axios.get('/api/getAllWbss/'+this.newCost.project_id).then(({ data }) => {
                 this.wbss = data;
             });
         },

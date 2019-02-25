@@ -84,7 +84,11 @@
             <div id="myPopoverContent" style="display : none;">
                 
             </div>
-            <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project.storeCopyProjectStructure') }}">
+            @if($mainMenu == "building")
+                <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project.storeCopyProjectStructure') }}">
+            @else
+                <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project_repair.storeCopyProjectStructure') }}">
+            @endif
                 @csrf
                 <div class="box-footer">
                     <button type="button" class="btn btn-primary pull-right" onclick="submitForm()">CREATE</button>
@@ -150,7 +154,7 @@
                 "dblclick_toggle": false,
                 "keep_selected_style": false
             },
-            "plugins": ["dnd", "contextmenu","crrm"],
+            "plugins": ["dnd", "contextmenu"],
             "contextmenu": {
                 "select_node": false, 
                 "show_at_node": false,

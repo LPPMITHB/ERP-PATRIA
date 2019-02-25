@@ -40,7 +40,7 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td>Code</td>
+                            <td>Item Number</td>
                             <td>{{ $material->code }}</td>
                         </tr>
                         <tr>

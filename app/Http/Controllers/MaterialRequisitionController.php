@@ -41,7 +41,6 @@ class MaterialRequisitionController extends Controller
         }elseif($menu == "building"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
-
         $modelMRs = MaterialRequisition::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
 
         return view('material_requisition.indexApprove', compact('modelMRs','menu'));
@@ -163,11 +162,11 @@ class MaterialRequisitionController extends Controller
                 "mrd_id" => $mrd->id,
                 "material_id" => $mrd->material_id,
                 "material_code" => $mrd->material->code,
-                "material_name" => $mrd->material->name,
+                "material_description" => $mrd->material->description,
                 "quantity" => number_format($mrd->quantity),
                 "quantityInt" => $mrd->quantity,
                 "wbs_id" => $mrd->wbs_id,
-                "wbs_name" => $mrd->wbs->name,
+                "wbs_number" => $mrd->wbs->number,
             ]);
         }
         return view('material_requisition.edit', compact('menu','modelMR','modelMRD','modelMaterial','modelProject','modelWBS'));
@@ -362,5 +361,11 @@ class MaterialRequisitionController extends Controller
     public function getMaterialAPI($id){
         
         return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getStockAPI($id){
+        $stock = Stock::where('material_id',$id)->first()->jsonSerialize();
+        
+        return response($stock, Response::HTTP_OK);
     }
 }

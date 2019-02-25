@@ -26,14 +26,11 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
-                            <div class="col-xs-4 no-padding">Project Code</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->code}}"><b>: {{$modelBOM->project->code}}</b></div>
+                            <div class="col-xs-4 no-padding">Project Number</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->code}}"><b>: {{$modelBOM->project->number}}</b></div>
                             
-                            <div class="col-xs-4 no-padding">Project Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->name}}"><b>: {{$modelBOM->project->name}}</b></div>
-        
                             <div class="col-xs-4 no-padding">Ship Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->ship->type}}"><b>: {{$modelBOM->project->ship->type}}</b></div>
+                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->name}}"><b>: {{$modelBOM->project->name}}</b></div>
         
                             <div class="col-xs-4 no-padding">Ship Type</div>
                             <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->ship->type}}"><b>: {{$modelBOM->project->ship->type}}</b></div>
@@ -45,12 +42,9 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
-                            <div class="col-xs-4 no-padding">Code</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->code}}"><b>: {{$modelBOM->wbs->code}}</b></div>
+                            <div class="col-xs-4 no-padding">Number</div>
+                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->number}}"><b>: {{$modelBOM->wbs->number}}</b></div>
                             
-                            <div class="col-xs-4 no-padding">Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->name}}"><b>: {{$modelBOM->wbs->name}}</b></div>
-        
                             <div class="col-xs-4 no-padding">Description</div>
                             <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->description}}"><b>: {{$modelBOM->wbs->description}}</b></div>
         
@@ -79,7 +73,9 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">Material Name</th>
+                                    <th width="25%">Material Number</th>
+                                    <th width="30%">Material Description</th>
+                                    <th width="5%">Unit</th>
                                     <th width="15%">Quantity</th>
                                     <th width="25%">Cost per pcs (Rp.)</th>
                                     <th width="25%">Sub Total Cost (Rp.)</th>
@@ -88,7 +84,9 @@
                             <tbody>
                                 <tr v-for="(rapd, index) in modelRAPD">
                                     <td>{{ index+1 }}</td>
-                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.name)">{{ rapd.material.code }} - {{ rapd.material.name }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.code)">{{ rapd.material.code }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.description)">{{ rapd.material.description }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(rapd.material.uom.unit)">{{ rapd.material.uom.unit }}</td>
                                     <td class="">{{ rapd.quantity }}</td>
                                     <td class="no-padding">
                                         <input v-model="rapd.price" class="form-control width100">
@@ -165,6 +163,12 @@
         data: data,
         methods:{
             update(){
+                this.modelRAPD.forEach(data=>{
+                    if(data.price == ""){
+                        data.price = 0;
+                        data.priceTotal = 0;
+                    }
+                })
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
@@ -183,7 +187,6 @@
                     this.modelRAPD.forEach(rapDetail => {
                         rapDetail.price = (rapDetail.price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                         rapDetail.priceTotal = parseInt((rapDetail.price+"").replace(/,/g , '')) * rapDetail.quantity;
-                        rapDetail.priceTotal = (rapDetail.priceTotal+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
                     });
                 },
                 deep: true

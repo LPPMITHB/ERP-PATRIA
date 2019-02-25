@@ -139,8 +139,11 @@ class PhysicalInventoryController extends Controller
         $snapshot = Snapshot::whereIn('status',[1,2])->where('id', $id)->first();
         $snapshotDetails = SnapshotDetail::where('snapshot_id',$id)
         ->with(array('material'=>function($query){
-                $query->select('id','name');
+                $query->select('id','code','description');
             }))
+        ->with(array('material.uom'=>function($query){
+            $query->select('id','unit');
+        }))
         ->with(array('storageLocation'=>function($query){
             $query->select('id','name');
         }))->get();

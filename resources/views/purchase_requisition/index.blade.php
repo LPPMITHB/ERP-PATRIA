@@ -6,7 +6,7 @@
         'title' => 'View All Purchase Requisitions',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Purchase Requisitions' => route('purchase_requisition.index'),
+            'View All Purchase Requisitions' => '',
         ]
     ]
 )
@@ -21,13 +21,12 @@
                 <table class="table table-bordered tableFixed tablePaging">
                     <thead>
                         <tr>
-                            <th width="5%">No</th>
-                            <th width="10%">Type</th>
-                            <th width="10%">Number</th>
-                            <th width="35%">Description</th>
-                            <th width="17%">Project Name</th>
-                            <th width="13%">Status</th>
-                            <th width="10%"></th>
+                            <th class="tdBreakWord" width="6%">No</th>
+                            <th class="tdBreakWord" width="10%">Type</th>
+                            <th class="tdBreakWord" width="10%">Number</th>
+                            <th class="tdBreakWord" width="35%">Description</th>
+                            <th class="tdBreakWord" width="13%">Status</th>
+                            <th class="tdBreakWord" width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,13 +34,12 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 @if($modelPR->type == 1)
-                                    <td>Material</td>
+                                    <td class="tdEllipsis">Material</td>
                                 @else
-                                    <td>Resource</td>
+                                    <td class="tdEllipsis">Resource</td>
                                 @endif
-                                <td>{{ $modelPR->number }}</td>
+                                <td class="tdEllipsis">{{ $modelPR->number }}</td>
                                 <td class="tdEllipsis">{{ isset($modelPR->description) ? $modelPR->description : '-' }}</td>
-                                <td class="tdEllipsis">{{ isset($modelPR->project) ? $modelPR->project->name : '-'}}</td>
                                 @if($modelPR->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">

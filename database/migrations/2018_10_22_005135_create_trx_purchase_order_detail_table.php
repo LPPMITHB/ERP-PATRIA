@@ -21,17 +21,19 @@ class CreateTrxPurchaseOrderDetailTable extends Migration
             $table->integer('quantity');
             $table->integer('received')->default(0);
             $table->integer('returned')->default(0);
+            $table->text('remark')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
-            $table->unsignedInteger('wbs_id')->nullable();
+            $table->unsignedInteger('project_id')->nullable();
             $table->double('total_price')->nullable();
+            $table->date('delivery_date');
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');
             $table->foreign('resource_id')->references('id')->on('mst_resource');
             $table->foreign('purchase_order_id')->references('id')->on('trx_purchase_order');
             $table->foreign('purchase_requisition_detail_id')->references('id')->on('trx_purchase_requisition_detail');
-            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
+            $table->foreign('project_id')->references('id')->on('pro_project');
         });
     }
 

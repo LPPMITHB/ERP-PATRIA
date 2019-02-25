@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
+use App\Models\WbsProfile;
+use App\Models\ActivityProfile;
 use App\Models\User;
 use DB;
 use DateTime;
@@ -28,11 +30,25 @@ class ActivityController extends Controller
         return view('activity.create', compact('project', 'wbs','menu'));
     }
 
+    public function createActivityProfile($id, Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/activity" ? "building" : "repair";
+        $wbs = WbsProfile::find($id);
+
+        return view('activity.createActivityProfile', compact('wbs','menu'));
+    }
+
     public function store(Request $request)
     {
         $data = $request->json()->all();
-        $stringPredecessor = '['.implode(',', $data['predecessor']).']';
-
+        $predecessorArray = [];
+        foreach($data['allPredecessor'] as $predecessor){
+            $temp = [];
+            array_push($temp, $predecessor[0]);
+            array_push($temp, $predecessor[1]);
+            array_push($predecessorArray, $temp);
+            
+        }
         DB::beginTransaction();
         try {
             $activity = new Activity;
@@ -43,31 +59,56 @@ class ActivityController extends Controller
             $activity->planned_duration = $data['planned_duration'];
 
             if($data['planned_start_date'] != ""){
-                $planStartDate = DateTime::createFromFormat('m/j/Y', $data['planned_start_date']);
+                $planStartDate = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
                 $activity->planned_start_date = $planStartDate->format('Y-m-d');
             }
 
             if($data['planned_end_date'] != ""){
-                $planEndDate = DateTime::createFromFormat('m/j/Y', $data['planned_end_date']);
+                $planEndDate = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
                 $activity->planned_end_date = $planEndDate->format('Y-m-d');
             }
 
-            if(count($data['predecessor']) >0){
-                $activity->predecessor = $stringPredecessor;
-                $refActivity = Activity::whereIn('id', json_decode($activity->predecessor))->orderBy('planned_end_date', 'desc')->first();
+            if(count($predecessorArray) >0){
+                $activity->predecessor = json_encode($predecessorArray);
             }
             $activity->weight = $data['weight']; 
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
             $users = User::whereIn('role_id',[1])->get();
-            Notification::send($users, new ProjectActivity($activity));
+            // Notification::send($users, new ProjectActivity($activity));
 
             if(!$activity->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
                 return response(["response"=>"Success to create new activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeActivityProfile(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $activity = new ActivityProfile;
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];
+            $activity->wbs_id = $data['wbs_id'];            
+            $activity->duration = $data['duration'];
+            $activity->user_id = Auth::user()->id;
+            $activity->branch_id = Auth::user()->branch->id;
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new activity profile"],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -86,15 +127,22 @@ class ActivityController extends Controller
             $activity->description = $data['description'];         
             $activity->planned_duration = $data['planned_duration'];
 
-            $planStartDate = DateTime::createFromFormat('m/j/Y', $data['planned_start_date']);
-            $planEndDate = DateTime::createFromFormat('m/j/Y', $data['planned_end_date']);
+            $planStartDate = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $planEndDate = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
 
             $activity->planned_start_date = $planStartDate->format('Y-m-d');
             $activity->planned_end_date = $planEndDate->format('Y-m-d');
             $activity->weight = $data['weight']; 
-            if($data['predecessor'] != null){
-                $stringPredecessor = '['.implode(',', $data['predecessor']).']';
-                $activity->predecessor = $stringPredecessor;
+            if(count($data['allPredecessor']) > 0){
+                $predecessorArray = [];
+                foreach($data['allPredecessor'] as $predecessor){
+                    $temp = [];
+                    array_push($temp, $predecessor[0]);
+                    array_push($temp, $predecessor[1]);
+                    array_push($predecessorArray, $temp);
+                    
+                }
+                $activity->predecessor = json_encode($predecessorArray);
             }else{
                 $activity->predecessor = null;
             }
@@ -104,6 +152,29 @@ class ActivityController extends Controller
             }else{
                 DB::commit();
                 return response(["response"=>"Success to update activity ".$activity->code],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function updateActivityProfile(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        
+        DB::beginTransaction();
+        try {
+            $activity = ActivityProfile::find($id);
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];         
+            $activity->duration = $data['duration'];
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to update activity profile ".$activity->name],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -151,8 +222,16 @@ class ActivityController extends Controller
         DB::beginTransaction();
         try {
             $activity = Activity::find($id);
-            if($data['predecessor'] != "[]"){
-                $activity->predecessor = $data['predecessor'];
+            if(count($data['allPredecessor']) > 0){
+                $predecessorArray = [];
+                foreach($data['allPredecessor'] as $predecessor){
+                    $temp = [];
+                    array_push($temp, $predecessor[0]);
+                    array_push($temp, $predecessor[1]);
+                    array_push($predecessorArray, $temp);
+                    
+                }
+                $activity->predecessor = json_encode($predecessorArray);
             }else{
                 $activity->predecessor = null;
             }
@@ -203,24 +282,30 @@ class ActivityController extends Controller
             }else{
                 $activity->status = 0;
                 $activity->progress = 100;
-                $actualEndDate = DateTime::createFromFormat('m/j/Y', $data['actual_end_date']);
+                $actualEndDate = DateTime::createFromFormat('d-m-Y', $data['actual_end_date']);
                 $activity->actual_end_date = $actualEndDate->format('Y-m-d');
                 $activity->actual_duration = $data['actual_duration'];
             }
-            $actualStartDate = DateTime::createFromFormat('m/j/Y', $data['actual_start_date']);
+            $actualStartDate = DateTime::createFromFormat('d-m-Y', $data['actual_start_date']);
             $activity->actual_start_date = $actualStartDate->format('Y-m-d');
-            $project = $activity->wbs->project;
-            if($project->actual_start_date != null){
-                if($project->actual_start_date > $activity->actual_start_date){
-                    $project->actual_start_date = $activity->actual_start_date;                    
-                }
-            }else{
-                $project->actual_start_date = $activity->actual_start_date;
-            }
             $activity->save();
 
-            $wbs = $activity->wbs;
+            $project = $activity->wbs->project;
+            $wbss = $project->wbss->where('wbs_id',null);
+            $earliest_date = null;
+            foreach($wbss as $wbs){
+                $temp = self::getEarliestActivity($wbs,$earliest_date);
+                if($earliest_date == null){
+                    $earliest_date = $temp;
+                }else{
+                    if($earliest_date > $temp){
+                        $earliest_date = $temp;
+                    }
+                }
+            }
+            $project->actual_start_date = $earliest_date;
 
+            $wbs = $activity->wbs;
             self::changeWbsProgress($wbs);
 
             $project = $wbs->project;
@@ -237,6 +322,61 @@ class ActivityController extends Controller
             
         } catch (\Exception $e) {
             DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function destroyActivityProfile(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $activityProfile = ActivityProfile::find($id);
+
+            if(!$activityProfile->delete()){
+                return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function destroyActivity(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        $error = [];
+        try {
+            $activity = Activity::find($id);
+            if($activity->progress > 0){
+                array_push($error, ["Failed to delete, this activity already have ".$activity->progress." % progress"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+
+            $activity_ref = Activity::whereNotIn('id',[$activity->id])->get();
+            foreach($activity_ref as $act){
+                if($act->predecessor != null){
+                    $predecessor = json_decode($act->predecessor);
+                    if(in_array($activity->id,$predecessor)){
+                        array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
+                        return response(["error"=> $error],Response::HTTP_OK);
+                    }
+                }
+            }
+            if(!$activity->delete()){
+                array_push($error, ["Failed to delete, please try again!"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            array_push($error, [$e->getMessage()]);                
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
@@ -258,6 +398,48 @@ class ActivityController extends Controller
 
         $activity_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
 		return $activity_code;
+    }
+
+    function getEarliestActivity($wbs, $earliest_date){
+        if($wbs){
+            if(count($wbs->wbss)>0){
+                foreach($wbs->wbss as $wbs_child){
+                    if(count($wbs_child->activities)>0){
+                        $activityRef = Activity::where('wbs_id',$wbs_child->id)->whereRaw('actual_start_date is not null')->orderBy('actual_start_date','asc')->first();
+                        if($activityRef != null){
+                            $earliest_date_ref = $activityRef->actual_start_date;
+                            if($earliest_date != null){
+                                if($earliest_date > $earliest_date_ref){
+                                    $earliest_date = $earliest_date_ref;
+                                }
+                            }else{
+                                $earliest_date = $earliest_date_ref;
+                            }
+                        }else{
+                            $earliest_date = $earliest_date;
+                        }
+                    }
+                    return self::getEarliestActivity($wbs_child,$earliest_date);
+                }
+            }else{
+                if(count($wbs->activities)>0){
+                    $activityRef = Activity::where('wbs_id',$wbs->id)->whereRaw('actual_start_date is not null')->orderBy('actual_start_date','asc')->first();
+                    if($activityRef != null){
+                        $earliest_date_ref = $activityRef->actual_start_date;
+                        if($earliest_date != null){
+                            if($earliest_date > $earliest_date_ref){
+                                $earliest_date = $earliest_date_ref;
+                            }
+                        }else{
+                            $earliest_date = $earliest_date_ref;
+                        }
+                    }else{
+                        $earliest_date = $earliest_date;
+                    }
+                }
+                return $earliest_date;
+            }
+        }
     }
 
     function changeWbsProgress($wbs){
@@ -303,6 +485,11 @@ class ActivityController extends Controller
         return response($activities, Response::HTTP_OK);
     }
 
+    public function getActivitiesProfileAPI($wbs_id){
+        $activities = ActivityProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($activities, Response::HTTP_OK);
+    }
+
     public function getActivitiesNetworkAPI($project_id){
         $project = Project::find($project_id);
         $activities = Activity::whereIn('wbs_id',$project->wbss->pluck('id')->toArray())->orderBy('planned_start_date','asc')->get();
@@ -314,23 +501,6 @@ class ActivityController extends Controller
             }
         }
 
-        foreach($activities as $activity){
-            $predecessorObj = json_decode($activity->predecessor);
-            $activity['predecessorText'] = "-";
-            if($predecessorObj != null){
-                foreach($predecessorObj as $predecessorTo){
-                    foreach($allActivities as $refAct){
-                        if($predecessorTo==$refAct->id){
-                            if($activity->predecessorText == "-"){
-                                $activity->predecessorText = $refAct->name;
-                            }else{
-                                $activity->predecessorText =  $activity->predecessorText.", ".$refAct->code;
-                            }
-                        }
-                    }
-                }
-            }
-        }
         return response($activities->jsonSerialize(), Response::HTTP_OK);
     }
 
@@ -340,7 +510,7 @@ class ActivityController extends Controller
         $allActivities = Collection::make();
         foreach ($project->wbss as $wbsData) {
             foreach($wbsData->activities as $activity){
-                $activity->push('wbs_name', $activity->wbs->name);
+                $activity->push('wbs_number', $activity->wbs->number);
                 $allActivities->push($activity);
             }
         }
@@ -354,7 +524,7 @@ class ActivityController extends Controller
         foreach ($project->wbss as $wbsData) {
             foreach($wbsData->activities as $activity){
                 if($activity->id != $activity_id){
-                    $activity->push('wbs_name', $activity->wbs->name);
+                    $activity->push('wbs_number', $activity->wbs->number);
                     $allActivities->push($activity);
                 }
             }
@@ -376,8 +546,12 @@ class ActivityController extends Controller
 
     public function getLatestPredecessorAPI($id)
     {
-        $predecessor = json_decode($id);
-        $latestActivity = Activity::orderBy('planned_end_date', 'desc')->whereIn('id', $predecessor)->first()->jsonSerialize();
+        $predecessors = json_decode($id);
+        $arrayPredecessor = [];
+        foreach($predecessors as $predecessor){
+            array_push($arrayPredecessor, $predecessor[0]);
+        }
+        $latestActivity = Activity::orderBy('planned_end_date', 'desc')->whereIn('id', $arrayPredecessor)->first()->jsonSerialize();
 
         return response($latestActivity, Response::HTTP_OK);
 

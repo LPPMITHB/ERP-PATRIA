@@ -78,17 +78,22 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%">No</th>
-                                                <th width="35%">Material Name</th>
+                                                <th width="17%">Material Number</th>
+                                                <th width="18%">Material Description</th>
+                                                <th width="5%">Unit</th>
                                                 <th width="10%">Quantity</th>
                                                 <th width="10%">Received</th>
-                                                <th width="30%">Storage Location</th>
+                                                <th width="15%">Storage Location</th>
+                                                <th width="10%">Received Date</th>
                                                 <th width="10%">Item OK</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(POD,index) in modelPOD" v-if="POD.quantity > 0" :id="getId(POD.id)">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ POD.material_code }} - {{ POD.material_name }}</td>
+                                                <td>{{ POD.material_code }}</td>
+                                                <td>{{ POD.material_name }}</td>
+                                                <td>{{ POD.unit }}</td>
                                                 <td>{{ POD.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">
@@ -97,6 +102,9 @@
                                                     <selectize v-model="POD.sloc_id" :settings="slocSettings">
                                                         <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
                                                     </selectize>  
+                                                </td>
+                                                <td class="p-l-0 textLeft">
+                                                    <input v-model="POD.received_date" required autocomplete="off" type="text" class="form-control datepicker width100 received_date" name="input_received_date" :id="makeId(POD.id)" placeholder="Received Date">  
                                                 </td>
                                                 <td class="no-padding p-t-2 p-b-2" align="center">
                                                     <input type="checkbox" v-icheck="" v-model="checkedPOD" :value="POD.id">
@@ -185,10 +193,19 @@
         mounted(){
             $('.datepicker').datepicker({
                 autoclose : true,
+                format : "dd-mm-yyyy"
             });
             $("#ship_date").datepicker().on(
                 "changeDate", () => {
                     this.ship_date = $('#ship_date').val();
+                }
+            );
+            $(".received_date").datepicker().on(
+                "changeDate", () => {
+
+                    this.modelPOD.forEach(POD => { 
+                        POD.received_date = $('#datepicker'+POD.id).val();
+                    });
                 }
             );
         },
@@ -204,6 +221,9 @@
             }
         },
         methods : {
+            makeId(id){
+                return "datepicker"+id;
+            },
             getId: function(id){
                 return id;
             },
@@ -299,7 +319,6 @@
         watch : {
             modelPOD:{
                 handler: function(newValue) {
-                    // console.log(newValue)
         
                     var data = newValue;
                     data.forEach(POD => {
@@ -330,6 +349,7 @@
                         else{
                             document.getElementById(POD.id).style.backgroundColor = "white";
                             POD.item_OK = 1;
+
                         }
                     }
                 });
@@ -337,6 +357,7 @@
         },
         created: function(){
             var data = this.modelPOD;
+            console.log(data);
             data.forEach(POD => {
                 // POD.sloc_id = null;
                 POD.received = parseInt(POD.quantity) - parseInt(POD.received);

@@ -67,8 +67,8 @@
                                 </tr>
                                 <tr>
                                     <td>2</td>
-                                    <td>Name</td>
-                                    <td>{{ wbsDisplay.name }}</td>
+                                    <td>Number</td>
+                                    <td>{{ wbsDisplay.number }}</td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
@@ -88,7 +88,7 @@
                                 <tr>
                                     <td>6</td>
                                     <td>Parent WBS</td>
-                                    <td v-if="wbsDisplay.parent_wbs != null">[{{ wbsDisplay.parent_wbs.code+"] - "+wbsDisplay.parent_wbs.name }}</td>
+                                    <td v-if="wbsDisplay.parent_wbs != null">[{{ wbsDisplay.parent_wbs.code+"] - "+wbsDisplay.parent_wbs.number }}</td>
                                     <td v-else>-</td>
                                 </tr>
                                 <tr>
@@ -137,8 +137,8 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="form-group col-sm-12">
-                                                <label for="name" class="control-label">Name</label>
-                                                <input id="name" type="text" class="form-control" v-model="editWbs.name" placeholder="Insert Name here..." >
+                                                <label for="number" class="control-label">Number</label>
+                                                <input id="number" type="text" class="form-control" v-model="editWbs.number" placeholder="Insert Number here..." >
                                             </div>
                                             <div class="form-group col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
@@ -200,7 +200,7 @@ var data = {
     editWbs : {
         wbs_id: @json($wbs->id),
         code: @json($wbs->code),
-        name : @json($wbs->name),
+        number : @json($wbs->number),
         description : @json($wbs->description),
         deliverables : @json($wbs->deliverables),
         planned_deadline : "",
@@ -213,10 +213,10 @@ var data = {
     wbsDisplay : {
         wbs_id: @json($wbs->id),
         code: @json($wbs->code),
-        name : @json($wbs->name),
+        number : @json($wbs->number),
         description : @json($wbs->description),
         deliverables : @json($wbs->deliverables),
-        planned_deadline : @json($wbs->planned_deadline),
+        planned_deadline : @json($wbs->planned_deadline).split("-").reverse().join("-"),
         projectText : @json($wbs->project->number)+" - "+@json($wbs->project->name),
         weight : @json($wbs->weight),
         parent_wbs : @json($wbs->wbs),
@@ -240,6 +240,7 @@ var vm = new Vue({
     mounted() {
         $('.datepicker').datepicker({
             autoclose : true,
+            format: "dd-mm-yyyy"
         });
         $("#edit_planned_deadline").datepicker().on(
             "changeDate", () => {
@@ -250,7 +251,7 @@ var vm = new Vue({
     computed:{
         updateOk: function(){
             let isOk = false;
-                if(this.editWbs.name == ""
+                if(this.editWbs.number == ""
                 || this.editWbs.description == ""
                 || this.editWbs.deliverables == ""
                 || this.editWbs.weight == ""
@@ -283,7 +284,7 @@ var vm = new Vue({
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
             
-            var deadline = new Date(newValue);
+            var deadline = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
             if(this.editWbs.parent_wbs != null){

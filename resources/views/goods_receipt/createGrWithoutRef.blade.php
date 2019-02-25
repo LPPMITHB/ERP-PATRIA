@@ -49,18 +49,24 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 32%">Material Name</th>
-                                            <th style="width: 25%">Received</th>
+                                            <th style="width: 17%">Material Number</th>
+                                            <th style="width: 20%">Material Description</th>
+                                            <th style="width: 5%">Unit</th>
+                                            <th style="width: 10%">Received</th>
                                             <th style="width: 28%">Storage Location</th>
+                                            <th style="width: 10%">Received Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }}</td>
+                                            <td class="tdEllipsis">{{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="tdEllipsis">{{ material.sloc_name }}</td>
+                                            <td class="tdEllipsis">{{ material.received_date }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -74,10 +80,13 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft">
+                                            <td class="p-l-0 textLeft" colspan="2">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control width100" v-model="dataInput.unit" disabled>
                                             </td>
                                             <td class="p-l-0">
                                                 <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Received Quantity">
@@ -86,6 +95,9 @@
                                                 <selectize v-model="dataInput.sloc_id" :settings="slocSettings">
                                                     <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.name }}</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <input v-model="dataInput.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_received_date" id="input_received_date" placeholder="Received Date">  
                                             </td>
                                             <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -114,8 +126,12 @@
                                                 <div class="col-sm-12">
                                                     <label for="type" class="control-label">Material</label>
                                                     <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                     </selectize>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <label for="unit" class="control-label">Unit</label>
+                                                    <input type="text" id="unit" v-model="editInput.unit" class="form-control" disabled>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <label for="quantity" class="control-label">Quantity</label>
@@ -126,6 +142,10 @@
                                                     <selectize id="edit_modal" v-model="editInput.sloc_id" :settings="slocSettings">
                                                         <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{sloc.code}} - {{sloc.name}}</option>
                                                     </selectize>
+                                                </div>
+                                                <div class="col-sm-12"> 
+                                                    <label for="type" class="control-label">Received Date</label>
+                                                    <input v-model="editInput.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_received_date" id="edit_received_date" placeholder="Received Date">  
                                                 </div>
                                             </div>
                                         </div>
@@ -187,7 +207,10 @@
             quantity : "",
             quantityInt : 0,
             sloc_id : "",
-            sloc_name : ""
+            sloc_name : "",
+            received_date: "",
+            unit:"",
+
         },
         editInput : {
             old_material_id : "",
@@ -197,7 +220,10 @@
             quantity : "",
             quantityInt : 0,
             sloc_id : "",
-            sloc_name : ""
+            sloc_name : "",
+            received_date: "",
+            unit:"",
+
         },
         material_id:[],
         material_id_modal:[],
@@ -212,10 +238,23 @@
         mounted(){
             $('.datepicker').datepicker({
                 autoclose : true,
+                format : "dd-mm-yyyy"
+
             });
             $("#ship_date").datepicker().on(
                 "changeDate", () => {
                     this.ship_date = $('#ship_date').val();
+                }
+            );
+
+            $("#input_received_date").datepicker().on(
+                "changeDate", () => {
+                    this.dataInput.received_date = $('#input_received_date').val();
+                }
+            );
+            $("#edit_received_date").datepicker().on(
+                "changeDate", () => {
+                    this.editInput.received_date = $('#edit_received_date').val();
                 }
             );
         },
@@ -236,7 +275,7 @@
                 var string_newValue = this.dataInput.quantityInt+"";
                 this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.sloc_id ==""){
+                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.sloc_id =="" || this.dataInput.received_date == ""){
                     isOk = true;
                 }
 
@@ -270,7 +309,6 @@
             },
             'dataInput.sloc_id': function(newValue){
                 if(newValue != ""){
-                    console.log(newValue);
                     $('div.overlay').show();
                     window.axios.get('/api/getSlocGR/'+newValue).then(({ data }) => {
                         this.dataInput.sloc_name = data.name;
@@ -286,6 +324,20 @@
                     })
                 }else{
                     this.dataInput.sloc_id = "";
+                }
+            },
+            'dataInput.material_id': function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getMaterialGR/'+newValue).then(({ data }) => {
+                        this.dataInput.unit = data.uom.unit;
+                    });
+                }
+            },
+            'editInput.material_id': function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getMaterialGR/'+newValue).then(({ data }) => {
+                        this.editInput.unit = data.uom.unit;
+                    });
                 }
             },
         },
@@ -313,10 +365,12 @@
                         material.quantity = this.editInput.quantity;
                         material.material_id = new_material_id;
                         material.sloc_id = this.editInput.sloc_id;
+                        material.unit = this.editInput.unit;
 
                         window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
-                            material.material_name = data.name;
+                            material.material_name = data.description;
                             material.material_code = data.code;
+                            material.received_date = this.editInput.received_date;
 
                              window.axios.get('/api/getSlocGR/'+this.editInput.sloc_id).then(({ data }) => {
                                 material.sloc_name = data.name;
@@ -352,6 +406,7 @@
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.sloc_id = data.sloc_id;
                 this.editInput.sloc_name = data.sloc_name;
+                this.editInput.received_date = data.received_date;
                 this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
@@ -370,7 +425,8 @@
                 var material_id = this.dataInput.material_id;
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterialGR/'+material_id).then(({ data }) => {
-                    this.dataInput.material_name = data.name;
+                    // this.dataInput.unit = data.uom.unit;
+                    this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
 
 
@@ -386,7 +442,9 @@
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
                     this.dataInput.sloc_id = "";
+                    this.dataInput.unit = "";
                     this.dataInput.sloc_name = "";
+                    this.dataInput.received_date = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;
 

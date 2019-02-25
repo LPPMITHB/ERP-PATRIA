@@ -22,7 +22,8 @@ class CreateProProjectTable extends Migration
             $table->unsignedInteger('project_sequence');
             $table->unsignedInteger('ship_id');
             $table->unsignedInteger('customer_id');
-            $table->string('name');
+            $table->string('name')->nullable();
+            $table->string('person_in_charge')->nullable();
             $table->text('description')->nullable();
             $table->unsignedInteger('sales_order_id')->nullable();
             $table->date('planned_start_date');
@@ -37,6 +38,7 @@ class CreateProProjectTable extends Migration
             $table->string('class_contact_person_name')->nullable();
             $table->string('class_contact_person_phone')->nullable();
             $table->string('class_contact_person_email')->nullable();
+            $table->unsignedInteger('project_type');
             $table->integer('status')->default(1);
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');            

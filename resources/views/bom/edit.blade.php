@@ -9,7 +9,7 @@
             'Manage Bill Of Materials' => route('bom.indexProject'),
             'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
             'View Bill Of Material' => route('bom.show', ['id' => $modelBOM->id]),
-            'Edit Bill Of Material' => route('bom.edit', ['id' => $modelBOM->id]),
+            'Edit Bill Of Material' => '',
         ]
     ]
 )
@@ -31,46 +31,44 @@
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
             
                                 <div class="col-xs-4 no-padding">Project Code</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.number)"><b>: {{project.number}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.number)"><b>: {{project.number}}</b></div>
                                 
                                 <div class="col-xs-4 no-padding">Ship Name</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.name)"><b>: {{project.name}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.name)"><b>: {{project.name}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Ship Type</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.ship.type)"><b>: {{project.ship.type}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.ship.type)"><b>: {{project.ship.type}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Customer</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(project.customer.name)"><b>: {{project.customer.name}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.customer.name)"><b>: {{project.customer.name}}</b></div>
                             </div>
 
                             <div class="col-xs-12 col-md-4">
-                                <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                                <div class="col-sm-12 no-padding"><b>WBS Information </b></div>
                                 
-                                <div class="col-xs-4 no-padding">Code</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.code)"><b>: {{wbs.code}}</b></div>
-                                
-                                <div class="col-xs-4 no-padding">Name</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.name)"><b>: {{wbs.name}}</b></div>
+                                <div class="col-xs-4 no-padding">Number</div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.number)"><b>: {{wbs.number}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Description</div>
-                                <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: {{wbs.description}}</b></div>
-                                <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.description)"><b>: -</b></div>
+                                <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: {{wbs.description}}</b></div>
+                                <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: -</b></div>
         
                                 <div class="col-xs-4 no-padding">Deliverable</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
         
                                 <div class="col-xs-4 no-padding">Progress</div>
-                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="tooltipText(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
+                                <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
                             </div>
 
                             <div class="col-xs-12 col-md-4 p-b-10">
-                                <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
+                                <div class="col-sm-12 no-padding"><b>BOM Information - {{status}}</b></div>
                         
                                 <div class="col-md-5 col-xs-4 no-padding">Code</div>
                                 <div class="col-md-7 col-xs-8 no-padding"><b>: {{bom.code}}</b></div>
                                 
                                 <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
-                                <div class="col-md-7 col-xs-8 no-padding"><a :href="showRapRoute(rap.id)" class="text-primary"><b>: {{rap.number}}</b></a></div>
+                                <div v-if="rap != null" class="col-md-7 col-xs-8 no-padding"><a :href="showRapRoute(rap.id)" class="text-primary"><b>: {{rap.number}}</b></a></div>
+                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
 
                                 <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
                                 <div v-if="pr == null" class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>
@@ -87,34 +85,44 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="30%">Material</th>
-                                        <th width="30%">Description</th>
+                                        <th width="25%">Material Number</th>
+                                        <th width="28%">Material Description</th>
                                         <th width="10%">Quantity</th>
+                                        <th width="10%">Unit</th>
                                         <th width="10%">Source</th>
-                                        <th width="5%" ></th>
+                                        <th width="12%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(bomDetail, index) in materialTable">
                                         <td class="p-t-13 p-b-13">{{ index + 1 }}</td>
-                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(bomDetail.material.name)">{{ bomDetail.material.code }} - {{ bomDetail.material.name }}</td>
-                                        <td v-if="bomDetail.material.description != null">{{ bomDetail.material.description }}</td>
-                                        <td v-else>{{ '-' }}</td>
+                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipCode(bomDetail.material.code)">{{ bomDetail.material.code }}</td>
+                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(bomDetail.material.description)">{{ bomDetail.material.description }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
+                                        <td>{{ bomDetail.material.uom.unit }}</td>
                                         <td>{{ bomDetail.source }}</td>
                                         <td class="p-l-0" align="center">
-                                            
+                                            <template v-if="bom.status == 1">
+                                                <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(bomDetail,index)">
+                                                    EDIT
+                                                </a>
+                                                <a href="#" @click="removeRow(bomDetail.id)" class="btn btn-danger btn-xs">
+                                                    <div class="btn-group">DELETE</div>
+                                                </a>
+                                            </template>
                                         </td>
                                     </tr>
+                                </tbody>
+                                <tfoot>
                                     <tr>
                                         <td>{{newIndex}}</td>
-                                        <td class="no-padding">
+                                        <td colspan="2" class="no-padding">
                                             <selectize id="material" v-model="input.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
                                         <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.unit" disabled></td>
                                         <td class="no-padding">
                                             <selectize v-model="input.source" :settings="sourceSettings">
                                                 <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
@@ -126,11 +134,11 @@
                                             </div></a>
                                         </td>
                                     </tr>
-                                </tbody>
+                                </tfoot>
                             </table>
                         </div>
 
-                        <div class="modal fade" id="edit">
+                        <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -140,14 +148,28 @@
                                         <h4 class="modal-title">Edit Material</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <label for="material">Material Name</label>
-                                        <input id="description" class="form-control" type="text" disabled v-model="modalData.material_name">
-
-                                        <label class="p-t-10" for="description">Description</label>
-                                        <input id="description" class="form-control" type="text" disabled v-model="modalData.description">
-
-                                        <label class="p-t-15" for="quantity">Quantity</label>
-                                        <input id="quantity" class="form-control" type="text" v-model="modalData.quantity">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Material</label>
+                                                <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" id="unit" v-model="editInput.unit" class="form-control" disabled>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Source</label>
+                                                <selectize v-model="editInput.source" :settings="sourceSettings">
+                                                    <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
+                                                </selectize>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button @click.prevent="update" type="button" class="btn btn-primary" data-dismiss="modal">SAVE</button>
@@ -158,9 +180,9 @@
                     </div>
                     @endverbatim
                 </form>
-                <div class="overlay">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
+            </div>
+            <div class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
             </div>
         </div>
     </div>
@@ -177,6 +199,7 @@
 
     var data = {
         menu : @json($menu),
+        status : @json(($modelBOM->status == 0) ? 'CONFIRMED' : 'OPEN'),
         sources : ['Stock','WIP'],
         bom : @json($modelBOM),
         project : @json($project),
@@ -192,11 +215,11 @@
         },
         input : {
             material_id : "",
-            material_name : "",
-            description : "",
             quantity : "",
             quantityInt : 0,
-            bom_id : ""
+            bom_id : "",
+            unit : "",
+            source : "Stock",
         },
         materialTable : @json($modelBOMDetail),
         materialSettings: {
@@ -205,15 +228,17 @@
         sourceSettings: {
             placeholder: 'Please Select Source'
         },
-        modalData : {
+        editInput : {
             bom_detail_id : "",
             material_id : "",
-            description : "",
             quantity : "",
             quantityInt : 0,
-            material_name : "",
+            unit : "",
+            source : "Stock",
         },
         material_id:[],
+        material_id_modal:[],
+        materials_modal :[],
     }
 
     Vue.directive('tooltip', function(el, binding){
@@ -231,7 +256,7 @@
             inputOk: function(){
                 let isOk = false;
 
-                if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == ""){
+                if(this.input.material_id == "" || this.input.quantity == "" || this.input.source == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -246,6 +271,12 @@
             },
         },
         methods: {
+            tooltipCode: function(code) {
+                return code;
+            },
+            tooltipDesc: function(desc) {
+                return desc;
+            },
             showRapRoute(id){
                 url = "/rap/"+id;
 
@@ -256,13 +287,25 @@
 
                 return url;
             },
-            tooltipText: function(text) {
-                return text
-            },
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
                     this.materials = data;
                     $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            },
+            getNewModalMaterials(jsonMaterialId){
+                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
+                    this.materials_modal = data;
+                    $('div.overlay').hide();
+                    $('#edit_item').modal();
                 })
                 .catch((error) => {
                     iziToast.warning({
@@ -293,32 +336,27 @@
                 })
             },
             update(){
-                this.modalData.quantityInt = (this.modalData.quantityInt+"").replace(/,/g , '');
-                this.modalData.quantityInt = parseInt(this.modalData.quantityInt);
+                this.editInput.quantityInt = (this.editInput.quantityInt+"").replace(/,/g , '');
+                this.editInput.quantityInt = parseInt(this.editInput.quantityInt);
                 $('div.overlay').show();
-                var data = this.modalData;
+                var data = this.editInput;
                 data = JSON.stringify(data);
                 var bom_id = this.bom.id;
-
-                if(this.menu == "building"){
-                    var url = "{{ route('bom.update') }}";
-                }else{
-                    var url = "{{ route('bom_repair.update') }}";
-                }
-
+                var url = "{{ route('bom.update') }}";
 
                 window.axios.put(url,data).then((response) => {
+                    console.log(response.material_id)
                     iziToast.success({
-                        title: 'Edit Success',
+                        title: 'Success Edit Material !',
                         position: 'topRight',
                         displayMode: 'replace'
                     });
-                    this.modalData.description = "";
-                    this.modalData.bom_detail_id = "";
-                    this.modalData.material_id = "";
-                    this.modalData.quantity = "";
-                    this.modalData.quantityInt = 0;
-                    this.modalData.material_name = "";
+                    this.editInput.bom_detail_id = "";
+                    this.editInput.material_id = "";
+                    this.editInput.quantity = "";
+                    this.editInput.source = "";
+                    this.editInput.unit = "";
+                    this.editInput.quantityInt = 0;
                     this.getBom(bom_id);
                 })
                 .catch((error) => {
@@ -340,24 +378,23 @@
             },
             getPR(bom_id){
                 window.axios.get('/api/getPRBom/'+bom_id).then(({ data }) => {
-                    console.log(data)
                     this.pr = data;
                 });
             },
             submitToTable(){
+                $('div.overlay').show();
                 this.input.quantityInt = (this.input.quantityInt+"").replace(/,/g , '');
                 this.input.quantityInt = parseInt(this.input.quantityInt);
 
-                if(this.input.material_id != "" && this.input.material_name != "" && this.input.description != "" && this.input.quantity != "" && this.input.quantityInt > 0){
-                    $('div.overlay').show();
+                if(this.input.material_id != "" && this.input.source != "" && this.input.quantity != "" && this.input.quantityInt > 0){
                     var newMaterial = this.input;
-                    var bom_id = this.input.bom_id;
                     newMaterial = JSON.stringify(newMaterial);
-                if(this.menu == "building"){
-                    var url = "{{ route('bom.storeBom') }}";
-                }else{
-                    var url = "{{ route('bom_repair.storeBom') }}";
-                }
+
+                    if(this.menu == "building"){
+                        var url = "{{ route('bom.storeBom') }}";
+                    }else{
+                        var url = "{{ route('bom_repair.storeBom') }}";
+                    }
 
                     window.axios.post(url,newMaterial).then((response) => {
                         iziToast.success({
@@ -369,14 +406,13 @@
                         var jsonMaterialId = JSON.stringify(this.material_id);
                         this.getNewMaterials(jsonMaterialId);
 
-                        this.input.description = "";
                         this.input.material_id = "";
-                        this.input.material_name = "";
                         this.input.quantity = "";
+                        this.input.unit = "";
                         this.input.source = "Stock";
                         this.input.quantityInt = 0;
                         this.materialTable = [];
-                        this.getBom(bom_id);
+                        this.getBom(this.bom.id);
                         this.getPR(this.bom.id);
                     })
                     .catch((error) => {
@@ -398,44 +434,115 @@
                     this.modalData.material_id = data.material_id;
                     this.modalData.quantity = data.quantity;
                 });
-            }
+            },
+            openEditModal(data,index){
+                $('div.overlay').show();
+                var material_id = JSON.stringify(this.material_id);
+                material_id = JSON.parse(material_id);
+                
+                this.material_id_modal = material_id;
+                this.material_id_modal.forEach(id => {
+                    if(id == data.material_id){
+                        var index = this.material_id_modal.indexOf(id);
+                        this.material_id_modal.splice(index, 1);
+                    }
+                });
+                var jsonMaterialId = JSON.stringify(this.material_id_modal);
+                this.getNewModalMaterials(jsonMaterialId);
+
+                this.editInput.bom_detail_id = data.id;
+                this.editInput.material_id = data.material_id;
+                this.editInput.quantity = data.quantity;
+                this.editInput.quantityInt = parseInt((data.quantity+"").replace(/,/g , ''));
+                this.editInput.source = data.source;
+                this.editInput.unit = data.material.uom.unit;
+            },
+            removeRow: function(id) {
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this materials?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            var url = "";
+                            if(vm.menu == "building"){
+                                url = "/bom/deleteMaterial/"+id;
+                            }else if(vm.route == "repair"){
+                                url = "/bom_repair/deleteMaterial/"+id;
+                            }
+                            $('div.overlay').show();            
+                            window.axios.delete(url).then((response) => {
+                                if(response.data.error != undefined){
+                                    console.log(response.data.error);
+                                    response.data.error.forEach(error => {
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: error,
+                                            position: 'topRight',
+                                        });
+                                    });
+                                    $('div.overlay').hide();
+                                }else{
+                                    iziToast.success({
+                                        displayMode: 'replace',
+                                        title: response.data.response,
+                                        position: 'topRight',
+                                    });
+                                    $('div.overlay').hide();   
+                                    vm.getBom(vm.bom.id);
+                                }
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: "Please try again.. ",
+                                    position: 'topRight',
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();            
+                            })
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }],
+                    ],
+                });
+            },
         },
         watch: {
             'input.material_id': function(newValue){
                 if(newValue != ""){
-                    window.axios.get('/api/getMaterial/'+newValue).then(({ data }) => {
-                        if(data.description == "" || data.description == null){
-                            this.input.description = '-';
-                        }else{
-                            this.input.description = data.description;
-
-                        }
-                        this.input.material_name = data.name;
+                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
+                        this.input.unit = data.uom.unit;
                     });
-                }else{
-                    this.input.description = "";
                 }
             },
             'input.quantity': function(newValue){
                 this.input.quantityInt = newValue;
                 this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             },
-            'modalData.quantity': function(newValue){
-                this.modalData.quantityInt = newValue;
-                this.modalData.quantity = (this.modalData.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+            'editInput.quantity': function(newValue){
+                this.editInput.quantityInt = newValue;
+                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
             },
             'bom.description' : function(newValue){
                 this.updateDesc(newValue);
             },
-            'modalData.material_id' : function(newValue){
+            'editInput.material_id': function(newValue){
                 if(newValue != ""){
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
-                        if(data.description == "" || data.description == null){
-                            this.modalData.description = '-';
-                        }else{
-                            this.modalData.description = data.description;
-                        }
-                        this.modalData.material_name = data.name;
+                        this.editInput.unit = data.uom.unit;
                     });
                 }
             },
