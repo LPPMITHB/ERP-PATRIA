@@ -83,7 +83,7 @@
 
                         <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
+                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;
                             @endphp

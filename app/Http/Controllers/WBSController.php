@@ -492,13 +492,13 @@ class WBSController extends Controller
             $wbs_ref->number = $data->number;
             $wbs_ref->description = $data->description;
             $wbs_ref->deliverables = $data->deliverables;
-            $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $planned_start_date = DateTime::createFromFormat('d-m-Y', $data->planned_start_date);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
             
-            $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
+            $planned_end_date = DateTime::createFromFormat('d-m-Y', $data->planned_end_date);
             $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
             
-            $wbs_ref->planned_duration = $data['planned_duration'];
+            $wbs_ref->planned_duration = $data->planned_duration;
             $wbs_ref->weight =  $data->weight;
 
             if(!$wbs_ref->save()){

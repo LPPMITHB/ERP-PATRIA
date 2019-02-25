@@ -724,7 +724,7 @@ class RAPController extends Controller
     }
 
     public function getAllWbssCostAPI($project_id){
-        $works = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
+        $works = WBS::orderBy('planned_end_date', 'asc')->where('project_id', $project_id)->get()->jsonSerialize();
         return response($works, Response::HTTP_OK);
     }
 

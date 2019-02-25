@@ -181,7 +181,7 @@
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input v-model="editWbs.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
+                                                <input autocomplete="off" v-model="editWbs.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
                                             </div>
                                         </div>
                                                 
@@ -191,7 +191,7 @@
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input v-model="editWbs.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
+                                                <input autocomplete="off" v-model="editWbs.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
                                             </div>
                                         </div>
                                         
@@ -276,7 +276,6 @@ var data = {
         number : "",
         description : "",
         deliverables : "",
-        planned_deadline : "",
         project_id : @json($project->id),
         weight : "",
         planned_start_date : "",
@@ -288,7 +287,6 @@ var data = {
         number : "",
         description : "",
         deliverables : "",
-        planned_deadline : "",
         project_id : @json($project->id),
         weight : "",
         planned_start_date : "",
@@ -412,7 +410,6 @@ var vm = new Vue({
             this.newWbs.number = "";
             this.newWbs.description = "";
             this.newWbs.deliverables = "";
-            this.newWbs.planned_deadline = "";                
             this.newWbs.weight = ""; 
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;

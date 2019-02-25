@@ -111,7 +111,7 @@
                                 <td>Deadline</td>
                                 <td>:</td>
                                 <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_deadline);
+                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
                                             $date = $date->format('d-m-Y');
                                             echo $date;
                                         @endphp
@@ -458,7 +458,7 @@ var data = {
     menu : @json($menu),
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
-    wbs_deadline : @json($wbs->planned_deadline),
+    wbs_deadline : @json($wbs->planned_end_date),
     wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
     activities :[],
