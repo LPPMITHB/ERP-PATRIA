@@ -58,9 +58,6 @@
                 </div> <!-- /.box-body -->
             </div>
             @endverbatim
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
         </div>
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->
@@ -115,7 +112,7 @@
             autoWidth       : true,
             lengthChange    : false,
         });
-        $('div.overlay').hide();
+        // $('div.loading').hide();
     });
 </script>
 @endpush
