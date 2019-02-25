@@ -26,6 +26,7 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('approved_by')->nullable();
             $table->timestamps();
 
             $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
@@ -33,6 +34,7 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->foreign('bom_id')->references('id')->on('mst_bom');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

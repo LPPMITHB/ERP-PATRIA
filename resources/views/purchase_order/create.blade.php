@@ -43,58 +43,29 @@
                     <div id="po">
                         <div class="box-header">
                             <div class="row">
-                                <div class="col-xs-12 col-md-4" v-if="modelProject != null">
+                                <div class="col-xs-12 col-md-4">
                                     <div class="col-xs-5 no-padding">PR Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.number}}</b></div>
                                     
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.ship.type}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="modelProject.customer.name"><b>: {{modelProject.customer.name}}</b></div>
+                                    <div class="col-sm-5 no-padding p-t-15">
+                                        <label for="estimated_freight">Estimated Freight </label>
+                                    </div>
+                                    <div class="col-sm-7 p-t-13 p-l-0">
+                                        <input class="form-control" v-model="estimated_freight" placeholder="Estimated Freight">
+                                    </div>
 
-                                    <div class="col-xs-5 no-padding">Start Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_start_date}}</b></div>
+                                    <div class="col-sm-5 no-padding p-t-15">
+                                        <label for="">Tax (%)</label>
+                                    </div>
+                                    <div class="col-sm-7 p-t-13 p-l-0">
+                                        <input class="form-control" v-model="tax" placeholder="Tax">
+                                    </div>
 
-                                    <div class="col-xs-5 no-padding">End Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
-
-                                    <div class="col-sm-3 no-padding p-t-15">
+                                    <div class="col-sm-5 no-padding p-t-15">
                                         <label for="">Currency</label>
                                     </div>
-                                    <div class="col-sm-9 p-t-13 p-l-0">
+                                    <div class="col-sm-7 p-t-13 p-l-0">
                                         <selectize :disabled="currencyOk" v-model="currency" :settings="currencySettings">
-                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-                                    <div class="col-xs-12 col-md-4" v-else>
-                                    <div class="col-xs-5 no-padding">PR Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
-
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-                                    
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-
-                                    <div class="col-xs-5 no-padding">Start Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-
-                                    <div class="col-xs-5 no-padding">End Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
-                                    
-                                    <div class="col-sm-3 no-padding p-t-15">
-                                        <label for="">Currency</label>
-                                    </div>
-                                    <div class="col-sm-9 p-t-13 p-l-0">
-                                        <selectize :disable="currencyOk" v-model="currency" :settings="currencySettings">
                                             <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
                                         </selectize>
                                     </div>
@@ -108,14 +79,6 @@
                                             <selectize v-model="vendor_id" :settings="vendorSettings">
                                                 <option v-for="(vendor, index) in modelVendor" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                             </selectize>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5 p-t-10">
-                                            <label for="delivery_date">Delivery Date</label>
-                                        </div>
-                                        <div class="col-sm-7 p-t-5 p-l-0">
-                                            <input v-model="delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -141,25 +104,7 @@
                                             <label for="">PO Description</label>
                                         </div>
                                         <div class="col-sm-12">
-                                            <textarea class="form-control" rows="2" v-model="description"></textarea>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-sm-5 p-t-15">
-                                            <label for="estimated_freight">Estimated Freight ({{selectedCurrency}})</label>
-                                        </div>
-                                        <div class="col-sm-7 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="estimated_freight" placeholder="Estimated Freight">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-5 p-t-15">
-                                            <label for="">Tax (%)</label>
-                                        </div>
-                                        <div class="col-sm-7 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="tax" placeholder="Tax">
+                                            <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -172,37 +117,50 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th v-if="modelPR.type == 1" style="width: 20%">Material Name</th>
-                                                <th v-else style="width: 20%">Resource Name</th>
+                                                <template v-if="modelPR.type == 1">
+                                                    <th width="15%">Material Number</th>
+                                                    <th width="25%">Material Description</th>
+                                                </template>
+                                                <template v-else>
+                                                    <th width="15%">Resource Number</th>
+                                                    <th width="25%">Resource Description</th>
+                                                </template>
                                                 <th style="width: 7%">Qty</th>
-                                                <th style="width: 8%">Order</th>
-                                                <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
+                                                <th style="width: 7%">Order</th>
+                                                <th style="width: 6%">Unit</th>
+                                                <th style="width: 12%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 7%">Disc. (%)</th>
-                                                <th style="width: 20%">WBS Name</th>
-                                                <th style="width: 8%">Alocation</th>
-                                                <th style="width: 10%"></th>
+                                                <th style="width: 10%">Delivery Date</th>
+                                                <th style="width: 8%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(PRD,index) in PRDetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td v-if="modelPR.type == 1" class="tdEllipsis">{{ PRD.material.code }} - {{ PRD.material.name }}</td>
-                                                <td v-else class="tdEllipsis">{{ PRD.resource.code }} - {{ PRD.resource.name }}</td>
+                                                <template v-if="modelPR.type == 1">
+                                                    <td class="tdEllipsis">{{ PRD.material.code }}</td>
+                                                    <td class="tdEllipsis">{{ PRD.material.description }}</td>
+                                                </template>
+                                                <template v-else>
+                                                    <td class="tdEllipsis">{{ PRD.resource.code }}</td>
+                                                    <td class="tdEllipsis">{{ PRD.resource.name }}</td>
+                                                </template>
                                                 <td class="tdEllipsis">{{ PRD.sugQuantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="PRD.quantity" placeholder="Please Input Quantity">
                                                 </td>
+                                                <td class="tdEllipsis" v-if="modelPR.type == 1">{{ PRD.material.uom.unit }}</td>
+                                                <td class="tdEllipsis" v-else>-</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input v-if="modelPR.type == 1" class="form-control width100" v-model="PRD.material.cost_standard_price" placeholder="Please Input Total Price">
                                                     <input v-else class="form-control width100" v-model="PRD.resource.cost_standard_price" placeholder="Please Input Total Price">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control" v-model="PRD.discount" placeholder="Discount">
+                                                    <input class="form-control width100" v-model="PRD.discount" placeholder="Discount">
                                                 </td>
-                                                <td class="tdEllipsis" v-if="PRD.wbs != null">{{ PRD.wbs.number }}</td>
-                                                <td class="tdEllipsis" v-else>-</td>
-                                                <td class="tdEllipsis" v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
-                                                <td class="tdEllipsis" v-else>-</td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input v-model="PRD.required_date" required autocomplete="off" type="text" class="form-control datepicker width100 delivery_date" name="delivery_date" :id="makeId(PRD.id)" placeholder="Delivery Date">
+                                                </td>
                                                 <td class="textCenter">
                                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(PRD,index)">
                                                         REMARK
@@ -217,28 +175,28 @@
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="dataOk">CREATE</button>
                             </div>
                             <div class="modal fade" id="edit_item">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
-                                                <h4 class="modal-title">Input Remark</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <label for="remark" class="control-label">Remark</label>
-                                                        <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark" class="form-control"></textarea>
-                                                    </div>
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title">Input Remark</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <label for="remark" class="control-label">Remark</label>
+                                                    <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark" class="form-control"></textarea>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
-                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 @endverbatim
@@ -323,9 +281,11 @@
                 autoclose : true,
                 format: 'dd-mm-yyyy',
             });
-            $("#delivery_date").datepicker().on(
+            $(".delivery_date").datepicker().on(
                 "changeDate", () => {
-                    this.delivery_date = $('#delivery_date').val();
+                    this.PRDetail.forEach(PRD => { 
+                        PRD.required_date = $('#datepicker'+PRD.id).val();
+                    });
                 }
             );
         },
@@ -366,7 +326,7 @@
                     }else{
                         ref = (decimal[0]+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                    if(parseFloat((PRD.total_price+"").replace(/,/g , '')) != ref.replace(/,/g, '')){
+                    if(parseFloat((PRD.old_price+"").replace(/,/g , '')) != ref.replace(/,/g, '')){
                         isOk = true;
                     }   
                 });
@@ -374,6 +334,9 @@
             },
         },
         methods : {
+            makeId(id){
+                return "datepicker"+id;
+            },
             getVendor(){
                 $('div.overlay').show();
                 window.axios.get('/api/getVendor').then(({ data }) => {
@@ -421,10 +384,8 @@
                 this.submittedForm.type = this.modelPR.type;
                 this.submittedForm.vendor_id = this.vendor_id;
                 this.submittedForm.currency = this.currency;
-                this.submittedForm.delivery_date = this.delivery_date;
                 this.submittedForm.description = this.description;
                 this.submittedForm.pr_id = this.modelPR.id;
-                this.submittedForm.project_id = this.modelPR.project_id;
                 this.submittedForm.currency = this.currency;
                 this.submittedForm.tax = this.tax;
                 this.submittedForm.estimated_freight = this.estimated_freight;
@@ -443,6 +404,7 @@
             PRDetail:{
                 handler: function(newValue) {
                     var data = newValue;
+                    var status = 0;
                     if(this.modelPR.type == 1){
                         data.forEach(PRD => {
                             PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
@@ -476,6 +438,13 @@
                                 }
                             }else{
                                 PRD.discount = (PRD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                            if(PRD.required_date == null || PRD.required_date == ""){
+                                this.delivery_date = "";
+                                status = 1;
+                            }
+                            if(status == 0){
+                                this.delivery_date = "ok";
                             }
                         });
                     }else{
@@ -512,6 +481,13 @@
                             }else{
                                 PRD.discount = (PRD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             } 
+                            if(PRD.required_date == null || PRD.required_date == ""){
+                                this.delivery_date = "";
+                                status = 1;
+                            }
+                            if(status == 0){
+                                this.delivery_date = "ok";
+                            }
                         });
                     }
                 },
@@ -575,6 +551,7 @@
         created: function() {
             this.getVendor();
             var data = this.PRDetail;
+            var status = 0;
             if(this.modelPR.type == 1){
                 data.forEach(PRD => {
                     PRD.quantity = PRD.quantity - PRD.reserved;
@@ -582,6 +559,14 @@
                     PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    PRD.required_date = PRD.required_date.split("-").reverse().join("-");
+                    if(PRD.required_date == null || PRD.required_date == ""){
+                        this.delivery_date = "";
+                        status = 1;
+                    }
+                    if(status == 0){
+                        this.delivery_date = "ok";
+                    }
                 });
             }else{
                 data.forEach(PRD => {
@@ -590,6 +575,14 @@
                     PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     PRD.resource.cost_standard_price = (PRD.resource.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    PRD.required_date = PRD.required_date.split("-").reverse().join("-");
+                    if(PRD.required_date == null || PRD.required_date == ""){
+                        this.delivery_date = "";
+                        status = 1;
+                    }
+                    if(status == 0){
+                        this.delivery_date = "ok";
+                    }
                 });
             }
             Vue.directive('tooltip', function(el, binding){
