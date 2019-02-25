@@ -248,8 +248,13 @@ class WBSController extends Controller
             if(isset($data['wbs_id'])){
                 $wbs->wbs_id = $data['wbs_id'];
             }
-            $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data['planned_deadline']);
-            $wbs->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $wbs->planned_start_date =  $planned_start_date->format('Y-m-d');
+            
+            $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
+            $wbs->planned_end_date =  $planned_end_date->format('Y-m-d');
+            
+            $wbs->planned_duration = $data['planned_duration'];
             $wbs->weight =  $data['weight'];
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
@@ -388,7 +393,7 @@ class WBSController extends Controller
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
-                return response(["response"=>"Success to Update WBS ".$wbs_ref->code],Response::HTTP_OK);
+                return response(["response"=>"Success to Update WBS ".$wbs_ref->number],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -449,15 +454,20 @@ class WBSController extends Controller
             $wbs_ref->number = $data['number'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
-            $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data['planned_deadline']);
-            $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
+            
+            $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
+            $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
+            
+            $wbs_ref->planned_duration = $data['planned_duration'];
             $wbs_ref->weight =  $data['weight'];
 
             if(!$wbs_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
-                return response(["response"=>"Success to Update WBS ".$wbs_ref->code],Response::HTTP_OK);
+                return response(["response"=>"Success to Update WBS ".$wbs_ref->number],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -482,8 +492,13 @@ class WBSController extends Controller
             $wbs_ref->number = $data->number;
             $wbs_ref->description = $data->description;
             $wbs_ref->deliverables = $data->deliverables;
-            $plannedDeadline = DateTime::createFromFormat('d-m-Y', $data->planned_deadline);
-            $wbs_ref->planned_deadline =  $plannedDeadline->format('Y-m-d');
+            $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
+            
+            $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
+            $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
+            
+            $wbs_ref->planned_duration = $data['planned_duration'];
             $wbs_ref->weight =  $data->weight;
 
             if(!$wbs_ref->save()){
@@ -1000,17 +1015,17 @@ class WBSController extends Controller
     }
 
     public function getWbsAPI($project_id){
-        $wbss = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->where('wbs_id', null)->get()->jsonSerialize();
+        $wbss = WBS::orderBy('planned_start_date', 'asc')->where('project_id', $project_id)->where('wbs_id', null)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 
     public function getAllWbsAPI($project_id){
-        $wbss = WBS::orderBy('planned_deadline', 'asc')->where('project_id', $project_id)->with('wbs')->get()->jsonSerialize();
+        $wbss = WBS::orderBy('planned_start_date', 'asc')->where('project_id', $project_id)->with('wbs')->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 
     public function getSubWbsAPI($wbs_id){
-        $wbss = WBS::orderBy('planned_deadline', 'asc')->where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        $wbss = WBS::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 
