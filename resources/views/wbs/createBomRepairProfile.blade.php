@@ -5,7 +5,7 @@
         'title' => 'Manage BOM / BOS Profile',
         'items' => [
             'Dashboard' => route('index'),
-            'Create WBS Profile' => route('wbs.createWbsProfile'),
+            'Create WBS Profile' => route('wbs_repair.createWbsProfile'),
             'Manage BOM / BOS Profile' => '',
         ]
     ]
@@ -98,7 +98,7 @@
                                         </template>
                                     </td>
                                     <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
-                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.description" disabled></td>
+                                    <td class="no-padding"><input class="form-control width100" type="text" :value="input.unit" disabled></td>
                                     <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                         <div class="btn-group">
                                             ADD

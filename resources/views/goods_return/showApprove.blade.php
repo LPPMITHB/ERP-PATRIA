@@ -1,29 +1,16 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if($modelWR->project)
-    @breadcrumb(
-        [
-            'title' => 'View Work Request »'.$modelWR->project->name,
-            'items' => [
-                'Dashboard' => route('index'),
-                'View Work Request' => route('work_request.show',$modelWR->id),
-            ]
+@breadcrumb(
+    [
+        'title' => 'View Goods Return',
+        'items' => [
+            'Dashboard' => route('index'),
+            'View Goods Return' => route('goods_return.show',$modelMR->id),
         ]
-    )
-    @endbreadcrumb
-@else
-    @breadcrumb(
-        [
-            'title' => 'View Work Request',
-            'items' => [
-                'Dashboard' => route('index'),
-                'View Work Request' => route('work_request.show',$modelWR->id),
-            ]
-        ]
-    )
-    @endbreadcrumb
-@endif
+    ]
+)
+@endbreadcrumb
 @endsection
 
 @section('content')
@@ -37,8 +24,8 @@
                             <i class="fa fa-envelope"></i>
                         </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">WR Number</span>
-                            <span class="info-box-number">{{ $modelWR->number }}</span>
+                            <span class="info-box-text">MR Number</span>
+                            <span class="info-box-number">{{ $modelMR->number }}</span>
                         </div>
                     </div>
                 </div>
@@ -48,7 +35,7 @@
                             Project Number
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ isset($modelWR->project) ? $modelWR->project->number : '-'}} </b>
+                            : <b> {{ $modelMR->project->number }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -56,7 +43,7 @@
                             Ship Name
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ isset($modelWR->project) ? $modelWR->project->name : '-' }} </b>
+                            : <b> {{ $modelMR->project->name }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -64,7 +51,7 @@
                             Ship Type
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ isset($modelWR->project) ? $modelWR->project->ship->type : '-' }} </b>
+                            : <b> {{ $modelMR->project->ship->type }} </b>
                         </div>
                     </div>
                 </div>
@@ -73,52 +60,48 @@
                         <div class="col-xs-5 col-md-5">
                             Customer Name
                         </div>
-                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelWR->project) ?$modelWR->project->customer->name : ''}}">
-                            : <b> {{ isset($modelWR->project) ? $modelWR->project->customer->name : '-'}} </b>
+                        <div class="col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelMR->project->customer->name}}">
+                            : <b> {{ $modelMR->project->customer->name }} </b>
                         </div>
                         <div class="col-xs-5 col-md-5">
                             Status
                         </div>
-                        @if($modelWR->status == 1)
+                        @if($modelMR->status == 1)
                             <div class="col-xs-7 col-md-7">
                                 : <b>OPEN</b>
                             </div>
-                        @elseif($modelWR->status == 2)
+                        @elseif($modelMR->status == 2)
                             <div class="col-xs-7 col-md-7">
-                                : <b>APPROVED</b>
+                                : <b>APPROVE</b>
                             </div>
-                        @elseif($modelWR->status == 3)
+                        @elseif($modelMR->status == 3)
                             <div class="col-xs-7 col-md-7">
                                 : <b>NEEDS REVISION</b>
                             </div>
-                        @elseif($modelWR->status == 4)
+                        @elseif($modelMR->status == 4)
                             <div class="col-xs-7 col-md-7">
                                 : <b>REVISED</b>
                             </div>
-                        @elseif($modelWR->status == 5)
+                        @elseif($modelMR->status == 5)
                             <div class="col-xs-7 col-md-7">
                                 : <b>REJECTED</b>
                             </div>
-                        @elseif($modelWR->status == 0 || $modelWR->status == 7)
+                        @elseif($modelMR->status == 0)
                             <div class="col-xs-7 col-md-7">
-                                : <b>ORDERED</b>
-                            </div>
-                        @elseif($modelWR->status == 6)
-                            <div class="col-xs-7 col-md-7">
-                                : <b>CONSOLIDATED</b>
+                                : <b>ISSUED</b>
                             </div>
                         @endif
                         <div class="col-xs-5 col-md-5">
                             Created By
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelWR->user->name }} </b>
+                            : <b> {{ $modelMR->user->name }} </b>
                         </div>
                         <div class="col-xs-5 col-md-5">
                             Created At
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelWR->created_at }} </b>
+                            : <b> {{ $modelMR->created_at }} </b>
                         </div>
                     </div>
                 </div>
@@ -128,44 +111,32 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="10%">Material Number</th>
-                            <th width="15%">Material Description</th>
-                            <th width="5%">Unit</th>
-                            <th width="10%">Quantity</th>
-                            <th width="23%">Work Name</th>
-                            <th width="10%">Description</th>
-                            <th width="12%">Type</th>
-                            <th width="10%">Required Date</th>
+                            <th width="40%">Material Desc.</th>
+                            <th width="25%">Quantity</th>
+                            <th width="30%">WBS Name</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelWR->workRequestDetails as $WRD)
+                        @foreach($modelMR->MaterialRequisitionDetails as $MRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->code}}">{{ $WRD->material->code }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->description}}">{{ $WRD->material->description }}</td>
-                                <td>{{ $WRD->material->uom->unit }}</td>
-                                <td>{{ number_format($WRD->quantity) }}</td>
-                                @if(isset($WRD->wbs))
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}">{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}</td>
-                                @endif
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{$WRD->description}}</td>
-                                <td>{{ ($WRD->type == 0) ? 'Raw Material' : 'Finished Goods' }}</td>
-                                <td>{{ isset($WRD->required_date) ? $WRD->required_date : '-' }}</td>
+                                <td>{{ $MRD->material->description }}</td>
+                                <td>{{ number_format($MRD->quantity) }}</td>
+                                <td>{{ $MRD->wbs != null ? $MRD->wbs->number : "-" }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                @if($modelWR->status == 1 || $modelWR->status == 4)
+                @if($modelMR->status == 1 || $modelMR->status == 4)
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                         @if($menu == "building")
-                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('work_request.approval', ['id'=>$modelWR->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_request.approval', ['id'=>$modelWR->id,'status'=>'need-revision']) }}">REVISE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('work_request.approval', ['id'=>$modelWR->id,'status'=>'reject']) }}">REJECT</a>
+                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('material_requisition.approval', ['id'=>$modelMR->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('material_requisition.approval', ['id'=>$modelMR->id,'status'=>'need-revision']) }}">REVISE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('material_requisition.approval', ['id'=>$modelMR->id,'status'=>'reject']) }}">REJECT</a>
                         @else
-                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('work_request_repair.approval', ['id'=>$modelWR->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('work_request_repair.approval', ['id'=>$modelWR->id,'status'=>'need-revision']) }}">REVISE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('work_request_repair.approval', ['id'=>$modelWR->id,'status'=>'reject']) }}">REJECT</a>
+                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('material_requisition_repair.approval', ['id'=>$modelMR->id,'status'=>'approve']) }}">APPROVE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('material_requisition_repair.approval', ['id'=>$modelMR->id,'status'=>'need-revision']) }}">REVISE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('material_requisition_repair.approval', ['id'=>$modelMR->id,'status'=>'reject']) }}">REJECT</a>
                         @endif
                     </div>
                 @endif

@@ -483,7 +483,7 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project-repair');
 
-    Route::post('/storeCopyProjectStructure/{new_id}', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
+    Route::post('/storeCopyProjectStructure', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project-repair');
 
@@ -570,7 +570,7 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     
     Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
     
-    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project');
+    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project-repair');
     
     Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
     
@@ -841,7 +841,7 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition');
 
-    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition');
+    Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
@@ -872,7 +872,7 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 
     Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
-    Route::get('/approval/{id}/{status}', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
+    Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition-repair');
 
@@ -1116,44 +1116,48 @@ Route::name('goods_receipt_repair.')->prefix('goods_receipt_repair')->group(func
 
 //Goods Return Building 
 Route::name('goods_return.')->prefix('goods_return')->group(function() {    
-    Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-material-requisition');
+    Route::get('/indexApprove', 'GoodsReturnController@indexApprove')->name('indexApprove')->middleware('can:approve-goods-return');
 
-    Route::get('/selectGR', 'GoodsIssueController@selectGR')->name('selectGR')->middleware('can:create-goods-issue');
+    Route::get('/showApprove/{id}', 'GoodsReturnController@showApprove')->name('showApprove')->middleware('can:show-goods-return');
 
-    Route::get('/selectPO', 'GoodsIssueController@selectPO')->name('selectPO')->middleware('can:create-goods-issue');
+    Route::get('/selectGR', 'GoodsReturnController@selectGR')->name('selectGR')->middleware('can:create-goods-return');
 
-    Route::post('/GR', 'GoodsIssueController@storeGoodsReturnGR')->name('storeGR')->middleware('can:create-goods-issue');
+    Route::get('/selectPO', 'GoodsReturnController@selectPO')->name('selectPO')->middleware('can:create-goods-return');
+
+    Route::post('/GR', 'GoodsReturnController@storeGoodsReturnGR')->name('storeGR')->middleware('can:create-goods-return');
     
-    Route::post('/PO', 'GoodsIssueController@storeGoodsReturnPO')->name('storePO')->middleware('can:create-goods-issue');
+    Route::post('/PO', 'GoodsReturnController@storeGoodsReturnPO')->name('storePO')->middleware('can:create-goods-return');
 
-    Route::get('/createGoodsReturnGR/{id}', 'GoodsIssueController@createGoodsReturnGR')->name('createGoodsReturnGR')->middleware('can:create-goods-issue');
+    Route::get('/createGoodsReturnGR/{id}', 'GoodsReturnController@createGoodsReturnGR')->name('createGoodsReturnGR')->middleware('can:create-goods-return');
 
-    Route::get('/createGoodsReturnPO/{id}', 'GoodsIssueController@createGoodsReturnPO')->name('createGoodsReturnPO')->middleware('can:create-goods-issue');
+    Route::get('/createGoodsReturnPO/{id}', 'GoodsReturnController@createGoodsReturnPO')->name('createGoodsReturnPO')->middleware('can:create-goods-return');
 
-    Route::get('/', 'GoodsIssueController@indexGoodsReturn')->name('index')->middleware('can:list-goods-issue');
+    Route::get('/', 'GoodsReturnController@indexGoodsReturn')->name('index')->middleware('can:list-goods-return');
    
-    Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue');
+    Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return');
 });
 
-//Goods Return Building 
+//Goods Return Repair 
 Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(function() {    
-    Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-material-requisition');
+    Route::get('/indexApprove', 'GoodsReturnController@indexApprove')->name('indexApprove')->middleware('can:approve-goods-return-repair');
 
-    Route::get('/selectGR', 'GoodsIssueController@selectGR')->name('selectGR')->middleware('can:create-goods-issue');
+    Route::get('/showApprove/{id}', 'GoodsReturnController@showApprove')->name('showApprove')->middleware('can:show-goods-return-repair');
 
-    Route::get('/selectPO', 'GoodsIssueController@selectPO')->name('selectPO')->middleware('can:create-goods-issue');
+    Route::get('/selectGR', 'GoodsReturnController@selectGR')->name('selectGR')->middleware('can:create-goods-return-repair');
 
-    Route::post('/GR', 'GoodsIssueController@storeGoodsReturnGR')->name('storeGR')->middleware('can:create-goods-issue');
+    Route::get('/selectPO', 'GoodsReturnController@selectPO')->name('selectPO')->middleware('can:create-goods-return-repair');
+
+    Route::post('/GR', 'GoodsReturnController@storeGoodsReturnGR')->name('storeGR')->middleware('can:create-goods-return-repair');
     
-    Route::post('/PO', 'GoodsIssueController@storeGoodsReturnPO')->name('storePO')->middleware('can:create-goods-issue');
+    Route::post('/PO', 'GoodsReturnController@storeGoodsReturnPO')->name('storePO')->middleware('can:create-goods-return-repair');
 
-    Route::get('/createGoodsReturnGR/{id}', 'GoodsIssueController@createGoodsReturnGR')->name('createGoodsReturnGR')->middleware('can:create-goods-issue');
+    Route::get('/createGoodsReturnGR/{id}', 'GoodsReturnController@createGoodsReturnGR')->name('createGoodsReturnGR')->middleware('can:create-goods-return-repair');
 
-    Route::get('/createGoodsReturnPO/{id}', 'GoodsIssueController@createGoodsReturnPO')->name('createGoodsReturnPO')->middleware('can:create-goods-issue');
+    Route::get('/createGoodsReturnPO/{id}', 'GoodsReturnController@createGoodsReturnPO')->name('createGoodsReturnPO')->middleware('can:create-goods-return-repair');
 
-    Route::get('/', 'GoodsIssueController@indexGoodsReturn')->name('index')->middleware('can:list-goods-issue');
+    Route::get('/', 'GoodsReturnController@indexGoodsReturn')->name('index')->middleware('can:list-goods-return-repair');
    
-    Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue');
+    Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return-repair');
 });
 
 //Stock Management Routes
@@ -1231,8 +1235,6 @@ Route::name('goods_issue.')->prefix('goods_issue')->group(function() {
     Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue');
 
     Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue');
-
-    Route::get('/showApproval/{id}', 'GoodsIssueController@showApprove')->name('showApprove')->middleware('can:show-goods-issue');
     
     Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-goods-issue');
 
@@ -1258,8 +1260,6 @@ Route::name('goods_issue_repair.')->prefix('goods_issue_repair')->group(function
     Route::get('/createGiWithRef/{id}', 'GoodsIssueController@createGiWithRef')->name('createGiWithRef')->middleware('can:create-goods-issue-repair');
 
     Route::get('/{id}', 'GoodsIssueController@show')->name('show')->middleware('can:show-goods-issue-repair');
-
-    Route::get('/showApproval/{id}', 'GoodsIssueController@showApprove')->name('showApprove')->middleware('can:show-goods-issue-repair');
     
     Route::get('/{id}/edit', 'GoodsIssueController@edit')->name('edit')->middleware('can:edit-goods-issue-repair');
 
@@ -1275,17 +1275,45 @@ Route::name('goods_issue_repair.')->prefix('goods_issue_repair')->group(function
 
 //Material Write Off Routes
 Route::name('material_write_off.')->prefix('material_write_off')->group(function() {
+    Route::get('/indexApprove', 'MaterialWriteOffController@indexApprove')->name('indexApprove')->middleware('can:approve-material-write-off');
 
+    Route::get('/showApprove/{id}', 'MaterialWriteOffController@showApprove')->name('showApprove')->middleware('can:approve-material-write-off');
+
+    Route::get('/approval/{id}/{status}', 'MaterialWriteOffController@approval')->name('approval');
+    
     Route::get('/create', 'MaterialWriteOffController@create')->name('create')->middleware('can:create-material-write-off');
+    
+    Route::get('/', 'MaterialWriteOffController@index')->name('index')->middleware('can:list-material-write-off');
+ 
+    Route::get('/{id}', 'MaterialWriteOffController@show')->name('show')->middleware('can:show-material-write-off');
 
+    Route::get('/{id}/edit', 'MaterialWriteOffController@edit')->name('edit')->middleware('can:edit-material-write-off');
+
+    Route::patch('/{id}', 'MaterialWriteOffController@update')->name('update')->middleware('can:edit-material-write-off');
+    
     Route::post('/', 'MaterialWriteOffController@store')->name('store')->middleware('can:create-material-write-off');
+
+
 });
 
-//Material Write Off Routes
+//Material Write Off Repair Routes
 Route::name('material_write_off_repair.')->prefix('material_write_off_repair')->group(function() {
+    Route::get('/indexApprove', 'MaterialWriteOffController@indexApprove')->name('indexApprove')->middleware('can:approve-material-write-off');
+
+    Route::get('/showApprove/{id}', 'MaterialWriteOffController@showApprove')->name('showApprove')->middleware('can:approve-material-write-off');
+
+    Route::get('/approval/{id}/{status}', 'MaterialWriteOffController@approval')->name('approval');
 
     Route::get('/create', 'MaterialWriteOffController@create')->name('create')->middleware('can:create-material-write-off-repair');
+    
+    Route::get('/', 'MaterialWriteOffController@index')->name('index')->middleware('can:list-material-write-off-repair');
+    
+    Route::get('/{id}', 'MaterialWriteOffController@show')->name('show')->middleware('can:show-material-write-off-repair');
 
+    Route::get('/{id}/edit', 'MaterialWriteOffController@edit')->name('edit')->middleware('can:edit-material-write-off-repair');
+
+    Route::patch('/{id}', 'MaterialWriteOffController@update')->name('update')->middleware('can:edit-material-write-off-repair');
+    
     Route::post('/', 'MaterialWriteOffController@store')->name('store')->middleware('can:create-material-write-off-repair');
 });
 

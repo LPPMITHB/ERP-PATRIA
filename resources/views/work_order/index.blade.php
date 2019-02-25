@@ -45,7 +45,7 @@
                                 @if($modelWO->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
-                                        @if($menu == "building")
+                                        @if($route == "/work_order")
                                             <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                             <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @else
@@ -56,7 +56,7 @@
                                 @elseif($modelWO->status == 2)
                                     <td>APPROVED</td>
                                     <td class="textCenter">
-                                        @if($menu == "building")
+                                        @if($route == "/work_order")
                                             <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @else
                                             <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
@@ -65,7 +65,7 @@
                                 @elseif($modelWO->status == 3)
                                     <td>NEED REVISION</td>
                                     <td class="textCenter">
-                                        @if($menu == "building")
+                                        @if($route == "/work_order")
                                             <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                             <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @else
@@ -76,7 +76,7 @@
                                 @elseif($modelWO->status == 4)
                                     <td>REVISED</td>
                                     <td class="textCenter">
-                                        @if($menu == "building")
+                                        @if($route == "/work_order")
                                             <a href="{{ route('work_order.edit', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                             <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @else
@@ -87,7 +87,7 @@
                                 @elseif($modelWO->status == 5)
                                     <td>REJECTED</td>
                                     <td class="textCenter">
-                                        @if($menu == "building")
+                                        @if($route == "/work_order")
                                             <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @else
                                             <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
@@ -96,7 +96,7 @@
                                 @else
                                     <td>RECEIVED</td>
                                     <td class="textCenter">
-                                        @if($menu == "building")
+                                        @if($route == "/work_order")
                                             <a href="{{ route('work_order.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @else
                                             <a href="{{ route('work_order_repair.show', ['id'=>$modelWO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>

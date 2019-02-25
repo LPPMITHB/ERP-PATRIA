@@ -750,6 +750,34 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_return.index',
         ]);
 
+        $selectGRRepair = Menu::where('route_name','goods_return_repair.selectGR')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGRRepair,
+            'route_name' => 'goods_return_repair.selectGR',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGRRepair,
+            'route_name' => 'goods_return_repair.createGoodsReturnGR',
+        ]);
+
+        $selectPORepair = Menu::where('route_name','goods_return_repair.selectPO')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPORepair,
+            'route_name' => 'goods_return_repair.selectPO',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectPORepair,
+            'route_name' => 'goods_return_repair.createGoodsReturnPO',
+        ]);
+
+        $viewReturnRepair = Menu::where('route_name','goods_return_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewReturnRepair,
+            'route_name' => 'goods_return_repair.index',
+        ]);
+
         //Goods Issue
         $selectMR = Menu::where('route_name','goods_issue.selectMR')->select('id')->first()->id;
         DB::table('sidenav')->insert([
@@ -939,16 +967,62 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'physical_inventory_repair.showPI',
         ]);
 
+        //Material Write Off Building
         $materialWriteOff = Menu::where('route_name','material_write_off.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $materialWriteOff,
             'route_name' => 'material_write_off.create',
         ]);
 
+        $approveMaterialWriteOff = Menu::where('route_name','material_write_off.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveMaterialWriteOff,
+            'route_name' => 'material_write_off.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveMaterialWriteOff,
+            'route_name' => 'material_write_off.showApprove',
+        ]);
+        
+        $materialWriteOffIndex = Menu::where('route_name','material_write_off.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $materialWriteOffIndex,
+            'route_name' => 'material_write_off.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $materialWriteOffIndex,
+            'route_name' => 'material_write_off.edit',
+        ]);
+
+        //Material Write Off Repair
         $materialWriteOffRepair = Menu::where('route_name','material_write_off_repair.create')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $materialWriteOffRepair,
             'route_name' => 'material_write_off_repair.create',
+        ]);
+
+        $approveMaterialWriteOffRepair = Menu::where('route_name','material_write_off_repair.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveMaterialWriteOffRepair,
+            'route_name' => 'material_write_off_repair.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveMaterialWriteOffRepair,
+            'route_name' => 'material_write_off_repair.showApprove',
+        ]);
+
+        $materialWriteOffRepairIndex = Menu::where('route_name','material_write_off_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $materialWriteOffRepairIndex,
+            'route_name' => 'material_write_off_repair.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $materialWriteOffRepairIndex,
+            'route_name' => 'material_write_off_repair.edit',
         ]);
 
         $goodsMovementIndex = Menu::where('route_name','goods_movement.index')->select('id')->first()->id;

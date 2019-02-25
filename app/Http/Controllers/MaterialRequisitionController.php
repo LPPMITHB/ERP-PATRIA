@@ -41,7 +41,6 @@ class MaterialRequisitionController extends Controller
         }elseif($menu == "building"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
         }
-
         $modelMRs = MaterialRequisition::whereIn('status',[1,4])->whereIn('project_id',$modelProject)->get();
 
         return view('material_requisition.indexApprove', compact('modelMRs','menu'));

@@ -1105,6 +1105,97 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Goods Return
+        $createGR = Menu::where('name','Based On Goods Receipt')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Return',
+            'menu_id' => $createGR,
+            'middleware' => 'create-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGR = Menu::where('name','View Goods Return')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Return',
+            'menu_id' => $viewGR,
+            'middleware' => 'list-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Goods Return',
+            'menu_id' => $viewGR,
+            'middleware' => 'show-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Goods Return',
+            'menu_id' => $viewGR,
+            'middleware' => 'edit-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveGR = Menu::where('name','Approve Goods Return')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Goods Return',
+            'menu_id' => $approveGR,
+            'middleware' => 'approve-goods-return',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Goods Return Repair
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
+        $grRepair = Menu::where('name','Goods Return')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $createGRRepair = Menu::where('name','Based On Goods Receipt')->where('menu_id',$grRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Goods Return',
+            'menu_id' => $createGRRepair,
+            'middleware' => 'create-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewGRRepair = Menu::where('name','View Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Goods Return',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'list-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Goods Return',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'show-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Goods Return',
+            'menu_id' => $viewGRRepair,
+            'middleware' => 'edit-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveGRRepair = Menu::where('name','Approve Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Goods Return',
+            'menu_id' => $approveGRRepair,
+            'middleware' => 'approve-goods-return-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Ship
         $ship = Menu::where('name','Ship')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -1852,7 +1943,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Material Write Off
-        $materialWriteOff = Menu::where('name','Material Write Off')->select('id')->first()->id;
+        $materialWriteOff = Menu::where('name','Create Material Write Off')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Material Write Off',
             'menu_id' => $materialWriteOff,
@@ -1861,12 +1952,81 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        $approveMaterialWriteOff = Menu::where('name','Approve Material Write Off')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Material Write Off',
+            'menu_id' => $approveMaterialWriteOff,
+            'middleware' => 'approve-material-write-off',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewMaterialWriteOff = Menu::where('name','View & Edit Material Write Off')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Material Write Off',
+            'menu_id' => $viewMaterialWriteOff,
+            'middleware' => 'list-material-write-off',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Material Write Off',
+            'menu_id' => $viewMaterialWriteOff,
+            'middleware' => 'edit-material-write-off',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Material Write Off',
+            'menu_id' => $viewMaterialWriteOff,
+            'middleware' => 'show-material-write-off',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Material Write Off Repair
-        $materialWriteOff = Menu::where('name','Material Write Off')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $mainMenuMaterialWriteOffRepair = Menu::where('name','Material Write Off')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $materialWriteOff = Menu::where('name','Create Material Write Off')->where('menu_id',$mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Material Write Off',
             'menu_id' => $materialWriteOff,
             'middleware' => 'create-material-write-off-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approveMaterialWriteOffRepair = Menu::where('name','Approve Material Write Off')->where('menu_id',$mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Material Write Off',
+            'menu_id' => $approveMaterialWriteOffRepair,
+            'middleware' => 'approve-material-write-off-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewMaterialWriteOff = Menu::where('name','View & Edit Material Write Off')->where('menu_id',$mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Material Write Off',
+            'menu_id' => $viewMaterialWriteOff,
+            'middleware' => 'list-material-write-off-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Material Write Off',
+            'menu_id' => $viewMaterialWriteOff,
+            'middleware' => 'edit-material-write-off-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Material Write Off',
+            'menu_id' => $viewMaterialWriteOff,
+            'middleware' => 'show-material-write-off-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

@@ -82,8 +82,9 @@
                                             <th style="width: 15%">WBS Name</th>
                                             <th style="width: 10%">Material Number</th>
                                             <th style="width: 15%">Material Description</th>
-                                            <th style="width: 10%">Quantity</th>
-                                            <th style="width: 10%">Available</th>
+                                            <th style="width: 4%">Unit</th>
+                                            <th style="width: 8%">Quantity</th>
+                                            <th style="width: 8%">Available</th>
                                             <th style="width: 15%">Description</th>
                                             <th style="width: 10%">Required Date</th>
                                             <th style="width: 10%"></th>
@@ -96,6 +97,7 @@
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td class="tdEllipsis">{{ material.material_code }}</td>
                                             <td class="tdEllipsis">{{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td v-if="material.available != ''"class="tdEllipsis">{{ material.available }}</td>
@@ -138,6 +140,9 @@
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInput.unit" disabled>
+                                            </td>
+                                            <td class="p-l-0">
                                                 <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
                                             <td class="p-l-0">
@@ -164,8 +169,9 @@
                                             <th style="width: 15%">WBS Name</th>
                                             <th style="width: 10%">Material Number</th>
                                             <th style="width: 15%">Material Description</th>
+                                            <th style="width: 4%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
-                                            <th style="width: 25%">Description</th>
+                                            <th style="width: 21%">Description</th>
                                             <th style="width: 10%">Required Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
@@ -177,6 +183,7 @@
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td class="tdEllipsis">{{ material.material_code }}</td>
                                             <td class="tdEllipsis">{{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis">{{ material.description}}</td>
@@ -211,6 +218,9 @@
                                                 <selectize v-model="dataInputFG.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in allmaterial" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInputFG.unit" disabled>
                                             </td>
                                             <td class="p-l-0">
                                                 <input :disabled="materialFGOk" class="form-control" v-model="dataInputFG.quantity" placeholder="Please Input Quantity">
@@ -267,6 +277,10 @@
                                                 </selectize>  
                                             </div>
                                             <div class="col-sm-12">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" id="unit" v-model="editInput.unit" class="form-control" disabled>
+                                            </div>
+                                            <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
@@ -318,6 +332,10 @@
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize disabled :settings="nullSettings" disabled >
                                                 </selectize>  
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" id="unit" v-model="editInputFG.unit" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
@@ -405,6 +423,7 @@
             available : "",
             description : "",
             required_date : "",
+            unit : "",
         },
         editInput : {
             old_material_id : "",
@@ -419,6 +438,7 @@
             available : "",
             description : "",
             required_date : "",
+            unit : "",
         },
         dataInputFG : {
             material_id :"",
@@ -431,6 +451,7 @@
             wbs_desc :"",
             description : "",
             required_date : "",
+            unit : "",
         },
         editInputFG : {
             old_material_id : "",
@@ -444,6 +465,7 @@
             wbs_desc :"",
             description : "",
             required_date : "",
+            unit : "",
         },
         material_id:[],
         material_id_modal:[],
@@ -601,6 +623,7 @@
                             material.wbs_id = this.editInput.wbs_id;
                             material.description = this.editInput.description;
                             material.available = this.editInput.available;
+                            material.unit = this.editInput.unit;
 
                             $('div.overlay').hide();
                         })
@@ -645,6 +668,7 @@
                             material.material_id = new_material_id;
                             material.wbs_id = this.editInputFG.wbs_id;
                             material.description = this.editInputFG.description;
+                            material.unit = this.editInputFG.unit;
 
                             $('div.overlay').hide();
                         })
@@ -685,6 +709,7 @@
                 this.editInput.available = data.available;
                 this.editInput.description = data.description;
                 this.editInput.required_date = data.required_date;
+                this.editInput.unit = data.unit;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -708,6 +733,7 @@
                 this.editInputFG.index = index;
                 this.editInputFG.description = data.description;
                 this.editInputFG.required_date = data.required_date;
+                this.editInputFG.unit = data.unit;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -802,6 +828,19 @@
             'dataInput.material_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
+                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+                        this.dataInput.unit = data.uom.unit;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
                     window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
                         this.availableQuantity = data;
 
@@ -826,9 +865,40 @@
                 }
             },
 
+            'dataInputFG.material_id' : function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+                        this.dataInputFG.unit = data.uom.unit;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }
+            },
+
             'editInput.material_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
+                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+                        this.editInput.unit = data.uom.unit;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
                     window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
                         this.availableQuantity = data;
 
@@ -847,10 +917,28 @@
                     })
 
                 
-                }else{
+                }
+            },
+
+            'editInputFG.material_id' : function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+                        this.editInputFG.unit = data.uom.unit;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
 
                 }
             },
+
             'project_id' : function(newValue){
                 this.dataInput.wbs_id = "";
                 if(newValue != ""){
@@ -899,6 +987,7 @@
             },
             'dataInput.wbs_id': function(newValue){
                 this.dataInput.material_id = "";
+                this.dataInput.unit = "";
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
@@ -923,6 +1012,7 @@
                 if(this.editInput.old_wbs_id != newValue){
                     this.editInput.material_id = "";
                     this.editInput.quantity = "";
+                    this.editInput.unit = "";
                     this.editInput.quantityInt = 0;
                 }
 
@@ -946,6 +1036,8 @@
             },
             'dataInputFG.wbs_id': function(newValue){
                 this.dataInputFG.material_id = "";
+                this.dataInputFG.unit = "";
+
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
@@ -969,6 +1061,7 @@
                 if(this.editInputFG.old_wbs_id != newValue){
                     this.editInputFG.material_id = "";
                     this.editInputFG.quantity = "";
+                    this.editInputFG.unit = "";
                     this.editInputFG.quantityInt = 0;
                 }
             },

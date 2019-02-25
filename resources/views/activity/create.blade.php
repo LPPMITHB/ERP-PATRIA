@@ -456,6 +456,9 @@ $(document).ready(function(){
 
 var data = {
     menu : @json($menu),
+    project_start_date : @json($project->planned_start_date),
+    project_end_date : @json($project->planned_end_date),
+    wbs_deadline : @json($wbs->planned_deadline),
     wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
     activities :[],
@@ -715,6 +718,7 @@ var vm = new Vue({
             }
         },
         openModalEditActivity(data){
+            this.predecessorTableEdit = [];
             document.getElementById("edit_activity_code").innerHTML= data.code;
             this.editActivity.activity_id = data.id;
             this.editActivity.name = data.name;
@@ -722,10 +726,12 @@ var vm = new Vue({
             this.editActivity.weight = data.weight;
             if(JSON.parse(data.predecessor) != null){
                 this.editActivity.allPredecessor = JSON.parse(data.predecessor);
+            }else{
+                this.editActivity.allPredecessor = [];
             }
             this.constWeightAct = data.weight;
-            $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date));
-            $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date));
+            $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date.split("-").reverse().join("-")));
+            $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date.split("-").reverse().join("-")));
 
             window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
                 this.allActivitiesEdit = data;
@@ -734,7 +740,6 @@ var vm = new Vue({
                     activity['selected'] = false;
                 });
 
-                this.predecessorTableEdit = [];
                 if(this.editActivity.allPredecessor.length > 0){
                     this.editActivity.allPredecessor.forEach(elementpredecessor => {
                         this.allActivitiesEdit.forEach(elementAllActivities => {
@@ -986,6 +991,22 @@ var vm = new Vue({
             },
             deep: true
         },
+        editActivity:{
+            handler: function(newValue) {
+                this.editActivity.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
+                if(parseInt(newValue.planned_duration) < 1 ){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'End Date cannot be ahead Start Date',
+                        position: 'topRight',
+                    });
+                    this.editActivity.planned_duration = "";
+                    this.editActivity.planned_end_date = "";
+                    this.editActivity.planned_start_date = "";
+                }
+            },
+            deep: true
+        },
         // 'newActivity.predecessor': function(newValue){
         //     this.predecessorTable = [];
         //     if(newValue != "" && newValue != null){
@@ -1091,6 +1112,126 @@ var vm = new Vue({
         //         })
         //     }
         // },
+        'newActivity.planned_start_date' : function(newValue){
+            var pro_planned_start_date = new Date(this.project_start_date).toDateString();
+            var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+            var wbs_deadline = new Date(this.wbs_deadline).toDateString();
+
+            var activity_start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var wbs_deadline = new Date(wbs_deadline);
+            var pro_planned_start_date = new Date(pro_planned_start_date);
+            var pro_planned_end_date = new Date(pro_planned_end_date);
+            
+            if(activity_start_date > wbs_deadline){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This activity start date is after parent WBS deadline",
+                    position: 'topRight',
+                });
+            }else if(activity_start_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity start date is behind project start date",
+                    position: 'topRight',
+                });
+            }else if(activity_start_date > pro_planned_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity start date is after project end date",
+                    position: 'topRight',
+                });
+            }
+        },
+        'newActivity.planned_end_date' : function(newValue){
+            var pro_planned_start_date = new Date(this.project_start_date).toDateString();
+            var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+            var wbs_deadline = new Date(this.wbs_deadline).toDateString();
+
+            var activity_end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var wbs_deadline = new Date(wbs_deadline);
+            var pro_planned_start_date = new Date(pro_planned_start_date);
+            var pro_planned_end_date = new Date(pro_planned_end_date);
+            
+            if(activity_end_date > wbs_deadline){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This activity end date is after parent WBS deadline",
+                    position: 'topRight',
+                });
+            }else if(activity_end_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity end date is behind project start date",
+                    position: 'topRight',
+                });
+            }else if(activity_end_date > pro_planned_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity end date is after project end date",
+                    position: 'topRight',
+                });
+            }
+        },
+        'editActivity.planned_start_date' : function(newValue){
+            var pro_planned_start_date = new Date(this.project_start_date).toDateString();
+            var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+            var wbs_deadline = new Date(this.wbs_deadline).toDateString();
+
+            var activity_start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var wbs_deadline = new Date(wbs_deadline);
+            var pro_planned_start_date = new Date(pro_planned_start_date);
+            var pro_planned_end_date = new Date(pro_planned_end_date);
+            
+            if(activity_start_date > wbs_deadline){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This activity start date is after parent WBS deadline",
+                    position: 'topRight',
+                });
+            }else if(activity_start_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity start date is behind project start date",
+                    position: 'topRight',
+                });
+            }else if(activity_start_date > pro_planned_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity start date is after project end date",
+                    position: 'topRight',
+                });
+            }
+        },
+        'editActivity.planned_end_date' : function(newValue){
+            var pro_planned_start_date = new Date(this.project_start_date).toDateString();
+            var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+            var wbs_deadline = new Date(this.wbs_deadline).toDateString();
+
+            var activity_end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var wbs_deadline = new Date(wbs_deadline);
+            var pro_planned_start_date = new Date(pro_planned_start_date);
+            var pro_planned_end_date = new Date(pro_planned_end_date);
+            
+            if(activity_end_date > wbs_deadline){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This activity end date is after parent WBS deadline",
+                    position: 'topRight',
+                });
+            }else if(activity_end_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity end date is behind project start date",
+                    position: 'topRight',
+                });
+            }else if(activity_end_date > pro_planned_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this activity end date is after project end date",
+                    position: 'topRight',
+                });
+            }
+        },
     },
     created: function() {
         this.getActivities();
