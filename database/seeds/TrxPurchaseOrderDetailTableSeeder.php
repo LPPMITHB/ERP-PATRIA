@@ -26,10 +26,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 2,
                 'resource_id' => NULL,
-                'wbs_id' => 4,
                 'total_price' => 37500000,
                 'created_at' => '2019-01-17 04:35:15',
                 'updated_at' => '2019-01-17 04:35:15',
+                'delivery_date' => '2019-02-18',
             ),
             1 => 
             array (
@@ -40,10 +40,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 33,
                 'resource_id' => NULL,
-                'wbs_id' => 6,
                 'total_price' => 114000000,
                 'created_at' => '2019-01-17 04:35:15',
                 'updated_at' => '2019-01-17 04:35:15',
+                'delivery_date' => '2019-02-18',
             ),
             2 => 
             array (
@@ -54,10 +54,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 2,
-                'wbs_id' => 4,
                 'total_price' => 3000000,
                 'created_at' => '2019-01-17 04:35:44',
                 'updated_at' => '2019-01-17 06:49:44',
+                'delivery_date' => '2019-02-18',
             ),
             3 => 
             array (
@@ -68,10 +68,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 5,
                 'resource_id' => NULL,
-                'wbs_id' => 12,
                 'total_price' => 6000000,
                 'created_at' => '2019-01-17 04:43:52',
                 'updated_at' => '2019-01-17 04:43:52',
+                'delivery_date' => '2019-02-18',
             ),
             4 => 
             array (
@@ -82,10 +82,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 19,
                 'resource_id' => NULL,
-                'wbs_id' => 13,
                 'total_price' => 300000000,
                 'created_at' => '2019-01-17 04:43:53',
                 'updated_at' => '2019-01-17 04:43:53',
+                'delivery_date' => '2019-02-18',
             ),
             5 => 
             array (
@@ -96,10 +96,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 4,
-                'wbs_id' => 13,
                 'total_price' => 10500000,
                 'created_at' => '2019-01-17 04:44:29',
                 'updated_at' => '2019-01-17 04:44:29',
+                'delivery_date' => '2019-02-18',
             ),
             6 => 
             array (
@@ -110,10 +110,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 36,
                 'resource_id' => NULL,
-                'wbs_id' => 5,
                 'total_price' => 690000000,
                 'created_at' => '2019-01-17 06:55:05',
                 'updated_at' => '2019-01-17 06:55:05',
+                'delivery_date' => '2019-02-18',
             ),
             7 => 
             array (
@@ -124,10 +124,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 30,
                 'resource_id' => NULL,
-                'wbs_id' => 6,
                 'total_price' => 2640000,
                 'created_at' => '2019-01-17 06:55:05',
                 'updated_at' => '2019-01-17 06:55:05',
+                'delivery_date' => '2019-02-18',
             ),
             8 => 
             array (
@@ -138,10 +138,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 33,
                 'resource_id' => NULL,
-                'wbs_id' => 4,
                 'total_price' => 190000000,
                 'created_at' => '2019-01-17 06:55:05',
                 'updated_at' => '2019-01-17 06:55:05',
+                'delivery_date' => '2019-02-18',
             ),
             9 => 
             array (
@@ -152,10 +152,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 43,
                 'resource_id' => NULL,
-                'wbs_id' => 7,
                 'total_price' => 57000000,
                 'created_at' => '2019-01-17 06:55:05',
                 'updated_at' => '2019-01-17 06:55:05',
+                'delivery_date' => '2019-02-18',
             ),
             10 => 
             array (
@@ -166,10 +166,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 38,
                 'resource_id' => NULL,
-                'wbs_id' => 6,
                 'total_price' => 12500000,
                 'created_at' => '2019-01-17 06:55:05',
                 'updated_at' => '2019-01-17 06:55:05',
+                'delivery_date' => '2019-02-18',
             ),
             11 => 
             array (
@@ -180,10 +180,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 2,
-                'wbs_id' => 4,
                 'total_price' => 6000000,
                 'created_at' => '2019-01-17 06:55:37',
                 'updated_at' => '2019-01-17 06:55:37',
+                'delivery_date' => '2019-02-18',
             ),
             12 => 
             array (
@@ -194,10 +194,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 1,
-                'wbs_id' => 6,
                 'total_price' => 3000000,
                 'created_at' => '2019-01-17 06:55:38',
                 'updated_at' => '2019-01-17 06:55:38',
+                'delivery_date' => '2019-02-18',
             ),
             13 => 
             array (
@@ -208,10 +208,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 3,
-                'wbs_id' => 7,
                 'total_price' => 5000000,
                 'created_at' => '2019-01-17 06:55:38',
                 'updated_at' => '2019-01-17 06:55:38',
+                'delivery_date' => '2019-02-18',
             ),
             14 => 
             array (
@@ -222,10 +222,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 4,
-                'wbs_id' => 7,
                 'total_price' => 10500000,
                 'created_at' => '2019-01-17 06:55:38',
                 'updated_at' => '2019-01-17 06:55:38',
+                'delivery_date' => '2019-02-18',
             ),
             15 => 
             array (
@@ -236,10 +236,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 32,
                 'resource_id' => NULL,
-                'wbs_id' => 13,
                 'total_price' => 80000000,
                 'created_at' => '2019-01-17 07:01:56',
                 'updated_at' => '2019-01-17 07:01:56',
+                'delivery_date' => '2019-02-18',
             ),
             16 => 
             array (
@@ -250,10 +250,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 68,
                 'resource_id' => NULL,
-                'wbs_id' => 12,
                 'total_price' => 64500,
                 'created_at' => '2019-01-17 07:01:56',
                 'updated_at' => '2019-01-17 07:01:56',
+                'delivery_date' => '2019-02-18',
             ),
             17 => 
             array (
@@ -264,10 +264,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 41,
                 'resource_id' => NULL,
-                'wbs_id' => 15,
                 'total_price' => 26400000,
                 'created_at' => '2019-01-17 07:01:56',
                 'updated_at' => '2019-01-17 07:01:56',
+                'delivery_date' => '2019-02-18',
             ),
             18 => 
             array (
@@ -278,10 +278,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 3,
                 'resource_id' => NULL,
-                'wbs_id' => 12,
                 'total_price' => 2400000,
                 'created_at' => '2019-01-17 07:01:56',
                 'updated_at' => '2019-01-17 07:01:56',
+                'delivery_date' => '2019-02-18',
             ),
             19 => 
             array (
@@ -292,10 +292,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => 17,
                 'resource_id' => NULL,
-                'wbs_id' => 13,
                 'total_price' => 2000000,
                 'created_at' => '2019-01-17 07:01:56',
                 'updated_at' => '2019-01-17 07:01:56',
+                'delivery_date' => '2019-02-18',
             ),
             20 => 
             array (
@@ -306,10 +306,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 2,
-                'wbs_id' => 12,
                 'total_price' => 7500000,
                 'created_at' => '2019-01-17 07:02:17',
                 'updated_at' => '2019-01-17 07:02:17',
+                'delivery_date' => '2019-02-18',
             ),
             21 => 
             array (
@@ -320,10 +320,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 3,
-                'wbs_id' => 13,
                 'total_price' => 7500000,
                 'created_at' => '2019-01-17 07:02:17',
                 'updated_at' => '2019-01-17 07:02:17',
+                'delivery_date' => '2019-02-18',
             ),
             22 => 
             array (
@@ -334,10 +334,10 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 4,
-                'wbs_id' => 12,
                 'total_price' => 17500000,
                 'created_at' => '2019-01-17 07:02:17',
                 'updated_at' => '2019-01-17 07:02:17',
+                'delivery_date' => '2019-02-18',
             ),
             23 => 
             array (
@@ -348,13 +348,11 @@ class TrxPurchaseOrderDetailTableSeeder extends Seeder
                 'received' => 0,
                 'material_id' => NULL,
                 'resource_id' => 1,
-                'wbs_id' => 15,
                 'total_price' => 3000000,
                 'created_at' => '2019-01-17 07:02:17',
                 'updated_at' => '2019-01-17 07:02:17',
+                'delivery_date' => '2019-02-18',
             ),
         ));
-        
-        
     }
 }

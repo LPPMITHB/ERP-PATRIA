@@ -141,6 +141,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }else{
@@ -153,6 +154,7 @@ class PurchaseRequisitionController extends Controller
                         if($data->project_id != null){
                             $PRD->project_id = $data->project_id;
                         }
+                        $PRD->user_id = Auth::user()->id;
                         $PRD->save();
                     }
                 }
@@ -198,6 +200,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }else{
@@ -209,6 +212,7 @@ class PurchaseRequisitionController extends Controller
                         if($data->project_id != null){
                             $PRD->project_id = $data->project_id;
                         }
+                        $PRD->user_id = Auth::user()->id;
                         $PRD->save();
                     }
                 }
@@ -504,6 +508,7 @@ class PurchaseRequisitionController extends Controller
                                 if($data->project_id != null){
                                     $PRD->project_id = $data->project_id;
                                 }
+                                $PRD->user_id = Auth::user()->id;
                                 $PRD->save();
                                 array_push($prd_id,$PurchaseRD->id,$data->id);
     
@@ -547,6 +552,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }
@@ -575,6 +581,7 @@ class PurchaseRequisitionController extends Controller
                                 if($data->project_id != null){
                                     $PRD->project_id = $data->project_id;
                                 }
+                                $PRD->user_id = Auth::user()->id;
                                 $PRD->save();
                                 array_push($prd_id,$PurchaseRD->id,$data->id);
     
@@ -617,6 +624,7 @@ class PurchaseRequisitionController extends Controller
                             if($data->project_id != null){
                                 $PRD->project_id = $data->project_id;
                             }
+                            $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
                     }
@@ -686,6 +694,7 @@ class PurchaseRequisitionController extends Controller
             if($datas->status == "approve"){
                 $modelPR->status = 2;
                 $modelPR->revision_description = $datas->desc;
+                $modelPR->approved_by = Auth::user()->id;
                 $modelPR->update();
                 DB::commit();
                 if($route == "/purchase_requisition"){
@@ -696,6 +705,7 @@ class PurchaseRequisitionController extends Controller
             }elseif($datas->status == "need-revision"){
                 $modelPR->status = 3;
                 $modelPR->revision_description = $datas->desc;
+                $modelPR->approved_by = Auth::user()->id;
                 $modelPR->update();
                 DB::commit();
                 if($route == "/purchase_requisition"){
@@ -706,6 +716,7 @@ class PurchaseRequisitionController extends Controller
             }elseif($datas->status == "reject"){
                 $modelPR->status = 5;
                 $modelPR->revision_description = $datas->desc;
+                $modelPR->approved_by = Auth::user()->id;
                 $modelPR->update();
                 DB::commit();
                 if($route == "/purchase_requisition"){
