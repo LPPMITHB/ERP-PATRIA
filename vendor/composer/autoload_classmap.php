@@ -92,6 +92,7 @@ return array(
     'App\\Models\\PurchaseOrderDetail' => $baseDir . '/app/Models/PurchaseOrderDetail.php',
     'App\\Models\\PurchaseRequisition' => $baseDir . '/app/Models/PurchaseRequisition.php',
     'App\\Models\\PurchaseRequisitionDetail' => $baseDir . '/app/Models/PurchaseRequisitionDetail.php',
+    'App\\Models\\PurchasingInfoRecord' => $baseDir . '/app/Models/PurchasingInfoRecord.php',
     'App\\Models\\Rap' => $baseDir . '/app/Models/Rap.php',
     'App\\Models\\RapDetail' => $baseDir . '/app/Models/RapDetail.php',
     'App\\Models\\Resource' => $baseDir . '/app/Models/Resource.php',

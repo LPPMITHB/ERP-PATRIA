@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMstUomTable extends Migration
+class CreateTrxMaterialWriteOffTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,16 @@ class CreateMstUomTable extends Migration
      */
     public function up()
     {
-        Schema::create('mst_uom', function (Blueprint $table) {
+        Schema::create('trx_material_write_off', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code')->unique();
-            $table->string('name');
-            $table->string('unit')->nullable();
-            $table->integer('status')->default(1);
-            $table->integer('is_decimal')->default(0);
+            $table->string('number')->unique();
+            $table->unsignedInteger('business_unit_id');
+            $table->text('description');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('branch_id')->references('id')->on('mst_branch'); 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
         });
     }
 
@@ -36,6 +33,6 @@ class CreateMstUomTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mst_uom');
+        Schema::dropIfExists('trx_material_write_off');
     }
 }
