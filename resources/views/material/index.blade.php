@@ -112,7 +112,7 @@
             autoWidth       : true,
             lengthChange    : false,
         });
-        // $('div.loading').hide();
+        $('div.overlay').hide();
     });
 </script>
 @endpush

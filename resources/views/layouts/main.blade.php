@@ -24,8 +24,11 @@
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper" id="content">
-                <div class="loading">
-                    <div class="loader">Loading...</div>
+                <div class="overlay">
+                    <div class="loader">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                        Loading...
+                    </div>
                     {{-- <div class="bounceball"></div>
                     <div class="text">LOADING...</div> --}}
                 </div>
