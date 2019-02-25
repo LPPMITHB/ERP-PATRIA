@@ -61,18 +61,10 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
-            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" required autofocus v-model="submittedForm.name">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" v-model="submittedForm.description">
+                                <input type="text" class="form-control" id="description" required v-model="submittedForm.description">
                             </div>
                         </div>
 
@@ -286,7 +278,7 @@
             createOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.uom_id == ""){
+                if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.uom_id == ""){
                     isOk = true;
                 }
 
@@ -382,9 +374,6 @@
         },
         watch:{
             created: function() {
-                if(this.oldData.name !=null) {
-                    this.project.name=this.oldData.name;
-                }
                 if(this.oldData.description !=null) {
                     this.project.description=this.oldData.description;
                 }
@@ -428,7 +417,6 @@
                     this.project.width_uom_id=this.oldData.width_uom_id;
                 }
             },
-            name : @json(Request::old('name')),
             description : @json(Request::old('description')),
             cost_standard_price : @json(Request::old('cost_standard_price')),
             cost_standard_service : @json(Request::old('cost_standard_service')),
