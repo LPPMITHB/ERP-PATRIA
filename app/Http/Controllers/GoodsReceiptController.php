@@ -109,8 +109,20 @@ class GoodsReceiptController extends Controller
         }elseif($route == "/goods_receipt_repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
         }
-        $modelWOs = WorkOrder::where('status',2)->whereIn('project_id',$modelProject)->get();
-        $modelPOs = PurchaseOrder::where('status',2)->whereIn('project_id',$modelProject)->get();
+
+        if($route == "/goods_receipt"){
+            $modelPR = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
+            $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPR)->where('status',2)->get();
+            
+            $modelWOs = WorkOrder::where('status',2)->whereIn('project_id',$modelProject)->get();
+
+
+        }elseif($route == "/goods_receipt_repair"){
+            $modelPR = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
+            $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPR)->where('status',2)->get();
+
+            $modelWOs = WorkOrder::where('status',2)->whereIn('project_id',$modelProject)->get();
+        }
 
         foreach($modelPOs as $key => $PO){
             if($PO->purchaseRequisition->type != 1){
