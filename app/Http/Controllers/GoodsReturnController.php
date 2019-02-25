@@ -54,9 +54,74 @@ class GoodsReturnController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
 
-        $modelMR = GoodsIssue::findOrFail($id);
+        $modelGI = GoodsIssue::findOrFail($id);
+        if($modelGI->status == 1){
+            $status = 'OPEN';
+        }
+        elseif($modelGI->status == 2){
+            $status = 'APPROVED';
+        }
+        elseif($modelGI->status == 3){
+            $status = 'NEEDS REVISION';
+        }
+        elseif($modelGI->status == 4){
+            $status = 'REVISED';
+        }
+        elseif($modelGI->status == 5){
+            $status = 'REJECTED';
+        }
+        elseif($modelGI->status == 0 || $modelGI->status == 7){
+            $status = 'ORDERED';
+        }
+        elseif($modelGI->status == 6){
+            $status = 'CONSOLIDATED';
+        }
 
-        return view('goods_return.showApprove', compact('modelMR','menu'));
+        return view('goods_return.showApprove', compact('modelGI','menu','status'));
+    }
+
+    public function approval(Request $request)
+    {
+        $datas = json_decode($request->datas);
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try{
+            $modelGI = GoodsIssue::findOrFail($datas->gi_id);
+            if($datas->status == "approve"){
+                $modelGI->status = 2;
+                $modelGI->approved_by = Auth::user()->id;
+                $modelGI->update();
+                DB::commit();
+                if($route == "/goods_return"){
+                    return redirect()->route('goods_return.show',$datas->gi_id)->with('success', 'Goods Return Approved');
+                }elseif($route == "/goods_return_repair"){
+                    return redirect()->route('goods_return_repair.show',$datas->gi_id)->with('success', 'Goods Return Approved');
+                }
+            }elseif($datas->status == "need-revision"){
+                $modelGI->status = 3;
+                $modelGI->approved_by = Auth::user()->id;
+                $modelGI->update();
+                DB::commit();
+                if($route == "/goods_return"){
+                    return redirect()->route('goods_return.show',$datas->gi_id)->with('success', 'Goods Return Need Revision');
+                }elseif($route == "/goods_return_repair"){
+                    return redirect()->route('goods_return_repair.show',$datas->gi_id)->with('success', 'Goods Return Need Revision');
+                }
+            }elseif($datas->status == "reject"){
+                $modelGI->status = 5;
+                $modelGI->approved_by = Auth::user()->id;
+                $modelGI->update();
+                DB::commit();
+                if($route == "/goods_return"){
+                    return redirect()->route('goods_return.show',$datas->gi_id)->with('success', 'Goods Return Rejected');
+                }elseif($route == "/goods_return_repair"){
+                    return redirect()->route('goods_return_repair.show',$datas->gi_id)->with('success', 'Goods Return Rejected');
+                }
+            }
+        } catch (\Exception $e){
+            DB::rollback();
+            return redirect()->route('goods_return.show',$datas->gi_id)->with('error', $e->getMessage());
+        }
     }
 
     public function createGoodsReturnGR($id,Request $request){
@@ -64,7 +129,7 @@ class GoodsReturnController extends Controller
         $route = $request->route()->getPrefix();    
         $modelGR = GoodsReceipt::find($id);
         $vendor = $modelGR->purchaseOrder->vendor;
-        $modelGRD = GoodsReceiptDetail::whereRaw('quantity - returned != 0')->where('goods_receipt_id',$modelGR->id)->with('material')->get();
+        $modelGRD = GoodsReceiptDetail::whereRaw('quantity - returned != 0')->where('goods_receipt_id',$modelGR->id)->with('material','material.uom')->get();
         foreach($modelGRD as $MRD){
             $MRD['returned_temp'] = 0;
         }
@@ -77,7 +142,7 @@ class GoodsReturnController extends Controller
         $route = $request->route()->getPrefix();    
         $modelPO = PurchaseOrder::find($id);
         $vendor = $modelPO->vendor;
-        $modelPOD = PurchaseOrderDetail::whereRaw('quantity - received - returned != 0')->where('purchase_order_id',$modelPO->id)->with('material')->get();
+        $modelPOD = PurchaseOrderDetail::whereRaw('quantity - received - returned != 0')->where('purchase_order_id',$modelPO->id)->with('material','material.uom')->get();
         foreach($modelPOD as $POD){
             $POD['returned_temp'] = 0;
         }
@@ -196,13 +261,24 @@ class GoodsReturnController extends Controller
     public function selectPO(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
-        if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }else{
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        // if($menu == "repair"){
+        //     $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+        // }else{
+        //     $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+        // }
+
+        if($menu == "building"){
+            $modelPR = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
+            $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPR)->where('status',2)->get();
+            
+        }elseif($menu == "repair"){
+            $modelPR = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
+            $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPR)->where('status',2)->get();
+
         }
-        $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
-        $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->whereIn('project_id', $modelProject)->where('status',2)->get();
+
+        // $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
+        // $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->whereIn('project_id', $modelProject)->where('status',2)->get();
 
         return view('goods_return.selectPO', compact('modelPOs','menu'));
     }
@@ -278,6 +354,29 @@ class GoodsReturnController extends Controller
         if($status == 0){
             $modelGR->status = 0;
             $modelGR->save();
+        }
+    }
+
+    public function updateStock($material_id,$issued){
+        $modelStock = Stock::where('material_id',$material_id)->first();
+        
+        if($modelStock){
+            $modelStock->quantity = $modelStock->quantity - $issued;
+            $modelStock->reserved = $modelStock->reserved - $issued;
+            $modelStock->save();
+        }else{
+
+        }
+    }
+
+    public function updateSlocDetail($material_id,$sloc_id,$issued){
+        $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->first();
+        
+        if($modelSlocDetail){
+            $modelSlocDetail->quantity = $modelSlocDetail->quantity - $issued;
+            $modelSlocDetail->save();
+        }else{
+
         }
     }
 }

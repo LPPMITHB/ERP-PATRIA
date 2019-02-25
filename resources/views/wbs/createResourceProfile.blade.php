@@ -65,10 +65,7 @@
                             <tbody>
                                 <tr v-for="(data,index) in resourceProfile">
                                     <td>{{ index + 1 }}</td>
-                                    <td v-if="data.category_id == 0">Sub Con</td>
-                                    <td v-else-if="data.category_id == 1">Others</td>
-                                    <td v-else-if="data.category_id == 2">External Equipment</td>
-                                    <td v-else-if="data.category_id == 3">Internal Equipment</td>
+                                    <td>{{getCategoryName(data.category_id)}}</td>
                                     <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
                                     <td v-if="data.resource_detail != null">{{ data.resource_detail.code }}</td>
                                     <td v-else>-</td>
@@ -300,6 +297,15 @@
         },
 
         methods : {
+            getCategoryName(id){
+                var category = "";
+                this.resource_categories.forEach(data => {
+                    if(data.id == id){
+                        category = data.name;
+                    }
+                });
+                return category;
+            },
             getNewRds(jsonRdId){
                 window.axios.get('/api/getRdProfiles/'+jsonRdId).then(({ data }) => {
                     this.resourceDetails = data;

@@ -164,7 +164,7 @@
         $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
         $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title != 'Material'){
+            if(title != 'Material Number' && title != 'Material Description'){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -222,7 +222,6 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getSlocSM/'+newValue).then(({ data }) => {
-                        console.log(data);
                         this.selectedSloc.push(data.sloc);
                         this.selectedSlocDetail = data.slocDetail;
                         this.slocValue = "Rp "+data.slocValue;
@@ -241,7 +240,7 @@
                             $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                             $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                 var title = $(this).text();
-                                if(title != 'Material'){
+                                if(title != 'Material Number' && title != 'Material Description'){
                                     $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                 }else{
                                     $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -296,7 +295,7 @@
                                 $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                                 $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                     var title = $(this).text();
-                                    if(title != 'Material'){
+                                    if(title != 'Material Number' && title != 'Material Description'){
                                         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                     }else{
                                         $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -360,7 +359,7 @@
                                 $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                                 $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                     var title = $(this).text();
-                                    if(title != 'Material'){
+                                    if(title != 'Material Number' && title != 'Material Description'){
                                         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                     }else{
                                         $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
@@ -390,7 +389,7 @@
                                 $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
                                 $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
                                     var title = $(this).text();
-                                    if(title != 'Material'){
+                                    if(title != 'Material Number' && title != 'Material Description'){
                                         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
                                     }else{
                                         $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );

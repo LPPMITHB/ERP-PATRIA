@@ -23,11 +23,12 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="17%">Number</th>
-                            <th width="17%">GR Number</th>
-                            <th width="17%">PO Number</th>
+                            <th width="15%">Number</th>
+                            <th width="15%">GR Number</th>
+                            <th width="15%">PO Number</th>
                             <th width="25%">Description</th>
                             <th width="12%">Type</th>
+                            <th width="12%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -45,6 +46,21 @@
                                     @else
                                     @endif
                                 </td>
+                                @if($modelGI->status == 1)
+                                    <td>OPEN</td>
+                                @elseif($modelGI->status == 2)
+                                    <td>APPROVED</td>
+                                @elseif($modelGI->status == 0 || $modelGI->status == 7)
+                                    <td>ORDERED</td>
+                                @elseif($modelGI->status == 3)
+                                    <td>NEEDS REVISION</td>
+                                @elseif($modelGI->status == 4)
+                                    <td>REVISED</td>
+                                @elseif($modelGI->status == 5)
+                                    <td>REJECTED</td>
+                                @elseif($modelGI->status == 6)
+                                    <td>CONSOLIDATED</td>
+                                @endif
                                 <td align="center">
                                     @if($menu == "building")
                                         <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>

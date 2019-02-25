@@ -46,7 +46,7 @@ class MaterialController extends Controller
         $data = json_decode($request->datas);
         $request = new Request([
             'code' => $data->code,
-            'name' => $data->name,
+            // 'name' => $data->name,
             'description' => $data->description,
             'cost_standard_price' => $data->cost_standard_price,
             'cost_standard_price_service' => $data->cost_standard_service,
@@ -60,7 +60,7 @@ class MaterialController extends Controller
 
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'cost_standard_price' => 'nullable|numeric',
             'cost_standard_price_service' => 'nullable|numeric',
@@ -74,7 +74,7 @@ class MaterialController extends Controller
         try {
             $material = new Material;
             $material->code = $data->code;
-            $material->name = $data->name;
+            // $material->name = $data->name;
             $material->description = $data->description;
             $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
             $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
@@ -143,7 +143,7 @@ class MaterialController extends Controller
         $data = json_decode($request->datas);
         $request = new Request([
             'code' => $data->code,
-            'name' => $data->name,
+            // 'name' => $data->name,
             'description' => $data->description,
             'cost_standard_price' => $data->cost_standard_price,
             'cost_standard_price_service' => $data->cost_standard_service,
@@ -157,7 +157,7 @@ class MaterialController extends Controller
         
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material,code,'.$id.',id|string|max:255',
-            'name' => 'required|string|max:255',   
+            // 'name' => 'required|string|max:255',   
             'description' => 'nullable|string|max:255',    
             'cost_standard_price' => 'nullable|numeric',
             'cost_standard_price_service' => 'nullable|numeric',
@@ -173,7 +173,7 @@ class MaterialController extends Controller
         try {
         $material = Material::find($id);
         $material->code = $data->code;
-        $material->name = $data->name;
+        // $material->name = $data->name;
         $material->description = $data->description;
         $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
         $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;

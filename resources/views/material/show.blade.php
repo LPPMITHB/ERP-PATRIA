@@ -8,7 +8,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View All Materials' => route('material.index'),
-            $material->name => route('material.show',$material->id),
+            $material->description => route('material.show',$material->id),
         ]
     ]
 )
@@ -45,16 +45,11 @@
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>Name</td>
-                            <td>{{ $material->name }}</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
                             <td>Description</td>
                             <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $material->description }}">{{ $material->description }}</td>
                         </tr>
                         <tr>
-                            <td>4</td>
+                            <td>3</td>
                             <td>Cost Standard Price Material</td>
                             <td>Rp {{ number_format($material->cost_standard_price,2) }}</td>
                         </tr>
