@@ -22,6 +22,7 @@ class CreateTrxGoodsReturnTable extends Migration
             $table->text('description');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
+            $table->integer('status')->default(1);
             $table->timestamps();
 
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');

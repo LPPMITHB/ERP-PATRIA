@@ -27,7 +27,6 @@
                             <th width="15%">GR Number</th>
                             <th width="15%">PO Number</th>
                             <th width="25%">Description</th>
-                            <th width="12%">Type</th>
                             <th width="12%">Status</th>
                             <th width="10%"></th>
                         </tr>
@@ -40,34 +39,76 @@
                                 <td>{{ $modelGI->goodsReceipt != null ? $modelGI->goodsReceipt->number : "-" }}</td>
                                 <td>{{ $modelGI->purchaseOrder != null ? $modelGI->purchaseOrder->number : "-" }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">{{ $modelGI->description }}</td>
-                                <td>
-                                    @if($modelGI->type == 4)
-                                        Goods Return
-                                    @else
-                                    @endif
-                                </td>
                                 @if($modelGI->status == 1)
-                                    <td>OPEN</td>
-                                @elseif($modelGI->status == 2)
-                                    <td>APPROVED</td>
-                                @elseif($modelGI->status == 0 || $modelGI->status == 7)
-                                    <td>ORDERED</td>
-                                @elseif($modelGI->status == 3)
-                                    <td>NEEDS REVISION</td>
-                                @elseif($modelGI->status == 4)
-                                    <td>REVISED</td>
-                                @elseif($modelGI->status == 5)
-                                    <td>REJECTED</td>
-                                @elseif($modelGI->status == 6)
-                                    <td>CONSOLIDATED</td>
-                                @endif
-                                <td align="center">
+                                <td>OPEN</td>
+                                <td class="textCenter">
                                     @if($menu == "building")
+                                        <a href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                         <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                    @else
+                                    @elseif($menu == "repair")
+                                        <a href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                         <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     @endif
                                 </td>
+                                @elseif($modelGI->status == 2)
+                                    <td>APPROVED</td>
+                                    <td class="textCenter">
+                                        @if($menu == "building")
+                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($menu == "repair")
+                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @elseif($modelGI->status == 0 || $modelGI->status == 7)
+                                    <td>ORDERED</td>
+                                    <td class="textCenter">
+                                        @if($menu == "building")
+                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($menu == "repair")
+                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @elseif($modelGI->status == 3)
+                                    <td>NEEDS REVISION</td>
+                                    <td class="textCenter">
+                                        @if($menu == "building")
+                                            <a href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($menu == "repair")
+                                            <a href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @elseif($modelGI->status == 4)
+                                    <td>REVISED</td>
+                                    <td class="textCenter">
+                                        @if($menu == "building")
+                                            <a href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($menu == "repair")
+                                            <a href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @elseif($modelGI->status == 5)
+                                    <td>REJECTED</td>
+                                    <td class="textCenter">
+                                        @if($menu == "building")
+                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($menu == "repair")
+                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @elseif($modelGI->status == 6)
+                                    <td>CONSOLIDATED</td>
+                                    <td class="textCenter">
+                                        @if($menu == "building")
+                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($menu == "repair")
+                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
