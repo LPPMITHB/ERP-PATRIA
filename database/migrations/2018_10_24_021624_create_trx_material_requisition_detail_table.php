@@ -17,7 +17,7 @@ class CreateTrxMaterialRequisitionDetailTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('material_requisition_id');
             $table->float('quantity',15,2);
-            $table->integer('issued')->default(0);
+            $table->float('issued',15,2)->default(0);
             $table->unsignedInteger('material_id');
             $table->unsignedInteger('wbs_id')->nullable();
             $table->timestamps();

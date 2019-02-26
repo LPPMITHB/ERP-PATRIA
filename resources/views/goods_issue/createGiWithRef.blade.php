@@ -259,6 +259,7 @@
                 return text
             },
             submitForm(){
+                $('div.overlay').show();
                 var data = this.modelMRD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)

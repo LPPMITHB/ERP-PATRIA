@@ -167,8 +167,14 @@ class MaterialRequisitionController extends Controller
         elseif($modelMR->status == 6){
             $status = 'CONSOLIDATED';
         }
+        $modelMRD = $modelMR->materialRequisitionDetails;
+        foreach($modelMRD as $MRD){
+            $issued = MaterialRequisitionDetail::where('material_id',$MRD->material_id)->where('wbs_id',$MRD->wbs_id)->get()->sum('issued');
+            $MRD['planned_quantity'] = $MRD->wbs != null ? $MRD->wbs->bom->bomDetails->where('material_id',$MRD->material_id)->first()->quantity : "-";
+            $MRD['issued'] = $issued;
+        }
 
-        return view('material_requisition.showApprove', compact('status','modelMR','route'));
+        return view('material_requisition.showApprove', compact('status','modelMR','route','modelMRD'));
     }
 
     public function edit($id, Request $request)

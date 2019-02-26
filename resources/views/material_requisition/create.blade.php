@@ -378,6 +378,7 @@
                 return text
             },
             submitForm(){
+                $('div.overlay').show();
                 this.submittedForm.description = this.description;
                 this.submittedForm.project_id = this.project_id;     
                 this.submittedForm.materials = this.dataMaterial;    
