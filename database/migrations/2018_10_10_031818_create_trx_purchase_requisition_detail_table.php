@@ -17,8 +17,8 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('purchase_requisition_id');
             $table->date('required_date')->nullable();
-            $table->integer('quantity');
-            $table->integer('reserved')->default(0);
+            $table->float('quantity',15,2);
+            $table->float('reserved',15,2)->default(0);
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->string('alocation')->nullable();

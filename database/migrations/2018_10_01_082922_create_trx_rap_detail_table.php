@@ -18,7 +18,7 @@ class CreateTrxRapDetailTable extends Migration
             $table->unsignedInteger('rap_id');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
             $table->double('price');
             $table->timestamps();
     
