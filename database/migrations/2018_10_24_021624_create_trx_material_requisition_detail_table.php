@@ -16,7 +16,7 @@ class CreateTrxMaterialRequisitionDetailTable extends Migration
         Schema::create('trx_material_requisition_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('material_requisition_id');
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
             $table->integer('issued')->default(0);
             $table->unsignedInteger('material_id');
             $table->unsignedInteger('wbs_id')->nullable();

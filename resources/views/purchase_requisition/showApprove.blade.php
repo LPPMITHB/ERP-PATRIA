@@ -41,6 +41,8 @@
         @elseif($route == "/purchase_requisition_repair")
             <form id="approve-pr"class="form-horizontal" action="{{ route('purchase_requisition_repair.approval') }}">
         @endif
+        @csrf
+        </form>
         <div class="box box-blue">
             <div class="row">
                 <div class="col-xs-12 col-md-3">

@@ -485,7 +485,7 @@ class MstMaterialTableSeeder extends Seeder
                 'cost_standard_price_service' => 0,
                 'latest_price' => 0,
                 'average_price' => 0,
-                'uom_id' => 3,
+                'uom_id' => 2,
                 'min' => 0,
                 'max' => 0,
                 'weight' => 0.0,
