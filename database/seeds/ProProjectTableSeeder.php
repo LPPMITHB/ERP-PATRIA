@@ -12,6 +12,8 @@ class ProProjectTableSeeder extends Seeder
      */
     public function run()
     {
+        
+
         \DB::table('pro_project')->delete();
         
         \DB::table('pro_project')->insert(array (
@@ -25,6 +27,7 @@ class ProProjectTableSeeder extends Seeder
                 'ship_id' => 5,
                 'customer_id' => 1,
                 'name' => 'Kapal Dummy Boat',
+                'person_in_charge' => NULL,
                 'description' => 'Dummy 19 Desember 2018',
                 'sales_order_id' => NULL,
                 'planned_start_date' => '2018-12-19',
@@ -49,18 +52,19 @@ class ProProjectTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'number' => 'PRO2-DUMMY2',
+                'number' => 'RP000101',
                 'drawing' => NULL,
                 'business_unit_id' => 2,
-                'project_sequence' => 2,
+                'project_sequence' => 1,
                 'ship_id' => 3,
-                'customer_id' => 2,
-                'name' => 'Repair Dummy',
-                'description' => 'Repair Dummy 19 Desember 2018',
+                'customer_id' => 4,
+                'name' => 'BARAN',
+                'person_in_charge' => NULL,
+                'description' => 'Project PAMI - DUMMY',
                 'sales_order_id' => NULL,
-                'planned_start_date' => '2018-12-28',
-                'planned_end_date' => '2019-01-28',
-                'planned_duration' => '32',
+                'planned_start_date' => '2019-04-01',
+                'planned_end_date' => '2019-04-25',
+                'planned_duration' => '25',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
                 'actual_duration' => NULL,
@@ -72,10 +76,10 @@ class ProProjectTableSeeder extends Seeder
                 'class_contact_person_email' => NULL,
                 'project_type' => 1,
                 'status' => 1,
-                'user_id' => 5,
-                'branch_id' => 1,
-                'created_at' => '2018-12-19 10:13:50',
-                'updated_at' => '2018-12-19 10:13:50',
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-02-25 17:02:53',
+                'updated_at' => '2019-02-25 17:02:53',
             ),
         ));
         
