@@ -1178,7 +1178,7 @@ Route::name('stock_management_repair.')->prefix('stock_management_repair')->grou
 Route::name('material_requisition.')->prefix('material_requisition')->group(function() {
     Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-material-requisition');
 
-    Route::get('/approval/{id}/{status}', 'MaterialRequisitionController@approval')->name('approval')->middleware('can:approve-material-requisition');
+    Route::get('/approval', 'MaterialRequisitionController@approval')->name('approval')->middleware('can:approve-material-requisition');
 
     Route::get('/', 'MaterialRequisitionController@index')->name('index')->middleware('can:list-material-requisition');
 
@@ -1204,7 +1204,7 @@ Route::name('material_requisition.')->prefix('material_requisition')->group(func
 Route::name('material_requisition_repair.')->prefix('material_requisition_repair')->group(function() {
     Route::get('/indexApprove', 'MaterialRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-material-requisition-repair');
 
-    Route::get('/approval/{id}/{status}', 'MaterialRequisitionController@approval')->name('approval')->middleware('can:approve-material-requisition-repair');
+    Route::get('/approval', 'MaterialRequisitionController@approval')->name('approval')->middleware('can:approve-material-requisition-repair');
 
     Route::get('/', 'MaterialRequisitionController@index')->name('index')->middleware('can:list-material-requisition-repair');
 

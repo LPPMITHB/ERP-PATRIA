@@ -252,7 +252,7 @@
             material_code : "",
             material_description : "",
             quantity : "",
-            quantityInt : 0,
+            quantityFloat : 0,
             wbs_id : "",
             wbs_number : "",
             wbs_description : "",
@@ -260,6 +260,7 @@
             available: "",
             availableStr: "",
             is_decimal: "",
+            unit : "",
         },
         editInput : {
             old_material_id : "",
@@ -267,7 +268,7 @@
             material_code : "",
             material_description : "",
             quantity : "",
-            quantityInt : 0,
+            quantityFloat : 0,
             wbs_id : "",
             old_wbs_id : "",
             wbs_number : "",
@@ -277,6 +278,7 @@
             availableStr: "",
             index: "",
             is_decimal: "",
+            unit : "",
         },
         material_id:[],
         material_id_modal:[],
@@ -327,10 +329,10 @@
             createOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.dataInput.quantityInt+"";
-                this.dataInput.quantityInt = parseFloat(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.dataInput.quantityFloat+"";
+                this.dataInput.quantityFloat = parseFloat(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt)){
+                if(this.dataInput.material_id == "" || this.dataInput.quantityFloat < 0 || this.dataInput.quantityFloat == 0 || this.dataInput.quantityFloat == "" || isNaN(this.dataInput.quantityFloat)){
                     isOk = true;
                 }
 
@@ -339,10 +341,10 @@
             updateOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseFloat(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.editInput.quantityFloat+"";
+                this.editInput.quantityFloat = parseFloat(string_newValue.replace(/,/g , ''));
 
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
+                if(this.editInput.material_id == "" || this.editInput.quantityFloat < 0 || this.editInput.quantityFloat == 0 || this.editInput.quantityFloat == "" || isNaN(this.editInput.quantityFloat)){
                     isOk = true;
                 }
 
@@ -375,50 +377,49 @@
             },
             update(old_material_id, new_material_id){
                 $('div.overlay').show();
+                this.dataInput.material_description = "";
+                this.dataInput.material_code = "";
+                this.dataInput.quantity = "";
+                this.dataInput.planned_quantity = "";
+                this.dataInput.available = "";
+                this.dataInput.material_id = "";
+                this.dataInput.wbs_id = "";
+                this.dataInput.wbs_number = "";
+
                 var material = this.dataMaterial[this.editInput.index];
-                material.quantityInt = this.editInput.quantityInt;
+                material.quantityFloat = this.editInput.quantityFloat;
                 material.quantity = this.editInput.quantity;
+                material.planned_quantity = this.editInput.planned_quantity;
                 material.material_id = new_material_id;
                 material.wbs_id = this.editInput.wbs_id;
+                material.available = this.editInput.available;
+                material.availableStr = this.editInput.availableStr;
+                material.quantity += " "+this.dataInput.unit;
 
-                console.log(this.editInput.available - this.editInput.quantityInt);
+                if(old_material_id != new_material_id){
+                    this.stocks.forEach(stock => {
+                        if(old_material_id == stock.material_id){
+                            stock.available = stock.quantity - stock.reserved;
+                        }
 
-                var quantity = this.editInput.quantityInt;
-
-                window.axios.get('/api/getStockMR/'+material.material_id).then(({ data }) => {
-                    var temp = data.quantity - data.reserved;
-
-                    if(temp < 0){
-                        var available = 0;
-                    }else if(temp > 0){
-                        var available = data.quantity - data.reserved;
-                    }
-
-                    if(quantity > available){
-                        iziToast.warning({
-                            title: 'This material only have '+ available + ' in stocks',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-
-                    }
-
-                    $('div.overlay').hide();
-
-                }).catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
+                        if(new_material_id == stock.material_id){
+                            stock.available -= this.editInput.quantityFloat;
+                        }
                     });
-                    $('div.overlay').hide();
-                })
+                }else{
+                    var diff = this.editInput.available - this.editInput.quantityFloat;
+                    this.stocks.forEach(stock => {
+                        if(new_material_id == stock.material_id){
+                            stock.available = diff;
+                        }
+                    });
+                }
 
                 window.axios.get('/api/getMaterialMR/'+new_material_id).then(({ data }) => {
                     material.material_description = data.description;
                     material.material_code = data.code;
-
-                        window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
+                    
+                    window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
                         material.wbs_number = data.wbs.number;
                         $('div.overlay').hide();
                     })
@@ -451,6 +452,9 @@
                 this.editInput.old_wbs_id = data.wbs_id;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_number = data.wbs_number;
+                this.editInput.is_decimal = data.is_decimal;
+                this.editInput.unit = data.unit;
+                this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -463,42 +467,15 @@
             },
             add(){
                 var material_id = this.dataInput.material_id;
-                var quantity = this.dataInput.quantityInt;
+                var quantity = this.dataInput.quantityFloat;
 
                 $('div.overlay').show();
 
-                window.axios.get('/api/getStockMR/'+material_id).then(({ data }) => {
-                    var temp = data.quantity - data.reserved;
-
-                    if(temp < 0){
-                        var available = 0;
-                    }else if(temp > 0){
-                        var available = data.quantity - data.reserved;
-                    }
-
-                    if(quantity > available){
-                        iziToast.warning({
-                            title: 'This material only have '+ available + ' in stocks',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-
-                    }
-
-                    $('div.overlay').hide();
-
-                }).catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
                 
                 window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
                     this.dataInput.material_description = data.description;
                     this.dataInput.material_code = data.code;
+                    this.dataInput.quantity += " "+this.dataInput.unit;
 
                     var temp_data = JSON.stringify(this.dataInput);
                     temp_data = JSON.parse(temp_data);
@@ -507,7 +484,7 @@
 
                     this.stocks.forEach(stock => {
                         if(stock.material_id == this.dataInput.material_id){
-                            stock.reserved += this.dataInput.quantityInt;
+                            stock.available -= this.dataInput.quantityFloat;
                         }
                     });
 
@@ -533,6 +510,13 @@
                 })
             },
             removeRow(index){
+                var material_id = this.dataMaterial[index].material_id;
+                this.stocks.forEach(stock => {
+                    if(stock.material_id == material_id){
+                        stock.available = stock.quantity - stock.reserved;
+                    }
+                });
+
                 this.dataMaterial.splice(index, 1);                
                 this.newIndex = this.dataMaterial.length + 1;
             }
@@ -562,34 +546,66 @@
             },
             'dataInput.quantity': function(newValue){
                 if(newValue != ""){
-                    var temp = parseFloat((newValue+"").replace(/\D/g, ""));
-                    var qty = "";
-                    if(temp > this.dataInput.available){
-                        iziToast.warning({
-                            title: 'There is no available stock for this material',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        qty = this.dataInput.available;
+                    var temp = parseFloat((newValue+"").replace(",", ""));
+                    this.dataInput.quantityFloat = temp;
+                                        
+                    if(this.dataInput.is_decimal){
+                        var decimal = (newValue+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
                     }else{
-                        qty = newValue;
+                        this.dataInput.quantity = ((newValue+"").replace(/\D/g, ""));
                     }
-
-                    this.dataInput.quantityInt = qty;
-                    var string_newValue = qty+"";
-                    quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    this.dataInput.quantity = quantity_string;
                 }
             },
-            'dataInput.available':function(newValue){
-                this.dataInput.availableStr = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            },
-            'editInput.available':function(newValue){
-                this.editInput.availableStr = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            'dataInput.quantityFloat' : function(newValue){
+                var qty = "";
+                var temp = newValue;
+                if(temp > this.dataInput.available){
+                    iziToast.warning({
+                        title: 'There is no available stock for this material',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    qty = this.dataInput.available;
+                }else{
+                    qty = temp;
+                }
+                this.dataInput.quantity = qty+"";
             },
             'editInput.quantity': function(newValue){
-                var temp = parseFloat((newValue+"").replace(/\D/g, ""));
+                if(newValue != ""){
+                    var temp = parseFloat((newValue+"").replace(",", ""));
+                    this.editInput.quantityFloat = temp;
+                                        
+                    if(this.editInput.is_decimal){
+                        var decimal = (newValue+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }else{
+                        this.editInput.quantity = ((newValue+"").replace(/\D/g, ""));
+                    }
+                }
+            },
+            'editInput.quantityFloat' : function(newValue){
                 var qty = "";
+                var temp = newValue;
                 if(temp > this.editInput.available){
                     iziToast.warning({
                         title: 'There is no available stock for this material',
@@ -598,16 +614,57 @@
                     });
                     qty = this.editInput.available;
                 }else{
-                    qty = newValue;
+                    qty = temp;
+                }
+                this.editInput.quantity = qty+"";
+            },
+            'dataInput.available':function(newValue){
+                if(this.dataInput.is_decimal){
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInput.availableStr = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInput.availableStr = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInput.availableStr = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }else{
+                    this.dataInput.availableStr = ((newValue+"").replace(/\D/g, ""));
                 }
 
-                this.editInput.quantityInt = qty;
-                var string_newValue = qty+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                Vue.nextTick(() => this.editInput.quantity = quantity_string);
+                this.dataInput.availableStr += " "+this.dataInput.unit;
+
+            },
+            'editInput.available':function(newValue){
+                if(this.editInput.is_decimal){
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.availableStr = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.availableStr = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.availableStr = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }else{
+                    this.editInput.availableStr = ((newValue+"").replace(/\D/g, ""));
+                }
+
+                this.editInput.availableStr += " "+this.editInput.unit;
+
             },
             'dataInput.wbs_id': function(newValue){
                 this.dataInput.material_id = "";
+                this.dataInput.planned_quantity = "";
+                this.dataInput.available = "";
+                this.dataInput.availableStr = "";
+                this.dataInput.quantity = "";
+                this.dataInput.quantityFloat = "";
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
@@ -631,15 +688,22 @@
             'editInput.wbs_id': function(newValue){
                 if(this.editInput.old_wbs_id != newValue){
                     this.editInput.material_id = "";
+                    this.editInput.planned_quantity = "";
                     this.editInput.quantity = "";
-                    this.editInput.quantityInt = 0;
+                    this.editInput.quantityFloat = "";
+                    this.editInput.available = "";
+                    this.editInput.availableStr = "";
                     this.editInput.old_wbs_id = null;
                 }
 
                 if(this.editInput.old_wbs_id == null){
                     this.editInput.material_id = "";
+                    this.editInput.planned_quantity = "";
                     this.editInput.quantity = "";
-                    this.editInput.quantityInt = 0;
+                    this.editInput.quantityFloat = "";
+                    this.editInput.available = "";
+                    this.editInput.availableStr = "";
+                    this.editInput.quantityFloat = "";
                 }
 
                 if(newValue != ""){
@@ -666,11 +730,29 @@
                     $('div.overlay').show();
                     window.axios.get('/api/getMaterialInfoAPI/'+newValue+"/"+this.dataInput.wbs_id).then(({ data }) => {
                         // this.dataInput.available = data['available'];
-                        this.dataInput.planned_quantity = data['planned_quantity'];
+                        this.dataInput.is_decimal = data['is_decimal'];
+                        this.dataInput.unit = data['unit'];
+                        if(this.dataInput.is_decimal){
+                            var decimal = (data['planned_quantity']+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    this.dataInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    this.dataInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                this.dataInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                        }else{
+                            this.dataInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, ""));
+                        }
+
+                        this.dataInput.planned_quantity += " "+this.dataInput.unit;
 
                         this.stocks.forEach(stock => {
                             if(stock.material_id == newValue){
-                                this.dataInput.available = stock.quantity - stock.reserved;
+                                this.dataInput.available = stock.available;
                             }
                         });
                         $('div.overlay').hide();
@@ -690,10 +772,37 @@
                     $('div.overlay').show();
                     window.axios.get('/api/getMaterialInfoAPI/'+newValue+'/'+this.editInput.wbs_id).then(({ data }) => {
                         // this.editInput.available = data['available'];
-                        this.editInput.planned_quantity = data['planned_quantity'];
+                        this.editInput.is_decimal = data['is_decimal'];
+                        this.editInput.unit = data['unit'];
+                        if(this.editInput.is_decimal){
+                            var decimal = (data['planned_quantity']+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    this.editInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    this.editInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                this.editInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                        }else{
+                            this.editInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, ""));
+                        }
+                        this.editInput.planned_quantity += " "+this.editInput.unit;
 
-                        this.editInput.available = this.dataMaterial[this.editInput.index].available;
-                        this.editInput.quantity = this.dataMaterial[this.editInput.index].quantity;
+
+                        if(newValue != this.editInput.old_material_id){
+                            this.stocks.forEach(stock => {
+                                if(stock.material_id == newValue){
+                                    this.editInput.available = stock.available;
+                                }
+                            });
+                            this.editInput.quantity = "";
+                        }else{
+                            this.editInput.available = this.dataMaterial[this.editInput.index].available;
+                            this.editInput.quantity = this.dataMaterial[this.editInput.index].quantity;
+                        }
 
                         $('div.overlay').hide();
                     })
