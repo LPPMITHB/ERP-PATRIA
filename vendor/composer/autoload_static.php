@@ -435,6 +435,8 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\GoodsMovementDetail' => __DIR__ . '/../..' . '/app/Models/GoodsMovementDetail.php',
         'App\\Models\\GoodsReceipt' => __DIR__ . '/../..' . '/app/Models/GoodsReceipt.php',
         'App\\Models\\GoodsReceiptDetail' => __DIR__ . '/../..' . '/app/Models/GoodsReceiptDetail.php',
+        'App\\Models\\GoodsReturn' => __DIR__ . '/../..' . '/app/Models/GoodsReturn.php',
+        'App\\Models\\GoodsReturnDetail' => __DIR__ . '/../..' . '/app/Models/GoodsReturnDetail.php',
         'App\\Models\\Material' => __DIR__ . '/../..' . '/app/Models/Material.php',
         'App\\Models\\MaterialRequisition' => __DIR__ . '/../..' . '/app/Models/MaterialRequisition.php',
         'App\\Models\\MaterialRequisitionDetail' => __DIR__ . '/../..' . '/app/Models/MaterialRequisitionDetail.php',
