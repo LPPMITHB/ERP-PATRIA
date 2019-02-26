@@ -79,6 +79,8 @@ return array(
     'App\\Models\\GoodsMovementDetail' => $baseDir . '/app/Models/GoodsMovementDetail.php',
     'App\\Models\\GoodsReceipt' => $baseDir . '/app/Models/GoodsReceipt.php',
     'App\\Models\\GoodsReceiptDetail' => $baseDir . '/app/Models/GoodsReceiptDetail.php',
+    'App\\Models\\GoodsReturn' => $baseDir . '/app/Models/GoodsReturn.php',
+    'App\\Models\\GoodsReturnDetail' => $baseDir . '/app/Models/GoodsReturnDetail.php',
     'App\\Models\\Material' => $baseDir . '/app/Models/Material.php',
     'App\\Models\\MaterialRequisition' => $baseDir . '/app/Models/MaterialRequisition.php',
     'App\\Models\\MaterialRequisitionDetail' => $baseDir . '/app/Models/MaterialRequisitionDetail.php',
