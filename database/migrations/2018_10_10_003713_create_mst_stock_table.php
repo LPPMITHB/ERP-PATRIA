@@ -16,8 +16,8 @@ class CreateMstStockTable extends Migration
         Schema::create('mst_stock', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('material_id')->unique();
-            $table->integer('quantity');
-            $table->integer('reserved')->default(0);
+            $table->float('quantity',15,2);
+            $table->float('reserved',15,2)->default(0);
             $table->unsignedInteger('branch_id');
             $table->timestamps();
 
