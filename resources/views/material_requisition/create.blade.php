@@ -70,17 +70,21 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 30%">WBS Name</th>
+                                            <th style="width: 23%">WBS Name</th>
                                             <th style="width: 35%">Material Name</th>
-                                            <th style="width: 20%">Quantity</th>
+                                            <th style="width: 17%">Planned Quantity (BOM)</th>
+                                            <th style="width: 16%">Available Quantity</th>
+                                            <th style="width: 16%">Requested Quantity</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_number }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_number }} - {{ material.wbs_description }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_description }}</td>
+                                            <td class="tdEllipsis">{{ material.planned_quantity }}</td>
+                                            <td class="tdEllipsis">{{ material.available }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
@@ -97,7 +101,7 @@
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length > 0">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length == 0">
@@ -116,6 +120,12 @@
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input disabled class="form-control" v-model="dataInput.planned_quantity" placeholder="">
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input disabled class="form-control" v-model="dataInput.available" placeholder="">
                                             </td>
                                             <td class="p-l-0">
                                                 <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
@@ -235,7 +245,10 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_number : ""
+            wbs_number : "",
+            wbs_description : "",
+            planned_quantity: "",
+            available: "",
         },
         editInput : {
             old_material_id : "",
@@ -246,7 +259,10 @@
             quantityInt : 0,
             wbs_id : "",
             old_wbs_id : "",
-            wbs_number : ""
+            wbs_number : "",
+            wbs_description : "",
+            planned_quantity: "",
+            available: "",
         },
         material_id:[],
         material_id_modal:[],
@@ -478,6 +494,8 @@
                     this.dataInput.material_description = "";
                     this.dataInput.material_code = "";
                     this.dataInput.quantity = "";
+                    this.dataInput.planned_quantity = "";
+                    this.dataInput.available = "";
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
                     this.dataInput.wbs_number = "";
@@ -523,10 +541,23 @@
                 }
             },
             'dataInput.quantity': function(newValue){
-                this.dataInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.dataInput.quantity = quantity_string;
+                if(newValue != ""){
+                    var qty = "";
+                    if(newValue > this.dataInput.available){
+                        iziToast.warning({
+                            title: 'There is no available stock for this material',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        qty = this.dataInput.available;
+                    }else{
+                        qty = newValue;
+                    }
+                    this.dataInput.quantityInt = qty;
+                    var string_newValue = qty+"";
+                    quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    this.dataInput.quantity = quantity_string;
+                }
             },
             'editInput.quantity': function(newValue){
                 this.editInput.quantityInt = newValue;
@@ -539,6 +570,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
+                        this.dataInput.wbs_description = data.wbs.description;
                         this.dataInput.wbs_number = data.wbs.number;
                         this.materials = data.materials;
                         $('div.overlay').hide();
@@ -585,6 +617,43 @@
                     })
                 }else{
                     this.dataInput.wbs_id = "";
+                }
+            },
+            'dataInput.material_id' : function(newValue){
+                if(newValue != ""){
+                    this.dataInput.quantity = "";
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialInfoAPI/'+newValue+"/"+this.dataInput.wbs_id).then(({ data }) => {
+                        this.dataInput.available = data['available'];
+                        this.dataInput.planned_quantity = data['planned_quantity'];
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }
+            },
+            'editInput.material_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialInfoAPI/'+newValue+'/'+this.dataInput.wbs_id).then(({ data }) => {
+                        this.editInput.available = data['available'];
+                        this.editInput.planned_quantity = data['planned_quantity'];
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
                 }
             },
         },
