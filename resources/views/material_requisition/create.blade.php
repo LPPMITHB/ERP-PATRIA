@@ -71,10 +71,11 @@
                                         <tr>
                                             <th style="width: 5%">No</th>
                                             <th style="width: 23%">WBS Name</th>
-                                            <th style="width: 35%">Material Name</th>
-                                            <th style="width: 17%">Planned Quantity (BOM)</th>
-                                            <th style="width: 16%">Available Quantity</th>
-                                            <th style="width: 16%">Requested Quantity</th>
+                                            <th style="width: 38%">Material Name</th>
+                                            <th style="width: 15%">Planned Qty (BOM)</th>
+                                            <th style="width: 12%">Available Qty</th>
+                                            <th style="width: 12%">Requested Qty</th>
+                                            <th style="width: 6%">Unit</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -86,6 +87,7 @@
                                             <td class="tdEllipsis">{{ material.planned_quantity }}</td>
                                             <td class="tdEllipsis">{{ material.availableStr }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
+                                            <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
@@ -130,6 +132,9 @@
                                             <td class="p-l-0">
                                                 <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
+                                            <td class="p-l-0">
+                                                <input disabled class="form-control" v-model="dataInput.unit" placeholder="">
+                                            </td>
                                             <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
@@ -171,22 +176,31 @@
                                                 <selectize disabled :settings="materialNullSettings" >
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12" v-show="editInput.wbs_id == ''">
+                                            <div class="col-sm-9" v-show="editInput.wbs_id == ''">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize disabled :settings="nullSettings" disabled >
                                                 </selectize>  
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-9">
                                                 <label for="planned_quantity" class="control-label">Planned Quantity</label>
                                                 <input disabled type="text" id="planned_quantity" v-model="editInput.planned_quantity" class="form-control" placeholder="">
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-3 m-t-25">
+                                                <input disabled type="text" id="unit" v-model="editInput.unit" class="form-control" placeholder="">
+                                            </div>
+                                            <div class="col-sm-9">
                                                 <label for="available" class="control-label">Available Quantity</label>
                                                 <input disabled type="text" id="available" v-model="editInput.availableStr" class="form-control" placeholder="">
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-3 m-t-25">
+                                                <input disabled type="text" id="unit" v-model="editInput.unit" class="form-control" placeholder="">
+                                            </div>
+                                            <div class="col-sm-9">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                            <div class="col-sm-3 m-t-25">
+                                                <input disabled type="text" id="unit" v-model="editInput.unit" class="form-control" placeholder="">
                                             </div>
                                         </div>
                                     </div>
@@ -394,7 +408,7 @@
                 material.wbs_id = this.editInput.wbs_id;
                 material.available = this.editInput.available;
                 material.availableStr = this.editInput.availableStr;
-                material.quantity += " "+this.dataInput.unit;
+                material.unit = this.editInput.unit;
 
                 if(old_material_id != new_material_id){
                     this.stocks.forEach(stock => {
@@ -475,7 +489,6 @@
                 window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
                     this.dataInput.material_description = data.description;
                     this.dataInput.material_code = data.code;
-                    this.dataInput.quantity += " "+this.dataInput.unit;
 
                     var temp_data = JSON.stringify(this.dataInput);
                     temp_data = JSON.parse(temp_data);
@@ -496,6 +509,8 @@
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
                     this.dataInput.wbs_number = "";
+                    this.dataInput.unit = "";
+                    this.dataInput.is_decimal = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;                    
                     $('div.overlay').hide();
@@ -562,7 +577,7 @@
                             this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
                     }else{
-                        this.dataInput.quantity = ((newValue+"").replace(/\D/g, ""));
+                        this.dataInput.quantity = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     }
                 }
             },
@@ -599,7 +614,7 @@
                             this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
                     }else{
-                        this.editInput.quantity = ((newValue+"").replace(/\D/g, ""));
+                        this.editInput.quantity = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     }
                 }
             },
@@ -632,10 +647,8 @@
                         this.dataInput.availableStr = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
                 }else{
-                    this.dataInput.availableStr = ((newValue+"").replace(/\D/g, ""));
+                    this.dataInput.availableStr = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                 }
-
-                this.dataInput.availableStr += " "+this.dataInput.unit;
 
             },
             'editInput.available':function(newValue){
@@ -652,11 +665,8 @@
                         this.editInput.availableStr = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
                 }else{
-                    this.editInput.availableStr = ((newValue+"").replace(/\D/g, ""));
+                    this.editInput.availableStr = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                 }
-
-                this.editInput.availableStr += " "+this.editInput.unit;
-
             },
             'dataInput.wbs_id': function(newValue){
                 this.dataInput.material_id = "";
@@ -665,6 +675,7 @@
                 this.dataInput.availableStr = "";
                 this.dataInput.quantity = "";
                 this.dataInput.quantityFloat = "";
+                this.dataInput.unit = "";
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
@@ -693,6 +704,7 @@
                     this.editInput.quantityFloat = "";
                     this.editInput.available = "";
                     this.editInput.availableStr = "";
+                    this.editInput.unit = "";
                     this.editInput.old_wbs_id = null;
                 }
 
@@ -704,6 +716,7 @@
                     this.editInput.available = "";
                     this.editInput.availableStr = "";
                     this.editInput.quantityFloat = "";
+                    this.editInput.unit = "";
                 }
 
                 if(newValue != ""){
@@ -745,10 +758,8 @@
                                 this.dataInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
                         }else{
-                            this.dataInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, ""));
+                            this.dataInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         }
-
-                        this.dataInput.planned_quantity += " "+this.dataInput.unit;
 
                         this.stocks.forEach(stock => {
                             if(stock.material_id == newValue){
@@ -787,10 +798,8 @@
                                 this.editInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
                         }else{
-                            this.editInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, ""));
+                            this.editInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         }
-                        this.editInput.planned_quantity += " "+this.editInput.unit;
-
 
                         if(newValue != this.editInput.old_material_id){
                             this.stocks.forEach(stock => {
