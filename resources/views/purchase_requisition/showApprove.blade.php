@@ -201,6 +201,7 @@
         data : data,
         methods : {
             submitForm(status){
+                $('div.overlay').show();
                 this.dataSubmit.desc = document.getElementById('rev_desc').value;
                 this.dataSubmit.status = status;
 

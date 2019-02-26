@@ -62,9 +62,9 @@
                                 @endif
                                 <td class="textCenter">
                                     @if($route == "/purchase_requisition")
-                                        <a href="{{ route('purchase_requisition.showApprove', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('purchase_requisition.showApprove', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @elseif($route == "/purchase_requisition_repair")
-                                        <a href="{{ route('purchase_requisition_repair.showApprove', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('purchase_requisition_repair.showApprove', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
@@ -85,5 +85,9 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+
+    function loading(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush
