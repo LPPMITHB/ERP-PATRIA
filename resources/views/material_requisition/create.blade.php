@@ -70,17 +70,21 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 30%">WBS Name</th>
+                                            <th style="width: 23%">WBS Name</th>
                                             <th style="width: 35%">Material Name</th>
-                                            <th style="width: 20%">Quantity</th>
+                                            <th style="width: 17%">Planned Quantity (BOM)</th>
+                                            <th style="width: 16%">Available Quantity</th>
+                                            <th style="width: 16%">Requested Quantity</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_number }}</td>
+                                            <td class="tdEllipsis">{{ material.wbs_number }} - {{ material.wbs_description }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_description }}</td>
+                                            <td class="tdEllipsis">{{ material.planned_quantity }}</td>
+                                            <td class="tdEllipsis">{{ material.availableStr }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
@@ -97,7 +101,7 @@
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length > 0">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length == 0">
@@ -116,6 +120,12 @@
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input disabled class="form-control" v-model="dataInput.planned_quantity" placeholder="">
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input disabled class="form-control" v-model="dataInput.availableStr" placeholder="">
                                             </td>
                                             <td class="p-l-0">
                                                 <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
@@ -167,6 +177,14 @@
                                                 </selectize>  
                                             </div>
                                             <div class="col-sm-12">
+                                                <label for="planned_quantity" class="control-label">Planned Quantity</label>
+                                                <input disabled type="text" id="planned_quantity" v-model="editInput.planned_quantity" class="form-control" placeholder="">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="available" class="control-label">Available Quantity</label>
+                                                <input disabled type="text" id="available" v-model="editInput.availableStr" class="form-control" placeholder="">
+                                            </div>
+                                            <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
@@ -201,6 +219,7 @@
 
 
     var data = {
+        stocks : @json($stocks),
         description : "",
         newIndex : "",
         materials : [],
@@ -235,7 +254,12 @@
             quantity : "",
             quantityInt : 0,
             wbs_id : "",
-            wbs_number : ""
+            wbs_number : "",
+            wbs_description : "",
+            planned_quantity: "",
+            available: "",
+            availableStr: "",
+            is_decimal: "",
         },
         editInput : {
             old_material_id : "",
@@ -246,7 +270,13 @@
             quantityInt : 0,
             wbs_id : "",
             old_wbs_id : "",
-            wbs_number : ""
+            wbs_number : "",
+            wbs_description : "",
+            planned_quantity: "",
+            available: "",
+            availableStr: "",
+            index: "",
+            is_decimal: "",
         },
         material_id:[],
         material_id_modal:[],
@@ -298,7 +328,7 @@
                 let isOk = false;
 
                 var string_newValue = this.dataInput.quantityInt+"";
-                this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                this.dataInput.quantityInt = parseFloat(string_newValue.replace(/,/g , ''));
 
                 if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt)){
                     isOk = true;
@@ -310,7 +340,7 @@
                 let isOk = false;
 
                 var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                this.editInput.quantityInt = parseFloat(string_newValue.replace(/,/g , ''));
 
                 if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
                     isOk = true;
@@ -350,6 +380,8 @@
                 material.quantity = this.editInput.quantity;
                 material.material_id = new_material_id;
                 material.wbs_id = this.editInput.wbs_id;
+
+                console.log(this.editInput.available - this.editInput.quantityInt);
 
                 var quantity = this.editInput.quantityInt;
 
@@ -411,16 +443,14 @@
                 });
             },
             openEditModal(data,index){
+                this.editInput.index = index;
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
                 this.editInput.material_description = data.material_description;
-                this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = data.quantityInt;
                 this.editInput.old_wbs_id = data.wbs_id;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_number = data.wbs_number;
-                this.editInput.index = index;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -475,9 +505,17 @@
 
                     this.dataMaterial.push(temp_data);
 
+                    this.stocks.forEach(stock => {
+                        if(stock.material_id == this.dataInput.material_id){
+                            stock.reserved += this.dataInput.quantityInt;
+                        }
+                    });
+
                     this.dataInput.material_description = "";
                     this.dataInput.material_code = "";
                     this.dataInput.quantity = "";
+                    this.dataInput.planned_quantity = "";
+                    this.dataInput.available = "";
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
                     this.dataInput.wbs_number = "";
@@ -523,14 +561,48 @@
                 }
             },
             'dataInput.quantity': function(newValue){
-                this.dataInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.dataInput.quantity = quantity_string;
+                if(newValue != ""){
+                    var temp = parseFloat((newValue+"").replace(/\D/g, ""));
+                    var qty = "";
+                    if(temp > this.dataInput.available){
+                        iziToast.warning({
+                            title: 'There is no available stock for this material',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        qty = this.dataInput.available;
+                    }else{
+                        qty = newValue;
+                    }
+
+                    this.dataInput.quantityInt = qty;
+                    var string_newValue = qty+"";
+                    quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    this.dataInput.quantity = quantity_string;
+                }
+            },
+            'dataInput.available':function(newValue){
+                this.dataInput.availableStr = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            },
+            'editInput.available':function(newValue){
+                this.editInput.availableStr = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
+                var temp = parseFloat((newValue+"").replace(/\D/g, ""));
+                var qty = "";
+                if(temp > this.editInput.available){
+                    iziToast.warning({
+                        title: 'There is no available stock for this material',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    qty = this.editInput.available;
+                }else{
+                    qty = newValue;
+                }
+
+                this.editInput.quantityInt = qty;
+                var string_newValue = qty+"";
                 quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 Vue.nextTick(() => this.editInput.quantity = quantity_string);
             },
@@ -539,6 +611,7 @@
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
+                        this.dataInput.wbs_description = data.wbs.description;
                         this.dataInput.wbs_number = data.wbs.number;
                         this.materials = data.materials;
                         $('div.overlay').hide();
@@ -585,6 +658,53 @@
                     })
                 }else{
                     this.dataInput.wbs_id = "";
+                }
+            },
+            'dataInput.material_id' : function(newValue){
+                if(newValue != ""){
+                    this.dataInput.quantity = "";
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialInfoAPI/'+newValue+"/"+this.dataInput.wbs_id).then(({ data }) => {
+                        // this.dataInput.available = data['available'];
+                        this.dataInput.planned_quantity = data['planned_quantity'];
+
+                        this.stocks.forEach(stock => {
+                            if(stock.material_id == newValue){
+                                this.dataInput.available = stock.quantity - stock.reserved;
+                            }
+                        });
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }
+            },
+            'editInput.material_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialInfoAPI/'+newValue+'/'+this.editInput.wbs_id).then(({ data }) => {
+                        // this.editInput.available = data['available'];
+                        this.editInput.planned_quantity = data['planned_quantity'];
+
+                        this.editInput.available = this.dataMaterial[this.editInput.index].available;
+                        this.editInput.quantity = this.dataMaterial[this.editInput.index].quantity;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
                 }
             },
         },

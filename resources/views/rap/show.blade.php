@@ -49,7 +49,7 @@
                 <div class="col-sm-6 col-md-4 m-t-10 m-l-10">
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
-                            Project Code
+                            Project Number
                         </div>
                         <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelRap->project->number}}">
                             : <b> {{ $modelRap->project->number }} </b>
@@ -57,7 +57,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
-                            Project Name
+                            Ship Name
                         </div>
                         <div class="col-xs-7 col-md-7 tdEllipsis">
                             : <b> {{ $modelRap->project->name }} </b>
@@ -71,24 +71,8 @@
                             : <b> {{ $modelRap->project->customer->name }} </b>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-5 col-md-5">
-                            Total Cost
-                        </div>
-                        <div class="col-xs-7 col-md-7 tdEllipsis">
-                            : <b>Rp.{{ number_format($modelRap->total_price) }} </b>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-sm-5 col-md-4 m-t-10 m-l-10">
-                    <div class="row">
-                        <div class="col-xs-5 col-md-4">
-                            Ship Name
-                        </div>
-                        <div class="col-xs-7 col-md-8 tdEllipsis">
-                            : <b> {{ $modelRap->project->ship->type }} </b>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-xs-5 col-md-4">
                             Ship Type
@@ -115,7 +99,7 @@
                     </div>
                 </div>
             </div>
-            <div class="box-body p-t-0 p-b-0">
+            <div class="box-body p-t-0 p-b-10">
                 @if($route == '/rap')
                     <table class="table table-bordered showTable tableNonPagingVue">
                         <thead>
@@ -123,8 +107,8 @@
                                 <th width="5%">No</th>
                                 <th width="15%">Material Number</th>
                                 <th width="30%">Material Description</th>
-                                <th width="5%">Unit</th>
                                 <th width="10%">Quantity</th>
+                                <th width="5%">Unit</th>
                                 <th width="15%">Cost per pcs</th>
                                 <th width="20%">Sub Total Cost</th>
                             </tr>
@@ -135,24 +119,33 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $rapDetail->material->code }}</td>
                                     <td>{{ $rapDetail->material->description }}</td>
+                                    <td>{{ number_format($rapDetail->quantity,2) }}</td>
                                     <td>{{ $rapDetail->material->uom->unit }}</td>
-                                    <td>{{ number_format($rapDetail->quantity) }}</td>
-                                    <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity) }}</td>
-                                    <td>Rp.{{ number_format($rapDetail->price) }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity,2) }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price,2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" style="visibility:hidden"></td>
+                                <td class="text-right p-r-5"><b>Total Cost :</b></td>
+                                <td class="text-left p-r-5"><b>Rp.{{ number_format($modelRap->total_price,2) }}</b></td>
+                            </tr>
+                        </tfoot>
                     </table>     
                 @elseif($route == '/rap_repair')
                     <table class="table table-bordered showTable tableNonPagingVue tableFixed">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="10%">Type</th>
-                                <th width="35%">Material Name</th>
-                                <th width="10%">Quantity</th>
+                                <th width="8%">Type</th>
+                                <th width="15%">Number</th>
+                                <th width="30%">Description</th>
+                                <th width="8%">Qty</th>
+                                <th width="5%">Unit</th>
                                 <th width="15%">Cost per pcs</th>
-                                <th width="20%">Sub Total Cost</th>
+                                <th width="15%">Sub Total Cost</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -161,17 +154,29 @@
                                     <td>{{ $loop->iteration }}</td>
                                     @if($rapDetail->material_id != null)
                                         <td>Material</td>
-                                        <td>{{ $rapDetail->material->name }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->material->code }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->material->description }}</td>
+                                        <td>{{ number_format($rapDetail->quantity,2) }}</td>
+                                        <td>{{ $rapDetail->material->uom->unit }}</td>
                                     @elseif($rapDetail->service_id != null)
                                         <td>Service</td>
-                                        <td>{{ $rapDetail->service->name }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->service->code }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->service->description }}</td>
+                                        <td>{{ number_format($rapDetail->quantity,2) }}</td>
+                                        <td>-</td>
                                     @endif
-                                    <td>{{ number_format($rapDetail->quantity) }}</td>
-                                    <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity) }}</td>
-                                    <td>Rp.{{ number_format($rapDetail->price) }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity,2) }}</td>
+                                    <td>Rp.{{ number_format($rapDetail->price,2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" style="visibility:hidden"></td>
+                                <td class="text-right p-r-5"><b>Total Cost :</b></td>
+                                <td class="text-left p-r-5"><b>Rp.{{ number_format($modelRap->total_price,2) }}</b></td>
+                            </tr>
+                        </tfoot>
                     </table>   
                 @endif
                 </div> <!-- /.box-body -->
