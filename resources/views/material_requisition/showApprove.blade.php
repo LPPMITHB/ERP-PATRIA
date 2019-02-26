@@ -77,17 +77,23 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="40%">Material Desc.</th>
-                            <th width="25%">Quantity</th>
+                            <th width="14%">Quantity</th>
                             <th width="30%">WBS Name</th>
+                            <th width="14%">Planned Qty</th>
+                            <th width="14%">Issued Qty</th>
+                            <th width="6%">Unit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelMR->MaterialRequisitionDetails as $MRD)
+                        @foreach($modelMRD as $MRD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $MRD->material->description }}</td>
-                                <td>{{ number_format($MRD->quantity,2) }} {{ ($MRD->material->uom->unit) }}</td>
+                                <td>{{ number_format($MRD->quantity,2) }}</td>
                                 <td>{{ $MRD->wbs != null ? $MRD->wbs->number : "-" }}</td>
+                                <td>{{ $MRD->planned_quantity }}</td>
+                                <td>{{ $MRD->issued }}</td>
+                                <td>{{ $MRD->material->uom->unit }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -118,7 +124,7 @@
         $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
         $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
             var title = $(this).text();
-            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
+            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity" || title == "Planned Qty" || title == "Issued Qty" || title == "Unit"){
                 $(this).html( '<input disabled class="form-control width100" type="text"/>' );
             }else{
                 $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
@@ -159,6 +165,7 @@
         data : data,
         methods : {
             submitForm(status){
+                $('div.overlay').show();
                 this.dataSubmit.desc = document.getElementById('rev_desc').value;
                 this.dataSubmit.status = status;
                 

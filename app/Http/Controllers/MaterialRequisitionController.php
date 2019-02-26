@@ -167,8 +167,14 @@ class MaterialRequisitionController extends Controller
         elseif($modelMR->status == 6){
             $status = 'CONSOLIDATED';
         }
+        $modelMRD = $modelMR->materialRequisitionDetails;
+        foreach($modelMRD as $MRD){
+            $issued = MaterialRequisitionDetail::where('material_id',$MRD->material_id)->where('wbs_id',$MRD->wbs_id)->get()->sum('issued');
+            $MRD['planned_quantity'] = $MRD->wbs != null ? $MRD->wbs->bom->bomDetails->where('material_id',$MRD->material_id)->first()->quantity : "-";
+            $MRD['issued'] = $issued;
+        }
 
-        return view('material_requisition.showApprove', compact('status','modelMR','route'));
+        return view('material_requisition.showApprove', compact('status','modelMR','route','modelMRD'));
     }
 
     public function edit($id, Request $request)
@@ -190,8 +196,8 @@ class MaterialRequisitionController extends Controller
                     "material_id" => $mrd->material_id,
                     "material_code" => $mrd->material->code,
                     "material_description" => $mrd->material->description,
-                    "planned_quantity" => number_format($mrd->wbs->bom->bomDetails->where('material_id', $mrd->material_id)->first()->quantity,2)." ".$mrd->material->uom->unit,
-                    "quantity" => number_format($mrd->quantity,2)." ".$mrd->material->uom->unit,
+                    "planned_quantity" => number_format($mrd->wbs->bom->bomDetails->where('material_id', $mrd->material_id)->first()->quantity,2),
+                    "quantity" => number_format($mrd->quantity,2),
                     "quantityFloat" => $mrd->quantity,
                     "wbs_id" => $mrd->wbs_id,
                     "wbs_number" => $mrd->wbs->number,
@@ -206,8 +212,8 @@ class MaterialRequisitionController extends Controller
                     "material_id" => $mrd->material_id,
                     "material_code" => $mrd->material->code,
                     "material_description" => $mrd->material->description,
-                    "planned_quantity" => number_format($mrd->wbs->bom->bomDetails->where('material_id', $mrd->material_id)->first()->quantity)." ".$mrd->material->uom->unit,
-                    "quantity" => number_format($mrd->quantity)." ".$mrd->material->uom->unit,
+                    "planned_quantity" => number_format($mrd->wbs->bom->bomDetails->where('material_id', $mrd->material_id)->first()->quantity),
+                    "quantity" => number_format($mrd->quantity),
                     "quantityFloat" => $mrd->quantity,
                     "wbs_id" => $mrd->wbs_id,
                     "wbs_number" => $mrd->wbs->number,

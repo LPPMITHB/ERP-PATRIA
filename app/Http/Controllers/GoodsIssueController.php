@@ -45,7 +45,7 @@ class GoodsIssueController extends Controller
         $modelMR = MaterialRequisition::findOrFail($id);
         $modelProject = $modelMR->project->with('ship', 'customer')->first();
         $modelSloc = StorageLocation::all();
-        $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$modelMR->id)->whereColumn('issued','!=','quantity')->with('material')->get();
+        $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$modelMR->id)->whereColumn('issued','!=','quantity')->with('material.uom')->get();
         foreach($modelMRDs as $MRD){
             $MRD['already_issued'] = $MRD->issued;
             $MRD['sloc_id'] = "";
@@ -253,7 +253,7 @@ class GoodsIssueController extends Controller
     
     //API
     public function getSlocDetailAPI($id){
-        $modelGI = StorageLocationDetail::where('material_id',$id)->with('storageLocation')->get();
+        $modelGI = StorageLocationDetail::where('material_id',$id)->with('storageLocation','material.uom')->get();
         foreach($modelGI as $GI){
             $GI['issued'] = "";
         }
