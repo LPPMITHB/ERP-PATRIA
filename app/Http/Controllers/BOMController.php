@@ -282,7 +282,7 @@ class BOMController extends Controller
         $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::where('id',$wbs->project_id)->with('ship','customer')->first();
-        $materials = Material::orderBy('description')->get()->jsonSerialize();
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
         
         if($route == '/bom'){
             if($project->business_unit_id == 1){
@@ -306,7 +306,6 @@ class BOMController extends Controller
         $datas = json_decode($request->datas);
         $bom_code = self::generateBomCode($datas->project_id);
         $modelBom = Bom::where('wbs_id',$datas->wbs_id)->first();
-
         if(!$modelBom){
             DB::beginTransaction();
             try {
@@ -608,7 +607,7 @@ class BOMController extends Controller
             $bom_detail = new BomDetail;
             $bom_detail->bom_id = $bom->id;
             $bom_detail->material_id = $material->material_id;
-            $bom_detail->quantity = $material->quantityInt;
+            $bom_detail->quantity = $material->quantity;
             $bom_detail->source = $material->source;
             if(!$bom_detail->save()){
                 return redirect()->route('bom.create')->with('error', 'Failed Save Bom Detail !');
@@ -625,7 +624,7 @@ class BOMController extends Controller
             }else{
                 $bom_detail->service_id = $material->service_id;
             }
-            $bom_detail->quantity = $material->quantityInt;
+            $bom_detail->quantity = $material->quantity;
             if(!$bom_detail->save()){
                 return redirect()->route('bom.create')->with('error', 'Failed Save Bom Detail !');
             }
