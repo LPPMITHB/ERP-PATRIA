@@ -12,6 +12,7 @@
     </head>
     <body class="{{ $defaultSkin->default ?? 'skin-blue' }} sidebar-mini fixed">
         <div class="wrapper">
+            
             <header class="main-header" id="header">
                 @include('includes.header')
             </header>
@@ -23,7 +24,14 @@
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper" id="content">
-
+                <div class="overlay">
+                    <div class="loader">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                        Loading...
+                    </div>
+                    {{-- <div class="bounceball"></div>
+                    <div class="text">LOADING...</div> --}}
+                </div>
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     @yield('content-header')

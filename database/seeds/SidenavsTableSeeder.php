@@ -750,6 +750,17 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_return.index',
         ]);
 
+        $indexApproveGReturn = Menu::where('route_name','goods_return.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveGReturn,
+            'route_name' => 'goods_return.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveGReturn,
+            'route_name' => 'goods_return.showApprove',
+        ]);
+
         $selectGRRepair = Menu::where('route_name','goods_return_repair.selectGR')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $selectGRRepair,
@@ -776,6 +787,17 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $viewReturnRepair,
             'route_name' => 'goods_return_repair.index',
+        ]);
+
+        $indexApproveGReturnRepair = Menu::where('route_name','goods_return_repair.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveGReturnRepair,
+            'route_name' => 'goods_return_repair.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexApproveGReturnRepair,
+            'route_name' => 'goods_return_repair.showApprove',
         ]);
 
         //Goods Issue

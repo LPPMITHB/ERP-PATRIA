@@ -24,6 +24,7 @@ class CreateTrxGoodsIssueTable extends Migration
             $table->integer('type')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('approved_by')->nullable();
             $table->timestamps();
 
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');

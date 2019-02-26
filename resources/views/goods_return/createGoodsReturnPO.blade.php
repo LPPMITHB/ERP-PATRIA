@@ -76,6 +76,7 @@
                                                 <th width="5%">No</th>
                                                 <th width="30%">Material Name</th>
                                                 <th width="30%">Material Description</th>
+                                                <th width="5%">Unit</th>
                                                 <th width="15%">Quantity</th>
                                                 <th width="15%">Return Qty</th>
                                             </tr>
@@ -83,8 +84,9 @@
                                         <tbody>
                                             <tr v-for="(POD,index) in modelPOD">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ POD.material.code }} - {{ POD.material.name }}</td>
+                                                <td>{{ POD.material.code }}</td>
                                                 <td>{{ POD.material.description }}</td>
+                                                <td>{{ POD.material.uom.unit }}</td>
                                                 <td>{{ POD.quantity - POD.received - POD.returned }} </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.returned_temp" placeholder="Please Input Returned Quantity">

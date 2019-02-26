@@ -23506,6 +23506,35 @@ textarea {
   width: 50em;
 }
 
+.overlay {
+  background-color: white;
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: #eaecfa;
+}
+
+.loader {
+  width: 250px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  position: absolute;
+  top: 45%;
+  left: 40%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  font-family: helvetica, arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: #3c8dbc;
+  letter-spacing: 0.2em;
+}
+
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.1
