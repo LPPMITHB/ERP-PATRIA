@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\GoodsIssue;
+use App\Models\GoodsReturn;
+use App\Models\GoodsReturnDetail;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
 use App\Models\Project;
@@ -32,7 +34,7 @@ class GoodsReturnController extends Controller
             $business_unit = 1;
         }
 
-        $modelGIs = GoodsIssue::where('type',4)->where('business_unit_id',$business_unit)->get();
+        $modelGIs = GoodsReturn::where('business_unit_id',$business_unit)->get();
 
         return view ('goods_return.index', compact('modelGIs','menu'));
     }
@@ -209,44 +211,68 @@ class GoodsReturnController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
         $datas = json_decode($request->datas);
-        $gi_number = $this->generateGINumber();
+        $gr_number = $this->generateGRNumber();
 
         DB::beginTransaction();
         try {
-            $GI = new GoodsIssue;
-            $GI->number = $gi_number;
-            $GI->purchase_order_id = $datas->purchase_order_id;
-            $GI->description = $datas->description;
+            $GR = new GoodsReturn;
+            $GR->number = $gr_number;
             if($menu ==  "building"){
-                $GI->business_unit_id = 1;
+                $GR->business_unit_id = 1;
             }elseif($menu == "repair"){
-                $GI->business_unit_id = 2;
+                $GR->business_unit_id = 2;
             }
-            $GI->type = 4;
-            $GI->status = 1;
-            $GI->branch_id = Auth::user()->branch->id;
-            $GI->user_id = Auth::user()->id;
-            $GI->save();
+            $GR->purchase_order_id = $datas->purchase_order_id;
+            $GR->description = $datas->description;
+            $GR->branch_id = Auth::user()->branch->id;
+            $GR->user_id = Auth::user()->id;
+            $GR->save();
+
             foreach($datas->POD as $POD){
                 if($POD->returned_temp > 0){
-                    $POD_returned = PurchaseOrderDetail::find($POD->id);
-                    $POD_returned->returned += $POD->returned_temp;
-                    $POD_returned->update();
-
-                    $GID = new GoodsIssueDetail;
-                    $GID->goods_issue_id = $GI->id;
-                    $GID->quantity = $POD->returned_temp;
-                    $GID->material_id = $POD->material_id;
-                    $GID->save();
+                    $GRD = new GoodsReturnDetail;
+                    $GRD->goods_return_id = $GR->id;
+                    $GRD->quantity = $POD->returned_temp;
+                    $GRD->material_id = $POD->material_id;
+                    $GRD->save();
 
                     $this->checkStatusPO($datas->purchase_order_id);
                 }
             }
+            // $GI = new GoodsIssue;
+            // $GI->number = $gi_number;
+            // $GI->purchase_order_id = $datas->purchase_order_id;
+            // $GI->description = $datas->description;
+            // if($menu ==  "building"){
+            //     $GI->business_unit_id = 1;
+            // }elseif($menu == "repair"){
+            //     $GI->business_unit_id = 2;
+            // }
+            // $GI->type = 4;
+            // $GI->status = 1;
+            // $GI->branch_id = Auth::user()->branch->id;
+            // $GI->user_id = Auth::user()->id;
+            // $GI->save();
+            // foreach($datas->POD as $POD){
+            //     if($POD->returned_temp > 0){
+            //         $POD_returned = PurchaseOrderDetail::find($POD->id);
+            //         $POD_returned->returned += $POD->returned_temp;
+            //         $POD_returned->update();
+
+            //         $GID = new GoodsIssueDetail;
+            //         $GID->goods_issue_id = $GI->id;
+            //         $GID->quantity = $POD->returned_temp;
+            //         $GID->material_id = $POD->material_id;
+            //         $GID->save();
+
+            //         $this->checkStatusPO($datas->purchase_order_id);
+            //     }
+            // }
             DB::commit();
             if($menu == "building"){
-                return redirect()->route('goods_return.show',$GI->id)->with('success', 'Goods Return Created');
+                return redirect()->route('goods_return.show',$GR->id)->with('success', 'Goods Return Created');
             }else{
-                return redirect()->route('goods_return_repair.show',$GI->id)->with('success', 'Goods Return Created');
+                return redirect()->route('goods_return_repair.show',$GR->id)->with('success', 'Goods Return Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -301,8 +327,8 @@ class GoodsReturnController extends Controller
     public function show(Request $request,$id)
     {
         $route = $request->route()->getPrefix();    
-        $modelGR = GoodsIssue::findOrFail($id);
-        $modelGRD = $modelGR->GoodsIssueDetails;
+        $modelGR = GoodsReturn::findOrFail($id);
+        $modelGRD = $modelGR->GoodsReturnDetails;
         $approve = FALSE;
 
         return view('goods_return.show', compact('modelGR','modelGRD','approve','route'));
@@ -327,6 +353,27 @@ class GoodsReturnController extends Controller
         $gi_number = 'GI-'.$gi_number;
 
         return $gi_number;
+    }
+
+    public function generateGRNumber(){
+        $modelGR = GoodsReturn::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
+		$number = 1;
+        if(isset($modelGR)){
+            $yearDoc = substr($modelGR->number, 4,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelGR->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'000000');
+        $year = intval($year);
+
+		$gr_number = $year+$number;
+        $gr_number = 'GRT-'.$gr_number;
+
+        return $gr_number;
     }
 
     public function checkStatusPO($po_id){

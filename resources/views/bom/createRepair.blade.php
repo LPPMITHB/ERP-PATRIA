@@ -115,7 +115,7 @@
                                                 <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity" :disabled="materialOk"></td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
@@ -155,7 +155,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="unit" class="control-label">Unit</label>
@@ -194,7 +194,6 @@
     });
 
     var data = {
-        submit: "ok",
         types : ['Material','Service'],
         project : @json($project),
         materials : @json($materials),
@@ -202,19 +201,22 @@
         wbs : @json($wbs),
         newIndex : 0, 
         submittedForm :{
-            project_id : "",
-            wbs_id : "",
+            project_id : @json($project->id),
+            wbs_id : @json($wbs->id),
             description : ""
         },
         input : {
             material_id : "",
             service_id : "",
             material_name : "",
+            service_name : "",
             material_code : "",
-            description : "",
+            service_code : "",
             quantity : "",
-            quantityInt : 0,
             type : "",
+            unit : "",
+            is_decimal : "",
+            material_ok : ""
         },
         editInput : {
             old_material_id : "",
@@ -226,7 +228,9 @@
             service_code : "",
             service_name : "",
             quantity : "",
-            quantityInt : 0,
+            unit : "",
+            is_decimal : "",
+            material_ok : ""
         },
         dataTable : [],
         materialSettings: {
@@ -261,17 +265,15 @@
             inputOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.input.quantityInt+"";
-                this.input.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
                 if(this.input.type == ""){
                     isOk = true;
                 }else{
                     if(this.input.type == "Material"){
-                        if(this.input.material_id == "" || this.input.material_name == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                        if(this.input.material_id == "" || this.input.material_name == "" || this.input.quantity == ""){
                             isOk = true;
                         }
                     }else if(this.input.type == "Service"){
-                        if(this.input.service_id == "" || this.input.service_name == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                        if(this.input.service_id == "" || this.input.service_name == "" || this.input.quantity == ""){
                             isOk = true;
                         }
                     }
@@ -281,7 +283,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.dataTable.length < 1 || this.submit == ""){
+                if(this.dataTable.length < 1){
                     isOk = true;
                 }
                 return isOk;
@@ -289,17 +291,33 @@
             updateOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
                 if(this.editInput.type == "Material"){
-                    if(this.editInput.material_id == "" || this.editInput.quantityInt == ""){
+                    if(this.editInput.material_id == "" || this.editInput.quantity == ""){
                         isOk = true;
                     }
                 }else if(this.editInput.type == "Service"){
-                    if(this.editInput.service_id == "" || this.editInput.quantityInt == ""){
+                    if(this.editInput.service_id == "" || this.editInput.quantity == ""){
                         isOk = true;
                     }
                 }
+                return isOk;
+            },
+            materialOk : function(){
+                let isOk = false;
+
+                if(this.input.material_ok == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
+            editMaterialOk : function(){
+                let isOk = false;
+
+                if(this.editInput.material_ok == ""){
+                    isOk = true;
+                }
+
                 return isOk;
             }
         },
@@ -391,7 +409,6 @@
                 $('div.overlay').show();
 
                 this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.index = index;
                 this.editInput.type = data.type;
@@ -402,6 +419,7 @@
                     this.editInput.old_material_id = data.material_id;
                     this.editInput.material_code = data.material_code;
                     this.editInput.material_name = data.material_name;
+                    this.editInput.is_decimal = data.is_decimal;
 
                     var material_id = JSON.stringify(this.material_id);
                     material_id = JSON.parse(material_id);
@@ -420,6 +438,7 @@
                     this.editInput.old_service_id = data.service_id;
                     this.editInput.service_code = data.service_code;
                     this.editInput.service_name = data.service_name;
+                    this.editInput.is_decimal = 0;
 
                     var service_id = JSON.stringify(this.service_id);
                     service_id = JSON.parse(service_id);
@@ -436,7 +455,10 @@
                 }
             },
             submitForm(){
-                this.submit = "";
+                $('div.overlay').show();
+                this.dataTable.forEach(data=>{
+                    data.quantity = (data.quantity+"").replace(/,/g , '');
+                })
                 this.submittedForm.materials = this.dataTable;
 
                 let struturesElem = document.createElement('input');
@@ -448,7 +470,7 @@
             },
             submitToTable(){
                 if(this.input.type == "Material"){
-                    if(this.input.material_id != "" && this.input.material_name != "" && this.input.unit != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                    if(this.input.material_id != "" && this.input.material_name != "" && this.input.unit != "" && this.input.quantity != ""){
                         var data = JSON.stringify(this.input);
                         data = JSON.parse(data);
                         this.dataTable.push(data);
@@ -466,10 +488,9 @@
                         this.input.material_code = "";
                         this.input.material_name = "";
                         this.input.quantity = "";
-                        this.input.quantityInt = 0;
                     }
                 }else if(this.input.type == "Service"){
-                    if(this.input.service_id != "" && this.input.service_name != "" && this.input.unit != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                    if(this.input.service_id != "" && this.input.service_name != "" && this.input.unit != "" && this.input.quantity != ""){
                         var data = JSON.stringify(this.input);
                         data = JSON.parse(data);
                         this.dataTable.push(data);
@@ -487,7 +508,6 @@
                         this.input.service_code = "";
                         this.input.service_name = "";
                         this.input.quantity = "";
-                        this.input.quantityInt = 0;
                     }
                 }
             },
@@ -541,15 +561,14 @@
                     this.dataTable.forEach(material => {
                         if(material.material_id == old_data_id){
                             var material = this.dataTable[this.editInput.index];
-                            material.quantityInt = this.editInput.quantityInt;
                             material.quantity = this.editInput.quantity;
+                            material.unit = this.editInput.unit;
                             material.material_id = new_data_id;
                             material.wbs_id = this.editInput.wbs_id;
 
                             window.axios.get('/api/getMaterialBOM/'+new_data_id).then(({ data }) => {
                                 material.material_name = data.description;
                                 material.material_code = data.code;
-                                material.description = data.description;
 
                                 this.material_id.forEach(id => {
                                     if(id == old_data_id){
@@ -583,7 +602,6 @@
                     this.dataTable.forEach(service => {
                         if(service.service_id == old_data_id){
                             var service = this.dataTable[this.editInput.index];
-                            service.quantityInt = this.editInput.quantityInt;
                             service.quantity = this.editInput.quantity;
                             service.service_id = new_data_id;
                             service.wbs_id = this.editInput.wbs_id;
@@ -591,7 +609,6 @@
                             window.axios.get('/api/getServiceBOM/'+new_data_id).then(({ data }) => {
                                 service.service_name = data.description;
                                 service.service_code = data.code;
-                                service.description = data.description;
 
                                 this.service_id.forEach(id => {
                                     if(id == old_data_id){
@@ -626,59 +643,133 @@
         },
         watch: {
             'input.material_id': function(newValue){
+                this.input.quantity = "";
                 if(newValue != ""){
+                    this.input.material_ok = "ok";
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         this.input.material_name = data.description;
                         this.input.material_code = data.code;
                         this.input.unit = data.uom.unit;
+                        this.input.is_decimal = data.uom.is_decimal;
                     });
+                }else{
+                    this.input.material_name = "";
+                    this.input.material_code = "";
+                    this.input.unit = "";
+                    this.input.is_decimal = "";
+                    this.input.material_ok = "";
                 }
             },
             'input.service_id': function(newValue){
                 if(newValue != ""){
+                    this.input.material_ok = "ok";
                     window.axios.get('/api/getServiceBOM/'+newValue).then(({ data }) => {
                         this.input.service_name = data.description;
                         this.input.service_code = data.code;
                         this.input.unit = '-';
+                        this.input.is_decimal = 0;
                     });
+                }else{
+                    this.input.service_name = "";
+                    this.input.service_code = "";
+                    this.input.unit = '';
+                    this.input.is_decimal = "";
+                    this.input.material_ok = "";
                 }
             },
             'editInput.material_id': function(newValue){
+                if(newValue != this.editInput.old_material_id){
+                    this.editInput.quantity = "";
+                }
                 if(newValue != ""){
+                    this.editInput.material_ok = "ok";
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         this.editInput.material_name = data.description;
                         this.editInput.material_code = data.code;
                         this.editInput.unit = data.uom.unit;
+                        this.editInput.is_decimal = data.uom.is_decimal;
                     });
+                }else{
+                    this.editInput.material_name = data.description;
+                    this.editInput.material_code = data.code;
+                    this.editInput.unit = "";
+                    this.editInput.is_decimal = "";
+                    this.editInput.material_ok = "";
                 }
             },
             'editInput.service_id': function(newValue){
+                if(newValue != this.editInput.old_service_id){
+                    this.editInput.quantity = "";
+                }
                 if(newValue != ""){
+                    this.editInput.material_ok = "ok";
                     window.axios.get('/api/getServiceBOM/'+newValue).then(({ data }) => {
                         this.editInput.service_name = data.description;
                         this.editInput.service_code = data.code;
                         this.editInput.unit = '-';
+                        this.editInput.is_decimal = 0;
                     });
+                }else{
+                    this.editInput.service_name = data.description;
+                    this.editInput.service_code = data.code;
+                    this.editInput.unit = "";
+                    this.editInput.is_decimal = "";
+                    this.editInput.material_ok = "";
                 }
             },
             'input.quantity': function(newValue){
-                this.input.quantityInt = newValue;
-                this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                if(this.input.type == "Material"){
+                    var is_decimal = this.input.is_decimal;
+                    if(is_decimal == 0){
+                        this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    }else{
+                        var decimal = newValue.replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.input.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }
+                }else{
+                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }
+
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                if(this.editInput.type == "Material"){
+                    var is_decimal = this.editInput.is_decimal;
+                    if(is_decimal == 0){
+                        this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    }else{
+                        var decimal = newValue.replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }   
+                }else{
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }
             },
             'input.type' : function(newValue){
                 this.input.material_id = "";
-                this.input.material_name = "";
-                this.input.description = "";
+                this.input.service_id = "";
+                this.input.quantity = "";
+                this.input.unit = "";
             }
         },
         created: function() {
-            this.submittedForm.project_id = this.project.id;
-            this.submittedForm.wbs_id = this.wbs.id;          
-
             this.newIndex = this.dataTable.length + 1;
         }
     });

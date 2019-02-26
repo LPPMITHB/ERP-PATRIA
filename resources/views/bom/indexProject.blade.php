@@ -52,9 +52,9 @@
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
                                     @if($route == '/bom')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a onClick="loading()" class="btn btn-primary btn-xs" href="{{ route('bom.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
                                     @elseif($route == '/bom_repair')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a onClick="loading()" class="btn btn-primary btn-xs" href="{{ route('bom_repair.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
@@ -75,5 +75,9 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+    
+    function loading(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush
