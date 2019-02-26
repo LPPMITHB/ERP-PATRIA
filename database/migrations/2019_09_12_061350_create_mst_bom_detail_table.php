@@ -18,7 +18,7 @@ class CreateMstBomDetailTable extends Migration
             $table->unsignedInteger('bom_id');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
             $table->string('source')->default('Stock');
             $table->timestamps();
 

@@ -9,6 +9,7 @@ use App\Models\MaterialRequisitionDetail;
 use App\Models\Branch;
 use App\Models\Material;
 use App\Models\WBS;
+use App\Models\Bom;
 use App\Models\Project;
 use App\Models\Stock;
 use Illuminate\Support\Collection;
@@ -55,7 +56,9 @@ class MaterialRequisitionController extends Controller
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
         }    
 
-        return view('material_requisition.create', compact('modelProject','menu'));
+        $stocks = Stock::all();
+
+        return view('material_requisition.create', compact('modelProject','menu','stocks'));
     }
 
     public function store(Request $request)
@@ -367,5 +370,25 @@ class MaterialRequisitionController extends Controller
         $stock = Stock::where('material_id',$id)->first()->jsonSerialize();
         
         return response($stock, Response::HTTP_OK);
+    }
+
+    public function getMaterialInfoAPI($id, $wbs_id)
+    {
+        $data = [];
+
+        $bom = Bom::where('wbs_id',$wbs_id)->first();
+        $planned_quantity = $bom->bomDetails->where('material_id', $id)->first()->quantity;
+
+        // $stock = Stock::where('material_id',$id)->first();
+        // $available = $stock->quantity - $stock->reserved;
+        // if($available < 0){
+        //     $available = 0;
+        // }
+        // $data['available'] = $available;
+        $data['planned_quantity'] = $planned_quantity;
+
+        return response($data, Response::HTTP_OK);
+
+        
     }
 }
