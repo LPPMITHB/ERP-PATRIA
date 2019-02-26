@@ -491,8 +491,8 @@
                         this.input.is_decimal = data.uom.is_decimal;
                     });
                 }else{
-                    this.input.material_name = data.description;
-                    this.input.material_code = data.code;
+                    this.input.material_name = "";
+                    this.input.material_code = "";
                     this.input.unit = "";
                     this.input.is_decimal = "";
                     this.input.material_ok = "";
@@ -511,8 +511,8 @@
                         this.editInput.is_decimal = data.uom.is_decimal;
                     });
                 }else{
-                    this.editInput.material_name = data.description;
-                    this.editInput.material_code = data.code;
+                    this.editInput.material_name = "";
+                    this.editInput.material_code = "";
                     this.editInput.unit = "";
                     this.editInput.is_decimal = "";
                     this.editInput.material_ok = "";

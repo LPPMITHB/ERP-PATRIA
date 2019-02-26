@@ -99,7 +99,7 @@
                     </div>
                 </div>
             </div>
-            <div class="box-body p-t-0 p-b-0">
+            <div class="box-body p-t-0 p-b-10">
                 @if($route == '/rap')
                     <table class="table table-bordered showTable tableNonPagingVue">
                         <thead>
@@ -139,11 +139,13 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="10%">Type</th>
-                                <th width="35%">Material Name</th>
-                                <th width="10%">Quantity</th>
+                                <th width="8%">Type</th>
+                                <th width="15%">Number</th>
+                                <th width="30%">Description</th>
+                                <th width="8%">Qty</th>
+                                <th width="5%">Unit</th>
                                 <th width="15%">Cost per pcs</th>
-                                <th width="20%">Sub Total Cost</th>
+                                <th width="15%">Sub Total Cost</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -152,12 +154,17 @@
                                     <td>{{ $loop->iteration }}</td>
                                     @if($rapDetail->material_id != null)
                                         <td>Material</td>
-                                        <td>{{ $rapDetail->material->name }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->material->code }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->material->description }}</td>
+                                        <td>{{ number_format($rapDetail->quantity,2) }}</td>
+                                        <td>{{ $rapDetail->material->uom->unit }}</td>
                                     @elseif($rapDetail->service_id != null)
                                         <td>Service</td>
-                                        <td>{{ $rapDetail->service->name }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->service->code }}</td>
+                                        <td class="tdEllipsis">{{ $rapDetail->service->description }}</td>
+                                        <td>{{ number_format($rapDetail->quantity,2) }}</td>
+                                        <td>-</td>
                                     @endif
-                                    <td>{{ number_format($rapDetail->quantity,2) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity,2) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price,2) }}</td>
                                 </tr>
@@ -165,7 +172,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5" style="visibility:hidden"></td>
+                                <td colspan="6" style="visibility:hidden"></td>
                                 <td class="text-right p-r-5"><b>Total Cost :</b></td>
                                 <td class="text-left p-r-5"><b>Rp.{{ number_format($modelRap->total_price,2) }}</b></td>
                             </tr>
