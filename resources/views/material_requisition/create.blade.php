@@ -259,6 +259,7 @@
             planned_quantity: "",
             available: "",
             availableStr: "",
+            is_decimal: "",
         },
         editInput : {
             old_material_id : "",
@@ -275,6 +276,7 @@
             available: "",
             availableStr: "",
             index: "",
+            is_decimal: "",
         },
         material_id:[],
         material_id_modal:[],
