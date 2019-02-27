@@ -47,14 +47,11 @@
                     <div class="col-sm-4 col-md-4">
                             <div class="box-header no-padding">
                                 <div class="box-body">
-                                    <div class="col-md-4 col-xs-4 no-padding"> Project Name</div>
-                                    <div class="col-md-6 no-padding"> : <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->project->name :  '-'}} </b></div>
-                                
                                     <div class="col-md-4 col-xs-4 no-padding">PO Code</div>
-                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
+                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
                                 
                                     <div class="col-md-4 col-xs-4 no-padding">Vendor Name</div>
-                                    <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->vendor->name : '-'}} </b></div>
+                                    <div class="col-md-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->vendor->name : '-'}}">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->vendor->name : '-'}} </b></div>
 
                                     <div class="col-md-4 col-xs-4 no-padding">Ship Date</div>
                                     <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->ship_date) ? date('d-m-Y', strtotime($modelGR->ship_date)) : '-'}} </b></div>
@@ -92,7 +89,7 @@
                                     <td>{{ $GRD->material->code }}</td>
                                     <td>{{ $GRD->material->description }}</td>
                                     <td>{{ $GRD->material->uom->unit }}</td>
-                                    <td>{{ number_format($GRD->quantity) }}</td>
+                                    <td>{{ number_format($GRD->quantity,2) }}</td>
                                     <td>{{ isset($GRD->storageLocation->name) ? $GRD->storageLocation->name : '-' }} </td>
                                     <td>{{ isset($GRD->received_date) ? date('d-m-Y', strtotime($GRD->received_date)) : '-' }}</td>
                                 </tr>
