@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-md-3">
                             : 
-                            <b>{{$snapshot->created_at}}</b>
+                            <b>{{$snapshot->created_at->format('d-m-Y H:i:s')}}</b>
                         </div>
                     </div>
                 </div>
@@ -81,9 +81,9 @@
                                 <td class="p-l-10 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$details->material->description}}">{{ $details->material->description }}</td>
                                 <td class="p-l-10">{{ $details->material->uom->unit }}</td>
                                 <td class="p-l-10">{{ $details->storageLocation->name }}</td>
-                                <td class="p-l-10">{{ $details->quantity }}</td>
-                                <td class="p-l-10">{{ $details->count }}</td>
-                                <td class="p-l-10">{{ $details->adjusted_stock }}</td>
+                                <td class="p-l-10">{{ number_format($details->quantity,2) }}</td>
+                                <td class="p-l-10">{{ number_format($details->count,2) }}</td>
+                                <td class="p-l-10">{{ number_format($details->adjusted_stock,2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -60,7 +60,7 @@
                                 </div>
                                 <!-- /.box-body -->
                                 <div class="box-footer">
-                                    <button disabled id="display" type="submit" class="btn btn-primary col-sm-12">DISPLAY</button>
+                                    <button disabled id="display" onclick="showOverlay()" type="submit" class="btn btn-primary col-sm-12">DISPLAY</button>
                                 </div>
                                 <!-- /.box-footer -->
                             </form>
@@ -84,7 +84,7 @@
                                         <tr>
                                             <td class="p-l-10">{{ $counter++ }}</td>
                                             <td class="p-l-10">{{ $snapshot->code }}</td>
-                                            <td class="p-l-10">{{ $snapshot->created_at }}</td>
+                                            <td class="p-l-10">{{ $snapshot->created_at->format('d-m-Y H:i:s') }}</td>
                                             <td class="p-l-10">
                                                 @if($snapshot->status == 1)
                                                     Open
@@ -97,11 +97,11 @@
                                             <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>
                                             <td class="p-l-0 textCenter">
                                                 @if($menu == "building")
-                                                    <a class="btn btn-primary btn-xs" href="{{route('physical_inventory.showSnapshot', ['id' => $snapshot->id])}}">
+                                                    <a id="btn_submit" onclick="showOverlay()" class="btn btn-primary btn-xs" href="{{route('physical_inventory.showSnapshot', ['id' => $snapshot->id])}}">
                                                         VIEW
                                                     </a>
                                                 @else
-                                                    <a class="btn btn-primary btn-xs" href="{{route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])}}">
+                                                    <a id="btn_submit" onclick="showOverlay()" class="btn btn-primary btn-xs" href="{{route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])}}">
                                                         VIEW
                                                     </a>
                                                 @endif
@@ -128,7 +128,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').remove();
+        $('div.overlay').hide();
         $('#sloc, #material').multiselect({
             includeSelectAllOption: true,
             buttonWidth: '100%',
@@ -155,9 +155,12 @@
             'info'        : true,
             'autoWidth'   : false,
             'initComplete': function(){
-                $('div.overlay').remove();
+                $('div.overlay').hide();
             }
         });
     });
+    function showOverlay(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush

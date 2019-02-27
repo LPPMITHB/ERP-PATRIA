@@ -18,9 +18,9 @@ class CreateRefSnapshotDetailTable extends Migration
             $table->unsignedInteger('snapshot_id');
             $table->unsignedInteger('material_id');
             $table->unsignedInteger('storage_location_id');
-            $table->integer('count')->nullable();
-            $table->integer('quantity');
-            $table->integer('adjusted_stock')->nullable();
+            $table->float('count',15,2)->nullable();
+            $table->float('quantity',15,2);
+            $table->float('adjusted_stock',15,2)->nullable();
             $table->timestamps();
              
             $table->foreign('storage_location_id')->references('id')->on('mst_storage_location'); 
