@@ -38,6 +38,7 @@
                                 <th width=20%>Number</th>
                                 <th width=25%>Description</th>
                                 <th width=23%>Deliverables</th>
+                                <th style="width: 11%">Duration</th>
                                 <th width=27%></th>
                             </tr>
                         </thead>

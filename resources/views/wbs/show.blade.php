@@ -482,6 +482,7 @@ var vm = new Vue({
             var maxWeightEdit = roundNumber(100 - roundNumber(this.totalWeight,2),2);            
 
         }
+        $('div.overlay').hide();
     }
     
 });

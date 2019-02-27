@@ -287,7 +287,7 @@ class WBSController extends Controller
             $wbsProfile->number = $data['number'];
             $wbsProfile->description = $data['description'];
             $wbsProfile->deliverables = $data['deliverables'];
-            $wbsProfile->planned_duration = $data['duration'];
+            $wbsProfile->duration = $data['duration'];
 
             if(isset($data['wbs_profile_id'])){
                 $wbsProfile->wbs_id = $data['wbs_profile_id'];
@@ -390,6 +390,7 @@ class WBSController extends Controller
             $wbs_ref->number = $data['number'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
+            $wbs_ref->duration = $data['duration'];
 
             if(!$wbs_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);

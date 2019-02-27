@@ -141,7 +141,7 @@
                                             <label for="deliverables" class="control-label">Deliverables</label>
                                             <textarea id="deliverables" v-model="editWbsProfile.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
                                         </div>
-                                        <div class="p-l-0 form-group col-sm-12">
+                                        <div class="form-group col-sm-12">
                                             <label for="duration" class=" control-label">Duration</label>
                                             <input v-model="editWbsProfile.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
                                         </div> 
@@ -224,7 +224,7 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editWbsProfile.number == ""
-                || this.newWbsProfile.duration == ""
+                || this.editWbsProfile.duration == ""
                 || this.editWbsProfile.deliverables == "")
                 {
                     isOk = true;
@@ -301,7 +301,7 @@ var vm = new Vue({
             });
         },
         openEditModal(data){
-            document.getElementById("wbs_code").innerHTML= data.code;
+            document.getElementById("wbs_code").innerHTML= data.number;
             this.editWbsProfile.wbs_id = data.id;
             this.active_id = data.id;
             this.editWbsProfile.number = data.number;
