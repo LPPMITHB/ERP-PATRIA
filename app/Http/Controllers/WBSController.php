@@ -70,7 +70,7 @@ class WBSController extends Controller
             $bom = new BomProfile;
             $bom->wbs_id = $data['wbs_id'];
             $bom->material_id = ($data['material_id'] != '') ? $data['material_id'] : null;
-            $bom->quantity = $data['quantityInt'];
+            $bom->quantity = $data['quantityFloat'];
             if($route == "/wbs"){
                 $bom->source = $data['source'];
             }else if($route == "/wbs_repair"){

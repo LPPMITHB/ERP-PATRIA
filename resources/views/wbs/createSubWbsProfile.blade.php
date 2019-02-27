@@ -48,6 +48,7 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
+                                <td>{{ data.duration }} Day(s)</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
@@ -100,6 +101,9 @@
                                 <td class="p-l-0">
                                     <textarea v-model="newSubWbsProfile.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
+                                <td class="p-l-0">
+                                    <textarea v-model="newSubWbsProfile.duration" rows="2" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>                                        
+                                </td>
                                 <td class="text-center" >
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
                                 </td>
@@ -129,6 +133,10 @@
                                             <label for="deliverables" class="control-label">Deliverables</label>
                                             <textarea id="deliverables" v-model="editWbsProfile.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
                                         </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="duration" class=" control-label">Duration</label>
+                                            <input v-model="editWbsProfile.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
+                                        </div> 
                                     </div>                                
                                 </div>
                                 <div class="modal-footer">
@@ -167,12 +175,14 @@ var data = {
         description : "",
         deliverables : "",
         wbs_profile_id : @json($wbs->id),
+        duration : "",
     },
     editWbsProfile : {
         wbs_profile_id: "",
         number : "",
         description : "",
         deliverables : "",
+        duration : "",
     },
     active_id : "",
 };
@@ -192,6 +202,7 @@ var vm = new Vue({
         createOk: function(){
             let isOk = false;
                 if(this.newSubWbsProfile.number == ""
+                || this.newSubWbsProfile.duration == ""
                 || this.newSubWbsProfile.deliverables == "")
                 {
                     isOk = true;
@@ -201,6 +212,7 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editWbsProfile.number == ""
+                || this.editWbsProfile.duration == ""
                 || this.editWbsProfile.deliverables == "")
                 {
                     isOk = true;
@@ -213,12 +225,13 @@ var vm = new Vue({
             return text
         },
         openEditModal(data){
-            document.getElementById("wbs_code").innerHTML= data.code;
+            document.getElementById("wbs_code").innerHTML= data.nunber;
             this.editWbsProfile.wbs_profile_id = data.id;
             this.active_id = data.id;
             this.editWbsProfile.number = data.number;
             this.editWbsProfile.description = data.description;
             this.editWbsProfile.deliverables = data.deliverables;
+            this.editWbsProfile.duration = data.duration;
         },
         createSubWBSRoute(data){
             var url = "";

@@ -18,7 +18,7 @@ class CreateMstBomProfile extends Migration
             $table->unsignedInteger('wbs_id');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
             $table->string('source')->nullable();
             $table->timestamps();
 
