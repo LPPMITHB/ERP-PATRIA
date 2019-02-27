@@ -1115,7 +1115,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGR = Menu::where('name','View Goods Return')->select('id')->first()->id;
+        $viewGR = Menu::where('name','View & Edit Goods Return')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Return',
             'menu_id' => $viewGR,
@@ -1162,7 +1162,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGRRepair = Menu::where('name','View Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
+        $viewGRRepair = Menu::where('name','View & Edit Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Return',
             'menu_id' => $viewGRRepair,

@@ -4,11 +4,11 @@
 @if($route == "/material_write_off")
     @breadcrumb(
         [
-            'title' => 'View Material Write Off » '.$modelGI->number,
+            'title' => 'View Material Write Off » '.$modelMWO->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Material Write Off' => route('material_write_off.show',$modelGI->id),
-                'View Material Write Off' => route('purchase_order.show',$modelGI->id),
+                'View All Material Write Off' => route('material_write_off.show',$modelMWO->id),
+                'View Material Write Off' => route('purchase_order.show',$modelMWO->id),
             ]
         ]
     )
@@ -16,10 +16,10 @@
 @elseif($route == "/material_write_off_repair")
     @breadcrumb(
         [
-            'title' => 'View Material Write Off » '.$modelGI->number,
+            'title' => 'View Material Write Off » '.$modelMWO->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Material Write Off' => route('material_write_off_repair.show',$modelGI->id),
+                'View All Material Write Off' => route('material_write_off_repair.show',$modelMWO->id),
                 'View Material Write Off' =>'',
             ]
         ]
@@ -39,19 +39,19 @@
                             <i class="fa fa-envelope"></i>
                         </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">GI Number</span>
-                            <span class="info-box-number">{{ $modelGI->number }}</span>
+                            <span class="info-box-text">MWO Number</span>
+                            <span class="info-box-number">{{ $modelMWO->number }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="box-header p-t-0 p-b-0">
                     <div class="col-sm-4 col-md-4 m-t-10">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-4 col-xs-4">
                                 Ship Name
                             </div>
                             <div class="col-md-8">
-                                : <b> {{ isset($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}} </b>
+                                : <b> {{ isset($modelMWO->materialRequisition) ? $modelMWO->materialRequisition->project->name : '-'}} </b>
                             </div>
                         </div>
                         <div class="row">
@@ -59,21 +59,21 @@
                                 MR Code
                             </div>
                             <div class="col-md-8">
-                                : <b> {{ isset($modelGI->materialRequisition) ? $modelGI->materialRequisition->number : '-' }} </b>
+                                : <b> {{ isset($modelMWO->materialRequisition) ? $modelMWO->materialRequisition->number : '-' }} </b>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row">
                             <div class="col-md-4 col-xs-4">
                                 Type
                             </div>
                             <div class="col-md-8">
-                                @if($modelGI->type == 1)
+                                @if($modelMWO->type == 1)
                                 : <b> MR Transaction </b>
-                                @elseif($modelGI->type == 2)
+                                @elseif($modelMWO->type == 2)
                                 : <b>  Resource Transaction </b>
-                                @elseif($modelGI->type == 3)
+                                @elseif($modelMWO->type == 3)
                                 : <b>  PI Transaction </b>
-                                @elseif($modelGI->type == 4)
+                                @elseif($modelMWO->type == 4)
                                 : <b>  Goods Return </b>
                                 @else
                                 : <b> Material Write Off </b>
@@ -85,17 +85,17 @@
                                 Status
                             </div>
                             <div class="col-md-8">
-                                @if($modelGI->status == 0)
+                                @if($modelMWO->status == 0)
                                 : <b> Issued </b>
-                                @elseif($modelGI->status == 1)
+                                @elseif($modelMWO->status == 1)
                                 : <b>  Open </b>
-                                @elseif($modelGI->status == 2)
+                                @elseif($modelMWO->status == 2)
                                 : <b>  Approved </b>
-                                @elseif($modelGI->status == 3)
+                                @elseif($modelMWO->status == 3)
                                 : <b>  Need Revision </b>
-                                @elseif($modelGI->status == 4)
+                                @elseif($modelMWO->status == 4)
                                 : <b> Revised </b>
-                                @elseif($modelGI->status == 5)
+                                @elseif($modelMWO->status == 5)
                                 : <b> Rejected </b>
                                 @endif
                             </div>
@@ -106,8 +106,8 @@
                             <div class="col-md-4 col-xs-4">
                                     Description
                                 </div>
-                            <div class="col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">
-                                    : <b> {{ $modelGI->description }} </b>
+                            <div class="col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelMWO->description}}">
+                                    : <b> {{ $modelMWO->description }} </b>
                                 </div>
                         </div>
                     </div>
@@ -125,24 +125,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($modelGID as $GID)
+                        @foreach ($modelMWOD as $MWO)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $GID->material->code }}</td>
-                            <td>{{ $GID->material->description }}</td>
-                            <td>{{ number_format($GID->quantity) }}</td>
-                            <td>{{ $GID->storageLocation != null ? $GID->storageLocation->name : "-" }} </td>
+                            <td>{{ $MWO->material->code }}</td>
+                            <td>{{ $MWO->material->description }}</td>
+                            <td>{{ number_format($MWO->quantity) }}</td>
+                            <td>{{ $MWO->storageLocation != null ? $MWO->storageLocation->name : "-" }} </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-                <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                {{-- <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($route == "/material_write_off")
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_issue.print', ['id'=>$modelGI->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_issue.print', ['id'=>$modelMWO->id]) }}">DOWNLOAD</a>
                     @elseif($route == "/material_write_off_repair")
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_issue_repair.print', ['id'=>$modelGI->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_issue_repair.print', ['id'=>$modelMWO->id]) }}">DOWNLOAD</a>
                     @endif
-                </div>
+                </div> --}}
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>

@@ -423,7 +423,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_return.index',
             'is_active' => true,
@@ -1330,7 +1330,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_return_repair.index',
             'is_active' => true,

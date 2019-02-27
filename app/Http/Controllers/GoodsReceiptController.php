@@ -32,11 +32,10 @@ class GoodsReceiptController extends Controller
     public function createGrWithRef(Request $request,$id)
     {
         $route = $request->route()->getPrefix();
-        // print_r($route);exit();
         $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
+        $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
         if($modelPO->purchaseRequisition->type == 1){
-            $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
-            // foreach($modelPODs as $POD){
+        // foreach($modelPODs as $POD){
             //     $POD['already_received'] = $POD->received;
             // }
             $modelSloc = StorageLocation::all();
@@ -61,9 +60,6 @@ class GoodsReceiptController extends Controller
                     "item_OK" => 0,
                     ]);
                 }
-                // print_r($datas);exit();
-
-
             
             return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc','route','datas'));
         

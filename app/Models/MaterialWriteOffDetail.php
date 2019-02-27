@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GoodsReturnDetail extends Model
+class MaterialWriteOffDetail extends Model
 {
-    protected $table = 'trx_goods_return_detail';
+    protected $table = 'trx_material_write_off_detail';
 
-    public function goodsReturn()
+    public function materialWriteOff()
     {
-        return $this->belongsTo('App\Models\GoodsReturn');
+        return $this->belongsTo('App\Models\MaterialWriteOff');
     }
 
     public function material()
@@ -22,4 +22,5 @@ class GoodsReturnDetail extends Model
     {
         return $this->belongsTo('App\Models\StorageLocation');
     }
+    
 }
