@@ -287,7 +287,7 @@ class WBSController extends Controller
             $wbsProfile->number = $data['number'];
             $wbsProfile->description = $data['description'];
             $wbsProfile->deliverables = $data['deliverables'];
-            $wbsProfile->duration = $data['duration'];
+            $wbsProfile->planned_duration = $data['duration'];
 
             if(isset($data['wbs_profile_id'])){
                 $wbsProfile->wbs_id = $data['wbs_profile_id'];
@@ -325,7 +325,7 @@ class WBSController extends Controller
             $wbs->number = $wbsProfile->number;
             $wbs->description = $wbsProfile->description;
             $wbs->deliverables = $wbsProfile->deliverables;
-            $wbs->duration = $wbsProfile->duration;
+            $wbs->planned_duration = $wbsProfile->duration;
             $wbs->project_id = $data['project_id'];
 
             if(isset($data['parent_wbs'])){
@@ -781,7 +781,7 @@ class WBSController extends Controller
                     $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;
@@ -842,7 +842,7 @@ class WBSController extends Controller
                     $wbsInput->name = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;
@@ -894,7 +894,7 @@ class WBSController extends Controller
                     $wbsInput->name = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;
@@ -954,7 +954,7 @@ class WBSController extends Controller
                     $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;
