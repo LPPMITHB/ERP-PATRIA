@@ -15,6 +15,7 @@ use App\Models\Activity;
 use App\Models\Structure;
 use App\Models\Category;
 use App\Models\Resource;
+use App\Models\ResourceTrx;
 use App\Models\ResourceDetail;
 use App\Models\BusinessUnit;
 use App\Models\MaterialRequisition;

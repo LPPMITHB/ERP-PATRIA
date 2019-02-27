@@ -180,9 +180,6 @@
                     </div>
                 </form>
             </div>
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
         </div>
     </div>
 </div>
@@ -247,6 +244,7 @@ $(document).ready(function(){
         data: data,
         methods : {
             submitForm(){
+                $('div.overlay').show();                
                 if(this.project.class_cp_phone.length > 13 || this.project.class_cp_phone.length < 10 && this.menu == "building" && this.project.class_cp_phone != ""){
                     iziToast.warning({
                         title: 'Classification Contact Person Phone format is not appropriate !',

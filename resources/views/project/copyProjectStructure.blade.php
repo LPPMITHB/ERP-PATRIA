@@ -78,12 +78,6 @@
                     </div>
                 </div>
             {{-- </div> --}}
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
-            <div id="myPopoverContent" style="display : none;">
-                
-            </div>
             @if($mainMenu == "building")
                 <form id="create-project-structure" class="form-horizontal" method="POST" action="{{route('project.storeCopyProjectStructure') }}">
             @else
@@ -107,6 +101,7 @@
     const form = document.querySelector('form#create-project-structure');
 
     function submitForm() {
+        $('div.overlay').show();
         var treeData = $('#treeview').jstree(true).get_json('#', {flat:true})
         // set flat:true to get all nodes in 1-level json
         var jsonData = JSON.stringify(treeData);
