@@ -238,7 +238,7 @@ class PurchaseOrderController extends Controller
             foreach($modelPO->purchaseOrderDetails as $POD){
                 if(count($datas) > 0){
                     $status = 0;
-                    foreach($datas as $data){
+                    foreach($datas as $key => $data){
                          if($data['material_code'] == $POD->material->code){
                             $quantity = $data['quantity'] + $POD->quantity;
                             $sub_total = $data['sub_total'] + $POD->total_price;
@@ -384,7 +384,7 @@ class PurchaseOrderController extends Controller
             foreach($modelPO->purchaseOrderDetails as $POD){
                 if(count($datas) > 0){
                     $status = 0;
-                    foreach($datas as $data){
+                    foreach($datas as $key => $data){
                          if($data['material_code'] == $POD->material->code){
                             $quantity = $data['quantity'] + $POD->quantity;
                             $sub_total = $data['sub_total'] + $POD->total_price;
@@ -501,7 +501,7 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource','material.uom')->get();
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource','material.uom','purchaseRequisitionDetail.purchaseRequisition')->get();
         $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
         foreach($modelPOD as $POD){
             $POD['old_price'] = $POD->total_price / $POD->quantity;

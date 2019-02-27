@@ -78,8 +78,8 @@ class PurchaseRequisitionController extends Controller
         }elseif($route == "/purchase_requisition_repair"){
             $modelProject = Project::where('status',1)->where('business_unit_id',2)->get()->jsonSerialize();
         }
-        $modelMaterial = Material::all()->jsonSerialize();
-        $modelResource = Resource::all()->jsonSerialize();
+        $modelMaterial = Material::orderBy('code')->get()->jsonSerialize();
+        $modelResource = Resource::orderBy('code')->get()->jsonSerialize();
 
         return view('purchase_requisition.create', compact('modelMaterial','modelProject','modelResource','route'));
     }
@@ -449,9 +449,9 @@ class PurchaseRequisitionController extends Controller
                 ]);
             }
         }
-
-        $materials = Material::where('status',1)->get()->jsonSerialize();
-        $resources = Resource::all()->jsonSerialize();
+        
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
+        $resources = Resource::orderBy('code')->get()->jsonSerialize();
 
         if($route == "/purchase_requisition"){
             $modelProject = Project::where('status',1)->where('business_unit_id',1)->get()->jsonSerialize();

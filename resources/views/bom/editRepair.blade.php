@@ -218,7 +218,6 @@
     });
 
     var data = {
-        submit: "ok",
         menu : @json($menu),
         status : @json(($modelBOM->status == 0) ? 'CONFIRMED' : 'OPEN'),
         types : ['Material','Service'],
@@ -240,8 +239,10 @@
             service_id : "",
             description : "",
             quantity : "",
-            quantityInt : 0,
             type : "",
+            unit : "",
+            is_decimal : "",
+            material_ok : ""
         },
         materialTable : @json($modelBOMDetail),
         materialSettings: {
@@ -258,9 +259,11 @@
             material_id : "",
             service_id : "",
             quantity : "",
-            quantityInt : 0,
             unit : "",
             source : "Stock",
+            is_decimal : "",
+            material_ok : "",
+            type : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -293,7 +296,6 @@
                             isOk = true;
                         }
                     }else if(this.input.type == "Service"){
-                        console.log()
                         if(this.input.service_id == "" || this.input.quantity == ""){
                             isOk = true;
                         }
@@ -304,14 +306,12 @@
             updateOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-                if(this.editInput.type == "Material"){
-                    if(this.editInput.material_id == "" || this.editInput.quantityInt == ""){
+                if(this.editInput.type == 'Material'){
+                    if(this.editInput.material_id == "" || this.editInput.quantity == ""){
                         isOk = true;
                     }
-                }else if(this.editInput.type == "Service"){
-                    if(this.editInput.service_id == "" || this.editInput.quantityInt == ""){
+                }else if(this.editInput.type == 'Service'){
+                    if(this.editInput.service_id == "" || this.editInput.quantity == ""){
                         isOk = true;
                     }
                 }
@@ -352,11 +352,22 @@
                 this.material_id = [];
                 this.service_id = [];
                 data.forEach(bomDetail => {
-                    bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     if(bomDetail.material_id != null){
+                        var decimal = (bomDetail.quantity+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            bomDetail.quantity = (bomDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
                         this.material_id.push(bomDetail.material_id);         
                     }else if(bomDetail.service_id != null){
-                        this.service_id.push(bomDetail.service_id);         
+                        bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.service_id.push(bomDetail.service_id); 
                     }
                 });
                 var jsonMaterialId = JSON.stringify(this.material_id);
@@ -411,9 +422,9 @@
                 $('div.overlay').show();
                 this.editInput.bom_detail_id = data.id;
                 this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = parseInt((data.quantity+"").replace(/,/g , ''));
 
                 if(data.material != null){
+                    this.editInput.type = 'Material';
                     var material_id = JSON.stringify(this.material_id);
                     material_id = JSON.parse(material_id);
                     
@@ -428,8 +439,10 @@
                     this.getNewModalMaterials(jsonMaterialId);
 
                     this.editInput.material_id = data.material_id;
+                    this.editInput.old_material_id = data.material_id;
                     this.editInput.unit = data.material.uom.unit;
-                    this.editInput.type = 'Material';
+                    this.editInput.is_decimal = data.is_decimal;
+
                 }else if(data.service != null){
                     var service_id = JSON.stringify(this.service_id);
                     service_id = JSON.parse(service_id);
@@ -445,8 +458,11 @@
                     this.getNewModalServices(jsonServiceId);
 
                     this.editInput.service_id = data.service_id;
+                    this.editInput.old_service_id = data.service_id;
                     this.editInput.unit = '-';
                     this.editInput.type = 'Service';
+                    this.editInput.is_decimal = 0;
+
                 }
             },
             removeRow: function(id) {
@@ -528,8 +544,7 @@
             },
             update(){
                 $('div.overlay').show();
-                this.editInput.quantityInt = (this.editInput.quantityInt+"").replace(/,/g , '');
-                this.editInput.quantityInt = parseInt(this.editInput.quantityInt);
+                this.editInput.quantity = (this.editInput.quantity+"").replace(/,/g , '');
                 $('div.overlay').show();
                 var data = this.editInput;
                 data = JSON.stringify(data);
@@ -556,7 +571,6 @@
                     this.editInput.bom_detail_id = "";
                     this.editInput.material_id = "";
                     this.editInput.quantity = "";
-                    this.editInput.quantityInt = 0;
                 })
                 .catch((error) => {
                     iziToast.warning({
@@ -577,10 +591,9 @@
                 });
             },
             submitToTable(){
-                this.input.quantityInt = (this.input.quantityInt+"").replace(/,/g , '');
-                this.input.quantityInt = parseInt(this.input.quantityInt);
+                this.input.quantity = (this.input.quantity+"").replace(/,/g , '');
                 if(this.input.type == "Material"){
-                    if(this.input.material_id != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                    if(this.input.material_id != "" && this.input.quantity != ""){
                         $('div.overlay').show();
                         var newMaterial = this.input;
                         var bom_id = this.input.bom_id;
@@ -602,7 +615,6 @@
                             this.input.type = "";
                             this.input.unit = "";
                             this.input.quantity = "";
-                            this.input.quantityInt = 0;
                             this.materialTable = [];
                             this.getBom(bom_id);
                         })
@@ -617,7 +629,7 @@
                         })
                     }
                 }else if(this.input.type == "Service"){
-                    if(this.input.service_id != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                    if(this.input.service_id != "" && this.input.quantity != ""){
                         $('div.overlay').show();
                         var newMaterial = this.input;
                         var bom_id = this.input.bom_id;
@@ -639,7 +651,6 @@
                             this.input.unit = "";
                             this.input.type = "";
                             this.input.quantity = "";
-                            this.input.quantityInt = 0;
                             this.materialTable = [];
                             this.getBom(bom_id);
                         })
@@ -667,30 +678,70 @@
         },
         watch: {
             'input.material_id': function(newValue){
+                this.input.quantity = "";
                 if(newValue != ""){
+                    this.input.material_ok = "ok";
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         this.input.unit = data.uom.unit;
+                        this.input.is_decimal = data.uom.is_decimal;
                     });
                 }else{
                     this.input.unit = "";
+                    this.input.is_decimal = "";
+                    this.input.material_ok = "";
                 }
             },
             'editInput.material_id': function(newValue){
+                if(newValue != this.editInput.old_material_id){
+                    this.editInput.quantity = "";
+                }
                 if(newValue != ""){
+                    this.editInput.material_ok = "ok";
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         this.editInput.unit = data.uom.unit;
+                        this.editInput.is_decimal = data.uom.is_decimal;
                     });
                 }else{
                     this.editInput.unit = "";
+                    this.editInput.is_decimal = "";
+                    this.editInput.material_ok = "";
                 }
             },
             'input.quantity': function(newValue){
-                this.input.quantityInt = newValue;
-                this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                var is_decimal = this.input.is_decimal;
+                if(is_decimal == 0){
+                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.input.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }  
             },
             'bom.description' : function(newValue){
                 this.updateDesc(newValue);
@@ -708,26 +759,48 @@
                 }
             },
             'input.service_id': function(newValue){
+                this.input.quantity = "";
                 if(newValue != ""){
+                    this.input.material_ok = "ok";
                     window.axios.get('/api/getServiceBOM/'+newValue).then(({ data }) => {
                         this.input.unit = '-';
+                        this.input.is_decimal = 0;
                     });
                 }else{
                     this.input.unit = "";
+                    this.input.is_decimal = "";
+                    this.input.material_ok = "";
                 }
             },
             'editInput.service_id': function(newValue){
+                if(newValue != this.editInput.old_service_id){
+                    this.editInput.quantity = "";
+                }
                 if(newValue != ""){
+                    this.editInput.material_ok = "ok";
                     window.axios.get('/api/getServiceBOM/'+newValue).then(({ data }) => {
                         this.editInput.unit = '-';
+                        this.editInput.is_decimal = 0;
                     });
                 }else{
                     this.editInput.unit = "";
+                    this.editInput.is_decimal = "";
+                    this.editInput.material_ok = "";
                 }
             },
             materialTable: function(newValue) {
                 newValue.forEach(bomDetail => {
-                    bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                    var decimal = (bomDetail.quantity+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        bomDetail.quantity = (bomDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
                 });
             },
         },

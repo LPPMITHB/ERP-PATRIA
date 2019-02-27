@@ -24,14 +24,14 @@
                 </div>
             </div> <!-- /.box-header --> --}}
             <div class="box-body">
-                <table class="table tableFixed table-bordered" id="po-table">
+                <table class="table tableFixed table-bordered tablePaging">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th width="15%">Number</th>
                             <th width="40%">Description</th>
-                            <th width="20%">Project Name</th>
-                            <th width="10%">Status</th>
+                            <th width="15%">Status</th>
+                            <th width="15%">Created By</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -41,7 +41,6 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPO->description}}">{{ $modelPO->description }}</td>
-                                <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
                                 @if($modelPO->status == 1)
                                     <td>OPEN</td>
                                 @elseif($modelPO->status == 2)
@@ -55,11 +54,12 @@
                                 @elseif($modelPO->status == 5)
                                     <td>REJECTED</td>
                                 @endif
+                                <td>{{ $modelPO->user->name }}</td>
                                 <td class="textCenter">
                                     @if($route == "/purchase_order")
-                                        <a href="{{ route('purchase_order.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('purchase_order.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @elseif($route == "/purchase_order_repair")
-                                        <a href="{{ route('purchase_order_repair.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('purchase_order_repair.showApprove', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
@@ -67,9 +67,6 @@
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
         </div> <!-- /.box -->
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->
@@ -78,17 +75,11 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#po-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
+
+    function loading(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush
