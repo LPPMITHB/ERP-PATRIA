@@ -55,11 +55,12 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
+                                                <th style="width: 15%">Category</th>
                                                 <th style="width: 25%">Resource</th>
-                                                <th style="width: 25%">WBS Name</th>
-                                                <th style="width: 20%">Quantity</th>
-                                                <th style="width: 15%">Status</th>
-                                                <th style="width: 10%"></th>
+                                                <th style="width: 25%">Resource Detail</th>
+                                                <th style="width: 10%">Quantity</th>
+                                                <th style="width: 25%">WBS</th>
+                                                <th style="width: 12%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -80,23 +81,54 @@
                                         <tfoot>
                                             <td class="p-l-10">{{newIndex}}</td>
                                             <td class="p-l-0 textLeft">
-                                                <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
-                                                    <option v-for="(resource,index) in modelResources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                <selectize v-model="dataInput.category_id" :settings="categorySettings">
+                                                    <option v-for="(category,index) in resource_categories" :value="category.id">{{ category.name }}</option>
                                                 </selectize>
+                                            </td>
+                                            
+                                            <td class="no-padding" v-show="dataInput.category_id == ''">
+                                                <selectize id="material" v-model="dataInput.null" :settings="nullSettings" disabled>
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id != ''">
+                                                <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
+                                                    <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
+                                            </td>
+            
+                                            <td class="no-padding" v-show="dataInput.category_id == 3 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
+                                                <selectize id="material" v-model="dataInput.null" :settings="nullResourceSettings" disabled>
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="no-padding" v-show="dataInput.category_id != 3 && dataInput.category_id != ''">
+                                                <selectize id="material" v-model="dataInput.null" :settings="otherSettings" disabled>
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length < 1">
+                                                <selectize v-model="dataInput.null" :settings="nullRdSettings" disabled>
+                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
+                                                <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
+                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                                </selectize>
+                                            </td>
+
+                                          
+                                            <td class="p-l-0 textLeft">
+                                                <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled='resourceDetail'>
                                             </td>
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }}</option>
+                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft">
-                                                <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity">
-                                            </td>
-                                            <td>
-                                                {{ "Not Assign" }}
-                                            </td>
                                             <td class="p-l-0 textCenter">
-                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                                <button :disabled="createOk" class="btn btn-primary btn-xs" data-toggle="modal" href="#input_schedule">ADD</button>
                                             </td>
                                         </tfoot>
                                     </table>
@@ -117,7 +149,7 @@
                                             <div class="col-sm-12">
                                                 <label class="control-label">Resource</label>
                                                 <selectize v-model="editInput.resource_id" :settings="resourceSettings">
-                                                    <option v-for="(resource,index) in modelResources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                    <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
@@ -129,6 +161,30 @@
                                             <div class="col-sm-12">
                                                 <label class="control-label">Quantity</label>
                                                 <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="input_schedule">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Input Schedule</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Schedule</label>
+                                                <input v-model="dataInput.schedule" type="text" name="daterange" value="" class="form-control" placeholder="Please Input Schedule (Optional)"/>
                                             </div>
                                         </div>
                                     </div>
@@ -160,22 +216,29 @@
 
     var data = {
         route : @json($route),
-        modelResources : @json($resources),
+        resources : @json($resources),
+        resourceDetails : @json($resourceDetails),
+        resource_categories : @json($resource_categories),
         projects : @json($modelProject),
         selectedProject : [],
         project_id : "",
         modelWBS : [],
+        selectedRD : [],
         modelAssignResource : [],
         newIndex : "",
         dataInput : {
             resource_id :"",
+            resource_detail_id :"",
             wbs_id : "",
             quantity : "",
+            category_id : "",
+            schedule : ""
         },
         editInput : {
             resource_id :"",
             wbs_id : "",
             quantity : "",
+            category_id : ""
         },
         projectSettings: {
             placeholder: 'Please Select Project'
@@ -186,12 +249,41 @@
         wbsSettings: {
             placeholder: 'Please Select WBS'
         },
+        categorySettings: {
+            placeholder: 'Please Select Category'
+        },
+        resourceDetailSettings: {
+            placeholder: 'Select Resource Detail (Optional)'
+        },
+        nullSettings: {
+            placeholder: 'Please Select Category First'
+        },
+        nullResourceSettings: {
+            placeholder: 'Please Select Resource First'
+        },
+        nullRdSettings: {
+            placeholder: 'Resource Detail Not Available !'
+        },
+        otherSettings: {
+            placeholder: '-'
+        },
     }
-
     var vm = new Vue({
         el : '#assignRsc',
         data : data,
-
+        mounted() {
+            $(function() {
+                $('input[name="daterange"]').daterangepicker({
+                    opens: 'left',
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    minDate: moment(),
+                    locale: {
+                        format: 'DD-MM-YYYY hh:mm A'
+                    },
+                });
+            });
+        },
         computed : {
             createOk: function(){
                 let isOk = false;
@@ -211,7 +303,15 @@
                 }
 
                 return isOk;
-            }
+            },
+            resourceDetail : function(){
+                let isOk = false;
+
+                if(this.dataInput.resource_detail_id != ""){
+                    isOk = true;
+                }
+                return isOk;
+            },
         },
 
         methods : {
@@ -346,28 +446,36 @@
                     })
                 }else{
                     this.selectedProject = [];
-                }
-
-                function myFunction(x) {
-                    if (x.matches) { // If media query matches
-                        $('.table').wrap('<div class="dataTables_scroll" />');
-                    } 
-                }
-
-                var x = window.matchMedia("(max-width: 500px)")
-                myFunction(x) // Call listener function at run time
-                x.addListener(myFunction) // Attach listener function on state changes
-
-                var x = window.matchMedia("(max-width: 1024px)")
-                myFunction(x) // Call listener function at run time
-                x.addListener(myFunction) // Attach listener function on state changes
-                
+                }              
             },
             'dataInput.quantity': function(newValue){
                 this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             },
             'editInput.quantity': function(newValue){
                 this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            },
+            'dataInput.resource_id' : function(newValue){
+                this.selectedRD = [];
+                this.dataInput.resource_detail_id = '';
+                this.dataInput.quantity = '';
+                this.resourceDetails.forEach(data => {
+                    if(data.resource_id == newValue){
+                        this.selectedRD.push(data);
+                    }
+                })
+            },
+            'dataInput.category_id' : function(newValue){
+                this.selectedRD = [];
+                this.dataInput.resource_id = '';
+                this.dataInput.resource_detail_id = '';
+                this.dataInput.quantity = '';
+            },
+            'dataInput.resource_detail_id': function(newValue){
+                if(newValue != ''){
+                    this.dataInput.quantity = 1;
+                }else{
+                    this.dataInput.quantity = '';
+                }
             },
         },
     });
