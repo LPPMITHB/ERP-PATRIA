@@ -750,6 +750,11 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_return.index',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewReturn,
+            'route_name' => 'goods_return.edit',
+        ]);
+
         $indexApproveGReturn = Menu::where('route_name','goods_return.indexApprove')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $indexApproveGReturn,
@@ -787,6 +792,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $viewReturnRepair,
             'route_name' => 'goods_return_repair.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewReturnRepair,
+            'route_name' => 'goods_return_repair.edit',
         ]);
 
         $indexApproveGReturnRepair = Menu::where('route_name','goods_return_repair.indexApprove')->select('id')->first()->id;

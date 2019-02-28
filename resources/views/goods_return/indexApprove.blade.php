@@ -24,6 +24,7 @@
                             <th width="5%">No</th>
                             <th width="20%">Number</th>
                             <th width="45%">Description</th>
+                            <th width="15%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -33,6 +34,19 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelGoodsReturn->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelGoodsReturn->description}}">{{ $modelGoodsReturn->description }}</td>
+                                @if($modelGoodsReturn->status == 1)
+                                <td>OPEN</td>
+                                @elseif($modelGoodsReturn->status == 2)
+                                    <td>APPROVED</td>
+                                @elseif($modelGoodsReturn->status == 0)
+                                    <td>ORDERED</td>
+                                @elseif($modelGoodsReturn->status == 3)
+                                    <td>NEEDS REVISION</td>
+                                @elseif($modelGoodsReturn->status == 4)
+                                    <td>REVISED</td>
+                                @elseif($modelGoodsReturn->status == 5)
+                                    <td>REJECTED</td>
+                                @endif
                                 <td class="textCenter">
                                     @if($menu == "building")
                                         <a href="{{ route('goods_return.showApprove', ['id'=>$modelGoodsReturn->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
