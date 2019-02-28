@@ -1117,6 +1117,8 @@ Route::name('goods_receipt_repair.')->prefix('goods_receipt_repair')->group(func
 //Goods Return Building 
 Route::name('goods_return.')->prefix('goods_return')->group(function() {    
     Route::get('/indexApprove', 'GoodsReturnController@indexApprove')->name('indexApprove')->middleware('can:approve-goods-return');
+    
+    Route::patch('/{id}', 'GoodsReturnController@update')->name('update')->middleware('can:edit-goods-return');
 
     Route::get('/showApprove/{id}', 'GoodsReturnController@showApprove')->name('showApprove')->middleware('can:show-goods-return');
 
@@ -1135,6 +1137,8 @@ Route::name('goods_return.')->prefix('goods_return')->group(function() {
     Route::get('/createGoodsReturnPO/{id}', 'GoodsReturnController@createGoodsReturnPO')->name('createGoodsReturnPO')->middleware('can:create-goods-return');
 
     Route::get('/', 'GoodsReturnController@indexGoodsReturn')->name('index')->middleware('can:list-goods-return');
+
+    Route::get('/edit/{id}', 'GoodsReturnController@edit')->name('edit')->middleware('can:edit-goods-return');
    
     Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return');
 });
@@ -1142,6 +1146,8 @@ Route::name('goods_return.')->prefix('goods_return')->group(function() {
 //Goods Return Repair 
 Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(function() {    
     Route::get('/indexApprove', 'GoodsReturnController@indexApprove')->name('indexApprove')->middleware('can:approve-goods-return-repair');
+    
+    Route::patch('/{id}', 'GoodsReturnController@update')->name('update')->middleware('can:edit-goods-return-repair');
 
     Route::get('/showApprove/{id}', 'GoodsReturnController@showApprove')->name('showApprove')->middleware('can:show-goods-return-repair');
 
@@ -1160,6 +1166,8 @@ Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(functi
     Route::get('/createGoodsReturnPO/{id}', 'GoodsReturnController@createGoodsReturnPO')->name('createGoodsReturnPO')->middleware('can:create-goods-return-repair');
 
     Route::get('/', 'GoodsReturnController@indexGoodsReturn')->name('index')->middleware('can:list-goods-return-repair');
+
+    Route::get('/edit/{id}', 'GoodsReturnController@edit')->name('edit')->middleware('can:edit-goods-return-repair');
    
     Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return-repair');
 });
@@ -1283,7 +1291,7 @@ Route::name('material_write_off.')->prefix('material_write_off')->group(function
 
     Route::get('/showApprove/{id}', 'MaterialWriteOffController@showApprove')->name('showApprove')->middleware('can:approve-material-write-off');
 
-    Route::get('/approval/{id}/{status}', 'MaterialWriteOffController@approval')->name('approval');
+    Route::get('/approval', 'MaterialWriteOffController@approval')->name('approval');
     
     Route::get('/create', 'MaterialWriteOffController@create')->name('create')->middleware('can:create-material-write-off');
     
@@ -1306,7 +1314,7 @@ Route::name('material_write_off_repair.')->prefix('material_write_off_repair')->
 
     Route::get('/showApprove/{id}', 'MaterialWriteOffController@showApprove')->name('showApprove')->middleware('can:approve-material-write-off');
 
-    Route::get('/approval/{id}/{status}', 'MaterialWriteOffController@approval')->name('approval');
+    Route::get('/approval', 'MaterialWriteOffController@approval')->name('approval');
 
     Route::get('/create', 'MaterialWriteOffController@create')->name('create')->middleware('can:create-material-write-off-repair');
     

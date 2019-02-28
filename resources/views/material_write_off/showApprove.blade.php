@@ -31,6 +31,11 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12">
+        @if($route == "/material_write_off")
+            <form id="approve-mwo"class="form-horizontal" action="{{ route('material_write_off.approval') }}">
+        @elseif($route == "/material_write_off_repair")
+            <form id="approve-mwo"class="form-horizontal" action="{{ route('material_write_off_repair.approval') }}">
+        @endif
         <div class="box box-blue">
             <div class="row">
                 <div class="col-sm-3 col-md-3">
@@ -39,14 +44,14 @@
                             <i class="fa fa-envelope"></i>
                         </span>
                         <div class="info-box-content">
-                            <span class="info-box-text">GI Number</span>
+                            <span class="info-box-text">MWO Number</span>
                             <span class="info-box-number">{{ $modelGI->number }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="box-header p-t-0 p-b-0">
                     <div class="col-sm-4 col-md-4 m-t-10">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-4 col-xs-4">
                                 Ship Name
                             </div>
@@ -61,7 +66,7 @@
                             <div class="col-md-8">
                                 : <b> {{ isset($modelGI->materialRequisition) ? $modelGI->materialRequisition->number : '-' }} </b>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row">
                             <div class="col-md-4 col-xs-4">
                                 Type
@@ -114,7 +119,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable" id="gi-table">
+                <table class="table table-bordered showTable m-t-20" id="gi-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -136,19 +141,15 @@
                         @endforeach
                     </tbody>
                 </table>
-                @if($modelGI->status == 1 || $modelGI->status == 4)
-                    <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                        @if($route == "/material_write_off")
-                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('material_write_off.approval', ['id'=>$modelGI->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('material_write_off.approval', ['id'=>$modelGI->id,'status'=>'need-revision']) }}">REVISE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('material_write_off.approval', ['id'=>$modelGI->id,'status'=>'reject']) }}">REJECT</a>
-                        @else
-                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" href="{{ route('material_write_off_repair.approval', ['id'=>$modelGI->id,'status'=>'approve']) }}">APPROVE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" href="{{ route('material_write_off_repair.approval', ['id'=>$modelGI->id,'status'=>'need-revision']) }}">REVISE</a>
-                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" href="{{ route('material_write_off_repair.approval', ['id'=>$modelGI->id,'status'=>'reject']) }}">REJECT</a>
-                        @endif
+                @verbatim
+                <div id="approval">
+                    <div class="col-md-12 m-b-10 p-r-0 p-t-10" v-if="modelGI.status == 1 || modelGI.status == 4">
+                            <a class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" @click.prevent="submitForm('approve')">APPROVE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" @click.prevent="submitForm('need-revision')">REVISE</a>
+                            <a class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" @click.prevent="submitForm('reject')">REJECT</a>
                     </div>
-                @endif
+                </div>
+                @endverbatim
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
@@ -160,6 +161,8 @@
 
 @push('script')
 <script>
+    const form = document.querySelector('form#approve-mwo');
+
     $(document).ready(function(){
         $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
         $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
@@ -190,5 +193,32 @@
 
         $('div.overlay').hide();
     });
+
+    var data = {
+        modelGI : @json($modelGI),
+        dataSubmit : {
+            mwo_id : @json($modelGI->id),
+            status : "",
+        }
+    }
+
+    var vm = new Vue({
+        el : '#approval',
+        data : data,
+        methods : {
+            submitForm(status){
+                this.dataSubmit.status = status;
+
+                let struturesElem = document.createElement('input');
+                struturesElem.setAttribute('type', 'hidden');
+                struturesElem.setAttribute('name', 'datas');
+                struturesElem.setAttribute('value', JSON.stringify(this.dataSubmit));
+                form.appendChild(struturesElem);
+                form.submit();
+            },
+        },
+        created: function() {
+        },
+    })
 </script>
 @endpush

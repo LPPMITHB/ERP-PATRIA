@@ -18,11 +18,14 @@ class CreateTrxMaterialWriteOffTable extends Migration
             $table->string('number')->unique();
             $table->unsignedInteger('business_unit_id');
             $table->text('description');
+            $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('approved_by')->nullable();
             $table->timestamps();
 
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 

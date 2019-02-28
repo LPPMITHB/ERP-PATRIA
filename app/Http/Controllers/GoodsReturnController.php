@@ -22,6 +22,7 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
 use DB;
 use Auth;
+use Illuminate\Support\Collection;
 // use App\Http\Controllers\Controller;
 
 class GoodsReturnController extends Controller
@@ -47,7 +48,7 @@ class GoodsReturnController extends Controller
         }elseif($menu == "building"){
             $business_unit_id = 1;
         }
-        $modelGoodsReturns = GoodsIssue::whereIn('status',[1,4])->where('business_unit_id',$business_unit_id)->where('type',4)->get();
+        $modelGoodsReturns = GoodsReturn::whereIn('status',[1,4])->where('business_unit_id',$business_unit_id)->get();
 
         return view('goods_return.indexApprove', compact('modelGoodsReturns','menu'));
     }
@@ -56,73 +57,152 @@ class GoodsReturnController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
 
-        $modelGI = GoodsIssue::findOrFail($id);
-        if($modelGI->status == 1){
+        $modelGRT = GoodsReturn::findOrFail($id);
+        if($modelGRT->status == 1){
             $status = 'OPEN';
         }
-        elseif($modelGI->status == 2){
+        elseif($modelGRT->status == 2){
             $status = 'APPROVED';
         }
-        elseif($modelGI->status == 3){
+        elseif($modelGRT->status == 3){
             $status = 'NEEDS REVISION';
         }
-        elseif($modelGI->status == 4){
+        elseif($modelGRT->status == 4){
             $status = 'REVISED';
         }
-        elseif($modelGI->status == 5){
+        elseif($modelGRT->status == 5){
             $status = 'REJECTED';
         }
-        elseif($modelGI->status == 0 || $modelGI->status == 7){
+        elseif($modelGRT->status == 0 || $modelGRT->status == 7){
             $status = 'ORDERED';
         }
-        elseif($modelGI->status == 6){
+        elseif($modelGRT->status == 6){
             $status = 'CONSOLIDATED';
         }
 
-        return view('goods_return.showApprove', compact('modelGI','menu','status'));
+        return view('goods_return.showApprove', compact('modelGRT','menu','status'));
     }
 
     public function approval(Request $request)
     {
         $datas = json_decode($request->datas);
         $route = $request->route()->getPrefix();
+        $gi_number = $this->generateGINumber();
+
         DB::beginTransaction();
         try{
-            $modelGI = GoodsIssue::findOrFail($datas->gi_id);
+            $modelGRT = GoodsReturn::findOrFail($datas->grt_id);
+            $modelGRTD = GoodsReturnDetail::where('goods_return_id',$modelGRT->id)->get();
+
             if($datas->status == "approve"){
-                $modelGI->status = 2;
-                $modelGI->approved_by = Auth::user()->id;
-                $modelGI->update();
+                $modelGRT->status = 2;
+                $modelGRT->approved_by = Auth::user()->id;
+                $modelGRT->update();
+
+                if($modelGRT->purchase_order_id != null){
+                    $GI = new GoodsIssue;
+                    $GI->number = $gi_number;
+                    $GI->goods_return_id = $modelGRT->id;
+                    $GI->description = $modelGRT->description;
+                    if($route ==  "/goods_return"){
+                        $GI->business_unit_id = 1;
+                    }elseif($route == "/goods_return_repair"){
+                        $GI->business_unit_id = 2;
+                    }
+                    $GI->type = 4;
+                    $GI->branch_id = Auth::user()->branch->id;
+                    $GI->user_id = Auth::user()->id;
+                    $GI->save();
+
+                    foreach($modelGRTD as $GRT){
+                        if($GRT->quantity > 0){
+                            $POD_returned = PurchaseOrderDetail::where('purchase_order_id',$modelGRT->purchase_order_id)->get();
+                            foreach($POD_returned as $data){
+                                if($GRT->material_id == $data->material_id){
+                                    $data->returned += $GRT->quantity;
+                                    $data->update();
+                                }
+                            }
+
+                            $GID = new GoodsIssueDetail;
+                            $GID->goods_issue_id = $GI->id;
+                            $GID->quantity = $GRT->quantity;
+                            $GID->material_id = $GRT->material_id;
+                            $GID->save();
+
+                            $this->checkStatusPO($modelGRT->purchase_order_id);
+                        }
+                    }
+
+                }elseif($modelGRT->goods_receipt_id != null){
+                    $GI = new GoodsIssue;
+                    $GI->number = $gi_number;
+                    $GI->goods_return_id = $modelGRT->id;
+                    $GI->description = $modelGRT->description;
+                    if($route ==  "/goods_return"){
+                        $GI->business_unit_id = 1;
+                    }elseif($route == "/goods_return_repair"){
+                        $GI->business_unit_id = 2;
+                    }
+                    $GI->type = 4;
+                    $GI->branch_id = Auth::user()->branch->id;
+                    $GI->user_id = Auth::user()->id;
+                    $GI->save();
+
+                    foreach($modelGRTD as $GRT){
+                        if($GRT->quantity > 0){
+                            $GRD_returned = GoodsReceiptDetail::where('goods_receipt_id',$modelGRT->goods_receipt_id)->get();
+                            foreach($GRD_returned as $data){
+                                if($GRT->material_id == $data->material_id){
+                                    $data->returned += $GRT->quantity;
+                                    $data->update();
+                                }
+                            }
+
+                            $GID = new GoodsIssueDetail;
+                            $GID->goods_issue_id = $GI->id;
+                            $GID->quantity = $GRT->quantity;
+                            $GID->material_id = $GRT->material_id;
+                            $GID->save();
+
+                            $this->updateStock($GRT->material_id, $GRT->quantity);
+                            $this->updateSlocDetail($GRT->material_id, $GRT->storage_location_id,$GRT->quantity);
+                            $this->checkStatusGR($modelGRT->goods_receipt_id);
+                        }
+                    }
+                }
+
+
                 DB::commit();
                 if($route == "/goods_return"){
-                    return redirect()->route('goods_return.show',$datas->gi_id)->with('success', 'Goods Return Approved');
+                    return redirect()->route('goods_return.show',$datas->grt_id)->with('success', 'Goods Return Approved');
                 }elseif($route == "/goods_return_repair"){
-                    return redirect()->route('goods_return_repair.show',$datas->gi_id)->with('success', 'Goods Return Approved');
+                    return redirect()->route('goods_return_repair.show',$datas->grt_id)->with('success', 'Goods Return Approved');
                 }
             }elseif($datas->status == "need-revision"){
-                $modelGI->status = 3;
-                $modelGI->approved_by = Auth::user()->id;
-                $modelGI->update();
+                $modelGRT->status = 3;
+                $modelGRT->approved_by = Auth::user()->id;
+                $modelGRT->update();
                 DB::commit();
                 if($route == "/goods_return"){
-                    return redirect()->route('goods_return.show',$datas->gi_id)->with('success', 'Goods Return Need Revision');
+                    return redirect()->route('goods_return.show',$datas->grt_id)->with('success', 'Goods Return Need Revision');
                 }elseif($route == "/goods_return_repair"){
-                    return redirect()->route('goods_return_repair.show',$datas->gi_id)->with('success', 'Goods Return Need Revision');
+                    return redirect()->route('goods_return_repair.show',$datas->grt_id)->with('success', 'Goods Return Need Revision');
                 }
             }elseif($datas->status == "reject"){
-                $modelGI->status = 5;
-                $modelGI->approved_by = Auth::user()->id;
-                $modelGI->update();
+                $modelGRT->status = 5;
+                $modelGRT->approved_by = Auth::user()->id;
+                $modelGRT->update();
                 DB::commit();
                 if($route == "/goods_return"){
-                    return redirect()->route('goods_return.show',$datas->gi_id)->with('success', 'Goods Return Rejected');
+                    return redirect()->route('goods_return.show',$datas->grt_id)->with('success', 'Goods Return Rejected');
                 }elseif($route == "/goods_return_repair"){
-                    return redirect()->route('goods_return_repair.show',$datas->gi_id)->with('success', 'Goods Return Rejected');
+                    return redirect()->route('goods_return_repair.show',$datas->grt_id)->with('success', 'Goods Return Rejected');
                 }
             }
         } catch (\Exception $e){
             DB::rollback();
-            return redirect()->route('goods_return.show',$datas->gi_id)->with('error', $e->getMessage());
+            return redirect()->route('goods_return.show',$datas->grt_id)->with('error', $e->getMessage());
         }
     }
 
@@ -132,10 +212,10 @@ class GoodsReturnController extends Controller
         $modelGR = GoodsReceipt::find($id);
         $vendor = $modelGR->purchaseOrder->vendor;
         $modelGRD = GoodsReceiptDetail::whereRaw('quantity - returned != 0')->where('goods_receipt_id',$modelGR->id)->with('material','material.uom')->get();
-        foreach($modelGRD as $MRD){
-            $MRD['returned_temp'] = 0;
+        foreach($modelGRD as $GRD){
+            $GRD['returned_temp'] = 0;
+            $GRD['available'] = $GRD->quantity - $GRD->returned;
         }
-
         return view('goods_return.createGoodsReturnGR', compact('modelGR','modelGRD','route','vendor'));
     }
 
@@ -152,50 +232,162 @@ class GoodsReturnController extends Controller
         return view('goods_return.createGoodsReturnPO', compact('modelPO','modelPOD','route','vendor'));
     }
 
+    public function edit($id,Request $request){
+
+        $route = $request->route()->getPrefix();
+        $modelGR = GoodsReturn::where('id',$id)->with('purchaseOrder','purchaseOrder.vendor','goodsReceipt.purchaseOrder.vendor')->first();
+        $GRD = GoodsReturnDetail::where('goods_return_id',$id)->with('material','material.uom')->get();
+        $modelGRD = Collection::make();
+
+        if($modelGR->purchase_order_id != null){
+            $pod = PurchaseOrderDetail::where('purchase_order_id',$modelGR->purchase_order_id)->get();
+            foreach($GRD as $data){
+                foreach($pod as $dataPOD){
+                    if($data->material_id == $dataPOD->material_id){
+                        $modelGRD->push([
+                            "id" => $data->id,
+                            "material_id" => $data->material_id, 
+                            "material_name" => $data->material->description,
+                            "material_code" => $data->material->code,
+                            "quantity" => $data->quantity,
+                            "unit" => $data->material->uom->unit,
+                            "is_decimal" => $data->material->uom->is_decimal,
+                            "available" => $dataPOD->quantity - $dataPOD->received - $dataPOD->returned,
+                        ]);
+                    }
+                }
+            }
+
+        }elseif($modelGR->goods_receipt_id != null){
+            $grd = GoodsReceiptDetail::where('goods_receipt_id',$modelGR->goods_receipt_id)->get();
+            foreach($GRD as $data){
+                foreach($grd as $dataGRD){
+                    if($data->material_id == $dataGRD->material_id){
+                        $modelGRD->push([
+                            "id" => $data->id,
+                            "material_id" => $data->material_id, 
+                            "material_name" => $data->material->description,
+                            "material_code" => $data->material->code,
+                            "quantity" => $data->quantity,
+                            "unit" => $data->material->uom->unit,
+                            "is_decimal" => $data->material->uom->is_decimal,
+                            "available" => $dataGRD->quantity - $dataGRD->received - $dataGRD->returned,
+                        ]);
+                    }
+                }
+            }
+
+
+        }
+        return view('goods_return.edit', compact('modelGRD','modelGR','route'));
+    }
+
+    public function update($id,Request $request)
+    {
+        $route = $request->route()->getPrefix();    
+        $datas = json_decode($request->datas);
+        
+        DB::beginTransaction();
+        try {
+            
+            $GR = GoodsReturn::where('id',$datas->goods_return_id)->first();
+            if($GR->status == 3){
+                $GR->status = 4;
+                $GR->update();
+            }
+            
+            foreach($datas->GRD as $data){
+                $GRD = GoodsReturnDetail::find($data->id);
+                $GRD->quantity = $data->quantity;
+                $GRD->update();
+            }
+
+
+            DB::commit();
+            if($route == "/goods_return"){
+                return redirect()->route('goods_return.show',$datas->goods_return_id)->with('success', 'Goods Return Updated');
+            }elseif($route == "/goods_return_repair"){
+                return redirect()->route('goods_return_repair.show',$datas->goods_return_id)->with('success', 'Goods Return Updated');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/goods_return"){
+                return redirect()->route('goods_return.edit',$datas->goods_return_id)->with('error', $e->getMessage());
+            }elseif($route == "/goods_return_repair"){
+                return redirect()->route('goods_return_repair.edit',$datas->goods_return_id)->with('error', $e->getMessage());
+            }
+        }
+    }
+
     public function storeGoodsReturnGR(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
         $datas = json_decode($request->datas);
-        $gi_number = $this->generateGINumber();
+        $gr_number = $this->generateGRNumber();
 
         DB::beginTransaction();
         try {
-            $GI = new GoodsIssue;
-            $GI->number = $gi_number;
-            $GI->goods_receipt_id = $datas->goods_receipt_id;
-            $GI->description = $datas->description;
+
+            $GR = new GoodsReturn;
+            $GR->number = $gr_number;
             if($menu ==  "building"){
-                $GI->business_unit_id = 1;
+                $GR->business_unit_id = 1;
             }elseif($menu == "repair"){
-                $GI->business_unit_id = 2;
+                $GR->business_unit_id = 2;
             }
-            $GI->type = 4;
-            $GI->branch_id = Auth::user()->branch->id;
-            $GI->user_id = Auth::user()->id;
-            $GI->save();
-            foreach($datas->GRD as $GRD){
-                if($GRD->returned_temp > 0){
-                    $GRD_returned = GoodsReceiptDetail::find($GRD->id);
-                    $GRD_returned->returned += $GRD->returned_temp;
-                    $GRD_returned->update();
+            $GR->goods_receipt_id = $datas->goods_receipt_id;
+            $GR->description = $datas->description;
+            $GR->branch_id = Auth::user()->branch->id;
+            $GR->user_id = Auth::user()->id;
+            $GR->save();
 
-                    $GID = new GoodsIssueDetail;
-                    $GID->goods_issue_id = $GI->id;
-                    $GID->quantity = $GRD->returned_temp;
-                    $GID->material_id = $GRD->material_id;
-                    $GID->storage_location_id = $GRD->storage_location_id;
-                    $GID->save();
-
-                    $this->updateStock($GRD->material_id, $GRD->returned_temp);
-                    $this->updateSlocDetail($GRD->material_id, $GRD->storage_location_id,$GRD->returned_temp);
-                    $this->checkStatusGR($datas->goods_receipt_id);
+            foreach($datas->GRD as $data){
+                if($data->returned_temp > 0){
+                    $GRD = new GoodsReturnDetail;
+                    $GRD->goods_return_id = $GR->id;
+                    $GRD->quantity = $data->returned_temp;
+                    $GRD->material_id = $data->material_id;
+                    $GRD->storage_location_id = $data->storage_location_id;
+                    $GRD->save();
                 }
             }
+
+            // $GI = new GoodsIssue;
+            // $GI->number = $gi_number;
+            // $GI->goods_receipt_id = $datas->goods_receipt_id;
+            // $GI->description = $datas->description;
+            // if($menu ==  "building"){
+            //     $GI->business_unit_id = 1;
+            // }elseif($menu == "repair"){
+            //     $GI->business_unit_id = 2;
+            // }
+            // $GI->type = 4;
+            // $GI->branch_id = Auth::user()->branch->id;
+            // $GI->user_id = Auth::user()->id;
+            // $GI->save();
+            // foreach($datas->GRD as $GRD){
+            //     if($GRD->returned_temp > 0){
+            //         $GRD_returned = GoodsReceiptDetail::find($GRD->id);
+            //         $GRD_returned->returned += $GRD->returned_temp;
+            //         $GRD_returned->update();
+
+            //         $GID = new GoodsIssueDetail;
+            //         $GID->goods_issue_id = $GI->id;
+            //         $GID->quantity = $GRD->returned_temp;
+            //         $GID->material_id = $GRD->material_id;
+            //         $GID->storage_location_id = $GRD->storage_location_id;
+            //         $GID->save();
+
+            //         $this->updateStock($GRD->material_id, $GRD->returned_temp);
+            //         $this->updateSlocDetail($GRD->material_id, $GRD->storage_location_id,$GRD->returned_temp);
+            //         $this->checkStatusGR($datas->goods_receipt_id);
+            //     }
+            // }
             DB::commit();
             if($menu == "building"){
-                return redirect()->route('goods_return.show',$GI->id)->with('success', 'Goods Return Created');
+                return redirect()->route('goods_return.show',$GR->id)->with('success', 'Goods Return Created');
             }else{
-                return redirect()->route('goods_return_repair.show',$GI->id)->with('success', 'Goods Return Created');
+                return redirect()->route('goods_return_repair.show',$GR->id)->with('success', 'Goods Return Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -236,7 +428,6 @@ class GoodsReturnController extends Controller
                     $GRD->material_id = $POD->material_id;
                     $GRD->save();
 
-                    $this->checkStatusPO($datas->purchase_order_id);
                 }
             }
             // $GI = new GoodsIssue;

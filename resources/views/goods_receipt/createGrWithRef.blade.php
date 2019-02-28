@@ -89,7 +89,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(POD,index) in modelPOD" v-if="POD.quantity > 0" :id="getId(POD.id)">
+                                            <tr v-for="(POD,index) in modelPOD" :id="getId(POD.id)">
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ POD.material_code }}</td>
                                                 <td>{{ POD.material_name }}</td>
@@ -241,7 +241,6 @@
                 var data = this.modelPOD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
-                
                 
                 var pod = this.checkedPOD;
                 var jsonPod = JSON.stringify(pod);
