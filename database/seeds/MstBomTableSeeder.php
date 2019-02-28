@@ -56,25 +56,24 @@ class MstBomTableSeeder extends Seeder
                 'created_at' => '2019-01-15 09:57:19',
                 'updated_at' => '2019-01-15 09:57:19',
             ),
-            
             3 => 
             array (
                 'id' => 4,
                 'code' => 'BOM19010001',
-                'description' => 'BOM DUMMY 1',
+                'description' => 'BOM DUMMY - PAMI 1',
                 'project_id' => 2,
                 'wbs_id' => 18,
                 'branch_id' => 2,
                 'user_id' => 3,
-                'status' => 1,
+                'status' => 0,
                 'created_at' => '2019-02-26 11:28:05',
-                'updated_at' => '2019-02-26 11:28:05',
+                'updated_at' => '2019-02-27 14:53:58',
             ),
             4 => 
             array (
                 'id' => 5,
                 'code' => 'BOM19010002',
-                'description' => 'BOM DUMMY 2',
+                'description' => 'BOM DUMMY - PAMI 2',
                 'project_id' => 2,
                 'wbs_id' => 19,
                 'branch_id' => 2,
@@ -87,7 +86,7 @@ class MstBomTableSeeder extends Seeder
             array (
                 'id' => 6,
                 'code' => 'BOM19010003',
-                'description' => 'BOM DUMMY 3',
+                'description' => 'BOM DUMMY - PAMI 3',
                 'project_id' => 2,
                 'wbs_id' => 20,
                 'branch_id' => 2,
@@ -100,7 +99,7 @@ class MstBomTableSeeder extends Seeder
             array (
                 'id' => 7,
                 'code' => 'BOM19010004',
-                'description' => 'BOM DUMMY 4',
+                'description' => 'BOM DUMMY - PAMI 4',
                 'project_id' => 2,
                 'wbs_id' => 21,
                 'branch_id' => 2,
@@ -113,7 +112,7 @@ class MstBomTableSeeder extends Seeder
             array (
                 'id' => 8,
                 'code' => 'BOM19010005',
-                'description' => 'BOM DUMMY 5',
+                'description' => 'BOM DUMMY - PAMI 5',
                 'project_id' => 2,
                 'wbs_id' => 22,
                 'branch_id' => 2,
@@ -126,7 +125,7 @@ class MstBomTableSeeder extends Seeder
             array (
                 'id' => 9,
                 'code' => 'BOM19010006',
-                'description' => 'BOM DUMMY 6',
+                'description' => 'BOM DUMMY - PAMI 6',
                 'project_id' => 2,
                 'wbs_id' => 23,
                 'branch_id' => 2,
@@ -139,7 +138,7 @@ class MstBomTableSeeder extends Seeder
             array (
                 'id' => 10,
                 'code' => 'BOM19010007',
-                'description' => 'BOM DUMMY 7',
+                'description' => 'BOM DUMMY - PAMI 7',
                 'project_id' => 2,
                 'wbs_id' => 24,
                 'branch_id' => 2,
@@ -152,7 +151,7 @@ class MstBomTableSeeder extends Seeder
             array (
                 'id' => 11,
                 'code' => 'BOM19010008',
-                'description' => 'BOM DUMMY 8',
+                'description' => 'BOM DUMMY - PAMI 8',
                 'project_id' => 2,
                 'wbs_id' => 25,
                 'branch_id' => 2,
