@@ -514,6 +514,7 @@
         watch: {
             'input.material_id': function(newValue){
                 if(newValue != ""){
+                    this.input.quantity = "";
                     $('div.overlay').show();
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         if(data.description == "" || data.description == null){
