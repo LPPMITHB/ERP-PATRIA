@@ -54,9 +54,10 @@ class ResourceController extends Controller
         }
         $resources = Resource::all();
         $resource_categories = Configuration::get('resource_category');
+        $operation_hours = Configuration::get('operation_hours');
         $resourceDetails = ResourceDetail::where('status','!=',0)->get()->jsonSerialize();
 
-        return view('resource.assignResource', compact('resourceDetails','resource_categories','resources','modelProject','route'));
+        return view('resource.assignResource', compact('resourceDetails','resource_categories','resources','modelProject','route','operation_hours'));
     }
 
     public function create(Request $request)
