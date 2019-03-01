@@ -117,6 +117,12 @@
         });
 
         $('div.overlay').hide();
+
+        $('#treeview').on("select_node.jstree", function (e, data) {
+            if(data.node.a_attr.href != '#'){
+                $('div.overlay').show();
+            }
+        });
     });
 
 </script>
