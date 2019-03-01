@@ -178,13 +178,13 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        <h4 class="modal-title">Input Schedule</h4>
+                                        <h4 class="modal-title">Input Schedule - Operation Hour : <b class="blink">{{operation_hours.start}} - {{operation_hours.end}}</b></h4>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <label class="control-label">Schedule</label>
-                                                <input v-model="dataInput.schedule" type="text" name="daterange" value="" class="form-control" placeholder="Please Input Schedule (Optional)"/>
+                                                <input v-model="dataInput.schedule" type="text" name="daterange" id="daterange" class="form-control" placeholder="Please Input Schedule (Optional)" autocomplete="off"/>
                                             </div>
                                         </div>
                                     </div>
@@ -219,6 +219,7 @@
         resources : @json($resources),
         resourceDetails : @json($resourceDetails),
         resource_categories : @json($resource_categories),
+        operation_hours : @json($operation_hours[0]),
         projects : @json($modelProject),
         selectedProject : [],
         project_id : "",
@@ -232,7 +233,9 @@
             wbs_id : "",
             quantity : "",
             category_id : "",
-            schedule : ""
+            start : "",
+            end : "",
+            schedule : "",
         },
         editInput : {
             resource_id :"",
@@ -278,9 +281,22 @@
                     timePicker: true,
                     timePicker24Hour: true,
                     minDate: moment(),
+                    timePickerIncrement: 30,
+                    showDropdowns: true,
                     locale: {
+                        timePicker24Hour: true,
                         format: 'DD-MM-YYYY hh:mm A'
                     },
+                });
+                $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+                    vm.dataInput.start = picker.startDate.format('HH:mm');
+                    vm.dataInput.end = picker.endDate.format('HH:mm');
+                    vm.checkTime(vm.dataInput.start,vm.dataInput.end);
+                });
+                $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+                    vm.dataInput.start = '';
+                    vm.dataInput.end = '';
+                    $('input[name="daterange"]').val('');
                 });
             });
         },
@@ -315,6 +331,42 @@
         },
 
         methods : {
+            clearTime(){
+                $('input[name="daterange"]').val('');
+            },
+            checkTime(start,end){
+                var operation_start = this.operation_hours.start;
+                var operation_end = this.operation_hours.end;
+                if(start < operation_start){
+                    this.clearTime();
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'Start Time Cannot Less Than '+ operation_start,
+                        position: 'topRight',
+                    });
+                }else if(start > operation_end){
+                    this.clearTime();
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'Start Time Cannot More Than '+ operation_end,
+                        position: 'topRight',
+                    });
+                }else if(end > operation_end){
+                    this.clearTime();
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'End Time Cannot More Than '+ operation_end,
+                        position: 'topRight',
+                    });
+                }else if(end < operation_start){
+                    this.clearTime();
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'End Time Cannot Less Than '+ operation_start,
+                        position: 'topRight',
+                    });
+                }
+            },
             tooltip(text){
                 Vue.directive('tooltip', function(el, binding){
                     $(el).tooltip('destroy');

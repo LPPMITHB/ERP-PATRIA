@@ -147,7 +147,6 @@ class ConfigurationsTableSeeder extends Seeder
         ]);
 
         $project_type = array(
-            
             0 => array(
                 'id' => 1,
                 'name' => 'Special Service',
@@ -174,6 +173,22 @@ class ConfigurationsTableSeeder extends Seeder
             'slug' => 'project_type',
             'title' => 'Project Type',
             'value' => json_encode($project_type),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $operation_hours = array(
+            0 => array(
+                'start' => '08:00',
+                'end' => '21:00',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'operation_hours',
+            'title' => 'Operation Hours',
+            'value' => json_encode($operation_hours),
             'is_active' => true,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
