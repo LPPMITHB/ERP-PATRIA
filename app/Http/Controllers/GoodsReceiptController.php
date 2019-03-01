@@ -32,11 +32,10 @@ class GoodsReceiptController extends Controller
     public function createGrWithRef(Request $request,$id)
     {
         $route = $request->route()->getPrefix();
-        // print_r($route);exit();
         $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
+        $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
         if($modelPO->purchaseRequisition->type == 1){
-            $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
-            // foreach($modelPODs as $POD){
+        // foreach($modelPODs as $POD){
             //     $POD['already_received'] = $POD->received;
             // }
             $modelSloc = StorageLocation::all();
@@ -59,11 +58,9 @@ class GoodsReceiptController extends Controller
                     "sloc_id" => "",
                     "received_date" => "",
                     "item_OK" => 0,
+                    "is_decimal" => $POD->material->uom->is_decimal == 1 ? true:false,
                     ]);
                 }
-                // print_r($datas);exit();
-
-
             
             return view('goods_receipt.createGrWithRef', compact('modelPO','modelPODs','modelSloc','route','datas'));
         
@@ -148,7 +145,7 @@ class GoodsReceiptController extends Controller
     public function createGrWithoutRef(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelMaterial = Material::all()->jsonSerialize();
+        $modelMaterial = Material::with('uom')->get()->jsonSerialize();
         $modelSloc = StorageLocation::all();
 
         return view('goods_receipt.createGrWithoutRef', compact('modelMaterial','modelSloc','route'));

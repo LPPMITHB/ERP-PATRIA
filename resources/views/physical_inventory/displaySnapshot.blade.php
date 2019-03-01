@@ -54,7 +54,7 @@
                                 <td class="p-l-10">{{ $stock->material->description }}</td>
                                 <td class="p-l-10">{{ $stock->material->uom->unit }}</td>
                                 <td class="p-l-10">{{ $stock->storageLocation->name }}</td>
-                                <td class="p-l-10">{{ $stock->quantity }}</td>
+                                <td class="p-l-10">{{ number_format($stock->quantity,2) }}</td>
                             </tr>
                         @endforeach
                         @if(count($stocks) == 0)
@@ -103,12 +103,13 @@
             'info'        : true,
             'autoWidth'   : false,
             'initComplete': function(){
-                $('div.overlay').remove();
+                $('div.overlay').hide();
             },
         });
     });
 
     document.getElementById("btnSubmit").addEventListener("click", function(){
+        $('div.overlay').show();
         let struturesElemSloc = document.createElement('input');
         struturesElemSloc.setAttribute('type', 'hidden');
         struturesElemSloc.setAttribute('name', 'sloc');
@@ -123,6 +124,7 @@
         form.submit();
     });
 
+    
     
 </script>
 @endpush

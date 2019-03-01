@@ -67,7 +67,7 @@
                             Created At
                         </div>
                         <div class="col-md-7">
-                            : <b> {{ $modelGM->created_at }} </b>
+                            : <b> {{ $modelGM->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $GMD->material->code }}</td>
                                 <td>{{ $GMD->material->description }}</td>
-                                <td>{{ number_format($GMD->quantity) }}</td>
+                                <td>{{ number_format($GMD->quantity,2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

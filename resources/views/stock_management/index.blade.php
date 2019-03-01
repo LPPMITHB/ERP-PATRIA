@@ -135,7 +135,7 @@
                                                 <td class="tdEllipsis">{{ selectedDetail.material.description }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity }}</td>
-                                                <td class="tdEllipsis">Rp {{ (selectedDetail.material.cost_standard_price * selectedDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                <td class="tdEllipsis">Rp {{ selectedDetail.totalValue }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity + 0 }} Days</td>
                                             </tr>
                                         </tbody>
@@ -219,6 +219,7 @@
         data : data,
         watch : {
             'sloc_id' : function(newValue){
+                $('div.overlay').show();
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getSlocSM/'+newValue).then(({ data }) => {
@@ -229,7 +230,30 @@
 
                         var data = this.selectedSlocDetail;
                         data.forEach(slocDetail => {
-                            slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                            var decimalQty = (slocDetail.quantity+"").replace(/,/g, '').split('.');
+                            if(decimalQty[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimalQty[1]+"").length > maxDecimal){
+                                    slocDetail.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    slocDetail.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                slocDetail.quantity = (slocDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }  
+                            
+                            slocDetail.totalValue = (slocDetail.material.cost_standard_price * slocDetail.quantity+"");
+                            var decimalQty = (slocDetail.totalValue+"").replace(/,/g, '').split('.');
+                            if(decimalQty[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimalQty[1]+"").length > maxDecimal){
+                                    slocDetail.totalValue = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    slocDetail.totalValue = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                slocDetail.totalValue = (slocDetail.totalValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
                         });
 
                         $('#tablePagingVue2').DataTable().destroy();
@@ -284,7 +308,30 @@
 
                             var data = this.selectedSlocDetail;
                             data.forEach(slocDetail => {
-                                slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                                var decimalQty = (slocDetail.quantity+"").replace(/,/g, '').split('.');
+                            if(decimalQty[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimalQty[1]+"").length > maxDecimal){
+                                    slocDetail.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    slocDetail.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                slocDetail.quantity = (slocDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }  
+                            
+                            slocDetail.totalValue = (slocDetail.material.cost_standard_price * slocDetail.quantity+"");
+                            var decimalQty = (slocDetail.totalValue+"").replace(/,/g, '').split('.');
+                            if(decimalQty[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimalQty[1]+"").length > maxDecimal){
+                                    slocDetail.totalValue = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    slocDetail.totalValue = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                slocDetail.totalValue = (slocDetail.totalValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }            
                             });
 
                             $('#tablePagingVue2').DataTable().destroy();
@@ -349,7 +396,30 @@
 
                         var data = this.selectedSlocDetail;
                         data.forEach(slocDetail => {
-                            slocDetail.quantity = (slocDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                            var decimalQty = (slocDetail.quantity+"").replace(/,/g, '').split('.');
+                            if(decimalQty[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimalQty[1]+"").length > maxDecimal){
+                                    slocDetail.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    slocDetail.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                slocDetail.quantity = (slocDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }  
+                            
+                            slocDetail.totalValue = (slocDetail.material.cost_standard_price * slocDetail.quantity+"");
+                            var decimalQty = (slocDetail.totalValue+"").replace(/,/g, '').split('.');
+                            if(decimalQty[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimalQty[1]+"").length > maxDecimal){
+                                    slocDetail.totalValue = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    slocDetail.totalValue = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                slocDetail.totalValue = (slocDetail.totalValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }            
                         });
 
                         $('#tablePagingVue2').DataTable().destroy();
@@ -383,6 +453,7 @@
                                     lengthChange    : false,
                                 });
                             })
+                            $('div.overlay').hide();
                         }else{
                             elements[0].parentNode.parentNode.removeChild(elements[0].parentNode);
                             this.$nextTick(function() {
@@ -413,6 +484,7 @@
                                     lengthChange    : false,
                                 });
                             })
+                            $('div.overlay').hide();
                         }
 
                     })
@@ -428,7 +500,6 @@
                         this.storageLocations = data.sloc;
                         this.warehouseValue = "Rp "+data.warehouseValue;
                         this.warehouseQuantity = data.warehouseQuantity;
-                        $('div.overlay').hide();
                     })
                     .catch((error) => {
                         iziToast.warning({
@@ -443,7 +514,9 @@
                     this.storageLocations = "";
                     $('div.overlay').hide();
                 }
+                
             }
+            
         },
         created: function(){
             window.axios.get('/api/getStockInfoSM/').then(({ data }) => {

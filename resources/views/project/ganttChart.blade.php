@@ -177,6 +177,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
+        $('div.overlay').hide();
         var project = @json($data);
         var links = @json($links);
         gantt.config.columns = [ 

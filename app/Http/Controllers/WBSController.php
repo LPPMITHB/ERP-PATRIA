@@ -70,7 +70,7 @@ class WBSController extends Controller
             $bom = new BomProfile;
             $bom->wbs_id = $data['wbs_id'];
             $bom->material_id = ($data['material_id'] != '') ? $data['material_id'] : null;
-            $bom->quantity = $data['quantityInt'];
+            $bom->quantity = $data['quantityFloat'];
             if($route == "/wbs"){
                 $bom->source = $data['source'];
             }else if($route == "/wbs_repair"){
@@ -325,7 +325,7 @@ class WBSController extends Controller
             $wbs->number = $wbsProfile->number;
             $wbs->description = $wbsProfile->description;
             $wbs->deliverables = $wbsProfile->deliverables;
-            $wbs->duration = $wbsProfile->duration;
+            $wbs->planned_duration = $wbsProfile->duration;
             $wbs->project_id = $data['project_id'];
 
             if(isset($data['parent_wbs'])){
@@ -390,6 +390,7 @@ class WBSController extends Controller
             $wbs_ref->number = $data['number'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
+            $wbs_ref->duration = $data['duration'];
 
             if(!$wbs_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -781,7 +782,7 @@ class WBSController extends Controller
                     $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;
@@ -839,10 +840,10 @@ class WBSController extends Controller
                 }else{
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->number;
+                    $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;
@@ -891,10 +892,10 @@ class WBSController extends Controller
                 if(count($wbs->activities)>0){
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->number;
+                    $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;
@@ -954,7 +955,7 @@ class WBSController extends Controller
                     $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
-                    $wbsInput->duration = $wbs->duration;
+                    $wbsInput->planned_duration = $wbs->duration;
                     $wbsInput->project_id = $project_id;
                     $wbsInput->wbs_id = $parent;
                     $wbsInput->user_id = Auth::user()->id;

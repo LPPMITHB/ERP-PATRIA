@@ -56,7 +56,7 @@
                             <tr>
                                 <td>Created At</td>
                                 <td>:</td>
-                                <td>&ensp;<b>{{$snapshot->created_at}}</b></td>
+                                <td>&ensp;<b>{{$snapshot->created_at->format('d-m-Y H:i:s')}}</b></td>
                             </tr>
                         </tbody>
                     </table>
@@ -155,21 +155,52 @@
         methods :{
             count: function(index) {
                 this.$nextTick(() => {
-                    var count = parseInt((this.snapshotDetails[index].count).replace(/,/g , ''));
+                    var snapshotDetail = this.snapshotDetails[index];
+                    var count = parseFloat((this.snapshotDetails[index].count).replace(/,/g , ''));
                     if((this.snapshotDetails[index].count) != "" && isNaN(count) == false){
                         var diff = this.snapshotDetails[index].quantity - (this.snapshotDetails[index].quantity * 2) + count;
-                        this.snapshotDetails[index].difference = (diff+"").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.snapshotDetails[index].difference = (diff+"");
 
-                        count_string = this.snapshotDetails[index].count.replace(/\D/g , '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        count_string = this.snapshotDetails[index].count;
                         this.snapshotDetails[index].count = count_string;
                     }else{
                         this.snapshotDetails[index].count = "";
                         var diff = this.snapshotDetails[index].quantity - (this.snapshotDetails[index].quantity * 2);
-                        this.snapshotDetails[index].difference = (diff+"").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.snapshotDetails[index].difference = (diff+"");
+                    }
+
+                    if(snapshotDetail.material.uom.is_decimal == 1){
+                        var decimal = (this.snapshotDetails[index].difference+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.snapshotDetails[index].difference = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.snapshotDetails[index].difference = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.snapshotDetails[index].difference = (this.snapshotDetails[index].difference+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                        
+                        var decimal = (this.snapshotDetails[index].count+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.snapshotDetails[index].count = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.snapshotDetails[index].count = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.snapshotDetails[index].count = (this.snapshotDetails[index].count+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }else{
+                        this.snapshotDetails[index].difference = ((this.snapshotDetails[index].difference+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        this.snapshotDetails[index].count = ((this.snapshotDetails[index].count+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     }
                 });
             },
             save(){
+                $('div.overlay').show();
                 this.snapshotDetails.forEach(details => {
                     details.count = (details.count+"").replace(/,/g , '');
                 });
@@ -184,12 +215,41 @@
         created: function() {
             this.snapshotDetails.forEach(details => {
                 if(details.count != null){
-                    details.difference = ((details.quantity - (details.quantity * 2) + details.count)+"").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    details.count = (details.count+"").replace(/\D/g , '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    details.difference = ((details.quantity - (details.quantity * 2) + details.count)+"");
+                    details.count = (details.count+"").replace(/,/g , '');
                 }else{    
                     details.count = details.quantity;
-                    var count = parseInt((details.count+"").replace(/,/g , ''));
-                    details.difference = ((details.quantity - (details.quantity * 2) + count)+"").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    var count = parseFloat((details.count+"").replace(/,/g , ''));
+                    details.difference = ((details.quantity - (details.quantity * 2) + count)+"");
+                }
+
+                if(details.material.uom.is_decimal == 1){
+                    var decimal = (details.difference+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            details.difference = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            details.difference = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        details.difference = (details.difference+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                    
+                    var decimal = (details.count+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            details.count = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            details.count = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        details.count = (details.count+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }else{
+                    details.difference = ((details.difference+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    details.count = ((details.count+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                 }
             });
         },

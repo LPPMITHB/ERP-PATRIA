@@ -4,10 +4,10 @@
 @if($route == "/goods_return")
     @breadcrumb(
         [
-            'title' => 'Create Goods Return',
+            'title' => 'Edit Goods Return',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Purchase Order' => route('goods_return.selectPO'),
+                'View All Goods Returns' => route('goods_return.index'),
                 'Details' => '',
             ]
         ]
@@ -16,10 +16,10 @@
 @elseif($route == "/goods_return_repair")
     @breadcrumb(
         [
-            'title' => 'Create Goods Return',
+            'title' => 'Edit Goods Return',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Purchase Order' => route('goods_return_repair.selectPO'),
+                'View All Goods Returns' => route('goods_return.index'),
                 'Details' => '',
             ]
         ]
@@ -34,31 +34,42 @@
         <div class="box">
             <div class="box-body">
                 @if($route == "/goods_return")
-                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_return.storePO') }}">
+                    <form id="update-gr" class="form-horizontal" method="POST" action="{{ route('goods_return.update',['id'=>$modelGR->id]) }}">
                 @elseif($route == "/goods_return_repair")
-                    <form id="create-gr" class="form-horizontal" method="POST" action="{{ route('goods_return_repair.storePO') }}">
+                    <form id="update-gr" class="form-horizontal" method="POST" action="{{ route('goods_return_repair.update',['id'=>$modelGR->id]) }}">
                 @endif
+                <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim
-                    <div id="pod">
+                    <div id="edit-grt">
                         <div class="col-sm-12 no-padding">
                             <div class="box-header">
                                 <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
                                     <div class="box-body no-padding">
-                                        <div class="col-md-4 col-xs-4 no-padding">PO Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.number }}</b></div>
+                                        <div class="col-md-4 col-xs-4 no-padding">GRT Number</div>
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGR.number }}</b></div>
+
+                                        <div class="col-md-4 col-xs-4 no-padding" v-if="modelGR.purchase_order_id != null">PO Number</div>
+                                        <div class="col-md-4 col-xs-4 no-padding" v-if="modelGR.goods_receipt_id != null">GR Number</div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.number }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.number }}</b></div>
                                         
                                         <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ vendor.name }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.name }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.purchase_order.vendor.name }}</b></div>
                 
                                         <div class="col-md-4 col-xs-4 no-padding">Address</div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{ vendor.address }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.address }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.purchase_order.vendor.address }}</b></div>
 
                                         <div class="col-md-4 col-xs-4 no-padding">Phone Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ vendor.phone_number }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.phone_number }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.purchase_order.vendor.phone_number }}</b></div>
 
-                                        <div class="col-md-4 col-xs-4 no-padding">PO Description</div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelPO.description)"><b>: {{ modelPO.description }}</b></div>
+                                        <div class="col-md-4 col-xs-4 no-padding" v-if="modelGR.purchase_order_id != null">PO Description</div>
+                                        <div class="col-md-4 col-xs-4 no-padding" v-if="modelGR.goods_receipt_id != null">GR Description</div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelGR.purchase_order.description)" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.description }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelGR.goods_receipt.description)" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.description }}</b></div>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
@@ -82,14 +93,14 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(POD,index) in modelPOD">
+                                            <tr v-for="(GRD,index) in modelGRD">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ POD.material.code }}</td>
-                                                <td>{{ POD.material.description }}</td>
-                                                <td>{{ POD.material.uom.unit }}</td>
-                                                <td>{{ POD.quantity - POD.received - POD.returned }} </td>
+                                                <td>{{ GRD.material_code }}</td>
+                                                <td>{{ GRD.material_name }}</td>
+                                                <td>{{ GRD.unit }}</td>
+                                                <td>{{ GRD.available }} </td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control width100" v-model="POD.returned_temp" placeholder="Please Input Returned Quantity">
+                                                    <input class="form-control width100" v-model="GRD.quantity" placeholder="Please Input Returned Quantity">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -98,7 +109,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12 p-t-10">
-                                    <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                                    <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
                                 </div>
                             </div>
                         </div>
@@ -115,7 +126,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-gr');
+    const form = document.querySelector('form#update-gr');
 
     $(document).ready(function(){
         $('div.overlay').hide();
@@ -149,21 +160,20 @@
     });
 
     var data = {
-        modelPOD : @json($modelPOD),
-        modelPO :   @json($modelPO),
-        vendor : @json($vendor),
+        modelGRD : @json($modelGRD),
+        modelGR :   @json($modelGR),
         description:"",
         submittedForm :{},
     }
 
     var vm = new Vue({
-        el : '#pod',
+        el : '#edit-grt',
         data : data,
         computed : {
             createOk: function(){
                 let isOk = true;
-                this.modelPOD.forEach(POD => {
-                    if((POD.returned_temp+"").replace(/,/g , '') > 0){
+                this.modelGRD.forEach(GRD => {
+                    if((GRD.quantity+"").replace(/,/g , '') > 0){
                         isOk = false;
                     }
                 });
@@ -174,26 +184,19 @@
             tooltipText($text){
                 return $text;
             },
-            changeText(){
-                if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
-                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelPO.vendor.address ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelPO.vendor.address;    
-                    }
-                }
-            }, 
             
             submitForm(){
-                var data = this.modelPOD;
+                var data = this.modelGRD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
 
-                data.forEach(POD => {
-                    POD.quantity = POD.quantity.replace(/,/g , ''); 
-                    POD.returned_temp = parseInt(POD.returned_temp);     
+                data.forEach(GRD => {
+                    GRD.quantity = GRD.quantity.replace(/,/g , ''); 
+                    GRD.quantity = parseInt(GRD.quantity);     
                 });
 
-                this.submittedForm.POD = data;
-                this.submittedForm.purchase_order_id = this.modelPO.id;
+                this.submittedForm.GRD = data;
+                this.submittedForm.goods_return_id = this.modelGR.id;
                 this.submittedForm.description = this.description;
 
                 let struturesElem = document.createElement('input');
@@ -205,32 +208,32 @@
             }
         },
         watch : {
-            modelPOD:{
+            modelGRD:{
                 handler: function(newValue) {
                     var data = newValue;
-                    data.forEach(POD => {
-                        if((parseInt((POD.quantity+"").replace(/,/g , '')) - parseInt((POD.received+"").replace(/,/g , ''))  - parseInt((POD.returned+"").replace(/,/g , ''))) < parseInt((POD.returned_temp+"").replace(/,/g , ''))){
-                            POD.returned_temp = POD.quantity - POD.received - POD.returned;
+                    data.forEach(GRD => {
+                        if((parseInt((GRD.available+"").replace(/,/g , ''))) < parseInt((GRD.quantity+"").replace(/,/g , ''))){
+                            GRD.quantity = GRD.available;
                             iziToast.warning({
                                 title: 'Cannot input more than received quantity..',
                                 position: 'topRight',
                                 displayMode: 'replace'
                             });
                         }
-                        if(POD.material.uom.is_decimal == 0){
-                            POD.returned_temp = (POD.returned_temp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+                        if(GRD.is_decimal == 0){
+                            GRD.quantity = (GRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
 
-                        }else if(POD.material.uom.is_decimal == 1){
-                            var decimal = (POD.returned_temp+"").replace(/,/g, '').split('.');
+                        }else if(GRD.is_decimal == 1){
+                            var decimal = (GRD.quantity+"").replace(/,/g, '').split('.');
                             if(decimal[1] != undefined){
                                 var maxDecimal = 4;
                                 if((decimal[1]+"").length > maxDecimal){
-                                    POD.returned_temp = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    GRD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                                 }else{
-                                    POD.returned_temp = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    GRD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                                 }
                             }else{
-                                POD.returned_temp = (POD.returned_temp+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                GRD.quantity = (GRD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
                         }
                     });
@@ -239,8 +242,9 @@
             },
         },
         created: function(){
-            this.modelPOD.forEach(POD => {
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            console.log(this.modelGR);
+            this.modelGRD.forEach(GRD => {
+                GRD.quantity = (GRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             });
         },
     });

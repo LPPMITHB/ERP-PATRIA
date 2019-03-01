@@ -423,7 +423,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_return.index',
             'is_active' => true,
@@ -547,18 +547,6 @@ class MenusTableSeeder extends Seeder
         $physicalInventory =  Menu::where('name','Physical Inventory')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View Adjustment History',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'physical_inventory.viewAdjustmentHistory',
-            'is_active' => true,
-            'roles' => 'ADMIN,PMP',
-            'menu_id'=>$physicalInventory,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-        
-        DB::table('menus')->insert([
-            'level' => 3,
             'name' => 'Snapshot',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory.indexSnapshot',
@@ -588,6 +576,18 @@ class MenusTableSeeder extends Seeder
             'name' => 'Adjust Stock',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory.indexAdjustStock',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=>$physicalInventory,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Adjustment History',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory.viewAdjustmentHistory',
             'is_active' => true,
             'roles' => 'ADMIN,PMP',
             'menu_id'=>$physicalInventory,
@@ -1330,7 +1330,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_return_repair.index',
             'is_active' => true,
@@ -1487,18 +1487,6 @@ class MenusTableSeeder extends Seeder
         $physicalInventory =  Menu::where('name','Physical Inventory')->where('menu_id',$materialManagement)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View Adjustment History',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'physical_inventory_repair.viewAdjustmentHistory',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$physicalInventory,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-        
-        DB::table('menus')->insert([
-            'level' => 3,
             'name' => 'Snapshot',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory_repair.indexSnapshot',
@@ -1528,6 +1516,18 @@ class MenusTableSeeder extends Seeder
             'name' => 'Adjust Stock',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory_repair.indexAdjustStock',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$physicalInventory,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Adjustment History',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'physical_inventory_repair.viewAdjustmentHistory',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$physicalInventory,

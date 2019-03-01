@@ -17,7 +17,7 @@ class TrxPurchaseRequisitionDetailTableSeeder extends Seeder
         \DB::table('trx_purchase_requisition_detail')->delete();
         
         \DB::table('trx_purchase_requisition_detail')->insert(array (
-            0 => 
+            /* 0 => 
             array (
                 'id' => 1,
                 'purchase_requisition_id' => 1,
@@ -28,7 +28,7 @@ class TrxPurchaseRequisitionDetailTableSeeder extends Seeder
                 'alocation' => 'Stock',
                 'created_at' => '2019-01-15 09:57:55',
                 'updated_at' => '2019-01-15 09:57:55',
-            ),
+            ), */
             1 => 
             array (
                 'id' => 2,

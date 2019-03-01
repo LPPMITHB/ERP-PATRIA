@@ -15,6 +15,7 @@ use App\Models\Activity;
 use App\Models\Structure;
 use App\Models\Category;
 use App\Models\Resource;
+use App\Models\ResourceTrx;
 use App\Models\ResourceDetail;
 use App\Models\BusinessUnit;
 use App\Models\MaterialRequisition;
@@ -385,6 +386,19 @@ class ProjectController extends Controller
                         $bom_detail = $bomD->replicate();
                         $bom_detail->bom_id = $bom->id;
                         $bom_detail->save();
+                    }
+                }
+
+                $resource_ref = ResourceTrx::where('wbs_id', $wbs_ref->id)->get();
+                if(count($resource_ref) > 0){
+                    foreach ($resource_ref as $resource) {
+                        $resource_input = new ResourceTrx;
+                        $resource_input = $resource->replicate();
+                        $resource_input->wbs_id = $wbs->id;
+                        $resource_input->project_id = $project_id;
+                        $resource_input->user_id = Auth::user()->id;
+                        $resource_input->branch_id = Auth::user()->branch->id;
+                        $resource_input->save();
                     }
                 }
             }elseif(strpos($dataTree->id, 'ACT') !== false){

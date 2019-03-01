@@ -7,7 +7,7 @@
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Goods Issue' => route('goods_issue.index'),
+            'View All Goods Returns' => route('goods_return.index'),
         ]
     ]
 )
