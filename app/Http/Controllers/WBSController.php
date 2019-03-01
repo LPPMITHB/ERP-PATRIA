@@ -887,7 +887,7 @@ class WBSController extends Controller
                         }
                     }
                 }
-                self::adoptWbsStructure($wbs->wbss, $wbs->id,$project_id);
+                self::adoptWbsStructure($wbs->wbss, $wbsInput->id,$project_id);
             }else{
                 if(count($wbs->activities)>0){
                     $wbsInput = new WBS;

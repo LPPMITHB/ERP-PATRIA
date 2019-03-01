@@ -92,10 +92,10 @@
     $(document).ready(function(){
 
         var data = @json($dataWbs) ;
-        
+        console.log(data);
         $('#treeview').jstree({
             "core": {
-                'data': @json($dataWbs),
+                'data': data,
                 "check_callback": true,
                 "animation": 200,
                 "dblclick_toggle": false,
@@ -105,6 +105,7 @@
             "contextmenu": {
                 "select_node": false, 
                 "show_at_node": false,
+                'items' : null
             }
         }).bind("changed.jstree", function (e, data) {
             if(data.node) {
