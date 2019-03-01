@@ -840,7 +840,7 @@ class WBSController extends Controller
                 }else{
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->number;
+                    $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
                     $wbsInput->planned_duration = $wbs->duration;
@@ -892,7 +892,7 @@ class WBSController extends Controller
                 if(count($wbs->activities)>0){
                     $wbsInput = new WBS;
                     $wbsInput->code = self::generateWbsCode($project_id);
-                    $wbsInput->name = $wbs->number;
+                    $wbsInput->number = $wbs->number;
                     $wbsInput->description = $wbs->description;
                     $wbsInput->deliverables = $wbs->deliverables;
                     $wbsInput->planned_duration = $wbs->duration;
