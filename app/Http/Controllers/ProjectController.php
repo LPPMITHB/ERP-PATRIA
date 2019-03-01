@@ -225,7 +225,6 @@ class ProjectController extends Controller
                 ]);
             } 
         }
-        
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
 
