@@ -518,16 +518,21 @@ class ProjectController extends Controller
             $project->user_id = Auth::user()->id;
             $project->branch_id = Auth::user()->branch->id;
             if($request->hasFile('drawing')){
-                // Get filename with the extension
-                $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
-                // Get just file name
-                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
-                // Get just ext
-                $extension = $request->file('drawing')->getClientOriginalExtension();
-                // File name to store
-                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
-                // Upload image
-                $path = $request->file('drawing')->storeAs('documents/project',$fileNameToStore);
+                try {
+                    // Get filename with the extension
+                    $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
+                    // Get just file name
+                    $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                    // Get just ext
+                    $extension = $request->file('drawing')->getClientOriginalExtension();
+                    // File name to store
+                    $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                    // Upload image
+                    $path = $request->file('drawing')->storeAs('documents/project',$fileNameToStore);
+                } catch (\Exception $e) {
+                    DB::rollback();
+                    dd($e);
+                }  
             }else{
                 $fileNameToStore =  null;
             }
