@@ -64,9 +64,9 @@
             <div class="box-body">
                 @if($project->id)
                     @if($menu == "building")
-                        <form class="form-horizontal" method="POST" action="{{ route('project.update',['id'=>$project->id]) }}">
+                        <form class="form-horizontal" method="POST" action="{{ route('project.update',['id'=>$project->id]) }}" enctype="multipart/form-data">
                     @else
-                        <form class="form-horizontal" method="POST" action="{{ route('project_repair.update',['id'=>$project->id]) }}">
+                        <form class="form-horizontal" method="POST" action="{{ route('project_repair.update',['id'=>$project->id]) }}" enctype="multipart/form-data">
                     @endif
                     <input type="hidden" name="_method" value="PATCH">
                 @else
