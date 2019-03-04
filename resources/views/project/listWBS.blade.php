@@ -92,7 +92,6 @@
     $(document).ready(function(){
 
         var data = @json($dataWbs) ;
-        console.log(data);
         $('#treeview').jstree({
             "core": {
                 'data': data,

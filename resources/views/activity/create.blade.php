@@ -145,8 +145,8 @@
                                 <th style="width: 16%">Description</th>
                                 <th style="width: 10%">Start Date</th>
                                 <th style="width: 10%">End Date</th>
-                                <th >Duration</th>
-                                <th >Weight</th>
+                                <th style="width: 7%" >Duration</th>
+                                <th style="width: 7%">Weight</th>
                                 <th style="width: 19%">Predecessor</th> 
                                 <th style="width: 13%"></th>
                             </tr>
