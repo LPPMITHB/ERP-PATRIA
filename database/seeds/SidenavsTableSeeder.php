@@ -222,6 +222,22 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'wbs_repair.createResourceProfile',
         ]);
 
+        $wbsConfigRepair = Menu::where('route_name','wbs_repair.createWbsConfiguration')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsConfigRepair,
+            'route_name' => 'wbs_repair.createWbsConfiguration',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsConfigRepair,
+            'route_name' => 'wbs_repair.createSubWbsConfiguration',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsConfigRepair,
+            'route_name' => 'activity_repair.createActivityConfiguration',
+        ]);
+
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $projectConfig,

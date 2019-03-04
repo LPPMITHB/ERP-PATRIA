@@ -52,5 +52,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstActivityProfileTableSeeder::class);
         $this->call(MstBomProfileTableSeeder::class);
         $this->call(MstResourceProfileTableSeeder::class);
+        $this->call(MstWbsConfigurationTableSeeder::class);
+        $this->call(MstActivityConfigurationTableSeeder::class);
     }
 }

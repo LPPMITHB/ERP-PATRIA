@@ -161,6 +161,24 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // WBS Configuration Repair
+        $manageWbsConfigurationRepair = Menu::where('name','Manage WBS Configuration')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Wbs Configuration Repair',
+            'menu_id' => $manageWbsConfigurationRepair,
+            'middleware' => 'manage-wbs-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Manage Activity Configuration Repair',
+            'menu_id' => $manageWbsConfigurationRepair,
+            'middleware' => 'manage-activity-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
         //BOM
         $viewBOM = Menu::where('name','View BOM')->select('id')->first()->id;
         DB::table('permissions')->insert([

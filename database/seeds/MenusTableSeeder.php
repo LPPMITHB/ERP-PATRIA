@@ -1016,6 +1016,18 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage WBS Configuration',
+            'icon' => 'fa-briefcase',
+            'route_name'=> 'wbs_repair.createWbsConfiguration',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 2,
             'name' => 'BOM / BOS',
             'icon' => 'fa-file-text-o',
