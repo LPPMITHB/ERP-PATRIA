@@ -91,8 +91,7 @@
 <script>
     $(document).ready(function(){
 
-        var data = @json($dataWbs);
-        
+        var data = @json($dataWbs) ;
         $('#treeview').jstree({
             "core": {
                 'data': data,
@@ -109,7 +108,7 @@
             }
         }).bind("changed.jstree", function (e, data) {
             if(data.node) {
-            document.location = data.node.a_attr.href;
+                document.location = data.node.a_attr.href;
             }
         }).bind("loaded.jstree", function (event, data) {
             // you get two params - event & data - check the core docs for a detailed description
@@ -117,6 +116,12 @@
         });
 
         $('div.overlay').hide();
+
+        $('#treeview').on("select_node.jstree", function (e, data) {
+            if(data.node.a_attr.href != '#'){
+                $('div.overlay').show();
+            }
+        });
     });
 
 </script>

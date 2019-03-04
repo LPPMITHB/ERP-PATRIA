@@ -224,8 +224,6 @@ class ProjectController extends Controller
                 ]);
             } 
         }
-        // print_r($dataWbs);exit();
-        
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
 
@@ -458,7 +456,8 @@ class ProjectController extends Controller
                 'planned_duration' => 'required',
                 'flag' => 'required',
                 'class_name' => 'required',
-                'class_contact_person_email' => 'nullable|email|max:255'
+                'class_contact_person_email' => 'nullable|email|max:255',
+                'drawing' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3000'
             ]);
         }elseif($menu == "repair"){
             $this->validate($request, [
@@ -469,6 +468,7 @@ class ProjectController extends Controller
                 'planned_start_date' => 'required',
                 'planned_end_date' => 'required',
                 'planned_duration' => 'required',
+                'drawing' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3000'
             ]);
         } 
         $projects = Project::all();
@@ -517,6 +517,7 @@ class ProjectController extends Controller
             $project->business_unit_id = $request->business_unit_id;
             $project->user_id = Auth::user()->id;
             $project->branch_id = Auth::user()->branch->id;
+
             if($request->hasFile('drawing')){
                 // Get filename with the extension
                 $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
@@ -615,6 +616,7 @@ class ProjectController extends Controller
             $project->business_unit_id = $request->business_unit_id;
             $project->user_id = Auth::user()->id;
             $project->branch_id = Auth::user()->branch->id;
+
             if($request->hasFile('drawing')){
                 // Get filename with the extension
                 $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
