@@ -26,7 +26,6 @@ class ActivityController extends Controller
         $wbs = WBS::find($id);
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-
         return view('activity.create', compact('project', 'wbs','menu'));
     }
 

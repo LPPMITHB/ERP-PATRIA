@@ -103,7 +103,6 @@ class ProjectController extends Controller
         $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = $project->wbss;
         $dataWbs = Collection::make();
-
         $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
         $dataWbs->push([
             "id" => $project->number, 
@@ -225,6 +224,7 @@ class ProjectController extends Controller
                 ]);
             } 
         }
+        // print_r($dataWbs);exit();
         
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }

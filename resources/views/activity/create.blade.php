@@ -61,7 +61,7 @@
                                 <td>:</td>
                                 <td>&ensp;<b>@php
                                             $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                            $date = $date->format('d-m-Y');
+                                            $date = isset($date) ? $date->format('d-m-Y') : '-';
                                             echo $date;
                                         @endphp
                                     </b>
@@ -72,7 +72,7 @@
                                 <td>:</td>
                                 <td>&ensp;<b>@php
                                             $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                            $date = $date->format('d-m-Y');
+                                            $date = isset($date) ? $date->format('d-m-Y') : '-';
                                             echo $date;
                                         @endphp
                                     </b>
@@ -111,9 +111,13 @@
                                 <td>Planned Start Date</td>
                                 <td>:</td>
                                 <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_start_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
+                                        if(isset($wbs->planned_end_date)){
+                                        $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_start_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    }else{
+                                        echo '-';
+                                    }
                                         @endphp
                                     </b>
                                 </td>
@@ -122,9 +126,13 @@
                                 <td>Planned End Date</td>
                                 <td>:</td>
                                 <td><b>@php
-                                            $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
-                                            $date = $date->format('d-m-Y');
-                                            echo $date;
+                                    if(isset($wbs->planned_end_date)){
+                                        $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    }else{
+                                        echo '-';
+                                    }
                                         @endphp
                                     </b>
                                 </td>
