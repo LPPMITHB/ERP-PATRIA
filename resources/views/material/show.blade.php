@@ -134,6 +134,19 @@
                                 @endif
                             </td>
                         </tr>
+                        <tr>
+                            <td style="vertical-align:top">16</td>
+                            <td style="vertical-align:top">Image</td>
+                            <td class="iconTd">
+                                @if($material->image != null)
+                                    <a target="_blank" href="{{ URL::to('/') }}/app/documents/material/{{$material->image}}">
+                                        <img style="width:100%; height:500px" src="{{ URL::to('/') }}/app/documents/material/{{$material->image}}">
+                                    </a>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

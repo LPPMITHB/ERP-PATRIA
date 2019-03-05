@@ -50,6 +50,7 @@
 
                         <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: @php
+                            if()
                                 $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
                                 $date = $date->format('d-m-Y');
                                 echo $date;

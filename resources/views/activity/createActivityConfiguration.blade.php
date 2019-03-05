@@ -1,57 +1,29 @@
 @extends('layouts.main')
 @section('content-header')
-    @if ($menu == "building")
-        @if($wbs->wbs != null)
-            @breadcrumb(
-                [
-                    'title' => "Manage Activities",
-                    'items' => [
-                        'Dashboard' => route('index'),
-                        $wbs->number => route('wbs.createSubWbsProfile', $wbs->wbs->id),
-                        "Manage Activities" => ""
-                    ]
+    @if($wbs->wbs != null)
+        @breadcrumb(
+            [
+                'title' => "Manage Activities",
+                'items' => [
+                    'Dashboard' => route('index'),
+                    $wbs->number => route('wbs_repair.createSubWbsConfiguration', $wbs->wbs->id),
+                    "Manage Activities" => ""
                 ]
-            )
-            @endbreadcrumb
-        @else
-            @breadcrumb(
-                [
-                    'title' => "Manage Activities",
-                    'items' => [
-                        'Dashboard' => route('index'),
-                        $wbs->number => route('wbs.createWbsProfile'),
-                        "Manage Activities" => ""
-                    ]
-                ]
-            )
-            @endbreadcrumb
-        @endif
+            ]
+        )
+        @endbreadcrumb
     @else
-        @if($wbs->wbs != null)
-            @breadcrumb(
-                [
-                    'title' => "Manage Activities",
-                    'items' => [
-                        'Dashboard' => route('index'),
-                        $wbs->number => route('wbs_repair.createSubWbsProfile', $wbs->wbs->id),
-                        "Manage Activities" => ""
-                    ]
+        @breadcrumb(
+            [
+                'title' => "Manage Activities",
+                'items' => [
+                    'Dashboard' => route('index'),
+                    $wbs->number => route('wbs_repair.createWbsConfiguration'),
+                    "Manage Activities" => ""
                 ]
-            )
-            @endbreadcrumb
-        @else
-            @breadcrumb(
-                [
-                    'title' => "Manage Activities",
-                    'items' => [
-                        'Dashboard' => route('index'),
-                        $wbs->number => route('wbs_repair.createWbsProfile'),
-                        "Manage Activities" => ""
-                    ]
-                ]
-            )
-            @endbreadcrumb
-        @endif
+            ]
+        )
+        @endbreadcrumb
     @endif
 @endsection
 @section('content')
@@ -105,13 +77,13 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newActivityProfile.name" class="form-control width100" rows="3" id="name" name="name" placeholder="Name"></textarea>
+                                    <textarea v-model="newActivityConfiguration.name" class="form-control width100" rows="3" id="name" name="name" placeholder="Name"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newActivityProfile.description" class="form-control width100" rows="3" name="description" placeholder="Description"></textarea>
+                                    <textarea v-model="newActivityConfiguration.description" class="form-control width100" rows="3" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newActivityProfile.duration" rows="3" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>                                        
+                                    <textarea v-model="newActivityConfiguration.duration" rows="3" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>                                        
                                 </td>
                                 <td class="textCenter p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -132,17 +104,17 @@
                                 <div class="modal-body">
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="name" class="control-label">Name</label>
-                                        <textarea id="name" v-model="editActivityProfile.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>                                                
+                                        <textarea id="name" v-model="editActivityConfiguration.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>                                                
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="description" class=" control-label">Description</label>
-                                        <textarea id="description" v-model="editActivityProfile.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
+                                        <textarea id="description" v-model="editActivityConfiguration.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="duration" class=" control-label">Duration</label>
-                                        <input v-model="editActivityProfile.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
+                                        <input v-model="editActivityConfiguration.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
                                     </div>                             
                                 </div>
                                 <div class="modal-footer">
@@ -170,20 +142,18 @@
 @push('script')
 <script>
 $(document).ready(function(){
-    $('div.overlay').hide();
 });
 
 var data = {
-    menu : @json($menu),
     activities :[],
     newIndex : "",
-    newActivityProfile : {
+    newActivityConfiguration : {
         name : "",
         description : "",
         duration : "",
         wbs_id : @json($wbs->id), 
     },
-    editActivityProfile : {
+    editActivityConfiguration : {
         activity_id : "",
         name : "",
         description : "",
@@ -206,8 +176,8 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newActivityProfile.name == ""
-                || this.newActivityProfile.duration == "")
+                if(this.newActivityConfiguration.name == ""
+                || this.newActivityConfiguration.duration == "")
                 {
                     isOk = true;
                 }
@@ -215,8 +185,8 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editActivityProfile.name == ""
-                || this.editActivityProfile.duration == "")
+                if(this.editActivityConfiguration.name == ""
+                || this.editActivityConfiguration.duration == "")
                 {
                     isOk = true;
                 }
@@ -229,13 +199,13 @@ var vm = new Vue({
         },
         openModalEditActivity(data){
             document.getElementById("edit_activity_code").innerHTML= data.name;
-            this.editActivityProfile.activity_id = data.id;
-            this.editActivityProfile.name = data.name;
-            this.editActivityProfile.description = data.description;
-            this.editActivityProfile.duration  = data.duration;
+            this.editActivityConfiguration.activity_id = data.id;
+            this.editActivityConfiguration.name = data.name;
+            this.editActivityConfiguration.description = data.description;
+            this.editActivityConfiguration.duration  = data.duration;
         },
         getActivities(){
-            window.axios.get('/api/getActivitiesProfile/'+this.newActivityProfile.wbs_id).then(({ data }) => {
+            window.axios.get('/api/getActivitiesConfiguration/'+this.newActivityConfiguration.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.newIndex = Object.keys(this.activities).length+1;
 
@@ -254,7 +224,7 @@ var vm = new Vue({
                     });
                 })
             });
-
+            $('div.overlay').hide();
         },
         deleteWbs(data){
             var menuTemp = this.menu;
@@ -271,12 +241,7 @@ var vm = new Vue({
                 position: 'center',
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
-                        var url = "";
-                        if(menuTemp == "building"){
-                            url = "/activity/"+data.id;
-                        }else{
-                            url = "/activity_repair/"+data.id;
-                        }
+                        var url  = "/activity_repair/deleteActivityConfiguration/"+data.id;
                         $('div.overlay').show();            
                         window.axios.delete(url)
                         .then((response) => {
@@ -319,17 +284,12 @@ var vm = new Vue({
             });
         },
         add(){      
-            this.newActivityProfile.duration = parseInt((this.newActivityProfile.duration+"").replace(/,/g , ''));
-            var newActivityProfile = this.newActivityProfile;
-            newActivityProfile = JSON.stringify(newActivityProfile);
-            var url = "";
-            if(this.menu == "building"){
-                url = "{{ route('activity.storeActivityProfile') }}";
-            }else{
-                url = "{{ route('activity_repair.storeActivityProfile') }}";              
-            }
+            this.newActivityConfiguration.duration = parseInt((this.newActivityConfiguration.duration+"").replace(/,/g , ''));
+            var newActivityConfiguration = this.newActivityConfiguration;
+            newActivityConfiguration = JSON.stringify(newActivityConfiguration);
+            var url = "{{ route('activity_repair.storeActivityConfiguration') }}";
             $('div.overlay').show();            
-            window.axios.post(url,newActivityProfile)
+            window.axios.post(url,newActivityConfiguration)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -344,11 +304,10 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();
                     this.getActivities();  
-                    this.newActivityProfile.name = "";
-                    this.newActivityProfile.description = "";
-                    this.newActivityProfile.duration = "";                
+                    this.newActivityConfiguration.name = "";
+                    this.newActivityConfiguration.description = "";
+                    this.newActivityConfiguration.duration = "";                
                 }
             })
             .catch((error) => {
@@ -363,16 +322,11 @@ var vm = new Vue({
 
         },
         update(){            
-            var editActivityProfile = this.editActivityProfile;
-            var url = "";
-            if(this.menu == "building"){
-                var url = "/activity/updateActivityProfile/"+editActivityProfile.activity_id;
-            }else{
-                var url = "/activity_repair/updateActivityProfile/"+editActivityProfile.activity_id;
-            }
-            editActivityProfile = JSON.stringify(editActivityProfile);
+            var editActivityConfiguration = this.editActivityConfiguration;
+            var url = "/activity_repair/updateActivityConfiguration/"+editActivityConfiguration.activity_id;
+            editActivityConfiguration = JSON.stringify(editActivityConfiguration);
             $('div.overlay').show();            
-            window.axios.put(url,editActivityProfile)
+            window.axios.put(url,editActivityConfiguration)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -387,9 +341,8 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    this.getActivities();
                 }
-                this.getActivities();
             })
             .catch((error) => {
                 iziToast.warning({
@@ -404,13 +357,13 @@ var vm = new Vue({
         },
     },
     watch: {
-        newActivityProfile:{
+        newActivityConfiguration:{
             handler: function(newValue) {
             },
             deep: true
         },
-        'newActivityProfile.duration':function(newValue){
-            this.newActivityProfile.duration = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+        'newActivityConfiguration.duration':function(newValue){
+            this.newActivityConfiguration.duration = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
         }
     },
     created: function() {

@@ -66,11 +66,14 @@
                                         <tbody>
                                             <tr v-for="(data,index) in modelAssignResource">
                                                 <td>{{ index + 1 }}</td>
+                                                <td v-if="data.category_id == 0">SubCon</td>
+                                                <td v-else-if="data.category_id == 1">Others</td>
+                                                <td v-else-if="data.category_id == 2">External Equipment</td>
+                                                <td v-else-if="data.category_id == 3">Internal Equipment</td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                                <td>{{ data.wbs.number }}</td>
+                                                <td>{{ data.resource_detail.code }}</td>
                                                 <td>{{ data.quantity }}</td>
-                                                <td v-if="data.wbs_id == null">{{ "Not Assigned" }}</td>
-                                                <td v-else>{{ "Assigned" }}</td>
+                                                <td>{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                                 <td class="p-l-3 textCenter">
                                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                                         EDIT
@@ -117,7 +120,6 @@
                                                     <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
                                                 </selectize>
                                             </td>
-
                                           
                                             <td class="p-l-0 textLeft">
                                                 <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled='resourceDetail'>
@@ -189,7 +191,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="add">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -229,13 +231,14 @@
         newIndex : "",
         dataInput : {
             resource_id :"",
+            category_id :"",
             resource_detail_id :"",
             wbs_id : "",
             quantity : "",
-            category_id : "",
             start : "",
             end : "",
-            schedule : "",
+            start_date : "",
+            end_date : "",
         },
         editInput : {
             resource_id :"",
@@ -291,7 +294,9 @@
                 $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
                     vm.dataInput.start = picker.startDate.format('HH:mm');
                     vm.dataInput.end = picker.endDate.format('HH:mm');
-                    vm.checkTime(vm.dataInput.start,vm.dataInput.end);
+                    vm.dataInput.datetime_start = picker.startDate.format('YYYY-MM-DD HH:mm');
+                    vm.dataInput.datetime_end = picker.endDate.format('YYYY-MM-DD HH:mm');
+                    vm.checkTime(vm.dataInput.start,vm.dataInput.end,vm.dataInput.datetime_start,vm.dataInput.datetime_end);
                 });
                 $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
                     vm.dataInput.start = '';
@@ -314,10 +319,6 @@
             updateOk: function(){
                 let isOk = false;
 
-                if(this.editInput.resource_id == "" || this.editInput.wbs_id == "" || this.editInput.quantity == ""){
-                    isOk = true;
-                }
-
                 return isOk;
             },
             resourceDetail : function(){
@@ -334,7 +335,8 @@
             clearTime(){
                 $('input[name="daterange"]').val('');
             },
-            checkTime(start,end){
+            checkTime(start,end,datetime_start,datetime_end){
+                let status = true;
                 var operation_start = this.operation_hours.start;
                 var operation_end = this.operation_hours.end;
                 if(start < operation_start){
@@ -344,6 +346,7 @@
                         title: 'Start Time Cannot Less Than '+ operation_start,
                         position: 'topRight',
                     });
+                    status = false;
                 }else if(start > operation_end){
                     this.clearTime();
                     iziToast.warning({
@@ -351,6 +354,7 @@
                         title: 'Start Time Cannot More Than '+ operation_end,
                         position: 'topRight',
                     });
+                    status = false;
                 }else if(end > operation_end){
                     this.clearTime();
                     iziToast.warning({
@@ -358,6 +362,7 @@
                         title: 'End Time Cannot More Than '+ operation_end,
                         position: 'topRight',
                     });
+                    status = false;
                 }else if(end < operation_start){
                     this.clearTime();
                     iziToast.warning({
@@ -365,6 +370,11 @@
                         title: 'End Time Cannot Less Than '+ operation_start,
                         position: 'topRight',
                     });
+                    status = false;
+                }
+                if(status === true){
+                    this.dataInput.start_date = datetime_start;
+                    this.dataInput.end_date = datetime_end;
                 }
             },
             tooltip(text){

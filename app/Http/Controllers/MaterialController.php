@@ -44,19 +44,6 @@ class MaterialController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
-        $request = new Request([
-            'code' => $data->code,
-            // 'name' => $data->name,
-            'description' => $data->description,
-            'cost_standard_price' => $data->cost_standard_price,
-            'cost_standard_price_service' => $data->cost_standard_service,
-            'weight' => $data->weight,
-            'height' => $data->height,
-            'length' => $data->lengths,
-            'width' => $data->width,
-            'volume' => $data->volume
-
-        ]);
 
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
@@ -68,6 +55,7 @@ class MaterialController extends Controller
             'height' => 'nullable|numeric',
             'length' => 'nullable|numeric',
             'width' => 'nullable|numeric',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3000'
         ]);
 
         DB::beginTransaction();
@@ -91,6 +79,21 @@ class MaterialController extends Controller
             $material->width_uom_id = $data->width_uom_id == "" ? null : $data->width_uom_id;
             $material->type = $data->type;
             $material->status = $data->status;
+            if($request->hasFile('image')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('image')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('image')->storeAs('documents/material',$fileNameToStore);
+            }else{
+                $fileNameToStore =  null;
+            }
+            $material->image = $fileNameToStore;
             $material->user_id = Auth::user()->id;
             $material->branch_id = Auth::user()->branch->id;
             $material->save();
@@ -190,6 +193,21 @@ class MaterialController extends Controller
         $material->width_uom_id = $data->width_uom_id == "" ? null : $data->width_uom_id;
         $material->type = $data->type;
         $material->status = $data->status;
+        if($request->hasFile('image')){
+            // Get filename with the extension
+            $fileNameWithExt = $request->file('image')->getClientOriginalName();
+            // Get just file name
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('image')->getClientOriginalExtension();
+            // File name to store
+            $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+            // Upload image
+            $path = $request->file('image')->storeAs('documents/material',$fileNameToStore);
+        }else{
+            $fileNameToStore =  null;
+        }
+        $material->image = $fileNameToStore;
         $material->update();
 
         DB::commit();
