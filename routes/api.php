@@ -141,9 +141,11 @@ Route::get('/getActualStartDate/{id}', 'ProjectController@getActualStartDateAPI'
 // wbs
 Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI');
 Route::get('/getWbsProfile/{menu}/{project_type}', 'WBSController@getWbsProfileAPI')->name('api.wbs.getWbsProfileAPI');
+Route::get('/getWbsConfiguration', 'WBSController@getWbsConfigurationAPI')->name('api.wbs.getWbsConfigurationAPI');
 Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('api.wbs.getAllWbsAPI');
 Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('api.wbs.getSubWbsAPI');
 Route::get('/getSubWbsProfile/{id}', 'WBSController@getSubWbsProfileAPI')->name('api.wbs.getSubWbsProfileAPI');
+Route::get('/getSubWbsConfiguration/{id}', 'WBSController@getSubWbsConfigurationAPI')->name('api.wbs.getSubWbsConfigurationAPI');
 Route::get('/getWeightWbs/{id}', 'WBSController@getWeightWbsAPI')->name('api.wbs.getWeightWbsAPI');
 Route::get('/getWeightProject/{id}', 'WBSController@getWeightProjectAPI')->name('api.wbs.getWeightProjectAPI');
 Route::get('/getDataProfileJstree/{id}', 'WBSController@getDataProfileJstreeAPI')->name('api.project.getDataProfileJstreeAPI');
@@ -151,6 +153,7 @@ Route::get('/getDataProfileJstree/{id}', 'WBSController@getDataProfileJstreeAPI'
 // activity
 Route::get('/getActivities/{id}', 'ActivityController@getActivitiesAPI')->name('api.activity.getActivitiesAPI');
 Route::get('/getActivitiesProfile/{id}', 'ActivityController@getActivitiesProfileAPI')->name('api.activity.getActivitiesProfileAPI');
+Route::get('/getActivitiesConfiguration/{id}', 'ActivityController@getActivitiesConfigurationAPI')->name('api.activity.getActivitiesConfigurationAPI');
 Route::get('/getActivitiesNetwork/{id}', 'ActivityController@getActivitiesNetworkAPI')->name('api.activity.getActivitiesNetworkAPI');
 Route::get('/getAllActivities/{id}', 'ActivityController@getAllActivitiesAPI')->name('api.activity.getAllActivitiesAPI');
 Route::get('/getAllActivitiesEdit/{project_id}/{activity_id}', 'ActivityController@getAllActivitiesEditAPI')->name('api.activity.getAllActivitiesEditAPI');

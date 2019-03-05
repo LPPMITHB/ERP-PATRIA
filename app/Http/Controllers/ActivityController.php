@@ -12,7 +12,9 @@ use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
 use App\Models\WbsProfile;
+use App\Models\WbsConfiguration;
 use App\Models\ActivityProfile;
+use App\Models\ActivityConfiguration;
 use App\Models\User;
 use DB;
 use DateTime;
@@ -35,6 +37,13 @@ class ActivityController extends Controller
         $wbs = WbsProfile::find($id);
 
         return view('activity.createActivityProfile', compact('wbs','menu'));
+    }
+
+    public function createActivityConfiguration($id, Request $request)
+    {
+        $wbs = WbsConfiguration::find($id);
+
+        return view('activity.createActivityConfiguration', compact('wbs'));
     }
 
     public function store(Request $request)
@@ -115,6 +124,32 @@ class ActivityController extends Controller
         }
     }
 
+    public function storeActivityConfiguration(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $activity = new ActivityConfiguration;
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];
+            $activity->wbs_id = $data['wbs_id'];            
+            $activity->duration = $data['duration'];
+            $activity->user_id = Auth::user()->id;
+            $activity->branch_id = Auth::user()->branch->id;
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new activity configuration"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function update(Request $request, $id)
     {
         $data = $request->json()->all();
@@ -174,6 +209,29 @@ class ActivityController extends Controller
             }else{
                 DB::commit();
                 return response(["response"=>"Success to update activity profile ".$activity->name],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function updateActivityConfiguration(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        
+        DB::beginTransaction();
+        try {
+            $activity = ActivityConfiguration::find($id);
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];         
+            $activity->duration = $data['duration'];
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to update activity configuration ".$activity->name],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -365,6 +423,25 @@ class ActivityController extends Controller
                 return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+    
+    public function destroyActivityConfiguration(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $activityConfiguration = ActivityConfiguration::find($id);
+
+            if(!$activityConfiguration->delete()){
+                return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
 
     public function destroyActivity(Request $request, $id)
     {
@@ -508,6 +585,11 @@ class ActivityController extends Controller
 
     public function getActivitiesProfileAPI($wbs_id){
         $activities = ActivityProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($activities, Response::HTTP_OK);
+    }
+
+    public function getActivitiesConfigurationAPI($wbs_id){
+        $activities = ActivityConfiguration::where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

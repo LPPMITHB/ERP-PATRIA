@@ -12,6 +12,7 @@ use App\Models\WBS;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\WbsProfile;
+use App\Models\WbsConfiguration;
 use App\Models\ActivityProfile;
 use App\Models\BomProfile;
 use App\Models\ResourceProfile;
@@ -29,6 +30,12 @@ use Auth;
 
 class WBSController extends Controller
 {
+
+    public function createWbsConfiguration(Request $request)
+    {
+        return view('wbs.createWbsConfiguration');
+    }
+
     public function createWbsProfile(Request $request)
     {
         $project_type = Configuration::get('project_type');
@@ -218,6 +225,23 @@ class WBSController extends Controller
         return view('wbs.createSubWbsProfile', compact('wbs','array','menu'));
     }
 
+    public function createSubWbsConfiguration($wbs_id, Request $request)
+    {
+        $wbs = WbsConfiguration::find($wbs_id);
+        $array = [
+            'Dashboard' => route('index'),
+            'Create WBS Configuration' => route('wbs_repair.createWbsConfiguration'),
+        ];
+        $iteration = 0;
+        $array_reverse = [];
+        $array_reverse = array_reverse(self::getParentsWbsConfiguration($wbs,$array_reverse, $iteration));
+        foreach ($array_reverse as $key => $value) {
+            $array[$key] = $value;
+        }
+        $array[$wbs->number] = "";
+        return view('wbs.createSubWbsConfiguration', compact('wbs','array'));
+    }
+
     public function createWBS($id, Request $request)
     {
         $project = Project::find($id);
@@ -231,6 +255,18 @@ class WBSController extends Controller
 
         return view('wbs.createWBS', compact('project','menu','wbs_profiles'));
     }
+
+    public function createWbsRepair($id, Request $request)
+    {
+        $project = Project::find($id);
+        $menu = "repair";
+        $businessUnit = 2;
+        $wbs_config = WbsConfiguration::where('wbs_id', null)->get();
+        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
+
+        return view('wbs.createWbsRepair', compact('project','menu','wbs_profiles','wbs_config'));
+    }
+
 
     public function store(Request $request)
     {
@@ -309,7 +345,37 @@ class WBSController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollback();
-                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeWbsConfiguration(Request $request)
+    {
+        $data = $request->json()->all();
+        DB::beginTransaction();
+        try {
+            $wbsConfiguration = new WbsConfiguration;
+            $wbsConfiguration->number = $data['number'];
+            $wbsConfiguration->description = $data['description'];
+            $wbsConfiguration->deliverables = $data['deliverables'];
+            $wbsConfiguration->duration = $data['duration'];
+
+            if(isset($data['wbs_configuration_id'])){
+                $wbsConfiguration->wbs_id = $data['wbs_configuration_id'];
+            }
+
+            $wbsConfiguration->user_id = Auth::user()->id;
+            $wbsConfiguration->branch_id = Auth::user()->branch->id;
+
+            if(!$wbsConfiguration->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new WBS Configuration"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 
@@ -335,6 +401,19 @@ class WBSController extends Controller
             $wbs->branch_id = Auth::user()->branch->id;
             $wbs->save();
             
+            if(count($wbsProfile->activities)>0){
+                foreach($wbsProfile->activities as $activity){
+                    $activityInput = new Activity;
+                    $activityInput->code = self::generateActivityCode($wbs->id);
+                    $activityInput->name = $activity->name;
+                    $activityInput->description = $activity->description;
+                    $activityInput->planned_duration = $activity->duration;
+                    $activityInput->wbs_id = $wbs->id;
+                    $activityInput->user_id = Auth::user()->id;
+                    $activityInput->branch_id = Auth::user()->branch->id;
+                    $activityInput->save();
+                }
+            }
             $bomProfile = $wbsProfile->bom;
             if(count($bomProfile)>0){
                 $bom = new Bom;
@@ -385,6 +464,29 @@ class WBSController extends Controller
     {
         $data = $request->json()->all();
         $wbs_ref = WbsProfile::find($id);
+        DB::beginTransaction();
+        try {
+            $wbs_ref->number = $data['number'];
+            $wbs_ref->description = $data['description'];
+            $wbs_ref->deliverables = $data['deliverables'];
+            $wbs_ref->duration = $data['duration'];
+
+            if(!$wbs_ref->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to Update WBS ".$wbs_ref->number],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function updateWbsConfiguration(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        $wbs_ref = WbsConfiguration::find($id);
         DB::beginTransaction();
         try {
             $wbs_ref->number = $data['number'];
@@ -576,6 +678,36 @@ class WBSController extends Controller
         }
     }
 
+    public function destroyWbsConfiguration(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $wbsConfiguration = WbsConfiguration::find($id);
+            $error = [];
+            if(count($wbsConfiguration->wbss)>0){
+                array_push($error, ["Failed to delete, this WBS have child WBS"]);
+            }
+
+            if(count($wbsConfiguration->activities)>0){
+                array_push($error, ["Failed to delete, this WBS have activities"]);
+            }
+
+            if(count($error)>0){
+                return response(["error"=> $error],Response::HTTP_OK);
+            }
+            if(!$wbsConfiguration->delete()){
+                array_push($error, ["Failed to delete, please try again!"]);
+                return response(["error"=> $error],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete WBS"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function destroyWbs(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
@@ -690,6 +822,18 @@ class WBSController extends Controller
                 }else{
                     $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsProfile',[$wbs->id]);
                 }
+                return $array_reverse;
+            }
+        }
+    }
+
+    function getParentsWbsConfiguration($wbs, $array_reverse, $iteration) {
+        if ($wbs) {
+            if($wbs->wbs){
+                $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsConfiguration',[$wbs->wbs->id]);
+                return self::getParentsWbsConfiguration($wbs->wbs,$array_reverse, $iteration,);
+            }else{
+                $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsConfiguration',[$wbs->id]);
                 return $array_reverse;
             }
         }
@@ -1016,8 +1160,19 @@ class WBSController extends Controller
         return response($wbss, Response::HTTP_OK);
     }
 
+    public function getWbsConfigurationAPI(){
+
+        $wbss = WbsConfiguration::where('wbs_id', null)->get()->jsonSerialize();
+        return response($wbss, Response::HTTP_OK);
+    }
+
     public function getSubWbsProfileAPI($wbs_id){
         $wbss = WbsProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($wbss, Response::HTTP_OK);
+    }
+    
+    public function getSubWbsConfigurationAPI($wbs_id){
+        $wbss = WbsConfiguration::where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
 
