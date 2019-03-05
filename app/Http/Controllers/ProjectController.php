@@ -702,6 +702,9 @@ class ProjectController extends Controller
         $links = Collection::make();
         $outstanding_item = Collection::make();
 
+        $progressStatus = Collection::make();
+        self::getDataStatusProgress($project,$progressStatus);
+
         $outstanding_item->push([
             "id" => $project->number , 
             "parent" => "#",
@@ -1731,6 +1734,69 @@ class ProjectController extends Controller
             ]);
         }
 
+    }
+
+    public function getDataStatusProgress($project, $progressStatus){
+        $previous_week = strtotime("-1 week +1 day");
+
+        $last_start_week = strtotime("last sunday midnight",$previous_week);
+        $last_end_week = strtotime("next saturday",$last_start_week);
+
+        $last_start_week = date("Y-m-d",$last_start_week);
+        $last_end_week = date("Y-m-d",$last_end_week);
+
+        $now_start_week = date( 'Y-m-d', strtotime( 'monday this week' ) );
+        $now_end_week = date( 'Y-m-d', strtotime( 'saturday this week' ) );
+
+
+        $actualProgress = 0;
+        $plannedProgress = 0;
+        $wbss = WBS::where('project_id', $project->id)->pluck('id')->toArray();
+        $activities = Activity::whereIn('wbs_id',$wbss)->get();
+
+        $lastPlannedActivities = $activities->where('planned_end_date','>',$last_start_week)->where('planned_end_date','<',$last_end_week);
+        $nowPlannedActivities = $activities->where('planned_end_date','>',$now_start_week)->where('planned_end_date','<',$now_end_week);
+
+
+        $actualActivities =$activities->filter(function ($data) {
+            return $data->progress > 0 || $data->actual_end_date !== null;
+        });
+        $lastActualActivities = $activities->where('planned_end_date','>',$last_start_week)->where('planned_end_date','<',$last_end_week);
+        $nowActualActivities = $activities->where('planned_end_date','>',$now_start_week)->where('planned_end_date','<',$now_end_week);
+
+        $actualActivities = $actualActivities->groupBy('actual_end_date');
+        // where('progress','>',0)->orWhere('actual_end_date', "!=", "")->groupBy('actual_end_date');
+        $plannnedActivities = $activities->groupBy('planned_end_date');
+
+        $actualSorted = $actualActivities;
+        foreach($actualSorted as $date =>$group){
+            if($date == null){
+                $actualSorted->put(date('Y-m-d'), $group);
+                $actualSorted->forget($date);
+            }
+        }
+        $actualSorted = $actualActivities->all();
+        $plannedSorted = $plannnedActivities->all();
+        ksort($actualSorted);
+        ksort($plannedSorted);
+        foreach($actualSorted as $date => $group){
+            foreach($group as $activity){
+                $actualProgress += $activity->progress * ($activity->weight/100);
+            }
+            if($date != null){
+            }else{
+                $project =$activity->wbs->project->actual_start_date;
+                if($project != null){
+                    if(date('Y-m-d')>$activity->wbs->project->actual_start_date){
+                    }
+                }
+            }   
+        }
+        foreach($plannedSorted as $date => $group){
+            foreach($group as $activity){
+                $plannedProgress += 100 * ($activity->weight/100);
+            }
+        }
     }
 
     //API
