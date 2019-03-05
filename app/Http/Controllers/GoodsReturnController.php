@@ -210,7 +210,11 @@ class GoodsReturnController extends Controller
 
         $route = $request->route()->getPrefix();    
         $modelGR = GoodsReceipt::find($id);
-        $vendor = $modelGR->purchaseOrder->vendor;
+        if($modelGR->purchase_order_id != null){
+            $vendor = $modelGR->purchaseOrder->vendor;
+        }elseif($modelGR->work_order_id != null){
+            $vendor = $modelGR->workOrder->vendor;
+        }
         $modelGRD = GoodsReceiptDetail::whereRaw('quantity - returned != 0')->where('goods_receipt_id',$modelGR->id)->with('material','material.uom')->get();
         foreach($modelGRD as $GRD){
             $GRD['returned_temp'] = 0;
@@ -235,7 +239,7 @@ class GoodsReturnController extends Controller
     public function edit($id,Request $request){
 
         $route = $request->route()->getPrefix();
-        $modelGR = GoodsReturn::where('id',$id)->with('purchaseOrder','purchaseOrder.vendor','goodsReceipt.purchaseOrder.vendor')->first();
+        $modelGR = GoodsReturn::where('id',$id)->with('purchaseOrder','purchaseOrder.vendor','goodsReceipt.purchaseOrder.vendor','goodsReceipt.workOrder.vendor')->first();
         $GRD = GoodsReturnDetail::where('goods_return_id',$id)->with('material','material.uom')->get();
         $modelGRD = Collection::make();
 
@@ -510,7 +514,7 @@ class GoodsReturnController extends Controller
         }
         $modelPRs = PurchaseRequisition::where('type',1)->pluck('id')->toArray();
         $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->pluck('id')->toArray();
-        $modelGRs = GoodsReceipt::whereIn('purchase_order_id',$modelPOs)->where('business_unit_id', $business_unit)->where('status',1)->get();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id',$modelPOs)->orWhere('type',3)->where('business_unit_id', $business_unit)->where('status',1)->get();
 
         return view('goods_return.selectGR', compact('modelGRs','menu'));
     }
