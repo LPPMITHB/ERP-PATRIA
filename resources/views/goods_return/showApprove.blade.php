@@ -152,6 +152,7 @@
         data : data,
         methods : {
             submitForm(status){
+                $('div.overlay').show();
                 this.dataSubmit.status = status;
 
                 let struturesElem = document.createElement('input');

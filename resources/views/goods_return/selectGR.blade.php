@@ -53,9 +53,9 @@
                                 @endif
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == 'building')
-                                        <a href="{{ route('goods_return.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('goods_return.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @else
-                                        <a href="{{ route('goods_return_repair.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('goods_return_repair.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
@@ -76,5 +76,9 @@
     $(document).ready(function(){
         $('div.overlay').hide();        
     });
+
+    function loading(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush

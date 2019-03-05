@@ -23940,6 +23940,10 @@ body {
   }
 }
 
+.modalFull {
+  width: 95%;
+}
+
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.1

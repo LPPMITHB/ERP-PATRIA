@@ -47,6 +47,11 @@
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.number }} - {{ project.name }}</option>
                                 </selectize>  
                             </div>
+                            <template v-if="selectedProject.length > 0">
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-primary pull-right" @click.prevent="openSchedule">RESOURCE SCHEDULE</button>
+                                </div>
+                            </template>
                         </div>
                         <template v-if="selectedProject.length > 0">
                             <div class="row">
@@ -138,7 +143,7 @@
                             </div>
                         </template>
                         <div class="modal fade" id="edit_item">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog ">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -192,6 +197,43 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="add">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="resource_schedule">
+                            <div class="modal-dialog modalFull">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Resource Schedule</h4>
+                                    </div>
+                                    <div class="modal-body p-t-5 p-b-5">
+                                        <div class="row p-l-10 p-r-10">
+                                            <div class="col-sm-12 p-l-0 p-b-10">
+                                                <div class="col-sm-4 col-xs-12 p-l-5">
+                                                    <label for="">Resource</label>
+                                                    <selectize v-model="schedule.resource_id" :settings="resourceSettings">
+                                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                    </selectize>
+                                                </div>
+                                                <div class="col-sm-4 col-xs-12">
+                                                    <label for="">Resource Detail</label>
+                                                    <selectize v-model="schedule.resource_detail_id" :settings="resourceDetailSettings" :disabled="resourceOk">
+                                                        <option v-for="(rd, index) in schedule.selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                                    </selectize>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="calendar" v-show="schedule.resource_id != '' && schedule.resource_detail_id != ''">
+                                
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" data-dismiss="modal" aria-label="Close">CLOSE</button>
                                     </div>
                                 </div>
                             </div>
@@ -273,6 +315,12 @@
         otherSettings: {
             placeholder: '-'
         },
+        schedule: {
+            resource_id : "",
+            resource_detail_id : "",
+            selectedRD : [],
+            events : [],
+        },
     }
     var vm = new Vue({
         el : '#assignRsc',
@@ -329,9 +377,44 @@
                 }
                 return isOk;
             },
-        },
+            resourceOk: function(){
+                let isOk = false;
 
+                if(this.schedule.resource_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            }
+        },
         methods : {
+            destroyFullCalendar(){
+                $('#calendar').fullCalendar('destroy');
+            },
+            buildFullCalendar(){
+                $('#calendar').fullCalendar({
+                    events : this.schedule.events,
+                    eventRender: function(eventObj, $el) {
+                        $($el).css("font-weight", "bold");
+                        $el.tooltip({
+                            title: eventObj.title,
+                            trigger: 'hover',
+                            placement: 'top',
+                            container: 'body',
+                        });
+                    },
+                    aspectRatio:  2,
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    defaultView: 'agendaWeek'
+                });
+            },
+            openSchedule(){
+                $('#resource_schedule').modal();
+            },
             clearTime(){
                 $('input[name="daterange"]').val('');
             },
@@ -539,6 +622,48 @@
                     this.dataInput.quantity = '';
                 }
             },
+            'schedule.resource_id' : function(newValue){
+                if(newValue != ''){
+                    this.schedule.selectedRD = [];
+                    this.resourceDetails.forEach(RD => {
+                        if(RD.resource_id == newValue){
+                            this.schedule.selectedRD.push(RD);
+                        }  
+                    });
+                }else{
+                    this.schedule.resource_detail_id = "";
+                }
+            },
+            'schedule.resource_detail_id' : function(newValue){
+                if(newValue != ''){
+                    $('div.overlay').show();
+                    this.destroyFullCalendar();
+                    this.schedule.events = [];
+                    window.axios.get('/api/getSchedule/'+newValue).then(({ data }) => {
+                        data.forEach(TR =>{
+                            this.schedule.events.push({
+                                title: TR.wbs.number+" - "+TR.wbs.description, 
+                                start: TR.start_date,
+                                end: TR.end_date,
+                                clickable : false,
+                                color : '#007bff',
+                                textColor : 'black',
+                            })
+                        });
+                        this.buildFullCalendar();
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        console.log(error);
+                        $('div.overlay').hide();
+                    })
+                }
+            }
         },
     });
 </script>

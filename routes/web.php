@@ -1166,6 +1166,9 @@ Route::name('goods_return.')->prefix('goods_return')->group(function() {
     Route::get('/edit/{id}', 'GoodsReturnController@edit')->name('edit')->middleware('can:edit-goods-return');
    
     Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return');
+
+    Route::get('/print/{id}', 'GoodsReturnController@printPdf')->name('print')->middleware('can:show-goods-return');    
+
 });
 
 //Goods Return Repair 
