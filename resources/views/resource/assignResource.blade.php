@@ -172,7 +172,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" @click.prevent="update">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +196,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="add">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" @click.prevent="add">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -233,7 +233,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" data-dismiss="modal" aria-label="Close">CLOSE</button>
+                                        <button type="button" aria-label="Close">CLOSE</button>
                                     </div>
                                 </div>
                             </div>
@@ -479,42 +479,66 @@
             },
             add(){
                 $('div.overlay').show();            
-                this.dataInput.project_id = this.project_id;
-                var dataInput = this.dataInput;
-                dataInput = JSON.stringify(dataInput);
-                if(this.route == "/resource"){
-                    var url = "{{ route('resource.storeAssignResource') }}";
-                }else if(this.route == "/resource_repair"){
-                    var url = "{{ route('resource_repair.storeAssignResource') }}";
-                }
-                window.axios.post(url,dataInput).then((response) => {
-                    if(response.data.error != undefined){
-                        iziToast.warning({
-                            displayMode: 'replace',
-                            title: response.data.error,
-                            position: 'topRight',
-                        });
-                        $('div.overlay').hide();            
-                    }else{
-                        iziToast.success({
-                            displayMode: 'replace',
-                            title: response.data.response,
-                            position: 'topRight',
-                        });
-                        $('div.overlay').hide();            
+
+                let status = false;
+                let start_date = this.dataInput.start_date;
+                this.modelAssignResource.forEach(TrxResource =>{
+                    if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
+                        status = true;
                     }
-                    
-                    this.getResource();
-                    this.dataInput.resource_id = "";
-                    this.dataInput.project_id = "";
-                    this.dataInput.wbs_id = "";             
-                    this.dataInput.quantity = "";             
                 })
-                .catch((error) => {
-                    console.log(error);
+                if(!status){
+                    let end_date = this.dataInput.end_date;
+                    this.modelAssignResource.forEach(TrxResource =>{
+                        if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
+                            status = true;
+                        }
+                    })
+                }
+                if(status){
+                    iziToast.warning({
+                        title: 'The Selected Time Already Booked By Another WBS !.',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
                     $('div.overlay').hide();            
-                })
-                
+                }else{
+                    this.dataInput.project_id = this.project_id;
+                    var dataInput = this.dataInput;
+                    dataInput = JSON.stringify(dataInput);
+                    if(this.route == "/resource"){
+                        var url = "{{ route('resource.storeAssignResource') }}";
+                    }else if(this.route == "/resource_repair"){
+                        var url = "{{ route('resource_repair.storeAssignResource') }}";
+                    }
+                    window.axios.post(url,dataInput).then((response) => {
+                        if(response.data.error != undefined){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: response.data.error,
+                                position: 'topRight',
+                            });
+                            $('div.overlay').hide();            
+                        }else{
+                            iziToast.success({
+                                displayMode: 'replace',
+                                title: response.data.response,
+                                position: 'topRight',
+                            });
+                            $('div.overlay').hide();            
+                        }
+                        
+                        this.getResource();
+                        this.dataInput.resource_id = "";
+                        this.dataInput.project_id = "";
+                        this.dataInput.wbs_id = "";             
+                        this.dataInput.quantity = "";             
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        $('div.overlay').hide();            
+                    })
+                }
             },
             update(){
                 $('div.overlay').show();   
