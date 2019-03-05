@@ -32,10 +32,9 @@
                                 </selectize>
                             </div>
                         </div>
-                            <div id="calendar" v-show="dataInput.resource_id != '' && dataInput.resource_detail_id != ''">
-                    
-                            </div>
-                        </template>
+                        <div id="calendar" v-show="dataInput.resource_id != '' && dataInput.resource_detail_id != ''">
+                
+                        </div>
                     </div>
                     @endverbatim
                 </div>
@@ -133,7 +132,7 @@
                                 start: TR.start_date,
                                 end: TR.end_date,
                                 clickable : false,
-                                color : '#CCCC00',
+                                color : '#007bff',
                                 textColor : 'black',
                             })
                         });
