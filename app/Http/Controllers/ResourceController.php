@@ -574,8 +574,10 @@ class ResourceController extends Controller
 
     public function resourceSchedule(Request $request){
         $route = $request->route()->getPrefix();
+        $resources = Resource::all();
+        $resourceDetail = ResourceDetail::where('category_id',3)->get();
 
-        return view('resource.resourceSchedule', compact('route'));        
+        return view('resource.resourceSchedule', compact('route','resources','resourceDetail'));        
     }
 
     public function createInternal(Request $request,$id)
@@ -770,5 +772,11 @@ class ResourceController extends Controller
         $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail')->get()->jsonSerialize();
 
         return response($modelRD, Response::HTTP_OK);
+    }
+
+    public function getScheduleAPI($id){
+        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs')->get()->jsonSerialize();
+
+        return response($modelTR, Response::HTTP_OK);
     }
 }
