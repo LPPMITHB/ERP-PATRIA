@@ -177,6 +177,8 @@ Route::name('material.')->prefix('material')->group(function() {
 
 //Resource Management Routes
 Route::name('resource.')->prefix('resource')->group(function() {
+    Route::get('/resourceSchedule', 'ResourceController@resourceSchedule')->name('resourceSchedule')->middleware('can:resource-schedule');
+
     Route::put('/updateDetail', 'ResourceController@updateDetail')->name('updateDetail')->middleware('can:show-resource');
 
     Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource');
@@ -222,6 +224,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
 //Resource Management Routes
 Route::name('resource_repair.')->prefix('resource_repair')->group(function() {
+    Route::get('/resourceSchedule', 'ResourceController@resourceSchedule')->name('resourceSchedule')->middleware('can:resource-schedule-repair');
+
     Route::put('/updateDetail', 'ResourceController@updateDetail')->name('updateDetail')->middleware('can:show-resource');
     
     Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource-repair');
