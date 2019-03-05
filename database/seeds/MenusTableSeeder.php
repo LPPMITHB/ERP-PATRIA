@@ -885,6 +885,18 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Resource Schedule',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource.resourceSchedule',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP',
+            'menu_id'=> $resourcemanagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Production Planning & Execution',
             'icon' => 'fa-database',
@@ -1792,6 +1804,18 @@ class MenusTableSeeder extends Seeder
             'name' => 'View Issued Resource',
             'icon' => 'fa-wrench',
             'route_name'=> 'resource_repair.indexIssued',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Resource Schedule',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'resource_repair.resourceSchedule',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $resourcemanagementRepair,

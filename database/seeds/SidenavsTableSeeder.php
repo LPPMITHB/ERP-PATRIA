@@ -1682,6 +1682,12 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'resource.issueResource',
         ]);
 
+        $resourceSchedule = Menu::where('route_name','resource.resourceSchedule')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $resourceSchedule,
+            'route_name' => 'resource.resourceSchedule',
+        ]);
+
         //Resource Repair
         $manageResourceRepair = Menu::where('route_name','resource_repair.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
@@ -1742,6 +1748,12 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $issueResourceRepair,
             'route_name' => 'resource_repair.issueResource',
+        ]);
+
+        $resourceScheduleRepair = Menu::where('route_name','resource_repair.resourceSchedule')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $resourceScheduleRepair,
+            'route_name' => 'resource_repair.resourceSchedule',
         ]);
 
         $manageService = Menu::where('route_name','service.index')->select('id')->first()->id;

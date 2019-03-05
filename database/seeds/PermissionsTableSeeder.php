@@ -1540,6 +1540,16 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // Resource Schedule
+        $resourceSchedule = Menu::where('name','Resource Schedule')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Resource Schedule',
+            'menu_id' => $resourceSchedule,
+            'middleware' => 'resource-schedule',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Service
         $service = Menu::where('name','Service')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -2220,7 +2230,7 @@ class PermissionsTableSeeder extends Seeder
         $resourceManagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
         $resourceRepair = Menu::where('name','Manage Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'List Resource',
+            'name' => 'List Resource Repair',
             'menu_id' => $resourceRepair,
             'middleware' => 'list-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2228,7 +2238,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Create Resource',
+            'name' => 'Create Resource Repair',
             'menu_id' => $resourceRepair,
             'middleware' => 'create-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2236,7 +2246,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Show Resource',
+            'name' => 'Show Resource Repair',
             'menu_id' => $resource,
             'middleware' => 'show-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2244,7 +2254,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Edit Resource',
+            'name' => 'Edit Resource Repair',
             'menu_id' => $resource,
             'middleware' => 'edit-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2254,7 +2264,7 @@ class PermissionsTableSeeder extends Seeder
         //Receive Resource
         $receiveResource = Menu::where('name','Receive Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Receive Resource',
+            'name' => 'Receive Resource Repair',
             'menu_id' => $receiveResource,
             'middleware' => 'create-receive-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2263,7 +2273,7 @@ class PermissionsTableSeeder extends Seeder
 
         $listResource = Menu::where('name','View Received Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'View Received Resource',
+            'name' => 'View Received Resource Repair',
             'menu_id' => $listResource,
             'middleware' => 'list-receive-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2271,7 +2281,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Show Received Resource',
+            'name' => 'Show Received Resource Repair',
             'menu_id' => $listResource,
             'middleware' => 'show-receive-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2281,7 +2291,7 @@ class PermissionsTableSeeder extends Seeder
         //Issue Resource
         $issueResource = Menu::where('name','Issue Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Issue Resource',
+            'name' => 'Issue Resource Repair',
             'menu_id' => $issueResource,
             'middleware' => 'create-issue-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2290,7 +2300,7 @@ class PermissionsTableSeeder extends Seeder
 
         $listIssueResource = Menu::where('name','View Issued Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Show Issue Resource',
+            'name' => 'Show Issue Resource Repair',
             'menu_id' => $listIssueResource,
             'middleware' => 'show-issue-resource-repair',
             'created_at' => date('Y-m-d'),
@@ -2298,9 +2308,19 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'List Issue Resource',
+            'name' => 'List Issue Resource Repair',
             'menu_id' => $listIssueResource,
             'middleware' => 'list-issue-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Resource Schedule
+        $resourceSchedule = Menu::where('name','Resource Schedule')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Resource Schedule Repair',
+            'menu_id' => $resourceSchedule,
+            'middleware' => 'resource-schedule-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
