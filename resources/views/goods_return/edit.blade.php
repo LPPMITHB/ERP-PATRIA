@@ -56,15 +56,36 @@
                                         
                                         <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
                                         <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.name }}</b></div>
-                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.purchase_order.vendor.name }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null">
+                                            <div v-if="modelGR.goods_receipt.purchase_order_id != null">
+                                                <b>: {{ modelGR.goods_receipt.purchase_order.vendor.name }}</b>
+                                            </div>
+                                            <div v-else-if="modelGR.goods_receipt.work_order_id != null">
+                                                <b>: {{ modelGR.goods_receipt.work_order.vendor.name }}</b>
+                                            </div>
+                                        </div>
                 
                                         <div class="col-md-4 col-xs-4 no-padding">Address</div>
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.address }}</b></div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.purchase_order.vendor.address }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" v-if="modelGR.goods_receipt_id != null">
+                                            <div v-if="modelGR.goods_receipt.purchase_order_id != null">
+                                                <b>: {{ modelGR.goods_receipt.purchase_order.vendor.address }}</b>
+                                            </div>
+                                            <div v-else-if="modelGR.goods_receipt.work_order_id != null">
+                                                <b>: {{ modelGR.goods_receipt.work_order.vendor.address }}</b>
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-4 col-xs-4 no-padding">Phone Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.phone_number }}</b></div>
-                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.purchase_order.vendor.phone_number }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null">
+                                            <div v-if="modelGR.goods_receipt.purchase_order_id != null">
+                                                <b>: {{ modelGR.goods_receipt.purchase_order.vendor.phone_number }}</b>
+                                            </div>
+                                            <div v-else-if="modelGR.goods_receipt.work_order_id != null">
+                                                <b>: {{ modelGR.goods_receipt.work_order.vendor.phone_number }}</b>
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-4 col-xs-4 no-padding" v-if="modelGR.purchase_order_id != null">PO Description</div>
                                         <div class="col-md-4 col-xs-4 no-padding" v-if="modelGR.goods_receipt_id != null">GR Description</div>
@@ -186,6 +207,7 @@
             },
             
             submitForm(){
+                $('div.overlay').show();
                 var data = this.modelGRD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)

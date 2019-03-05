@@ -22,10 +22,11 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">GR Number</th>
-                            <th width="20%">PO Number</th>
+                            <th width="15%">GR Number</th>
+                            <th width="15%">PO Number</th>
+                            <th width="15%">WO Number</th>
                             <th width="20%">Description</th>
-                            <th width="25%">Vendor</th>
+                            <th width="20%">Vendor</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -34,14 +35,27 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->number }}">{{ $modelGR->number }}</td>
+                                @if($modelGR->purchase_order_id != null)
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->purchaseOrder->number }}">{{ $modelGR->purchaseOrder->number }}</td>
+                                @else
+                                <td>-</td>
+                                @endif
+                                @if($modelGR->work_order_id != null)
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->workOrder->number }}">{{ $modelGR->workOrder->number }}</td>
+                                @else
+                                <td>-</td>
+                                @endif
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->description }}">{{ $modelGR->description }}</td>
+                                @if($modelGR->purchase_order_id != null)
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->purchaseOrder->vendor->name }}">{{ $modelGR->purchaseOrder->vendor->name }}</td>
+                                @elseif($modelGR->work_order_id != null)
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->workOrder->vendor->name }}">{{ $modelGR->workOrder->vendor->name }}</td>
+                                @endif
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == 'building')
-                                        <a href="{{ route('goods_return.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('goods_return.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @else
-                                        {{-- <a href="{{ route('goods_return_repair.createGiWithRef', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a> --}}
+                                        <a onClick="loading()" href="{{ route('goods_return_repair.createGoodsReturnGR', ['id'=>$modelGR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
@@ -62,5 +76,9 @@
     $(document).ready(function(){
         $('div.overlay').hide();        
     });
+
+    function loading(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush

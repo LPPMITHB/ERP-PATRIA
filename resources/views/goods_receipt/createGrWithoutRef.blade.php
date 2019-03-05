@@ -36,12 +36,11 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-3 col-md-12">
-                                    <div class="col-md-3 col-xs-3 no-padding">Ship Date:</div>
-
-                                    <div class="col-sm-12 col-lg-8 p-t-0 p-l-0">
-                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker width100" name="ship_date" id="ship_date" placeholder="Ship Date">
+                                        <div class="col-md-8 col-xs-12 p-l-0">Ship Date:</div>
+                                        <div class="col-sm-12 col-lg-8  p-l-0">
+                                            <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker" name="ship_date" id="ship_date" placeholder="Ship Date" style="width: 180px">
+                                        </div>
                                     </div>
-                                </div>
                             </div>
                         <div class="col-sm-12">
                             <div class="row">

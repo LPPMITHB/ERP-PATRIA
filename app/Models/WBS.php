@@ -28,6 +28,11 @@ class WBS extends Model
         return $this->belongsTo(self::class, 'wbs_id');
     }
 
+    public function wbsConfig()
+    {
+        return $this->belongsTo('App\Models\WbsConfiguration', 'wbs_configuration_id');
+    }
+
     public function bom()
     {
         return $this->hasOne('App\Models\Bom', 'wbs_id');

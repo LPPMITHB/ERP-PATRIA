@@ -98,10 +98,10 @@
                             </tbody>
                         </table>
                         <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                            @if($route == "/goods_return")
-                                {{-- <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_return.print', ['id'=>$modelGR->id]) }}">DOWNLOAD</a> --}}
-                            @elseif($route == "/goods_return_repair")
-                                {{-- <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_return_repair.print', ['id'=>$modelGR->id]) }}">DOWNLOAD</a> --}}
+                            @if($route == "/goods_return" && $modelGR->status == 2)
+                                <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_return.print', ['id'=>$modelGR->id]) }}">DOWNLOAD</a>
+                            @elseif($route == "/goods_return_repair" && $modelGR->status == 2)
+                                <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_return_repair.print', ['id'=>$modelGR->id]) }}">DOWNLOAD</a>
                             @endif
                         </div>
                     </div>
