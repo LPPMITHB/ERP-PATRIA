@@ -40,7 +40,7 @@
                                     @if($menu == "building")
                                         <a href="{{ route('goods_return.createGoodsReturnPO', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @elseif($menu == "repair")
-                                        {{-- <a href="{{ route('goods_receipt_repair.createGrWithRef', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a> --}}
+                                        <a href="{{ route('goods_return_repair.createGoodsReturnPO', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>

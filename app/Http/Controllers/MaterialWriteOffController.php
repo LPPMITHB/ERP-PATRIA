@@ -10,6 +10,8 @@ use App\Models\Stock;
 use App\Models\StorageLocation;
 use App\Models\GoodsIssue;
 use App\Models\GoodsIssueDetail;
+use App\Models\MaterialWriteOff;
+use App\Models\MaterialWriteOffDetail;
 use App\Models\Branch;
 use Illuminate\Support\Collection;
 use Auth;
@@ -25,7 +27,7 @@ class MaterialWriteOffController extends Controller
     public function index(Request $request)
     {
         $route = $request->route()->getPrefix();    
-        $modelWriteOffs = GoodsIssue::where('type', 5)->get();
+        $modelWriteOffs = MaterialWriteOff::all();
 
         return view('material_write_off.index', compact('modelWriteOffs','route'));
 
@@ -35,9 +37,9 @@ class MaterialWriteOffController extends Controller
     {
         $route = $request->route()->getPrefix();    
         if($route == "/material_write_off"){
-            $modelGIs = GoodsIssue::whereIn('status',[1,4])->where('business_unit_id',1)->get();
+            $modelGIs = MaterialWriteOff::whereIn('status',[1,4])->where('business_unit_id',1)->get();
         }elseif($route == "/material_write_off_repair"){
-            $modelGIs = GoodsIssue::whereIn('status',[1,4])->where('business_unit_id',2)->get();
+            $modelGIs = MaterialWriteOff::whereIn('status',[1,4])->where('business_unit_id',2)->get();
         }
 
         return view('material_write_off.indexApprove', compact('modelGIs','route'));
@@ -67,12 +69,12 @@ class MaterialWriteOffController extends Controller
     {
         $datas = json_decode($request->datas);
         $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
-        $number = $this->generateGINumber();
+        $number = $this->generateMWONumber();
 
         DB::beginTransaction();
         try{
 
-            $MWO = new GoodsIssue;
+            $MWO = new MaterialWriteOff;
             $MWO->number = $number;
             $MWO->description = $datas->description;
             if($menu == "building"){
@@ -80,20 +82,41 @@ class MaterialWriteOffController extends Controller
             }else if($menu == "repair"){
                 $MWO->business_unit_id = 2;
             }
-            $MWO->type = 5;
-            $MWO->status = 1;
             $MWO->user_id = Auth::user()->id;
             $MWO->branch_id = Auth::user()->branch->id;
             $MWO->save();
 
             foreach($datas->materials as $data){
-                $MWOD = new GoodsIssueDetail;
-                $MWOD->goods_issue_id = $MWO->id;
+                $MWOD = new MaterialWriteOffDetail;
+                $MWOD->material_write_off_id = $MWO->id;
                 $MWOD->quantity = $data->quantity;
                 $MWOD->material_id = $data->material_id;
                 $MWOD->storage_location_id = $data->sloc_id;
                 $MWOD->save();
             }
+
+            // $MWO = new GoodsIssue;
+            // $MWO->number = $number;
+            // $MWO->description = $datas->description;
+            // if($menu == "building"){
+            //     $MWO->business_unit_id = 1;
+            // }else if($menu == "repair"){
+            //     $MWO->business_unit_id = 2;
+            // }
+            // $MWO->type = 5;
+            // $MWO->status = 1;
+            // $MWO->user_id = Auth::user()->id;
+            // $MWO->branch_id = Auth::user()->branch->id;
+            // $MWO->save();
+
+            // foreach($datas->materials as $data){
+            //     $MWOD = new GoodsIssueDetail;
+            //     $MWOD->goods_issue_id = $MWO->id;
+            //     $MWOD->quantity = $data->quantity;
+            //     $MWOD->material_id = $data->material_id;
+            //     $MWOD->storage_location_id = $data->sloc_id;
+            //     $MWOD->save();
+            // }
             DB::commit();
             if($menu == "building"){
                 return redirect()->route('material_write_off.show',$MWO->id)->with('success', 'Material Write Off Created');
@@ -120,17 +143,17 @@ class MaterialWriteOffController extends Controller
     public function show($id, Request $request)
     {
         $route = $request->route()->getPrefix();    
-        $modelGI = GoodsIssue::findOrFail($id);
-        $modelGID = $modelGI->GoodsIssueDetails;
+        $modelMWO = MaterialWriteOff::findOrFail($id);
+        $modelMWOD = $modelMWO->materialWriteOffDetails;
 
-        return view('material_write_off.show', compact('modelGI','modelGID','route'));
+        return view('material_write_off.show', compact('modelMWO','modelMWOD','route'));
     }
 
     public function showApprove($id, Request $request)
     {
         $route = $request->route()->getPrefix();    
-        $modelGI = GoodsIssue::findOrFail($id);
-        $modelGID = $modelGI->GoodsIssueDetails;
+        $modelGI = MaterialWriteOff::findOrFail($id);
+        $modelGID = $modelGI->materialWriteOffDetails;
 
         return view('material_write_off.showApprove', compact('modelGI','modelGID','route'));
     }
@@ -144,8 +167,8 @@ class MaterialWriteOffController extends Controller
     public function edit($id, Request $request)
     {
         $route = $request->route()->getPrefix();    
-        $modelGI = GoodsIssue::findOrFail($id);
-        $modelGID = $modelGI->GoodsIssueDetails;   
+        $modelGI = MaterialWriteOff::findOrFail($id);
+        $modelGID = $modelGI->MaterialWriteOffDetails;   
 
         $materials = Material::all();
         $storageLocations = StorageLocation::where('status',1)->get();
@@ -179,7 +202,7 @@ class MaterialWriteOffController extends Controller
     {
         $datas = json_decode($request->datas);
         $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
-        $MWO = GoodsIssue::find($id);
+        $MWO = MaterialWriteOff::find($id);
 
         DB::beginTransaction();
         try{
@@ -192,19 +215,19 @@ class MaterialWriteOffController extends Controller
 
             if(count($datas->gid_deleted)>0){
                 foreach($datas->gid_deleted as $gid_id){
-                    $gid = GoodsIssueDetail::find($gid_id);
+                    $gid = MaterialWriteOffDetail::find($gid_id);
                     $gid->delete();
                 }
             }
             foreach($datas->materials as $data){
                 if(isset($data->gid_id)){
-                    $MWOD = GoodsIssueDetail::find($data->gid_id);
+                    $MWOD = MaterialWriteOffDetail::find($data->gid_id);
                     $MWOD->material_id = $data->material_id;
                     $MWOD->quantity = $data->quantity;
                     $MWOD->storage_location_id = $data->sloc_id;
                     $MWOD->update();
                 }else{
-                    $MWOD = new GoodsIssueDetail;
+                    $MWOD = new MaterialWriteOffDetail;
                     $MWOD->goods_issue_id = $MWO->id;
                     $MWOD->quantity = $data->quantity;
                     $MWOD->material_id = $data->material_id;
@@ -229,30 +252,72 @@ class MaterialWriteOffController extends Controller
             
     }
 
-    public function approval($gi_id,$status, Request $request){
-        $modelGI = GoodsIssue::findOrFail($gi_id);
+    public function approval(Request $request){
+
+        $datas = json_decode($request->datas);
+        $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";   
+        $gi_number = $this->generateGINumber();
         
-        if($status == "approve"){
-            $modelGI->status = 2;
-            foreach($modelGI->goodsIssueDetails as $data){
-                $this->updateSlocDetailApproved($data);
-                $this->updateStockApproved($data);
+        DB::beginTransaction();
+        try {
+            $modelMWO = MaterialWriteOff::findOrFail($datas->mwo_id);
+            $modelMWOD = MaterialWriteOffDetail::where('material_write_off_id',$modelMWO->id)->get();
+
+            if($datas->status == "approve"){
+                $modelMWO->status = 2;
+                $modelMWO->approved_by = Auth::user()->id;
+                $modelMWO->update();
+
+                $GI = new GoodsIssue;
+                $GI->number = $gi_number;
+                $GI->material_write_off_id = $modelMWO->id;
+                $GI->description = $modelMWO->description;
+                if($menu ==  "building"){
+                    $GI->business_unit_id = 1;
+                }elseif($menu == "repair"){
+                    $GI->business_unit_id = 2;
+                }
+                $GI->type = 5;
+                $GI->branch_id = Auth::user()->branch->id;
+                $GI->user_id = Auth::user()->id;
+                $GI->save();
+
+                foreach($modelMWO->materialWriteOffDetails as $data){
+
+                    $GID = new GoodsIssueDetail;
+                    $GID->goods_issue_id = $GI->id;
+                    $GID->quantity = $data->quantity;
+                    $GID->material_id = $data->material_id;
+                    $GID->storage_location_id = $data->storage_location_id;
+                    $GID->save();
+
+                    $this->updateSlocDetailApproved($data);
+                    $this->updateStockApproved($data);
+                }
+
+            }elseif($datas->status == "need-revision"){
+                $modelMWO->status = 3;
+                $modelMWO->update();
+            }elseif($datas->status == "reject"){
+                $modelMWO->status = 4;
+                $modelMWO->update();
             }
-            $modelGI->update();
-        }elseif($status == "need-revision"){
-            $modelGI->status = 3;
-            $modelGI->update();
-        }elseif($status == "reject"){
-            $modelGI->status = 4;
-            $modelGI->update();
+            
+            DB::commit();
+            if($menu == "building"){
+                return redirect()->route('material_write_off.show',$datas->mwo_id)->with('success', 'Material Write Off Updated');
+            }elseif($menu == "repair"){
+                return redirect()->route('material_write_off_repair.show',$datas->mwo_id)->with('success', 'Material Write Off Updated');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($menu == "building"){
+                return redirect()->route('material_write_off.show',$datas->mwo_id)->with('error', $e->getMessage());
+            }elseif($menu == "repair"){
+                return redirect()->route('material_write_off_repair.show',$datas->mwo_id)->with('error', $e->getMessage());
+            }
         }
 
-        $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
-        if($menu == "building"){
-            return redirect()->route('material_write_off.show',$gi_id)->with('success', 'Material Write Off Updated');
-        }elseif($menu == "repair"){
-            return redirect()->route('material_write_off_repair.show',$gi_id)->with('success', 'Material Write Off Updated');
-        }
     }
 
     public function destroy($id)
@@ -279,6 +344,27 @@ class MaterialWriteOffController extends Controller
         $gi_number = 'GI-'.$gi_number;
 
         return $gi_number;
+    }
+
+    public function generateMWONumber(){
+        $modelMWO = MaterialWriteOff::orderBy('created_at','desc')->first();
+        $yearNow = date('y');
+        
+		$number = 1;
+        if(isset($modelMWO)){
+            $yearDoc = substr($modelMWO->number, 4,2);
+            if($yearNow == $yearDoc){
+                $number += intval(substr($modelMWO->number, -5));
+            }
+        }
+
+        $year = date($yearNow.'000000');
+        $year = intval($year);
+
+		$mwo_number = $year+$number;
+        $mwo_number = 'MWO-'.$mwo_number;
+
+        return $mwo_number;
     }
 
     

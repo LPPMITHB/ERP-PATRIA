@@ -71,9 +71,6 @@
                     
                 </div>
             </div>
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
         </div>
     </div>
 </div>
@@ -83,6 +80,7 @@
 <script>
     $(document).ready(function(){
         var data = @json($data);
+        var project = @json($project);
 
         $('#treeview').jstree({
             "core": {
@@ -106,5 +104,11 @@
         });
         $('div.overlay').hide();
     });
+
+    $('#treeview').on("select_node.jstree", function (e, data) {
+        if(data.node.a_attr.href != '#'){
+            $('div.overlay').show();
+        }
+     });
 </script>
 @endpush

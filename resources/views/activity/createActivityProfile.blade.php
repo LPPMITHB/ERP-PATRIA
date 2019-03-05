@@ -33,7 +33,8 @@
                     'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
-                        $wbs->number => route('wbs_repair.createSubWbsProfile', $wbs->wbs->id)
+                        $wbs->number => route('wbs_repair.createSubWbsProfile', $wbs->wbs->id),
+                        "Manage Activities" => ""
                     ]
                 ]
             )
@@ -44,7 +45,8 @@
                     'title' => "Manage Activities",
                     'items' => [
                         'Dashboard' => route('index'),
-                        $wbs->number => route('wbs_repair.createWbsProfile')
+                        $wbs->number => route('wbs_repair.createWbsProfile'),
+                        "Manage Activities" => ""
                     ]
                 ]
             )
@@ -226,10 +228,7 @@ var vm = new Vue({
             return text
         },
         openModalEditActivity(data){
-            window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
-                this.allActivitiesEdit = data;
-            });
-            document.getElementById("edit_activity_code").innerHTML= data.code;
+            document.getElementById("edit_activity_code").innerHTML= data.name;
             this.editActivityProfile.activity_id = data.id;
             this.editActivityProfile.name = data.name;
             this.editActivityProfile.description = data.description;

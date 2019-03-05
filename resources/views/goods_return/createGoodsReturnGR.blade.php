@@ -76,6 +76,7 @@
                                                 <th width="5%">No</th>
                                                 <th width="30%">Material Name</th>
                                                 <th width="30%">Material Description</th>
+                                                <th width="5%">Unit</th>
                                                 <th width="15%">Quantity</th>
                                                 <th width="15%">Return Qty</th>
                                             </tr>
@@ -83,9 +84,10 @@
                                         <tbody>
                                             <tr v-for="(GRD,index) in modelGRD">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ GRD.material.code }} - {{ GRD.material.name }}</td>
+                                                <td>{{ GRD.material.code }}</td>
                                                 <td>{{ GRD.material.description }}</td>
-                                                <td>{{ GRD.quantity - GRD.returned }} </td>
+                                                <td>{{ GRD.material.uom.unit }}</td>
+                                                <td>{{ GRD.available }} </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="GRD.returned_temp" placeholder="Please Input Returned Quantity">
                                                 </td>
@@ -186,10 +188,8 @@
                 data = JSON.parse(data)
 
                 data.forEach(GRD => {
-                    GRD.quantity = GRD.quantity.replace(/,/g , ''); 
-                    GRD.returned_temp = parseInt(GRD.returned_temp);     
+                    GRD.returned_temp = GRD.returned_temp.replace(/,/g , '');   
                 });
-
                 this.submittedForm.GRD = data;
                 this.submittedForm.goods_receipt_id = this.modelGR.id;
                 this.submittedForm.description = this.description;
@@ -223,7 +223,7 @@
         },
         created: function(){
             this.modelGRD.forEach(GRD => {
-                GRD.quantity = (GRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                GRD.available = (GRD.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             });
         },
     });

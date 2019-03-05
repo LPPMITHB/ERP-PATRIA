@@ -86,3 +86,6 @@ require("jstree/dist/jstree.min.js");
 
 //fullcalendar
 require("fullcalendar/dist/fullcalendar.min.js");
+
+//date range picker
+require("daterangepicker");

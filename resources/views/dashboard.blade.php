@@ -102,9 +102,15 @@
                                                           }
                                                         }
                                                       }
+                                                      $totalCost = count($project->raps)>0 ? $project->raps->sum('total_price') : 0;
+                                                      if($totalCost > 0){
+                                                        $percentageCost = $costAbsorbed / $totalCost;
+                                                      }else{
+                                                        $percentageCost = 0;
+                                                      }
                                                   @endphp
                                                   <div class="col-md-4 col-xs-7 col-sm-8 tdEllipsis" data-container="body" data-toggle="tooltip" data-placement="bottom" title="Rp {{number_format($costAbsorbed)}} / Rp {{count($project->raps)>0 ? number_format($project->raps->sum('total_price')) : 0}}">
-                                                      <h4> : Rp {{number_format($costAbsorbed)}} / Rp {{count($project->raps)>0 ? number_format($project->raps->sum('total_price')) : 0}}</h4>                
+                                                      <h4> : {{$percentageCost}} %</h4>                
                                                   </div>
                                               </div>
                                               <br>
@@ -289,5 +295,8 @@
 
 @push('script')
 <script>
+     $(document).ready(function(){
+        $('div.overlay').hide();
+    });
 </script>
 @endpush

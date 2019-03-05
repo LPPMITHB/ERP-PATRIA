@@ -119,14 +119,14 @@
                                                 <th style="width: 5%">No</th>
                                                 <template v-if="modelPR.type == 1">
                                                     <th width="15%">Material Number</th>
-                                                    <th width="25%">Material Description</th>
+                                                    <th width="21%">Material Description</th>
                                                 </template>
                                                 <template v-else>
                                                     <th width="15%">Resource Number</th>
-                                                    <th width="25%">Resource Description</th>
+                                                    <th width="21%">Resource Description</th>
                                                 </template>
-                                                <th style="width: 7%">Qty</th>
-                                                <th style="width: 7%">Order</th>
+                                                <th style="width: 9%">Qty</th>
+                                                <th style="width: 9%">Order</th>
                                                 <th style="width: 6%">Unit</th>
                                                 <th style="width: 12%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 7%">Disc. (%)</th>
@@ -364,6 +364,7 @@
 
             },
             submitForm(){
+                $('div.overlay').show();
                 var data = this.PRDetail;
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
@@ -407,7 +408,24 @@
                     var status = 0;
                     if(this.modelPR.type == 1){
                         data.forEach(PRD => {
-                            PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                            // quantity
+                            if(PRD.material.uom.is_decimal == 0){
+                                PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                            }else{
+                                var decimal = (PRD.quantity+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        PRD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        PRD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
+                                }else{
+                                    PRD.quantity = (PRD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                } 
+                            }
+
+                            // cost standard price
                             var decimal = (PRD.material.cost_standard_price+"").replace(/,/g, '').split('.');
                             if(decimal[1] != undefined){
                                 var maxDecimal = 2;
@@ -419,6 +437,8 @@
                             }else{
                                 PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }    
+
+                            // discount
                             var discount = parseInt((PRD.discount+"").replace(/,/g, ''));
                             if(discount > 100){
                                 iziToast.warning({
@@ -439,6 +459,8 @@
                             }else{
                                 PRD.discount = (PRD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
+
+                            // delivery date
                             if(PRD.required_date == null || PRD.required_date == ""){
                                 this.delivery_date = "";
                                 status = 1;
@@ -554,10 +576,25 @@
             var status = 0;
             if(this.modelPR.type == 1){
                 data.forEach(PRD => {
+                    // separator quantity
                     PRD.quantity = PRD.quantity - PRD.reserved;
                     PRD.sugQuantity = PRD.quantity;
-                    PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    if(PRD.material.uom.is_decimal == 0){
+                        PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }else{
+                        var decimal = (PRD.sugQuantity+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                PRD.sugQuantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                PRD.sugQuantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            PRD.sugQuantity = (PRD.sugQuantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }
+
                     PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     PRD.required_date = PRD.required_date.split("-").reverse().join("-");
                     if(PRD.required_date == null || PRD.required_date == ""){

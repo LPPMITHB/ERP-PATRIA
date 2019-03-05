@@ -120,20 +120,20 @@
                         <div class="box-body">
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-15 p-t-0">
-                                    <table class="table table-bordered tableFixed p-t-10" style="border-collapse:collapse;">
+                                    <table class="table table-bordered tableFixed p-t-10 m-b-5" style="border-collapse:collapse;">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <template v-if="modelPO.purchase_requisition.type == 1">
                                                     <th width="15%">Material Number</th>
-                                                    <th width="25%">Material Description</th>
+                                                    <th width="21%">Material Description</th>
                                                 </template>
                                                 <template v-else>
                                                     <th width="15%">Resource Number</th>
-                                                    <th width="25%">Resource Description</th>
+                                                    <th width="21%">Resource Description</th>
                                                 </template>
-                                                <th style="width: 7%">Qty</th>
-                                                <th style="width: 7%">Order</th>
+                                                <th style="width: 9%">Qty</th>
+                                                <th style="width: 9%">Order</th>
                                                 <th style="width: 6%">Unit</th>
                                                 <th style="width: 12%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 7%">Disc. (%)</th>
@@ -346,6 +346,7 @@
 
             },
             submitForm(){
+                $('div.overlay').show();
                 var data = this.PODetail;
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
@@ -374,6 +375,29 @@
                     var data = newValue;
                     var status = 0;
                     data.forEach(POD => {
+                        // discount
+                        var discount = parseInt((POD.discount+"").replace(/,/g, ''));
+                        if(discount > 100){
+                            iziToast.warning({
+                                title: 'Discount cannot exceed 100% !',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            POD.discount = 100;
+                        }
+                        var decimal = (POD.discount+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                POD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                POD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            POD.discount = (POD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+
+                        // total price
                         var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
                             var maxDecimal = 2;
@@ -385,7 +409,29 @@
                         }else{
                             POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
-                        POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+
+                        // quantity
+                        if(POD.purchase_requisition_detail.purchase_requisition.type == 1){
+                            if(POD.material.uom.is_decimal == 0){
+                                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                            }else{
+                                var decimal = (POD.quantity+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        POD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        POD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
+                                }else{
+                                    POD.quantity = (POD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                } 
+                            }
+                        }else{
+                            POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                        }
+
+                        // delivery date
                         if(POD.delivery_date == null || POD.delivery_date == ""){
                             this.delivery_date = "";
                             status = 1;
@@ -398,25 +444,25 @@
                 deep: true
             },
             'modelPO.tax' : function (newValue){
-                var tax = parseInt((newValue+"").replace(/,/g, ''));
+                var tax = (newValue+"").replace(/,/g, '');
                 if(newValue > 100){
                     iziToast.warning({
                         title: 'Tax cannot exceed 100% !',
                         position: 'topRight',
                         displayMode: 'replace'
                     });
-                    this.tax = 100;
+                    this.modelPO.tax = 100;
                 }
                 var decimal = (newValue+"").replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
                     var maxDecimal = 2;
                     if((decimal[1]+"").length > maxDecimal){
-                        this.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        this.modelPO.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                     }else{
-                        this.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        this.modelPO.tax = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                     }
                 }else{
-                    this.tax = (this.tax+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    this.modelPO.tax = (this.modelPO.tax+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
             'modelPO.estimated_freight': function (newValue){
@@ -467,9 +513,24 @@
             data.forEach(POD => {
                 POD.delivery_date = POD.delivery_date.split("-").reverse().join("-");
                 POD.price = parseFloat((POD.total_price / POD.quantity+"").replace(/,/g , ''));
-                POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;        
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
-                POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
+                POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;    
+
+                // quantity
+                if(POD.material.uom.is_decimal == 0){
+                        POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }else{
+                        var decimal = (POD.purchase_requisition_detail.quantity+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                POD.purchase_requisition_detail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                POD.purchase_requisition_detail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }    
                 var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
                     var maxDecimal = 2;

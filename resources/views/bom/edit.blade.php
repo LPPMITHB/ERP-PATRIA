@@ -121,7 +121,7 @@
                                                 <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity" :disabled="materialOk"></td>
                                         <td class="no-padding"><input class="form-control width100" type="text" v-model="input.unit" disabled></td>
                                         <td class="no-padding">
                                             <selectize v-model="input.source" :settings="sourceSettings">
@@ -157,7 +157,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="unit" class="control-label">Unit</label>
@@ -214,12 +214,13 @@
             description : ""
         },
         input : {
+            bom_id : @json($modelBOM->id),
             material_id : "",
             quantity : "",
-            quantityInt : 0,
-            bom_id : "",
-            unit : "",
             source : "Stock",
+            unit : "",
+            is_decimal : "",
+            material_ok : ""
         },
         materialTable : @json($modelBOMDetail),
         materialSettings: {
@@ -231,10 +232,12 @@
         editInput : {
             bom_detail_id : "",
             material_id : "",
+            old_material_id : "",
             quantity : "",
-            quantityInt : 0,
             unit : "",
             source : "Stock",
+            is_decimal : "",
+            material_ok : ""
         },
         material_id:[],
         material_id_modal:[],
@@ -261,14 +264,24 @@
                 }
                 return isOk;
             },
-            createOk: function(){
+            materialOk : function(){
                 let isOk = false;
 
-                if(this.submittedForm.project_id == "" || this.submittedForm.bom_code == "" || this.submittedForm.description == "" || this.materialTable.length < 1){
+                if(this.input.material_ok == ""){
                     isOk = true;
                 }
+
                 return isOk;
             },
+            editMaterialOk : function(){
+                let isOk = false;
+
+                if(this.editInput.material_ok == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            }
         },
         methods: {
             tooltipCode: function(code) {
@@ -336,8 +349,7 @@
                 })
             },
             update(){
-                this.editInput.quantityInt = (this.editInput.quantityInt+"").replace(/,/g , '');
-                this.editInput.quantityInt = parseInt(this.editInput.quantityInt);
+                this.editInput.quantity = (this.editInput.quantity+"").replace(/,/g , '');
                 $('div.overlay').show();
                 var data = this.editInput;
                 data = JSON.stringify(data);
@@ -356,7 +368,6 @@
                     this.editInput.quantity = "";
                     this.editInput.source = "";
                     this.editInput.unit = "";
-                    this.editInput.quantityInt = 0;
                     this.getBom(bom_id);
                 })
                 .catch((error) => {
@@ -370,10 +381,19 @@
                 })
             },
             getBom(bom_id){
+                $('div.overlay').show();
                 window.axios.get('/api/getBom/'+bom_id).then(({ data }) => {
+                    this.material_id = [];
                     this.materialTable = data;
-                    $('div.overlay').hide();
+
+                    this.materialTable.forEach(material =>{
+                        this.material_id.push(material.material_id);         
+                    })
+
+                    var jsonMaterialId = JSON.stringify(this.material_id);
+                    this.getNewMaterials(jsonMaterialId);
                     this.newIndex = this.materialTable.length + 1;
+                    $('div.overlay').hide();
                 });
             },
             getPR(bom_id){
@@ -383,10 +403,9 @@
             },
             submitToTable(){
                 $('div.overlay').show();
-                this.input.quantityInt = (this.input.quantityInt+"").replace(/,/g , '');
-                this.input.quantityInt = parseInt(this.input.quantityInt);
+                this.input.quantity = (this.input.quantity+"").replace(/,/g , '');
 
-                if(this.input.material_id != "" && this.input.source != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                if(this.input.material_id != "" && this.input.source != "" && this.input.quantity != ""){
                     var newMaterial = this.input;
                     newMaterial = JSON.stringify(newMaterial);
 
@@ -410,7 +429,6 @@
                         this.input.quantity = "";
                         this.input.unit = "";
                         this.input.source = "Stock";
-                        this.input.quantityInt = 0;
                         this.materialTable = [];
                         this.getBom(this.bom.id);
                         this.getPR(this.bom.id);
@@ -452,10 +470,11 @@
 
                 this.editInput.bom_detail_id = data.id;
                 this.editInput.material_id = data.material_id;
+                this.editInput.old_material_id = data.material_id;
                 this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = parseInt((data.quantity+"").replace(/,/g , ''));
                 this.editInput.source = data.source;
-                this.editInput.unit = data.material.uom.unit;
+                this.editInput.unit = data.unit;
+                this.editInput.is_decimal = data.is_decimal;
             },
             removeRow: function(id) {
                 iziToast.question({
@@ -494,7 +513,6 @@
                                         title: response.data.response,
                                         position: 'topRight',
                                     });
-                                    $('div.overlay').hide();   
                                     vm.getBom(vm.bom.id);
                                 }
                             })
@@ -522,33 +540,88 @@
         },
         watch: {
             'input.material_id': function(newValue){
+                this.input.quantity = "";
                 if(newValue != ""){
+                    this.input.material_ok = "ok";
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         this.input.unit = data.uom.unit;
+                        this.input.is_decimal = data.uom.is_decimal;
                     });
+                }else{
+                    this.input.unit = "";
+                    this.input.is_decimal = "";
+                    this.input.material_ok = "";
+                }
+            },
+            'editInput.material_id': function(newValue){
+                if(newValue != this.editInput.old_material_id){
+                    this.editInput.quantity = "";
+                }
+                if(newValue != ""){
+                    this.editInput.material_ok = "ok";
+                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
+                        this.editInput.unit = data.uom.unit;
+                        this.editInput.is_decimal = data.uom.is_decimal;
+                    });
+                }else{
+                    this.editInput.unit = "";
+                    this.editInput.is_decimal = "";
+                    this.editInput.material_ok = "";
                 }
             },
             'input.quantity': function(newValue){
-                this.input.quantityInt = newValue;
-                this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                var is_decimal = this.input.is_decimal;
+                if(is_decimal == 0){
+                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.input.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }  
             },
             'bom.description' : function(newValue){
                 this.updateDesc(newValue);
             },
-            'editInput.material_id': function(newValue){
-                if(newValue != ""){
-                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
-                        this.editInput.unit = data.uom.unit;
-                    });
-                }
-            },
+            
             materialTable: function(newValue) {
                 newValue.forEach(bomDetail => {
-                    bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                    var decimal = (bomDetail.quantity+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        bomDetail.quantity = (bomDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
                 });
             },
         },
@@ -560,7 +633,17 @@
 
             var data = this.materialTable;
             data.forEach(bomDetail => {
-                bomDetail.quantity = (bomDetail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                var decimal = (bomDetail.quantity+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        bomDetail.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    bomDetail.quantity = (bomDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
                 this.material_id.push(bomDetail.material_id);         
             });
             var jsonMaterialId = JSON.stringify(this.material_id);

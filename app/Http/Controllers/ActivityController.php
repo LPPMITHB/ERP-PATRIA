@@ -12,7 +12,9 @@ use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
 use App\Models\WbsProfile;
+use App\Models\WbsConfiguration;
 use App\Models\ActivityProfile;
+use App\Models\ActivityConfiguration;
 use App\Models\User;
 use DB;
 use DateTime;
@@ -26,8 +28,17 @@ class ActivityController extends Controller
         $wbs = WBS::find($id);
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-
         return view('activity.create', compact('project', 'wbs','menu'));
+    }
+    
+    public function createActivityRepair($id, Request $request)
+    {
+        $wbs = WBS::find($id);
+        $activity_config = $wbs->wbsConfig->activities;
+        $project = $wbs->project;
+        $menu = "repair";
+
+        return view('activity.createActivityRepair', compact('project', 'wbs','menu','activity_config'));
     }
 
     public function createActivityProfile($id, Request $request)
@@ -36,6 +47,13 @@ class ActivityController extends Controller
         $wbs = WbsProfile::find($id);
 
         return view('activity.createActivityProfile', compact('wbs','menu'));
+    }
+
+    public function createActivityConfiguration($id, Request $request)
+    {
+        $wbs = WbsConfiguration::find($id);
+
+        return view('activity.createActivityConfiguration', compact('wbs'));
     }
 
     public function store(Request $request)
@@ -70,6 +88,10 @@ class ActivityController extends Controller
 
             if(count($predecessorArray) >0){
                 $activity->predecessor = json_encode($predecessorArray);
+            }
+
+            if(isset($data['activity_configuration_id'])){
+                $activity->activity_configuration_id = $data['activity_configuration_id'];
             }
             $activity->weight = $data['weight']; 
             $activity->user_id = Auth::user()->id;
@@ -109,6 +131,32 @@ class ActivityController extends Controller
             }else{
                 DB::commit();
                 return response(["response"=>"Success to create new activity profile"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeActivityConfiguration(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $activity = new ActivityConfiguration;
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];
+            $activity->wbs_id = $data['wbs_id'];            
+            $activity->duration = $data['duration'];
+            $activity->user_id = Auth::user()->id;
+            $activity->branch_id = Auth::user()->branch->id;
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new activity configuration"],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -181,6 +229,29 @@ class ActivityController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+
+    public function updateActivityConfiguration(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        
+        DB::beginTransaction();
+        try {
+            $activity = ActivityConfiguration::find($id);
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];         
+            $activity->duration = $data['duration'];
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to update activity configuration ".$activity->name],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
     
     public function index($id, Request $request)
     {
@@ -212,7 +283,29 @@ class ActivityController extends Controller
     {
         $project = Project::find($id);
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        // $wbss = $project->wbss->pluck('id')->toArray();
+        // $activities = Activity::whereIn('wbs_id',$wbss)->get();
+        // $predecessors =$activities->pluck('predecessor','id')->toArray();
+        // $predecessor_array = [];
+        // $temp_starting_point = [];
+        // $starting_point = [];
 
+        // foreach($predecessors as $act_id => $predecessor){
+        //     if($predecessor != null){
+        //         $temp = json_decode($predecessor);
+        //         array_push($predecessor_array, $temp[0][0]);
+        //     }else{
+        //         array_push($temp_starting_point, $act_id);
+        //     }
+        // }
+
+        // foreach($temp_starting_point as $key => $act_id){
+        //     array_search($act_id,$predecessor_array);
+        //     if(array_search($act_id,$predecessor_array) != false){
+        //         array_push($starting_point, $act_id);
+        //     }
+        // }
+        
         return view('activity.indexNetwork', compact('project','menu'));
     }
 
@@ -344,6 +437,25 @@ class ActivityController extends Controller
                 return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+    
+    public function destroyActivityConfiguration(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $activityConfiguration = ActivityConfiguration::find($id);
+
+            if(!$activityConfiguration->delete()){
+                return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
 
     public function destroyActivity(Request $request, $id)
     {
@@ -361,9 +473,11 @@ class ActivityController extends Controller
             foreach($activity_ref as $act){
                 if($act->predecessor != null){
                     $predecessor = json_decode($act->predecessor);
-                    if(in_array($activity->id,$predecessor)){
-                        array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
-                        return response(["error"=> $error],Response::HTTP_OK);
+                    foreach($predecessor as $act_id){
+                        if($activity->id == $act_id[0]){
+                            array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
+                            return response(["error"=> $error],Response::HTTP_OK);
+                        }
                     }
                 }
             }
@@ -487,6 +601,11 @@ class ActivityController extends Controller
 
     public function getActivitiesProfileAPI($wbs_id){
         $activities = ActivityProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($activities, Response::HTTP_OK);
+    }
+
+    public function getActivitiesConfigurationAPI($wbs_id){
+        $activities = ActivityConfiguration::where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

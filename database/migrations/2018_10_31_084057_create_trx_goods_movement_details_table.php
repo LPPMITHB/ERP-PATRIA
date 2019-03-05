@@ -17,7 +17,7 @@ class CreateTrxGoodsMovementDetailsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('goods_movement_id');
             $table->unsignedInteger('material_id');
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');

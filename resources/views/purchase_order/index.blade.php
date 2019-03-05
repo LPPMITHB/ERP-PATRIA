@@ -29,9 +29,9 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="15%">Number</th>
-                            <th width="35%">Description</th>
-                            <th width="20%">Project Number</th>
+                            <th width="40%">Description</th>
                             <th width="15%">Status</th>
+                            <th width="15%">Created By</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -41,65 +41,70 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelPO->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPO->description}}">{{ $modelPO->description }}</td>
-                                <td>{{ isset($modelPO->project) ? $modelPO->project->number : '-' }}</td>
                                 @if($modelPO->status == 1)
                                     <td>OPEN</td>
+                                    <td>{{ $modelPO->user->name }}</td>
                                     <td class="textCenter">
                                         @if($route == "/purchase_order")
-                                            <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($route == "/purchase_order_repair")
-                                            <a href="{{ route('purchase_order_repair.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelPO->status == 2)
                                     <td>APPROVED</td>
+                                    <td>{{ $modelPO->user->name }}</td>
                                     <td class="textCenter">
                                         @if($route == "/purchase_order")
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($route == "/purchase_order_repair")
-                                            <a href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelPO->status == 3)
                                     <td>NEED REVISION</td>
+                                    <td>{{ $modelPO->user->name }}</td>
                                     <td class="textCenter">
                                         @if($route == "/purchase_order")
-                                            <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($route == "/purchase_order_repair")
-                                            <a href="{{ route('purchase_order_repair.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelPO->status == 4)
                                     <td>REVISED</td>
+                                    <td>{{ $modelPO->user->name }}</td>
                                     <td class="textCenter">
                                         @if($route == "/purchase_order")
-                                            <a href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($route == "/purchase_order_repair")
-                                            <a href="{{ route('purchase_order_repair.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.edit', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelPO->status == 5)
                                     <td>REJECTED</td>
+                                    <td>{{ $modelPO->user->name }}</td>
                                     <td class="textCenter">
                                         @if($route == "/purchase_order")
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($route == "/purchase_order_repair")
-                                            <a href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @else
                                     <td>RECEIVED</td>
+                                    <td>{{ $modelPO->user->name }}</td>
                                     <td class="textCenter">
                                         @if($route == "/purchase_order")
-                                            <a href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($route == "/purchase_order_repair")
-                                            <a href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @endif
@@ -121,5 +126,9 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+
+    function loading(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush

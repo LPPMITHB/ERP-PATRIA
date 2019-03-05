@@ -54,9 +54,10 @@ class ResourceController extends Controller
         }
         $resources = Resource::all();
         $resource_categories = Configuration::get('resource_category');
+        $operation_hours = Configuration::get('operation_hours');
         $resourceDetails = ResourceDetail::where('status','!=',0)->get()->jsonSerialize();
 
-        return view('resource.assignResource', compact('resourceDetails','resource_categories','resources','modelProject','route'));
+        return view('resource.assignResource', compact('resourceDetails','resource_categories','resources','modelProject','route','operation_hours'));
     }
 
     public function create(Request $request)
@@ -529,11 +530,20 @@ class ResourceController extends Controller
         DB::beginTransaction();
         try {
             $resource = new ResourceTrx;
-            $resource->category_id = 1;
+            $resource->category_id = $data['category_id'];
             $resource->resource_id = $data['resource_id'];
+            if($data['resource_detail_id'] != ''){
+                $resource->resource_detail_id = $data['resource_detail_id'];
+            }
             $resource->project_id = $data['project_id'];
             $resource->wbs_id = $data['wbs_id'];
             $resource->quantity = $data['quantity'];
+            if($data['start_date'] != ''){
+                $resource->start_date = $data['start_date'];
+            }
+            if($data['end_date'] != ''){
+                $resource->end_date = $data['end_date'];
+            }
 
             $ProdOrder = ProductionOrder::where('wbs_id',$data['wbs_id'])->where('status',1)->first();
             if($ProdOrder){
@@ -560,6 +570,14 @@ class ResourceController extends Controller
             DB::rollback();
                 return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
+    }
+
+    public function resourceSchedule(Request $request){
+        $route = $request->route()->getPrefix();
+        $resources = Resource::all();
+        $resourceDetail = ResourceDetail::where('category_id',3)->get();
+
+        return view('resource.resourceSchedule', compact('route','resources','resourceDetail'));        
     }
 
     public function createInternal(Request $request,$id)
@@ -724,7 +742,7 @@ class ResourceController extends Controller
     }
 
     public function getResourceTrxApi($id){
-        $resourceTrx = ResourceTrx::with('project','resource','wbs')->where('project_id',$id)->get()->jsonSerialize();
+        $resourceTrx = ResourceTrx::with('project','resource','wbs','resourceDetail')->where('project_id',$id)->get()->jsonSerialize();
 
         return response($resourceTrx, Response::HTTP_OK);
     }
@@ -754,5 +772,11 @@ class ResourceController extends Controller
         $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail')->get()->jsonSerialize();
 
         return response($modelRD, Response::HTTP_OK);
+    }
+
+    public function getScheduleAPI($id){
+        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs')->get()->jsonSerialize();
+
+        return response($modelTR, Response::HTTP_OK);
     }
 }

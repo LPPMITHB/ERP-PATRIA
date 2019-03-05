@@ -16,7 +16,7 @@ class CreateMstStorageLocationDetailTable extends Migration
         Schema::create('mst_storage_location_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('material_id');
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
             $table->unsignedInteger('storage_location_id')->nullable();
             $table->timestamps();
             

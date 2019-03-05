@@ -172,6 +172,20 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label for="upload" class="col-sm-2 control-label">Upload Drawing</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <label class="input-group-btn">
+                                            <span class="btn btn-primary">
+                                                Browse&hellip; <input type="file" style="display: none;" multiple id="drawing" name="drawing">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="box-footer">
                                 <button @click.prevent="submitForm()" type="button" class="btn btn-primary pull-right">CREATE</button>
                             </div>
@@ -179,9 +193,6 @@
                         @endverbatim
                     </div>
                 </form>
-            </div>
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
             </div>
         </div>
     </div>
@@ -247,6 +258,7 @@ $(document).ready(function(){
         data: data,
         methods : {
             submitForm(){
+                $('div.overlay').show();                
                 if(this.project.class_cp_phone.length > 13 || this.project.class_cp_phone.length < 10 && this.menu == "building" && this.project.class_cp_phone != ""){
                     iziToast.warning({
                         title: 'Classification Contact Person Phone format is not appropriate !',

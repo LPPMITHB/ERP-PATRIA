@@ -31,7 +31,6 @@
                             <tr>
                                 <th style="width: 5%">No</th>
                                 <th style="width: 10%">Item Number</th>
-                                <th style="width: 30%">Name</th>
                                 <th style="width: 35%">Description</th>
                                 <th style="width: 10%">Type</th>
                                 <th style="width: 10%"></th>
@@ -42,7 +41,6 @@
                             <tr v-for="(data,index) in materials">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.code }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" :title="data.name">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" :title="data.description">{{ data.description }}</td>
                                 <td v-if="data.type == 3">Bulk part</td>
                                 <td v-else-if="data.type == 2">Component</td>
@@ -58,9 +56,6 @@
                 </div> <!-- /.box-body -->
             </div>
             @endverbatim
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
         </div>
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->

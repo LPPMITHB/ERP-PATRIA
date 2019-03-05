@@ -6,7 +6,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View All Materials' => route('material.index'),
-            $material->name => route('material.show',$material->id),
+            $material->description => route('material.show',$material->id),
             'Edit Material' => route('material.edit',$material->id),
         ]
     ]
@@ -35,18 +35,10 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="name" class="col-sm-2 control-label">Name</label>
-                
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="name" required autofocus v-model="submittedForm.name">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
                                 <label for="description" class="col-sm-2 control-label">Description</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="description" v-model="submittedForm.description">
+                                    <input type="text" class="form-control" id="description" required autofocus v-model="submittedForm.description">
                                 </div>
                             </div>
 
@@ -161,6 +153,20 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="upload" class="col-sm-2 control-label">Upload Image</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <span class="btn btn-primary">
+                                                    Browse&hellip; <input type="file" style="display: none;" multiple id="image" name="image">
+                                                </span>
+                                            </label>
+                                            <input type="text" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
                                     <label for="status" class="col-sm-2 control-label">Status</label>
                     
                                     <div class="col-sm-10">
@@ -200,7 +206,6 @@
         uoms : @json($uoms),
         submittedForm :{
             code : @json($material->code),
-            name : @json($material->name),
             description : @json($material->description),
             cost_standard_price : @json($material->cost_standard_price),
             cost_standard_service : @json($material->cost_standard_price_service),
@@ -248,7 +253,7 @@
             createOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.code == "" || this.submittedForm.name == "" || this.submittedForm.uom_id == ""){
+                if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.uom_id == ""){
                     isOk = true;
                 }
 

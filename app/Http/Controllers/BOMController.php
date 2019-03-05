@@ -282,7 +282,7 @@ class BOMController extends Controller
         $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::where('id',$wbs->project_id)->with('ship','customer')->first();
-        $materials = Material::orderBy('description')->get()->jsonSerialize();
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
         
         if($route == '/bom'){
             if($project->business_unit_id == 1){
@@ -306,7 +306,6 @@ class BOMController extends Controller
         $datas = json_decode($request->datas);
         $bom_code = self::generateBomCode($datas->project_id);
         $modelBom = Bom::where('wbs_id',$datas->wbs_id)->first();
-
         if(!$modelBom){
             DB::beginTransaction();
             try {
@@ -358,10 +357,10 @@ class BOMController extends Controller
                 $bom_detail = new BomDetail;
                 $bom_detail->bom_id = $data['bom_id'];
                 $bom_detail->material_id = $data['material_id'];
-                $bom_detail->quantity = $data['quantityInt'];
+                $bom_detail->quantity = $data['quantity'];
                 $bom_detail->source = $data['source'];
                 $bom_detail->save();
-            }else{
+            }elseif($route == "/bom_repair"){
                 $bom_detail = new BomDetail;
                 $bom_detail->bom_id = $data['bom_id'];
                 if($data['material_id'] != ""){
@@ -369,7 +368,7 @@ class BOMController extends Controller
                 }elseif($data['service_id'] != ""){
                     $bom_detail->service_id = $data['service_id'];
                 }
-                $bom_detail->quantity = $data['quantityInt'];
+                $bom_detail->quantity = $data['quantity'];
                 $bom_detail->save();
             }
             $modelBOM = Bom::findOrFail($data['bom_id']);
@@ -381,11 +380,11 @@ class BOMController extends Controller
                 $rap_detail->rap_id = $rap_id;
                 if($route == "/bom"){
                     $rap_detail->material_id = $data['material_id'];
-                    $rap_detail->quantity = $data['quantityInt'];
+                    $rap_detail->quantity = $data['quantity'];
                     if($data['source'] == "WIP"){
-                        $rap_detail->price = $bom_detail->material->cost_standard_price_service * $data['quantityInt'];
+                        $rap_detail->price = $bom_detail->material->cost_standard_price_service * $data['quantity'];
                     }else{
-                        $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                        $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantity'];
                     }
                     $rap_detail->save();
     
@@ -395,12 +394,12 @@ class BOMController extends Controller
                 }elseif($route == "/bom_repair"){
                     $rap_detail->material_id = $bom_detail->material_id;
                     $rap_detail->service_id = $bom_detail->service_id;
-                    $rap_detail->quantity = $data['quantityInt'];
+                    $rap_detail->quantity = $data['quantity'];
     
                     if($bom_detail->material_id != null){
-                        $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantityInt'];
+                        $rap_detail->price = $bom_detail->material->cost_standard_price * $data['quantity'];
                     }elseif($bom_detail->service_id != null){
-                        $rap_detail->price = $bom_detail->service->cost_standard_price * $data['quantityInt'];
+                        $rap_detail->price = $bom_detail->service->cost_standard_price * $data['quantity'];
                     }
                     $rap_detail->save();
                     // create PR & Reserve stock
@@ -496,10 +495,12 @@ class BOMController extends Controller
         DB::beginTransaction();
         try {
             $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
-            $diff = $data['quantityInt'] - $modelBOMDetail->quantity;
-            $modelBOMDetail->quantity = $data['quantityInt'];
+            $diff = $data['quantity'] - $modelBOMDetail->quantity;
+            $modelBOMDetail->quantity = $data['quantity'];
             $modelBOMDetail->material_id = ($data['material_id'] != '') ? $data['material_id'] : null;
-            $modelBOMDetail->service_id = ($data['service_id'] != '') ? $data['service_id'] : null;
+            if(isset($data['service_id'])){
+                $modelBOMDetail->service_id = ($data['service_id'] != '') ? $data['service_id'] : null;
+            }
             $modelBOMDetail->source = isset($data['source']) ? $data['source'] : null ;
 
             if(!$modelBOMDetail->update()){
@@ -510,7 +511,7 @@ class BOMController extends Controller
                     $modelRAP = Rap::where('bom_id',$modelBOMDetail->bom_id)->first();
                     foreach($modelRAP->rapDetails as $rapDetail){
                         if($rapDetail->material_id == $modelBOMDetail->material_id){
-                            $rapDetail->quantity = $data['quantityInt'];
+                            $rapDetail->quantity = $data['quantity'];
                             $rapDetail->update();
                         }
                     }
@@ -608,7 +609,7 @@ class BOMController extends Controller
             $bom_detail = new BomDetail;
             $bom_detail->bom_id = $bom->id;
             $bom_detail->material_id = $material->material_id;
-            $bom_detail->quantity = $material->quantityInt;
+            $bom_detail->quantity = $material->quantity;
             $bom_detail->source = $material->source;
             if(!$bom_detail->save()){
                 return redirect()->route('bom.create')->with('error', 'Failed Save Bom Detail !');
@@ -625,7 +626,7 @@ class BOMController extends Controller
             }else{
                 $bom_detail->service_id = $material->service_id;
             }
-            $bom_detail->quantity = $material->quantityInt;
+            $bom_detail->quantity = $material->quantity;
             if(!$bom_detail->save()){
                 return redirect()->route('bom.create')->with('error', 'Failed Save Bom Detail !');
             }
@@ -776,7 +777,7 @@ class BOMController extends Controller
                         $status = 1;
                     }else{
                         $remaining = $modelStock->quantity - $modelStock->reserved;
-                        if($remaining < $data['quantityInt']){
+                        if($remaining < $data['quantity']){
                             $status = 1;
                         }
                     }
@@ -805,27 +806,27 @@ class BOMController extends Controller
                     $modelBom = Bom::findOrFail($data['bom_id']);
                     if(isset($modelStock)){
                         $remaining = $modelStock->quantity - $modelStock->reserved;
-                        if($remaining < $data['quantityInt']){
+                        if($remaining < $data['quantity']){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->project_id = $project_id;
                             $PRD->material_id = $data['material_id'];
-                            $PRD->quantity = $data['quantityInt'] - $remaining;
+                            $PRD->quantity = $data['quantity'] - $remaining;
                             $PRD->save();
                         }
-                        $modelStock->reserved += $data['quantityInt'];
+                        $modelStock->reserved += $data['quantity'];
                         $modelStock->update();
                     }else{
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->material_id = $data['material_id'];
-                        $PRD->quantity = $data['quantityInt'];
+                        $PRD->quantity = $data['quantity'];
                         $PRD->save();
     
                         $modelStock = new Stock;
                         $modelStock->material_id = $data['material_id'];
                         $modelStock->quantity = 0;
-                        $modelStock->reserved = $data['quantityInt'];
+                        $modelStock->reserved = $data['quantity'];
                         $modelStock->branch_id = Auth::user()->branch->id;
                         $modelStock->save();
                     }

@@ -27,4 +27,9 @@ class GoodsIssue extends Model
     {
         return $this->belongsTo('App\Models\PurchaseOrder');
     }
+    
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

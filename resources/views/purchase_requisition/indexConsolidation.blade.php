@@ -168,6 +168,7 @@
                 return text
             },
             submitForm(){
+                $('div.overlay').show();
                 var prd = this.checkedPR;
                 var jsonPrd = JSON.stringify(prd);
                 jsonPrd = JSON.parse(jsonPrd);

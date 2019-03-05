@@ -18,19 +18,19 @@ class CreateTrxGoodsIssueTable extends Migration
             $table->string('number')->unique();
             $table->unsignedInteger('business_unit_id');
             $table->unsignedInteger('material_requisition_id')->nullable();
-            $table->unsignedInteger('purchase_order_id')->nullable();
-            $table->unsignedInteger('goods_receipt_id')->nullable();
+            $table->unsignedInteger('goods_return_id')->nullable();
+            $table->unsignedInteger('material_write_off_id')->nullable();
             $table->text('description');
             $table->integer('type')->default(1);
-            $table->integer('status')->default(0);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('approved_by')->nullable();
             $table->timestamps();
 
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
             $table->foreign('material_requisition_id')->references('id')->on('trx_material_requisition');
-            $table->foreign('purchase_order_id')->references('id')->on('trx_purchase_order');
-            $table->foreign('goods_receipt_id')->references('id')->on('trx_goods_receipt');
+            $table->foreign('goods_return_id')->references('id')->on('trx_goods_return');
+            $table->foreign('material_write_off_id')->references('id')->on('trx_material_write_off');
         });
     }
 

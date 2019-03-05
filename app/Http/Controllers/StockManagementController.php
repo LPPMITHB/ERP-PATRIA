@@ -96,8 +96,8 @@ class StockManagementController extends Controller
             $inventory_qty += $slocDetail->quantity;
         }
 
-        $inventory_value = number_format($inventory_value);
-        $inventory_qty = number_format($inventory_qty);
+        $inventory_value = number_format($inventory_value,2);
+        $inventory_qty = number_format($inventory_qty,2);
 
         $data['sloc'] = $sloc;
         $data['slocDetail'] = $slocDetails;
@@ -131,8 +131,8 @@ class StockManagementController extends Controller
         //     }
         // }
 
-        $inventory_value = number_format($inventory_value);
-        $inventory_qty = number_format($inventory_qty);
+        $inventory_value = number_format($inventory_value,2);
+        $inventory_qty = number_format($inventory_qty,2);
 
         $data['sloc'] = $slocs;
         $data['warehouseValue'] = $inventory_value;
@@ -164,9 +164,9 @@ class StockManagementController extends Controller
             $reserved_inventory_qty += $stock->reserved;
         }
 
-        $inventory_value = number_format($inventory_value);
-        $inventory_qty = number_format($inventory_qty);
-        $reserved_inventory_qty = number_format($reserved_inventory_qty);
+        $inventory_value = number_format($inventory_value,2);
+        $inventory_qty = number_format($inventory_qty,2);
+        $reserved_inventory_qty = number_format($reserved_inventory_qty,2);
 
         $data['stockValue'] = $inventory_value;
         $data['stockQuantity'] = $inventory_qty;

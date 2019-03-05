@@ -19,6 +19,7 @@ class CreateMstUomTable extends Migration
             $table->string('name');
             $table->string('unit')->nullable();
             $table->integer('status')->default(1);
+            $table->integer('is_decimal')->default(0);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();

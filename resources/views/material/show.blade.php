@@ -8,7 +8,7 @@
         'items' => [
             'Dashboard' => route('index'),
             'View All Materials' => route('material.index'),
-            $material->name => route('material.show',$material->id),
+            $material->description => route('material.show',$material->id),
         ]
     ]
 )
@@ -45,16 +45,11 @@
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>Name</td>
-                            <td>{{ $material->name }}</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
                             <td>Description</td>
                             <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $material->description }}">{{ $material->description }}</td>
                         </tr>
                         <tr>
-                            <td>4</td>
+                            <td>3</td>
                             <td>Cost Standard Price Material</td>
                             <td>Rp {{ number_format($material->cost_standard_price,2) }}</td>
                         </tr>
@@ -139,6 +134,19 @@
                                 @endif
                             </td>
                         </tr>
+                        <tr>
+                            <td style="vertical-align:top">16</td>
+                            <td style="vertical-align:top">Image</td>
+                            <td class="iconTd">
+                                @if($material->image != null)
+                                    <a target="_blank" href="{{ URL::to('/') }}/app/documents/material/{{$material->image}}">
+                                        <img style="width:100%; height:500px" src="{{ URL::to('/') }}/app/documents/material/{{$material->image}}">
+                                    </a>
+                                @else
+                                    -
+                                @endif
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -147,3 +155,10 @@
 </div>
 
 @endsection
+@push('script')
+<script>
+     $(document).ready(function(){
+        $('div.overlay').hide();
+    });
+</script>
+@endpush

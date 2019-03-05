@@ -79,11 +79,13 @@
                         <thead>
                             <tr>
                                 <th style="width: 2px">No</th>
-                                <th style="width: 17%">Number</th>
-                                <th style="width: 17%">Description</th>
+                                <th style="width: 10%">Number</th>
+                                <th style="width: 15%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
-                                <th style="width: 40px">Deadline</th>
-                                <th style="width: 25px">Weight</th>
+                                <th style="width: 7%">Start Date</th>
+                                <th style="width: 7%">End Date</th>
+                                <th style="width: 7%">Duration</th>
+                                <th style="width: 30px">Weight</th>
                                 <th style="width: 75px"></th>
                             </tr>
                         </thead>
@@ -93,7 +95,9 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.planned_deadline)">{{ data.planned_deadline }}</td>
+                                <td>{{ data.planned_start_date }}</td>
+                                <td>{{ data.planned_end_date }}</td>
+                                <td>{{ data.planned_duration }} Day(s)</td>
                                 <td>{{ data.weight }} %</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
@@ -131,7 +135,13 @@
                                     <textarea v-model="newWbs.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newWbs.planned_deadline" type="text" class="form-control datepicker width100" id="planned_deadline" name="planned_deadline" placeholder="Deadline">
+                                    <input autocomplete="off" v-model="newWbs.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                </td>
+                                <td class="p-l-0">
+                                    <input autocomplete="off" v-model="newWbs.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
+                                </td>
+                                <td class="p-l-0">
+                                    <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newWbs.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
                                 </td>
                                 <td class="p-l-0">
                                     <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
@@ -165,14 +175,29 @@
                                             <label for="deliverables" class="control-label">Deliverables</label>
                                             <textarea id="deliverables" v-model="editWbs.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
                                         </div>
-                                        <div class="form-group col-sm-12">
-                                            <label for="edit_planned_deadline" class="control-label">Deadline</label>
+                                        <div class="form-group col-sm-4">
+                                            <label for="edit_planned_start_date" class=" control-label">Start Date</label>
                                             <div class="input-group date">
                                                 <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
+                                                    <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input v-model="editWbs.planned_deadline" type="text" class="form-control datepicker" id="edit_planned_deadline" placeholder="Insert Deadline here...">                                                                                               
-                                            </div>  
+                                                <input autocomplete="off" v-model="editWbs.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
+                                            </div>
+                                        </div>
+                                                
+                                        <div class="form-group col-sm-4">
+                                            <label for="edit_planned_end_date" class=" control-label">End Date</label>
+                                            <div class="input-group date">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input autocomplete="off" v-model="editWbs.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group col-sm-4">
+                                            <label for="duration" class=" control-label">Duration</label>
+                                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editWbs.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="weight" class="control-label">Weight (%)</label>
@@ -251,18 +276,22 @@ var data = {
         number : "",
         description : "",
         deliverables : "",
-        planned_deadline : "",
         project_id : @json($project->id),
-        weight : ""
+        weight : "",
+        planned_start_date : "",
+        planned_end_date : "",
+        planned_duration : "",
     },
     editWbs : {
         wbs_id: "",
         number : "",
         description : "",
         deliverables : "",
-        planned_deadline : "",
         project_id : @json($project->id),
         weight : "",
+        planned_start_date : "",
+        planned_end_date : "",
+        planned_duration : "",
     },
     maxWeight : 0,
     totalWeight : 0,
@@ -288,16 +317,41 @@ var vm = new Vue({
     mounted() {
         $('.datepicker').datepicker({
             autoclose : true,
-            format : "dd-mm-yyyy",
+            format : "dd-mm-yyyy"
         });
-        $("#planned_deadline").datepicker().on(
+        $("#planned_start_date").datepicker().on(
             "changeDate", () => {
-                this.newWbs.planned_deadline = $('#planned_deadline').val();
+                this.newWbs.planned_start_date = $('#planned_start_date').val();
+                if(this.newWbs.planned_end_date != ""){
+                    this.newWbs.planned_duration = datediff(parseDate(this.newWbs.planned_start_date), parseDate(this.newWbs.planned_end_date));
+                }
+                this.setEndDateNew();
             }
         );
-        $("#edit_planned_deadline").datepicker().on(
+        $("#planned_end_date").datepicker().on(
             "changeDate", () => {
-                this.editWbs.planned_deadline = $('#edit_planned_deadline').val();
+                this.newWbs.planned_end_date = $('#planned_end_date').val();
+                if(this.newWbs.planned_start_date != ""){
+                    this.newWbs.planned_duration = datediff(parseDate(this.newWbs.planned_start_date), parseDate(this.newWbs.planned_end_date));
+                }
+            }
+        );
+
+        $("#edit_planned_start_date").datepicker().on(
+            "changeDate", () => {
+                this.editWbs.planned_start_date = $('#edit_planned_start_date').val();
+                if(this.editWbs.planned_end_date != ""){
+                    this.editWbs.planned_duration = datediff(parseDate(this.editWbs.planned_start_date), parseDate(this.editWbs.planned_end_date));
+                }
+                this.setEndDateEdit();
+            }
+        );
+        $("#edit_planned_end_date").datepicker().on(
+            "changeDate", () => {
+                this.editWbs.planned_end_date = $('#edit_planned_end_date').val();
+                if(this.editWbs.planned_start_date != ""){
+                    this.editWbs.planned_duration = datediff(parseDate(this.editWbs.planned_start_date), parseDate(this.editWbs.planned_end_date));
+                }
             }
         );
     },
@@ -307,7 +361,9 @@ var vm = new Vue({
                 if(this.newWbs.number == ""
                 || this.newWbs.deliverables == ""
                 || this.newWbs.weight == ""
-                || this.newWbs.planned_deadline == "")
+                || this.newWbs.planned_start_date == ""
+                || this.newWbs.planned_end_date == ""
+                || this.newWbs.planned_duration == "")
                 {
                     isOk = true;
                 }
@@ -318,7 +374,9 @@ var vm = new Vue({
                 if(this.editWbs.number == ""
                 || this.editWbs.deliverables == ""
                 || this.editWbs.weight == ""
-                || this.editWbs.planned_deadline == "")
+                || this.editWbs.planned_start_date == ""
+                || this.editWbs.planned_end_date == ""
+                || this.editWbs.planned_duration == "")
                 {
                     isOk = true;
                 }
@@ -352,7 +410,6 @@ var vm = new Vue({
             this.newWbs.number = "";
             this.newWbs.description = "";
             this.newWbs.deliverables = "";
-            this.newWbs.planned_deadline = "";                
             this.newWbs.weight = ""; 
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
@@ -361,9 +418,15 @@ var vm = new Vue({
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
             this.editWbs.weight = data.weight;
-            if(data.planned_deadline != null){
-                this.editWbs.planned_deadline = data.planned_deadline;
-                $('#edit_planned_deadline').datepicker('setDate', new Date(data.planned_deadline.split("-").reverse().join("-")));
+            this.editWbs.planned_duration = data.planned_duration;
+            if(data.planned_start_date != null){
+                this.editWbs.planned_start_date = data.planned_start_date;
+                $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date.split("-").reverse().join("-")));
+            }
+
+            if(data.planned_end_date != null){
+                this.editWbs.planned_end_date = data.planned_end_date;
+                $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date.split("-").reverse().join("-")));
             }
         },
         createSubWBS(data){
@@ -381,8 +444,12 @@ var vm = new Vue({
                 this.newIndex = Object.keys(this.wbs).length+1;
                 this.totalWeight = 0;
                 this.wbs.forEach(data => {
-                    if(data.planned_deadline != null){
-                        data.planned_deadline = data.planned_deadline.split("-").reverse().join("-");   
+                    if(data.planned_start_date != null){
+                        data.planned_start_date = data.planned_start_date.split("-").reverse().join("-");   
+                    }
+
+                    if(data.planned_end_date != null){
+                        data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");   
                     }
                     this.totalWeight += data.weight;
                 });
@@ -471,7 +538,9 @@ var vm = new Vue({
                 this.newWbs.number = "";
                 this.newWbs.description = "";
                 this.newWbs.deliverables = "";
-                this.newWbs.planned_deadline = "";                
+                this.newWbs.planned_start_date = "";                
+                this.newWbs.planned_end_date = "";                
+                this.newWbs.planned_duration = "";                
                 this.newWbs.weight = "";                
             })
             .catch((error) => {
@@ -512,7 +581,9 @@ var vm = new Vue({
                 this.editWbs.number = "";
                 this.editWbs.description = "";
                 this.editWbs.deliverables = "";
-                this.editWbs.planned_deadline = "";                
+                this.editWbs.planned_start_date = "";                
+                this.editWbs.planned_end_date = "";                
+                this.editWbs.planned_duration = "";               
                 this.editWbs.weight = ""; 
             })
             .catch((error) => {
@@ -589,6 +660,30 @@ var vm = new Vue({
                 ],
             });
         },
+        setEndDateNew(){
+            if(this.newWbs.planned_duration != "" && this.newWbs.planned_start_date != ""){
+                var planned_duration = parseInt(this.newWbs.planned_duration);
+                var planned_start_date = this.newWbs.planned_start_date;
+                var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
+                
+                planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
+                $('#planned_end_date').datepicker('setDate', planned_end_date);
+            }else{
+                this.newWbs.planned_end_date = "";
+            }
+        },
+        setEndDateEdit(){
+            if(this.editWbs.planned_duration != "" && this.editWbs.planned_start_date != ""){
+                var planned_duration = parseInt(this.editWbs.planned_duration);
+                var planned_start_date = this.editWbs.planned_start_date;
+                var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
+                
+                planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
+                $('#edit_planned_end_date').datepicker('setDate', planned_end_date);
+            }else{
+                this.editWbs.planned_end_date = "";
+            }
+        },
     },
     watch : {
         // 'editWbs.process_cost_string': function(newValue) {
@@ -603,48 +698,132 @@ var vm = new Vue({
         //     other_cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         //     Vue.nextTick(() => this.editWbs.other_cost_string = other_cost_string);
         // },
-        'newWbs.planned_deadline': function(newValue){
+        newWbs:{
+            handler: function(newValue) {
+                this.newWbs.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
+                if(parseInt(newValue.planned_duration) < 1 ){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'End Date cannot be ahead Start Date',
+                        position: 'topRight',
+                    });
+                    this.newWbs.planned_duration = "";
+                    this.newWbs.planned_end_date = "";
+                    this.newWbs.planned_start_date = "";
+                }
+            },
+            deep: true
+        },
+        editWbs:{
+            handler: function(newValue) {
+                this.editWbs.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
+                if(parseInt(newValue.planned_duration) < 1 ){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'End Date cannot be ahead Start Date',
+                        position: 'topRight',
+                    });
+                    this.editWbs.planned_duration = "";
+                    this.editWbs.planned_end_date = "";
+                    this.editWbs.planned_start_date = "";
+                }
+            },
+            deep: true
+        },
+        'newWbs.planned_start_date': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
 
-            var deadline = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
             
-            if(deadline < pro_planned_start_date){
+            if(start_date < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS deadline is behind project start date",
+                    title: "this WBS start date is behind project start date",
                     position: 'topRight',
                 });
-            }else if(deadline > pro_planned_end_date){
+                $('#planned_start_date').datepicker('setDate', pro_planned_start_date);
+            }else if(start_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS deadline is after project end date",
+                    title: "this WBS start date is after project end date",
                     position: 'topRight',
                 });
+                $('#planned_start_date').datepicker('setDate', pro_planned_end_date);
             }
         },
-        'editWbs.planned_deadline': function(newValue){
+        'newWbs.planned_end_date': function(newValue){
+            var pro_planned_start_date = new Date(this.project_start_date).toDateString();
+            var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+
+            var end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var pro_planned_start_date = new Date(pro_planned_start_date);
+            var pro_planned_end_date = new Date(pro_planned_end_date);
+            
+            if(end_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this WBS end date is behind project start date",
+                    position: 'topRight',
+                });
+                $('#planned_end_date').datepicker('setDate', pro_planned_start_date);
+            }else if(end_date > pro_planned_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this WBS end date is after project end date",
+                    position: 'topRight',
+                });
+                $('#planned_end_date').datepicker('setDate', pro_planned_end_date);
+            }
+        },
+        'editWbs.planned_start_date': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
             
-            var deadline = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
 
-            if(deadline < pro_planned_start_date){
+            if(start_date < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS deadline is behind project start date",
+                    title: "this WBS start date is behind project start date",
                     position: 'topRight',
                 });
-            }else if(deadline > pro_planned_end_date){
+                $('#edit_planned_start_date').datepicker('setDate', pro_planned_start_date);
+            }else if(start_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS deadline is after project end date",
+                    title: "this WBS start date is after project end date",
                     position: 'topRight',
                 });
+                $('#edit_planned_start_date').datepicker('setDate', pro_planned_end_date);
+            }
+        },
+        'editWbs.planned_end_date': function(newValue){
+            var pro_planned_start_date = new Date(this.project_start_date).toDateString();
+            var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+            
+            var end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var pro_planned_start_date = new Date(pro_planned_start_date);
+            var pro_planned_end_date = new Date(pro_planned_end_date);
+
+            if(end_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this WBS end date is behind project start date",
+                    position: 'topRight',
+                });
+                $('#edit_planned_end_date').datepicker('setDate', pro_planned_start_date);
+            }else if(end_date > pro_planned_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "this WBS end date is after project end date",
+                    position: 'topRight',
+                });
+                $('#edit_planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
         },
         'newWbs.weight': function(newValue){
@@ -707,7 +886,17 @@ var vm = new Vue({
     },
     
 });
+function parseDate(str) {
+    var mdy = str.split('-');
+    var date = new Date(mdy[2], mdy[1]-1, mdy[0]);
+    return date;
+}
 
+function datediff(first, second) {
+    // Take the difference between the dates and divide by milliseconds per day.
+    // Round to nearest whole number to deal with DST.
+    return Math.round(((second-first)/(1000*60*60*24))+1);
+}
 function roundNumber(num, scale) {
   if(!("" + num).includes("e")) {
     return +(Math.round(num + "e+" + scale)  + "e-" + scale);

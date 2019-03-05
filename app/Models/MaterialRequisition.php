@@ -27,4 +27,9 @@ class MaterialRequisition extends Model
     {
         return $this->hasMany('App\Models\GoodsIssue');
     }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo('App\Models\User','approved_by');
+    }
 }

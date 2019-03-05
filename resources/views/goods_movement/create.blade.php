@@ -302,7 +302,21 @@
                         this.dataSLD.forEach(sld => {
                             sld.available = sld.quantity;
                             sld.quantity_rn = sld.quantity;
-                            sld.quantity_rn = (sld.quantity_rn+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            if(sld.material.uom.is_decimal == 1){
+                                var decimal = (sld.quantity_rn+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        sld.quantity_rn = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        sld.quantity_rn = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
+                                }else{
+                                    sld.quantity_rn = (sld.quantity_rn+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                            }else{
+                                sld.quantity_rn = ((sld.quantity_rn+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                            }
                             sld.quantity = "";
                         });
                         $('div.overlay').hide();
@@ -321,7 +335,7 @@
                 handler: function(newValue) {
                     var data = newValue;
                     data.forEach(SLD => {
-                        if(parseInt(SLD.quantity.replace(/,/g , '')) > parseInt(SLD.quantity_rn.replace(/,/g , ''))){
+                        if(parseFloat(SLD.quantity.replace(/,/g , '')) > parseFloat(SLD.quantity_rn.replace(/,/g , ''))){
                             SLD.quantity = SLD.quantity_rn;
                             iziToast.warning({
                                 title: 'Cannot input more than available quantity..',
@@ -329,7 +343,21 @@
                                 displayMode: 'replace'
                             });
                         }
-                        SLD.quantity = (SLD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                        if(SLD.material.uom.is_decimal == 1){
+                            var decimal = (SLD.quantity+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    SLD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    SLD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                SLD.quantity = (SLD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                        }else{
+                            SLD.quantity = ((SLD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        }
                     });
                 },
                 deep: true
