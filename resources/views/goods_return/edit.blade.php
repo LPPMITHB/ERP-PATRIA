@@ -207,6 +207,7 @@
             },
             
             submitForm(){
+                $('div.overlay').show();
                 var data = this.modelGRD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)

@@ -83,7 +83,7 @@
                                 -
                                 @endif
                             </div>
-                            <div style="font-size: 11px;">Project  :</div>
+                            {{-- <div style="font-size: 11px;">Project  :</div>
                             <div class="p-l-5" style="word-wrap:break-word;width: 340px; margin-left: 65px; margin-top: -50px;">
                                 @if($modelGR->purchase_order_id != "")
                                 <b style="font-size: 12px;">{{$modelGR->purchaseOrder->project->name}}</b>
@@ -92,7 +92,7 @@
                                 @elseif($modelGR->purchase_order_id == "" && $modelGR->work_order_id == "")
                                 -
                                 @endif
-                            </div>
+                            </div> --}}
                             <div style="font-size: 11px;">Dept  :</div>
                             <div class="p-l-5" style="word-wrap:break-word;width: 340px; margin-left: 65px; margin-top: -50px;">
                                 <b style="font-size: 12px;">{{$modelGR->user->role->name}}</b>

@@ -43,69 +43,69 @@
                                 <td>OPEN</td>
                                 <td class="textCenter">
                                     @if($menu == "building")
-                                        <a href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a onClick="loading()" href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a onClick="loading()" href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     @elseif($menu == "repair")
-                                        <a href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                        <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a onClick="loading()" href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a onClick="loading()" href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     @endif
                                 </td>
                                 @elseif($modelGI->status == 2)
                                     <td>APPROVED</td>
                                     <td class="textCenter">
                                         @if($menu == "building")
-                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($menu == "repair")
-                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelGI->status == 0 || $modelGI->status == 7)
                                     <td>ORDERED</td>
                                     <td class="textCenter">
                                         @if($menu == "building")
-                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($menu == "repair")
-                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelGI->status == 3)
                                     <td>NEEDS REVISION</td>
                                     <td class="textCenter">
                                         @if($menu == "building")
-                                            <a href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($menu == "repair")
-                                            <a href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelGI->status == 4)
                                     <td>REVISED</td>
                                     <td class="textCenter">
                                         @if($menu == "building")
-                                            <a href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($menu == "repair")
-                                            <a href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.edit', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelGI->status == 5)
                                     <td>REJECTED</td>
                                     <td class="textCenter">
                                         @if($menu == "building")
-                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($menu == "repair")
-                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @elseif($modelGI->status == 6)
                                     <td>CONSOLIDATED</td>
                                     <td class="textCenter">
                                         @if($menu == "building")
-                                            <a href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @elseif($menu == "repair")
-                                            <a href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                            <a onClick="loading()" href="{{ route('goods_return_repair.show', ['id'=>$modelGI->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @endif
@@ -127,5 +127,9 @@
     $(document).ready(function(){
         $('div.overlay').hide();        
     });
+
+    function loading(){
+        $('div.overlay').show();
+    }
 </script>
 @endpush
