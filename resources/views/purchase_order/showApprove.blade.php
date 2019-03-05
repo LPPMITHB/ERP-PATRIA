@@ -131,11 +131,11 @@
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_code'] }}">{{ $POD['resource_code'] }}</td>
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_name'] }}">{{ $POD['resource_name'] }}</td>
                                     @endif
-                                    <td>{{ number_format($POD['quantity']) }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['quantity'],2) }}">{{ number_format($POD['quantity'],2) }}</td>
                                     <td>{{ $POD['unit'] }}</td>
-                                    <td>{{ number_format($POD['discount']) }}%</td>
-                                    <td>{{ number_format($POD['price'] / $modelPO['value'],2) }}</td>
-                                    <td>{{ number_format($POD['sub_total'] / $modelPO['value'],2) }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['discount'],2) }}%">{{ number_format($POD['discount'],2) }}%</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['price'] / $modelPO['value'],2) }}">{{ number_format($POD['price'] / $modelPO['value'],2) }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['sub_total'] / $modelPO['value'],2) }}">{{ number_format($POD['sub_total'] / $modelPO['value'],2) }}</td>
                                     <td>{{ isset($POD['delivery_date']) ? date('d-m-Y', strtotime($POD['delivery_date'])) : '-' }}</td>
                                     <td class="textCenter">
                                         <a class="btn btn-primary btn-xs" data-toggle="modal" href="#show_remark" onClick="test({{$POD['id']}})">
@@ -250,6 +250,7 @@
         data : data,
         methods : {
             submitForm(status){
+                $('div.overlay').show();
                 this.dataSubmit.desc = document.getElementById('rev_desc').value;
                 this.dataSubmit.status = status;
 

@@ -16,8 +16,8 @@ class CreateTrxGoodsReceiptDetailTable extends Migration
         Schema::create('trx_goods_receipt_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('goods_receipt_id');
-            $table->integer('quantity');
-            $table->integer('returned')->default(0);
+            $table->float('quantity',15,2);
+            $table->float('returned',15,2)->default(0);
             $table->date('received_date')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_detail_id')->nullable();

@@ -12,7 +12,9 @@ use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
 use App\Models\WbsProfile;
+use App\Models\WbsConfiguration;
 use App\Models\ActivityProfile;
+use App\Models\ActivityConfiguration;
 use App\Models\User;
 use DB;
 use DateTime;
@@ -26,7 +28,6 @@ class ActivityController extends Controller
         $wbs = WBS::find($id);
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-
         return view('activity.create', compact('project', 'wbs','menu'));
     }
 
@@ -36,6 +37,13 @@ class ActivityController extends Controller
         $wbs = WbsProfile::find($id);
 
         return view('activity.createActivityProfile', compact('wbs','menu'));
+    }
+
+    public function createActivityConfiguration($id, Request $request)
+    {
+        $wbs = WbsConfiguration::find($id);
+
+        return view('activity.createActivityConfiguration', compact('wbs'));
     }
 
     public function store(Request $request)
@@ -116,6 +124,32 @@ class ActivityController extends Controller
         }
     }
 
+    public function storeActivityConfiguration(Request $request)
+    {
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $activity = new ActivityConfiguration;
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];
+            $activity->wbs_id = $data['wbs_id'];            
+            $activity->duration = $data['duration'];
+            $activity->user_id = Auth::user()->id;
+            $activity->branch_id = Auth::user()->branch->id;
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new activity configuration"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function update(Request $request, $id)
     {
         $data = $request->json()->all();
@@ -181,6 +215,29 @@ class ActivityController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
+
+    public function updateActivityConfiguration(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        
+        DB::beginTransaction();
+        try {
+            $activity = ActivityConfiguration::find($id);
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];         
+            $activity->duration = $data['duration'];
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to update activity configuration ".$activity->name],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
     
     public function index($id, Request $request)
     {
@@ -212,7 +269,29 @@ class ActivityController extends Controller
     {
         $project = Project::find($id);
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        // $wbss = $project->wbss->pluck('id')->toArray();
+        // $activities = Activity::whereIn('wbs_id',$wbss)->get();
+        // $predecessors =$activities->pluck('predecessor','id')->toArray();
+        // $predecessor_array = [];
+        // $temp_starting_point = [];
+        // $starting_point = [];
 
+        // foreach($predecessors as $act_id => $predecessor){
+        //     if($predecessor != null){
+        //         $temp = json_decode($predecessor);
+        //         array_push($predecessor_array, $temp[0][0]);
+        //     }else{
+        //         array_push($temp_starting_point, $act_id);
+        //     }
+        // }
+
+        // foreach($temp_starting_point as $key => $act_id){
+        //     array_search($act_id,$predecessor_array);
+        //     if(array_search($act_id,$predecessor_array) != false){
+        //         array_push($starting_point, $act_id);
+        //     }
+        // }
+        
         return view('activity.indexNetwork', compact('project','menu'));
     }
 
@@ -334,6 +413,25 @@ class ActivityController extends Controller
             $activityProfile = ActivityProfile::find($id);
 
             if(!$activityProfile->delete()){
+                return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+    
+    public function destroyActivityConfiguration(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $activityConfiguration = ActivityConfiguration::find($id);
+
+            if(!$activityConfiguration->delete()){
                 return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
@@ -487,6 +585,11 @@ class ActivityController extends Controller
 
     public function getActivitiesProfileAPI($wbs_id){
         $activities = ActivityProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($activities, Response::HTTP_OK);
+    }
+
+    public function getActivitiesConfigurationAPI($wbs_id){
+        $activities = ActivityConfiguration::where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

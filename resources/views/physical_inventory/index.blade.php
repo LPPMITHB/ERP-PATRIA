@@ -36,7 +36,7 @@
                             <tr>
                                 <td class="p-l-10">{{ $counter++ }}</td>
                                 <td class="p-l-10">{{ $snapshot->code }}</td>
-                                <td class="p-l-10">{{ $snapshot->created_at }}</td>
+                                <td class="p-l-10">{{ $snapshot->created_at->format('d-m-Y H:i:s')}}</td>
                                 <td class="p-l-10">{{ $snapshot->user->name }}</td>
                                 <td class="p-l-10">
                                     @if($snapshot->status == 1)

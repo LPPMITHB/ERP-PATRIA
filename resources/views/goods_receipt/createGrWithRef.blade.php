@@ -44,31 +44,31 @@
                         <div class="col-sm-12 no-padding">
                             <div class="box-header">
                                 <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
-                                    <div class="box-body no-padding">
-                                        <div class="col-md-4 col-xs-4 no-padding">PO Number</div>
+                                    <div class="box-body no-padding col-md-10">
+                                        <div class="col-md-3 col-xs-4 no-padding">PO Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.number }}</b></div>
                                         
-                                        <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.vendor.name }}</b></div>
+                                        <div class="col-md-3 col-xs-4 no-padding">Vendor</div>
+                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.name)"><b>: {{ modelPO.vendor.name }}</b></div>
                 
-                                        <div class="col-md-4 col-xs-4 no-padding">Address</div>
+                                        <div class="col-md-3 col-xs-4 no-padding">Address</div>
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.address)"><b>: {{ modelPO.vendor.address }}</b></div>
 
-                                        <div class="col-md-4 col-xs-4 no-padding">Phone Number</div>
+                                        <div class="col-md-3 col-xs-4 no-padding">Phone Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.vendor.phone_number }}</b></div>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
-                                    <div class="box-body no-padding">
-                                        <div class="col-md-4 col-lg-7 col-xs-12 no-padding"> GR Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
-                                        </div>
+                                    <div class="col-md-12 col-xs-12 p-l-0"> GR Description : </div>
+                                    <div class="col-sm-12 col-md-12  p-l-0 p-t-0 ">
+                                        <textarea class="form-control" rows="3" v-model="description" style="width:260px"></textarea>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-3 col-md-12 p-l-5">
-                                    <div class="col-md-3 col-xs-3 no-padding">Ship Date:</div>
 
-                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-0 ">
-                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker width100" name="ship_date" id="ship_date" placeholder="Ship Date">
+                                <div class="col-xs-12 col-lg-3 col-md-12 p-l-0">
+                                    <div class="col-md-8 col-xs-12 p-l-0">Ship Date:</div>
+                                    <div class="col-sm-12 col-lg-8  p-l-0 p-t-0 ">
+                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker" name="ship_date" id="ship_date" placeholder="Ship Date" style="width: 150px">
                                     </div>
                                 </div>
                             </div>
@@ -91,8 +91,8 @@
                                         <tbody>
                                             <tr v-for="(POD,index) in modelPOD" :id="getId(POD.id)">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ POD.material_code }}</td>
-                                                <td>{{ POD.material_name }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(POD.material_code)">{{ POD.material_code }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(POD.material_name)">{{ POD.material_name }}</td>
                                                 <td>{{ POD.unit }}</td>
                                                 <td>{{ POD.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
@@ -249,7 +249,7 @@
 
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , ''); 
-                    POD.received = POD.received.replace(/,/g , '');
+                    POD.received = parseFloat(POD.received);   
                     if(POD.sloc_id != ""){
                         if(this.checkedPOD.indexOf(POD.id+"") == -1){
                             isOk = true;
@@ -318,10 +318,9 @@
         watch : {
             modelPOD:{
                 handler: function(newValue) {
-        
                     var data = newValue;
                     data.forEach(POD => {
-                        if(parseInt(POD.quantity.replace(/,/g , '')) < parseInt(POD.received.replace(/,/g , ''))){
+                        if(parseFloat(POD.quantity.replace("," , '')) < parseFloat(POD.received.replace("," , ''))){
                             POD.received = POD.quantity;
                             iziToast.warning({
                                 title: 'Cannot input more than avaiable quantity..',
@@ -329,7 +328,21 @@
                                 displayMode: 'replace'
                             });
                         }
-                        POD.received = (POD.received+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                        if(POD.is_decimal){
+                            var decimalReceived = (POD.received+"").replace(/,/g, '').split('.');
+                            if(decimalReceived[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimalReceived[1]+"").length > maxDecimal){
+                                    POD.received = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    POD.received = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                POD.received = (POD.received+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                        }else{
+                            POD.received = (POD.received+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                        }            
                     });
                 },
                 deep: true
@@ -358,10 +371,36 @@
             var data = this.modelPOD;
             data.forEach(POD => {
                 // POD.sloc_id = null;
-                POD.received = parseInt(POD.quantity) - parseInt(POD.received);
+                POD.received = parseFloat(POD.quantity) - parseFloat(POD.received);
                 POD.quantity = POD.received;
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
-                POD.received = (POD.received+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                if(POD.is_decimal){
+                    var decimalQty = (POD.quantity+"").replace(/,/g, '').split('.');
+                    if(decimalQty[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimalQty[1]+"").length > maxDecimal){
+                            POD.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            POD.quantity = (decimalQty[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalQty[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        POD.quantity = (POD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+
+                    var decimalReceived = (POD.received+"").replace(/,/g, '').split('.');
+                    if(decimalReceived[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimalReceived[1]+"").length > maxDecimal){
+                            POD.received = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            POD.received = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        POD.received = (POD.received+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }else{
+                    POD.quantity = ((POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    POD.received = (POD.received+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                }
             });
         },
         updated: function () {

@@ -42,7 +42,7 @@
                                 <tr>
                                     <th width="5%">No</th>
                                     <th width="15%">Type</th>
-                                    <th width="30%">Material / Service</th>
+                                    <th width="15%">Material / Service</th>
                                     <th width="33%">Description</th>
                                     <th width="10%">Quantity</th>
                                     <th width="10%">Unit</th>
@@ -54,10 +54,10 @@
                                     <td>{{ index + 1 }}</td>
                                     <td v-if="data.material_id != null">Material</td>
                                     <td v-else-if="data.service_id != null">Service</td>
-                                    <td v-if="data.material_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.description)">{{ data.material.code }} - {{ data.material.description }}</td>
-                                    <td v-else-if="data.service_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.service.description)">{{ data.service.code }} - {{ data.service.description }}</td>
-                                    <td v-if="data.material_id != null">{{ data.material.description }}</td>
-                                    <td v-else-if="data.service_id != null">{{ data.service.description }}</td>
+                                    <td v-if="data.material_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.code)">{{ data.material.code }}</td>
+                                    <td v-else-if="data.service_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.service.code)">{{ data.service.code }}</td>
+                                    <td v-if="data.material_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.description)">{{ data.material.description }}</td>
+                                    <td v-else-if="data.service_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.service.description)">{{ data.service.description }}</td>
                                     <td>{{ data.quantity }}</td>
                                     <td v-if="data.material_id != null && data.material.uom != null">{{ data.material.uom.unit }}</td>
                                     <td v-else-if="data.service_id != null">-</td>
@@ -97,7 +97,10 @@
                                             </selectize>    
                                         </template>
                                     </td>
-                                    <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
+                                    <td v-if="input.type == 'Material'" class="no-padding"><input :disabled="materialOk" class="form-control width100" type="text" v-model="input.quantity"></td>
+                                    <td v-else-if="input.type == 'Service'" class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"></td>
+                                    <td v-else-if="input.type == ''"class="no-padding"><input disabled class="form-control width100" type="text" v-model="input.quantity"></td>
+                                    </template>
                                     <td class="no-padding"><input class="form-control width100" type="text" :value="input.unit" disabled></td>
                                     <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                         <div class="btn-group">
@@ -133,10 +136,24 @@
                                                 <option v-for="(service, index) in services_modal" :value="service.id">{{ service.code }} - {{ service.description }}</option>
                                             </selectize>
                                         </div>
-                                        <div class="col-sm-6">
-                                            <label for="quantity" class="control-label">Quantity</label>
-                                            <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
-                                        </div>
+                                        <template v-if="editInput.type == 'Material'"> 
+                                            <div class="col-sm-6">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                        </template>
+                                        <template v-else-if="editInput.type == 'Service'"> 
+                                            <div class="col-sm-6">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                        </template>
+                                        <template v-else-if="editInput.type == ''"> 
+                                            <div class="col-sm-6">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input disabled type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                        </template>
                                         <div class="col-sm-6">
                                             <label for="quantity" class="control-label">Unit</label>
                                             <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
@@ -181,9 +198,10 @@
             service_id : "",
             description : "",
             quantity : "",
-            quantityInt : 0,
+            quantityFloat : 0,
             type : "",
             unit: "",
+            is_decimal : "",
         },
         editInput : {
             wbs_id : @json($wbs->id),
@@ -191,10 +209,11 @@
             material_id : "",
             service_id : "",
             quantity : "",
-            quantityInt : 0,
+            quantityFloat : 0,
             description : "",
             id : "",
             unit: "",
+            is_decimal : "",
         },
         mixSettings: {
             placeholder: 'Please Select Material / Service'
@@ -236,18 +255,18 @@
             inputOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.input.quantityInt+"";
-                this.input.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.input.quantityFloat+"";
+                this.input.quantityFloat = parseFloat(string_newValue.replace(/,/g , ''));
 
                 if(this.input.type == ""){
                     isOk = true;
                 }else{
                     if(this.input.type == "Material"){
-                        if(this.input.material_id == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                        if(this.input.material_id == "" || this.input.quantity == "" || this.input.quantityFloat < 1){
                             isOk = true;
                         }
                     }else if(this.input.type == "Service"){
-                        if(this.input.service_id == "" || this.input.quantity == "" || this.input.quantityInt < 1){
+                        if(this.input.service_id == "" || this.input.quantity == "" || this.input.quantityFloat < 1){
                             isOk = true;
                         }
                     }
@@ -257,15 +276,33 @@
             updateOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.editInput.quantityFloat+"";
+                this.editInput.quantityFloat = parseFloat(string_newValue.replace(/,/g , ''));
 
-                if(this.editInput.material_id == "" && this.editInput.service_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || this.editInput.source == "" || isNaN(this.editInput.quantityInt)){
+                if(this.editInput.material_id == "" && this.editInput.service_id == "" || this.editInput.quantityFloat < 1 || this.editInput.quantityFloat == "" || this.editInput.source == "" || isNaN(this.editInput.quantityFloat)){
                     isOk = true;
                 }
 
                 return isOk;
-            }
+            },
+            materialOk: function(){
+                let isOk = false;
+
+                if(this.input.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
+            materialEditOk: function(){
+                let isOk = false;
+
+                if(this.input.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
         },
         methods: {
             buildTable(){
@@ -295,7 +332,25 @@
                         }else if(data.service_id != null){
                             this.service_id.push(data.service_id);
                         }
-                        data.quantity = (data.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                        if(data.material_id != null){
+                            if(data.material.uom.is_decimal == 1){
+                                var decimal = (data.quantity+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        data.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        data.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
+                                }else{
+                                    data.quantity = (data.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                            }else{
+                                data.quantity = ((data.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                            }
+                        }else{
+                            data.quantity = ((data.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                        }
                     });
 
                     var jsonMaterialId = JSON.stringify(this.material_id);
@@ -413,11 +468,11 @@
                 }
 
                 this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = parseInt((data.quantity+"").replace(/,/g , ''));
+                this.editInput.quantityFloat = parseFloat((data.quantity+"").replace(/,/g , ''));
                 this.editInput.id = data.id;
             },
             submitToTable(){
-                if(this.input.material_id != "" && this.input.quantity != "" && this.input.quantityInt > 0 || this.input.service_id != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                if(this.input.material_id != "" && this.input.quantity != "" && this.input.quantityFloat > 0 || this.input.service_id != "" && this.input.quantity != "" && this.input.quantityFloat > 0){
                     var data = JSON.stringify(this.input);
                     if(this.route == "/wbs"){
                         var url = "{{ route('wbs.storeBomProfile') }}";
@@ -436,7 +491,7 @@
                         this.input.type = "";
                         this.input.description = "";
                         this.input.quantity = "";
-                        this.input.quantityInt = 0;
+                        this.input.quantityFloat = 0;
 
                         this.getBomProfile(this.wbs.id)
                     })
@@ -551,6 +606,8 @@
         },
         watch: {
             'input.material_id': function(newValue){
+                $('div.overlay').show();
+                this.input.quantity = "";
                 if(newValue != ""){
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
                         if(data.description == "" || data.description == null){
@@ -559,10 +616,15 @@
                             this.input.description = data.description;
                         }
                         this.input.unit = data.uom.unit;
+                        this.input.is_decimal = data.uom.is_decimal;
+                        $('div.overlay').hide();
                     });
                 }else{
                     this.input.description = "";
                     this.input.unit = "";
+                    this.input.is_decimal = "";
+                    this.input.quantity = "";
+                    $('div.overlay').hide();
                 }
             },
             'input.service_id': function(newValue){
@@ -581,12 +643,39 @@
                 }
             },
             'input.quantity': function(newValue){
-                this.input.quantityInt = newValue;
-                this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                this.input.quantityFloat = newValue.replace(/,/g, '');
+                if(this.input.is_decimal == 1 && this.input.type =="Material"){
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.input.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }else{
+                    this.input.quantity = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                }    
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                if(this.editInput.is_decimal == 1 && this.editInput.type =="Material"){
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }else{
+                    this.editInput.quantity = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                }    
             },
             'editInput.material_id': function(newValue){
                 if(newValue != ""){
@@ -622,7 +711,7 @@
                 this.input.material_name = "";
                 this.input.description = "";
                 this.input.quantity = "";
-                this.input.quantityInt = 0;
+                this.input.quantityFloat = 0;
             }
         },
         created: function() {

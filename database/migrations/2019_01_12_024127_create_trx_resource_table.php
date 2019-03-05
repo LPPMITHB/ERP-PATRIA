@@ -21,6 +21,8 @@ class CreateTrxResourceTable extends Migration
             $table->unsignedInteger('project_id')->nullable();           
             $table->unsignedInteger('wbs_id')->nullable();       
             $table->integer('quantity')->default(1);
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->timestamps();
 
             $table->foreign('resource_id')->references('id')->on('mst_resource');

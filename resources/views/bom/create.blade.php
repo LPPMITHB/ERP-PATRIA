@@ -103,7 +103,7 @@
                                                 <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity"></td>
+                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity" :disabled="materialOk"></td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
                                         <td class="no-padding">
                                             <selectize v-model="input.source" :settings="sourceSettings">
@@ -141,7 +141,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Unit</label>
@@ -182,26 +182,25 @@
     });
 
     var data = {
-        submit: "ok",
         sources : ['Stock','WIP'],
         project : @json($project),
         materials : @json($materials),
         wbs : @json($wbs),
         newIndex : 0, 
         submittedForm :{
-            project_id : "",
-            wbs_id : "",
+            project_id : @json($project->id),
+            wbs_id : @json($wbs->id),
             description : ""
         },
         input : {
             material_id : "",
             material_name : "",
             material_code : "",
-            description : "",
             quantity : "",
-            quantityInt : 0,
             source : "Stock",
             unit : "",
+            is_decimal : "",
+            material_ok : ""
         },
         editInput : {
             old_material_id : "",
@@ -209,9 +208,10 @@
             material_code : "",
             material_name : "",
             quantity : "",
-            quantityInt : 0,
-            description : "",
-            source : ""
+            source : "",
+            unit : "",
+            is_decimal : "",
+            material_ok : ""
         },
         materialTable : [],
         materialSettings: {
@@ -240,10 +240,7 @@
             inputOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.input.quantityInt+"";
-                this.input.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                if(this.input.material_id == "" || this.input.material_name == "" || this.input.description == "" || this.input.quantity == "" || this.input.quantityInt < 1 || this.input.source == ""){
+                if(this.input.material_id == "" || this.input.quantity == "" || this.input.source == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -251,7 +248,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.materialTable.length < 1 || this.submit == ""){
+                if(this.materialTable.length < 1){
                     isOk = true;
                 }
                 return isOk;
@@ -259,10 +256,25 @@
             updateOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                if(this.editInput.material_id == "" || this.editInput.quantity == "" || this.editInput.source == ""){
+                    isOk = true;
+                }
 
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || this.editInput.source == "" || isNaN(this.editInput.quantityInt)){
+                return isOk;
+            },
+            materialOk : function(){
+                let isOk = false;
+
+                if(this.input.material_ok == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
+            editMaterialOk : function(){
+                let isOk = false;
+
+                if(this.editInput.material_ok == ""){
                     isOk = true;
                 }
 
@@ -330,14 +342,13 @@
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
                 this.editInput.material_name = data.material_name;
-                this.editInput.description = data.description;
                 this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
                 this.editInput.source = data.source;
                 this.editInput.unit = data.unit;
+                this.editInput.is_decimal = data.is_decimal;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -353,7 +364,10 @@
                 this.getNewModalMaterials(jsonMaterialId);
             },
             submitForm(){
-                this.submit = "";
+                $('div.overlay').show();
+                this.materialTable.forEach(data=>{
+                    data.quantity = (data.quantity+"").replace(/,/g , '');
+                })
                 this.submittedForm.materials = this.materialTable;
 
                 let struturesElem = document.createElement('input');
@@ -364,7 +378,7 @@
                 form.submit();
             },
             submitToTable(){
-                if(this.input.material_id != "" && this.input.material_name != "" && this.input.quantity != "" && this.input.quantityInt > 0){
+                if(this.input.material_id != "" && this.input.material_name != "" && this.input.quantity != "" && this.input.source != ""){
                     $('div.overlay').show();
 
                     var data = JSON.stringify(this.input);
@@ -467,49 +481,81 @@
         },
         watch: {
             'input.material_id': function(newValue){
+                this.input.quantity = "";
                 if(newValue != ""){
+                    this.input.material_ok = "ok";
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
-                        if(data.description == "" || data.description == null){
-                            this.input.description = '-';
-                        }else{
-                            this.input.description = data.description;
-
-                        }
                         this.input.material_name = data.description;
                         this.input.material_code = data.code;
                         this.input.unit = data.uom.unit;
+                        this.input.is_decimal = data.uom.is_decimal;
                     });
                 }else{
-                    this.input.description = "";
+                    this.input.material_name = "";
+                    this.input.material_code = "";
                     this.input.unit = "";
+                    this.input.is_decimal = "";
+                    this.input.material_ok = "";
+                }
+            },
+            'editInput.material_id': function(newValue){
+                if(newValue != this.editInput.old_material_id){
+                    this.editInput.quantity = "";
+                }
+                if(newValue != ""){
+                    this.editInput.material_ok = "ok";
+                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
+                        this.editInput.material_name = data.description;
+                        this.editInput.material_code = data.code;
+                        this.editInput.unit = data.uom.unit;
+                        this.editInput.is_decimal = data.uom.is_decimal;
+                    });
+                }else{
+                    this.editInput.material_name = "";
+                    this.editInput.material_code = "";
+                    this.editInput.unit = "";
+                    this.editInput.is_decimal = "";
+                    this.editInput.material_ok = "";
                 }
             },
             'input.quantity': function(newValue){
-                this.input.quantityInt = newValue;
-                this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                var is_decimal = this.input.is_decimal;
+                if(is_decimal == 0){
+                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.input.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-            },
-            'editInput.material_id': function(newValue){
-                if(newValue != ""){
-                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
-                        if(data.description == "" || data.description == null){
-                            this.editInput.description = '-';
-                        }else{
-                            this.editInput.description = data.description;
-                        }
-                    });
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 }else{
-                    this.editInput.description = "";
-                }
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }  
             },
         },
         created: function() {
-            this.submittedForm.project_id = this.project.id;
-            this.submittedForm.wbs_id = this.wbs.id;          
-
             this.newIndex = this.materialTable.length + 1;
         }
     });

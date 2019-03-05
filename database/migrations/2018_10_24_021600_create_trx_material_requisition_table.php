@@ -18,10 +18,12 @@ class CreateTrxMaterialRequisitionTable extends Migration
             $table->string('number')->unique();
             $table->unsignedInteger('project_id')->nullable();
             $table->text('description')->nullable();
+            $table->text('revision_description')->nullable();
             $table->integer('status')->default(1);
             $table->integer('type');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('approved_by')->nullable();
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('pro_project');

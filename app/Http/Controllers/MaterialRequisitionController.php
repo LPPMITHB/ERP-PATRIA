@@ -57,7 +57,9 @@ class MaterialRequisitionController extends Controller
         }    
 
         $stocks = Stock::all();
-
+        foreach($stocks as $stock){
+            $stock['available'] = $stock->quantity - $stock->reserved;
+        }
         return view('material_requisition.create', compact('modelProject','menu','stocks'));
     }
 
@@ -85,7 +87,7 @@ class MaterialRequisitionController extends Controller
                     $status = 0;
                     foreach($modelMRDs as $MRD){
                         if($MRD->material_id == $data->material_id && $MRD->wbs_id == $data->wbs_id){
-                            $updatedQty = $MRD->quantity + $data->quantityInt;
+                            $updatedQty = $MRD->quantity + $data->quantityFloat;
                             $this->updateReserveStock($data->material_id, $MRD->quantity ,$updatedQty);
                             $MRD->quantity = $updatedQty;
                             $MRD->update();
@@ -96,22 +98,22 @@ class MaterialRequisitionController extends Controller
                     if($status == 0){
                         $MRD = new MaterialRequisitionDetail;
                         $MRD->material_requisition_id = $MR->id;
-                        $MRD->quantity = $data->quantityInt;
+                        $MRD->quantity = $data->quantityFloat;
                         $MRD->material_id = $data->material_id;
                         $MRD->wbs_id = $data->wbs_id;
                         $MRD->save();
 
-                        $this->reserveStock($data->material_id, $data->quantityInt);
+                        $this->reserveStock($data->material_id, $data->quantityFloat);
                     }
                 }else{
                     $MRD = new MaterialRequisitionDetail;
                     $MRD->material_requisition_id = $MR->id;
-                    $MRD->quantity = $data->quantityInt;
+                    $MRD->quantity = $data->quantityFloat;
                     $MRD->material_id = $data->material_id;
                     $MRD->wbs_id = $data->wbs_id;
                     $MRD->save();
 
-                    $this->reserveStock($data->material_id, $data->quantityInt);
+                    $this->reserveStock($data->material_id, $data->quantityFloat);
                 }
             }
             
@@ -141,11 +143,38 @@ class MaterialRequisitionController extends Controller
 
     public function showApprove($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        $route = $request->route()->getPrefix();
 
         $modelMR = MaterialRequisition::findOrFail($id);
+        if($modelMR->status == 1){
+            $status = 'OPEN';
+        }
+        elseif($modelMR->status == 2){
+            $status = 'APPROVED';
+        }
+        elseif($modelMR->status == 3){
+            $status = 'NEEDS REVISION';
+        }
+        elseif($modelMR->status == 4){
+            $status = 'REVISED';
+        }
+        elseif($modelMR->status == 5){
+            $status = 'REJECTED';
+        }
+        elseif($modelMR->status == 0 || $modelMR->status == 7){
+            $status = 'ORDERED';
+        }
+        elseif($modelMR->status == 6){
+            $status = 'CONSOLIDATED';
+        }
+        $modelMRD = $modelMR->materialRequisitionDetails;
+        foreach($modelMRD as $MRD){
+            $issued = MaterialRequisitionDetail::where('material_id',$MRD->material_id)->where('wbs_id',$MRD->wbs_id)->get()->sum('issued');
+            $MRD['planned_quantity'] = $MRD->wbs != null ? $MRD->wbs->bom->bomDetails->where('material_id',$MRD->material_id)->first()->quantity : "-";
+            $MRD['issued'] = $issued;
+        }
 
-        return view('material_requisition.showApprove', compact('modelMR','menu'));
+        return view('material_requisition.showApprove', compact('status','modelMR','route','modelMRD'));
     }
 
     public function edit($id, Request $request)
@@ -161,18 +190,46 @@ class MaterialRequisitionController extends Controller
         $modelWBS = $modelMR->project->wbss; 
         $modelMRD = Collection::make();
         foreach($modelMR->MaterialRequisitionDetails as $mrd){
-            $modelMRD->push([
-                "mrd_id" => $mrd->id,
-                "material_id" => $mrd->material_id,
-                "material_code" => $mrd->material->code,
-                "material_description" => $mrd->material->description,
-                "quantity" => number_format($mrd->quantity),
-                "quantityInt" => $mrd->quantity,
-                "wbs_id" => $mrd->wbs_id,
-                "wbs_number" => $mrd->wbs->number,
-            ]);
+            if($mrd->material->uom->is_decimal == 1){
+                $modelMRD->push([
+                    "mrd_id" => $mrd->id,
+                    "material_id" => $mrd->material_id,
+                    "material_code" => $mrd->material->code,
+                    "material_description" => $mrd->material->description,
+                    "planned_quantity" => number_format($mrd->wbs->bom->bomDetails->where('material_id', $mrd->material_id)->first()->quantity,2),
+                    "quantity" => number_format($mrd->quantity,2),
+                    "quantityFloat" => $mrd->quantity,
+                    "wbs_id" => $mrd->wbs_id,
+                    "wbs_number" => $mrd->wbs->number,
+                    "wbs_description" => $mrd->wbs->description,
+                    "availableStr" => "-",
+                    "is_decimal" => true,
+                    "unit" => $mrd->material->uom->unit,
+                ]);
+            }else{
+                $modelMRD->push([
+                    "mrd_id" => $mrd->id,
+                    "material_id" => $mrd->material_id,
+                    "material_code" => $mrd->material->code,
+                    "material_description" => $mrd->material->description,
+                    "planned_quantity" => number_format($mrd->wbs->bom->bomDetails->where('material_id', $mrd->material_id)->first()->quantity),
+                    "quantity" => number_format($mrd->quantity),
+                    "quantityFloat" => $mrd->quantity,
+                    "wbs_id" => $mrd->wbs_id,
+                    "wbs_number" => $mrd->wbs->number,
+                    "wbs_description" => $mrd->wbs->description,
+                    "availableStr" => "-",
+                    "is_decimal" => false,
+                    "unit" => $mrd->material->uom->unit,
+                ]);
+            }
         }
-        return view('material_requisition.edit', compact('menu','modelMR','modelMRD','modelMaterial','modelProject','modelWBS'));
+
+        $stocks = Stock::all();
+        foreach($stocks as $stock){
+            $stock['available'] = $stock->quantity - $stock->reserved;
+        }
+        return view('material_requisition.edit', compact('menu','modelMR','modelMRD','modelMaterial','modelProject','modelWBS','stocks'));
     }
 
     public function update(Request $request, $id)
@@ -182,6 +239,11 @@ class MaterialRequisitionController extends Controller
         DB::beginTransaction();
         try {
             $MR = MaterialRequisition::find($id);
+            foreach($datas->deleted_mrd as $id){
+                $modelPRD = MaterialRequisitionDetail::findOrFail($id);
+                $this->deleteReserveStock($modelPRD);
+                $modelPRD->delete();
+            }
             $MR->description = $datas->description;
             if($MR->status == 3){
                 $MR->status = 4;
@@ -191,9 +253,9 @@ class MaterialRequisitionController extends Controller
             foreach($datas->materials as $data){
                 if($data->mrd_id != null){
                     $MRD = MaterialRequisitionDetail::find($data->mrd_id);
-                    $this->updateReserveStock($data->material_id, $MRD->quantity ,$data->quantityInt);
+                    $this->updateReserveStock($data->material_id, $MRD->quantity ,$data->quantityFloat);
                     
-                    $MRD->quantity = $data->quantityInt;
+                    $MRD->quantity = $data->quantityFloat;
                     $MRD->wbs_id = $data->wbs_id;
                     $MRD->update();
                 }else{
@@ -202,7 +264,7 @@ class MaterialRequisitionController extends Controller
                         $status = 0;
                         foreach($modelMRDs as $MRD){
                             if($MRD->material_id == $data->material_id && $MRD->wbs_id == $data->wbs_id){
-                                $updatedQty = $MRD->quantity + $data->quantityInt;
+                                $updatedQty = $MRD->quantity + $data->quantityFloat;
                                 $this->updateReserveStock($data->material_id, $MRD->quantity ,$updatedQty);
                                 $MRD->quantity = $updatedQty;
                                 $MRD->update();
@@ -213,22 +275,22 @@ class MaterialRequisitionController extends Controller
                         if($status == 0){
                             $MRD = new MaterialRequisitionDetail;
                             $MRD->material_requisition_id = $MR->id;
-                            $MRD->quantity = $data->quantityInt;
+                            $MRD->quantity = $data->quantityFloat;
                             $MRD->material_id = $data->material_id;
                             $MRD->wbs_id = $data->wbs_id;
                             $MRD->save();
     
-                            $this->reserveStock($data->material_id, $data->quantityInt);
+                            $this->reserveStock($data->material_id, $data->quantityFloat);
                         }
                     }else{
                         $MRD = new MaterialRequisitionDetail;
                         $MRD->material_requisition_id = $MR->id;
-                        $MRD->quantity = $data->quantityInt;
+                        $MRD->quantity = $data->quantityFloat;
                         $MRD->material_id = $data->material_id;
                         $MRD->wbs_id = $data->wbs_id;
                         $MRD->save();
     
-                        $this->reserveStock($data->material_id, $data->quantityInt);
+                        $this->reserveStock($data->material_id, $data->quantityFloat);
                     }
                 }
 
@@ -251,23 +313,49 @@ class MaterialRequisitionController extends Controller
     }
 
 
-    public function approval($mr_id,$status, Request $request){
-        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
-        $modelMR = MaterialRequisition::findOrFail($mr_id);
-        if($status == "approve"){
-            $modelMR->status = 2;
-            $modelMR->update();
-        }elseif($status == "need-revision"){
-            $modelMR->status = 3;
-            $modelMR->update();
-        }elseif($status == "reject"){
-            $modelMR->status = 5;
-            $modelMR->update();
-        }
-        if($menu == "building"){
-            return redirect()->route('material_requisition.show',$mr_id)->with('success', 'Material Requisition Updated');
-        }elseif($menu == "repair"){
-            return redirect()->route('material_requisition_repair.show',$mr_id)->with('success', 'Material Requisition Updated');
+    public function approval(Request $request){
+        $datas = json_decode($request->datas);
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try{
+            $modelMR = MaterialRequisition::findOrFail($datas->mr_id);
+            if($datas->status == "approve"){
+                $modelMR->status = 2;
+                $modelMR->revision_description = $datas->desc;
+                $modelMR->approved_by = Auth::user()->id;
+                $modelMR->update();
+                DB::commit();
+                if($route == "/material_requisition"){
+                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Purchase Requisition Approved');
+                }elseif($route == "/material_requisition_repair"){
+                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Purchase Requisition Approved');
+                }
+            }elseif($datas->status == "need-revision"){
+                $modelMR->status = 3;
+                $modelMR->revision_description = $datas->desc;
+                $modelMR->approved_by = Auth::user()->id;
+                $modelMR->update();
+                DB::commit();
+                if($route == "/material_requisition"){
+                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Purchase Requisition Need Revision');
+                }elseif($route == "/material_requisition_repair"){
+                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Purchase Requisition Need Revision');
+                }
+            }elseif($datas->status == "reject"){
+                $modelMR->status = 5;
+                $modelMR->revision_description = $datas->desc;
+                $modelMR->approved_by = Auth::user()->id;
+                $modelMR->update();
+                DB::commit();
+                if($route == "/material_requisition"){
+                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Purchase Requisition Rejected');
+                }elseif($route == "/material_requisition_repair"){
+                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Purchase Requisition Rejected');
+                }
+            }
+        } catch (\Exception $e){
+            DB::rollback();
+            return redirect()->route('material_requisition.show',$datas->mr_id)->with('error', $e->getMessage());
         }
     }
     // function
@@ -285,6 +373,14 @@ class MaterialRequisitionController extends Controller
         if($modelStock){
             $modelStock->reserved = $modelStock->reserved + $difference;
             $modelStock->save();
+        }
+    }
+
+    public function deleteReserveStock($modelPRD){
+        $modelStock = Stock::where('material_id',$modelPRD->material_id)->first();
+        if($modelStock){
+            $modelStock->reserved = $modelStock->reserved - $modelPRD->quantity;
+            $modelStock->update();
         }
     }
 
@@ -385,6 +481,9 @@ class MaterialRequisitionController extends Controller
         //     $available = 0;
         // }
         // $data['available'] = $available;
+        $material = Material::where('id',$id)->first();
+        $data['is_decimal'] = $material->uom->is_decimal == 1 ? true:false;
+        $data['unit'] = $material->uom->unit;
         $data['planned_quantity'] = $planned_quantity;
 
         return response($data, Response::HTTP_OK);

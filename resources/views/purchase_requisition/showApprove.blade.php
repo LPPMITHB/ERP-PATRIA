@@ -41,6 +41,8 @@
         @elseif($route == "/purchase_requisition_repair")
             <form id="approve-pr"class="form-horizontal" action="{{ route('purchase_requisition_repair.approval') }}">
         @endif
+        @csrf
+        </form>
         <div class="box box-blue">
             <div class="row">
                 <div class="col-xs-12 col-md-3">
@@ -119,7 +121,7 @@
                                     <td class="tdEllipsis">{{ $PRD->resource->code }}</td>
                                     <td class="tdEllipsis">{{ $PRD->resource->name }}</td>
                                 @endif
-                                <td>{{ number_format($PRD->quantity) }}</td>
+                                <td>{{ number_format((float)$PRD->quantity,2) }}</td>
                                 @if($modelPR->type == 1)
                                     <td>{{ $PRD->material->uom->unit}}</td>
                                 @else
@@ -199,6 +201,7 @@
         data : data,
         methods : {
             submitForm(status){
+                $('div.overlay').show();
                 this.dataSubmit.desc = document.getElementById('rev_desc').value;
                 this.dataSubmit.status = status;
 

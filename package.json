@@ -13,6 +13,7 @@
         "axios": "^0.18.0",
         "bootstrap": "^4.0.0",
         "cross-env": "^5.1",
+        "empty-module": "0.0.2",
         "jquery": "^3.2",
         "laravel-mix": "^2.1.14",
         "lodash": "^4.17.11",
@@ -24,11 +25,13 @@
         "ajv": "^6.6.1",
         "bootstrap-multiselect": "^0.9.13",
         "chart.js": "^2.7.3",
+        "daterangepicker": "^3.0.3",
         "dhtmlx-gantt": "^5.2.0",
         "fullcalendar": "^3.9.0",
         "imagemin": "^6.0.0",
         "izitoast": "^1.4.0",
         "jstree": "^3.3.7",
+        "moment": "2.18.1",
         "selectize": "^0.12.6"
     }
 }

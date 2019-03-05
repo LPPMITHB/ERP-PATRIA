@@ -54,11 +54,11 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th v-if="pr_type == 'Material'" style="width: 25%">Material Number</th>
-                                            <th v-else-if="pr_type == 'Resource'" style="width: 25%">Resource Number</th>
+                                            <th v-if="pr_type == 'Material'" style="width: 22%">Material Number</th>
+                                            <th v-else-if="pr_type == 'Resource'" style="width: 22%">Resource Number</th>
                                             <th v-if="pr_type == 'Material'" style="width: 25%">Material Description</th>
                                             <th v-else-if="pr_type == 'Resource'" style="width: 25%">Resource Description</th>
-                                            <th style="width: 9%">Quantity</th>
+                                            <th style="width: 12%">Quantity</th>
                                             <th style="width: 8%">Unit</th>
                                             <th style="width: 15%">Project Number</th>
                                             <th style="width: 13%">Required Date</th>
@@ -109,7 +109,7 @@
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="materialOk">
                                             </td>
                                             <td class="p-l-0">
                                                 <input class="form-control" v-model="dataInput.unit" disabled>
@@ -160,7 +160,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="unit" class="control-label">Unit</label>
@@ -211,7 +211,7 @@
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Project Number</label>
@@ -253,7 +253,6 @@
     });
 
     var data = {
-        submit: "ok",
         types : ['Material','Resource'],
         pr_type : "Material",
         isResource : "",
@@ -276,9 +275,12 @@
             project_number : "-",
             required_date : "",
             alocation : "Stock",
+            is_decimal : "",
+            material_ok : ""
         },
         editInput : {
             material_id : "",
+            old_material_id : "",
             material_code : "",
             material_name : "",
             resource_id :"",
@@ -290,6 +292,8 @@
             project_number : "",
             required_date : "",
             alocation : "",
+            is_decimal : "",
+            material_ok : ""
         },
         dataMaterial : [],
         submittedForm : {},
@@ -359,7 +363,7 @@
             allOk: function(){
                 let isOk = false;
                 
-                if(this.dataMaterial.length < 1 || this.submit == ""){
+                if(this.dataMaterial.length < 1){
                     isOk = true;
                 }
 
@@ -368,13 +372,12 @@
             createOk: function(){
                 let isOk = false;
 
-                var quantityInt = parseInt((this.dataInput.quantity+"").replace(/,/g , ''));
                 if(this.pr_type == 'Material'){
-                    if(this.dataInput.material_id == "" || quantityInt < 1 || this.dataInput.quantity == "" || this.dataInput.alocation == ""){
+                    if(this.dataInput.material_id == "" || this.dataInput.quantity == "" || this.dataInput.alocation == ""){
                         isOk = true;
                     }
                 }else if(this.pr_type == 'Resource'){
-                    if(this.dataInput.resource_id == "" || quantityInt < 1 || this.dataInput.quantity == ""){
+                    if(this.dataInput.resource_id == "" || this.dataInput.quantity == ""){
                         isOk = true;
                     }
                 }
@@ -383,16 +386,33 @@
             updateOk: function(){
                 let isOk = false;
 
-                var quantityInt = parseInt((this.editInput.quantity+"").replace(/,/g , ''));
                 if(this.pr_type == 'Material'){
-                    if(this.editInput.material_id == "" || quantityInt < 1 || this.editInput.quantity == "" || this.editInput.alocation == ""){
+                    if(this.editInput.material_id == "" || this.editInput.quantity == "" || this.editInput.alocation == ""){
                         isOk = true;
                     }
                 }else if(this.pr_type == 'Resource'){
-                    if(this.editInput.resource_id == "" || quantityInt < 1 || this.editInput.quantity == ""){
+                    if(this.editInput.resource_id == "" || this.editInput.quantity == ""){
                         isOk = true;
                     }
                 }
+                return isOk;
+            },
+            materialOk : function(){
+                let isOk = false;
+
+                if(this.dataInput.material_ok == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
+            editMaterialOk : function(){
+                let isOk = false;
+
+                if(this.editInput.material_ok == ""){
+                    isOk = true;
+                }
+
                 return isOk;
             }
         },
@@ -409,16 +429,18 @@
                 this.dataInput.project_id = "";
                 this.dataInput.project_number = "-";
                 this.dataInput.required_date = "";
-                this.dataInput.alocation = "Stock";
+                if(this.dataInput.pr_type == "Material"){
+                    this.dataInput.alocation = "Stock";
+                }
 
                 this.newIndex = Object.keys(this.dataMaterial).length+1;
             },
             submitForm(){
+                $('div.overlay').show();
                 this.dataMaterial.forEach(data => {
-                    data.quantity = parseInt((data.quantity+"").replace(/,/g , ''));
+                    data.quantity = (data.quantity+"").replace(/,/g , '');
                 })
 
-                this.submit = "";
                 this.submittedForm.resource = this.isResource;
                 this.submittedForm.description = this.description;
                 this.submittedForm.datas = this.dataMaterial;    
@@ -432,6 +454,7 @@
             },
             openEditModal(data,index){
                 this.editInput.material_id = data.material_id;
+                this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
                 this.editInput.material_name = data.material_name;
                 this.editInput.resource_id = data.resource_id;
@@ -444,6 +467,7 @@
                 this.editInput.required_date = data.required_date;
                 this.editInput.alocation = data.alocation;
                 this.editInput.index = index;
+                this.editInput.is_decimal = data.is_decimal;
             },
             update(){
                 $('div.overlay').show();
@@ -487,10 +511,48 @@
         },
         watch : {
             'dataInput.quantity': function(newValue){
-                this.dataInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                if(this.pr_type == "Material"){
+                    var is_decimal = this.dataInput.is_decimal;
+                    if(is_decimal == 0){
+                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    }else{
+                        var decimal = newValue.replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }
+                }else{
+                    this.dataInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                if(this.pr_type == "Material"){
+                    var is_decimal = this.editInput.is_decimal;
+                    if(is_decimal == 0){
+                        this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    }else{
+                        var decimal = newValue.replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }
+                }else{
+                    this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
             },
             pr_type : function(newValue){
                 this.clearData();
@@ -509,20 +571,27 @@
                 })
             },
             'dataInput.material_id': function(newValue){
+                this.dataInput.quantity = "";
                 if(newValue != ""){
+                    this.dataInput.material_ok = "ok";
                     window.axios.get('/api/getMaterialPR/'+newValue).then(({ data }) => {
                         this.dataInput.material_name = data.description;
                         this.dataInput.material_code = data.code;
                         this.dataInput.unit = data.uom.unit;
+                        this.dataInput.is_decimal = data.uom.is_decimal;
+
                     });
                 }else{
                     this.dataInput.material_name = "";
                     this.dataInput.material_code = "";
                     this.dataInput.unit = "";
+                    this.dataInput.is_decimal = "";
+                    this.dataInput.material_ok = "";
                 }
             },
             'dataInput.resource_id': function(newValue){
                 if(newValue != ""){
+                    this.dataInput.material_ok = "ok";
                     window.axios.get('/api/getResourcePR/'+newValue).then(({ data }) => {
                         this.dataInput.resource_name = data.name;
                         this.dataInput.resource_code = data.code;
@@ -532,6 +601,7 @@
                     this.dataInput.resource_name = "";
                     this.dataInput.resource_code = "";
                     this.dataInput.unit = "";
+                    this.dataInput.material_ok = "";
                 }
             },
             'dataInput.project_id': function(newValue){
@@ -544,29 +614,40 @@
                 }
             },
             'editInput.material_id': function(newValue){
+                if(newValue != this.editInput.old_material_id){
+                    this.editInput.quantity = "";
+                }
                 if(newValue != ""){
+                    this.editInput.material_ok = "ok";
                     window.axios.get('/api/getMaterialPR/'+newValue).then(({ data }) => {
                         this.editInput.material_name = data.description;
                         this.editInput.material_code = data.code;
                         this.editInput.unit = data.uom.unit;
+                        this.editInput.is_decimal = data.uom.is_decimal;
                     });
                 }else{
                     this.editInput.material_name = "";
                     this.editInput.material_code = "";
                     this.editInput.unit = "";
+                    this.editInput.material_ok = "";
+                    this.editInput.is_decimal = "";
                 }
             },
             'editInput.resource_id': function(newValue){
                 if(newValue != ""){
+                    this.editInput.material_ok = "ok";
                     window.axios.get('/api/getResourcePR/'+newValue).then(({ data }) => {
                         this.editInput.resource_name = data.name;
                         this.editInput.resource_code = data.code;
                         this.editInput.unit = "-";
+                        this.editInput.is_decimal = 0;
                     });
                 }else{
                     this.editInput.resource_name = "";
                     this.editInput.resource_code = "";
                     this.editInput.unit = "";
+                    this.editInput.material_ok = "";
+                    this.editInput.is_decimal = "";
                 }
             },
             'editInput.project_id': function(newValue){

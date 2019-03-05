@@ -68,6 +68,7 @@
         
         <!-- ./wrapper -->
         <script src="{{ asset('js/app.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
         <script>
             $(function () {
                 @include('components.iziToast');

@@ -36,12 +36,11 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-3 col-md-12">
-                                    <div class="col-md-3 col-xs-3 no-padding">Ship Date:</div>
-
-                                    <div class="col-sm-12 col-lg-8 p-t-0 p-l-0">
-                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker width100" name="ship_date" id="ship_date" placeholder="Ship Date">
+                                        <div class="col-md-8 col-xs-12 p-l-0">Ship Date:</div>
+                                        <div class="col-sm-12 col-lg-8  p-l-0">
+                                            <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker" name="ship_date" id="ship_date" placeholder="Ship Date" style="width: 180px">
+                                        </div>
                                     </div>
-                                </div>
                             </div>
                         <div class="col-sm-12">
                             <div class="row">
@@ -54,7 +53,7 @@
                                             <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Received</th>
                                             <th style="width: 28%">Storage Location</th>
-                                            <th style="width: 10%">Received Date</th>
+                                            <th style="width: 12%">Received Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -89,7 +88,7 @@
                                                 <input class="form-control width100" v-model="dataInput.unit" disabled>
                                             </td>
                                             <td class="p-l-0">
-                                                <input class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Received Quantity">
+                                                <input :disabled="materialOk" class="form-control width100" v-model="dataInput.quantity" placeholder="Please Input Received Quantity">
                                             </td>
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.sloc_id" :settings="slocSettings">
@@ -205,11 +204,12 @@
             material_code : "",
             material_name : "",
             quantity : "",
-            quantityInt : 0,
+            quantityFloat : 0,
             sloc_id : "",
             sloc_name : "",
             received_date: "",
             unit:"",
+            is_decimal : "",
 
         },
         editInput : {
@@ -218,12 +218,12 @@
             material_code : "",
             material_name : "",
             quantity : "",
-            quantityInt : 0,
+            quantityFloat : 0,
             sloc_id : "",
             sloc_name : "",
             received_date: "",
             unit:"",
-
+            is_decimal : "",
         },
         material_id:[],
         material_id_modal:[],
@@ -272,10 +272,10 @@
             createOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.dataInput.quantityInt+"";
-                this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.dataInput.quantityFloat+"";
+                this.dataInput.quantityFloat = parseFloat(string_newValue.replace(",", ''));
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.sloc_id =="" || this.dataInput.received_date == ""){
+                if(this.dataInput.material_id == "" || this.dataInput.quantityFloat < 0 || this.dataInput.quantityFloat == 0 || this.dataInput.quantityFloat == "" || isNaN(this.dataInput.quantityFloat) || this.dataInput.sloc_id =="" || this.dataInput.received_date == ""){
                     isOk = true;
                 }
 
@@ -284,28 +284,76 @@
             updateOk: function(){
                 let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
+                var string_newValue = this.editInput.quantityFloat+"";
+                this.editInput.quantityFloat = parseFloat(string_newValue.replace(",", ''));
 
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
+                if(this.editInput.material_id == "" ||  this.editInput.quantityFloat < 0|| this.editInput.quantityFloat == 0 || this.editInput.quantityFloat == "" || isNaN(this.editInput.quantityFloat)){
                     isOk = true;
                 }
 
                 return isOk;
-            }
+            },
+            materialOk: function(){
+                let isOk = false;
+
+                if(this.dataInput.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
+            materialEditOk: function(){
+                let isOk = false;
+
+                if(this.editInput.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
         },
         watch : {
             'dataInput.quantity': function(newValue){
-                this.dataInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                Vue.nextTick(() => this.dataInput.quantity = quantity_string);
+                if(this.dataInput.is_decimal == 1){
+                    var decimalReceived = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimalReceived[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimalReceived[1]+"").length > maxDecimal){
+                            this.dataInput.quantity = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            this.dataInput.quantityFloat = this.dataInput.quantity.replace(',', '');
+                        }else{
+                            this.dataInput.quantity = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").replace(/\D/g, "");
+                            this.dataInput.quantityFloat = this.dataInput.quantity.replace(',', '');
+                        }
+                    }else{
+                        this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.dataInput.quantityFloat = this.dataInput.quantity.replace(',', '');
+                    }
+                }else{
+                    this.dataInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                    this.dataInput.quantityFloat = this.dataInput.quantity.replace(',', '');
+                }
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                Vue.nextTick(() => this.editInput.quantity = quantity_string);
+                if(this.editInput.is_decimal == 1){
+                    var decimalReceived = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimalReceived[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimalReceived[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            this.editInput.quantityFloat = this.editInput.quantity.replace(',', '');
+                        }else{
+                            this.editInput.quantity = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").replace(/\D/g, "");
+                            this.editInput.quantityFloat = this.editInput.quantity.replace(',', '');
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.editInput.quantityFloat = this.editInput.quantity.replace(',', '');
+                    }
+                }else{
+                    this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                    this.editInput.quantityFloat = this.editInput.quantity.replace(',', '');
+                }
             },
             'dataInput.sloc_id': function(newValue){
                 if(newValue != ""){
@@ -328,15 +376,25 @@
             },
             'dataInput.material_id': function(newValue){
                 if(newValue != ""){
-                    window.axios.get('/api/getMaterialGR/'+newValue).then(({ data }) => {
-                        this.dataInput.unit = data.uom.unit;
+                    this.dataInput.quantity = "";
+                    this.materials.forEach(material => {
+                        if(newValue == material.id){
+                            this.dataInput.unit = material.uom.unit;
+                            this.dataInput.is_decimal = material.uom.is_decimal;
+                        }
                     });
                 }
             },
             'editInput.material_id': function(newValue){
                 if(newValue != ""){
-                    window.axios.get('/api/getMaterialGR/'+newValue).then(({ data }) => {
-                        this.editInput.unit = data.uom.unit;
+                    if(newValue != this.editInput.old_material_id){
+                        this.editInput.quantity = "";
+                    }
+                    this.materials.forEach(material => {
+                        if(newValue == material.id){
+                            this.editInput.unit = material.uom.unit;
+                            this.editInput.is_decimal = material.uom.is_decimal;
+                        }
                     });
                 }
             },
@@ -345,7 +403,7 @@
             
             submitForm(){
                 this.dataMaterial.forEach(material => {
-                    material.quantity = parseInt((material.quantity+"").replace(/,/g , ''));
+                    material.quantity = parseFloat((material.quantity+"").replace("," , ''));
                 });
                 this.submittedForm.materials = this.dataMaterial;
                 this.submittedForm.description = this.description;
@@ -359,42 +417,41 @@
                 form.submit();
             },
             update(old_material_id, new_material_id){
-                
-                        var material = this.dataMaterial[this.editInput.index];
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                        material.material_id = new_material_id;
-                        material.sloc_id = this.editInput.sloc_id;
-                        material.unit = this.editInput.unit;
+                var material = this.dataMaterial[this.editInput.index];
+                material.quantityFloat = this.editInput.quantityFloat;
+                material.quantity = this.editInput.quantity;
+                material.material_id = new_material_id;
+                material.sloc_id = this.editInput.sloc_id;
+                material.unit = this.editInput.unit;
 
-                        window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
-                            material.material_name = data.description;
-                            material.material_code = data.code;
-                            material.received_date = this.editInput.received_date;
+                window.axios.get('/api/getMaterialPR/'+new_material_id).then(({ data }) => {
+                    material.material_name = data.description;
+                    material.material_code = data.code;
+                    material.received_date = this.editInput.received_date;
 
-                             window.axios.get('/api/getSlocGR/'+this.editInput.sloc_id).then(({ data }) => {
-                                material.sloc_name = data.name;
-                                $('div.overlay').hide();
-                            })
-                            .catch((error) => {
-                                iziToast.warning({
-                                    title: 'Please Try Again..',
-                                    position: 'topRight',
-                                    displayMode: 'replace'
-                                });
-                                $('div.overlay').hide();
-                            })
+                        window.axios.get('/api/getSlocGR/'+this.editInput.sloc_id).then(({ data }) => {
+                        material.sloc_name = data.name;
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
 
-                            $('div.overlay').hide();
-                        })
-                        .catch((error) => {
-                            iziToast.warning({
-                                title: 'Please Try Again..',
-                                position: 'topRight',
-                                displayMode: 'replace'
-                            });
-                            $('div.overlay').hide();
-                        })
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
             },
            
             openEditModal(data,index){
@@ -402,8 +459,8 @@
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
                 this.editInput.material_name = data.material_name;
+                this.editInput.is_decimal = data.is_decimal;
                 this.editInput.quantity = data.quantity;
-                this.editInput.quantityInt = data.quantityInt;
                 this.editInput.sloc_id = data.sloc_id;
                 this.editInput.sloc_name = data.sloc_name;
                 this.editInput.received_date = data.received_date;

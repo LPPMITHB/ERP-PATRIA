@@ -58,6 +58,7 @@ class GoodsReceiptController extends Controller
                     "sloc_id" => "",
                     "received_date" => "",
                     "item_OK" => 0,
+                    "is_decimal" => $POD->material->uom->is_decimal == 1 ? true:false,
                     ]);
                 }
             
@@ -144,7 +145,7 @@ class GoodsReceiptController extends Controller
     public function createGrWithoutRef(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelMaterial = Material::all()->jsonSerialize();
+        $modelMaterial = Material::with('uom')->get()->jsonSerialize();
         $modelSloc = StorageLocation::all();
 
         return view('goods_receipt.createGrWithoutRef', compact('modelMaterial','modelSloc','route'));

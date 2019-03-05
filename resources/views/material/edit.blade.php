@@ -153,6 +153,20 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="upload" class="col-sm-2 control-label">Upload Image</label>
+                                    <div class="col-sm-5">
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <span class="btn btn-primary">
+                                                    Browse&hellip; <input type="file" style="display: none;" multiple id="image" name="image">
+                                                </span>
+                                            </label>
+                                            <input type="text" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
                                     <label for="status" class="col-sm-2 control-label">Status</label>
                     
                                     <div class="col-sm-10">

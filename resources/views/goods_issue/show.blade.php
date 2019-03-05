@@ -98,7 +98,7 @@
                             <td>{{ $GID->material->code }}</td>
                             <td>{{ $GID->material->description }}</td>
                             <td>{{ $GID->material->uom->unit }}</td>
-                            <td>{{ number_format($GID->quantity) }}</td>
+                            <td>{{ number_format($GID->quantity,2) }}</td>
                             <td>{{ $GID->storageLocation != null ? $GID->storageLocation->name : "-" }} </td>
                         </tr>
                         @endforeach
