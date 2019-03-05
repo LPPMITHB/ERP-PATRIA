@@ -448,6 +448,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\PurchaseOrderDetail' => __DIR__ . '/../..' . '/app/Models/PurchaseOrderDetail.php',
         'App\\Models\\PurchaseRequisition' => __DIR__ . '/../..' . '/app/Models/PurchaseRequisition.php',
         'App\\Models\\PurchaseRequisitionDetail' => __DIR__ . '/../..' . '/app/Models/PurchaseRequisitionDetail.php',
+        'App\\Models\\PurchasingInfoRecord' => __DIR__ . '/../..' . '/app/Models/PurchasingInfoRecord.php',
         'App\\Models\\Rap' => __DIR__ . '/../..' . '/app/Models/Rap.php',
         'App\\Models\\RapDetail' => __DIR__ . '/../..' . '/app/Models/RapDetail.php',
         'App\\Models\\Resource' => __DIR__ . '/../..' . '/app/Models/Resource.php',
