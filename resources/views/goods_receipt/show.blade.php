@@ -87,7 +87,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $GRD->material->code }}</td>
-                                    <td>{{ $GRD->material->description }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GRD->material->description}}">{{ $GRD->material->description }}</td>
                                     <td>{{ $GRD->material->uom->unit }}</td>
                                     <td>{{ number_format($GRD->quantity,2) }}</td>
                                     <td>{{ isset($GRD->storageLocation->name) ? $GRD->storageLocation->name : '-' }} </td>

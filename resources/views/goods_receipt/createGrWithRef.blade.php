@@ -91,8 +91,8 @@
                                         <tbody>
                                             <tr v-for="(POD,index) in modelPOD" :id="getId(POD.id)">
                                                 <td>{{ index+1 }}</td>
-                                                <td>{{ POD.material_code }}</td>
-                                                <td>{{ POD.material_name }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(POD.material_code)">{{ POD.material_code }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(POD.material_name)">{{ POD.material_name }}</td>
                                                 <td>{{ POD.unit }}</td>
                                                 <td>{{ POD.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
