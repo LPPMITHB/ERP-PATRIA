@@ -13,6 +13,11 @@ class WbsConfiguration extends Model
         return $this->hasMany('App\Models\ActivityConfiguration', 'wbs_id');
     }
 
+    public function wbssProject() 
+    {
+        return $this->hasMany('App\Models\WBS','wbs_configuration_id');
+    }
+
     public function wbss() 
     {
         return $this->hasMany(self::class, 'wbs_id');

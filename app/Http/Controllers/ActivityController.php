@@ -30,6 +30,16 @@ class ActivityController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         return view('activity.create', compact('project', 'wbs','menu'));
     }
+    
+    public function createActivityRepair($id, Request $request)
+    {
+        $wbs = WBS::find($id);
+        $activity_config = $wbs->wbsConfig->activities;
+        $project = $wbs->project;
+        $menu = "repair";
+
+        return view('activity.createActivityRepair', compact('project', 'wbs','menu','activity_config'));
+    }
 
     public function createActivityProfile($id, Request $request)
     {
@@ -78,6 +88,10 @@ class ActivityController extends Controller
 
             if(count($predecessorArray) >0){
                 $activity->predecessor = json_encode($predecessorArray);
+            }
+
+            if(isset($data['activity_configuration_id'])){
+                $activity->activity_configuration_id = $data['activity_configuration_id'];
             }
             $activity->weight = $data['weight']; 
             $activity->user_id = Auth::user()->id;
@@ -459,9 +473,11 @@ class ActivityController extends Controller
             foreach($activity_ref as $act){
                 if($act->predecessor != null){
                     $predecessor = json_decode($act->predecessor);
-                    if(in_array($activity->id,$predecessor)){
-                        array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
-                        return response(["error"=> $error],Response::HTTP_OK);
+                    foreach($predecessor as $act_id){
+                        if($activity->id == $act_id[0]){
+                            array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
+                            return response(["error"=> $error],Response::HTTP_OK);
+                        }
                     }
                 }
             }

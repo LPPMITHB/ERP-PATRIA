@@ -21,7 +21,7 @@ class CreateMstResourceDetailTable extends Migration
             $table->string('brand')->nullable();
             $table->integer('quantity')->default(1);
             $table->text('description')->nullable();
-            $table->string('category_id');
+            $table->integer('category_id');
             $table->double('kva')->nullable();
             $table->double('amp')->nullable();
             $table->double('volt')->nullable();

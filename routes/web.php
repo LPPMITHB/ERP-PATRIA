@@ -572,15 +572,13 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     
     Route::get('/createWBS/{id}', 'WBSController@createWbsRepair')->name('createWBS')->middleware('can:create-project-repair');
     
-    Route::post('/store', 'WBSController@store')->name('store')->middleware('can:create-project-repair');
+    Route::post('/store', 'WBSController@storeWbsRepair')->name('store')->middleware('can:create-project-repair');
     
-    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project-repair');
-    
-    Route::put('update/{id}', 'WBSController@update')->name('update')->middleware('can:edit-project-repair');  
+    Route::put('update/{id}', 'WBSController@updateWbsRepair')->name('update')->middleware('can:edit-project-repair');  
     
     Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project-repair');    
     
-    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWBS')->name('createSubWBS')->middleware('can:create-project-repair');
+    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'WBSController@createSubWbsRepair')->name('createSubWBS')->middleware('can:create-project-repair');
     
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project-repair');    
     
@@ -677,7 +675,7 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
     Route::put('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');    
 
     //Activity 
-    Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project-repair');
+    Route::get('/create/{id}', 'ActivityController@createActivityRepair')->name('create')->middleware('can:create-project-repair');
 
     Route::put('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project-repair');    
 

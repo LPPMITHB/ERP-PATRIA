@@ -262,16 +262,14 @@ class WBSController extends Controller
         $menu = "repair";
         $businessUnit = 2;
         $wbs_config = WbsConfiguration::where('wbs_id', null)->get();
-        $wbs_profiles = WbsProfile::where('wbs_id', null)->where('business_unit_id', $businessUnit)->where('project_type_id', $project->project_type)->get()->jsonSerialize();
 
-        return view('wbs.createWbsRepair', compact('project','menu','wbs_profiles','wbs_config'));
+        return view('wbs.createWbsRepair', compact('project','menu','wbs_config'));
     }
 
 
     public function store(Request $request)
     {
         $data = $request->json()->all();
-        
         DB::beginTransaction();
         try {
             $wbs = new WBS;
@@ -284,6 +282,49 @@ class WBSController extends Controller
             if(isset($data['wbs_id'])){
                 $wbs->wbs_id = $data['wbs_id'];
             }
+
+            $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $wbs->planned_start_date =  $planned_start_date->format('Y-m-d');
+            
+            $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
+            $wbs->planned_end_date =  $planned_end_date->format('Y-m-d');
+            
+            $wbs->planned_duration = $data['planned_duration'];
+            $wbs->weight =  $data['weight'];
+            $wbs->user_id = Auth::user()->id;
+            $wbs->branch_id = Auth::user()->branch->id;
+            
+
+            if(!$wbs->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new WBS"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeWbsRepair(Request $request)
+    {
+        $data = $request->json()->all();
+        DB::beginTransaction();
+        try {
+            $wbsConfig = WbsConfiguration::find($data['wbs_configuration_id']);
+            $wbs = new WBS;
+            $wbs->code = self::generateWbsCode($data['project_id']);
+            $wbs->number = $data['number'];
+            $wbs->description = $wbsConfig->description;
+            $wbs->deliverables = $wbsConfig->deliverables;
+            $wbs->wbs_configuration_id = $wbsConfig->id;
+            $wbs->project_id = $data['project_id'];
+
+            if(isset($data['wbs_id'])){
+                $wbs->wbs_id = $data['wbs_id'];
+            }
+
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
             $wbs->planned_start_date =  $planned_start_date->format('Y-m-d');
             
@@ -544,6 +585,32 @@ class WBSController extends Controller
         return view('wbs.createSubWBS', compact('project', 'wbs','array','menu','wbs_profiles'));
     }
 
+    public function createSubWbsRepair($project_id, $wbs_id, Request $request)
+    {
+        $wbs = WBS::find($wbs_id);
+        $wbs_config = WbsConfiguration::where('wbs_id', $wbs->wbs_configuration_id)->get();
+        $project = Project::find($project_id);
+        $menu = "repair";
+        $businessUnit = 2;
+
+        $array = [
+            'Dashboard' => route('index'),
+            'View all Projects' => route('project_repair.index'),
+            'Project|'.$project->number => route('project_repair.show',$project->id),
+            'Add WBS' => route('wbs_repair.createWBS',$project->id),
+        ];
+
+        $iteration = 0;
+        $array_reverse = [];
+        $array_reverse = array_reverse(self::getParents($wbs,$array_reverse,$project->id, $iteration, $menu));
+        foreach ($array_reverse as $key => $value) {
+            $array[$key] = $value;
+        }
+        
+        $array["WBS ".$wbs->number] = "";
+        return view('wbs.createSubWbsRepair', compact('project', 'wbs','array','menu','wbs_config'));
+    }
+
     public function update(Request $request, $id)
     {
         $data = $request->json()->all();
@@ -559,6 +626,38 @@ class WBSController extends Controller
             $wbs_ref->number = $data['number'];
             $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $data['deliverables'];
+            $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
+            $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
+            
+            $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
+            $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
+            
+            $wbs_ref->planned_duration = $data['planned_duration'];
+            $wbs_ref->weight =  $data['weight'];
+
+            if(!$wbs_ref->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to Update WBS ".$wbs_ref->number],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function updateWbsRepair(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        $wbs_ref = WBS::find($id);
+        $wbs_config = WbsConfiguration::find($data['wbs_configuration_id']);
+        DB::beginTransaction();
+        try {
+            $wbs_ref->number = $data['number'];
+            $wbs_ref->description = $wbs_config->description;
+            $wbs_ref->deliverables = $wbs_config->deliverables;
+            $wbs_ref->wbs_configuration_id = $wbs_config->id;
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
             

@@ -1,32 +1,12 @@
 @extends('layouts.main')
 @section('content-header')
-    @if ($menu == "building")
-        @breadcrumb(
-            [
-                'title' => 'Add Work Breakdown Structures',
-                'items' => [
-                    'Dashboard' => route('index'),
-                    'View all Projects' => route('project.index'),
-                    'Project|'.$project->number => route('project.show',$project->id),
-                    'Add WBS' => ""
-                ]
-            ]
-        )
-        @endbreadcrumb
-    @else
-        @breadcrumb(
-            [
-                'title' => 'Add Work Breakdown Structures',
-                'items' => [
-                    'Dashboard' => route('index'),
-                    'View all Projects' => route('project_repair.index'),
-                    'Project|'.$project->number => route('project_repair.show',$project->id),
-                    'Add WBS' => ""
-                ]
-            ]
-        )
-        @endbreadcrumb
-    @endif
+@breadcrumb(
+    [
+        'title' => $project->name,
+        'items' => $array
+    ]
+)
+@endbreadcrumb
 @endsection
 @section('content')
 <div class="row">
@@ -34,7 +14,7 @@
         <div class="box">
             <div class="box-header">
                 <div class="col-xs-12 col-lg-4 col-md-12">    
-                    <div class="box-body">
+                    <div class="box-header">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Code</div>
@@ -65,11 +45,51 @@
                         </div>
                     </div>
                 </div>
+                <div class="box-header">
+                    <div class="col-xs-12 col-lg-4 col-md-12">    
+                        <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Number</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Description</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Deliverable</div>
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Start Date</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: @php
+                                if($wbs->planned_start_date != null){
+                                    $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_start_date);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                }else{
+                                    echo "-";
+                                }
+                            @endphp
+                            </b>
+                        </div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">End Date</div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: @php
+                            if($wbs->planned_end_date != null){
+                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
+                                $date = $date->format('d-m-Y');
+                                echo $date;
+                            }else{
+                                echo "-";
+                            }
+                        @endphp
+                        </b>
+                    </div>
+                    </div>
+                </div>
             </div>
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>100%</b>)</h4>
+                    <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>{{parentWbsWeight}}%</b>)</h4>
                     <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse">
                         <thead>
                             <tr>
@@ -97,7 +117,7 @@
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBSRoute(data)">
                                                 MANAGE WBS
                                             </a>
                                         </div>
@@ -121,24 +141,24 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0" colspan="2">
-                                    <selectize v-model="newWbs.wbs_configuration_id" :settings="wbsConfigSettings">
+                                    <selectize v-model="newSubWBS.wbs_configuration_id" :settings="wbsConfigSettings">
                                         <option v-for="(wbs_config, index) in wbs_configs" :value="wbs_config.id">{{ wbs_config.number }} - {{ wbs_config.description }}</option>
                                     </selectize>
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newWbs.number" type="text" class="form-control width100" id="number" name="number" placeholder="Number">
+                                    <input v-model="newSubWBS.number" type="text" class="form-control width100" id="number" name="number" placeholder="Number">
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newWbs.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                    <input autocomplete="off" v-model="newSubWBS.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newWbs.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
+                                    <input autocomplete="off" v-model="newSubWBS.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
                                 </td>
                                 <td class="p-l-0">
-                                    <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newWbs.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
+                                    <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newSubWBS.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newWbs.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
+                                    <input v-model="newSubWBS.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
                                 </td>
                                 <td align="center" class="p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -228,12 +248,16 @@ var data = {
     menu : @json($menu),
     wbs : [],
     newIndex : "", 
+    parentWbsWeight : @json($wbs->weight),
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
-    newWbs : {
+    parent_wbs_start_date : @json($wbs->planned_start_date),
+    parent_wbs_end_date : @json($wbs->planned_end_date),
+    newSubWBS : {
         number : "",
         description : "",
         deliverables : "",
+        wbs_id : @json($wbs->id),
         project_id : @json($project->id),
         weight : "",
         planned_start_date : "",
@@ -280,18 +304,18 @@ var vm = new Vue({
         });
         $("#planned_start_date").datepicker().on(
             "changeDate", () => {
-                this.newWbs.planned_start_date = $('#planned_start_date').val();
-                if(this.newWbs.planned_end_date != ""){
-                    this.newWbs.planned_duration = datediff(parseDate(this.newWbs.planned_start_date), parseDate(this.newWbs.planned_end_date));
+                this.newSubWBS.planned_start_date = $('#planned_start_date').val();
+                if(this.newSubWBS.planned_end_date != ""){
+                    this.newSubWBS.planned_duration = datediff(parseDate(this.newSubWBS.planned_start_date), parseDate(this.newSubWBS.planned_end_date));
                 }
                 this.setEndDateNew();
             }
         );
         $("#planned_end_date").datepicker().on(
             "changeDate", () => {
-                this.newWbs.planned_end_date = $('#planned_end_date').val();
-                if(this.newWbs.planned_start_date != ""){
-                    this.newWbs.planned_duration = datediff(parseDate(this.newWbs.planned_start_date), parseDate(this.newWbs.planned_end_date));
+                this.newSubWBS.planned_end_date = $('#planned_end_date').val();
+                if(this.newSubWBS.planned_start_date != ""){
+                    this.newSubWBS.planned_duration = datediff(parseDate(this.newSubWBS.planned_start_date), parseDate(this.newSubWBS.planned_end_date));
                 }
             }
         );
@@ -317,12 +341,12 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newWbs.number == ""
-                || this.newWbs.wbs_configuration_id == ""
-                || this.newWbs.weight == ""
-                || this.newWbs.planned_start_date == ""
-                || this.newWbs.planned_end_date == ""
-                || this.newWbs.planned_duration == "")
+                if(this.newSubWBS.number == ""
+                || this.newSubWBS.wbs_configuration_id == ""
+                || this.newSubWBS.weight == ""
+                || this.newSubWBS.planned_start_date == ""
+                || this.newSubWBS.planned_end_date == ""
+                || this.newSubWBS.planned_duration == "")
                 {
                     isOk = true;
                 }
@@ -349,6 +373,16 @@ var vm = new Vue({
                 }
             return isOk;
         }
+        // updateOk: function(){
+        //     let isOk = false;
+        //         if(this.dataUpd.uom_id == ""
+        //         || this.dataUpd.standard_price.replace(/,/g , '') < 1)
+        //         {
+        //             isOk = true;
+        //         }
+        //     return isOk;
+        // },
+
     }, 
     methods:{
         tooltipText: function(text) {
@@ -365,7 +399,6 @@ var vm = new Vue({
             this.editWbs.number = data.number;
             this.editWbs.wbs_configuration_id = data.wbs_configuration_id;
             this.editWbs.weight = data.weight;
-            this.editWbs.planned_duration = data.planned_duration;
             if(data.planned_start_date != null){
                 this.editWbs.planned_start_date = data.planned_start_date;
                 $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date.split("-").reverse().join("-")));
@@ -375,52 +408,61 @@ var vm = new Vue({
                 this.editWbs.planned_end_date = data.planned_end_date;
                 $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date.split("-").reverse().join("-")));
             }
+            
         },
-        createSubWBS(data){
+        createSubWBSRoute(data){
             var url = "";
             if(this.menu == "building"){
-                url = "/wbs/createSubWBS/"+this.newWbs.project_id+"/"+data.id;
+                url = "/wbs/createSubWBS/"+this.newSubWBS.project_id+"/"+data.id;
             }else{
-                url = "/wbs_repair/createSubWBS/"+this.newWbs.project_id+"/"+data.id;                
+                url = "/wbs_repair/createSubWBS/"+this.newSubWBS.project_id+"/"+data.id;                
             }
             return url;
         },
-        getWBS(){
-            window.axios.get('/api/getWbs/'+this.newWbs.project_id).then(({ data }) => {
-                this.wbs = data;
-                this.newIndex = Object.keys(this.wbs).length+1;
-                this.totalWeight = 0;
-                this.wbs.forEach(data => {
-                    if(data.planned_start_date != null){
+        getSubWBS(){
+            window.axios.get('/api/getWeightWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
+                this.totalWeight = data;
+                window.axios.get('/api/getSubWbs/'+this.newSubWBS.wbs_id).then(({ data }) => {
+                    this.wbs = data;
+                    this.newIndex = Object.keys(this.wbs).length+1;
+                    this.wbs.forEach(data => {
+                        if(data.planned_start_date != null){
                         data.planned_start_date = data.planned_start_date.split("-").reverse().join("-");   
-                    }
+                        }
 
-                    if(data.planned_end_date != null){
-                        data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");   
-                    }
-                    this.totalWeight += data.weight;
-                });
-                this.totalWeight = roundNumber(this.totalWeight,2);
-                this.maxWeight = roundNumber((100 - this.totalWeight),2);
-                $('#wbs-table').DataTable().destroy();
-                this.$nextTick(function() {
-                    $('#wbs-table').DataTable({
-                        'paging'      : true,
-                        'lengthChange': false,
-                        'searching'   : false,
-                        'ordering'    : false,
-                        'info'        : true,
-                        'autoWidth'   : false,
+                        if(data.planned_end_date != null){
+                            data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");   
+                        }
                     });
-                })
+                    this.maxWeight = roundNumber((this.parentWbsWeight-this.totalWeight),2);
+                    $('#wbs-table').DataTable().destroy();
+                    this.$nextTick(function() {
+                        $('#wbs-table').DataTable({
+                            'paging'      : true,
+                            'lengthChange': false,
+                            'searching'   : false,
+                            'ordering'    : false,
+                            'info'        : true,
+                            'autoWidth'   : false,
+                            columnDefs : [
+                                { targets: 0, sortable: false},
+                            ]
+                        });
+                    })
+                });
             });
         },
         add(){            
-            var newWbs = this.newWbs;
-            newWbs = JSON.stringify(newWbs);
-            var url = "{{ route('wbs_repair.store') }}";
+            var newSubWBS = this.newSubWBS;
+            newSubWBS = JSON.stringify(newSubWBS);
+            var url = "";
+            if(this.menu == "building"){
+                url = "{{ route('wbs.store') }}";
+            }else{
+                url = "{{ route('wbs_repair.store') }}";              
+            }
             $('div.overlay').show();            
-            window.axios.post(url,newWbs)
+            window.axios.post(url,newSubWBS)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -437,16 +479,13 @@ var vm = new Vue({
                     });
                     $('div.overlay').hide();            
                 }
-                
-                this.getWBS();
-                this.newWbs.number = "";
-                this.newWbs.description = "";
-                this.newWbs.wbs_configuration_id = "";
-                this.newWbs.deliverables = "";
-                this.newWbs.planned_start_date = "";                
-                this.newWbs.planned_end_date = "";                
-                this.newWbs.planned_duration = "";                
-                this.newWbs.weight = "";                
+                this.getSubWBS();
+                this.newSubWBS.number = "";
+                this.newSubWBS.wbs_configuration_id = "";
+                this.newSubWBS.planned_start_date = "";                
+                this.newSubWBS.planned_end_date = "";                
+                this.newSubWBS.planned_duration = "";         
+                this.newSubWBS.weight = "";
             })
             .catch((error) => {
                 console.log(error);
@@ -455,13 +494,13 @@ var vm = new Vue({
 
         },
         update(){            
-            var editWbs = this.editWbs;    
+            var editWbs = this.editWbs;
             var url = "";
             if(this.menu == "building"){
                 var url = "/wbs/update/"+editWbs.wbs_id;                
             }else{
                 var url = "/wbs_repair/update/"+editWbs.wbs_id;                
-            }        
+            } 
             editWbs = JSON.stringify(editWbs);
             $('div.overlay').show();            
             window.axios.put(url,editWbs)
@@ -482,22 +521,15 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                 }
                 
-                this.getWBS();   
+                this.getSubWBS(); 
                 this.editWbs.number = "";
-                this.editWbs.description = "";
-                this.editWbs.deliverables = "";
                 this.editWbs.wbs_configuration_id = "";
                 this.editWbs.planned_start_date = "";                
                 this.editWbs.planned_end_date = "";                
-                this.editWbs.planned_duration = "";               
-                this.editWbs.weight = ""; 
+                this.editWbs.planned_duration = "";                
+                this.editWbs.weight = "";   
             })
             .catch((error) => {
-                iziToast.warning({
-                    displayMode: 'replace',
-                    title: "Please try again.. ",
-                    position: 'topRight',
-                });
                 console.log(error);
                 $('div.overlay').hide();            
             })
@@ -542,7 +574,7 @@ var vm = new Vue({
                                     position: 'topRight',
                                 });
                                 $('div.overlay').hide();   
-                                vm.getWBS();
+                                vm.getSubWBS();
                             }
                         })
                         .catch((error) => {
@@ -567,15 +599,15 @@ var vm = new Vue({
             });
         },
         setEndDateNew(){
-            if(this.newWbs.planned_duration != "" && this.newWbs.planned_start_date != ""){
-                var planned_duration = parseInt(this.newWbs.planned_duration);
-                var planned_start_date = this.newWbs.planned_start_date;
+            if(this.newSubWBS.planned_duration != "" && this.newSubWBS.planned_start_date != ""){
+                var planned_duration = parseInt(this.newSubWBS.planned_duration);
+                var planned_start_date = this.newSubWBS.planned_start_date;
                 var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
                 
                 planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                 $('#planned_end_date').datepicker('setDate', planned_end_date);
             }else{
-                this.newWbs.planned_end_date = "";
+                this.newSubWBS.planned_end_date = "";
             }
         },
         setEndDateEdit(){
@@ -591,31 +623,19 @@ var vm = new Vue({
             }
         },
     },
-    watch : {
-        // 'editWbs.process_cost_string': function(newValue) {
-        //     var string_newValue = newValue+"";
-        //     this.editWbs.process_cost = newValue;
-        //     process_cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        //     Vue.nextTick(() => this.editWbs.process_cost_string = process_cost_string);
-        // },
-        // 'editWbs.other_cost_string': function(newValue) {
-        //     var string_newValue = newValue+"";
-        //     this.editWbs.other_cost = newValue;
-        //     other_cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        //     Vue.nextTick(() => this.editWbs.other_cost_string = other_cost_string);
-        // },
-        newWbs:{
+    watch: {
+        newSubWBS:{
             handler: function(newValue) {
-                this.newWbs.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
+                this.newSubWBS.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
                 if(parseInt(newValue.planned_duration) < 1 ){
                     iziToast.warning({
                         displayMode: 'replace',
                         title: 'End Date cannot be ahead Start Date',
                         position: 'topRight',
                     });
-                    this.newWbs.planned_duration = "";
-                    this.newWbs.planned_end_date = "";
-                    this.newWbs.planned_start_date = "";
+                    this.newSubWBS.planned_duration = "";
+                    this.newSubWBS.planned_end_date = "";
+                    this.newSubWBS.planned_start_date = "";
                 }
             },
             deep: true
@@ -636,111 +656,183 @@ var vm = new Vue({
             },
             deep: true
         },
-        'newWbs.planned_start_date': function(newValue){
+        'newSubWBS.planned_start_date': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+            var parent_wbs_start_date = new Date(this.parent_wbs_start_date).toDateString();
+            var parent_wbs_end_date = new Date(this.parent_wbs_end_date).toDateString();
 
-            var start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var planned_start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var parent_wbs_start_date = new Date(parent_wbs_start_date);
+            var parent_wbs_end_date = new Date(parent_wbs_end_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            
-            if(start_date < pro_planned_start_date){
+
+            if(planned_start_date < parent_wbs_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS start date is behind project start date",
+                    title: "This WBS start date is behind parent WBS start date",
+                    position: 'topRight',
+                });
+                $('#planned_start_date').datepicker('setDate', parent_wbs_start_date);
+            }else if(planned_start_date > parent_wbs_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS start date is after parent WBS end date",
+                    position: 'topRight',
+                });
+                $('#planned_start_date').datepicker('setDate', parent_wbs_end_date);
+            }else if(planned_start_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS start date is behind project start date",
                     position: 'topRight',
                 });
                 $('#planned_start_date').datepicker('setDate', pro_planned_start_date);
-            }else if(start_date > pro_planned_end_date){
+            }else if(planned_start_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS start date is after project end date",
+                    title: "This WBS start date is after project end date",
                     position: 'topRight',
                 });
                 $('#planned_start_date').datepicker('setDate', pro_planned_end_date);
             }
         },
-        'newWbs.planned_end_date': function(newValue){
+        'newSubWBS.planned_end_date': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
+            var parent_wbs_start_date = new Date(this.parent_wbs_start_date).toDateString();
+            var parent_wbs_end_date = new Date(this.parent_wbs_end_date).toDateString();
 
-            var end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var planned_end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var parent_wbs_start_date = new Date(parent_wbs_start_date);
+            var parent_wbs_end_date = new Date(parent_wbs_end_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            
-            if(end_date < pro_planned_start_date){
+
+            if(planned_end_date < parent_wbs_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS end date is behind project start date",
+                    title: "This WBS end date is behind parent WBS start date",
+                    position: 'topRight',
+                });
+                $('#planned_end_date').datepicker('setDate', parent_wbs_start_date);
+            }else if(planned_end_date > parent_wbs_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS end date is after parent WBS end date",
+                    position: 'topRight',
+                });
+                $('#planned_end_date').datepicker('setDate', parent_wbs_end_date);
+            }else if(planned_end_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS end date is behind project start date",
                     position: 'topRight',
                 });
                 $('#planned_end_date').datepicker('setDate', pro_planned_start_date);
-            }else if(end_date > pro_planned_end_date){
+            }else if(planned_end_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS end date is after project end date",
+                    title: "This WBS end date is after project end date",
                     position: 'topRight',
                 });
                 $('#planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
         },
-        'editWbs.planned_start_date': function(newValue){
+        'editSubWBS.planned_start_date': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
-            
-            var start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var parent_wbs_start_date = new Date(this.parent_wbs_start_date).toDateString();
+            var parent_wbs_end_date = new Date(this.parent_wbs_end_date).toDateString();
+
+            var planned_start_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var parent_wbs_start_date = new Date(parent_wbs_start_date);
+            var parent_wbs_end_date = new Date(parent_wbs_end_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
 
-            if(start_date < pro_planned_start_date){
+            if(planned_start_date < parent_wbs_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS start date is behind project start date",
+                    title: "This WBS start date is behind parent WBS start date",
+                    position: 'topRight',
+                });
+                $('#edit_planned_start_date').datepicker('setDate', parent_wbs_start_date);
+            }else if(planned_start_date > parent_wbs_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS start date is after parent WBS end date",
+                    position: 'topRight',
+                });
+                $('#edit_planned_start_date').datepicker('setDate', parent_wbs_end_date);
+            }else if(planned_start_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS start date is behind project start date",
                     position: 'topRight',
                 });
                 $('#edit_planned_start_date').datepicker('setDate', pro_planned_start_date);
-            }else if(start_date > pro_planned_end_date){
+            }else if(planned_start_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS start date is after project end date",
+                    title: "This WBS start date is after project end date",
                     position: 'topRight',
                 });
                 $('#edit_planned_start_date').datepicker('setDate', pro_planned_end_date);
             }
         },
-        'editWbs.planned_end_date': function(newValue){
+        'editSubWBS.planned_end_date': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
-            
-            var end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var parent_wbs_start_date = new Date(this.parent_wbs_start_date).toDateString();
+            var parent_wbs_end_date = new Date(this.parent_wbs_end_date).toDateString();
+
+            var planned_end_date = new Date(newValue.split("-").reverse().join("-")+" 00:00:00");
+            var parent_wbs_start_date = new Date(parent_wbs_start_date);
+            var parent_wbs_end_date = new Date(parent_wbs_end_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
 
-            if(end_date < pro_planned_start_date){
+            if(planned_end_date < parent_wbs_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS end date is behind project start date",
+                    title: "This WBS end date is behind parent WBS start date",
+                    position: 'topRight',
+                });
+                $('#edit_planned_end_date').datepicker('setDate', parent_wbs_start_date);
+            }else if(planned_end_date > parent_wbs_end_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS end date is after parent WBS end date",
+                    position: 'topRight',
+                });
+                $('#edit_planned_end_date').datepicker('setDate', parent_wbs_end_date);
+            }else if(planned_end_date < pro_planned_start_date){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "This WBS end date is behind project start date",
                     position: 'topRight',
                 });
                 $('#edit_planned_end_date').datepicker('setDate', pro_planned_start_date);
-            }else if(end_date > pro_planned_end_date){
+            }else if(planned_end_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "this WBS end date is after project end date",
+                    title: "This WBS end date is after project end date",
                     position: 'topRight',
                 });
                 $('#edit_planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
         },
-        'newWbs.weight': function(newValue){
-            this.newWbs.weight = (this.newWbs.weight+"").replace(/[^0-9.]/g, "");  
+        'newSubWBS.weight': function(newValue){
+            this.newSubWBS.weight = (this.newSubWBS.weight+"").replace(/[^0-9.]/g, "");  
             if(roundNumber(newValue,2)>this.maxWeight){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: 'Total weight cannot exceed 100%',
+                    title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
-                this.newWbs.weight = this.maxWeight;
+                this.newSubWBS.weight = this.maxWeight;
             }
         },
         'editWbs.weight': function(newValue){
@@ -751,25 +843,25 @@ var vm = new Vue({
                     totalWeight += data.weight;
                 }
             });
-            var maxWeightEdit = roundNumber(100 - roundNumber(totalWeight,2),2);
+            var maxWeightEdit = roundNumber(this.parentWbsWeight - roundNumber(totalWeight,2),2);            
             if(this.editWbs.weight>maxWeightEdit){
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: 'Total weight cannot exceed 100%',
+                    title: 'Total weight cannot exceed '+this.parentWbsWeight+'%',
                     position: 'topRight',
                 });
                 this.editWbs.weight = maxWeightEdit;
             }
         },
-        'newWbs.wbs_configuration_id' : function(newValue){
+        'newSubWBS.wbs_configuration_id' : function(newValue){
             if(newValue != ""){
                 this.wbs_configs.forEach(wbs_config => {
                     if(newValue == wbs_config.id){
-                        this.newWbs.number = wbs_config.number;
+                        this.newSubWBS.number = wbs_config.number;
                     }
                 });
             }else{
-                this.newWbs.number = "";
+                this.newSubWBS.number = "";
             }
 
         },
@@ -787,9 +879,8 @@ var vm = new Vue({
         },
     },
     created: function() {
-        this.getWBS();
-    },
-    
+        this.getSubWBS();
+    }
 });
 function parseDate(str) {
     var mdy = str.split('-');
