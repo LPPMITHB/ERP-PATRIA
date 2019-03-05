@@ -30,9 +30,9 @@ class ProProjectTableSeeder extends Seeder
                 'person_in_charge' => NULL,
                 'description' => 'Project Dummy - Ship Building',
                 'sales_order_id' => NULL,
-                'planned_start_date' => '2019-04-01',
+                'planned_start_date' => '2019-03-01',
                 'planned_end_date' => '2019-09-27',
-                'planned_duration' => '180',
+                'planned_duration' => '211',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
                 'actual_duration' => NULL,
@@ -47,7 +47,7 @@ class ProProjectTableSeeder extends Seeder
                 'user_id' => 5,
                 'branch_id' => 1,
                 'created_at' => '2018-12-19 09:25:42',
-                'updated_at' => '2019-02-26 15:12:46',
+                'updated_at' => '2019-03-05 14:04:15',
             ),
             1 => 
             array (

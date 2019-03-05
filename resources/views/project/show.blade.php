@@ -193,6 +193,49 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-12" style="margin-top: -5px;">
+            <div class="box box-solid">
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align: middle" class="textCenter" rowspan="2">Comp. %</th>
+                                <th class="textCenter" colspan="4">In-Wk & Cum Performance</th>
+                            </tr>
+                            <tr>
+                                <th class="textCenter">Last Week</th>
+                                <th class="textCenter">This Week</th>
+                                <th class="textCenter">In-Wk Gain</th>
+                                <th style="width: 10%" class="textCenter">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Expected Comp. %</th>
+                                <td class="textCenter">{{progressStatus.last_week_planned}} %</td>
+                                <td class="textCenter">{{progressStatus.this_week_planned}} %</td>
+                                <td class="textCenter">{{progressStatus.this_week_planned - progressStatus.last_week_planned}} %</td>
+                                <td v-if="progressStatus.this_week_actual - progressStatus.this_week_planned < 0" rowspan="2" class="textCenter" style="background-color: red; color: white; font-size:1.2em">
+                                    <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
+                                </td>
+                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned > 0" rowspan="2" class="textCenter" style="background-color: green; color: white; font-size:1.2em">
+                                    <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
+                                </td>
+                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned == 0" rowspan="2" class="textCenter" style="background-color: green; color: white; font-size:1.2em">
+                                    <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Actual Comp. %</th>
+                                <td class="textCenter">{{progressStatus.last_week_actual}} %</td>
+                                <td class="textCenter">{{progressStatus.this_week_actual}} %</td>
+                                <td class="textCenter">{{progressStatus.this_week_actual - progressStatus.last_week_actual}} %</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- unused -->
@@ -744,6 +787,7 @@
             project_id : @json($project->id),
             project : @json($project),
             today : @json($today),
+            progressStatus : @json($progressStatus),
             predecessorActivities : [],
             activity:"",
             confirmActivity : {
@@ -801,6 +845,18 @@
 
             }, 
             methods:{
+                getStatus:function(data){
+                    text = "";
+                    if(data < 0){
+                        text = "Behind";
+                    }else if(data == 0){
+                        text = "On Time";
+                    }else if(data > 0){
+                        text = "Ahead";
+                    }
+
+                    return text;
+                },
                 styleProgressBar: function(data){
                     return "width: "+data+"%";
                 },
