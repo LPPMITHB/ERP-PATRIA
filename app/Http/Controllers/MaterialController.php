@@ -71,12 +71,12 @@ class MaterialController extends Controller
             $material->max = $data->max == "" ? 0 : $data->max;
             $material->weight = $data->weight;
             $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
-            $material->height = $data->height;
-            $material->height_uom_id = $data->height_uom_id == "" ? null : $data->height_uom_id;
             $material->length = $data->lengths;
             $material->length_uom_id = $data->length_uom_id == "" ? null : $data->length_uom_id;
             $material->width = $data->width;
             $material->width_uom_id = $data->width_uom_id == "" ? null : $data->width_uom_id;
+            $material->height = $data->height;
+            $material->height_uom_id = $data->height_uom_id == "" ? null : $data->height_uom_id;
             $material->type = $data->type;
             $material->status = $data->status;
             if($request->hasFile('image')){
