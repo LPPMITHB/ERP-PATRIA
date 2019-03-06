@@ -23944,6 +23944,13 @@ body {
   width: 95%;
 }
 
+.modalNotif {
+  width: 30%;
+  top: 20%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.1
