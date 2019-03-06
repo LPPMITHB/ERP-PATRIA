@@ -31,7 +31,7 @@
         "imagemin": "^6.0.0",
         "izitoast": "^1.4.0",
         "jstree": "^3.3.7",
-        "moment": "2.18.1",
+        "moment": "^2.24.0",
         "selectize": "^0.12.6"
     }
 }
