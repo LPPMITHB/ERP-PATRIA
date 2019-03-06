@@ -32,10 +32,35 @@
                                 </selectize>
                             </div>
                         </div>
-                            <div id="calendar" v-show="dataInput.resource_id != '' && dataInput.resource_detail_id != ''">
-                    
+                        <div id="calendar" v-show="dataInput.resource_id != '' && dataInput.resource_detail_id != ''">
+                
+                        </div>
+
+                        <div class="modal fade" id="detail_event">
+                            <div class="modal-dialog modalNotif">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <b>Start</b><h5 class="modal-title" id="modal_start_date"></h5>
+                                        <b>End</b><h5 class="modal-title" id="modal_end_date"></h5>
+                                    </div>
+                                    <div class="modal-body p-t-5 p-b-5">
+                                        <div class="row p-l-10 p-r-10">
+                                            <label class="control-label">WBS</label>
+                                            <input type="text" name="wbs" id="wbs" class="form-control" disabled/>
+
+                                            <label class="control-label">Booked By</label>
+                                            <input type="text" name="booked_by" id="booked_by" class="form-control" disabled/>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">CLOSE</button>
+                                    </div>
+                                </div>
                             </div>
-                        </template>
+                        </div>
                     </div>
                     @endverbatim
                 </div>
@@ -67,6 +92,8 @@
         resourceDetailSettings: {
             placeholder: 'Please Select Resource Detail'
         },
+        days : ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
+        months : ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "August", "Sept", "Oct", "Nov", "Dec"],
     }
 
     var vm = new Vue({
@@ -84,6 +111,16 @@
             }
         },
         methods: {
+            buildingDate(date){
+                let day_start = this.days[date.getDay()];
+                let date_start = date.getDate();
+                let month_start = this.months[date.getMonth()];
+                let year_start = date.getFullYear();
+                let time_start = date.toLocaleTimeString();
+
+                let result = day_start + ", " + date_start + " " + month_start + " " + year_start + " - " + time_start; 
+                return result;
+            },
             destroyFullCalendar(){
                 $('#calendar').fullCalendar('destroy');
             },
@@ -104,6 +141,16 @@
                         left: 'prev,next today',
                         center: 'title',
                         right: 'month,agendaWeek,agendaDay'
+                    },
+                    defaultView: 'agendaWeek',
+                    eventClick: function (calEvent, jsEvent, view) {
+                        if(calEvent.clickable == true){
+                            document.getElementById('modal_start_date').innerHTML =  calEvent.start_date;        
+                            document.getElementById('modal_end_date').innerHTML =  calEvent.end_date;        
+                            document.getElementById('wbs').value =  calEvent.title;     
+                            document.getElementById('booked_by').value =  calEvent.booked_by;     
+                            $('#detail_event').modal();
+                        }
                     },
                 });
             }
@@ -128,12 +175,18 @@
                     this.events = [];
                     window.axios.get('/api/getSchedule/'+newValue).then(({ data }) => {
                         data.forEach(TR =>{
+                            let start_date = new Date((TR.start_date+"").replace(/-/g,"/"));
+                            let end_date = new Date((TR.end_date+"").replace(/-/g,"/"));
+
                             this.events.push({
                                 title: TR.wbs.number+" - "+TR.wbs.description, 
                                 start: TR.start_date,
                                 end: TR.end_date,
-                                clickable : false,
-                                color : '#CCCC00',
+                                booked_by : TR.user.name,
+                                start_date : this.buildingDate(start_date),
+                                end_date : this.buildingDate(end_date),
+                                clickable : true,
+                                color : '#007bff',
                                 textColor : 'black',
                             })
                         });

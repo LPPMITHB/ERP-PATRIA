@@ -811,3 +811,13 @@ $color-loader: #3c8dbc;
         opacity: 0.0;
     }
 }
+
+.modalFull{
+    width:95%;
+}
+
+.modalNotif{
+    width:30%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+}
