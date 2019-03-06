@@ -657,7 +657,7 @@ class PurchaseOrderController extends Controller
         }
     }
 
-    public function printPdf($id)
+    public function printPdf($id, Request $request)
     { 
         $branch = Auth::user()->branch; 
         $modelPO = PurchaseOrder::find($id);
@@ -673,12 +673,13 @@ class PurchaseOrderController extends Controller
         }
         $total_price = $modelPO->total_price - $discount + $tax + $freight;
         $words = numberConverter::longform($total_price);
+        $route = $request->route()->getPrefix();
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch]);
+        $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
         $now = date("Y_m_d_H_i_s");
 
-        return $pdf->stream('Purchase_Order_'.$now.'.pdf');
+        return $pdf->download('Purchase_Order_'.$now.'.pdf');
     }
 
     // function

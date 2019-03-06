@@ -574,6 +574,8 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     
     Route::post('/store', 'WBSController@storeWbsRepair')->name('store')->middleware('can:create-project-repair');
     
+    Route::post('/adoptWbs', 'WBSController@adoptWbs')->name('adoptWbs')->middleware('can:create-project-repair');
+
     Route::put('update/{id}', 'WBSController@updateWbsRepair')->name('update')->middleware('can:edit-project-repair');  
     
     Route::patch('updateWithForm/{id}', 'WBSController@updateWithForm')->name('updateWithForm')->middleware('can:edit-project-repair');    
@@ -1057,6 +1059,8 @@ Route::name('physical_inventory.')->prefix('physical_inventory')->group(function
 
     Route::get('/viewAdjustmentHistory', 'PhysicalInventoryController@viewAdjustmentHistory')->name('viewAdjustmentHistory')->middleware('can:list-adjustment-history');
 
+    Route::get('/print/{id}', 'PhysicalInventoryController@printPdf')->name('print')->middleware('can:show-snapshot');    
+
 });
 
 //Physical Inventory Routes
@@ -1086,6 +1090,8 @@ Route::name('physical_inventory_repair.')->prefix('physical_inventory_repair')->
     Route::patch('/storeAdjustStock/{id}', 'PhysicalInventoryController@storeAdjustStock')->name('storeAdjustStock')->middleware('can:adjust-stock-repair');
 
     Route::get('/viewAdjustmentHistory', 'PhysicalInventoryController@viewAdjustmentHistory')->name('viewAdjustmentHistory')->middleware('can:list-adjustment-history-repair');
+
+    Route::get('/print/{id}', 'PhysicalInventoryController@printPdf')->name('print')->middleware('can:show-snapshot-repair');    
 
 });
 
@@ -1196,6 +1202,8 @@ Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(functi
     Route::get('/edit/{id}', 'GoodsReturnController@edit')->name('edit')->middleware('can:edit-goods-return-repair');
    
     Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return-repair');
+
+    Route::get('/print/{id}', 'GoodsReturnController@printPdf')->name('print')->middleware('can:show-goods-return-repair');    
 });
 
 //Stock Management Routes

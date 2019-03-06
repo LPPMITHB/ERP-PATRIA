@@ -172,7 +172,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" @click.prevent="update">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +196,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="add">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" @click.prevent="add">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -233,7 +233,33 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" data-dismiss="modal" aria-label="Close">CLOSE</button>
+                                        <button type="button" class="btn btn-primary" aria-label="Close">CLOSE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="detail_event">
+                            <div class="modal-dialog modalNotif">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <b>Start</b><h5 class="modal-title" id="modal_start_date"></h5>
+                                        <b>End</b><h5 class="modal-title" id="modal_end_date"></h5>
+                                    </div>
+                                    <div class="modal-body p-t-5 p-b-5">
+                                        <div class="row p-l-10 p-r-10">
+                                            <label class="control-label">WBS</label>
+                                            <input type="text" name="wbs" id="wbs" class="form-control" disabled/>
+
+                                            <label class="control-label">Booked By</label>
+                                            <input type="text" name="booked_by" id="booked_by" class="form-control" disabled/>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">CLOSE</button>
                                     </div>
                                 </div>
                             </div>
@@ -321,7 +347,10 @@
             selectedRD : [],
             events : [],
         },
+        days : ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
+        months : ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "August", "Sept", "Oct", "Nov", "Dec"],
     }
+
     var vm = new Vue({
         el : '#assignRsc',
         data : data,
@@ -388,6 +417,16 @@
             }
         },
         methods : {
+            buildingDate(date){
+                let day_start = this.days[date.getDay()];
+                let date_start = date.getDate();
+                let month_start = this.months[date.getMonth()];
+                let year_start = date.getFullYear();
+                let time_start = date.toLocaleTimeString();
+
+                let result = day_start + ", " + date_start + " " + month_start + " " + year_start + " - " + time_start; 
+                return result;
+            },
             destroyFullCalendar(){
                 $('#calendar').fullCalendar('destroy');
             },
@@ -409,7 +448,16 @@
                         center: 'title',
                         right: 'month,agendaWeek,agendaDay'
                     },
-                    defaultView: 'agendaWeek'
+                    defaultView: 'agendaWeek',
+                    eventClick: function (calEvent, jsEvent, view) {
+                        if(calEvent.clickable == true){
+                            document.getElementById('modal_start_date').innerHTML =  calEvent.start_date;        
+                            document.getElementById('modal_end_date').innerHTML =  calEvent.end_date;        
+                            document.getElementById('wbs').value =  calEvent.title;     
+                            document.getElementById('booked_by').value =  calEvent.booked_by;     
+                            $('#detail_event').modal();
+                        }
+                    },
                 });
             },
             openSchedule(){
@@ -479,42 +527,66 @@
             },
             add(){
                 $('div.overlay').show();            
-                this.dataInput.project_id = this.project_id;
-                var dataInput = this.dataInput;
-                dataInput = JSON.stringify(dataInput);
-                if(this.route == "/resource"){
-                    var url = "{{ route('resource.storeAssignResource') }}";
-                }else if(this.route == "/resource_repair"){
-                    var url = "{{ route('resource_repair.storeAssignResource') }}";
-                }
-                window.axios.post(url,dataInput).then((response) => {
-                    if(response.data.error != undefined){
-                        iziToast.warning({
-                            displayMode: 'replace',
-                            title: response.data.error,
-                            position: 'topRight',
-                        });
-                        $('div.overlay').hide();            
-                    }else{
-                        iziToast.success({
-                            displayMode: 'replace',
-                            title: response.data.response,
-                            position: 'topRight',
-                        });
-                        $('div.overlay').hide();            
+
+                let status = false;
+                let start_date = this.dataInput.start_date;
+                this.modelAssignResource.forEach(TrxResource =>{
+                    if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
+                        status = true;
                     }
-                    
-                    this.getResource();
-                    this.dataInput.resource_id = "";
-                    this.dataInput.project_id = "";
-                    this.dataInput.wbs_id = "";             
-                    this.dataInput.quantity = "";             
                 })
-                .catch((error) => {
-                    console.log(error);
+                if(!status){
+                    let end_date = this.dataInput.end_date;
+                    this.modelAssignResource.forEach(TrxResource =>{
+                        if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
+                            status = true;
+                        }
+                    })
+                }
+                if(status){
+                    iziToast.warning({
+                        title: 'The Selected Time Already Booked By Another WBS !.',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
                     $('div.overlay').hide();            
-                })
-                
+                }else{
+                    this.dataInput.project_id = this.project_id;
+                    var dataInput = this.dataInput;
+                    dataInput = JSON.stringify(dataInput);
+                    if(this.route == "/resource"){
+                        var url = "{{ route('resource.storeAssignResource') }}";
+                    }else if(this.route == "/resource_repair"){
+                        var url = "{{ route('resource_repair.storeAssignResource') }}";
+                    }
+                    window.axios.post(url,dataInput).then((response) => {
+                        if(response.data.error != undefined){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: response.data.error,
+                                position: 'topRight',
+                            });
+                            $('div.overlay').hide();            
+                        }else{
+                            iziToast.success({
+                                displayMode: 'replace',
+                                title: response.data.response,
+                                position: 'topRight',
+                            });
+                            $('div.overlay').hide();            
+                        }
+                        
+                        this.getResource();
+                        this.dataInput.resource_id = "";
+                        this.dataInput.project_id = "";
+                        this.dataInput.wbs_id = "";             
+                        this.dataInput.quantity = "";             
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        $('div.overlay').hide();            
+                    })
+                }
             },
             update(){
                 $('div.overlay').show();   
@@ -641,11 +713,17 @@
                     this.schedule.events = [];
                     window.axios.get('/api/getSchedule/'+newValue).then(({ data }) => {
                         data.forEach(TR =>{
+                            let start_date = new Date((TR.start_date+"").replace(/-/g,"/"));
+                            let end_date = new Date((TR.end_date+"").replace(/-/g,"/"));
+
                             this.schedule.events.push({
                                 title: TR.wbs.number+" - "+TR.wbs.description, 
                                 start: TR.start_date,
                                 end: TR.end_date,
-                                clickable : false,
+                                booked_by : TR.user.name,
+                                start_date : this.buildingDate(start_date),
+                                end_date : this.buildingDate(end_date),
+                                clickable : true,
                                 color : '#007bff',
                                 textColor : 'black',
                             })
