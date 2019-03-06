@@ -544,6 +544,8 @@ class ResourceController extends Controller
             if($data['end_date'] != ''){
                 $resource->end_date = $data['end_date'];
             }
+            $resource->user_id = Auth::user()->id;
+            $resource->branch_id = Auth::user()->branch->id;
 
             $ProdOrder = ProductionOrder::where('wbs_id',$data['wbs_id'])->where('status',1)->first();
             if($ProdOrder){
@@ -775,7 +777,7 @@ class ResourceController extends Controller
     }
 
     public function getScheduleAPI($id){
-        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs')->get()->jsonSerialize();
+        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs','user')->get()->jsonSerialize();
 
         return response($modelTR, Response::HTTP_OK);
     }
