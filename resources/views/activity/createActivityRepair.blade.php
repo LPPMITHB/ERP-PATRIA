@@ -194,7 +194,7 @@
                                     <button class="btn btn-primary btn-xs col-xs-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
                                 </td>
                                 <td class="textCenter">
-                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">CREATE</button>
+                                    <button @click.prevent="assignActivity" :disabled="nextStepOk" class="btn btn-primary" id="btnSubmit">CREATE</button>
                                 </td>
                             </tr>
                         </tfoot>
@@ -421,6 +421,114 @@
                         <!-- /.modal-dialog -->
                     </div>
 
+                    <div class="modal fade" id="assign_activity_detail">
+                        <div class="modal-dialog modalPredecessor">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Assign Material</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="length" class="col-sm-12 control-label">Material</label>
+            
+                                            <div class="col-sm-12">
+                                                <selectize id="material" name="material_id" v-model="newActivity.material_id" :settings="material_settings">
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                </selectize>    
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="length" class="col-sm-12 control-label">Length</label>
+                            
+                                            <div class="col-sm-8">
+                                                <input type="text" name="length" :disabled="lengthOk" class="form-control" id="lengths" v-model="newActivity.lengths" >
+                                            </div>
+            
+                                            <div class="col-sm-4 p-l-2">
+                                                <selectize id="uom" name="length_uom_id" v-model="newActivity.length_uom_id" :settings="length_uom_settings">
+                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                </selectize>    
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="width" class="col-sm-12 control-label">Width</label>
+                            
+                                            <div class="col-sm-8">
+                                                <input type="text" name="width" :disabled="widthOk" class="form-control" id="width" v-model="newActivity.width"  >
+                                            </div>
+            
+                                            <div class="col-sm-4 p-l-2">
+                                                <selectize id="uom" name="width_uom_id" v-model="newActivity.width_uom_id" :settings="width_uom_settings">
+                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                </selectize>    
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="form-group">
+                                            <label for="height" class="col-sm-12 control-label">Height</label>
+                            
+                                            <div class="col-sm-8">
+                                                <input type="text" name="height" :disabled="heightOk" class="form-control" id="height" v-model="newActivity.height" >
+                                            </div>
+            
+                                            <div class="col-sm-4 p-l-2">
+                                                <selectize id="uom" name="height_uom_id" v-model="newActivity.height_uom_id" :settings="height_uom_settings">
+                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                </selectize>    
+                                            </div>
+                                        </div>   
+
+                                        <div class="form-group">
+                                            <label for="height" class="col-sm-12 control-label">Quantity</label>
+                            
+                                            <div class="col-sm-8">
+                                                <input type="text" name="quantity" class="form-control" id="quantity" v-model="newActivity.quantity_material" >
+                                            </div>
+            
+                                            <div class="col-sm-4 p-l-2">
+                                                <input disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
+                                            </div>
+                                        </div>                        
+                                    </div>
+                                </div>
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Assign Service</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="length" class="col-sm-12 control-label">Service</label>
+            
+                                            <div class="col-sm-12">
+                                                <selectize id="service" name="service_id" v-model="newActivity.service_id" :settings="service_settings">
+                                                    <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
+                                                </selectize>    
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="height" class="col-sm-12 control-label">Quantity</label>
+                            
+                                            <div class="col-sm-12">
+                                                <input type="text" name="quantity" class="form-control" id="quantity" v-model="newActivity.quantity_service" >
+                                            </div>
+                                        </div>                        
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button :disabled="createOk" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="add">NEXT</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+
                 </div>
             </div>
             @endverbatim
@@ -442,6 +550,9 @@ $(document).ready(function(){
 
 var data = {
     menu : @json($menu),
+    materials : @json($materials),
+    services : @json($services),
+    uoms : @json($uoms),
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
     wbs_start_date : @json($wbs->planned_start_date),
@@ -466,6 +577,20 @@ var data = {
         latest_predecessor : "",
         allPredecessor : [],
         activity_configuration_id : "",
+
+        material_id : "",
+        quantity_material : 1,
+        weight : "",
+        weight_uom_id : "",
+        lengths :"",
+        length_uom_id : "",
+        width : "",
+        width_uom_id : "",
+        height :"",
+        height_uom_id : "",
+
+        service_id: "",
+        quantity_service : 1,
     },  
     editActivity : {
         activity_id : "",
@@ -501,6 +626,24 @@ var data = {
     constWeightAct : 0,
     oldValueWeight : "",
     activity_configs : @json($activity_config),
+    weight_uom_settings: {
+        placeholder: 'Select weight UOM!'
+    },
+    height_uom_settings: {
+        placeholder: 'Select height UOM!'
+    },
+    length_uom_settings: {
+        placeholder: 'Select length UOM!'
+    },
+    width_uom_settings: {
+        placeholder: 'Select width UOM!'
+    },
+    material_settings : {
+        placeholder: 'Material'
+    },
+    service_settings : {
+        placeholder: 'Service'
+    }
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -564,6 +707,59 @@ var vm = new Vue({
                 {
                     isOk = true;
                 }
+
+                if(this.newActivity.weight_uom_id != ""){
+                    if(this.newActivity.weight == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.newActivity.height_uom_id != ""){
+                    if(this.newActivity.height == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.newActivity.length_uom_id != ""){
+                    if(this.newActivity.lengths == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.newActivity.width_uom_id != ""){
+                    if(this.newActivity.width == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.newActivity.width_uom_id != ""){
+                    if(this.newActivity.width == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.newActivity.material_id != ""){
+                    if(this.newActivity.quantity_material == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.newActivity.service_id != ""){
+                    if(this.newActivity.quantity_service == ""){
+                        isOk = true;
+                    }
+                }
+
+            return isOk;
+        },
+        nextStepOk: function(){
+            let isOk = false;
+                if(this.newActivity.activity_configuration_id == ""
+                || this.newActivity.weight == ""
+                || this.newActivity.planned_duration == "")
+                {
+                    isOk = true;
+                }
             return isOk;
         },
         updateOk: function(){
@@ -594,8 +790,43 @@ var vm = new Vue({
                 }
             return isOk;
         },
+        weightOk :function(){
+            let isOk = false;
+
+            if(this.newActivity.weight_uom_id == ""){
+                isOk = true;
+            }
+            return isOk;
+        },
+        heightOk :function(){
+            let isOk = false;
+
+            if(this.newActivity.height_uom_id == ""){
+                isOk = true;
+            }
+            return isOk;
+        },
+        lengthOk :function(){
+            let isOk = false;
+
+            if(this.newActivity.length_uom_id == ""){
+                isOk = true;
+            }
+            return isOk;
+        },
+        widthOk :function(){
+            let isOk = false;
+
+            if(this.newActivity.width_uom_id == ""){
+                isOk = true;
+            }
+            return isOk;
+        },
     }, 
     methods:{
+        assignActivity(){
+            $('#assign_activity_detail').modal();
+        },
         addPredecessor() {
             this.allActivities.forEach(elementAllActivities => {
                 if(this.newActivity.predecessor == elementAllActivities.id){
@@ -1306,7 +1537,45 @@ var vm = new Vue({
                 this.editActivity.name = "";
                 this.editActivity.description = "";
             }
-
+        },
+        'newActivity.height': function(newValue) {
+            var decimal = newValue.replace(/,/g, '').split('.');
+            if(decimal[1] != undefined){
+                var maxDecimal = 2;
+                if((decimal[1]+"").length > maxDecimal){
+                    this.newActivity.height = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                }else{
+                    this.newActivity.height = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                }
+            }else{
+                this.newActivity.height = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        },
+        'newActivity.lengths': function(newValue) {
+            var decimal = newValue.replace(/,/g, '').split('.');
+            if(decimal[1] != undefined){
+                var maxDecimal = 2;
+                if((decimal[1]+"").length > maxDecimal){
+                    this.newActivity.lengths = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                }else{
+                    this.newActivity.lengths = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                }
+            }else{
+                this.newActivity.lengths = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        },
+        'newActivity.width': function(newValue) {
+            var decimal = newValue.replace(/,/g, '').split('.');
+            if(decimal[1] != undefined){
+                var maxDecimal = 2;
+                if((decimal[1]+"").length > maxDecimal){
+                    this.newActivity.width = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                }else{
+                    this.newActivity.width = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                }
+            }else{
+                this.newActivity.width = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
         },
     },
     created: function() {
