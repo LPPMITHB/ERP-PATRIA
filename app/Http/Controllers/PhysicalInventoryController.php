@@ -8,6 +8,7 @@ use App\Models\SnapshotDetail;
 use App\Models\StorageLocationDetail; 
 use App\Models\Stock; 
 use App\Models\Material; 
+use App\Models\Branch;
 use App\Models\StorageLocation; 
 use App\Models\GoodsIssue;
 use App\Models\GoodsIssueDetail;
@@ -127,10 +128,24 @@ class PhysicalInventoryController extends Controller
         }
     }
 
-    public function showSnapshot($id)
+    public function showSnapshot($id,Request $request)
     {
+        $route = $request->route()->getPrefix();    
         $snapshot = Snapshot::where('id', $id)->whereIn('status',[1,2])->first();
-        return view('physical_inventory.showSnapshot', compact('snapshot'));
+        return view('physical_inventory.showSnapshot', compact('snapshot','route'));
+    }
+
+    public function printPdf($id, Request $request)
+    {
+        $modelSnapshot = Snapshot::find($id);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $branch = Branch::find(Auth::user()->branch_id);
+        $route = $request->route()->getPrefix();
+        $pdf->loadView('physical_inventory.pdf',['modelSnapshot' => $modelSnapshot, 'branch' => $branch, 'route' => $route]);
+        $now = date("Y_m_d_H_i_s");
+        
+        return $pdf->download('Snapshot_'.$now.'.pdf');
     }
 
     public function countStock($id, Request $request)

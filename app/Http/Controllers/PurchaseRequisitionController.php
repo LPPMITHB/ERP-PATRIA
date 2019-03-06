@@ -753,16 +753,17 @@ class PurchaseRequisitionController extends Controller
 		return $pr_number;
     }
 
-    public function printPdf($id)
+    public function printPdf($id, Request $request)
     {
         $modelPR = PurchaseRequisition::find($id);
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
         $branch = Branch::find(Auth::user()->branch_id);
-        $pdf->loadView('purchase_requisition.pdf',['modelPR' => $modelPR, 'branch' => $branch]);
+        $route = $request->route()->getPrefix();
+        $pdf->loadView('purchase_requisition.pdf',['modelPR' => $modelPR, 'branch' => $branch, 'route'=> $route]);
         $now = date("Y_m_d_H_i_s");
         
-        return $pdf->stream('Purchase_Requisition_'.$now.'.pdf');
+        return $pdf->download('Purchase_Requisition_'.$now.'.pdf');
     }
 
     public function getProjectApi($id){

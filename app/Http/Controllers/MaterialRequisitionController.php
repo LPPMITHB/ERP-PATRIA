@@ -384,13 +384,14 @@ class MaterialRequisitionController extends Controller
         }
     }
 
-    public function printPdf($id)
+    public function printPdf($id, Request $request)
     {
         $modelMR = MaterialRequisition::find($id);
         $branch = Auth::user()->branch;
+        $route = $request->route()->getPrefix();
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('material_requisition.pdf',['modelMR' => $modelMR, 'branch' => $branch]);
+        $pdf->loadView('material_requisition.pdf',['modelMR' => $modelMR, 'branch' => $branch,'route'=> $route]);
         $now = date("Y_m_d_H_i_s");
         return $pdf->download('Material_Requisition_'.$now.'.pdf');
     }
