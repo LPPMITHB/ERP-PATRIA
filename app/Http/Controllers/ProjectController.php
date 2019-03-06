@@ -702,6 +702,9 @@ class ProjectController extends Controller
         $links = Collection::make();
         $outstanding_item = Collection::make();
 
+        $progressStatus = Collection::make();
+        self::getDataStatusProgress($project,$progressStatus);
+
         $outstanding_item->push([
             "id" => $project->number , 
             "parent" => "#",
@@ -721,7 +724,7 @@ class ProjectController extends Controller
         
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
         return view('project.show', compact('project','today','ganttData','links','outstanding_item','modelPrO','menu',
-        'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress'));
+        'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress', 'progressStatus'));
     }
 
 
@@ -1731,6 +1734,56 @@ class ProjectController extends Controller
             ]);
         }
 
+    }
+
+    public function getDataStatusProgress($project, $progressStatus){
+        $previous_week = strtotime("-1 week +1 day");
+
+        $last_start_week = strtotime("last sunday midnight",$previous_week);
+        $last_end_week = strtotime("next saturday",$last_start_week);
+
+        $last_end_week = date("Y-m-d",$last_end_week);
+        
+        $now_end_week = date( 'Y-m-d', strtotime( 'saturday this week' ) );
+
+        $actualProgress = 0;
+        $plannedProgress = 0;
+        $wbss = WBS::where('project_id', $project->id)->pluck('id')->toArray();
+        $activities = Activity::whereIn('wbs_id',$wbss)->get();
+
+        $lastPlannedActivities = $activities->where('planned_end_date','<',$last_end_week);
+        $nowPlannedActivities = $activities->where('planned_end_date','<',$now_end_week);
+
+        $actualActivities =$activities->filter(function ($data) {
+            return $data->progress > 0 || $data->actual_end_date !== null;
+        });
+        $lastActualActivities = $actualActivities->where('planned_end_date','<',$last_end_week);
+        $nowActualActivities = $actualActivities->where('planned_end_date','<',$now_end_week);
+        
+        $tempLastPlanned = 0;
+        foreach($lastPlannedActivities as $activity){
+            $tempLastPlanned +=  100 * ($activity->weight/100);
+        }
+
+        $tempNowPlanned = 0;
+        foreach($nowPlannedActivities as $activity){
+            $tempNowPlanned +=  100 * ($activity->weight/100);
+        }
+
+        $tempNowActual = 0;
+        foreach($lastActualActivities as $activity){
+            $tempNowActual +=  100 * ($activity->weight/100);
+        }
+
+        $tempNowActual = 0;
+        foreach($nowActualActivities as $activity){
+            $tempNowActual +=  100 * ($activity->weight/100);
+        }
+
+        $progressStatus->put("last_week_planned", $tempLastPlanned);
+        $progressStatus->put("this_week_planned", $tempNowPlanned);
+        $progressStatus->put("last_week_actual", $tempNowActual);
+        $progressStatus->put("this_week_actual", $tempNowActual);
     }
 
     //API

@@ -56,7 +56,7 @@ class CreateMstResourceDetailTable extends Migration
             $table->foreign('vendor_id')->references('id')->on('mst_vendor');
             $table->foreign('performance_uom_id')->references('id')->on('mst_uom');
             $table->foreign('lifetime_uom_id')->references('id')->on('mst_uom');
-            $table->foreign('po_id')->references('id')->on('trx_purchase_order_detail');
+            $table->foreign('po_id')->references('id')->on('trx_purchase_order');
         });
     }
 

@@ -529,6 +529,18 @@ class GoodsReturnController extends Controller
         return view('goods_return.show', compact('modelGR','modelGRD','approve','route'));
     }
 
+    public function printPdf($id)
+    {
+        $modelGRT = GoodsReturn::find($id);
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $branch = Branch::find(Auth::user()->branch_id);
+        $pdf->loadView('goods_return.pdf',['modelGRT' => $modelGRT, 'branch' => $branch]);
+        $now = date("Y_m_d_H_i_s");
+        
+        return $pdf->download('Goods_Return_'.$now.'.pdf');
+    }
+
     public function generateGINumber(){
         $modelGI = GoodsIssue::orderBy('created_at','desc')->first();
         $yearNow = date('y');
