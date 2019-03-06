@@ -930,7 +930,7 @@ class WBSController extends Controller
         if ($wbs) {
             if($wbs->wbs){
                 $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsConfiguration',[$wbs->wbs->id]);
-                return self::getParentsWbsConfiguration($wbs->wbs,$array_reverse, $iteration,);
+                return self::getParentsWbsConfiguration($wbs->wbs,$array_reverse, $iteration);
             }else{
                 $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsConfiguration',[$wbs->id]);
                 return $array_reverse;
