@@ -18,7 +18,7 @@ class CreateMstResourceTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('cost_standard_price')->default(0);
+            $table->biginteger('cost_standard_price')->default(0);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();

@@ -1,3 +1,7 @@
+
+//moment
+window.moment = require('moment');
+
 // JQuery
 window.$ = window.jQuery = require("jquery");
 
@@ -89,3 +93,4 @@ require("fullcalendar/dist/fullcalendar.min.js");
 
 //date range picker
 require("daterangepicker");
+

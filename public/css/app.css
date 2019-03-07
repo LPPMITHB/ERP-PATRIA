@@ -23902,10 +23902,6 @@ textarea {
   height: 100%;
 }
 
-body {
-  background: #eaecfa;
-}
-
 .loader {
   width: 250px;
   height: 50px;
@@ -23949,6 +23945,18 @@ body {
   top: 20%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
+}
+
+.border-top-modal {
+  border-top: 1px solid #e5e5e5;
+}
+
+.border-right-modal {
+  border-right: 2px solid #e5e5e5;
+}
+
+.border-left-modal {
+  border-left: 2px solid #e5e5e5;
 }
 
 /*!

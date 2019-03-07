@@ -52,87 +52,73 @@
                        
                         @verbatim
                         <div id="material">
-                        <div class="form-group">
-                            <label for="code" class="col-sm-2 control-label">Item Number</label>
-            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="code" name="code" required autofocus v-model="submittedForm.code">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="description" class="col-sm-2 control-label">Description</label>
-            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" required v-model="submittedForm.description">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
-                            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="cost_standard_price" name="cost_standard_price" required v-model="submittedForm.cost_standard_price">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
-                            
-                            <div class="col-sm-10">
-                                <input type="text"  class="form-control" id="cost_standard_service" name="cost_standard_service" required v-model="submittedForm.cost_standard_service">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="uom" class="col-sm-2 control-label">Unit Of Measurement</label>
-                            
-                            <div class="col-sm-10">
-                                <selectize name="uom_id" id="uom" v-model="submittedForm.uom_id" :settings="uom_settings">
-                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                </selectize> 
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="min" class="col-sm-2 control-label">Min</label>
-                            
-                            <div class="col-sm-10">
-                                <input type="text" name="min"  class="form-control" id="min" required v-model="submittedForm.min">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="max" class="col-sm-2 control-label">Max</label>
-                            
-                            <div class="col-sm-10">
-                                <input type="text" name="max" class="form-control" id="max" required v-model="submittedForm.max">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="weight" class="col-sm-2 control-label">Weight</label>
-            
-                            <div class="col-sm-8">
-                                <input type="text" name="weight" :disabled="weightOk" class="form-control" id="weight" v-model="submittedForm.weight">
-                            </div>
-
-                            <div class="col-sm-2">
-                                <selectize id="uom" name="weight_uom_id" v-model="submittedForm.weight_uom_id" :settings="weight_uom_settings">
-                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                </selectize>    
-                            </div>
-                        </div>
-                        
                             <div class="form-group">
-                                <label for="height" class="col-sm-2 control-label">Height</label>
+                                <label for="code" class="col-sm-2 control-label">Item Number</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="code" name="code" required autofocus v-model="submittedForm.code">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="description" class="col-sm-2 control-label">Description</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="description" name="description" required v-model="submittedForm.description">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
+                                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="cost_standard_price" name="cost_standard_price" required v-model="submittedForm.cost_standard_price">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
+                                
+                                <div class="col-sm-10">
+                                    <input type="text"  class="form-control" id="cost_standard_service" name="cost_standard_service" required v-model="submittedForm.cost_standard_service">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="uom" class="col-sm-2 control-label">Unit Of Measurement</label>
+                                
+                                <div class="col-sm-10">
+                                    <selectize name="uom_id" id="uom" v-model="submittedForm.uom_id" :settings="uom_settings">
+                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                    </selectize> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min" class="col-sm-2 control-label">Min</label>
+                                
+                                <div class="col-sm-10">
+                                    <input type="text" name="min"  class="form-control" id="min" required v-model="submittedForm.min">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="max" class="col-sm-2 control-label">Max</label>
+                                
+                                <div class="col-sm-10">
+                                    <input type="text" name="max" class="form-control" id="max" required v-model="submittedForm.max">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="weight" class="col-sm-2 control-label">Weight</label>
                 
                                 <div class="col-sm-8">
-                                    <input type="text" name="height" :disabled="heightOk" class="form-control" id="height" v-model="submittedForm.height" >
+                                    <input type="text" name="weight" :disabled="weightOk" class="form-control" id="weight" v-model="submittedForm.weight">
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <selectize id="uom" name="height_uom_id" v-model="submittedForm.height_uom_id" :settings="height_uom_settings">
+                                    <selectize id="uom" name="weight_uom_id" v-model="submittedForm.weight_uom_id" :settings="weight_uom_settings">
                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                     </selectize>    
                                 </div>
@@ -161,6 +147,20 @@
 
                                 <div class="col-sm-2">
                                     <selectize id="uom" name="width_uom_id" v-model="submittedForm.width_uom_id" :settings="width_uom_settings">
+                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                    </selectize>    
+                                </div>
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="height" class="col-sm-2 control-label">Height</label>
+                
+                                <div class="col-sm-8">
+                                    <input type="text" name="height" :disabled="heightOk" class="form-control" id="height" v-model="submittedForm.height" >
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <selectize id="uom" name="height_uom_id" v-model="submittedForm.height_uom_id" :settings="height_uom_settings">
                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                     </selectize>    
                                 </div>
@@ -480,7 +480,7 @@
                 'submittedForm.weight': function(newValue) {
                     var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
-                        var maxDecimal = 4;
+                        var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
                             this.submittedForm.weight = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                         }else{
@@ -493,7 +493,7 @@
                 'submittedForm.height': function(newValue) {
                     var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
-                        var maxDecimal = 4;
+                        var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
                             this.submittedForm.height = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                         }else{
@@ -506,7 +506,7 @@
                 'submittedForm.lengths': function(newValue) {
                     var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
-                        var maxDecimal = 4;
+                        var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
                             this.submittedForm.lengths = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                         }else{
@@ -519,7 +519,7 @@
                 'submittedForm.width': function(newValue) {
                     var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
-                        var maxDecimal = 4;
+                        var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
                             this.submittedForm.width = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                         }else{

@@ -30,8 +30,8 @@ class CreateMstResourceDetailTable extends Migration
             $table->double('width')->nullable();
             $table->double('height')->nullable();
             $table->string('manufactured_in')->nullable();
-            $table->date('manufactured_date')->nullable();
-            $table->date('purchasing_date')->nullable();
+            $table->string('manufactured_date')->nullable();
+            $table->string('purchasing_date')->nullable();
             $table->double('purchasing_price')->nullable();
             $table->double('lifetime')->nullable();
             $table->unsignedInteger('lifetime_uom_id')->nullable(); 
