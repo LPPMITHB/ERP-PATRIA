@@ -1198,6 +1198,9 @@ Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(functi
     Route::get('/edit/{id}', 'GoodsReturnController@edit')->name('edit')->middleware('can:edit-goods-return-repair');
    
     Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return-repair');
+
+    Route::get('/print/{id}', 'GoodsReturnController@printPdf')->name('print')->middleware('can:show-goods-return-repair');    
+
 });
 
 //Stock Management Routes
