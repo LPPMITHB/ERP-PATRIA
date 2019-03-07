@@ -42,7 +42,11 @@
                 <div class="col-xs-12">
                     <div class="box-header no-padding" style="margin-bottom : 47px">
                         <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">
-                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">                    
+                            @if($route == '/goods_return')
+                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">    
+                            @else 
+                            <img src="{{ asset('images/logo-PAMI.jpg') }}" alt="" srcset="">    
+                            @endif                
                         </div>
                         <div class="row" style="margin-left: -5px;">
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
