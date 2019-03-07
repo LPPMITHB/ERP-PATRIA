@@ -76,7 +76,8 @@
                                                 <td v-else-if="data.category_id == 2">External Equipment</td>
                                                 <td v-else-if="data.category_id == 3">Internal Equipment</td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                                <td v-if="data.resource_detail != null">{{ data.resource_detail.code }}</td>
+                                                <td v-if="data.resource_detail != null && data.resource_detail.serial_number == null || data.resource_detail != null && data.resource_detail.serial_number == ''">{{ data.resource_detail.code }}</td>
+                                                <td v-else-if="data.resource_detail != null && data.resource_detail.serial_number != null && data.resource_detail.serial_number != ''">{{ data.resource_detail.code }} - {{ data.resource_detail.serial_number }}</td>
                                                 <td v-else>-</td>
                                                 <td>{{ data.quantity }}</td>
                                                 <td>{{ data.wbs.number }} - {{ data.wbs.description }}</td>
@@ -123,7 +124,7 @@
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
                                                 <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
-                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                 </selectize>
                                             </td>
                                           
@@ -143,6 +144,7 @@
                                 </div>
                             </div>
                         </template>
+
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog ">
                                 <div class="modal-content">
@@ -178,7 +180,7 @@
                                                 <label class="control-label">Quantity</label>
                                                 <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editResource">
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12" v-if="editInput.category_id == 3">
                                                 <label class="control-label">Schedule</label>
                                                 <input type="text" name="daterangeModal" id="daterangeModal" class="form-control" placeholder="Please Input Schedule (Optional)" autocomplete="off"/>
                                             </div>
@@ -236,7 +238,7 @@
                                                 <div class="col-sm-4 col-xs-12">
                                                     <label for="">Resource Detail</label>
                                                     <selectize v-model="schedule.resource_detail_id" :settings="resourceDetailSettings" :disabled="resourceOk">
-                                                        <option v-for="(rd, index) in schedule.selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                                        <option v-for="(rd, index) in schedule.selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                     </selectize>
                                                 </div>
                                             </div>
@@ -264,6 +266,9 @@
                                     </div>
                                     <div class="modal-body p-t-5 p-b-5">
                                         <div class="row p-l-10 p-r-10">
+                                            <label class="control-label">Project Number</label>
+                                            <input type="text" name="project" id="project" class="form-control" disabled/>
+
                                             <label class="control-label">WBS</label>
                                             <input type="text" name="wbs" id="wbs" class="form-control" disabled/>
 
@@ -327,7 +332,9 @@
             resource_detail_id :"",
             wbs_id : "",
             quantity : "",
-            category_id : ""
+            category_id : "",
+            start_date : "",
+            end_date : "",
         },
         projectSettings: {
             placeholder: 'Please Select Project'
@@ -436,8 +443,10 @@
             editResource: function(){
                 let isOk = false;
 
-                if(this.editInput.resource_detail_id != ""){
-                    isOk = true;
+                if(this.editInput.category_id == 3){
+                    if(this.editInput.resource_detail_id != "" && this.editInput.resource_detail_id != null){
+                        isOk = true;
+                    }
                 }
 
                 return isOk;
@@ -446,21 +455,40 @@
         methods : {
             buildDateRangePicker(){
                 $(function() {
-                    $('input[name="daterangeModal"]').daterangepicker({
-                        opens: 'center',
-                        timePicker: true,
-                        timePicker24Hour: true,
-                        minDate: moment(),
-                        timePickerIncrement: 30,
-                        showDropdowns: true,
-                        locale: {
+                    let startDate = moment(vm.editInput.start_date).format('DD-MM-YYYY HH:mm');
+                    let endDate = moment(vm.editInput.end_date).format('DD-MM-YYYY HH:mm');
+
+                    if(startDate != "Invalid date"){
+                        $('input[name="daterangeModal"]').daterangepicker({
+                            startDate : startDate,
+                            endDate: endDate,
+                            opens: 'center',
+                            timePicker: true,
                             timePicker24Hour: true,
-                            format: 'DD-MM-YYYY hh:mm A'
-                        },
-                        startDate: vm.editInput.start_date, 
-                        endDate: vm.editInput.end_date,
-                        drops: "up"
-                    });
+                            minDate: moment(),
+                            timePickerIncrement: 30,
+                            showDropdowns: true,
+                            locale: {
+                                timePicker24Hour: true,
+                                format: 'DD-MM-YYYY hh:mm A'
+                            },
+                            drops: "up"
+                        });
+                    }else{
+                        $('input[name="daterangeModal"]').daterangepicker({
+                            opens: 'center',
+                            timePicker: true,
+                            timePicker24Hour: true,
+                            minDate: moment(),
+                            timePickerIncrement: 30,
+                            showDropdowns: true,
+                            locale: {
+                                timePicker24Hour: true,
+                                format: 'DD-MM-YYYY hh:mm A'
+                            },
+                            drops: "up"
+                        });
+                    }
                     $('input[name="daterangeModal"]').on('apply.daterangepicker', function(ev, picker) {
                         // vm.dataInput.start = picker.startDate.format('HH:mm');
                         // vm.dataInput.end = picker.endDate.format('HH:mm');
@@ -511,7 +539,8 @@
                         if(calEvent.clickable == true){
                             document.getElementById('modal_start_date').innerHTML =  calEvent.start_date;        
                             document.getElementById('modal_end_date').innerHTML =  calEvent.end_date;        
-                            document.getElementById('wbs').value =  calEvent.title;     
+                            document.getElementById('project').value =  calEvent.project;     
+                            document.getElementById('wbs').value =  calEvent.wbs;     
                             document.getElementById('booked_by').value =  calEvent.booked_by;     
                             $('#detail_event').modal();
                         }
@@ -699,6 +728,8 @@
                 this.editInput.resource_detail_id = data.resource_detail_id;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.quantity = data.quantity;
+                this.editInput.start_date = data.start_date;
+                this.editInput.end_date = data.end_date;
 
                 this.buildDateRangePicker();
             },
@@ -792,7 +823,9 @@
                             let end_date = new Date((TR.end_date+"").replace(/-/g,"/"));
 
                             this.schedule.events.push({
-                                title: TR.wbs.number+" - "+TR.wbs.description, 
+                                title: "Project: "+TR.project.number + " \n WBS: "+ TR.wbs.number+" - "+TR.wbs.description, 
+                                wbs: TR.wbs.number+" - "+TR.wbs.description, 
+                                project: TR.project.number, 
                                 start: TR.start_date,
                                 end: TR.end_date,
                                 booked_by : TR.user.name,

@@ -833,3 +833,7 @@ $color-loader: #3c8dbc;
 .border-left-modal{
     border-left: 2px solid #e5e5e5;
 }
+
+.modal {
+    overflow-y:auto;
+}

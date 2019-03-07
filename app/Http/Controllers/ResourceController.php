@@ -777,7 +777,7 @@ class ResourceController extends Controller
     }
 
     public function getScheduleAPI($id){
-        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs','user')->get()->jsonSerialize();
+        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs','user','project')->get()->jsonSerialize();
 
         return response($modelTR, Response::HTTP_OK);
     }
