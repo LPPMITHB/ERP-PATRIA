@@ -55,5 +55,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MstResourceProfileTableSeeder::class);
         $this->call(MstWbsConfigurationTableSeeder::class);
         $this->call(MstActivityConfigurationTableSeeder::class);
+        $this->call(PurchasingInfoRecordTableSeeder::class);
     }
 }
