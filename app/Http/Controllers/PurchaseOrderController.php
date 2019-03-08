@@ -754,12 +754,25 @@ class PurchaseOrderController extends Controller
                 $status = true;
                 foreach($datas as $key => $data){
                     if($data['vendor_id'] == $PIR->vendor_id){
-                        $datas->push([
-                            "vendor_id" => $PIR->vendor->id, 
-                            "vendor_code" => $PIR->vendor->code, 
-                            "vendor_name" => $PIR->vendor->name,
-                            "count" => $data['count']+1,
+                        if($data['created_at'] > $PIR->created_at){
+                            $datas->push([
+                                "vendor_id" => $PIR->vendor->id, 
+                                "vendor_code" => $PIR->vendor->code, 
+                                "vendor_name" => $PIR->vendor->name,
+                                "count" => $data['count']+1,
+                                "created_at" => $PIR->created_at,
+                                "price" => $PIR->price,
                         ]);
+                        }else{
+                            $datas->push([
+                                "vendor_id" => $PIR->vendor->id, 
+                                "vendor_code" => $PIR->vendor->code, 
+                                "vendor_name" => $PIR->vendor->name,
+                                "count" => $data['count']+1,
+                                "created_at" => $data['created_at'],
+                                "price" => $data['price'],
+                            ]);
+                        }
                         $status = false;
                         $datas->forget($key);
                     }
@@ -770,6 +783,8 @@ class PurchaseOrderController extends Controller
                         "vendor_code" => $PIR->vendor->code, 
                         "vendor_name" => $PIR->vendor->name,
                         "count" => 1,
+                        "created_at" => $PIR->created_at,
+                        "price" => $PIR->price,
                     ]);
                 }
             }else{
@@ -778,6 +793,8 @@ class PurchaseOrderController extends Controller
                     "vendor_code" => $PIR->vendor->code, 
                     "vendor_name" => $PIR->vendor->name,
                     "count" => 1,
+                    "created_at" => $PIR->created_at,
+                    "price" => $PIR->price,
                 ]);
             }
         }

@@ -224,9 +224,10 @@
                                                     <table class="table table-bordered tableFixed p-t-10 showTable" style="border-collapse:collapse;">
                                                         <thead>
                                                             <tr>
-                                                                <th style="width: 10%">No</th>
-                                                                <th style="width: 70%">Vendor</th>
-                                                                <th style="width: 20%">Count</th>
+                                                                <th style="width: 5%">No</th>
+                                                                <th style="width: 60%">Vendor</th>
+                                                                <th style="width: 15%">Count</th>
+                                                                <th style="width: 20%">Last Price</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -234,10 +235,11 @@
                                                                 <td>{{ index+1 }}</td>
                                                                 <td>{{ po.vendor_code }} - {{ po.vendor_name }}</td>
                                                                 <td>{{ po.count }} Time(s)</td>
+                                                                <td>Rp.{{ po.price }}</td>
                                                             </tr>
                                                             <template v-if="vendorList.po_list.length < 1">
                                                                 <tr>
-                                                                    <td colspan="3" class="textCenter">No Transaction For This Material</td>
+                                                                    <td colspan="4" class="textCenter">No Transaction For This Material</td>
                                                                 </tr>
                                                             </template>
                                                         </tbody>
@@ -650,6 +652,21 @@
                 }else{
                     this.vendorList.po_list = [];
                 }
+            },
+            'vendorList.po_list':function(newValue){
+                this.vendorList.po_list.forEach(data=>{
+                    var decimal = (data.price+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            data.price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            data.price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        data.price = (data.price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                })
             }
         },
         created: function() {
