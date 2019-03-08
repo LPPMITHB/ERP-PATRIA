@@ -106,6 +106,11 @@
                                         <div class="col-sm-12">
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
+                                        <div class="col-sm-12 p-t-5">
+                                            <a class="btn btn-primary btn-xs pull-right" data-toggle="modal" href="#vendor_list" @click.prevent="vendorList">
+                                                VENDOR LIST
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -197,6 +202,56 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="modal fade" id="vendor_list">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title">Vendor List</h4>
+                                        </div>
+                                        <div class="modal-body p-b-0">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <label for="">Material</label>
+                                                    <selectize v-model="vendorList.material_id" :settings="materialSettings">
+                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    </selectize>
+                                                </div>
+                                                <div class="col-sm-12" v-if="vendorList.material_id != ''">
+                                                    <table class="table table-bordered tableFixed p-t-10 showTable" style="border-collapse:collapse;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 10%">No</th>
+                                                                <th style="width: 70%">Vendor</th>
+                                                                <th style="width: 20%">Count</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(po,index) in vendorList.po_list">
+                                                                <td>{{ index+1 }}</td>
+                                                                <td>{{ po.vendor_code }} - {{ po.vendor_name }}</td>
+                                                                <td>{{ po.count }} Time(s)</td>
+                                                            </tr>
+                                                            <template v-if="vendorList.po_list.length < 1">
+                                                                <tr>
+                                                                    <td colspan="3" class="textCenter">No Transaction For This Material</td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="close">CLOSE</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 @endverbatim
@@ -247,6 +302,7 @@
     });
 
     var data = {
+        materials : @json($materials),
         modelPR : @json($modelPR),
         PRDetail : @json($modelPRD),
         modelProject : @json($modelProject),
@@ -257,6 +313,9 @@
         },
         currencySettings: {
             placeholder: 'Please Select Currency'
+        },
+        materialSettings: {
+            placeholder: 'Please Select Material'
         },
         selectedCurrency : "",
         currency : "",
@@ -271,6 +330,10 @@
             remark : "",
         },
         submittedForm : {},
+        vendorList : {
+            material_id : "",
+            po_list : [],
+        }
     }
 
     var vm = new Vue({
@@ -334,6 +397,9 @@
             },
         },
         methods : {
+            vendorList(){
+                this.vendorList.material_id = "";
+            },
             makeId(id){
                 return "datepicker"+id;
             },
@@ -569,6 +635,22 @@
                     }
                 });
             },
+            'vendorList.material_id':function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getVendorList/'+newValue).then(({ data }) => {
+                        this.vendorList.po_list = data;
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                    })
+                }else{
+                    this.vendorList.po_list = [];
+                }
+            }
         },
         created: function() {
             this.getVendor();
@@ -596,7 +678,8 @@
                     }
 
                     PRD.material.cost_standard_price = (PRD.material.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    PRD.required_date = PRD.required_date.split("-").reverse().join("-");
+                    PRD.required_date = (PRD.required_date != null) ? PRD.required_date.split("-").reverse().join("-") : null;
+
                     if(PRD.required_date == null || PRD.required_date == ""){
                         this.delivery_date = "";
                         status = 1;
@@ -612,7 +695,8 @@
                     PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     PRD.sugQuantity = (PRD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     PRD.resource.cost_standard_price = (PRD.resource.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    PRD.required_date = PRD.required_date.split("-").reverse().join("-");
+                    PRD.required_date = (PRD.required_date != null) ? PRD.required_date.split("-").reverse().join("-") : null;
+
                     if(PRD.required_date == null || PRD.required_date == ""){
                         this.delivery_date = "";
                         status = 1;

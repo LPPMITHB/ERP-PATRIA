@@ -15,6 +15,7 @@ use App\Models\Resource;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\PurchasingInfoRecord;
+use App\Models\Material;
 use DateTime;
 use Auth;
 use DB;
@@ -71,6 +72,7 @@ class PurchaseOrderController extends Controller
         $currencies = Configuration::get('currencies');
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
         $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','project','resource','material.uom')->get();
+        $materials = Material::all();
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
                 $modelPRD->forget($key);
@@ -91,7 +93,7 @@ class PurchaseOrderController extends Controller
         }else{
             $modelProject = [];
         }
-        return view('purchase_order.create', compact('modelPR','modelPRD','modelProject','currencies','route'));
+        return view('purchase_order.create', compact('modelPR','modelPRD','modelProject','currencies','route','materials'));
     }
 
     public function selectPRD(Request $request, $id)
@@ -736,5 +738,47 @@ class PurchaseOrderController extends Controller
         $resource = Resource::where('id',$id)->with('uom')->first()->jsonSerialize();
 
         return response($resource, Response::HTTP_OK);
+    }
+
+    public function getVendorListAPI($id){
+        $PIRs = PurchasingInfoRecord::where('material_id',$id)->get();
+
+        $datas = Collection::make();
+        foreach($PIRs as $PIR){
+            if(count($datas) > 0){
+                $status = true;
+                foreach($datas as $key => $data){
+                    if($data['vendor_id'] == $PIR->vendor_id){
+                        $datas->push([
+                            "vendor_id" => $PIR->vendor->id, 
+                            "vendor_code" => $PIR->vendor->code, 
+                            "vendor_name" => $PIR->vendor->name,
+                            "count" => $data['count']+1,
+                        ]);
+                        $status = false;
+                        $datas->forget($key);
+                    }
+                }
+                if($status){
+                    $datas->push([
+                        "vendor_id" => $PIR->vendor->id, 
+                        "vendor_code" => $PIR->vendor->code, 
+                        "vendor_name" => $PIR->vendor->name,
+                        "count" => 1,
+                    ]);
+                }
+            }else{
+                $datas->push([
+                    "vendor_id" => $PIR->vendor->id, 
+                    "vendor_code" => $PIR->vendor->code, 
+                    "vendor_name" => $PIR->vendor->name,
+                    "count" => 1,
+                ]);
+            }
+        }
+        $datas = $datas->sortByDesc('count');
+        $datas = $datas->values();
+
+        return response($datas, Response::HTTP_OK);
     }
 }
