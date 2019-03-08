@@ -180,7 +180,7 @@
                                                 <label class="control-label">Quantity</label>
                                                 <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editResource">
                                             </div>
-                                            <div class="col-sm-12" v-if="editInput.category_id == 3">
+                                            <div class="col-sm-12" v-show="editInput.category_id == 3 && editInput.resource_detail_id != '' && editInput.resource_detail_id != null">
                                                 <label class="control-label">Schedule</label>
                                                 <input type="text" name="daterangeModal" id="daterangeModal" class="form-control" placeholder="Please Input Schedule (Optional)" autocomplete="off"/>
                                             </div>
@@ -333,6 +333,8 @@
             wbs_id : "",
             quantity : "",
             category_id : "",
+            start : "",
+            end : "",
             start_date : "",
             end_date : "",
         },
@@ -417,9 +419,12 @@
 
                 return isOk;
             },
-
             updateOk: function(){
                 let isOk = false;
+
+                if(this.editInput.resource_id == "" || this.editInput.quantity == "" || this.editInput.wbs_id == ""){
+                    isOk = true;
+                }
 
                 return isOk;
             },
@@ -453,6 +458,20 @@
             }
         },
         methods : {
+            clearEditData(){
+                this.editInput.old_resource_id ="";
+                this.editInput.resource_id ="";
+                this.editInput.resource_detail_id ="";
+                this.editInput.wbs_id = "";
+                this.editInput.quantity = "";
+                this.editInput.category_id = "";
+                this.editInput.start = '';
+                this.editInput.end = '';
+                this.editInput.start_date = '';
+                this.editInput.end_date = '';
+                this.editInput.datetime_start = '';
+                this.editInput.datetime_end = '';
+            },
             buildDateRangePicker(){
                 $(function() {
                     let startDate = moment(vm.editInput.start_date).format('DD-MM-YYYY HH:mm');
@@ -465,7 +484,6 @@
                             opens: 'center',
                             timePicker: true,
                             timePicker24Hour: true,
-                            minDate: moment(),
                             timePickerIncrement: 30,
                             showDropdowns: true,
                             locale: {
@@ -476,6 +494,7 @@
                         });
                     }else{
                         $('input[name="daterangeModal"]').daterangepicker({
+                            autoUpdateInput: false,
                             opens: 'center',
                             timePicker: true,
                             timePicker24Hour: true,
@@ -490,16 +509,23 @@
                         });
                     }
                     $('input[name="daterangeModal"]').on('apply.daterangepicker', function(ev, picker) {
-                        // vm.dataInput.start = picker.startDate.format('HH:mm');
-                        // vm.dataInput.end = picker.endDate.format('HH:mm');
-                        // vm.dataInput.datetime_start = picker.startDate.format('YYYY-MM-DD HH:mm');
-                        // vm.dataInput.datetime_end = picker.endDate.format('YYYY-MM-DD HH:mm');
-                        // vm.checkTime(vm.dataInput.start,vm.dataInput.end,vm.dataInput.datetime_start,vm.dataInput.datetime_end);
+                        vm.editInput.start = picker.startDate.format('HH:mm');
+                        vm.editInput.end = picker.endDate.format('HH:mm');
+                        vm.editInput.datetime_start = picker.startDate.format('YYYY-MM-DD HH:mm');
+                        vm.editInput.datetime_end = picker.endDate.format('YYYY-MM-DD HH:mm');
+                        var validation = vm.checkTime(vm.editInput.start,vm.editInput.end,vm.editInput.datetime_start,vm.editInput.datetime_end);
+                        if(validation === true){
+                            $(this).val(picker.startDate.format('DD-MM-YYYY hh:mm A') + ' - ' + picker.endDate.format('DD-MM-YYYY hh:mm A'));
+                        }
                     });
                     $('input[name="daterangeModal"]').on('cancel.daterangepicker', function(ev, picker) {
-                        // vm.dataInput.start = '';
-                        // vm.dataInput.end = '';
-                        // $('input[name="daterangeModal"]').val('');
+                        vm.editInput.start = '';
+                        vm.editInput.end = '';
+                        vm.editInput.start_date = '';
+                        vm.editInput.end_date = '';
+                        vm.editInput.datetime_start = '';
+                        vm.editInput.datetime_end = '';
+                        $('input[name="daterangeModal"]').val('');
                     });
                 });
             },
@@ -561,6 +587,7 @@
             },
             clearTime(){
                 $('input[name="daterange"]').val('');
+                $('input[name="daterangeModal"]').val('');
             },
             checkTime(start,end,datetime_start,datetime_end){
                 let status = true;
@@ -600,9 +627,15 @@
                     status = false;
                 }
                 if(status === true){
-                    this.dataInput.start_date = datetime_start;
-                    this.dataInput.end_date = datetime_end;
+                    if(this.dataInput.start != "" && this.dataInput.end != ""){
+                        this.dataInput.start_date = datetime_start;
+                        this.dataInput.end_date = datetime_end;
+                    }else if(this.editInput.start != "" && this.editInput.end != ""){
+                        this.editInput.start_date = datetime_start;
+                        this.editInput.end_date = datetime_end;
+                    }
                 }
+                return status;
             },
             tooltip(text){
                 Vue.directive('tooltip', function(el, binding){
@@ -690,13 +723,20 @@
             },
             update(){
                 $('div.overlay').show();   
+                if($('input[name="daterangeModal"]').val() == "" || $('input[name="daterangeModal"]').val() == null){
+                    this.editInput.start = '';
+                    this.editInput.end = '';
+                    this.editInput.start_date = '';
+                    this.editInput.end_date = '';
+                    this.editInput.datetime_start = '';
+                    this.editInput.datetime_end = '';
+                }
                 if(this.route == "/resource"){
                     var url = "/resource/updateAssignResource/"+this.editInput.id;
                 }else if(this.route == "/resource_repair"){
                     var url = "/resource_repair/updateAssignResource/"+this.editInput.id;
                 }         
                 let editInput = JSON.stringify(this.editInput);
-
                 window.axios.put(url,editInput).then((response) => {
                     if(response.data.error != undefined){
                         iziToast.warning({
@@ -711,9 +751,10 @@
                             title: response.data.response,
                             position: 'topRight',
                         });
+                        $('#edit_item').modal('hide');
                         $('div.overlay').hide();            
                     }
-                    
+                    this.clearEditData();
                     this.getResource();   
                 })
                 .catch((error) => {
@@ -721,6 +762,7 @@
                 })
             },
             openEditModal(data,index){
+                $('input[name="daterangeModal"]').val('');
                 this.editInput.id = data.id
                 this.editInput.category_id = data.category_id;
                 this.editInput.resource_id = data.resource_id;
@@ -865,9 +907,11 @@
                 
             },
             'editInput.resource_detail_id' : function(newValue){
-                if(newValue != ""){
-                    this.editInput.quantity = 1;
-                }                
+                if(newValue != "" && newValue != null){
+                    if(this.editInput.category_id == 3){
+                        this.editInput.quantity = 1;
+                    }
+                }             
             },
         },
     });
