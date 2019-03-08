@@ -12,7 +12,7 @@ class MstResourceProfileTableSeeder extends Seeder
      */
     public function run()
     {
-        
+       
 
         \DB::table('mst_resource_profile')->delete();
         
@@ -118,6 +118,6 @@ class MstResourceProfileTableSeeder extends Seeder
             ),
         ));
         
-        
+   
     }
 }

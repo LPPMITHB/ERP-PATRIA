@@ -1169,7 +1169,7 @@ class MstResourceDetailTableSeeder extends Seeder
             array (
                 'id' => 29,
                 'resource_id' => 14,
-                'code' => '',
+                'code' => 'AI 001',
                 'serial_number' => NULL,
                 'brand' => 'ESAB',
                 'quantity' => 1,
@@ -1207,6 +1207,88 @@ class MstResourceDetailTableSeeder extends Seeder
                 'updated_at' => NULL,
             ),
             29 => 
+            array (
+                'id' => 30,
+                'resource_id' => 14,
+                'code' => 'AI 002',
+                'serial_number' => NULL,
+                'brand' => 'ESAB',
+                'quantity' => 1,
+                'description' => 'Argon Inverter',
+                'category_id' => 3,
+                'kva' => 0.0,
+                'amp' => 0.0,
+                'volt' => 0.0,
+                'phase' => 0,
+                'length' => 0.0,
+                'width' => 0.0,
+                'height' => 0.0,
+                'manufactured_in' => NULL,
+                'manufactured_date' => NULL,
+                'purchasing_date' => NULL,
+                'purchasing_price' => 0.0,
+                'lifetime' => 0.0,
+                'lifetime_uom_id' => 13,
+                'depreciation_method' => 0,
+                'accumulated_depreciation' => 0.0,
+                'running_hours' => 0,
+                'cost_per_hour' => 0.0,
+                'utilization' => 0.0,
+                'performance' => 0.0,
+                'performance_uom_id' => 13,
+                'productivity' => 0.0,
+                'status' => 1,
+                'vendor_id' => 1,
+                'others_name' => NULL,
+                'sub_con_address' => NULL,
+                'sub_con_phone' => NULL,
+                'sub_con_competency' => NULL,
+                'po_id' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            30 => 
+            array (
+                'id' => 31,
+                'resource_id' => 14,
+                'code' => 'AI 003',
+                'serial_number' => NULL,
+                'brand' => 'ESAB',
+                'quantity' => 1,
+                'description' => 'Argon Inverter',
+                'category_id' => 3,
+                'kva' => 0.0,
+                'amp' => 0.0,
+                'volt' => 0.0,
+                'phase' => 0,
+                'length' => 0.0,
+                'width' => 0.0,
+                'height' => 0.0,
+                'manufactured_in' => NULL,
+                'manufactured_date' => NULL,
+                'purchasing_date' => NULL,
+                'purchasing_price' => 0.0,
+                'lifetime' => 0.0,
+                'lifetime_uom_id' => 13,
+                'depreciation_method' => 0,
+                'accumulated_depreciation' => 0.0,
+                'running_hours' => 0,
+                'cost_per_hour' => 0.0,
+                'utilization' => 0.0,
+                'performance' => 0.0,
+                'performance_uom_id' => 13,
+                'productivity' => 0.0,
+                'status' => 1,
+                'vendor_id' => 1,
+                'others_name' => NULL,
+                'sub_con_address' => NULL,
+                'sub_con_phone' => NULL,
+                'sub_con_competency' => NULL,
+                'po_id' => NULL,
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            ),
+            31 => 
             array (
                 'id' => 32,
                 'resource_id' => 15,
@@ -1247,7 +1329,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            30 => 
+            32 => 
             array (
                 'id' => 33,
                 'resource_id' => 16,
@@ -1288,7 +1370,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            31 => 
+            33 => 
             array (
                 'id' => 34,
                 'resource_id' => 16,
@@ -1329,7 +1411,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            32 => 
+            34 => 
             array (
                 'id' => 35,
                 'resource_id' => 16,
@@ -1370,7 +1452,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            33 => 
+            35 => 
             array (
                 'id' => 36,
                 'resource_id' => 16,
@@ -1411,7 +1493,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            34 => 
+            36 => 
             array (
                 'id' => 37,
                 'resource_id' => 16,
@@ -1452,7 +1534,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            35 => 
+            37 => 
             array (
                 'id' => 38,
                 'resource_id' => 16,
@@ -1493,7 +1575,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            36 => 
+            38 => 
             array (
                 'id' => 39,
                 'resource_id' => 16,
@@ -1534,7 +1616,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            37 => 
+            39 => 
             array (
                 'id' => 40,
                 'resource_id' => 16,
@@ -1575,7 +1657,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            38 => 
+            40 => 
             array (
                 'id' => 41,
                 'resource_id' => 16,
@@ -1616,7 +1698,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            39 => 
+            41 => 
             array (
                 'id' => 42,
                 'resource_id' => 16,
@@ -1657,7 +1739,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            40 => 
+            42 => 
             array (
                 'id' => 43,
                 'resource_id' => 16,
@@ -1698,7 +1780,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            41 => 
+            43 => 
             array (
                 'id' => 44,
                 'resource_id' => 16,
@@ -1739,7 +1821,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            42 => 
+            44 => 
             array (
                 'id' => 45,
                 'resource_id' => 16,
@@ -1780,7 +1862,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            43 => 
+            45 => 
             array (
                 'id' => 46,
                 'resource_id' => 17,
@@ -1821,7 +1903,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            44 => 
+            46 => 
             array (
                 'id' => 47,
                 'resource_id' => 16,
@@ -1862,7 +1944,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            45 => 
+            47 => 
             array (
                 'id' => 48,
                 'resource_id' => 16,
@@ -1903,7 +1985,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            46 => 
+            48 => 
             array (
                 'id' => 49,
                 'resource_id' => 16,
@@ -1944,7 +2026,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            47 => 
+            49 => 
             array (
                 'id' => 50,
                 'resource_id' => 16,
@@ -1985,7 +2067,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            48 => 
+            50 => 
             array (
                 'id' => 51,
                 'resource_id' => 16,
@@ -2026,7 +2108,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            49 => 
+            51 => 
             array (
                 'id' => 52,
                 'resource_id' => 16,
@@ -2067,7 +2149,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            50 => 
+            52 => 
             array (
                 'id' => 53,
                 'resource_id' => 16,
@@ -2108,7 +2190,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            51 => 
+            53 => 
             array (
                 'id' => 54,
                 'resource_id' => 16,
@@ -2149,7 +2231,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            52 => 
+            54 => 
             array (
                 'id' => 55,
                 'resource_id' => 16,
@@ -2190,7 +2272,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            53 => 
+            55 => 
             array (
                 'id' => 56,
                 'resource_id' => 16,
@@ -2231,7 +2313,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            54 => 
+            56 => 
             array (
                 'id' => 57,
                 'resource_id' => 16,
@@ -2272,7 +2354,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            55 => 
+            57 => 
             array (
                 'id' => 58,
                 'resource_id' => 16,
@@ -2313,7 +2395,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            56 => 
+            58 => 
             array (
                 'id' => 59,
                 'resource_id' => 16,
@@ -2354,7 +2436,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            57 => 
+            59 => 
             array (
                 'id' => 60,
                 'resource_id' => 16,
@@ -2395,7 +2477,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            58 => 
+            60 => 
             array (
                 'id' => 61,
                 'resource_id' => 16,
@@ -2436,7 +2518,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            59 => 
+            61 => 
             array (
                 'id' => 62,
                 'resource_id' => 16,
@@ -2477,7 +2559,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            60 => 
+            62 => 
             array (
                 'id' => 63,
                 'resource_id' => 16,
@@ -2518,7 +2600,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            61 => 
+            63 => 
             array (
                 'id' => 64,
                 'resource_id' => 16,
@@ -2559,7 +2641,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            62 => 
+            64 => 
             array (
                 'id' => 65,
                 'resource_id' => 16,
@@ -2600,7 +2682,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            63 => 
+            65 => 
             array (
                 'id' => 66,
                 'resource_id' => 16,
@@ -2641,7 +2723,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            64 => 
+            66 => 
             array (
                 'id' => 67,
                 'resource_id' => 16,
@@ -2682,7 +2764,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            65 => 
+            67 => 
             array (
                 'id' => 68,
                 'resource_id' => 16,
@@ -2723,7 +2805,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            66 => 
+            68 => 
             array (
                 'id' => 69,
                 'resource_id' => 16,
@@ -2764,7 +2846,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            67 => 
+            69 => 
             array (
                 'id' => 70,
                 'resource_id' => 16,
@@ -2805,7 +2887,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            68 => 
+            70 => 
             array (
                 'id' => 71,
                 'resource_id' => 16,
@@ -2846,7 +2928,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            69 => 
+            71 => 
             array (
                 'id' => 72,
                 'resource_id' => 16,
@@ -2887,7 +2969,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            70 => 
+            72 => 
             array (
                 'id' => 73,
                 'resource_id' => 16,
@@ -2928,7 +3010,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            71 => 
+            73 => 
             array (
                 'id' => 74,
                 'resource_id' => 16,
@@ -2969,7 +3051,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            72 => 
+            74 => 
             array (
                 'id' => 75,
                 'resource_id' => 16,
@@ -3010,7 +3092,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            73 => 
+            75 => 
             array (
                 'id' => 76,
                 'resource_id' => 16,
@@ -3051,7 +3133,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            74 => 
+            76 => 
             array (
                 'id' => 77,
                 'resource_id' => 16,
@@ -3092,7 +3174,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            75 => 
+            77 => 
             array (
                 'id' => 78,
                 'resource_id' => 16,
@@ -3133,7 +3215,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            76 => 
+            78 => 
             array (
                 'id' => 79,
                 'resource_id' => 16,
@@ -3174,7 +3256,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            77 => 
+            79 => 
             array (
                 'id' => 80,
                 'resource_id' => 16,
@@ -3215,7 +3297,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            78 => 
+            80 => 
             array (
                 'id' => 81,
                 'resource_id' => 16,
@@ -3256,7 +3338,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            79 => 
+            81 => 
             array (
                 'id' => 82,
                 'resource_id' => 16,
@@ -3297,7 +3379,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            80 => 
+            82 => 
             array (
                 'id' => 83,
                 'resource_id' => 16,
@@ -3338,7 +3420,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            81 => 
+            83 => 
             array (
                 'id' => 84,
                 'resource_id' => 16,
@@ -3379,7 +3461,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            82 => 
+            84 => 
             array (
                 'id' => 85,
                 'resource_id' => 16,
@@ -3420,7 +3502,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            83 => 
+            85 => 
             array (
                 'id' => 86,
                 'resource_id' => 16,
@@ -3461,7 +3543,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            84 => 
+            86 => 
             array (
                 'id' => 87,
                 'resource_id' => 16,
@@ -3502,7 +3584,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            85 => 
+            87 => 
             array (
                 'id' => 88,
                 'resource_id' => 16,
@@ -3543,7 +3625,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            86 => 
+            88 => 
             array (
                 'id' => 89,
                 'resource_id' => 16,
@@ -3584,7 +3666,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            87 => 
+            89 => 
             array (
                 'id' => 90,
                 'resource_id' => 16,
@@ -3625,7 +3707,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            88 => 
+            90 => 
             array (
                 'id' => 91,
                 'resource_id' => 16,
@@ -3666,7 +3748,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            89 => 
+            91 => 
             array (
                 'id' => 92,
                 'resource_id' => 16,
@@ -3707,7 +3789,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            90 => 
+            92 => 
             array (
                 'id' => 93,
                 'resource_id' => 16,
@@ -3748,7 +3830,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            91 => 
+            93 => 
             array (
                 'id' => 94,
                 'resource_id' => 16,
@@ -3789,7 +3871,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            92 => 
+            94 => 
             array (
                 'id' => 95,
                 'resource_id' => 16,
@@ -3830,7 +3912,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            93 => 
+            95 => 
             array (
                 'id' => 96,
                 'resource_id' => 16,
@@ -3871,7 +3953,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            94 => 
+            96 => 
             array (
                 'id' => 97,
                 'resource_id' => 16,
@@ -3912,7 +3994,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            95 => 
+            97 => 
             array (
                 'id' => 98,
                 'resource_id' => 16,
@@ -3953,7 +4035,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            96 => 
+            98 => 
             array (
                 'id' => 99,
                 'resource_id' => 16,
@@ -3994,7 +4076,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            97 => 
+            99 => 
             array (
                 'id' => 100,
                 'resource_id' => 16,
@@ -4035,7 +4117,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            98 => 
+            100 => 
             array (
                 'id' => 101,
                 'resource_id' => 16,
@@ -4076,7 +4158,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            99 => 
+            101 => 
             array (
                 'id' => 102,
                 'resource_id' => 16,
@@ -4117,7 +4199,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            100 => 
+            102 => 
             array (
                 'id' => 103,
                 'resource_id' => 16,
@@ -4158,7 +4240,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            101 => 
+            103 => 
             array (
                 'id' => 104,
                 'resource_id' => 16,
@@ -4199,7 +4281,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            102 => 
+            104 => 
             array (
                 'id' => 105,
                 'resource_id' => 16,
@@ -4240,7 +4322,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            103 => 
+            105 => 
             array (
                 'id' => 106,
                 'resource_id' => 16,
@@ -4281,7 +4363,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            104 => 
+            106 => 
             array (
                 'id' => 107,
                 'resource_id' => 18,
@@ -4322,7 +4404,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            105 => 
+            107 => 
             array (
                 'id' => 108,
                 'resource_id' => 18,
@@ -4363,7 +4445,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            106 => 
+            108 => 
             array (
                 'id' => 109,
                 'resource_id' => 19,
@@ -4404,7 +4486,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            107 => 
+            109 => 
             array (
                 'id' => 110,
                 'resource_id' => 20,
@@ -4445,7 +4527,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            108 => 
+            110 => 
             array (
                 'id' => 111,
                 'resource_id' => 21,
@@ -4486,7 +4568,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            109 => 
+            111 => 
             array (
                 'id' => 112,
                 'resource_id' => 22,
@@ -4527,7 +4609,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            110 => 
+            112 => 
             array (
                 'id' => 113,
                 'resource_id' => 23,
@@ -4568,7 +4650,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            111 => 
+            113 => 
             array (
                 'id' => 114,
                 'resource_id' => 24,
@@ -4609,7 +4691,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            112 => 
+            114 => 
             array (
                 'id' => 115,
                 'resource_id' => 25,
@@ -4650,7 +4732,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            113 => 
+            115 => 
             array (
                 'id' => 116,
                 'resource_id' => 26,
@@ -4691,7 +4773,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            114 => 
+            116 => 
             array (
                 'id' => 117,
                 'resource_id' => 27,
@@ -4732,7 +4814,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            115 => 
+            117 => 
             array (
                 'id' => 118,
                 'resource_id' => 28,
@@ -4773,7 +4855,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            116 => 
+            118 => 
             array (
                 'id' => 119,
                 'resource_id' => 29,
@@ -4814,7 +4896,7 @@ class MstResourceDetailTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            117 => 
+            119 => 
             array (
                 'id' => 120,
                 'resource_id' => 30,
