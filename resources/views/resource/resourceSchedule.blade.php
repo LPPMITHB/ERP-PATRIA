@@ -28,7 +28,7 @@
                             <div class="col-sm-4 col-xs-12">
                                 <label for="">Resource Detail</label>
                                 <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings" :disabled="resourceOk">
-                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                 </selectize>
                             </div>
                         </div>
@@ -48,6 +48,9 @@
                                     </div>
                                     <div class="modal-body p-t-5 p-b-5">
                                         <div class="row p-l-10 p-r-10">
+                                            <label class="control-label">Project Number</label>
+                                            <input type="text" name="project" id="project" class="form-control" disabled/>
+
                                             <label class="control-label">WBS</label>
                                             <input type="text" name="wbs" id="wbs" class="form-control" disabled/>
 
@@ -147,7 +150,8 @@
                         if(calEvent.clickable == true){
                             document.getElementById('modal_start_date').innerHTML =  calEvent.start_date;        
                             document.getElementById('modal_end_date').innerHTML =  calEvent.end_date;        
-                            document.getElementById('wbs').value =  calEvent.title;     
+                            document.getElementById('project').value =  calEvent.project;     
+                            document.getElementById('wbs').value =  calEvent.wbs;     
                             document.getElementById('booked_by').value =  calEvent.booked_by;     
                             $('#detail_event').modal();
                         }
@@ -179,7 +183,9 @@
                             let end_date = new Date((TR.end_date+"").replace(/-/g,"/"));
 
                             this.events.push({
-                                title: TR.wbs.number+" - "+TR.wbs.description, 
+                                title: "Project: "+TR.project.number + " \n WBS: "+ TR.wbs.number+" - "+TR.wbs.description, 
+                                wbs: TR.wbs.number+" - "+TR.wbs.description, 
+                                project: TR.project.number, 
                                 start: TR.start_date,
                                 end: TR.end_date,
                                 booked_by : TR.user.name,

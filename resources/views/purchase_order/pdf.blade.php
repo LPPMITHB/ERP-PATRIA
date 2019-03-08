@@ -110,12 +110,6 @@
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
-                            <div style="font-size: 11px;">Delivery Date  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelPO->delivery_date}}                     
-                            </div>
-                        </div>
-                        <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Delivery Terms  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
                                 {{($modelPO->delivery_terms != null) ? $modelPO->delivery_terms : '-'}}                    
@@ -145,12 +139,13 @@
                                 <tr>
                                     <th style="font-size: 11px" width="5%" class="text-center">No</th>
                                     <th style="font-size: 11px" width="15%" class="text-center" >Material Number</th>
-                                    <th style="font-size: 11px" width="20%" class="text-center">Material Name</th>
+                                    <th style="font-size: 11px" width="20%" class="text-center">Material Description</th>
                                     <th style="font-size: 11px" width="7%" class="text-center">Qty</th>
                                     <th style="font-size: 11px" width="8%" class="text-center">Unit</th>
                                     <th style="font-size: 11px" width="15%" class="text-center">Unit Price</th>
                                     <th style="font-size: 11px" width="5%" class="text-center">Disc (%)</th>
                                     <th style="font-size: 11px" width="15%" class="text-center">Amount</th>
+                                    <th style="font-size: 11px" width="10%" class="text-center">Delivery Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -162,12 +157,13 @@
                                         <tr>
                                             <td style="font-size: 11px" width="5%">{{ $loop->iteration }}</td>
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord">{{ $POD->material->code }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $POD->material->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $POD->material->description }}</td>
                                             <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{ number_format($POD->quantity) }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="8%" class="tdBreakWord">{{ $POD->material->uom->unit }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="8%" class="tdBreakWord text-center">{{ $POD->material->uom->unit }}</td>
                                             <td style="font-size: 11px" width="15%" class="tdBreakWord text-right">{{ number_format($POD->total_price / $POD->quantity,2) }}</td>
                                             <td style="font-size: 11px" width="5%" class="tdBreakWord text-center">{{ number_format($POD->discount,2) }}</td>
                                             <td style="font-size: 11px" width="15%" class="tdBreakWord text-right">{{ number_format($POD->total_price - ($POD->total_price * ($POD->discount/100)),2) }}</td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord">{{ isset($POD->delivery_date) ? date('d-m-Y', strtotime($POD->delivery_date)) : '-' }}</td>
                                         </tr>
                                         @php($discount += $POD->total_price * (($POD->discount)/100))
                                         @php($tax += $POD->total_price * (($POD->tax)/100))

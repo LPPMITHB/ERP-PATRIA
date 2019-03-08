@@ -181,7 +181,7 @@ class ConfigurationsTableSeeder extends Seeder
         $operation_hours = array(
             0 => array(
                 'start' => '08:00',
-                'end' => '21:00',
+                'end' => '22:00',
             ),
         );
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
+use App\Models\ActivityDetail;
 use App\Models\Material;
 use App\Models\Service;
 use App\Models\UOM;
@@ -99,20 +100,49 @@ class ActivityController extends Controller
 
             if(isset($data['activity_configuration_id'])){
                 $activity->activity_configuration_id = $data['activity_configuration_id'];
+
             }
+
             $activity->weight = $data['weight']; 
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
             $users = User::whereIn('role_id',[1])->get();
             // Notification::send($users, new ProjectActivity($activity));
-
-            if(!$activity->save()){
-                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
-            }else{
-                DB::commit();
-                return response(["response"=>"Success to create new activity"],Response::HTTP_OK);
+            $activity->save();
+            if($activity->wbs->project->business_unit_id == 2){
+                $activityDetail = new ActivityDetail;
+                $activityDetail->activity_id = $activity->id;
+                if($data['material_id'] != null || $data['service_id'] != null){
+                    if($data['material_id'] != null){
+                        $activityDetail->material_id = $data['material_id'];
+                        $activityDetail->quantity_material = $data['quantity_material'];
+                        if($data['length_uom_id'] != ""){
+                            $activityDetail->length_uom_id = $data['length_uom_id'];
+                            $activityDetail->length = $data['lengths'];
+                        }
+                        
+                        if($data['width_uom_id'] != ""){
+                            $activityDetail->width_uom_id = $data['width_uom_id'];
+                            $activityDetail->width = $data['width'];
+                        }
+    
+                        if($data['height_uom_id'] != ""){
+                            $activityDetail->height_uom_id = $data['height_uom_id'];
+                            $activityDetail->height = $data['height'];
+                        }
+                    }
+    
+                    if($data['service_id'] != null){
+                        $activityDetail->activity_id = $activity->id;
+                        $activityDetail->service_id = $data['service_id'];
+                        $activityDetail->quantity_service = $data['quantity_service'];
+                    }
+                }
+                $activityDetail->save();
             }
+            DB::commit();
+            return response(["response"=>"Success to create new activity"],Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollback();
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
@@ -201,7 +231,37 @@ class ActivityController extends Controller
             }else{
                 $activity->predecessor = null;
             }
-
+            
+            if($activity->wbs->project->business_unit_id == 2){
+                $activityDetail = $activity->activityDetail;
+                if($data['material_id'] != null || $data['service_id'] != null){
+                    if($data['material_id'] != null){
+                        $activityDetail->material_id = $data['material_id'];
+                        $activityDetail->quantity_material = $data['quantity_material'];
+                        if($data['length_uom_id'] != ""){
+                            $activityDetail->length_uom_id = $data['length_uom_id'];
+                            $activityDetail->length = $data['lengths'];
+                        }
+                        
+                        if($data['width_uom_id'] != ""){
+                            $activityDetail->width_uom_id = $data['width_uom_id'];
+                            $activityDetail->width = $data['width'];
+                        }
+    
+                        if($data['height_uom_id'] != ""){
+                            $activityDetail->height_uom_id = $data['height_uom_id'];
+                            $activityDetail->height = $data['height'];
+                        }
+                    }
+    
+                    if($data['service_id'] != null){
+                        $activityDetail->activity_id = $activity->id;
+                        $activityDetail->service_id = $data['service_id'];
+                        $activityDetail->quantity_service = $data['quantity_service'];
+                    }
+                }
+                $activityDetail->update();
+            }
             if(!$activity->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
@@ -488,13 +548,12 @@ class ActivityController extends Controller
                     }
                 }
             }
-            if(!$activity->delete()){
-                array_push($error, ["Failed to delete, please try again!"]);                
-                return response(["error"=> $error],Response::HTTP_OK);
-            }else{
-                DB::commit();
-                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            if($activity->wbs->project->business_unit_id == 2){
+                $activity->activityDetail->delete();
             }
+            $activity->delete();
+            DB::commit();
+            return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollback();
             array_push($error, [$e->getMessage()]);                
@@ -602,7 +661,7 @@ class ActivityController extends Controller
 
     //API
     public function getActivitiesAPI($wbs_id){
-        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->with('activityDetail')->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

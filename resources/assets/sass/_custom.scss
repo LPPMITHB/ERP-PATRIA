@@ -821,3 +821,19 @@ $color-loader: #3c8dbc;
     top: 20%;
     transform: translate(-50%, -50%);
 }
+
+.border-top-modal{
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-right-modal{
+    border-right: 2px solid #e5e5e5;
+}
+
+.border-left-modal{
+    border-left: 2px solid #e5e5e5;
+}
+
+.modal {
+    overflow-y:auto;
+}

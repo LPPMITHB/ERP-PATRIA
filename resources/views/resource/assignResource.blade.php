@@ -14,7 +14,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 p-b-20">
         <div class="box">
             <div class="box-body">
                 @csrf
@@ -76,7 +76,9 @@
                                                 <td v-else-if="data.category_id == 2">External Equipment</td>
                                                 <td v-else-if="data.category_id == 3">Internal Equipment</td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                                <td>{{ data.resource_detail.code }}</td>
+                                                <td v-if="data.resource_detail != null && data.resource_detail.serial_number == null || data.resource_detail != null && data.resource_detail.serial_number == ''">{{ data.resource_detail.code }}</td>
+                                                <td v-else-if="data.resource_detail != null && data.resource_detail.serial_number != null && data.resource_detail.serial_number != ''">{{ data.resource_detail.code }} - {{ data.resource_detail.serial_number }}</td>
+                                                <td v-else>-</td>
                                                 <td>{{ data.quantity }}</td>
                                                 <td>{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                                 <td class="p-l-3 textCenter">
@@ -122,7 +124,7 @@
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
                                                 <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
-                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                 </selectize>
                                             </td>
                                           
@@ -135,13 +137,14 @@
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textCenter">
-                                                <button :disabled="createOk" class="btn btn-primary btn-xs" data-toggle="modal" href="#input_schedule">ADD</button>
+                                                <button :disabled="createOk" class="btn btn-primary btn-xs" data-toggle="modal" @click.prevent="inputSchedule">ADD</button>
                                             </td>
                                         </tfoot>
                                     </table>
                                 </div>
                             </div>
                         </template>
+
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog ">
                                 <div class="modal-content">
@@ -159,15 +162,27 @@
                                                     <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </div>
+                                            <template v-if="editInput.category_id == 3">
+                                                <div class="col-sm-12">
+                                                    <label class="control-label">Resource Detail</label>
+                                                    <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
+                                                        <option v-for="(resource,index) in selectedRDModal" :value="resource.id">{{ resource.code }}</option>
+                                                    </selectize>
+                                                </div>
+                                            </template>
                                             <div class="col-sm-12">
                                                 <label class="control-label">WBS Name</label>
                                                 <selectize v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }}</option>
+                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label class="control-label">Quantity</label>
-                                                <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editResource">
+                                            </div>
+                                            <div class="col-sm-12" v-show="editInput.category_id == 3 && editInput.resource_detail_id != '' && editInput.resource_detail_id != null">
+                                                <label class="control-label">Schedule</label>
+                                                <input type="text" name="daterangeModal" id="daterangeModal" class="form-control" placeholder="Please Input Schedule (Optional)" autocomplete="off"/>
                                             </div>
                                         </div>
                                     </div>
@@ -209,7 +224,7 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        <h4 class="modal-title">Resource Schedule</h4>
+                                        <h4 class="modal-title">Internal Resource Schedule</h4>
                                     </div>
                                     <div class="modal-body p-t-5 p-b-5">
                                         <div class="row p-l-10 p-r-10">
@@ -223,7 +238,7 @@
                                                 <div class="col-sm-4 col-xs-12">
                                                     <label for="">Resource Detail</label>
                                                     <selectize v-model="schedule.resource_detail_id" :settings="resourceDetailSettings" :disabled="resourceOk">
-                                                        <option v-for="(rd, index) in schedule.selectedRD" :value="rd.id">{{ rd.code }}</option>
+                                                        <option v-for="(rd, index) in schedule.selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                     </selectize>
                                                 </div>
                                             </div>
@@ -251,6 +266,9 @@
                                     </div>
                                     <div class="modal-body p-t-5 p-b-5">
                                         <div class="row p-l-10 p-r-10">
+                                            <label class="control-label">Project Number</label>
+                                            <input type="text" name="project" id="project" class="form-control" disabled/>
+
                                             <label class="control-label">WBS</label>
                                             <input type="text" name="wbs" id="wbs" class="form-control" disabled/>
 
@@ -309,10 +327,16 @@
             end_date : "",
         },
         editInput : {
+            old_resource_id :"",
             resource_id :"",
+            resource_detail_id :"",
             wbs_id : "",
             quantity : "",
-            category_id : ""
+            category_id : "",
+            start : "",
+            end : "",
+            start_date : "",
+            end_date : "",
         },
         projectSettings: {
             placeholder: 'Please Select Project'
@@ -349,6 +373,7 @@
         },
         days : ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
         months : ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "August", "Sept", "Oct", "Nov", "Dec"],
+        selectedRDModal : [],
     }
 
     var vm = new Vue({
@@ -381,6 +406,8 @@
                     $('input[name="daterange"]').val('');
                 });
             });
+
+            
         },
         computed : {
             createOk: function(){
@@ -392,9 +419,12 @@
 
                 return isOk;
             },
-
             updateOk: function(){
                 let isOk = false;
+
+                if(this.editInput.resource_id == "" || this.editInput.quantity == "" || this.editInput.wbs_id == ""){
+                    isOk = true;
+                }
 
                 return isOk;
             },
@@ -414,9 +444,91 @@
                 }
 
                 return isOk;
+            },
+            editResource: function(){
+                let isOk = false;
+
+                if(this.editInput.category_id == 3){
+                    if(this.editInput.resource_detail_id != "" && this.editInput.resource_detail_id != null){
+                        isOk = true;
+                    }
+                }
+
+                return isOk;
             }
         },
         methods : {
+            clearEditData(){
+                this.editInput.old_resource_id ="";
+                this.editInput.resource_id ="";
+                this.editInput.resource_detail_id ="";
+                this.editInput.wbs_id = "";
+                this.editInput.quantity = "";
+                this.editInput.category_id = "";
+                this.editInput.start = '';
+                this.editInput.end = '';
+                this.editInput.start_date = '';
+                this.editInput.end_date = '';
+                this.editInput.datetime_start = '';
+                this.editInput.datetime_end = '';
+            },
+            buildDateRangePicker(){
+                $(function() {
+                    let startDate = moment(vm.editInput.start_date).format('DD-MM-YYYY HH:mm');
+                    let endDate = moment(vm.editInput.end_date).format('DD-MM-YYYY HH:mm');
+
+                    if(startDate != "Invalid date"){
+                        $('input[name="daterangeModal"]').daterangepicker({
+                            startDate : startDate,
+                            endDate: endDate,
+                            opens: 'center',
+                            timePicker: true,
+                            timePicker24Hour: true,
+                            timePickerIncrement: 30,
+                            showDropdowns: true,
+                            locale: {
+                                timePicker24Hour: true,
+                                format: 'DD-MM-YYYY hh:mm A'
+                            },
+                            drops: "up"
+                        });
+                    }else{
+                        $('input[name="daterangeModal"]').daterangepicker({
+                            autoUpdateInput: false,
+                            opens: 'center',
+                            timePicker: true,
+                            timePicker24Hour: true,
+                            minDate: moment(),
+                            timePickerIncrement: 30,
+                            showDropdowns: true,
+                            locale: {
+                                timePicker24Hour: true,
+                                format: 'DD-MM-YYYY hh:mm A'
+                            },
+                            drops: "up"
+                        });
+                    }
+                    $('input[name="daterangeModal"]').on('apply.daterangepicker', function(ev, picker) {
+                        vm.editInput.start = picker.startDate.format('HH:mm');
+                        vm.editInput.end = picker.endDate.format('HH:mm');
+                        vm.editInput.datetime_start = picker.startDate.format('YYYY-MM-DD HH:mm');
+                        vm.editInput.datetime_end = picker.endDate.format('YYYY-MM-DD HH:mm');
+                        var validation = vm.checkTime(vm.editInput.start,vm.editInput.end,vm.editInput.datetime_start,vm.editInput.datetime_end);
+                        if(validation === true){
+                            $(this).val(picker.startDate.format('DD-MM-YYYY hh:mm A') + ' - ' + picker.endDate.format('DD-MM-YYYY hh:mm A'));
+                        }
+                    });
+                    $('input[name="daterangeModal"]').on('cancel.daterangepicker', function(ev, picker) {
+                        vm.editInput.start = '';
+                        vm.editInput.end = '';
+                        vm.editInput.start_date = '';
+                        vm.editInput.end_date = '';
+                        vm.editInput.datetime_start = '';
+                        vm.editInput.datetime_end = '';
+                        $('input[name="daterangeModal"]').val('');
+                    });
+                });
+            },
             buildingDate(date){
                 let day_start = this.days[date.getDay()];
                 let date_start = date.getDate();
@@ -453,18 +565,29 @@
                         if(calEvent.clickable == true){
                             document.getElementById('modal_start_date').innerHTML =  calEvent.start_date;        
                             document.getElementById('modal_end_date').innerHTML =  calEvent.end_date;        
-                            document.getElementById('wbs').value =  calEvent.title;     
+                            document.getElementById('project').value =  calEvent.project;     
+                            document.getElementById('wbs').value =  calEvent.wbs;     
                             document.getElementById('booked_by').value =  calEvent.booked_by;     
                             $('#detail_event').modal();
                         }
                     },
                 });
             },
+            inputSchedule(){
+                if(this.dataInput.category_id == 3 && this.dataInput.resource_detail_id != ""){
+                    $('#input_schedule').modal();
+                }else{
+                    this.add();
+                }
+            },
             openSchedule(){
+                this.schedule.resource_id = "";
+                this.schedule.resource_detail_id = "";
                 $('#resource_schedule').modal();
             },
             clearTime(){
                 $('input[name="daterange"]').val('');
+                $('input[name="daterangeModal"]').val('');
             },
             checkTime(start,end,datetime_start,datetime_end){
                 let status = true;
@@ -504,9 +627,15 @@
                     status = false;
                 }
                 if(status === true){
-                    this.dataInput.start_date = datetime_start;
-                    this.dataInput.end_date = datetime_end;
+                    if(this.dataInput.start != "" && this.dataInput.end != ""){
+                        this.dataInput.start_date = datetime_start;
+                        this.dataInput.end_date = datetime_end;
+                    }else if(this.editInput.start != "" && this.editInput.end != ""){
+                        this.editInput.start_date = datetime_start;
+                        this.editInput.end_date = datetime_end;
+                    }
                 }
+                return status;
             },
             tooltip(text){
                 Vue.directive('tooltip', function(el, binding){
@@ -529,19 +658,21 @@
                 $('div.overlay').show();            
 
                 let status = false;
-                let start_date = this.dataInput.start_date;
-                this.modelAssignResource.forEach(TrxResource =>{
-                    if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
-                        status = true;
-                    }
-                })
-                if(!status){
-                    let end_date = this.dataInput.end_date;
+                if(this.dataInput.category_id == 3){
+                    let start_date = this.dataInput.start_date;
                     this.modelAssignResource.forEach(TrxResource =>{
-                        if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
+                        if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
                             status = true;
                         }
                     })
+                    if(!status){
+                        let end_date = this.dataInput.end_date;
+                        this.modelAssignResource.forEach(TrxResource =>{
+                            if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
+                                status = true;
+                            }
+                        })
+                    }
                 }
                 if(status){
                     iziToast.warning({
@@ -578,9 +709,11 @@
                         
                         this.getResource();
                         this.dataInput.resource_id = "";
-                        this.dataInput.project_id = "";
+                        this.dataInput.resource_detail_id = "";
                         this.dataInput.wbs_id = "";             
-                        this.dataInput.quantity = "";             
+                        this.dataInput.quantity = ""; 
+                        this.dataInput.category_id = ""; 
+                        $('#input_schedule').modal('hide');
                     })
                     .catch((error) => {
                         console.log(error);
@@ -590,13 +723,20 @@
             },
             update(){
                 $('div.overlay').show();   
+                if($('input[name="daterangeModal"]').val() == "" || $('input[name="daterangeModal"]').val() == null){
+                    this.editInput.start = '';
+                    this.editInput.end = '';
+                    this.editInput.start_date = '';
+                    this.editInput.end_date = '';
+                    this.editInput.datetime_start = '';
+                    this.editInput.datetime_end = '';
+                }
                 if(this.route == "/resource"){
                     var url = "/resource/updateAssignResource/"+this.editInput.id;
                 }else if(this.route == "/resource_repair"){
                     var url = "/resource_repair/updateAssignResource/"+this.editInput.id;
                 }         
                 let editInput = JSON.stringify(this.editInput);
-
                 window.axios.put(url,editInput).then((response) => {
                     if(response.data.error != undefined){
                         iziToast.warning({
@@ -611,9 +751,10 @@
                             title: response.data.response,
                             position: 'topRight',
                         });
+                        $('#edit_item').modal('hide');
                         $('div.overlay').hide();            
                     }
-                    
+                    this.clearEditData();
                     this.getResource();   
                 })
                 .catch((error) => {
@@ -621,10 +762,18 @@
                 })
             },
             openEditModal(data,index){
+                $('input[name="daterangeModal"]').val('');
                 this.editInput.id = data.id
+                this.editInput.category_id = data.category_id;
                 this.editInput.resource_id = data.resource_id;
+                this.editInput.old_resource_id = data.resource_id;
+                this.editInput.resource_detail_id = data.resource_detail_id;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.quantity = data.quantity;
+                this.editInput.start_date = data.start_date;
+                this.editInput.end_date = data.end_date;
+
+                this.buildDateRangePicker();
             },
         },
         watch : {
@@ -676,7 +825,7 @@
                 this.dataInput.resource_detail_id = '';
                 this.dataInput.quantity = '';
                 this.resourceDetails.forEach(data => {
-                    if(data.resource_id == newValue){
+                    if(data.resource_id == newValue && data.category_id == this.dataInput.category_id){
                         this.selectedRD.push(data);
                     }
                 })
@@ -695,15 +844,14 @@
                 }
             },
             'schedule.resource_id' : function(newValue){
+                this.schedule.resource_detail_id = "";
                 if(newValue != ''){
                     this.schedule.selectedRD = [];
                     this.resourceDetails.forEach(RD => {
-                        if(RD.resource_id == newValue){
+                        if(RD.resource_id == newValue && RD.category_id == 3){
                             this.schedule.selectedRD.push(RD);
                         }  
                     });
-                }else{
-                    this.schedule.resource_detail_id = "";
                 }
             },
             'schedule.resource_detail_id' : function(newValue){
@@ -717,7 +865,9 @@
                             let end_date = new Date((TR.end_date+"").replace(/-/g,"/"));
 
                             this.schedule.events.push({
-                                title: TR.wbs.number+" - "+TR.wbs.description, 
+                                title: "Project: "+TR.project.number + " \n WBS: "+ TR.wbs.number+" - "+TR.wbs.description, 
+                                wbs: TR.wbs.number+" - "+TR.wbs.description, 
+                                project: TR.project.number, 
                                 start: TR.start_date,
                                 end: TR.end_date,
                                 booked_by : TR.user.name,
@@ -741,7 +891,28 @@
                         $('div.overlay').hide();
                     })
                 }
-            }
+            },
+            'editInput.resource_id' : function(newValue){
+                if(this.editInput.category_id == 3){
+                    this.selectedRDModal = [];
+                    this.resourceDetails.forEach(data => {
+                        if(data.resource_id == newValue && data.category_id == 3){
+                            this.selectedRDModal.push(data);
+                        }
+                    })
+                    if(this.editInput.old_resource_id != newValue){
+                        this.editInput.resource_detail_id = '';
+                    }
+                }
+                
+            },
+            'editInput.resource_detail_id' : function(newValue){
+                if(newValue != "" && newValue != null){
+                    if(this.editInput.category_id == 3){
+                        this.editInput.quantity = 1;
+                    }
+                }             
+            },
         },
     });
 </script>

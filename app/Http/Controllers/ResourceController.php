@@ -509,6 +509,22 @@ class ResourceController extends Controller
             $resource_ref->resource_id = $data['resource_id'];
             $resource_ref->wbs_id = $data['wbs_id'];
             $resource_ref->quantity = $data['quantity'];
+            if($data['category_id'] == 3){
+                if($data['resource_detail_id'] != "" && $data['resource_detail_id'] != null){
+                    $resource_ref->resource_detail_id = $data['resource_detail_id'];
+                    if($data['start_date'] != "" && $data['start_date'] != null && $data['end_date'] != "" && $data['end_date'] != null){
+                        $resource_ref->start_date = $data['start_date'];
+                        $resource_ref->end_date = $data['end_date'];
+                    }else{
+                        $resource_ref->start_date = null;
+                        $resource_ref->end_date = null;
+                    }
+                }else{
+                    $resource_ref->resource_detail_id = null;
+                    $resource_ref->start_date = null;
+                    $resource_ref->end_date = null;
+                }
+            }
 
             if(!$resource_ref->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -777,7 +793,7 @@ class ResourceController extends Controller
     }
 
     public function getScheduleAPI($id){
-        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs','user')->get()->jsonSerialize();
+        $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs','user','project')->get()->jsonSerialize();
 
         return response($modelTR, Response::HTTP_OK);
     }

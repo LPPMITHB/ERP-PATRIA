@@ -315,7 +315,7 @@
                     </div>
 
                     <div class="modal fade" id="edit_activity">
-                        <div class="modal-dialog modalPredecessor">
+                        <div class="modal-dialog modalFull">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -324,93 +324,183 @@
                                     <h4 class="modal-title">Edit Activity <b id="edit_activity_code"></b></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="p-l-0 form-group col-sm-12">
-                                        <label for="name" class="control-label">Activity Configuration</label>
-                                        <selectize v-model="editActivity.activity_configuration_id" :settings="activityConfigSettings">
-                                            <option v-for="(activity_config, index) in activity_configs" :value="activity_config.id">{{ activity_config.name }} - {{ activity_config.description }}</option>
-                                        </selectize>
-                                    </div>
-
-                                    <div class="p-l-0 form-group col-sm-3">
-                                        <label for="edit_planned_start_date" class=" control-label">Start Date</label>
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
+                                    <div class="row">
+                                        <div class="col-sm-6 border-right-modal">
+                                            <div class="p-l-0 form-group col-sm-12">
+                                                <label for="name" class="control-label">Activity Configuration</label>
+                                                <selectize v-model="editActivity.activity_configuration_id" :settings="activityConfigSettings">
+                                                    <option v-for="(activity_config, index) in activity_configs" :value="activity_config.id">{{ activity_config.name }} - {{ activity_config.description }}</option>
+                                                </selectize>
                                             </div>
-                                            <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
-                                        </div>
-                                    </div>
-                                            
-                                    <div class="p-l-0 form-group col-sm-3">
-                                        <label for="edit_planned_end_date" class=" control-label">End Date</label>
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="p-l-0 form-group col-sm-3">
-                                        <label for="duration" class=" control-label">Duration</label>
-                                        <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
-                                    </div>
-                                        
-                                    <div class="p-l-0 form-group col-sm-3">
-                                        <label for="weight" class=" control-label">Weight</label>
-                                        <input v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
-                                    </div>
-
-                                    <div class="p-l-0 form-group col-sm-12">
-                                        <selectize v-model="editActivity.predecessor" :settings="activitiesSettings">
-                                            <option v-for="(activity, index) in allActivitiesEdit" v-if="activity.selected != true" :value="activity.id">{{ activity.name }}</option>
-                                        </selectize>
-                                    </div>
-                                    <div class="p-l-0 form-group col-sm-12">
-                                        <selectize v-model="editActivity.predecessorType" :settings="typeSettings">
-                                            <option value="fs">Finish to Start</option>
-                                            <option value="ss">Start to Start</option>
-                                            <option value="ff">Finish to Finish</option>
-                                            <option value="sf">Start to Finish</option>
-                                        </selectize>
-                                    </div>
-                                    <div class="p-l-0 form-group col-sm-2">
-                                        <button  :disabled="predecessoreEditOk" type="button" class="btn btn-primary" @click="addPredecessorEdit">ADD PREDECESSOR</button>
-                                    </div>
-                                            
-                                    <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
-                                        <thead>
-                                            <tr>
-                                                <th class="p-l-5" style="width: 5%">No</th>
-                                                <th style="width: 16%">Code</th>
-                                                <th style="width: 26%">Name</th>
-                                                <th style="width: 30%">Description</th>
-                                                <th style="width: 23%">WBS Number</th>
-                                                <th style="width: 23%">Pred. Type</th>
-                                                <th style="width: 15%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(data,index) in predecessorTableEdit">
-                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
-                                                <td v-if="data.type == 'fs'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Start')">Finish to Start</td>
-                                                <td v-else-if="data.type == 'ss'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Start')">Start to Start</td>
-                                                <td v-else-if="data.type == 'ff'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Finish')">Finish to Finish</td>
-                                                <td v-else-if="data.type == 'sf'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Finish')">Start to Finish</td>
-                                                <td>
-                                                    <div class="col-sm-12 col-xs-12 no-padding p-r-2">
-                                                        <a class="btn btn-danger btn-xs col-xs-12" @click="removePredecessorEdit(data)" data-toggle="modal">
-                                                            DELETE
-                                                        </a>
+        
+                                            <div class="p-l-0 form-group col-sm-3">
+                                                <label for="edit_planned_start_date" class=" control-label">Start Date</label>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>                                
+                                                    <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
+                                                </div>
+                                            </div>
+                                                    
+                                            <div class="p-l-0 form-group col-sm-3">
+                                                <label for="edit_planned_end_date" class=" control-label">End Date</label>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="p-l-0 form-group col-sm-3">
+                                                <label for="duration" class=" control-label">Duration</label>
+                                                <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
+                                            </div>
+                                                
+                                            <div class="p-l-0 form-group col-sm-3">
+                                                <label for="weight" class=" control-label">Weight</label>
+                                                <input v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
+                                            </div>
+        
+                                            <div class="p-l-0 form-group col-sm-12">
+                                                <selectize v-model="editActivity.predecessor" :settings="activitiesSettings">
+                                                    <option v-for="(activity, index) in allActivitiesEdit" v-if="activity.selected != true" :value="activity.id">{{ activity.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="p-l-0 form-group col-sm-12">
+                                                <selectize v-model="editActivity.predecessorType" :settings="typeSettings">
+                                                    <option value="fs">Finish to Start</option>
+                                                    <option value="ss">Start to Start</option>
+                                                    <option value="ff">Finish to Finish</option>
+                                                    <option value="sf">Start to Finish</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="p-l-0 form-group col-sm-2">
+                                                <button  :disabled="predecessoreEditOk" type="button" class="btn btn-primary" @click="addPredecessorEdit">ADD PREDECESSOR</button>
+                                            </div>
+                                                    
+                                            <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="p-l-5" style="width: 5%">No</th>
+                                                        <th style="width: 16%">Code</th>
+                                                        <th style="width: 26%">Name</th>
+                                                        <th style="width: 30%">Description</th>
+                                                        <th style="width: 23%">WBS Number</th>
+                                                        <th style="width: 23%">Pred. Type</th>
+                                                        <th style="width: 15%"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(data,index) in predecessorTableEdit">
+                                                        <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
+                                                        <td v-if="data.type == 'fs'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Start')">Finish to Start</td>
+                                                        <td v-else-if="data.type == 'ss'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Start')">Start to Start</td>
+                                                        <td v-else-if="data.type == 'ff'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Finish to Finish')">Finish to Finish</td>
+                                                        <td v-else-if="data.type == 'sf'" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('Start to Finish')">Start to Finish</td>
+                                                        <td>
+                                                            <div class="col-sm-12 col-xs-12 no-padding p-r-2">
+                                                                <a class="btn btn-danger btn-xs col-xs-12" @click="removePredecessorEdit(data)" data-toggle="modal">
+                                                                    DELETE
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>                                
+                                        </div>
+                                        <div style="margin-left: -0.2em" class="col-sm-6 border-left-modal">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <label for="length" class="col-sm-12 control-label">Material</label>
+                    
+                                                    <div class="col-sm-12">
+                                                        <selectize id="material" name="material_id" v-model="editActivity.material_id" :settings="material_settings">
+                                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="length" class="col-sm-12 control-label">Length</label>
+                                    
+                                                    <div class="col-sm-8">
+                                                        <input type="text" name="length" :disabled="lengthEditOk" class="form-control" id="lengths" v-model="editActivity.lengths" >
+                                                    </div>
+                    
+                                                    <div class="col-sm-4 p-l-2">
+                                                        <selectize id="uom" name="length_uom_id" v-model="editActivity.length_uom_id" :settings="length_uom_settings">
+                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="width" class="col-sm-12 control-label">Width</label>
+                                    
+                                                    <div class="col-sm-8">
+                                                        <input type="text" name="width" :disabled="widthEditOk" class="form-control" id="width" v-model="editActivity.width"  >
+                                                    </div>
+                    
+                                                    <div class="col-sm-4 p-l-2">
+                                                        <selectize id="uom" name="width_uom_id" v-model="editActivity.width_uom_id" :settings="width_uom_settings">
+                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
+                                            
+                                                <div class="form-group">
+                                                    <label for="height" class="col-sm-12 control-label">Height</label>
+                                    
+                                                    <div class="col-sm-8">
+                                                        <input type="text" name="height" :disabled="heightEditOk" class="form-control" id="height" v-model="editActivity.height" >
+                                                    </div>
+                    
+                                                    <div class="col-sm-4 p-l-2">
+                                                        <selectize id="uom" name="height_uom_id" v-model="editActivity.height_uom_id" :settings="height_uom_settings">
+                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>   
+        
+                                                <div class="form-group">
+                                                    <label for="height" class="col-sm-12 control-label">Quantity</label>
+                                    
+                                                    <div class="col-sm-8">
+                                                        <input type="text" name="quantity" class="form-control" id="quantity" v-model="editActivity.quantity_material" >
+                                                    </div>
+                    
+                                                    <div class="col-sm-4 p-l-2">
+                                                        <input disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
+                                                    </div>
+                                                </div>                        
+                                            </div>
+
+                                            <div class="row m-t-10 border-top-modal">
+                                                <div class="form-group m-t-5">
+                                                    <label for="length" class="col-sm-12 control-label">Service</label>
+                    
+                                                    <div class="col-sm-12">
+                                                        <selectize id="service" name="service_id" v-model="editActivity.service_id" :settings="service_settings">
+                                                            <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
+        
+                                                <div class="form-group">
+                                                    <label for="height" class="col-sm-12 control-label">Quantity</label>
+                                    
+                                                    <div class="col-sm-12">
+                                                        <input type="text" name="quantity" class="form-control" id="quantity" v-model="editActivity.quantity_service" >
+                                                    </div>
+                                                </div>                        
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button :disabled="updateOk" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update">SAVE</button>
@@ -496,7 +586,7 @@
                                         </div>                        
                                     </div>
                                 </div>
-                                <div class="modal-header">
+                                <div class="modal-header border-top-modal">
                                     <h4 class="modal-title">Assign Service</h4>
                                 </div>
                                 <div class="modal-body">
@@ -580,8 +670,6 @@ var data = {
 
         material_id : "",
         quantity_material : 1,
-        weight : "",
-        weight_uom_id : "",
         lengths :"",
         length_uom_id : "",
         width : "",
@@ -605,6 +693,18 @@ var data = {
         latest_predecessor : "",
         allPredecessor : [],
         activity_configuration_id : "",
+
+        material_id : "",
+        quantity_material : 1,
+        lengths :"",
+        length_uom_id : "",
+        width : "",
+        width_uom_id : "",
+        height :"",
+        height_uom_id : "",
+
+        service_id: "",
+        quantity_service : 1,
     },
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
@@ -770,6 +870,48 @@ var vm = new Vue({
                 {
                     isOk = true;
                 }
+
+                if(this.editActivity.weight_uom_id != ""){
+                    if(this.editActivity.weight == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.height_uom_id != ""){
+                    if(this.editActivity.height == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.length_uom_id != ""){
+                    if(this.editActivity.lengths == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.width_uom_id != ""){
+                    if(this.editActivity.width == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.width_uom_id != ""){
+                    if(this.editActivity.width == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.material_id != ""){
+                    if(this.editActivity.quantity_material == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.service_id != ""){
+                    if(this.editActivity.quantity_service == ""){
+                        isOk = true;
+                    }
+                }
             return isOk;
         },
         predecessorOk: function(){
@@ -788,14 +930,6 @@ var vm = new Vue({
                 {
                     isOk = true;
                 }
-            return isOk;
-        },
-        weightOk :function(){
-            let isOk = false;
-
-            if(this.newActivity.weight_uom_id == ""){
-                isOk = true;
-            }
             return isOk;
         },
         heightOk :function(){
@@ -818,6 +952,33 @@ var vm = new Vue({
             let isOk = false;
 
             if(this.newActivity.width_uom_id == ""){
+                isOk = true;
+            }
+            return isOk;
+        },
+        heightEditOk :function(){
+            let isOk = false;
+
+            if(this.editActivity.height_uom_id == "" || 
+            this.editActivity.height_uom_id == null){
+                isOk = true;
+            }
+            return isOk;
+        },
+        lengthEditOk :function(){
+            let isOk = false;
+
+            if(this.editActivity.length_uom_id == "" ||
+            this.editActivity.length_uom_id == null){
+                isOk = true;
+            }
+            return isOk;
+        },
+        widthEditOk :function(){
+            let isOk = false;
+
+            if(this.editActivity.width_uom_id == "" ||
+            this.editActivity.width_uom_id == null){
                 isOk = true;
             }
             return isOk;
@@ -949,6 +1110,17 @@ var vm = new Vue({
             this.editActivity.description = data.description;
             this.editActivity.activity_configuration_id = data.activity_configuration_id;
             this.editActivity.weight = data.weight;
+
+            this.editActivity.material_id = data.activity_detail.material_id;
+            this.editActivity.quantity_material = data.activity_detail.quantity_material;
+            this.editActivity.service_id = data.activity_detail.service_id;
+            this.editActivity.quantity_service = data.activity_detail.quantity_service;
+            this.editActivity.lengths = data.activity_detail.length;
+            this.editActivity.length_uom_id = data.activity_detail.length_uom_id;
+            this.editActivity.width = data.activity_detail.width;
+            this.editActivity.width_uom_id = data.activity_detail.width_uom_id;
+            this.editActivity.height = data.activity_detail.height;
+            this.editActivity.height_uom_id = data.activity_detail.height_uom_id;
             if(JSON.parse(data.predecessor) != null){
                 this.editActivity.allPredecessor = JSON.parse(data.predecessor);
             }else{
@@ -1047,6 +1219,11 @@ var vm = new Vue({
 
         },
         add(){            
+            this.newActivity.lengths = (this.newActivity.lengths+"").replace(/,/g , '');
+            this.newActivity.width = (this.newActivity.width+"").replace(/,/g , '');
+            this.newActivity.height = (this.newActivity.height+"").replace(/,/g , '');
+            this.newActivity.quantity_material = (this.newActivity.quantity_material+"").replace(/,/g , '');
+            this.newActivity.quantity_service = (this.newActivity.quantity_service+"").replace(/,/g , '');
             var newActivity = this.newActivity;
             newActivity = JSON.stringify(newActivity);
             var url = "";
@@ -1081,6 +1258,18 @@ var vm = new Vue({
                     this.newActivity.planned_end_date = "";
                     this.newActivity.planned_duration = "";
                     this.newActivity.weight = "";
+
+                    this.newActivity.lengths="";
+                    this.newActivity.width = "";
+                    this.newActivity.height = "";
+                    this.newActivity.quantity_material = 1;
+                    this.newActivity.quantity_service = 1;
+                    this.newActivity.length_uom_id = "";
+                    this.newActivity.width_uom_id = "";
+                    this.newActivity.height_uom_id = "";
+                    this.newActivity.material_id = "";
+                    this.newActivity.service_id = "";
+
                     this.newActivity.allPredecessor = []; 
                     this.predecessorTable =[];
                 }
@@ -1576,6 +1765,18 @@ var vm = new Vue({
             }else{
                 this.newActivity.width = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
+        },
+        'newActivity.quantity_material': function(newValue) {
+            this.newActivity.quantity_material = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editActivity.quantity_material': function(newValue) {
+            this.editActivity.quantity_material = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'newActivity.quantity_service': function(newValue) {
+            this.newActivity.quantity_service = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editActivity.quantity_service': function(newValue) {
+            this.editActivity.quantity_service = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
     },
     created: function() {

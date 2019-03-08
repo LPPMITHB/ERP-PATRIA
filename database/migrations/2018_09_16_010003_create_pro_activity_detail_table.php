@@ -18,7 +18,8 @@ class CreateProActivityDetailTable extends Migration
             $table->unsignedInteger('activity_id')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
-            $table->integer('quantity')->nullable();
+            $table->integer('quantity_material')->nullable();
+            $table->integer('quantity_service')->nullable();
             $table->float('length', 15, 2)->nullable();
             $table->integer('length_uom_id')->nullable();
             $table->float('width', 15, 2)->nullable();
