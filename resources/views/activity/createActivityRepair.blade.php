@@ -870,6 +870,48 @@ var vm = new Vue({
                 {
                     isOk = true;
                 }
+
+                if(this.editActivity.weight_uom_id != ""){
+                    if(this.editActivity.weight == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.height_uom_id != ""){
+                    if(this.editActivity.height == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.length_uom_id != ""){
+                    if(this.editActivity.lengths == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.width_uom_id != ""){
+                    if(this.editActivity.width == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.width_uom_id != ""){
+                    if(this.editActivity.width == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.material_id != ""){
+                    if(this.editActivity.quantity_material == ""){
+                        isOk = true;
+                    }
+                }
+
+                if(this.editActivity.service_id != ""){
+                    if(this.editActivity.quantity_service == ""){
+                        isOk = true;
+                    }
+                }
             return isOk;
         },
         predecessorOk: function(){

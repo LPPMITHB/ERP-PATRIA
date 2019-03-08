@@ -111,10 +111,10 @@ class ActivityController extends Controller
             // Notification::send($users, new ProjectActivity($activity));
             $activity->save();
             if($activity->wbs->project->business_unit_id == 2){
+                $activityDetail = new ActivityDetail;
+                $activityDetail->activity_id = $activity->id;
                 if($data['material_id'] != null || $data['service_id'] != null){
-                    $activityDetail = new ActivityDetail;
                     if($data['material_id'] != null){
-                        $activityDetail->activity_id = $activity->id;
                         $activityDetail->material_id = $data['material_id'];
                         $activityDetail->quantity_material = $data['quantity_material'];
                         if($data['length_uom_id'] != ""){
@@ -138,8 +138,8 @@ class ActivityController extends Controller
                         $activityDetail->service_id = $data['service_id'];
                         $activityDetail->quantity_service = $data['quantity_service'];
                     }
-                    $activityDetail->save();
                 }
+                $activityDetail->save();
             }
             DB::commit();
             return response(["response"=>"Success to create new activity"],Response::HTTP_OK);
@@ -231,7 +231,37 @@ class ActivityController extends Controller
             }else{
                 $activity->predecessor = null;
             }
-
+            
+            if($activity->wbs->project->business_unit_id == 2){
+                $activityDetail = $activity->activityDetail;
+                if($data['material_id'] != null || $data['service_id'] != null){
+                    if($data['material_id'] != null){
+                        $activityDetail->material_id = $data['material_id'];
+                        $activityDetail->quantity_material = $data['quantity_material'];
+                        if($data['length_uom_id'] != ""){
+                            $activityDetail->length_uom_id = $data['length_uom_id'];
+                            $activityDetail->length = $data['lengths'];
+                        }
+                        
+                        if($data['width_uom_id'] != ""){
+                            $activityDetail->width_uom_id = $data['width_uom_id'];
+                            $activityDetail->width = $data['width'];
+                        }
+    
+                        if($data['height_uom_id'] != ""){
+                            $activityDetail->height_uom_id = $data['height_uom_id'];
+                            $activityDetail->height = $data['height'];
+                        }
+                    }
+    
+                    if($data['service_id'] != null){
+                        $activityDetail->activity_id = $activity->id;
+                        $activityDetail->service_id = $data['service_id'];
+                        $activityDetail->quantity_service = $data['quantity_service'];
+                    }
+                }
+                $activityDetail->update();
+            }
             if(!$activity->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
@@ -518,13 +548,10 @@ class ActivityController extends Controller
                     }
                 }
             }
-            if(!$activity->delete()){
-                array_push($error, ["Failed to delete, please try again!"]);                
-                return response(["error"=> $error],Response::HTTP_OK);
-            }else{
-                DB::commit();
-                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
-            }
+            $activity->activityDetail->delete();
+            $activity->delete();
+            DB::commit();
+            return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollback();
             array_push($error, [$e->getMessage()]);                
