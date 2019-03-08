@@ -655,6 +655,11 @@ class PurchaseOrderController extends Controller
             $PIR->resource_id = $POD->resource_id;
             $PIR->vendor_id = $modelPO->vendor_id;
             $PIR->quantity = $POD->quantity;
+            if($POD->quantity != 0){
+                $PIR->price = $POD->total_price / $POD->quantity;
+            }else{
+                $PIR->price = 0;
+            }
             $PIR->save();
         }
     }
