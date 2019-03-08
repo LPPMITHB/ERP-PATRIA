@@ -47,7 +47,7 @@
                         <div class="box-body">
                             <div class="col-sm-12">
                                 <label for="code" class="control-label">Code*</label>
-                                <input type="text" id="code" v-model="dataInput.code" class="form-control" disabled>
+                                <input type="text" id="code" v-model="dataInput.code" class="form-control" placeholder="Please Input Code">
                             </div>
                             <div class="col-sm-12">
                                 <label for="brand" class="control-label">Brand*</label>
@@ -140,7 +140,7 @@
         uom : @json($uom),
         resource : @json($resource),
         dataInput : {
-            code : @json($resource_detail_code),
+            code : "",
             resource_id : @json($resource->id),
             brand : "",
             manufactured_date : "",
@@ -187,7 +187,7 @@
             dataOk: function(){
                 let isOk = false;
                 
-                if(this.dataInput.brand == ""){
+                if(this.dataInput.brand == "" || this.dataInput.code == ""){
                     isOk = true;
                 }
                 return isOk;
