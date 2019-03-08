@@ -107,7 +107,7 @@
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
                                         <div class="col-sm-12 p-t-5">
-                                            <a class="btn btn-primary btn-xs pull-right" data-toggle="modal" href="#vendor_list" @click.prevent="vendorList">
+                                            <a class="btn btn-primary btn-xs pull-right" data-toggle="modal" href="#vendor_list" @click.prevent="vendor_list">
                                                 VENDOR LIST
                                             </a>
                                         </div>
@@ -397,7 +397,7 @@
             },
         },
         methods : {
-            vendorList(){
+            vendor_list(){
                 this.vendorList.material_id = "";
             },
             makeId(id){
