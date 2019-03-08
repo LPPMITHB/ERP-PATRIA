@@ -548,7 +548,9 @@ class ActivityController extends Controller
                     }
                 }
             }
-            $activity->activityDetail->delete();
+            if($activity->wbs->project->business_unit_id == 2){
+                $activity->activityDetail->delete();
+            }
             $activity->delete();
             DB::commit();
             return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
