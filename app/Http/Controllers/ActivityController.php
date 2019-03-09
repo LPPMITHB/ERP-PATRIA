@@ -350,31 +350,10 @@ class ActivityController extends Controller
     {
         $project = Project::find($id);
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-        // $wbss = $project->wbss->pluck('id')->toArray();
-        // $activities = Activity::whereIn('wbs_id',$wbss)->get();
-        // $predecessors =$activities->pluck('predecessor','id')->toArray();
-        // $predecessor_array = [];
-        // $temp_starting_point = [];
-        // $starting_point = [];
 
-        // foreach($predecessors as $act_id => $predecessor){
-        //     if($predecessor != null){
-        //         $temp = json_decode($predecessor);
-        //         array_push($predecessor_array, $temp[0][0]);
-        //     }else{
-        //         array_push($temp_starting_point, $act_id);
-        //     }
-        // }
-
-        // foreach($temp_starting_point as $key => $act_id){
-        //     array_search($act_id,$predecessor_array);
-        //     if(array_search($act_id,$predecessor_array) != false){
-        //         array_push($starting_point, $act_id);
-        //     }
-        // }
-        
         return view('activity.indexNetwork', compact('project','menu'));
     }
+
 
     public function updatePredecessor(Request $request, $id)
     {
