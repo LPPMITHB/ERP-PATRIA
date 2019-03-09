@@ -17,22 +17,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
         \DB::table('trx_purchase_requisition')->delete();
         
         \DB::table('trx_purchase_requisition')->insert(array (
-            /* 0 => 
-            array (
-                'id' => 1,
-                'number' => 'PR-1900001',
-                'type' => 1,
-                'bom_id' => NULL, // 4
-                'purchase_requisition_id' => NULL,
-                'business_unit_id' => 2,
-                'description' => 'AUTO PR FOR PRO2-DUMMY2',
-                'status' => 1,
-                'branch_id' => 1,
-                'user_id' => 1,
-                'created_at' => '2019-01-15 09:57:54',
-                'updated_at' => '2019-01-15 09:57:54',
-            ), */
-            1 => 
+            0 => 
             array (
                 'id' => 2,
                 'number' => 'PR-1900002',
@@ -50,7 +35,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:30:38',
                 'updated_at' => '2019-01-17 04:30:38',
             ),
-            2 => 
+            1 => 
             array (
                 'id' => 3,
                 'number' => 'PR-1900003',
@@ -59,7 +44,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'bom_id' => NULL,
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 1,
-                'description' => 'PR DUMMY PMP 2 (RESOURCE)',
+            'description' => 'PR DUMMY PMP 2 (RESOURCE)',
                 'revision_description' => NULL,
                 'status' => 1,
                 'branch_id' => 2,
@@ -68,7 +53,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:31:13',
                 'updated_at' => '2019-01-17 04:31:13',
             ),
-            3 => 
+            2 => 
             array (
                 'id' => 4,
                 'number' => 'PR-1900004',
@@ -86,7 +71,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:33:59',
                 'updated_at' => '2019-01-17 06:50:05',
             ),
-            4 => 
+            3 => 
             array (
                 'id' => 5,
                 'number' => 'PR-1900005',
@@ -104,7 +89,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:34:34',
                 'updated_at' => '2019-01-17 04:35:44',
             ),
-            5 => 
+            4 => 
             array (
                 'id' => 6,
                 'number' => 'PR-1900006',
@@ -122,7 +107,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:40:37',
                 'updated_at' => '2019-01-17 04:40:37',
             ),
-            6 => 
+            5 => 
             array (
                 'id' => 7,
                 'number' => 'PR-1900007',
@@ -131,7 +116,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'bom_id' => NULL,
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 2,
-                'description' => 'PR DUMMY PAMI 2 (RESOURCE)',
+            'description' => 'PR DUMMY PAMI 2 (RESOURCE)',
                 'revision_description' => NULL,
                 'status' => 1,
                 'branch_id' => 1,
@@ -140,7 +125,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:41:15',
                 'updated_at' => '2019-01-17 04:41:15',
             ),
-            7 => 
+            6 => 
             array (
                 'id' => 8,
                 'number' => 'PR-1900008',
@@ -158,7 +143,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:42:14',
                 'updated_at' => '2019-01-17 04:44:06',
             ),
-            8 => 
+            7 => 
             array (
                 'id' => 9,
                 'number' => 'PR-1900009',
@@ -167,7 +152,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'bom_id' => NULL,
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 2,
-                'description' => 'PR DUMMY PAMI 4 -> PO (RESOURCE)',
+            'description' => 'PR DUMMY PAMI 4 -> PO (RESOURCE)',
                 'revision_description' => NULL,
                 'status' => 7,
                 'branch_id' => 1,
@@ -176,7 +161,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 04:42:47',
                 'updated_at' => '2019-01-17 04:44:29',
             ),
-            9 => 
+            8 => 
             array (
                 'id' => 10,
                 'number' => 'PR-1900010',
@@ -194,7 +179,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 06:51:04',
                 'updated_at' => '2019-01-17 06:51:14',
             ),
-            10 => 
+            9 => 
             array (
                 'id' => 11,
                 'number' => 'PR-1900011',
@@ -203,7 +188,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'bom_id' => NULL,
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 1,
-                'description' => 'PR DUMMY PMP 6 (RESOURCE)',
+            'description' => 'PR DUMMY PMP 6 (RESOURCE)',
                 'revision_description' => NULL,
                 'status' => 2,
                 'branch_id' => 2,
@@ -212,7 +197,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 06:52:06',
                 'updated_at' => '2019-01-17 06:52:12',
             ),
-            11 => 
+            10 => 
             array (
                 'id' => 12,
                 'number' => 'PR-1900012',
@@ -230,7 +215,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 06:53:05',
                 'updated_at' => '2019-01-17 06:55:05',
             ),
-            12 => 
+            11 => 
             array (
                 'id' => 13,
                 'number' => 'PR-1900013',
@@ -239,7 +224,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'bom_id' => NULL,
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 1,
-                'description' => 'PR DUMMY PMP 8 (RESOURCE)',
+            'description' => 'PR DUMMY PMP 8 (RESOURCE)',
                 'revision_description' => NULL,
                 'status' => 0,
                 'branch_id' => 2,
@@ -248,7 +233,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 06:53:57',
                 'updated_at' => '2019-01-17 06:55:38',
             ),
-            13 => 
+            12 => 
             array (
                 'id' => 14,
                 'number' => 'PR-1900014',
@@ -266,7 +251,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 06:58:29',
                 'updated_at' => '2019-01-17 06:59:23',
             ),
-            14 => 
+            13 => 
             array (
                 'id' => 15,
                 'number' => 'PR-1900015',
@@ -275,7 +260,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'bom_id' => NULL,
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 2,
-                'description' => 'PR DUMMY PAMI 6 (RESOURCE)',
+            'description' => 'PR DUMMY PAMI 6 (RESOURCE)',
                 'revision_description' => NULL,
                 'status' => 2,
                 'branch_id' => 1,
@@ -284,7 +269,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 06:59:14',
                 'updated_at' => '2019-01-17 06:59:27',
             ),
-            15 => 
+            14 => 
             array (
                 'id' => 16,
                 'number' => 'PR-1900016',
@@ -302,7 +287,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 07:00:13',
                 'updated_at' => '2019-01-17 07:01:56',
             ),
-            16 => 
+            15 => 
             array (
                 'id' => 17,
                 'number' => 'PR-1900017',
@@ -311,7 +296,7 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'bom_id' => NULL,
                 'purchase_requisition_id' => NULL,
                 'business_unit_id' => 2,
-                'description' => 'PR DUMMY PAMI 8 (RESOURCE)',
+            'description' => 'PR DUMMY PAMI 8 (RESOURCE)',
                 'revision_description' => NULL,
                 'status' => 0,
                 'branch_id' => 1,
@@ -320,7 +305,80 @@ class TrxPurchaseRequisitionTableSeeder extends Seeder
                 'created_at' => '2019-01-17 07:00:58',
                 'updated_at' => '2019-01-17 07:02:17',
             ),
+            16 => 
+            array (
+                'id' => 18,
+                'number' => 'PR-1900018',
+                'required_date' => NULL,
+                'type' => 1,
+                'bom_id' => NULL,
+                'purchase_requisition_id' => NULL,
+                'business_unit_id' => 1,
+                'description' => 'PR DUMMY PIR 1',
+                'revision_description' => '',
+                'status' => 0,
+                'branch_id' => 1,
+                'user_id' => 2,
+                'approved_by' => 2,
+                'created_at' => '2019-03-08 17:45:18',
+                'updated_at' => '2019-03-08 17:49:53',
+            ),
+            17 => 
+            array (
+                'id' => 19,
+                'number' => 'PR-1900019',
+                'required_date' => NULL,
+                'type' => 2,
+                'bom_id' => NULL,
+                'purchase_requisition_id' => NULL,
+                'business_unit_id' => 1,
+                'description' => 'PR DUMMY PIR 2',
+                'revision_description' => '',
+                'status' => 0,
+                'branch_id' => 1,
+                'user_id' => 2,
+                'approved_by' => 2,
+                'created_at' => '2019-03-08 17:47:11',
+                'updated_at' => '2019-03-08 17:52:26',
+            ),
+            18 => 
+            array (
+                'id' => 20,
+                'number' => 'PR-1900020',
+                'required_date' => NULL,
+                'type' => 1,
+                'bom_id' => NULL,
+                'purchase_requisition_id' => NULL,
+                'business_unit_id' => 2,
+                'description' => 'PR DUMMY PIR PAMI 1',
+                'revision_description' => '',
+                'status' => 0,
+                'branch_id' => 2,
+                'user_id' => 3,
+                'approved_by' => 3,
+                'created_at' => '2019-03-08 17:54:58',
+                'updated_at' => '2019-03-08 17:57:17',
+            ),
+            19 => 
+            array (
+                'id' => 21,
+                'number' => 'PR-1900021',
+                'required_date' => NULL,
+                'type' => 2,
+                'bom_id' => NULL,
+                'purchase_requisition_id' => NULL,
+                'business_unit_id' => 2,
+                'description' => 'PR DUMMY PIR PAMI 2',
+                'revision_description' => '',
+                'status' => 0,
+                'branch_id' => 2,
+                'user_id' => 3,
+                'approved_by' => 3,
+                'created_at' => '2019-03-08 17:55:37',
+                'updated_at' => '2019-03-08 17:58:31',
+            ),
         ));
+        
         
     }
 }

@@ -20,7 +20,8 @@ class CreatePurchasingInfoRecord extends Migration
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('vendor_id')->nullable();
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
+            $table->double('price');
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');
