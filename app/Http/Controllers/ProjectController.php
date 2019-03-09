@@ -722,7 +722,6 @@ class ProjectController extends Controller
         $predecessor_array = [];
         $temp_starting_point = [];
         $starting_point = [];
-
         foreach($predecessors as $act_id => $predecessor){
             if($predecessor != null){
                 $temp = json_decode($predecessor);
@@ -739,7 +738,7 @@ class ProjectController extends Controller
         }
 
         foreach($temp_starting_point as $key => $act_id){
-            if(array_search($act_id,$predecessor_array) != false){
+            if(array_search($act_id,$predecessor_array) > -1){
                 array_push($starting_point, $act_id);
             }
         }
@@ -780,7 +779,6 @@ class ProjectController extends Controller
                 }
             }
         }
-
 
         $longest_duration = 0;
         $longest_model = [];
