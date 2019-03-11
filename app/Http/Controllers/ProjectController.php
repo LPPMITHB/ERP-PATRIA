@@ -810,6 +810,7 @@ class ProjectController extends Controller
         foreach ($ganttData as $key => $data) {
             if(array_search($data["id"], $cpm_act_code) > -1){
                 $data['is_cpm'] = true;
+                $data['text'] = $data['text']." CPM!";
                 $ganttData[$key] = $data;
             }
         }
