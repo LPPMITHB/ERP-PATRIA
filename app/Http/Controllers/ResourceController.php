@@ -79,6 +79,7 @@ class ResourceController extends Controller
             $resource->code = strtoupper($data->code);
             $resource->name = ucwords($data->name);
             $resource->description = $data->description;
+            $resource->cost_standard_price = $data->cost_standard_price;
             $resource->user_id = Auth::user()->id;
             $resource->branch_id = Auth::user()->branch->id;
             $resource->save();
@@ -404,7 +405,6 @@ class ResourceController extends Controller
     public function updateDetail(Request $request)
     {
         $data = $request->json()->all();
-
         DB::beginTransaction();
         try {
             $modelRD = ResourceDetail::findOrFail($data['resource_detail_id']);
@@ -413,15 +413,19 @@ class ResourceController extends Controller
             $modelRD->performance_uom_id = ($data['performance_uom_id'] != '') ? $data['performance_uom_id'] : null;
             $modelRD->lifetime_uom_id = ($data['lifetime_uom_id'] != '') ? $data['lifetime_uom_id'] : null;
             if($modelRD->lifetime_uom_id != null){
-                if($data['lt'] != ''){
+                if($data['lifetime'] != ''){
                     if($modelRD->lifetime_uom_id == 1){
-                        $modelRD->lifetime = $data['lt'] * 8;
+                        $modelRD->lifetime = $data['lifetime'] * 8;
                     }elseif($modelRD->lifetime_uom_id == 2){
-                        $modelRD->lifetime = $data['lt'] * 8 * 30;
+                        $modelRD->lifetime = $data['lifetime'] * 8 * 30;
                     }elseif($modelRD->lifetime_uom_id == 3){
-                        $modelRD->lifetime = $data['lt'] * 8 * 365;
+                        $modelRD->lifetime = $data['lifetime'] * 8 * 365;
                     }
                 }
+            }
+            if($data['lifetime_uom_id'] == '' || $data['lifetime'] == ''){
+                $modelRD->lifetime = null;
+                $modelRD->lifetime_uom_id = null;
             }
             if($data['category_id'] == 0){
                 $modelRD->sub_con_address = $data['sub_con_address'];
@@ -448,17 +452,27 @@ class ResourceController extends Controller
                 }
                 $modelRD->purchasing_price = ($data['purchasing_price'] != '') ? $data['purchasing_price'] : null;
                 $modelRD->cost_per_hour = ($data['cost_per_hour'] != '') ? $data['cost_per_hour'] : null;
+                $modelRD->serial_number = ($data['serial_number'] != '') ? $data['serial_number'] : null;
+                $modelRD->quantity = ($data['quantity'] != '') ? $data['quantity'] : null;
+                $modelRD->kva = ($data['kva'] != '') ? $data['kva'] : null;
+                $modelRD->amp = ($data['amp'] != '') ? $data['amp'] : null;
+                $modelRD->volt = ($data['volt'] != '') ? $data['volt'] : null;
+                $modelRD->phase = ($data['phase'] != '') ? $data['phase'] : null;
+                $modelRD->length = ($data['length'] != '') ? $data['length'] : null;
+                $modelRD->width = ($data['width'] != '') ? $data['width'] : null;
+                $modelRD->height = ($data['height'] != '') ? $data['height'] : null;
+                $modelRD->manufactured_in = ($data['manufactured_in'] != '') ? $data['manufactured_in'] : null;
             }
 
             if(!$modelRD->update()){
-                return redirect()->route('resource.show',$data['resource_detail_id'])->with('error','Failed to save, please try again !');
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
-                return response(json_encode($modelRD),Response::HTTP_OK);
+                return response(["response"=>"Resource Detail Updated"],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('resource.show',$data['resource_detail_id'])->with('error', $e->getMessage());
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 
@@ -613,14 +627,36 @@ class ResourceController extends Controller
         $route = $request->route()->getPrefix();
         $data = json_decode($request->datas);
 
+        $RSDs = ResourceDetail::all();
+        foreach ($RSDs as $rsd) {
+            if($rsd->code == $data->code){
+                if($route == "/resource"){
+                    return redirect()->route('resource.createInternal',$data->resource_id)->with('warning', 'Code has been taken')->withInput();
+                }elseif($route == "/resource_repair"){
+                    return redirect()->route('resource_repair.createInternal',$data->resource_id)->with('warning', 'Code has been taken')->withInput();
+                }
+            }
+        }
+
         DB::beginTransaction();
         try {
+
                 $RD = new ResourceDetail;
                 $RD->code = $data->code;
                 $RD->resource_id = $data->resource_id;
+                $RD->serial_number = $data->serial_number;
                 $RD->category_id = 3;
+                $RD->quantity = ($data->quantity != '') ? $data->quantity : 1;
                 $RD->description = $data->description;
-                $RD->brand = $data->brand;
+                $RD->kva = ($data->kva != '') ? $data->kva : null;
+                $RD->amp = ($data->amp != '') ? $data->amp : null;
+                $RD->volt = ($data->volt != '') ? $data->volt : null;
+                $RD->phase = ($data->phase != '') ? $data->phase : null;
+                $RD->length = ($data->length != '') ? $data->length : null;
+                $RD->width = ($data->width != '') ? $data->width : null;
+                $RD->height = ($data->height != '') ? $data->height : null;
+                $RD->brand = ($data->brand != '') ? $data->brand : null;
+                $RD->manufactured_in = $data->manufactured_in;
                 if($data->depreciation_method != ""){
                     $RD->depreciation_method = $data->depreciation_method;
                 }
@@ -674,13 +710,13 @@ class ResourceController extends Controller
     public function generateResourceCode(){
         $code = 'RSC';
         $modelResource = Resource::orderBy('code', 'desc')->first();
-        
+
         $number = 1;
 		if(isset($modelResource)){
-            $number += intval(substr($modelResource->code, -4));
+            $number += intval(substr($modelResource->code, -3));
 		}
 
-        $resource_code = $code.''.sprintf('%04d', $number);
+        $resource_code = $code.''.sprintf('%03d', $number);
 		return $resource_code;
     }
 
