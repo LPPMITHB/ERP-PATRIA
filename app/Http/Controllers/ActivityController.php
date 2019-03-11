@@ -338,8 +338,9 @@ class ActivityController extends Controller
         
         if($activity->predecessor != null){
             $predecessor = json_decode($activity->predecessor);
-            foreach($predecessor as $activity_id){
-                $refActivity = Activity::find($activity_id);
+            foreach($predecessor as $activity_predecessor){
+                $refActivity = Activity::find($activity_predecessor[0]);
+                $refActivity->type = $activity_predecessor[1];
                 $activityPredecessor->push($refActivity);
             }
         }
