@@ -837,3 +837,7 @@ $color-loader: #3c8dbc;
 .modal {
     overflow-y:auto;
 }
+
+.selectizeFull>.selectize-dropdown{
+    width: 180% !important;
+}

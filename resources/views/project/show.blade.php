@@ -4,7 +4,7 @@
     @if ($menu == "building")
         @breadcrumb(
             [
-                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->name,
+                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->name." (".$project->person_in_charge.")",
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Projects' => route('project.index'),
@@ -16,7 +16,7 @@
     @else
         @breadcrumb(
             [
-                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->name,
+                'title' => 'Show Project » '.$project->businessUnit->name.' » '.$project->name." (".$project->person_in_charge.")",
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Projects' => route('project_repair.index'),
@@ -684,7 +684,11 @@
             if(task.$level == 0){
                 return "<b>"+task.text+"</b>";
             }else{
-                return "";
+                if(task.is_cpm){
+                    return "(!)";
+                }else{
+                    return "";
+                }
             }
         };
         

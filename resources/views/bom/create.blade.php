@@ -99,7 +99,7 @@
                                     <tr>
                                         <td>{{newIndex}}</td>
                                         <td colspan="2" class="no-padding">
-                                            <selectize id="material" v-model="input.material_id" :settings="materialSettings">
+                                            <selectize class="selectizeFull" id="material" v-model="input.material_id" :settings="materialSettings">
                                                 <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>    
                                         </td>
