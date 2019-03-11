@@ -807,10 +807,11 @@ class ProjectController extends Controller
         $cpm_act_code = array_unique($cpm_act_code);
         foreach ($ganttData as $key => $data) {
             if(array_search($data["id"], $cpm_act_code) > -1){
-                $data['text'] = $data['text']." CPM!";
+                $data['is_cpm'] = true;
                 $ganttData[$key] = $data;
             }
         }
+
         $ganttData->jsonSerialize();
         $links->jsonSerialize();
         $dataPlannedCost->jsonSerialize();

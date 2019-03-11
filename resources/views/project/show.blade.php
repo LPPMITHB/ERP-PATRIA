@@ -684,7 +684,11 @@
             if(task.$level == 0){
                 return "<b>"+task.text+"</b>";
             }else{
-                return "";
+                if(task.is_cpm){
+                    return "(!)";
+                }else{
+                    return "";
+                }
             }
         };
         
