@@ -56,7 +56,7 @@
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->progress}} %</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">WBS</div>
-                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->wbs->code}} - {{$activity->wbs->number}}"><b>: {{$activity->wbs->code}} - {{$activity->wbs->number}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->wbs->number}} - {{$activity->wbs->description}}"><b>: {{$activity->wbs->number}} - {{$activity->wbs->description}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Status</div>
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$activity->status == 1 ? 'Open' : 'Done'}} </b></div>
@@ -124,6 +124,7 @@
                             <th width="12%">Activity Code</th>
                             <th width="30%">Activity Name</th>
                             <th width="30%">WBS</th>
+                            <th>Type</th>
                             <th>Progress</th>
                             <th width="20px">Status</th>
                         </tr>
@@ -134,7 +135,16 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $activity->code }}</td>
                                 <td>{{ $activity->name }}</td>
-                                <td>{{$activity->wbs->code}} - {{$activity->wbs->number}}</td>
+                                <td>{{$activity->wbs->number}} - {{$activity->wbs->description}}</td>
+                                @if($activity->type = "fs")
+                                    <td>Finish to Start</td>
+                                @elseif($activity->type = "ff")
+                                    <td>Finish to Finish</td>
+                                @elseif($activity->type = "sf")
+                                    <td>Start to Finish</td>
+                                @elseif($activity->type = "ss")
+                                    <td>Start to Start</td>
+                                @endif
                                 <td>{{$activity->progress}} %</td>
                                 <td class="textCenter">
                                     @if($activity->status == 0)
