@@ -63,6 +63,7 @@ return array(
     'App\\Http\\ViewComposers\\SidenavComposer' => $baseDir . '/app/Http/ViewComposers/SidenavComposer.php',
     'App\\Models\\Activity' => $baseDir . '/app/Models/Activity.php',
     'App\\Models\\ActivityConfiguration' => $baseDir . '/app/Models/ActivityConfiguration.php',
+    'App\\Models\\ActivityDetail' => $baseDir . '/app/Models/ActivityDetail.php',
     'App\\Models\\ActivityProfile' => $baseDir . '/app/Models/ActivityProfile.php',
     'App\\Models\\Bom' => $baseDir . '/app/Models/Bom.php',
     'App\\Models\\BomDetail' => $baseDir . '/app/Models/BomDetail.php',

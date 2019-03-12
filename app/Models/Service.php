@@ -27,5 +27,9 @@ class Service extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+    public function uom()
+    {
+        return $this->belongsTo('App\Models\Uom');
+    }
     
 }

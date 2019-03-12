@@ -419,6 +419,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\ViewComposers\\SidenavComposer' => __DIR__ . '/../..' . '/app/Http/ViewComposers/SidenavComposer.php',
         'App\\Models\\Activity' => __DIR__ . '/../..' . '/app/Models/Activity.php',
         'App\\Models\\ActivityConfiguration' => __DIR__ . '/../..' . '/app/Models/ActivityConfiguration.php',
+        'App\\Models\\ActivityDetail' => __DIR__ . '/../..' . '/app/Models/ActivityDetail.php',
         'App\\Models\\ActivityProfile' => __DIR__ . '/../..' . '/app/Models/ActivityProfile.php',
         'App\\Models\\Bom' => __DIR__ . '/../..' . '/app/Models/Bom.php',
         'App\\Models\\BomDetail' => __DIR__ . '/../..' . '/app/Models/BomDetail.php',
