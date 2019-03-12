@@ -14,6 +14,7 @@ use App\Models\Activity;
 use App\Models\ActivityDetail;
 use App\Models\Material;
 use App\Models\Service;
+use App\Models\Vendor;
 use App\Models\UOM;
 use App\Models\WbsProfile;
 use App\Models\WbsConfiguration;
@@ -42,11 +43,12 @@ class ActivityController extends Controller
 
         $materials = Material::all();
         $services = Service::all();
+        $vendors = Vendor::all();
         $uoms = UOM::all();
         $project = $wbs->project;
         $menu = "repair";
 
-        return view('activity.createActivityRepair', compact('uoms','materials','services','project', 'wbs','menu','activity_config'));
+        return view('activity.createActivityRepair', compact('vendors','uoms','materials','services','project', 'wbs','menu','activity_config'));
     }
 
     public function createActivityProfile($id, Request $request)
