@@ -41,7 +41,6 @@ class CreateMstMaterialTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('uom_id')->references('id')->on('mst_uom');
             $table->foreign('dimension_uom_id')->references('id')->on('mst_uom');
-            $table->foreign('height_uom_id')->references('id')->on('mst_uom');
         });
     }
 
