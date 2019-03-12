@@ -176,6 +176,30 @@
     });
 
     var data = {
+        oldData : {
+            code : @json(Request::old('code')),
+            serial_number : @json(Request::old('serial_number')),
+            brand : @json(Request::old('brand')),
+            quantity : @json(Request::old('quantity')),
+            kva : @json(Request::old('kva')),
+            amp :@json(Request::old('amp')),
+            volt : @json(Request::old('volt')),
+            phase : @json(Request::old('phase')),
+            length : @json(Request::old('length')),
+            width : @json(Request::old('width')),
+            height : @json(Request::old('height')),
+            manufactured_in : @json(Request::old('manufactured_in')),
+            manufactured_date : @json(Request::old('manufactured_date')),
+            purchasing_date : @json(Request::old('purchasing_date')),
+            purchasing_price : @json(Request::old('purchasing_price')),
+            lifetime : @json(Request::old('lifetime')),
+            lifetime_uom_id : @json(Request::old('lifetime_uom_id')),
+            cost_per_hour : @json(Request::old('cost_per_hour')),
+            description : @json(Request::old('description')),
+            depreciation_method : @json(Request::old('depreciation_method')),
+            performance : @json(Request::old('performance')),
+            performance_uom_id : @json(Request::old('performance_uom_id')),
+        },
         depreciation_methods : @json($depreciation_methods),
         uom : @json($uom),
         resource : @json($resource),
@@ -245,30 +269,127 @@
         },
         methods: {
             submitForm(){
-                this.dataInput.purchasing_price = (this.dataInput.purchasing_price+"").replace(/,/g , '');
-                this.dataInput.cost_per_hour = (this.dataInput.cost_per_hour+"").replace(/,/g , '');
-                this.dataInput.performance = (this.dataInput.performance+"").replace(/,/g , '');
-                this.dataInput.lifetime = (this.dataInput.lifetime+"").replace(/,/g , '');
-                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/,/g , '');
-                this.dataInput.kva = (this.dataInput.kva+"").replace(/,/g , '');
-                this.dataInput.amp = (this.dataInput.amp+"").replace(/,/g , '');
-                this.dataInput.volt = (this.dataInput.volt+"").replace(/,/g , '');
-                this.dataInput.phase = (this.dataInput.phase+"").replace(/,/g , '');
-                this.dataInput.length = (this.dataInput.length+"").replace(/,/g , '');
-                this.dataInput.width = (this.dataInput.width+"").replace(/,/g , '');
-                this.dataInput.height = (this.dataInput.height+"").replace(/,/g , '');
+                window.axios.get('/api/getCodeRSCD').then(({ data }) => {
+                    const array = data;
+                    var statsCode = '';
+                    
+                    for (let i = 0;i < array.length; i++){
+                        if(array[i].code == this.dataInput.code){
+                            statsCode = 'yes';
+                            iziToast.error({
+                                title: 'Code has been taken !',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            break;
+                            $('div.overlay').hide();
+                        }
+                    }
 
-                $('div.overlay').show();
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.dataInput));
-                form.appendChild(struturesElem);
-                document.body.appendChild(form);
-                form.submit();
+                    if(statsCode != 'yes'){
+                        $('div.overlay').show();
+                        this.dataInput.purchasing_price = (this.dataInput.purchasing_price+"").replace(/,/g , '');
+                        this.dataInput.cost_per_hour = (this.dataInput.cost_per_hour+"").replace(/,/g , '');
+                        this.dataInput.performance = (this.dataInput.performance+"").replace(/,/g , '');
+                        this.dataInput.lifetime = (this.dataInput.lifetime+"").replace(/,/g , '');
+                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/,/g , '');
+                        this.dataInput.kva = (this.dataInput.kva+"").replace(/,/g , '');
+                        this.dataInput.amp = (this.dataInput.amp+"").replace(/,/g , '');
+                        this.dataInput.volt = (this.dataInput.volt+"").replace(/,/g , '');
+                        this.dataInput.phase = (this.dataInput.phase+"").replace(/,/g , '');
+                        this.dataInput.length = (this.dataInput.length+"").replace(/,/g , '');
+                        this.dataInput.width = (this.dataInput.width+"").replace(/,/g , '');
+                        this.dataInput.height = (this.dataInput.height+"").replace(/,/g , '');
+
+                        let struturesElem = document.createElement('input');
+                        struturesElem.setAttribute('type', 'hidden');
+                        struturesElem.setAttribute('name', 'datas');
+                        struturesElem.setAttribute('value', JSON.stringify(this.dataInput));
+                        form.appendChild(struturesElem);
+                        document.body.appendChild(form);
+                        form.submit();
+                        $('div.overlay').hide();
+                    }
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
             }
         },
         watch : {
+            created: function() {
+                if(this.oldData.code !=null) {
+                    this.dataInput.code=this.oldData.code;
+                }
+                if(this.oldData.serial_number !=null) {
+                    this.dataInput.serial_number=this.oldData.serial_number;
+                }
+                if(this.oldData.brand !=null) {
+                    this.dataInput.brand=this.oldData.brand;
+                }
+                if(this.oldData.quantity !=null) {
+                    this.dataInput.quantity=this.oldData.quantity;
+                }
+                if(this.oldData.kva !=null) {
+                    this.dataInput.kva=this.oldData.kva;
+                }
+                if(this.oldData.amp !=null) {
+                    this.dataInput.amp=this.oldData.amp;
+                }
+                if(this.oldData.volt !=null) {
+                    this.dataInput.volt=this.oldData.volt;
+                }
+                if(this.oldData.phase !=null) {
+                    this.dataInput.phase=this.oldData.phase;
+                }
+                if(this.oldData.length !=null) {
+                    this.dataInput.length=this.oldData.length;
+                }
+                if(this.oldData.width !=null) {
+                    this.dataInput.width=this.oldData.width;
+                }
+                if(this.oldData.height !=null) {
+                    this.dataInput.height=this.oldData.height;
+                }
+                if(this.oldData.manufactured_in !=null) {
+                    this.dataInput.manufactured_in=this.oldData.manufactured_in;
+                }
+                if(this.oldData.manufactured_date !=null) {
+                    this.dataInput.manufactured_date=this.oldData.manufactured_date;
+                }
+                if(this.oldData.purchasing_date !=null) {
+                    this.dataInput.purchasing_date=this.oldData.purchasing_date;
+                }
+                if(this.oldData.purchasing_price !=null) {
+                    this.dataInput.purchasing_price=this.oldData.purchasing_price;
+                }
+                if(this.oldData.lifetime !=null) {
+                    this.dataInput.lifetime=this.oldData.lifetime;
+                }
+                if(this.oldData.lifetime_uom_id !=null) {
+                    this.dataInput.lifetime_uom_id=this.oldData.lifetime_uom_id;
+                }
+                if(this.oldData.cost_per_hour !=null) {
+                    this.dataInput.cost_per_hour=this.oldData.cost_per_hour;
+                }
+                if(this.oldData.description !=null) {
+                    this.dataInput.description=this.oldData.description;
+                }
+                if(this.oldData.depreciation_method !=null) {
+                    this.dataInput.depreciation_method=this.oldData.depreciation_method;
+                }
+                if(this.oldData.performance !=null) {
+                    this.dataInput.performance=this.oldData.performance;
+                }
+                if(this.oldData.performance_uom_id !=null) {
+                    this.dataInput.performance_uom_id=this.oldData.performance_uom_id;
+                }
+            },
             'dataInput.purchasing_price': function(newValue) {
                 var decimal = newValue.replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){

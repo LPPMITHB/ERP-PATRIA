@@ -125,6 +125,7 @@ Route::get('/getCategoryAR/{id}', 'ResourceController@getCategoryARApi')->name('
 Route::get('/generateCodeGrResource/{data}', 'ResourceController@generateCodeAPI')->name('api.resource.generateCodeAPI');
 Route::get('/getNewResourceDetail/{id}', 'ResourceController@getNewResourceDetailAPI')->name('api.resource.getNewResourceDetailAPI');
 Route::get('/getSchedule/{id}', 'ResourceController@getScheduleAPI')->name('api.resource.getScheduleAPI');
+Route::get('/getCodeRSCD', 'ResourceController@getCodeRSCDAPI')->name('api.resource.getCodeRSCDAPI');
 
 // yard plan
 Route::get('/getWbs/{id}', 'YardPlanController@getWbsAPI')->name('api.yard_plan.getWbsAPI');

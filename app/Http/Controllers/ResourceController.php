@@ -627,17 +627,6 @@ class ResourceController extends Controller
         $route = $request->route()->getPrefix();
         $data = json_decode($request->datas);
 
-        $RSDs = ResourceDetail::all();
-        foreach ($RSDs as $rsd) {
-            if($rsd->code == $data->code){
-                if($route == "/resource"){
-                    return redirect()->route('resource.createInternal',$data->resource_id)->with('warning', 'Code has been taken')->withInput();
-                }elseif($route == "/resource_repair"){
-                    return redirect()->route('resource_repair.createInternal',$data->resource_id)->with('warning', 'Code has been taken')->withInput();
-                }
-            }
-        }
-
         DB::beginTransaction();
         try {
 
@@ -832,5 +821,11 @@ class ResourceController extends Controller
         $modelTR = ResourceTrx::where('resource_detail_id',$id)->with('wbs','user','project')->get()->jsonSerialize();
 
         return response($modelTR, Response::HTTP_OK);
+    }
+
+    public function getCodeRSCDAPI(){
+        $modelRSCD = ResourceDetail::all()->jsonSerialize();
+
+        return response($modelRSCD, Response::HTTP_OK);
     }
 }

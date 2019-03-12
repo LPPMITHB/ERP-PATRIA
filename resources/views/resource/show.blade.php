@@ -868,7 +868,6 @@
             this.editInput.width = parseInt((this.editInput.width+"").replace(/,/g , ''));
             this.editInput.height = parseInt((this.editInput.height+"").replace(/,/g , ''));
             let data = this.editInput;
-            console.log(this.editInput);
 
             if(this.route == "/resource"){
                 var url = "{{ route('resource.updateDetail') }}";
