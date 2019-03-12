@@ -494,6 +494,7 @@ class ResourceController extends Controller
             $resource->code = strtoupper($data->code);
             $resource->name = ucwords($data->name);
             $resource->description = $data->description;
+            $resource->cost_standard_price = $data->cost_standard_price;
             $resource->update();
 
             DB::commit();
