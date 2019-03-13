@@ -1277,6 +1277,9 @@ var vm = new Vue({
         removeMaterialEdit(data){
             for (let x = 0; x < this.editActivity.dataMaterial.length; x++) {
                 if(this.editActivity.dataMaterial[x].material_id == data.material_id){
+                    if(this.editActivity.dataMaterial[x].id != null){
+                        this.editActivity.deletedActDetail.push(this.editActivity.dataMaterial[x].id);
+                    }
                     this.editActivity.dataMaterial.splice(x,1);
                 }
             }
