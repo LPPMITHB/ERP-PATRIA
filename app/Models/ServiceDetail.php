@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model
+class ServiceDetail extends Model
 {
-    protected $table = 'mst_service';
+    protected $table = 'mst_service_detail';
 
     public function branch()
     {
@@ -28,14 +28,14 @@ class Service extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function ship()
+    public function uom()
     {
-        return $this->belongsTo('App\Models\Ship');
+        return $this->belongsTo('App\Models\Uom');
     }
     
-    public function serviceDetails()
+    public function service()
     {
-        return $this->hasMany('App\Models\ServiceDetail');
+        return $this->belongsTo('App\Models\Service');
     }
 
 }

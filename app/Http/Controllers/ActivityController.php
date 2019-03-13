@@ -45,7 +45,7 @@ class ActivityController extends Controller
         foreach ($materials as $material) {
             $material['selected'] = false;
         }
-        $services = Service::all();
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
         $vendors = Vendor::all();
         $uoms = UOM::all();
         $project = $wbs->project;
@@ -135,7 +135,7 @@ class ActivityController extends Controller
                     if($data['service_id'] != null){
                         $activityDetailSerivice = new ActivityDetail;
                         $activityDetailSerivice->activity_id = $activity->id;
-                        $activityDetailSerivice->service_id = $data['service_id'];
+                        $activityDetailSerivice->service_detail_id = $data['service_detail_id'];
                         $activityDetailSerivice->area = $data['area'];
                         $activityDetailSerivice->vendor_id = $data['vendor_id'];
                         $activityDetailSerivice->area_uom_id = $data['area_uom_id'];
@@ -645,7 +645,7 @@ class ActivityController extends Controller
 
     //API
     public function getActivitiesAPI($wbs_id){
-        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom')->get()->jsonSerialize();
+        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom','activityDetails.serviceDetail.service')->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

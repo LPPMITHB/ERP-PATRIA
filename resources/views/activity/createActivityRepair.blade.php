@@ -527,38 +527,67 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row m-t-10 border-top-modal">
-                                                <div class="form-group m-t-5">
-                                                    <label for="length" class="col-sm-12 control-label">Service</label>
-                    
+                                            <div class="m-t-10 border-top-modal">
+                                                <div class="row">
                                                     <div class="col-sm-12">
-                                                        <selectize id="service" name="service_id" v-model="editActivity.service_id" :settings="service_settings">
-                                                            <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
-                                                        </selectize>    
+                                                        <div class="row">
+                                                            <label for="length" class="col-sm-12 control-label">Service</label>
+                            
+                                                            <div class="col-sm-12">
+                                                                <selectize id="service" name="service_id" v-model="editActivity.service_id" :settings="service_settings">
+                                                                    <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }} [General]</option>
+                                                                    <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }} [{{service.ship.type}}]</option>
+                                                                </selectize>    
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div> 
-                                                
-                                                <div class="form-group">
-                                                    <label for="area" class="col-sm-12 control-label">Area</label>
-                                    
-                                                    <div class="col-sm-8">
-                                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="editActivity.area" >
-                                                    </div>
-                    
-                                                    <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="area_uom_id" v-model="editActivity.area_uom_id" :settings="area_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                        </selectize>    
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                    <label for="length" class="col-sm-12 control-label">Vendor</label>
-                    
+    
                                                     <div class="col-sm-12">
-                                                        <selectize id="vendor" name="vendor_id" v-model="editActivity.vendor_id" :settings="vendor_settings">
-                                                            <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
-                                                        </selectize>    
+                                                        <div class="row">
+                                                            <label for="length" class="col-sm-12 control-label">Service Detail</label>
+                            
+                                                            <div v-show="editActivity.service_id == ''" class="col-sm-12">
+                                                                <selectize disabled :settings="empty_service_settings">
+                                                                </selectize>  
+                                                            </div>
+                                                            <div v-show="editActivity.selected_service.length == 0 && editActivity.service_id != ''" class="col-sm-12">
+                                                                <selectize  disabled :settings="empty_service_detail_settings">
+                                                                </selectize>  
+                                                            </div>            
+                                                            <div class="col-sm-12"  v-show="editActivity.selected_service.length > 0">
+                                                                <selectize id="service_detail" name="service_detail_id" v-model="editActivity.service_detail_id" :settings="service_detail_settings">
+                                                                    <option v-for="(service_detail, index) in editActivity.selected_service" :value="service_detail.id">{{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                </selectize>    
+                                                            </div>                                            
+                                                        </div>
+                                                    </div>
+                                                            
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <label for="area" class="col-sm-12 control-label">Area</label>
+                                            
+                                                            <div class="col-sm-8">
+                                                                <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="editActivity.area" >
+                                                            </div>
+                            
+                                                            <div class="col-sm-4 p-l-2">
+                                                                <selectize id="uom" name="area_uom_id" v-model="editActivity.area_uom_id" :settings="area_uom_settings">
+                                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                                </selectize>    
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <label for="length" class="col-sm-12 control-label">Vendor</label>
+                            
+                                                            <div class="col-sm-12">
+                                                                <selectize id="vendor" name="vendor_id" v-model="editActivity.vendor_id" :settings="vendor_settings">
+                                                                    <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                </selectize>    
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -702,37 +731,64 @@
                                         </div>
                                         <div style="margin-left: -0.2em" class="col-sm-4 border-left-modal">
                                             <div class="row">
-                                                <div class="form-group">
-                                                    <label for="length" class="col-sm-12 control-label">Service</label>
-                    
-                                                    <div class="col-sm-12">
-                                                        <selectize id="service" name="service_id" v-model="newActivity.service_id" :settings="service_settings">
-                                                            <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
-                                                        </selectize>    
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <label for="length" class="col-sm-12 control-label">Service</label>
+                        
+                                                        <div class="col-sm-12">
+                                                            <selectize id="service" name="service_id" v-model="newActivity.service_id" :settings="service_settings">
+                                                                <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }} [General]</option>
+                                                                <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }} [{{service.ship.type}}]</option>
+                                                            </selectize>    
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <label for="length" class="col-sm-12 control-label">Service Detail</label>
+                        
+                                                        <div v-show="newActivity.service_id == ''" class="col-sm-12">
+                                                            <selectize disabled :settings="empty_service_settings">
+                                                            </selectize>  
+                                                        </div>
+                                                        <div v-show="newActivity.selected_service.length == 0 && newActivity.service_id != ''" class="col-sm-12">
+                                                            <selectize  disabled :settings="empty_service_detail_settings">
+                                                            </selectize>  
+                                                        </div>            
+                                                        <div class="col-sm-12"  v-show="newActivity.selected_service.length > 0">
+                                                            <selectize id="service_detail" name="service_detail_id" v-model="newActivity.service_detail_id" :settings="service_detail_settings">
+                                                                <option v-for="(service_detail, index) in newActivity.selected_service" :value="service_detail.id">{{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                            </selectize>    
+                                                        </div>                                            
                                                     </div>
                                                 </div>
                                                       
-                                                <div class="form-group">
-                                                    <label for="area" class="col-sm-12 control-label">Area</label>
-                                    
-                                                    <div class="col-sm-8">
-                                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="newActivity.area" >
-                                                    </div>
-                    
-                                                    <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="area_uom_id" v-model="newActivity.area_uom_id" :settings="area_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                        </selectize>    
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <label for="area" class="col-sm-12 control-label">Area</label>
+                                        
+                                                        <div class="col-sm-8">
+                                                            <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="newActivity.area" >
+                                                        </div>
+                        
+                                                        <div class="col-sm-4 p-l-2">
+                                                            <selectize id="uom" name="area_uom_id" v-model="newActivity.area_uom_id" :settings="area_uom_settings">
+                                                                <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            </selectize>    
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="form-group">
-                                                    <label for="length" class="col-sm-12 control-label">Vendor</label>
-                    
-                                                    <div class="col-sm-12">
-                                                        <selectize id="vendor" name="vendor_id" v-model="newActivity.vendor_id" :settings="vendor_settings">
-                                                            <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
-                                                        </selectize>    
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <label for="length" class="col-sm-12 control-label">Vendor</label>
+                        
+                                                        <div class="col-sm-12">
+                                                            <selectize id="vendor" name="vendor_id" v-model="newActivity.vendor_id" :settings="vendor_settings">
+                                                                <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                            </selectize>    
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -824,6 +880,8 @@ var data = {
         activity_configuration_id : "",
 
         service_id: "",
+        service_detail_id: "",
+        selected_service : "",
         vendor_id : "",
         area :"",
         area_uom_id : "",
@@ -852,6 +910,8 @@ var data = {
         dimension_uom_id : "",
 
         service_id: "",
+        service_detail_id: "",
+        selected_service : "",
         vendor_id : "",
         area :"",
         area_uom_id : "",
@@ -902,7 +962,16 @@ var data = {
     },
     vendor_settings : {
         placeholder: 'Vendor'
-    }
+    },
+    empty_service_settings:{
+        placeholder: 'Please select service first!'
+    },
+    empty_service_detail_settings:{
+        placeholder: 'Service doesn\'t have service detail!'
+    },
+    service_detail_settings:{
+        placeholder: 'Service Detail'
+    },
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -1023,7 +1092,8 @@ var vm = new Vue({
 
                 if(this.newActivity.service_id != ""){
                     if(this.newActivity.area == "" || 
-                    this.newActivity.area_uom_id == "")
+                    this.newActivity.area_uom_id == "" ||
+                    this.newActivity.service_detail_id == "")
                     {
                         isOk = true;
                     }
@@ -1335,8 +1405,9 @@ var vm = new Vue({
                     });
 
                     material.push(act_detail);
-                }else if(act_detail.service_id != null){
-                    this.editActivity.service_id = act_detail.service_id;
+                }else if(act_detail.service_detail_id != null){
+                    this.editActivity.service_id = act_detail.service_detail.service_id;
+                    this.editActivity.service_detail_id = act_detail.service_detail_id;
                     this.editActivity.area = (act_detail.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
                     this.editActivity.area_uom_id = act_detail.area_uom_id;
                     this.editActivity.vendor_id = act_detail.vendor_id;
@@ -1486,6 +1557,7 @@ var vm = new Vue({
                     this.newActivity.weight = "";
                     this.newActivity.dataMaterial = [];
                     this.newActivity.service_id = "";
+                    this.newActivity.service_detail_id = "";
                     this.newActivity.area = "";
                     this.newActivity.area_uom_id = "";
                     this.newActivity.vendor_id = "";
@@ -2033,8 +2105,56 @@ var vm = new Vue({
         'newMaterial.quantity': function(newValue) {
             this.newMaterial.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
-        'editActivity.quantity': function(newValue) {
-            this.editActivity.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        'editMaterial.quantity': function(newValue) {
+            this.editMaterial.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'newActivity.service_id': function(newValue) {
+            if(newValue != ""){
+                this.newActivity.service_detail_id = "";
+                this.services.forEach(service => {
+                    if(service.id == newValue){
+                        this.newActivity.selected_service = service.service_details;
+                    }
+                });
+            }else{
+                this.newActivity.selected_service = "";
+                this.newActivity.service_detail_id = "";
+            }
+        },
+        'newActivity.service_detail_id' : function(newValue){
+            if(newValue != ""){
+                this.newActivity.selected_service.forEach(service_detail => {
+                    if(service_detail.id == newValue){
+                        this.newActivity.area_uom_id = service_detail.uom_id;
+                    }
+                });
+            }else{
+                this.newActivity.area_uom_id = "";
+            }
+        },
+        'editActivity.service_id': function(newValue) {
+            if(newValue != ""){
+                this.editActivity.service_detail_id = "";
+                this.services.forEach(service => {
+                    if(service.id == newValue){
+                        this.editActivity.selected_service = service.service_details;
+                    }
+                });
+            }else{
+                this.editActivity.selected_service = "";
+                this.editActivity.service_detail_id = "";
+            }
+        },
+        'editActivity.service_detail_id' : function(newValue){
+            if(newValue != ""){
+                this.editActivity.selected_service.forEach(service_detail => {
+                    if(service_detail.id == newValue){
+                        this.editActivity.area_uom_id = service_detail.uom_id;
+                    }
+                });
+            }else{
+                this.editActivity.area_uom_id = "";
+            }
         },
         'newMaterial.material_id': function(newValue) {
             if(newValue != ""){
