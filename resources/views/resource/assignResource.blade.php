@@ -211,7 +211,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" @click.prevent="add">SAVE</button>
+                                        <button type="button" class="btn btn-primary" @click.prevent="add">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -713,6 +713,12 @@
                         this.dataInput.wbs_id = "";             
                         this.dataInput.quantity = ""; 
                         this.dataInput.category_id = ""; 
+                        this.dataInput.start = '';
+                        this.dataInput.end = '';
+                        this.dataInput.start_date = '';
+                        this.dataInput.end_date = '';
+                        this.dataInput.datetime_start = '';
+                        this.dataInput.datetime_end = '';
                         $('#input_schedule').modal('hide');
                     })
                     .catch((error) => {
