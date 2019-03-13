@@ -490,98 +490,98 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        //Work Order Repair
-        // $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
-        // $woRepair = Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        // $createWO = Menu::where('name','Create WO')->where('menu_id',$woRepair)->select('id')->first()->id;
-        // DB::table('permissions')->insert([
-        //     'name' => 'Create Work Order',
-        //     'menu_id' => $createWO,
-        //     'middleware' => 'create-work-order-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        // Work Order Repair
+        $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
+        $woRepair = Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        $createWO = Menu::where('name','Create WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Order',
+            'menu_id' => $createWO,
+            'middleware' => 'create-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // $approveWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;        
-        // DB::table('permissions')->insert([
-        //     'name' => 'Approve Work Order',
-        //     'menu_id' => $approveWO,
-        //     'middleware' => 'approve-work-order-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        $approveWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;        
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Order',
+            'menu_id' => $approveWO,
+            'middleware' => 'approve-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // $viewWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;
-        // DB::table('permissions')->insert([
-        //     'name' => 'List Work Order',
-        //     'menu_id' => $viewWO,
-        //     'middleware' => 'list-work-order-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        $viewWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'list-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // DB::table('permissions')->insert([
-        //     'name' => 'Show Work Order',
-        //     'menu_id' => $viewWO,
-        //     'middleware' => 'show-work-order-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'show-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // DB::table('permissions')->insert([
-        //     'name' => 'Edit Work Order',
-        //     'menu_id' => $viewWO,
-        //     'middleware' => 'edit-work-order-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Order',
+            'menu_id' => $viewWO,
+            'middleware' => 'edit-work-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        //Work Request Repair
-        // $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        // $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
-        // $wrRepair = Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        // $createWRRepair = Menu::where('name','Create WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
-        // DB::table('permissions')->insert([
-        //     'name' => 'Create Work Request',
-        //     'menu_id' => $createWRRepair,
-        //     'middleware' => 'create-work-request-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        // Work Request Repair
+        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
+        $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
+        $wrRepair = Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
+        $createWRRepair = Menu::where('name','Create WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Work Request',
+            'menu_id' => $createWRRepair,
+            'middleware' => 'create-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // $approveWRRepair = Menu::where('name','Approve WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
-        // DB::table('permissions')->insert([
-        //     'name' => 'Approve Work Request',
-        //     'menu_id' => $approveWRRepair,
-        //     'middleware' => 'approve-work-request-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        $approveWRRepair = Menu::where('name','Approve WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Work Request',
+            'menu_id' => $approveWRRepair,
+            'middleware' => 'approve-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // $viewWRRepair = Menu::where('name','View & Edit WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
-        // DB::table('permissions')->insert([
-        //     'name' => 'List Work Request',
-        //     'menu_id' => $viewWRRepair,
-        //     'middleware' => 'list-work-request-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        $viewWRRepair = Menu::where('name','View & Edit WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Work Request',
+            'menu_id' => $viewWRRepair,
+            'middleware' => 'list-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // DB::table('permissions')->insert([
-        //     'name' => 'Show Work Request',
-        //     'menu_id' => $viewWRRepair,
-        //     'middleware' => 'show-work-request-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        DB::table('permissions')->insert([
+            'name' => 'Show Work Request',
+            'menu_id' => $viewWRRepair,
+            'middleware' => 'show-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
-        // DB::table('permissions')->insert([
-        //     'name' => 'Edit Work Request',
-        //     'menu_id' => $viewWRRepair,
-        //     'middleware' => 'edit-work-request-repair',
-        //     'created_at' => date('Y-m-d'),
-        //     'updated_at' => date('Y-m-d'),
-        // ]);
+        DB::table('permissions')->insert([
+            'name' => 'Edit Work Request',
+            'menu_id' => $viewWRRepair,
+            'middleware' => 'edit-work-request-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
         
 
         //Purchase Requisition
