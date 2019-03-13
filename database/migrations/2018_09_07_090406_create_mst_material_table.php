@@ -16,7 +16,6 @@ class CreateMstMaterialTable extends Migration
         Schema::create('mst_material', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code')->unique();
-            $table->integer('family_id')->nullable();
             $table->text('description');
             $table->integer('cost_standard_price')->default(0);
             $table->integer('cost_standard_price_service')->default(0);
@@ -30,6 +29,7 @@ class CreateMstMaterialTable extends Migration
             $table->float('width', 15, 2)->nullable();
             $table->float('height', 15, 2)->nullable();
             $table->unsignedInteger('dimension_uom_id')->nullable();
+            $table->unsignedInteger('family_id')->nullable();
             $table->integer('type')->default(1);
             $table->integer('status')->default(1);
             $table->string('image')->nullable();

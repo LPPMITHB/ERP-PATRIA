@@ -63,4 +63,34 @@ class ConfigurationController extends Controller
     public function getCurrenciesAPI(){
         return response(Configuration::get('currencies')->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function materialFamilyIndex()
+    {
+        $currencies = Configuration::get('currencies');
+
+        return view('currencies.index', compact('currencies'));
+    }
+
+    public function materialFamilyAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $currencies = Configuration::where('slug','currencies')->first();
+            $currencies->value = $data;
+            $currencies->update();
+
+            DB::commit();
+            return response(json_encode($currencies),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('currencies.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function getMaterialFamilyAPI(){
+        return response(Configuration::get('currencies')->jsonSerialize(), Response::HTTP_OK);
+    }
 }
