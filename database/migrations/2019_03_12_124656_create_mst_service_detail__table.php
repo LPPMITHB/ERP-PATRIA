@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMstServiceTable extends Migration
+class CreateMstServiceDetailTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,18 @@ class CreateMstServiceTable extends Migration
      */
     public function up()
     {
-        Schema::create('mst_service', function (Blueprint $table) {
+        Schema::create('mst_service_detail', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('service_id');  
             $table->string('code')->unique();
             $table->string('name')->unique();
-            $table->unsignedInteger('ship_id')->nullable();
-            $table->string('status')->default(1);
+            $table->unsignedInteger('uom_id')->unique();
+            $table->string('description')->unique();
+            $table->biginteger('cost_standard_price')->default(0);
+
             $table->timestamps();
 
-            $table->foreign('ship_id')->references('id')->on('mst_ship');
+            $table->foreign('service_id')->references('id')->on('mst_service');
 
         });
     }
@@ -33,6 +36,6 @@ class CreateMstServiceTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mst_service');
+        Schema::dropIfExists('mst_service_detail_');
     }
 }
