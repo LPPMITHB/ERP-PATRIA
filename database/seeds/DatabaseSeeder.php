@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
         $this->call(YardsTableSeeder::class);
         $this->call(MstResourceTableSeeder::class);
         $this->call(MstResourceDetailTableSeeder::class);
+        $this->call(MstServiceTableSeeder::class);
+        $this->call(MstServiceDetailTableSeeder::class);
         $this->call(ProProjectTableSeeder::class);
         $this->call(ProWbsTableSeeder::class);
         $this->call(ProActivityTableSeeder::class);

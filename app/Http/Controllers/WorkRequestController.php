@@ -247,15 +247,27 @@ class WorkRequestController extends Controller
         $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";  
 
         $modelWR = WorkRequest::findOrFail($id);
-        $project = Project::where('id',$modelWR->project_id)->with('customer','ship')->first();
-        $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->where('type',0)->with('material','wbs')->get();
+        $project = Project::where('id',$modelWR->project_id)->with('customer','ship')->get();
+        foreach($project as $data){
+            $planStartDate = DateTime::createFromFormat('Y-m-d', $data['planned_start_date']);
+            $data['planned_start_date'] = $planStartDate->format('d-m-Y');
+
+            $planEndDate = DateTime::createFromFormat('Y-m-d', $data['planned_end_date']);
+            $data['planned_end_date'] = $planEndDate->format('d-m-Y');
+        }
+
+        $modelWRD = WorkRequestDetail::where('work_request_id',$modelWR->id)->where('type',0)->with('material','wbs','material.uom')->get();
         foreach($modelWRD as $wrd){
             $material = Stock::where('material_id',$wrd->material_id)->first();
             $wrd['available'] = $material->quantity-$material->reserved;
+            $wrd['old_data'] = true;
         }
         $modelWRD->jsonSerialize();
 
-        $modelWRDFG = WorkRequestDetail::where('work_request_id',$modelWR->id)->where('type',1)->with('material','wbs')->get();
+        $modelWRDFG = WorkRequestDetail::where('work_request_id',$modelWR->id)->where('type',1)->with('material','wbs','material.uom')->get();
+        foreach($modelWRDFG as $wrdfg){
+            $wrdfg['old_data'] = true;
+        }
         $modelWRDFG->jsonSerialize();
         $wbss = [];
         $wbss = WBS::where('project_id',$modelWR->project_id)->get()->jsonSerialize();
@@ -287,12 +299,14 @@ class WorkRequestController extends Controller
             $WR->update();
             
             foreach($datas->materials as $data){
-                $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
-                if($required_date){
+
+                if($data->required_date != null && $data->required_date != ''){
+                    $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
                     $required_date = $required_date->format('Y-m-d');
                 }else{
                     $required_date = null;
                 }
+
                 if($data->wrd_id != null){
                     $WRD = WorkRequestDetail::find($data->wrd_id);
                     // $this->updateReserveStock($data->material_id, $WRD->quantity ,$data->quantityInt);
@@ -349,8 +363,8 @@ class WorkRequestController extends Controller
             }
 
             foreach($datas->materialsFG as $data){
-                $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
-                if($required_date){
+                if($data->required_date != null && $data->required_date != ''){
+                    $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
                     $required_date = $required_date->format('Y-m-d');
                 }else{
                     $required_date = null;
@@ -601,6 +615,42 @@ class WorkRequestController extends Controller
         $ids = json_decode($ids);
 
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getMaterialWIPApi($id){
+        $data = array();
+
+        $wbs = WBS::findOrFail($id);
+        if($wbs->bom != null){
+            $bom_id = Bom::where('wbs_id',$wbs->id)->first();
+            $material_ids = BomDetail::where('bom_id',$bom_id->id)->where('source','WIP')->pluck('material_id')->toArray();
+            $data['materials'] = Material::whereIn('id',$material_ids)->get();
+        }else{
+            $data['materials'] = [];
+        }
+
+        $data['wbs'] = $wbs->jsonSerialize();
+
+        return response($data, Response::HTTP_OK);
+    }
+
+    public function getMaterialWIPEditAPI($id, $wr_id){
+        $data = array();
+        $wrds = WorkRequest::find($wr_id)->workRequestDetails;
+        $exisiting_material = $wrds->where('wbs_id',$id)->pluck('material_id')->toArray();
+
+        $wbs = WBS::findOrFail($id);
+        if($wbs->bom != null){
+            $bom_id = Bom::where('wbs_id',$wbs->id)->first();
+            $material_ids = BomDetail::where('bom_id',$bom_id->id)->where('source','WIP')->pluck('material_id')->toArray();
+            $data['materials'] = Material::whereIn('id',$material_ids)->whereNotIn('id', $exisiting_material)->get();
+        }else{
+            $data['materials'] = [];
+        }
+
+        $data['wbs'] = $wbs->jsonSerialize();
+
+        return response($data, Response::HTTP_OK);
     }
     
 

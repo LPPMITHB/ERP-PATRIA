@@ -50,90 +50,105 @@
                         </div>
                         <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                <table class="table table-bordered tableFixed m-b-0" >
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 5%">No</th>
-                                            <th v-if="pr_type == 'Material'" style="width: 22%">Material Number</th>
-                                            <th v-else-if="pr_type == 'Resource'" style="width: 22%">Resource Number</th>
-                                            <th v-if="pr_type == 'Material'" style="width: 25%">Material Description</th>
-                                            <th v-else-if="pr_type == 'Resource'" style="width: 25%">Resource Description</th>
-                                            <th style="width: 12%">Quantity</th>
-                                            <th style="width: 8%">Unit</th>
-                                            <th style="width: 15%">Project Number</th>
-                                            <th style="width: 13%">Required Date</th>
-                                            <th style="width: 15%">Alocation</th>
-                                            <th style="width: 13%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(data,index) in dataMaterial">
-                                            <td>{{ index + 1 }}</td>
-                                            <template v-if="data.material_code != ''">
-                                                <td class="tdEllipsis">{{ data.material_code }}</td>
-                                                <td class="tdEllipsis">{{ data.material_name }}</td>
-                                            </template>
-                                            <template v-else-if="data.resource_code != ''">
-                                                <td class="tdEllipsis">{{ data.resource_code }}</td>
-                                                <td class="tdEllipsis">{{ data.resource_name }}</td>
-                                            </template>
-                                            <td class="tdEllipsis">{{ data.quantity }}</td>
-                                            <td class="tdEllipsis">{{ data.unit }}</td>
-                                            <td class="tdEllipsis">{{ data.project_number }}</td>
-                                            <td class="tdEllipsis">{{ data.required_date }}</td>
-                                            <td class="tdEllipsis">{{ data.alocation }}</td>
-                                            <td class="p-l-0 textCenter">
-                                                <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                                    EDIT
-                                                </a>
-                                                <a v-else-if="pr_type == 'Resource'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(data,index)">
-                                                    EDIT
-                                                </a>
-                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                    DELETE
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td class="p-l-10">{{newIndex}}</td>
-                                            <td v-show="pr_type == 'Material'" class="p-l-0 textLeft" colspan="2">
-                                                <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                                </selectize>
-                                            </td>
-                                            <td v-show="pr_type == 'Resource'" class="p-l-0 textLeft" colspan="2">
-                                                <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
-                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="materialOk">
-                                            </td>
-                                            <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.unit" disabled>
-                                            </td>
-                                            <td class="p-l-0 textLeft">
-                                                <selectize v-model="dataInput.project_id" :settings="projectSettings">
-                                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
-                                                </selectize>  
-                                            </td>
-                                            <td class="p-l-0 textLeft">
-                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
-                                            </td>
-                                            <td class="p-l-0 textLeft">
-                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
-                                                    <option value="Consumption">Consumption</option>
-                                                    <option value="Stock">Stock</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="p-l-0  textCenter">
-                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                <template v-if="pr_type != 'Subcon'">
+                                    <table class="table table-bordered tableFixed m-b-0" >
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%">No</th>
+                                                <th v-if="pr_type == 'Material'" style="width: 22%">Material Number</th>
+                                                <th v-else-if="pr_type == 'Resource'" style="width: 22%">Resource Number</th>
+                                                <th v-if="pr_type == 'Material'" style="width: 25%">Material Description</th>
+                                                <th v-else-if="pr_type == 'Resource'" style="width: 25%">Resource Description</th>
+                                                <th style="width: 12%">Quantity</th>
+                                                <th style="width: 8%">Unit</th>
+                                                <th style="width: 15%">Project Number</th>
+                                                <th style="width: 13%">Required Date</th>
+                                                <th style="width: 15%">Alocation</th>
+                                                <th style="width: 13%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data,index) in dataMaterial">
+                                                <td>{{ index + 1 }}</td>
+                                                <template v-if="data.material_code != ''">
+                                                    <td class="tdEllipsis">{{ data.material_code }}</td>
+                                                    <td class="tdEllipsis">{{ data.material_name }}</td>
+                                                </template>
+                                                <template v-else-if="data.resource_code != ''">
+                                                    <td class="tdEllipsis">{{ data.resource_code }}</td>
+                                                    <td class="tdEllipsis">{{ data.resource_name }}</td>
+                                                </template>
+                                                <td class="tdEllipsis">{{ data.quantity }}</td>
+                                                <td class="tdEllipsis">{{ data.unit }}</td>
+                                                <td class="tdEllipsis">{{ data.project_number }}</td>
+                                                <td class="tdEllipsis">{{ data.required_date }}</td>
+                                                <td class="tdEllipsis">{{ data.alocation }}</td>
+                                                <td class="p-l-0 textCenter">
+                                                    <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
+                                                        EDIT
+                                                    </a>
+                                                    <a v-else-if="pr_type == 'Resource'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(data,index)">
+                                                        EDIT
+                                                    </a>
+                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                        DELETE
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="p-l-10">{{newIndex}}</td>
+                                                <td v-show="pr_type == 'Material'" class="p-l-0 textLeft" colspan="2">
+                                                    <selectize v-model="dataInput.material_id" :settings="materialSettings" class="selectizeFull">
+                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    </selectize>
+                                                </td>
+                                                <td v-show="pr_type == 'Resource'" class="p-l-0 textLeft" colspan="2">
+                                                    <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
+                                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                    </selectize>
+                                                </td>
+                                                <td class="p-l-0">
+                                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="materialOk">
+                                                </td>
+                                                <td class="p-l-0">
+                                                    <input class="form-control" v-model="dataInput.unit" disabled>
+                                                </td>
+                                                <td class="p-l-0 textLeft">
+                                                    <selectize v-model="dataInput.project_id" :settings="projectSettings">
+                                                        <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                                    </selectize>  
+                                                </td>
+                                                <td class="p-l-0 textLeft">
+                                                    <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
+                                                </td>
+                                                <td class="p-l-0 textLeft">
+                                                    <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
+                                                        <option value="Consumption">Consumption</option>
+                                                        <option value="Stock">Stock</option>
+                                                    </selectize>
+                                                </td>
+                                                <td class="p-l-0  textCenter">
+                                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </template>
+                                <template v-else>
+                                    <table class="table table-bordered tableFixed m-b-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%">No</th>
+                                                <th style="width: 25%">WBS</th>
+                                                <th style="width: 40%">Job Order</th>
+                                                <th style="width: 20%">Vendor</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </template>
                             </div>
                         </div>
 
@@ -250,10 +265,13 @@
 
     $(document).ready(function(){
         $('div.overlay').hide();
+        var a = $('table').width();
+        var b = $('selectize').width();
+        console.log(b);
     });
 
     var data = {
-        types : ['Material','Resource'],
+        types : ['Material','Resource','Subcon'],
         pr_type : "Material",
         isResource : "",
         description : "",
