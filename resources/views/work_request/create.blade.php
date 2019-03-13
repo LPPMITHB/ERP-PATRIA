@@ -214,9 +214,13 @@
                                                 <selectize disabled v-model="dataInputFG.id" :settings="nullSettings" disabled>
                                                 </selectize>  
                                             </td>
-                                            <td colspan="2" class="p-l-0 textLeft" v-show="dataInputFG.wbs_id != '' && allmaterial.length > 0">
+                                            <td colspan="2" class="p-l-0 textLeft" v-show="dataInputFG.wbs_id != '' && materialWIP.length == 0">
+                                                <selectize disabled v-model="dataInput.material_id" :settings="materialWIPNullSettings">
+                                                </selectize>
+                                            </td>
+                                            <td colspan="2" class="p-l-0 textLeft" v-show="dataInputFG.wbs_id != '' && materialWIP.length > 0">
                                                 <selectize v-model="dataInputFG.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in allmaterial" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <option v-for="(material, index) in materialWIP" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
@@ -322,10 +326,15 @@
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12" v-show="editInputFG.wbs_id != '' && allmaterial.length > 0">
+                                            <div class="col-sm-12" v-show="editInputFG.wbs_id != '' && materialWIPEdit.length == 0">
+                                                <label for="type" class="control-label">Material</label>
+                                                <selectize disabled v-model="editInputFG.material_id" :settings="materialWIPNullSettings">
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12" v-show="editInputFG.wbs_id != '' && materialWIPEdit.length > 0">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInputFG.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in allmaterial" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <option v-for="(material, index) in materialWIPEdit" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12" v-show="editInputFG.wbs_id == ''">
@@ -385,8 +394,9 @@
         newIndexFG : "",
         boms : [],
         materials : [],
-        allmaterial : @json($allmaterial),
+        materialWIP : [],
         materialsEdit : [],
+        materialWIPEdit : [],
         projects : @json($modelProject),
         wbss : [],
         project_id : "",
@@ -407,6 +417,9 @@
         },
         materialNullSettings:{
             placeholder: "WBS doesn't have BOM !"
+        },
+        materialWIPNullSettings:{
+            placeholder: "WBS doesn't have BOM with source WIP !"
         },
         selectedProject : [],
         dataMaterial : [],
@@ -940,12 +953,20 @@
             },
 
             'project_id' : function(newValue){
+                
                 this.dataInput.wbs_id = "";
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getProjectMR/'+newValue).then(({ data }) => {
                         this.selectedProject = [];
                         this.selectedProject.push(data);
+                        this.selectedProject.forEach(data => {
+                            var date_planned = data.planned_start_date;
+                            var date_ended = data.planned_end_date;
+
+                            data.planned_start_date = date_planned.split("-").reverse().join("-");
+                            data.planned_end_date = date_ended.split("-").reverse().join("-");
+                        });
                         this.wbss = data.wbss;
                         $('div.overlay').hide();
                     })
@@ -1031,7 +1052,7 @@
                         $('div.overlay').hide();
                     })
                 }else{
-                    this.dataInput.wbs_id = "";
+                    this.editInput.wbs_id = "";
                 }
             },
             'dataInputFG.wbs_id': function(newValue){
@@ -1040,9 +1061,11 @@
 
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getMaterialWIP/'+newValue).then(({ data }) => {
                         this.dataInputFG.wbs_number = data.wbs.number;
                         this.dataInputFG.wbs_desc = data.wbs.description;
+                        this.materialWIP = data.materials;
+                        
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -1064,6 +1087,24 @@
                     this.editInputFG.unit = "";
                     this.editInputFG.quantityInt = 0;
                 }
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialWIP/'+newValue).then(({ data }) => {
+                        this.materialWIPEdit = data.materials;
+                        
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else{
+                    this.editInputFG.wbs_id = "";
+                }
             },
             'required_date': function(newValue){
                 this.dataMaterial.forEach(data =>{
@@ -1080,6 +1121,7 @@
             }
         },
         created: function() {
+            
             this.newIndex = Object.keys(this.dataMaterial).length+1;
             this.newIndexFG = Object.keys(this.dataMaterialFG).length+1;
             Vue.directive('tooltip', function(el, binding){
@@ -1091,6 +1133,8 @@
             })
         },
         updated: function(){
+            console.log(this.selectedProject);
+
             $('.datepicker').datepicker({
                 autoclose : true,
                 format: 'dd-mm-yyyy',
