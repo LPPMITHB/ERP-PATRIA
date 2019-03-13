@@ -18,15 +18,22 @@ class CreateProActivityDetailTable extends Migration
             $table->unsignedInteger('activity_id')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
+            $table->unsignedInteger('vendor_id')->nullable();
             $table->integer('quantity_material')->nullable();
-            $table->integer('quantity_service')->nullable();
             $table->float('length', 15, 2)->nullable();
-            $table->integer('length_uom_id')->nullable();
             $table->float('width', 15, 2)->nullable();
-            $table->integer('width_uom_id')->nullable();
             $table->float('height', 15, 2)->nullable();
-            $table->integer('height_uom_id')->nullable();
+            $table->unsignedInteger('dimension_uom_id')->nullable();
+            $table->float('area', 15, 2)->nullable();
+            $table->unsignedInteger('area_uom_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('activity_id')->references('id')->on('pro_activity');
+            $table->foreign('material_id')->references('id')->on('mst_material');
+            $table->foreign('service_id')->references('id')->on('mst_service');
+            $table->foreign('vendor_id')->references('id')->on('mst_vendor');
+            $table->foreign('dimension_uom_id')->references('id')->on('mst_uom');
+            $table->foreign('area_uom_id')->references('id')->on('mst_uom');
         });
     }
 

@@ -14,6 +14,7 @@ use App\Models\Activity;
 use App\Models\ActivityDetail;
 use App\Models\Material;
 use App\Models\Service;
+use App\Models\Vendor;
 use App\Models\UOM;
 use App\Models\WbsProfile;
 use App\Models\WbsConfiguration;
@@ -41,12 +42,16 @@ class ActivityController extends Controller
         $activity_config = $wbs->wbsConfig->activities;
 
         $materials = Material::all();
+        foreach ($materials as $material) {
+            $material['selected'] = false;
+        }
         $services = Service::all();
+        $vendors = Vendor::all();
         $uoms = UOM::all();
         $project = $wbs->project;
         $menu = "repair";
 
-        return view('activity.createActivityRepair', compact('uoms','materials','services','project', 'wbs','menu','activity_config'));
+        return view('activity.createActivityRepair', compact('vendors','uoms','materials','services','project', 'wbs','menu','activity_config'));
     }
 
     public function createActivityProfile($id, Request $request)
@@ -111,35 +116,31 @@ class ActivityController extends Controller
             // Notification::send($users, new ProjectActivity($activity));
             $activity->save();
             if($activity->wbs->project->business_unit_id == 2){
-                $activityDetail = new ActivityDetail;
-                $activityDetail->activity_id = $activity->id;
-                if($data['material_id'] != null || $data['service_id'] != null){
-                    if($data['material_id'] != null){
-                        $activityDetail->material_id = $data['material_id'];
-                        $activityDetail->quantity_material = $data['quantity_material'];
-                        if($data['length_uom_id'] != ""){
-                            $activityDetail->length_uom_id = $data['length_uom_id'];
-                            $activityDetail->length = $data['lengths'];
-                        }
-                        
-                        if($data['width_uom_id'] != ""){
-                            $activityDetail->width_uom_id = $data['width_uom_id'];
-                            $activityDetail->width = $data['width'];
-                        }
-    
-                        if($data['height_uom_id'] != ""){
-                            $activityDetail->height_uom_id = $data['height_uom_id'];
-                            $activityDetail->height = $data['height'];
+                if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
+                    if(count($data['dataMaterial']) > 0){
+                        foreach ($data['dataMaterial'] as $material) {
+                            $activityDetailMaterial = new ActivityDetail;
+                            $activityDetailMaterial->activity_id = $activity->id;
+                            $activityDetailMaterial->material_id = $material['material_id'];
+                            $activityDetailMaterial->quantity_material = $material['quantity'];
+                            if($material['dimension_uom_id'] != ""){
+                                $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
+                                $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
+                                $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
+                                $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
+                            }
+                            $activityDetailMaterial->save();
                         }
                     }
-    
                     if($data['service_id'] != null){
-                        $activityDetail->activity_id = $activity->id;
-                        $activityDetail->service_id = $data['service_id'];
-                        $activityDetail->quantity_service = $data['quantity_service'];
+                        $activityDetailSerivice = new ActivityDetail;
+                        $activityDetailSerivice->activity_id = $activity->id;
+                        $activityDetailSerivice->service_id = $data['service_id'];
+                        $activityDetailSerivice->area = $data['area'];
+                        $activityDetailSerivice->area_uom_id = $data['area_uom_id'];
+                        $activityDetailSerivice->save();
                     }
                 }
-                $activityDetail->save();
             }
             DB::commit();
             return response(["response"=>"Success to create new activity"],Response::HTTP_OK);
@@ -233,7 +234,7 @@ class ActivityController extends Controller
             }
             
             if($activity->wbs->project->business_unit_id == 2){
-                $activityDetail = $activity->activityDetail;
+                $activityDetail = $activity->activityDetails;
                 if($data['material_id'] != null || $data['service_id'] != null){
                     if($data['material_id'] != null){
                         $activityDetail->material_id = $data['material_id'];
@@ -529,7 +530,9 @@ class ActivityController extends Controller
                 }
             }
             if($activity->wbs->project->business_unit_id == 2){
-                $activity->activityDetail->delete();
+                foreach ($activity->activityDetails as $act_detail) {
+                    $act_detail->delete();
+                }
             }
             $activity->delete();
             DB::commit();
@@ -641,7 +644,7 @@ class ActivityController extends Controller
 
     //API
     public function getActivitiesAPI($wbs_id){
-        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->with('activityDetail')->get()->jsonSerialize();
+        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom')->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

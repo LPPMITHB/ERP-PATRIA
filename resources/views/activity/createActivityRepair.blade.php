@@ -420,8 +420,8 @@
                                                     <label for="length" class="col-sm-12 control-label">Material</label>
                     
                                                     <div class="col-sm-12">
-                                                        <selectize id="material" name="material_id" v-model="editActivity.material_id" :settings="material_settings">
-                                                            <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                        <selectize id="material" name="material_id" v-model="editMaterial.material_id" :settings="material_settings">
+                                                            <option v-for="(material, index) in newMaterials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>
@@ -429,11 +429,11 @@
                                                     <label for="length" class="col-sm-12 control-label">Length</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="length" :disabled="lengthEditOk" class="form-control" id="lengths" v-model="editActivity.lengths" >
+                                                        <input type="text" name="length" :disabled="lengthEditOk" class="form-control" id="lengths" v-model="editMaterial.lengths" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="length_uom_id" v-model="editActivity.length_uom_id" :settings="length_uom_settings">
+                                                        <selectize id="uom" name="length_uom_id" v-model="editMaterial.length_uom_id" :settings="length_uom_settings">
                                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
@@ -443,11 +443,11 @@
                                                     <label for="width" class="col-sm-12 control-label">Width</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="width" :disabled="widthEditOk" class="form-control" id="width" v-model="editActivity.width"  >
+                                                        <input type="text" name="width" :disabled="widthEditOk" class="form-control" id="width" v-model="editMaterial.width"  >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="width_uom_id" v-model="editActivity.width_uom_id" :settings="width_uom_settings">
+                                                        <selectize id="uom" name="width_uom_id" v-model="editMaterial.width_uom_id" :settings="width_uom_settings">
                                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
@@ -457,11 +457,11 @@
                                                     <label for="height" class="col-sm-12 control-label">Height</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="height" :disabled="heightEditOk" class="form-control" id="height" v-model="editActivity.height" >
+                                                        <input type="text" name="height" :disabled="heightEditOk" class="form-control" id="height" v-model="editMaterial.height" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="height_uom_id" v-model="editActivity.height_uom_id" :settings="height_uom_settings">
+                                                        <selectize id="uom" name="height_uom_id" v-model="editMaterial.height_uom_id" :settings="height_uom_settings">
                                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
@@ -471,13 +471,60 @@
                                                     <label for="height" class="col-sm-12 control-label">Quantity</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="quantity" class="form-control" id="quantity" v-model="editActivity.quantity_material" >
+                                                        <input type="text" name="quantity" class="form-control" id="quantity" v-model="editMaterial.quantity" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
                                                         <input disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
                                                     </div>
-                                                </div>                        
+                                                </div>  
+                                                
+                                                <div class="form-group">
+                                                    <div class="m-t-10 col-sm-2">
+                                                        <button :disabled="addMaterialEditOk" type="button" class="btn btn-primary" @click="addMaterialEdit">ADD</button>
+                                                    </div>
+                                                </div>
+    
+                                                <div class="form-group">
+                                                    <div class="m-t-10 col-sm-12">
+                                                        <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="p-l-5" style="width: 3%">No</th>
+                                                                    <th style="width: 16%">Material</th>
+                                                                    <th style="width: 7%">Length</th>
+                                                                    <th style="width: 7%">Width</th>
+                                                                    <th style="width: 7%">Height</th>
+                                                                    <th style="width: 5%">UOM</th>
+                                                                    <th style="width: 7%">Quantity</th>
+                                                                    <th style="width: 6%"></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="(data,index) in editActivity.dataMaterial">
+                                                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material.code +' - '+data.material.description )">{{ data.material.code }} - {{ data.material.description }}</td>
+                                                                    <td v-if="data.lengths != ''" class="p-b-15 p-t-15">{{ data.lengths }}</td>
+                                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                                    <td v-if="data.width != ''" class="p-b-15 p-t-15">{{ data.width }}</td>
+                                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                                    <td v-if="data.height != ''" class="p-b-15 p-t-15">{{ data.height }}</td>
+                                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                                    <td v-if="data.dimension_uom_id != null && data.dimension_uom_id != ''" class="p-b-15 p-t-15">{{ data.dimension_uom.unit }}</td>
+                                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                                    <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
+                                                                    <td>
+                                                                        <div class="col-sm-12 col-xs-12 no-padding p-r-2">
+                                                                            <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(data)" data-toggle="modal">
+                                                                                DELETE
+                                                                            </a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table> 
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="row m-t-10 border-top-modal">
@@ -489,15 +536,31 @@
                                                             <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
                                                         </selectize>    
                                                     </div>
-                                                </div>
-        
+                                                </div> 
+                                                
                                                 <div class="form-group">
-                                                    <label for="height" class="col-sm-12 control-label">Quantity</label>
+                                                    <label for="area" class="col-sm-12 control-label">Area</label>
                                     
-                                                    <div class="col-sm-12">
-                                                        <input type="text" name="quantity" class="form-control" id="quantity" v-model="editActivity.quantity_service" >
+                                                    <div class="col-sm-8">
+                                                        <input type="text" name="area" class="form-control" id="area" v-model="editActivity.area" >
                                                     </div>
-                                                </div>                        
+                    
+                                                    <div class="col-sm-4 p-l-2">
+                                                        <selectize id="uom" name="area_uom_id" v-model="editActivity.area_uom_id" :settings="area_uom_settings">
+                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="length" class="col-sm-12 control-label">Vendor</label>
+                    
+                                                    <div class="col-sm-12">
+                                                        <selectize id="vendor" name="vendor_id" v-model="editActivity.vendor_id" :settings="vendor_settings">
+                                                            <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -512,102 +575,168 @@
                     </div>
 
                     <div class="modal fade" id="assign_activity_detail">
-                        <div class="modal-dialog modalPredecessor">
+                        <div class="modal-dialog modalFull">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header col-sm-8">
+                                    <h4 class="modal-title">Assign Material</h4>
+                                </div>
+                                <div class="modal-header col-sm-4">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Assign Material</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="form-group">
-                                            <label for="length" class="col-sm-12 control-label">Material</label>
-            
-                                            <div class="col-sm-12">
-                                                <selectize id="material" name="material_id" v-model="newActivity.material_id" :settings="material_settings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                                </selectize>    
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="length" class="col-sm-12 control-label">Length</label>
-                            
-                                            <div class="col-sm-8">
-                                                <input type="text" name="length" :disabled="lengthOk" class="form-control" id="lengths" v-model="newActivity.lengths" >
-                                            </div>
-            
-                                            <div class="col-sm-4 p-l-2">
-                                                <selectize id="uom" name="length_uom_id" v-model="newActivity.length_uom_id" :settings="length_uom_settings">
-                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                </selectize>    
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label for="width" class="col-sm-12 control-label">Width</label>
-                            
-                                            <div class="col-sm-8">
-                                                <input type="text" name="width" :disabled="widthOk" class="form-control" id="width" v-model="newActivity.width"  >
-                                            </div>
-            
-                                            <div class="col-sm-4 p-l-2">
-                                                <selectize id="uom" name="width_uom_id" v-model="newActivity.width_uom_id" :settings="width_uom_settings">
-                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                </selectize>    
-                                            </div>
-                                        </div>
-                                    
-                                        <div class="form-group">
-                                            <label for="height" class="col-sm-12 control-label">Height</label>
-                            
-                                            <div class="col-sm-8">
-                                                <input type="text" name="height" :disabled="heightOk" class="form-control" id="height" v-model="newActivity.height" >
-                                            </div>
-            
-                                            <div class="col-sm-4 p-l-2">
-                                                <selectize id="uom" name="height_uom_id" v-model="newActivity.height_uom_id" :settings="height_uom_settings">
-                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                </selectize>    
-                                            </div>
-                                        </div>   
-
-                                        <div class="form-group">
-                                            <label for="height" class="col-sm-12 control-label">Quantity</label>
-                            
-                                            <div class="col-sm-8">
-                                                <input type="text" name="quantity" class="form-control" id="quantity" v-model="newActivity.quantity_material" >
-                                            </div>
-            
-                                            <div class="col-sm-4 p-l-2">
-                                                <input disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
-                                            </div>
-                                        </div>                        
-                                    </div>
-                                </div>
-                                <div class="modal-header border-top-modal">
                                     <h4 class="modal-title">Assign Service</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="form-group">
-                                            <label for="length" class="col-sm-12 control-label">Service</label>
-            
-                                            <div class="col-sm-12">
-                                                <selectize id="service" name="service_id" v-model="newActivity.service_id" :settings="service_settings">
-                                                    <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
-                                                </selectize>    
+                                        <div class="col-sm-8 border-right-modal">
+                                            <div class="form-group">
+                                                <label for="length" class="p-l-0 col-sm-12 control-label">Material</label>
+                
+                                                <div class="p-l-0 col-sm-12">
+                                                    <selectize id="material" name="material_id" v-model="newMaterial.material_id" :settings="material_settings">
+                                                        <option v-if="material.selected==false" v-for="(material, index) in newMaterials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    </selectize>    
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="length" class="p-l-0 col-sm-12 control-label">Length</label>
+                                
+                                                <div class="p-l-0 col-sm-8">
+                                                    <input type="text" name="length" :disabled="lengthOk" class="form-control" id="lengths" v-model="newMaterial.lengths" >
+                                                </div>
+                
+                                                <div class="col-sm-4 p-l-2">
+                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="length_uom_settings">
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                    </selectize>    
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="width" class="p-l-0 col-sm-12 control-label">Width</label>
+                                
+                                                <div class="p-l-0 col-sm-8">
+                                                    <input type="text" name="width" :disabled="widthOk" class="form-control" id="width" v-model="newMaterial.width"  >
+                                                </div>
+                
+                                                <div class="col-sm-4 p-l-2">
+                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="width_uom_settings">
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                    </selectize>    
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="form-group">
+                                                <label for="height" class="p-l-0 col-sm-12 control-label">Height</label>
+                                
+                                                <div class="p-l-0 col-sm-8">
+                                                    <input type="text" name="height" :disabled="heightOk" class="form-control" id="height" v-model="newMaterial.height" >
+                                                </div>
+                
+                                                <div class="col-sm-4 p-l-2">
+                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="height_uom_settings">
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                    </selectize>    
+                                                </div>
+                                            </div>   
+    
+                                            <div class="form-group">
+                                                <label for="quantity" class="p-l-0 col-sm-12 control-label">Quantity</label>
+                                
+                                                <div class="p-l-0 col-sm-8">
+                                                    <input type="text" name="quantity" class="form-control" id="quantity" v-model="newMaterial.quantity" >
+                                                </div>
+                
+                                                <div class="col-sm-4 p-l-2">
+                                                    <input disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
+                                                </div>
+                                            </div>   
+
+                                            <div class="form-group">
+                                                <div class="p-l-0 m-t-10 col-sm-2">
+                                                    <button :disabled="addMaterialOk" type="button" class="btn btn-primary" @click="addMaterial">ADD</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="p-l-0 m-t-10 col-sm-12">
+                                                    <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="p-l-5" style="width: 3%">No</th>
+                                                                <th style="width: 30%">Material</th>
+                                                                <th style="width: 7%">Length</th>
+                                                                <th style="width: 7%">Width</th>
+                                                                <th style="width: 7%">Height</th>
+                                                                <th style="width: 5%">UOM</th>
+                                                                <th style="width: 7%">Quantity</th>
+                                                                <th style="width: 6%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(data,index) in newActivity.dataMaterial">
+                                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material_name)">{{ data.material_name }}</td>
+                                                                <td v-if="data.lengths != ''" class="p-b-15 p-t-15">{{ data.lengths }}</td>
+                                                                <td v-else class="p-b-15 p-t-15">-</td>
+                                                                <td v-if="data.width != ''" class="p-b-15 p-t-15">{{ data.width }}</td>
+                                                                <td v-else class="p-b-15 p-t-15">-</td>
+                                                                <td v-if="data.height != ''" class="p-b-15 p-t-15">{{ data.height }}</td>
+                                                                <td v-else class="p-b-15 p-t-15">-</td>
+                                                                <td v-if="data.unit != ''" class="p-b-15 p-t-15">{{ data.unit }}</td>
+                                                                <td v-else class="p-b-15 p-t-15">-</td>
+                                                                <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
+                                                                <td>
+                                                                    <div class="col-sm-12 col-xs-12 no-padding p-r-2">
+                                                                        <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(data)" data-toggle="modal">
+                                                                            DELETE
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table> 
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div style="margin-left: -0.2em" class="col-sm-4 border-left-modal">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <label for="length" class="col-sm-12 control-label">Service</label>
+                    
+                                                    <div class="col-sm-12">
+                                                        <selectize id="service" name="service_id" v-model="newActivity.service_id" :settings="service_settings">
+                                                            <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.description }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
+                                                      
+                                                <div class="form-group">
+                                                    <label for="area" class="col-sm-12 control-label">Area</label>
+                                    
+                                                    <div class="col-sm-8">
+                                                        <input type="text" name="area" class="form-control" id="area" v-model="newActivity.area" >
+                                                    </div>
+                    
+                                                    <div class="col-sm-4 p-l-2">
+                                                        <selectize id="uom" name="area_uom_id" v-model="newActivity.area_uom_id" :settings="area_uom_settings">
+                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="length" class="col-sm-12 control-label">Vendor</label>
+                    
+                                                    <div class="col-sm-12">
+                                                        <selectize id="vendor" name="vendor_id" v-model="editActivity.vendor_id" :settings="vendor_settings">
+                                                            <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                        </selectize>    
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="height" class="col-sm-12 control-label">Quantity</label>
-                            
-                                            <div class="col-sm-12">
-                                                <input type="text" name="quantity" class="form-control" id="quantity" v-model="newActivity.quantity_service" >
-                                            </div>
-                                        </div>                        
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -640,9 +769,11 @@ $(document).ready(function(){
 
 var data = {
     menu : @json($menu),
-    materials : @json($materials),
+    newMaterials : @json($materials),
+    editMaterials : @json($materials),
     services : @json($services),
     uoms : @json($uoms),
+    vendors : @json($vendors),
     project_start_date : @json($project->planned_start_date),
     project_end_date : @json($project->planned_end_date),
     wbs_start_date : @json($wbs->planned_start_date),
@@ -654,6 +785,29 @@ var data = {
     allActivities : [],
     allActivitiesEdit : [],
     maxWeight : 0,
+
+    newMaterial : {
+        material_id : "",
+        material_name : "",
+        quantity : 1,
+        lengths :"",
+        width : "",
+        height :"",
+        dimension_uom_id : "",
+        unit : "",
+    },
+
+    editMaterial : {
+        material_id : "",
+        material_name : "",
+        quantity : 1,
+        lengths :"",
+        width : "",
+        height :"",
+        dimension_uom_id : "",
+        unit : "",
+    },
+
     newActivity : {
         name : "",
         description : "",
@@ -668,17 +822,12 @@ var data = {
         allPredecessor : [],
         activity_configuration_id : "",
 
-        material_id : "",
-        quantity_material : 1,
-        lengths :"",
-        length_uom_id : "",
-        width : "",
-        width_uom_id : "",
-        height :"",
-        height_uom_id : "",
-
         service_id: "",
-        quantity_service : 1,
+        vendor_id : "",
+        area :"",
+        area_uom_id : "",
+
+        dataMaterial : [],
     },  
     editActivity : {
         activity_id : "",
@@ -695,16 +844,18 @@ var data = {
         activity_configuration_id : "",
 
         material_id : "",
-        quantity_material : 1,
+        quantity : 1,
         lengths :"",
-        length_uom_id : "",
         width : "",
-        width_uom_id : "",
         height :"",
-        height_uom_id : "",
+        dimension_uom_id : "",
 
         service_id: "",
-        quantity_service : 1,
+        vendor_id : "",
+        area :"",
+        area_uom_id : "",
+
+        dataMaterial : [],
     },
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
@@ -738,11 +889,17 @@ var data = {
     width_uom_settings: {
         placeholder: 'Select width UOM!'
     },
+    area_uom_settings: {
+        placeholder: 'Select area UOM!'
+    },
     material_settings : {
         placeholder: 'Material'
     },
     service_settings : {
         placeholder: 'Service'
+    },
+    vendor_settings : {
+        placeholder: 'Vendor'
     }
 };
 
@@ -799,6 +956,60 @@ var vm = new Vue({
         );
     },
     computed:{
+        addMaterialOk: function(){
+            let isOk = false;
+            if(this.newMaterial.dimension_uom_id != ""){
+                if(this.newMaterial.height == ""){
+                    isOk = true;
+                }
+            }
+
+            if(this.newMaterial.dimension_uom_id != ""){
+                if(this.newMaterial.lengths == ""){
+                    isOk = true;
+                }
+            }
+
+            if(this.newMaterial.dimension_uom_id != ""){
+                if(this.newMaterial.width == ""){
+                    isOk = true;
+                }
+            }
+
+            if(this.newMaterial.material_id == "" || 
+            this.newMaterial.quantity == ""){
+                isOk = true;
+            }
+            
+            return isOk;
+        },
+        addMaterialEditOk: function(){
+            let isOk = false;
+            if(this.editMaterial.dimension_uom_id != ""){
+                if(this.editMaterial.height == ""){
+                    isOk = true;
+                }
+            }
+
+            if(this.editMaterial.dimension_uom_id != ""){
+                if(this.editMaterial.lengths == ""){
+                    isOk = true;
+                }
+            }
+
+            if(this.editMaterial.dimension_uom_id != ""){
+                if(this.editMaterial.width == ""){
+                    isOk = true;
+                }
+            }
+
+            if(this.editMaterial.material_id == "" || 
+            this.editMaterial.quantity == ""){
+                isOk = true;
+            }
+            
+            return isOk;
+        },
         createOk: function(){
             let isOk = false;
                 if(this.newActivity.activity_configuration_id == ""
@@ -808,44 +1019,10 @@ var vm = new Vue({
                     isOk = true;
                 }
 
-                if(this.newActivity.weight_uom_id != ""){
-                    if(this.newActivity.weight == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.newActivity.height_uom_id != ""){
-                    if(this.newActivity.height == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.newActivity.length_uom_id != ""){
-                    if(this.newActivity.lengths == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.newActivity.width_uom_id != ""){
-                    if(this.newActivity.width == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.newActivity.width_uom_id != ""){
-                    if(this.newActivity.width == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.newActivity.material_id != ""){
-                    if(this.newActivity.quantity_material == ""){
-                        isOk = true;
-                    }
-                }
-
                 if(this.newActivity.service_id != ""){
-                    if(this.newActivity.quantity_service == ""){
+                    if(this.newActivity.area == "" || 
+                    this.newActivity.area_uom_id == "")
+                    {
                         isOk = true;
                     }
                 }
@@ -871,47 +1048,6 @@ var vm = new Vue({
                     isOk = true;
                 }
 
-                if(this.editActivity.weight_uom_id != ""){
-                    if(this.editActivity.weight == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.editActivity.height_uom_id != ""){
-                    if(this.editActivity.height == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.editActivity.length_uom_id != ""){
-                    if(this.editActivity.lengths == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.editActivity.width_uom_id != ""){
-                    if(this.editActivity.width == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.editActivity.width_uom_id != ""){
-                    if(this.editActivity.width == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.editActivity.material_id != ""){
-                    if(this.editActivity.quantity_material == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.editActivity.service_id != ""){
-                    if(this.editActivity.quantity_service == ""){
-                        isOk = true;
-                    }
-                }
             return isOk;
         },
         predecessorOk: function(){
@@ -935,7 +1071,7 @@ var vm = new Vue({
         heightOk :function(){
             let isOk = false;
 
-            if(this.newActivity.height_uom_id == ""){
+            if(this.newMaterial.dimension_uom_id == ""){
                 isOk = true;
             }
             return isOk;
@@ -943,7 +1079,7 @@ var vm = new Vue({
         lengthOk :function(){
             let isOk = false;
 
-            if(this.newActivity.length_uom_id == ""){
+            if(this.newMaterial.dimension_uom_id == ""){
                 isOk = true;
             }
             return isOk;
@@ -951,7 +1087,7 @@ var vm = new Vue({
         widthOk :function(){
             let isOk = false;
 
-            if(this.newActivity.width_uom_id == ""){
+            if(this.newMaterial.dimension_uom_id == ""){
                 isOk = true;
             }
             return isOk;
@@ -959,8 +1095,8 @@ var vm = new Vue({
         heightEditOk :function(){
             let isOk = false;
 
-            if(this.editActivity.height_uom_id == "" || 
-            this.editActivity.height_uom_id == null){
+            if(this.editActivity.dimension_uom_id == "" || 
+            this.editActivity.dimension_uom_id == null){
                 isOk = true;
             }
             return isOk;
@@ -968,8 +1104,8 @@ var vm = new Vue({
         lengthEditOk :function(){
             let isOk = false;
 
-            if(this.editActivity.length_uom_id == "" ||
-            this.editActivity.length_uom_id == null){
+            if(this.editActivity.dimension_uom_id == "" ||
+            this.editActivity.dimension_uom_id == null){
                 isOk = true;
             }
             return isOk;
@@ -977,8 +1113,8 @@ var vm = new Vue({
         widthEditOk :function(){
             let isOk = false;
 
-            if(this.editActivity.width_uom_id == "" ||
-            this.editActivity.width_uom_id == null){
+            if(this.editActivity.dimension_uom_id == "" ||
+            this.editActivity.dimension_uom_id == null){
                 isOk = true;
             }
             return isOk;
@@ -987,6 +1123,46 @@ var vm = new Vue({
     methods:{
         assignActivity(){
             $('#assign_activity_detail').modal();
+        },
+        addMaterial(){
+            var temp = this.newMaterial;
+            temp = JSON.stringify(temp);
+            temp = JSON.parse(temp);
+            this.newMaterials.forEach(material => {
+                if(material.id == temp.material_id){
+                    material.selected = true;
+                }
+            });
+            this.newActivity.dataMaterial.push(temp);
+
+            this.newMaterial.material_id = "";
+            this.newMaterial.material_name = "";
+            this.newMaterial.quantity = 1;
+            this.newMaterial.lengths = "";
+            this.newMaterial.width = "";
+            this.newMaterial.height = "";
+            this.newMaterial.dimension_uom_id = "";
+            this.newMaterial.unit = "";
+        },
+        addMaterialEdit(){
+            var temp = this.editMaterial;
+            temp = JSON.stringify(temp);
+            temp = JSON.parse(temp);
+            this.newMaterials.forEach(material => {
+                if(material.id == temp.material_id){
+                    material.selected = true;
+                }
+            });
+            this.editActivity.dataMaterial.push(temp);
+
+            this.editMaterial.material_id = "";
+            this.editMaterial.material_name = "";
+            this.editMaterial.quantity = 1;
+            this.editMaterial.lengths = "";
+            this.editMaterial.width = "";
+            this.editMaterial.height = "";
+            this.editMaterial.dimension_uom_id = "";
+            this.editMaterial.unit = "";
         },
         addPredecessor() {
             this.allActivities.forEach(elementAllActivities => {
@@ -1084,6 +1260,18 @@ var vm = new Vue({
                 }
             });
         },
+        removeMaterial(data){
+            for (let x = 0; x < this.newActivity.dataMaterial.length; x++) {
+                if(this.newActivity.dataMaterial[x].material_id == data.material_id){
+                    this.newActivity.dataMaterial.splice(x,1);
+                }
+            }
+            this.newMaterials.forEach(material => {
+                if(material.id == data.material_id){
+                    material.selected = false;
+                }
+            });
+        },
         tooltipText: function(text) {
             return text
         },
@@ -1110,17 +1298,25 @@ var vm = new Vue({
             this.editActivity.description = data.description;
             this.editActivity.activity_configuration_id = data.activity_configuration_id;
             this.editActivity.weight = data.weight;
-
-            this.editActivity.material_id = data.activity_detail.material_id;
-            this.editActivity.quantity_material = data.activity_detail.quantity_material;
-            this.editActivity.service_id = data.activity_detail.service_id;
-            this.editActivity.quantity_service = data.activity_detail.quantity_service;
-            this.editActivity.lengths = data.activity_detail.length;
-            this.editActivity.length_uom_id = data.activity_detail.length_uom_id;
-            this.editActivity.width = data.activity_detail.width;
-            this.editActivity.width_uom_id = data.activity_detail.width_uom_id;
-            this.editActivity.height = data.activity_detail.height;
-            this.editActivity.height_uom_id = data.activity_detail.height_uom_id;
+            
+            var material = [];
+            data.activity_details.forEach(act_detail => {
+                if(act_detail.material_id != null){
+                    act_detail['lengths'] = (act_detail['length']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    act_detail['width'] = (act_detail['width']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    act_detail['height'] = (act_detail['height']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    act_detail['quantity'] = (act_detail['quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    
+                    material.push(act_detail);
+                }else if(act_detail.service_id != null){
+                    this.editActivity.service_id = act_detail.service_id;
+                    this.editActivity.area = act_detail.area;
+                    this.editActivity.area_uom_id = act_detail.area_uom_id;
+                    this.editActivity.vendor_id = act_detail.vendor_id;
+                }
+            });
+            this.editActivity.dataMaterial = material;
+            
             if(JSON.parse(data.predecessor) != null){
                 this.editActivity.allPredecessor = JSON.parse(data.predecessor);
             }else{
@@ -1219,12 +1415,14 @@ var vm = new Vue({
 
         },
         add(){            
-            this.newActivity.lengths = (this.newActivity.lengths+"").replace(/,/g , '');
-            this.newActivity.width = (this.newActivity.width+"").replace(/,/g , '');
-            this.newActivity.height = (this.newActivity.height+"").replace(/,/g , '');
-            this.newActivity.quantity_material = (this.newActivity.quantity_material+"").replace(/,/g , '');
-            this.newActivity.quantity_service = (this.newActivity.quantity_service+"").replace(/,/g , '');
             var newActivity = this.newActivity;
+            this.newActivity.dataMaterial.forEach(material => {
+                material.lengths = (material.lengths+"").replace(/,/g , '');
+                material.width = (material.width+"").replace(/,/g , '');
+                material.height = (material.height+"").replace(/,/g , '');
+                material.quantity = (material.quantity+"").replace(/,/g , '');
+            });
+            newActivity.area = (newActivity.area+"").replace(/,/g , '');        
             newActivity = JSON.stringify(newActivity);
             var url = "";
             if(this.menu == "building"){
@@ -1258,17 +1456,24 @@ var vm = new Vue({
                     this.newActivity.planned_end_date = "";
                     this.newActivity.planned_duration = "";
                     this.newActivity.weight = "";
-
-                    this.newActivity.lengths="";
-                    this.newActivity.width = "";
-                    this.newActivity.height = "";
-                    this.newActivity.quantity_material = 1;
-                    this.newActivity.quantity_service = 1;
-                    this.newActivity.length_uom_id = "";
-                    this.newActivity.width_uom_id = "";
-                    this.newActivity.height_uom_id = "";
-                    this.newActivity.material_id = "";
+                    this.newActivity.dataMaterial = [];
                     this.newActivity.service_id = "";
+                    this.newActivity.area = "";
+                    this.newActivity.area_uom_id = "";
+                    this.newActivity.vendor_id = "";
+
+                    this.newMaterial.lengths="";
+                    this.newMaterial.width = "";
+                    this.newMaterial.height = "";
+                    this.newMaterial.quantity = 1;
+                    this.newMaterial.dimension_uom_id = "";
+                    this.newMaterial.material_id = "";
+
+                    this.newMaterials.forEach(material => {
+                        if(material.selected){
+                            material.selected = false;
+                        }
+                    });
 
                     this.newActivity.allPredecessor = []; 
                     this.predecessorTable =[];
@@ -1727,56 +1932,68 @@ var vm = new Vue({
                 this.editActivity.description = "";
             }
         },
-        'newActivity.height': function(newValue) {
+        'newMaterial.height': function(newValue) {
             var decimal = newValue.replace(/,/g, '').split('.');
             if(decimal[1] != undefined){
                 var maxDecimal = 2;
                 if((decimal[1]+"").length > maxDecimal){
-                    this.newActivity.height = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    this.newMaterial.height = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                 }else{
-                    this.newActivity.height = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    this.newMaterial.height = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                 }
             }else{
-                this.newActivity.height = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.newMaterial.height = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         },
-        'newActivity.lengths': function(newValue) {
+        'newMaterial.lengths': function(newValue) {
             var decimal = newValue.replace(/,/g, '').split('.');
             if(decimal[1] != undefined){
                 var maxDecimal = 2;
                 if((decimal[1]+"").length > maxDecimal){
-                    this.newActivity.lengths = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    this.newMaterial.lengths = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                 }else{
-                    this.newActivity.lengths = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    this.newMaterial.lengths = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                 }
             }else{
-                this.newActivity.lengths = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.newMaterial.lengths = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         },
-        'newActivity.width': function(newValue) {
+        'newMaterial.width': function(newValue) {
             var decimal = newValue.replace(/,/g, '').split('.');
             if(decimal[1] != undefined){
                 var maxDecimal = 2;
                 if((decimal[1]+"").length > maxDecimal){
-                    this.newActivity.width = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    this.newMaterial.width = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                 }else{
-                    this.newActivity.width = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    this.newMaterial.width = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                 }
             }else{
-                this.newActivity.width = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.newMaterial.width = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         },
-        'newActivity.quantity_material': function(newValue) {
-            this.newActivity.quantity_material = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        'newMaterial.quantity': function(newValue) {
+            this.newMaterial.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
-        'editActivity.quantity_material': function(newValue) {
-            this.editActivity.quantity_material = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        'editActivity.quantity': function(newValue) {
+            this.editActivity.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
-        'newActivity.quantity_service': function(newValue) {
-            this.newActivity.quantity_service = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        'newMaterial.material_id': function(newValue) {
+            if(newValue != ""){
+                this.newMaterials.forEach(material => {
+                    if(material.id == newValue){
+                        this.newMaterial.material_name = material.code+" - "+material.description;
+                    }
+                });
+            }
         },
-        'editActivity.quantity_service': function(newValue) {
-            this.editActivity.quantity_service = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        'newMaterial.dimension_uom_id': function(newValue) {
+            if(newValue != ""){
+                this.uoms.forEach(uom => {
+                    if(uom.id == newValue){
+                        this.newMaterial.unit = uom.unit;
+                    }
+                });
+            }
         },
     },
     created: function() {
