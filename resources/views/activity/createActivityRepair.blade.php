@@ -909,6 +909,7 @@ var data = {
         height :"",
         dimension_uom_id : "",
 
+        act_detail_service_id : "",
         service_id: "",
         service_detail_id: "",
         selected_service : "",
@@ -919,6 +920,16 @@ var data = {
         dataMaterial : [],
         deletedActDetail : [],
     },
+    maxWeight : 0,
+    totalWeight : 0,
+    predecessorTable: [],
+    predecessorTableView :[],
+    predecessorTableEdit:[],
+    constWeightAct : 0,
+    oldValueWeight : "",
+    activity_configs : @json($activity_config),
+    first_open_modal_service : true,
+    first_open_modal_area_uom : true,
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
     },
@@ -931,14 +942,6 @@ var data = {
     activityConfigSettings:{
         placeholder: 'Activity Configuration',
     },
-    maxWeight : 0,
-    totalWeight : 0,
-    predecessorTable: [],
-    predecessorTableView :[],
-    predecessorTableEdit:[],
-    constWeightAct : 0,
-    oldValueWeight : "",
-    activity_configs : @json($activity_config),
     weight_uom_settings: {
         placeholder: 'Select weight UOM!'
     },
@@ -1378,7 +1381,15 @@ var vm = new Vue({
             }
         },
         openModalEditActivity(data){
-            $('div.overlay').show();      
+            $('div.overlay').show();     
+            this.editMaterial.material_id = "";
+            this.editMaterial.material_name = "";
+            this.editMaterial.quantity = 1;
+            this.editMaterial.lengths = "";
+            this.editMaterial.width = "";
+            this.editMaterial.height = "";
+            this.editMaterial.dimension_uom_id = "";
+            this.editMaterial.unit = ""; 
             this.predecessorTableEdit = [];
             document.getElementById("edit_activity_code").innerHTML= data.code;
             this.editActivity.activity_id = data.id;
@@ -1386,6 +1397,8 @@ var vm = new Vue({
             this.editActivity.description = data.description;
             this.editActivity.activity_configuration_id = data.activity_configuration_id;
             this.editActivity.weight = data.weight;
+            this.first_open_modal_service = true;
+            this.first_open_modal_area_uom = true;
             
             var material = [];
             data.activity_details.forEach(act_detail => {
@@ -1406,6 +1419,7 @@ var vm = new Vue({
 
                     material.push(act_detail);
                 }else if(act_detail.service_detail_id != null){
+                    this.editActivity.act_detail_service_id = act_detail.id;
                     this.editActivity.service_id = act_detail.service_detail.service_id;
                     this.editActivity.service_detail_id = act_detail.service_detail_id;
                     this.editActivity.area = (act_detail.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
@@ -1590,7 +1604,7 @@ var vm = new Vue({
             })
 
         },
-        update(){            
+        update(){                 
             var editActivity = this.editActivity;
             var url = "";
             if(this.menu == "building"){
@@ -1622,6 +1636,8 @@ var vm = new Vue({
                         material.selected = false;
                     }
                 });
+                this.editActivity.deletedActDetail = [];
+                this.editActivity.dataMaterial = [];
                 this.getActivities();
                 this.getAllActivities(); 
             })
@@ -2134,7 +2150,11 @@ var vm = new Vue({
         },
         'editActivity.service_id': function(newValue) {
             if(newValue != ""){
-                this.editActivity.service_detail_id = "";
+                if(this.first_open_modal_service){
+                    this.first_open_modal_service = false;
+                }else{
+                    this.editActivity.service_detail_id = "";
+                }
                 this.services.forEach(service => {
                     if(service.id == newValue){
                         this.editActivity.selected_service = service.service_details;
@@ -2154,6 +2174,17 @@ var vm = new Vue({
                 });
             }else{
                 this.editActivity.area_uom_id = "";
+            }
+        },
+        'editActivity.area_uom_id' : function(newValue){
+            if(newValue != ""){
+                if(this.first_open_modal_area_uom){
+                    this.first_open_modal_area_uom = false;
+                }else{
+                    this.editActivity.area = "";
+                }
+            }else{
+                this.editActivity.area = "";
             }
         },
         'newMaterial.material_id': function(newValue) {

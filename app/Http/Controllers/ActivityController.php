@@ -233,36 +233,43 @@ class ActivityController extends Controller
             }else{
                 $activity->predecessor = null;
             }
+
+            if(count($data['deletedActDetail'])>0){
+                foreach ($data['deletedActDetail'] as $act_detail_id) {
+                    $activityDetailMaterial = ActivityDetail::find($act_detail_id);
+                    $activityDetailMaterial->delete();
+                }
+            }
             
             if($activity->wbs->project->business_unit_id == 2){
-                $activityDetail = $activity->activityDetails;
-                if($data['material_id'] != null || $data['service_id'] != null){
-                    if($data['material_id'] != null){
-                        $activityDetail->material_id = $data['material_id'];
-                        $activityDetail->quantity_material = $data['quantity_material'];
-                        if($data['length_uom_id'] != ""){
-                            $activityDetail->length_uom_id = $data['length_uom_id'];
-                            $activityDetail->length = $data['lengths'];
-                        }
-                        
-                        if($data['width_uom_id'] != ""){
-                            $activityDetail->width_uom_id = $data['width_uom_id'];
-                            $activityDetail->width = $data['width'];
-                        }
-    
-                        if($data['height_uom_id'] != ""){
-                            $activityDetail->height_uom_id = $data['height_uom_id'];
-                            $activityDetail->height = $data['height'];
+                if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
+                    if(count($data['dataMaterial']) > 0){
+                        // print_r(count($data['dataMaterial'])); exit();
+                        foreach ($data['dataMaterial'] as $material) {
+                            if($material['id'] == null){
+                                $activityDetailMaterial = new ActivityDetail;
+                                $activityDetailMaterial->activity_id = $activity->id;
+                                $activityDetailMaterial->material_id = $material['material_id'];
+                                $activityDetailMaterial->quantity_material = $material['quantity'];
+                                if($material['dimension_uom_id'] != ""){
+                                    $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
+                                    $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
+                                    $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
+                                    $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
+                                }
+                                $activityDetailMaterial->save();
+                            }
                         }
                     }
-    
                     if($data['service_id'] != null){
-                        $activityDetail->activity_id = $activity->id;
-                        $activityDetail->service_id = $data['service_id'];
-                        $activityDetail->quantity_service = $data['quantity_service'];
+                        $activityDetailSerivice = ActivityDetail::find($data['act_detail_service_id']);
+                        $activityDetailSerivice->service_detail_id = $data['service_detail_id'];
+                        $activityDetailSerivice->area = $data['area'];
+                        $activityDetailSerivice->vendor_id = $data['vendor_id'];
+                        $activityDetailSerivice->area_uom_id = $data['area_uom_id'];
+                        $activityDetailSerivice->update();
                     }
                 }
-                $activityDetail->update();
             }
             if(!$activity->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
