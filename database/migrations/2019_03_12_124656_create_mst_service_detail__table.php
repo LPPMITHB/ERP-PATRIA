@@ -16,10 +16,9 @@ class CreateMstServiceDetailTable extends Migration
         Schema::create('mst_service_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('service_id');  
-            $table->string('code')->unique();
-            $table->string('name')->unique();
-            $table->unsignedInteger('uom_id')->unique();
-            $table->string('description')->unique();
+            $table->string('name');
+            $table->unsignedInteger('uom_id');
+            $table->string('description')->nullable();
             $table->biginteger('cost_standard_price')->default(0);
 
             $table->timestamps();
