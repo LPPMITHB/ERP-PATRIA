@@ -185,10 +185,10 @@
                                     <input autocomplete="off" v-model="newActivity.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
                                 </td>
                                 <td class="p-l-0">
-                                    <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
+                                    <input autocomplete="off" @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
+                                    <input autocomplete="off" v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
                                 </td>
                                 <td class="p-l-0 textCenter p-r-5 p-l-5">
                                     <button class="btn btn-primary btn-xs col-xs-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
@@ -339,7 +339,7 @@
                                                     <div class="input-group-addon">
                                                         <i class="fa fa-calendar"></i>
                                                     </div>
-                                                    <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
+                                                    <input autocomplete="off" v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
                                                 </div>
                                             </div>
                                                     
@@ -349,18 +349,18 @@
                                                     <div class="input-group-addon">
                                                         <i class="fa fa-calendar"></i>
                                                     </div>
-                                                    <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
+                                                    <input autocomplete="off" v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
                                                 </div>
                                             </div>
                                             
                                             <div class="p-l-0 form-group col-sm-3">
                                                 <label for="duration" class=" control-label">Duration</label>
-                                                <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
+                                                <input autocomplete="off" @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
                                             </div>
                                                 
                                             <div class="p-l-0 form-group col-sm-3">
                                                 <label for="weight" class=" control-label">Weight</label>
-                                                <input v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
+                                                <input autocomplete="off" v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
                                             </div>
         
                                             <div class="p-l-0 form-group col-sm-12">
@@ -421,7 +421,7 @@
                     
                                                     <div class="col-sm-12">
                                                         <selectize id="material" name="material_id" v-model="editMaterial.material_id" :settings="material_settings">
-                                                            <option v-for="(material, index) in newMaterials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                            <option v-if="material.selected==false" v-for="(material, index) in editMaterials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>
@@ -429,11 +429,11 @@
                                                     <label for="length" class="col-sm-12 control-label">Length</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="length" :disabled="lengthEditOk" class="form-control" id="lengths" v-model="editMaterial.lengths" >
+                                                        <input autocomplete="off" type="text" name="length" :disabled="lengthEditOk" class="form-control" id="lengths" v-model="editMaterial.lengths" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="length_uom_id" v-model="editMaterial.length_uom_id" :settings="length_uom_settings">
+                                                        <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="length_uom_settings">
                                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
@@ -443,11 +443,11 @@
                                                     <label for="width" class="col-sm-12 control-label">Width</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="width" :disabled="widthEditOk" class="form-control" id="width" v-model="editMaterial.width"  >
+                                                        <input autocomplete="off" type="text" name="width" :disabled="widthEditOk" class="form-control" id="width" v-model="editMaterial.width"  >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="width_uom_id" v-model="editMaterial.width_uom_id" :settings="width_uom_settings">
+                                                        <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="width_uom_settings">
                                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
@@ -457,11 +457,11 @@
                                                     <label for="height" class="col-sm-12 control-label">Height</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="height" :disabled="heightEditOk" class="form-control" id="height" v-model="editMaterial.height" >
+                                                        <input autocomplete="off" type="text" name="height" :disabled="heightEditOk" class="form-control" id="height" v-model="editMaterial.height" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
-                                                        <selectize id="uom" name="height_uom_id" v-model="editMaterial.height_uom_id" :settings="height_uom_settings">
+                                                        <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="height_uom_settings">
                                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
@@ -471,11 +471,11 @@
                                                     <label for="height" class="col-sm-12 control-label">Quantity</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="quantity" class="form-control" id="quantity" v-model="editMaterial.quantity" >
+                                                        <input autocomplete="off" type="text" name="quantity" class="form-control" id="quantity" v-model="editMaterial.quantity" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
-                                                        <input disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
+                                                        <input autocomplete="off" disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
                                                     </div>
                                                 </div>  
                                                 
@@ -503,19 +503,19 @@
                                                             <tbody>
                                                                 <tr v-for="(data,index) in editActivity.dataMaterial">
                                                                     <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material.code +' - '+data.material.description )">{{ data.material.code }} - {{ data.material.description }}</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material_name)">{{ data.material_name }}</td>
                                                                     <td v-if="data.lengths != ''" class="p-b-15 p-t-15">{{ data.lengths }}</td>
                                                                     <td v-else class="p-b-15 p-t-15">-</td>
                                                                     <td v-if="data.width != ''" class="p-b-15 p-t-15">{{ data.width }}</td>
                                                                     <td v-else class="p-b-15 p-t-15">-</td>
                                                                     <td v-if="data.height != ''" class="p-b-15 p-t-15">{{ data.height }}</td>
                                                                     <td v-else class="p-b-15 p-t-15">-</td>
-                                                                    <td v-if="data.dimension_uom_id != null && data.dimension_uom_id != ''" class="p-b-15 p-t-15">{{ data.dimension_uom.unit }}</td>
+                                                                    <td v-if="data.dimension_uom_id != null && data.dimension_uom_id != ''" class="p-b-15 p-t-15">{{ data.unit }}</td>
                                                                     <td v-else class="p-b-15 p-t-15">-</td>
                                                                     <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
                                                                     <td>
                                                                         <div class="col-sm-12 col-xs-12 no-padding p-r-2">
-                                                                            <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(data)" data-toggle="modal">
+                                                                            <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterialEdit(data)" data-toggle="modal">
                                                                                 DELETE
                                                                             </a>
                                                                         </div>
@@ -542,7 +542,7 @@
                                                     <label for="area" class="col-sm-12 control-label">Area</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="area" class="form-control" id="area" v-model="editActivity.area" >
+                                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="editActivity.area" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
@@ -577,14 +577,14 @@
                     <div class="modal fade" id="assign_activity_detail">
                         <div class="modal-dialog modalFull">
                             <div class="modal-content">
-                                <div class="modal-header col-sm-8">
-                                    <h4 class="modal-title">Assign Material</h4>
-                                </div>
-                                <div class="modal-header col-sm-4">
+                                <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Assign Service</h4>
+                                    <div class="row">
+                                        <h4 class="modal-title col-sm-8">Assign Material</h4>
+                                        <h4 class="modal-title col-sm-2">Assign Service</h4>
+                                    </div>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -602,7 +602,7 @@
                                                 <label for="length" class="p-l-0 col-sm-12 control-label">Length</label>
                                 
                                                 <div class="p-l-0 col-sm-8">
-                                                    <input type="text" name="length" :disabled="lengthOk" class="form-control" id="lengths" v-model="newMaterial.lengths" >
+                                                    <input autocomplete="off" type="text" name="length" :disabled="lengthOk" class="form-control" id="lengths" v-model="newMaterial.lengths" >
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
@@ -616,7 +616,7 @@
                                                 <label for="width" class="p-l-0 col-sm-12 control-label">Width</label>
                                 
                                                 <div class="p-l-0 col-sm-8">
-                                                    <input type="text" name="width" :disabled="widthOk" class="form-control" id="width" v-model="newMaterial.width"  >
+                                                    <input autocomplete="off" type="text" name="width" :disabled="widthOk" class="form-control" id="width" v-model="newMaterial.width"  >
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
@@ -630,7 +630,7 @@
                                                 <label for="height" class="p-l-0 col-sm-12 control-label">Height</label>
                                 
                                                 <div class="p-l-0 col-sm-8">
-                                                    <input type="text" name="height" :disabled="heightOk" class="form-control" id="height" v-model="newMaterial.height" >
+                                                    <input autocomplete="off" type="text" name="height" :disabled="heightOk" class="form-control" id="height" v-model="newMaterial.height" >
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
@@ -644,11 +644,11 @@
                                                 <label for="quantity" class="p-l-0 col-sm-12 control-label">Quantity</label>
                                 
                                                 <div class="p-l-0 col-sm-8">
-                                                    <input type="text" name="quantity" class="form-control" id="quantity" v-model="newMaterial.quantity" >
+                                                    <input autocomplete="off" type="text" name="quantity" class="form-control" id="quantity" v-model="newMaterial.quantity" >
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
-                                                    <input disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
+                                                    <input autocomplete="off" disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
                                                 </div>
                                             </div>   
 
@@ -716,7 +716,7 @@
                                                     <label for="area" class="col-sm-12 control-label">Area</label>
                                     
                                                     <div class="col-sm-8">
-                                                        <input type="text" name="area" class="form-control" id="area" v-model="newActivity.area" >
+                                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="newActivity.area" >
                                                     </div>
                     
                                                     <div class="col-sm-4 p-l-2">
@@ -730,7 +730,7 @@
                                                     <label for="length" class="col-sm-12 control-label">Vendor</label>
                     
                                                     <div class="col-sm-12">
-                                                        <selectize id="vendor" name="vendor_id" v-model="editActivity.vendor_id" :settings="vendor_settings">
+                                                        <selectize id="vendor" name="vendor_id" v-model="newActivity.vendor_id" :settings="vendor_settings">
                                                             <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                                         </selectize>    
                                                     </div>
@@ -798,6 +798,7 @@ var data = {
     },
 
     editMaterial : {
+        id : null,
         material_id : "",
         material_name : "",
         quantity : 1,
@@ -856,6 +857,7 @@ var data = {
         area_uom_id : "",
 
         dataMaterial : [],
+        deletedActDetail : [],
     },
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
@@ -1095,8 +1097,8 @@ var vm = new Vue({
         heightEditOk :function(){
             let isOk = false;
 
-            if(this.editActivity.dimension_uom_id == "" || 
-            this.editActivity.dimension_uom_id == null){
+            if(this.editMaterial.dimension_uom_id == "" || 
+            this.editMaterial.dimension_uom_id == null){
                 isOk = true;
             }
             return isOk;
@@ -1104,8 +1106,8 @@ var vm = new Vue({
         lengthEditOk :function(){
             let isOk = false;
 
-            if(this.editActivity.dimension_uom_id == "" ||
-            this.editActivity.dimension_uom_id == null){
+            if(this.editMaterial.dimension_uom_id == "" ||
+            this.editMaterial.dimension_uom_id == null){
                 isOk = true;
             }
             return isOk;
@@ -1113,8 +1115,8 @@ var vm = new Vue({
         widthEditOk :function(){
             let isOk = false;
 
-            if(this.editActivity.dimension_uom_id == "" ||
-            this.editActivity.dimension_uom_id == null){
+            if(this.editMaterial.dimension_uom_id == "" ||
+            this.editMaterial.dimension_uom_id == null){
                 isOk = true;
             }
             return isOk;
@@ -1148,7 +1150,7 @@ var vm = new Vue({
             var temp = this.editMaterial;
             temp = JSON.stringify(temp);
             temp = JSON.parse(temp);
-            this.newMaterials.forEach(material => {
+            this.editMaterials.forEach(material => {
                 if(material.id == temp.material_id){
                     material.selected = true;
                 }
@@ -1272,6 +1274,18 @@ var vm = new Vue({
                 }
             });
         },
+        removeMaterialEdit(data){
+            for (let x = 0; x < this.editActivity.dataMaterial.length; x++) {
+                if(this.editActivity.dataMaterial[x].material_id == data.material_id){
+                    this.editActivity.dataMaterial.splice(x,1);
+                }
+            }
+            this.editMaterials.forEach(material => {
+                if(material.id == data.material_id){
+                    material.selected = false;
+                }
+            });
+        },
         tooltipText: function(text) {
             return text
         },
@@ -1291,6 +1305,7 @@ var vm = new Vue({
             }
         },
         openModalEditActivity(data){
+            $('div.overlay').show();      
             this.predecessorTableEdit = [];
             document.getElementById("edit_activity_code").innerHTML= data.code;
             this.editActivity.activity_id = data.id;
@@ -1305,12 +1320,21 @@ var vm = new Vue({
                     act_detail['lengths'] = (act_detail['length']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     act_detail['width'] = (act_detail['width']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     act_detail['height'] = (act_detail['height']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    act_detail['quantity'] = (act_detail['quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    
+                    act_detail['quantity'] = (act_detail['quantity_material']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    act_detail['material_name'] = act_detail.material.code+" - "+act_detail.material.description;
+                    if(act_detail.dimension_uom_id != null && act_detail.dimension_uom_id != ''){
+                        act_detail['unit'] = act_detail.dimension_uom.unit;
+                    }
+                    this.editMaterials.forEach(material => {
+                        if(material.id == act_detail['material_id']){
+                            material.selected = true;
+                        }
+                    });
+
                     material.push(act_detail);
                 }else if(act_detail.service_id != null){
                     this.editActivity.service_id = act_detail.service_id;
-                    this.editActivity.area = act_detail.area;
+                    this.editActivity.area = (act_detail.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
                     this.editActivity.area_uom_id = act_detail.area_uom_id;
                     this.editActivity.vendor_id = act_detail.vendor_id;
                 }
@@ -1344,6 +1368,7 @@ var vm = new Vue({
                         });
                     });
                 }
+                $('div.overlay').hide();
             });
             
         },
@@ -1517,6 +1542,11 @@ var vm = new Vue({
                     });
                     $('div.overlay').hide();            
                 }
+                this.newMaterials.forEach(material => {
+                    if(material.selected){
+                        material.selected = false;
+                    }
+                });
                 this.getActivities();
                 this.getAllActivities(); 
             })
@@ -1971,6 +2001,32 @@ var vm = new Vue({
                 this.newMaterial.width = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         },
+        'newActivity.area': function(newValue) {
+            var decimal = newValue.replace(/,/g, '').split('.');
+            if(decimal[1] != undefined){
+                var maxDecimal = 2;
+                if((decimal[1]+"").length > maxDecimal){
+                    this.newActivity.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                }else{
+                    this.newActivity.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                }
+            }else{
+                this.newActivity.area = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        },
+        'editActivity.area': function(newValue) {
+            var decimal = newValue.replace(/,/g, '').split('.');
+            if(decimal[1] != undefined){
+                var maxDecimal = 2;
+                if((decimal[1]+"").length > maxDecimal){
+                    this.editActivity.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                }else{
+                    this.editActivity.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                }
+            }else{
+                this.editActivity.area = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        },
         'newMaterial.quantity': function(newValue) {
             this.newMaterial.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
@@ -1991,6 +2047,24 @@ var vm = new Vue({
                 this.uoms.forEach(uom => {
                     if(uom.id == newValue){
                         this.newMaterial.unit = uom.unit;
+                    }
+                });
+            }
+        },
+        'editMaterial.material_id': function(newValue) {
+            if(newValue != ""){
+                this.editMaterials.forEach(material => {
+                    if(material.id == newValue){
+                        this.editMaterial.material_name = material.code+" - "+material.description;
+                    }
+                });
+            }
+        },
+        'editMaterial.dimension_uom_id': function(newValue) {
+            if(newValue != ""){
+                this.uoms.forEach(uom => {
+                    if(uom.id == newValue){
+                        this.editMaterial.unit = uom.unit;
                     }
                 });
             }

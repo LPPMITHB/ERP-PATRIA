@@ -137,6 +137,7 @@ class ActivityController extends Controller
                         $activityDetailSerivice->activity_id = $activity->id;
                         $activityDetailSerivice->service_id = $data['service_id'];
                         $activityDetailSerivice->area = $data['area'];
+                        $activityDetailSerivice->vendor_id = $data['vendor_id'];
                         $activityDetailSerivice->area_uom_id = $data['area_uom_id'];
                         $activityDetailSerivice->save();
                     }
