@@ -46,14 +46,21 @@
                             <div class="form-group">
                                 <label for="number" class="col-sm-2 control-label">Project Number</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="number" name="number"  required v-model="project.number">
+                                    <input autocomplete="off" type="text" class="form-control" id="number" name="number"  required v-model="project.number">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="person_in_charge" class="col-sm-2 control-label">Person In Charge (PIC)</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="person_in_charge" name="person_in_charge" v-model="project.person_in_charge">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Ship Name</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="name" name="name"  required v-model="project.name">
+                                    <input autocomplete="off" type="text" class="form-control" id="name" name="name"  required v-model="project.name">
                                 </div>
                             </div>
 
@@ -232,6 +239,7 @@ $(document).ready(function(){
             class_cp_phone : @json(Request::old('class_contact_person_phone')),
             class_cp_email :@json(Request::old('class_contact_person_email')),
             description : @json(Request::old('description')),
+            person_in_charge : @json(Request::old('person_in_charge')),
         },
         projectRef:  @json($project->id== null ? "": $project->id),
         customers : @json($customers),
@@ -247,6 +255,7 @@ $(document).ready(function(){
             class_cp_phone : @json($project->class_contact_person_phone == null ? "": $project->class_contact_person_phone),
             class_cp_email : @json($project->class_contact_person_email == null ? "": $project->class_contact_person_email),
             description : @json($project->description == null ? "": $project->description),
+            person_in_charge : "",
         },
         customer: "",
         menu : @json($menu),
