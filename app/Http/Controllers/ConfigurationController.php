@@ -93,6 +93,38 @@ class ConfigurationController extends Controller
     }
 
     public function getMaterialFamilyAPI(){
-        return response(Configuration::get('currencies')->jsonSerialize(), Response::HTTP_OK);
+        return response(Configuration::get('material_family')->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function densityIndex()
+    {
+        $density = Configuration::get('density');
+        
+        $id = count($density) + 1;
+
+        return view('density.index', compact('density','id'));
+    }
+
+    public function densityAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $density = Configuration::where('slug','density')->first();
+            $density->value = $data;
+            $density->update();
+
+            DB::commit();
+            return response(json_encode($density),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('density.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function getDensityAPI(){
+        return response(Configuration::get('density')->jsonSerialize(), Response::HTTP_OK);
     }
 }

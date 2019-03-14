@@ -104,6 +104,15 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="density_id" class="col-sm-2 control-label">Density</label>
+                                <div class="col-sm-10">
+                                    <selectize id="density_id" name="density_id" v-model="submittedForm.density_id" :settings="density_id_settings">
+                                        <option v-for="(data, index) in densities" :value="data.id">{{ data.name }}</option>
+                                    </selectize>   
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="min" class="col-sm-2 control-label">Min</label>
                                 
                                 <div class="col-sm-10">
@@ -277,6 +286,7 @@
             },
             uoms : @json($uoms),
             material_families : @json($material_families),
+            densities : @json($densities),
             submittedForm :{
                 code : "",
                 name : "",
@@ -296,6 +306,7 @@
                 width :0,
                 width_uom_id : "",
                 family_id : "",
+                density_id : "",
                 status : 1,
                 type : 1,
             },
@@ -317,6 +328,9 @@
             family_id_settings: {
                 placeholder: 'Select Material Family!'
             },
+            density_id_settings: {
+                placeholder: 'Select Density!'
+            }
         }
     
         var vm = new Vue({
