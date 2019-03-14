@@ -533,7 +533,7 @@
                                             </div>
 
                                             <div class="m-t-10 border-top-modal">
-                                                <div class="row">
+                                                <div class="row m-t-10">
                                                     <div class="col-sm-12">
                                                         <div class="row">
                                                             <label for="length" class="col-sm-12 control-label">Service</label>
