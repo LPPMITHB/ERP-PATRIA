@@ -151,7 +151,7 @@
                                 @endif
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{$WRD->description}}</td>
                                 <td>{{ ($WRD->type == 0) ? 'Raw Material' : 'Finished Goods' }}</td>
-                                <td>{{ isset($WRD->required_date) ? $WRD->required_date : '-' }}</td>
+                                <td>{{ isset($WRD->required_date) ? date('d-m-Y', strtotime($WRD->required_date)) : '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

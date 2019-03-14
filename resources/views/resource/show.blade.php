@@ -351,7 +351,7 @@
                     </div>
 
                     <div class="modal fade" id="edit_info">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modalFull">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

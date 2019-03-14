@@ -213,5 +213,22 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $density = array(
+            0 => array(
+                'id' => 1,
+                'name' => 'Iron',
+                'value' => 0.75,
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'density',
+            'title' => 'Density',
+            'value' => json_encode($density),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }
