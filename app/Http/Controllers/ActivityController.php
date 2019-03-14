@@ -117,6 +117,7 @@ class ActivityController extends Controller
             // Notification::send($users, new ProjectActivity($activity));
             $activity->save();
             if($activity->wbs->project->business_unit_id == 2){
+                $project_id = $activity->wbs->project_id;
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
                     if(count($data['dataMaterial']) > 0){
                         foreach ($data['dataMaterial'] as $material) {
@@ -124,6 +125,7 @@ class ActivityController extends Controller
                             $activityDetailMaterial->activity_id = $activity->id;
                             $activityDetailMaterial->material_id = $material['material_id'];
                             $activityDetailMaterial->quantity_material = $material['quantity'];
+                            $activityDetailMaterial->source = $material['source'];
                             if($material['dimension_uom_id'] != ""){
                                 $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
                                 $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
@@ -131,6 +133,32 @@ class ActivityController extends Controller
                                 $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
                             }
                             $activityDetailMaterial->save();
+
+                            $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $material['material_id'])->get();
+                            if(count($modelBomPrep) > 0){
+                                foreach ($modelBomPrep as $bomPrep) {
+                                    if($bomPrep->status != 0){
+                                        //Masih belum pakai hitungan rumus
+                                        $bomPrep->quantity += $material['quantity'];
+                                    }else{
+                                        $bomPrep = new BomPrep;
+                                        $bomPrep->project_id = $project_id;
+                                        $bomPrep->material_id = $material['material_id'];
+                                        $bomPrep->quantity = $material['quantity'];
+                                        $bomPrep->status = 1;
+                                        $bomPrep->source = $material['source'];
+                                        $bomPrep->save();
+                                    }
+                                }
+                            }else{
+                                $bomPrep = new BomPrep;
+                                $bomPrep->project_id = $project_id;
+                                $bomPrep->material_id = $material['material_id'];
+                                $bomPrep->quantity = $material['quantity'];
+                                $bomPrep->status = 1;
+                                $bomPrep->source = $material['source'];
+                                $bomPrep->save();
+                            }
                         }
                     }
                     if($data['service_id'] != null){
@@ -207,6 +235,7 @@ class ActivityController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->json()->all();
+        $error = [];
         
         DB::beginTransaction();
         try {
@@ -236,8 +265,27 @@ class ActivityController extends Controller
             }
 
             if(count($data['deletedActDetail'])>0){
+                $project_id = $activity->wbs->project_id;
                 foreach ($data['deletedActDetail'] as $act_detail_id) {
                     $activityDetailMaterial = ActivityDetail::find($act_detail_id);
+                    $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $activityDetailMaterial->material_id)->get();
+                    foreach ($modelBomPrep as $bomPrep) {
+                        if($bomPrep->status == 0){
+                            array_push($error, ["Failed to delete material, this material has been already summarized"]);                
+                            return response(["error"=> $error],Response::HTTP_OK);
+                        }else{
+                            //Belum menggunakan rumus
+                            $bomPrep->quantity -= $activityDetailMaterial->quantity_material;
+                            if($bomPrep->quantity == 0){
+                                $bomPrep->delete();
+                            }
+                        }
+
+                        if(count($bomPrep->bomDetails) > 0){
+                            array_push($error, ["Failed to delete material, this material has been already partially summarized"]);                
+                            return response(["error"=> $error],Response::HTTP_OK);
+                        }
+                    }
                     $activityDetailMaterial->delete();
                 }
             }
@@ -252,6 +300,7 @@ class ActivityController extends Controller
                                 $activityDetailMaterial->activity_id = $activity->id;
                                 $activityDetailMaterial->material_id = $material['material_id'];
                                 $activityDetailMaterial->quantity_material = $material['quantity'];
+                                $activityDetailMaterial->source = $material['source'];
                                 if($material['dimension_uom_id'] != ""){
                                     $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
                                     $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
@@ -259,6 +308,31 @@ class ActivityController extends Controller
                                     $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
                                 }
                                 $activityDetailMaterial->save();
+                                $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $material['material_id'])->get();
+                                if(count($modelBomPrep) > 0){
+                                    foreach ($modelBomPrep as $bomPrep) {
+                                        if($bomPrep->status != 0){
+                                            //Masih belum pakai hitungan rumus
+                                            $bomPrep->quantity += $material['quantity'];
+                                        }else{
+                                            $bomPrep = new BomPrep;
+                                            $bomPrep->project_id = $project_id;
+                                            $bomPrep->material_id = $material['material_id'];
+                                            $bomPrep->quantity = $material['quantity'];
+                                            $bomPrep->status = 1;
+                                            $bomPrep->source = $material['source'];
+                                            $bomPrep->save();
+                                        }
+                                    }
+                                }else{
+                                    $bomPrep = new BomPrep;
+                                    $bomPrep->project_id = $project_id;
+                                    $bomPrep->material_id = $material['material_id'];
+                                    $bomPrep->quantity = $material['quantity'];
+                                    $bomPrep->status = 1;
+                                    $bomPrep->source = $material['source'];
+                                    $bomPrep->save();
+                                }
                             }
                         }
                     }
@@ -273,14 +347,16 @@ class ActivityController extends Controller
                 }
             }
             if(!$activity->save()){
-                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+                array_push($error, ["Failed to save, please try again!"]);                
+                return response(["error"=> $error],Response::HTTP_OK);
             }else{
                 DB::commit();
                 return response(["response"=>"Success to update activity ".$activity->code],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+            array_push($error, [$e->getMessage()]);                
+            return response(["error"=> $error],Response::HTTP_OK);
         }
     }
 
@@ -539,7 +615,26 @@ class ActivityController extends Controller
                 }
             }
             if($activity->wbs->project->business_unit_id == 2){
+                $project_id = $activity->wbs->project_id;
                 foreach ($activity->activityDetails as $act_detail) {
+                    $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $act_detail->material_id)->get();
+                    foreach ($modelBomPrep as $bomPrep) {
+                        if($bomPrep->status == 0){
+                            array_push($error, ["Failed to delete, this activity material has been already summarized"]);                
+                            return response(["error"=> $error],Response::HTTP_OK);
+                        }else{
+                            //Belum menggunakan rumus
+                            $bomPrep->quantity -= $act_detail->quantity_material;
+                            if($bomPrep->quantity == 0){
+                                $bomPrep->delete();
+                            }
+                        }
+
+                        if(count($bomPrep->bomDetails) > 0){
+                            array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);                
+                            return response(["error"=> $error],Response::HTTP_OK);
+                        }
+                    }
                     $act_detail->delete();
                 }
             }
@@ -549,7 +644,7 @@ class ActivityController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             array_push($error, [$e->getMessage()]);                
-            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+            return response(["error"=> $error],Response::HTTP_OK);
         }
     }
     
