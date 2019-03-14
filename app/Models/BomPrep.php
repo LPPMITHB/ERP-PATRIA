@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BomPre extends Model
+class BomPrep extends Model
 {
     protected $table = 'mst_bom_prep';
 
