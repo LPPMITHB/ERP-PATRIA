@@ -66,9 +66,11 @@ class ConfigurationController extends Controller
 
     public function materialFamilyIndex()
     {
-        $currencies = Configuration::get('currencies');
+        $material_family = Configuration::get('material_family');
+        
+        $id = count($material_family) + 1;
 
-        return view('currencies.index', compact('currencies'));
+        return view('material_family.index', compact('material_family','id'));
     }
 
     public function materialFamilyAdd(Request $request)
@@ -78,15 +80,15 @@ class ConfigurationController extends Controller
 
         DB::beginTransaction();
         try {
-            $currencies = Configuration::where('slug','currencies')->first();
-            $currencies->value = $data;
-            $currencies->update();
+            $material_family = Configuration::where('slug','material_family')->first();
+            $material_family->value = $data;
+            $material_family->update();
 
             DB::commit();
-            return response(json_encode($currencies),Response::HTTP_OK);
+            return response(json_encode($material_family),Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('currencies.index')->with('error', $e->getMessage());
+            return redirect()->route('material_family.index')->with('error', $e->getMessage());
         }
     }
 

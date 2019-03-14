@@ -29,23 +29,16 @@
                                         <div class="box-header with-border">
                                             <h4 class="box-title pull-right">
                                                 <a data-toggle="collapse" data-parent="#accordion" href="#new_currency">
-                                                    ADD NEW CURRENCY
+                                                    ADD NEW MATERIAL FAMILY
                                                 </a>
                                             </h4>
                                         </div>
                                         <div id="new_currency" class="panel-collapse collapse">
                                             <div class="box-body">
-                                                <div class="col-sm-4">
-                                                    <label for="name">Currency Name</label>
-                                                    <input v-model="input.name" type="text" class="form-control" placeholder="Please insert currency name">
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <label for="unit">Currency Unit</label>
-                                                    <input v-model="input.unit" type="text" class="form-control" placeholder="Please insert currency unit">
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <label for="value">Currency Value</label>
-                                                    <input v-model="input.value" type="text" class="form-control" placeholder="Please insert currency value">
+                                                <div class="col-sm-12">
+                                                    <input v-model="input.id" type="hidden" class="form-control">
+                                                    <label for="name">Material Family Name</label>
+                                                    <input v-model="input.name" type="text" class="form-control" placeholder="Please insert material family name">
                                                 </div>
                                                 <div class="col-xs-12 p-t-10">
                                                     <button type="submit" class="btn btn-primary pull-right" @click.prevent="add()">CREATE</button>
@@ -57,7 +50,7 @@
                                         <div class="box-header with-border">
                                             <h4 class="box-title pull-right">
                                                 <a data-toggle="collapse" data-parent="#accordion" href="#current_currency">
-                                                    MANAGE CURRENT CURRENCY
+                                                    MANAGE CURRENT MATERIAL FAMILY
                                                 </a>
                                             </h4>
                                         </div>
@@ -67,18 +60,14 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="30%">Currency Name</th>
-                                                            <th width="30%">Currency Unit</th>
-                                                            <th width="25%">Currency Value</th>
-                                                            <th width="10%" ></th>
+                                                            <th width="85%">Material Family Name</th>
+                                                            <th width="10%"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(currency,index) in currencies"> 
+                                                        <tr v-for="(data,index) in material_family"> 
                                                             <td>{{ index+1 }}</td>
-                                                            <td class="no-padding"><input v-model="currency.name" type="text" class="form-control"></td>
-                                                            <td class="no-padding"><input v-model="currency.unit" type="text" class="form-control"></td>
-                                                            <td class="no-padding"><input v-model="currency.value" type="text" class="form-control"></td>
+                                                            <td class="no-padding"><input v-model="data.name" type="text" class="form-control"></td>
                                                             <td class="p-l-0" align="center">
                                                                 <a @click.prevent="save()" class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
@@ -116,11 +105,10 @@
     });
 
     var data = {
-        currencies : @json($currencies),
+        material_family : @json($material_family),
         input:{
-            name : "",
-            unit : "",
-            value : ""
+            id : @json($id),
+            name : ""
         }
     }
 
@@ -129,27 +117,23 @@
         data : data,
         methods: {
             clearData(){
+                this.input.id = "";
                 this.input.name = "";
-                this.input.unit = "";
-                this.input.value = "";
             },
             add(){
                 $('div.overlay').show();
                 var input = JSON.stringify(this.input);
                 input = JSON.parse(input);
 
-                this.currencies.push(input);
-                this.currencies.forEach(currency => {
-                    currency.value = parseInt((currency.value+"").replace(/,/g , ''));
-                });
+                this.material_family.push(input);
 
-                var currencies = this.currencies;
-                currencies = JSON.stringify(currencies);
-                var url = "{{ route('currencies.add') }}";
+                var material_family = this.material_family;
+                material_family = JSON.stringify(material_family);
+                var url = "{{ route('material_family.add') }}";
 
-                window.axios.put(url,currencies).then((response) => {
+                window.axios.put(url,material_family).then((response) => {
                     iziToast.success({
-                        title: 'Success Save Currencies',
+                        title: 'Success Save Material Family',
                         position: 'topRight',
                         displayMode: 'replace'
                     });
@@ -169,17 +153,13 @@
             },
             save(){
                 $('div.overlay').show();
-                this.currencies.forEach(currency => {
-                    currency.value = parseInt((currency.value+"").replace(/,/g , ''));
-                });
+                var material_family = this.material_family;
+                material_family = JSON.stringify(material_family);
+                var url = "{{ route('material_family.add') }}";
 
-                var currencies = this.currencies;
-                currencies = JSON.stringify(currencies);
-                var url = "{{ route('currencies.add') }}";
-
-                window.axios.put(url,currencies).then((response) => {
+                window.axios.put(url,material_family).then((response) => {
                     iziToast.success({
-                        title: 'Success Save Currencies',
+                        title: 'Success Save Material Family',
                         position: 'topRight',
                         displayMode: 'replace'
                     });
@@ -195,23 +175,8 @@
                 $('div.overlay').hide();
             }
         },
-        watch: {
-            'input.value': function(newValue){
-                this.input.value = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            },
-            currencies:{
-                handler: function(newValue) {
-                    newValue.forEach(currency => {
-                        currency.value = (currency.value+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    });
-                },
-                deep: true
-            },
-        },
-        created : function(){
-            this.currencies.forEach(currency => {
-                currency.value = (currency.value+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            });
+        created:function(){
+            console.log(this.material_family);
         }
     });
 </script>

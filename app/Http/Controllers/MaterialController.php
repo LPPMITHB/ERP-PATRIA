@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Material;
 use App\Models\Uom;
+use App\Models\Configuration;
 use Auth;
 use DB;
 
@@ -31,8 +32,9 @@ class MaterialController extends Controller
     {
         $material = new Material;
         $uoms = Uom::all();
+        $material_families = Configuration::get('material_family');
 
-        return view('material.create', compact('material','uoms'));
+        return view('material.create', compact('material','uoms','material_families'));
     }
 
     /**
@@ -44,17 +46,16 @@ class MaterialController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
-
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
             // 'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'cost_standard_price' => 'nullable|numeric',
-            'cost_standard_price_service' => 'nullable|numeric',
-            'weight' => 'nullable|numeric',
-            'height' => 'nullable|numeric',
-            'length' => 'nullable|numeric',
-            'width' => 'nullable|numeric',
+            'cost_standard_price' => 'nullable',
+            'cost_standard_price_service' => 'nullable',
+            'weight' => 'nullable',
+            'height' => 'nullable',
+            'length' => 'nullable',
+            'width' => 'nullable',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3000'
         ]);
 
@@ -70,14 +71,12 @@ class MaterialController extends Controller
             $material->min = $data->min == "" ? 0 : $data->min;
             $material->max = $data->max == "" ? 0 : $data->max;
             $material->weight = $data->weight;
-            $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
             $material->length = $data->lengths;
-            $material->length_uom_id = $data->length_uom_id == "" ? null : $data->length_uom_id;
             $material->width = $data->width;
-            $material->width_uom_id = $data->width_uom_id == "" ? null : $data->width_uom_id;
             $material->height = $data->height;
-            $material->height_uom_id = $data->height_uom_id == "" ? null : $data->height_uom_id;
             $material->type = $data->type;
+            $material->family_id = $data->family_id;
+            $material->dimension_uom_id = $data->dimension_uom_id;
             $material->status = $data->status;
             if($request->hasFile('image')){
                 // Get filename with the extension
