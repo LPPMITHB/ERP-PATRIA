@@ -33,6 +33,7 @@ class CreateMstMaterialTable extends Migration
             $table->integer('type')->default(1);
             $table->integer('status')->default(1);
             $table->string('image')->nullable();
+            $table->string('density')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();
