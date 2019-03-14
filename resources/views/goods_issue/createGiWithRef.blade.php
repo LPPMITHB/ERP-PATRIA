@@ -90,11 +90,11 @@
                                                 <div class="modal fade" :id="MRD.id">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
-                                                            <div class="modal-header">
+                                                            <div class="modal-header text-left">
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
-                                                                <h4 class="modal-title">Picking Configuration for <b>{{MRD.material.name}}</b></h4>
+                                                                <h4 class="modal-title">Picking Configuration for <b>{{MRD.material.description}}</b></h4>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <table style="line-height: 20px">
