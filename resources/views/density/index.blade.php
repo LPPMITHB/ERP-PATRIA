@@ -3,10 +3,10 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'Manage Material Family',
+            'title' => 'Manage Density',
             'items' => [
                 'Dashboard' => route('index'),
-                'Manage Material Family' => '',
+                'Manage Density' => '',
             ]
         ]
     )
@@ -18,10 +18,10 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="add-currency" class="form-horizontal" method="POST" action="{{ route('material_family.add') }}">
+                <form id="add-currency" class="form-horizontal" method="POST" action="{{ route('density.add') }}">
                 @csrf
                     @verbatim
-                    <div id="material_family">
+                    <div id="density">
                         <div class="box-body">
                             <div class="col-md-12 p-l-0 p-r-0">
                                 <div class="box-group" id="accordion">
@@ -29,16 +29,20 @@
                                         <div class="box-header with-border">
                                             <h4 class="box-title pull-right">
                                                 <a data-toggle="collapse" data-parent="#accordion" href="#new_currency">
-                                                    ADD NEW MATERIAL FAMILY
+                                                    ADD NEW DENSITY
                                                 </a>
                                             </h4>
                                         </div>
                                         <div id="new_currency" class="panel-collapse collapse">
                                             <div class="box-body">
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-6">
                                                     <input v-model="input.id" type="hidden" class="form-control">
-                                                    <label for="name">Material Family Name</label>
-                                                    <input v-model="input.name" type="text" class="form-control" placeholder="Please insert material family name">
+                                                    <label for="name">Density Name</label>
+                                                    <input v-model="input.name" type="text" class="form-control" placeholder="Please insert density name">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label for="value">Density Value</label>
+                                                    <input v-model="input.value" type="text" class="form-control" placeholder="Please insert density value">
                                                 </div>
                                                 <div class="col-xs-12 p-t-10">
                                                     <button type="submit" class="btn btn-primary pull-right" @click.prevent="add()">CREATE</button>
@@ -50,7 +54,7 @@
                                         <div class="box-header with-border">
                                             <h4 class="box-title pull-right">
                                                 <a data-toggle="collapse" data-parent="#accordion" href="#current_currency">
-                                                    MANAGE CURRENT MATERIAL FAMILY
+                                                    MANAGE CURRENT DENSITY
                                                 </a>
                                             </h4>
                                         </div>
@@ -60,14 +64,16 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="85%">Material Family Name</th>
+                                                            <th width="45%">Density Name</th>
+                                                            <th width="40%">Density Value</th>
                                                             <th width="10%"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(data,index) in material_family"> 
+                                                        <tr v-for="(data,index) in density"> 
                                                             <td>{{ index+1 }}</td>
                                                             <td class="no-padding"><input v-model="data.name" type="text" class="form-control"></td>
+                                                            <td class="no-padding"><input v-model="data.value" type="text" class="form-control"></td>
                                                             <td class="p-l-0" align="center">
                                                                 <a @click.prevent="save()" class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
@@ -105,35 +111,37 @@
     });
 
     var data = {
-        material_family : @json($material_family),
+        density : @json($density),
         input:{
             id : @json($id),
-            name : ""
+            name : "",
+            value: "",
         }
     }
 
     var vm = new Vue({
-        el : '#material_family',
+        el : '#density',
         data : data,
         methods: {
             clearData(){
                 this.input.id = "";
                 this.input.name = "";
+                this.input.value = "";
             },
             add(){
                 $('div.overlay').show();
                 var input = JSON.stringify(this.input);
                 input = JSON.parse(input);
 
-                this.material_family.push(input);
+                this.density.push(input);
 
-                var material_family = this.material_family;
-                material_family = JSON.stringify(material_family);
-                var url = "{{ route('material_family.add') }}";
+                var density = this.density;
+                density = JSON.stringify(density);
+                var url = "{{ route('density.add') }}";
 
-                window.axios.put(url,material_family).then((response) => {
+                window.axios.put(url,density).then((response) => {
                     iziToast.success({
-                        title: 'Success Save Material Family',
+                        title: 'Success Save Density',
                         position: 'topRight',
                         displayMode: 'replace'
                     });
@@ -153,13 +161,13 @@
             },
             save(){
                 $('div.overlay').show();
-                var material_family = this.material_family;
-                material_family = JSON.stringify(material_family);
-                var url = "{{ route('material_family.add') }}";
+                var density = this.density;
+                density = JSON.stringify(density);
+                var url = "{{ route('density.add') }}";
 
-                window.axios.put(url,material_family).then((response) => {
+                window.axios.put(url,density).then((response) => {
                     iziToast.success({
-                        title: 'Success Save Material Family',
+                        title: 'Success Save Density',
                         position: 'topRight',
                         displayMode: 'replace'
                     });
@@ -175,7 +183,56 @@
                 $('div.overlay').hide();
             }
         },
+        watch:{
+            density:{
+                handler: function(newValue){
+                    var dataDensity = newValue;
+                    dataDensity.forEach(data => {
+                        var decimal = (data.value+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                data.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                data.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            data.value = (data.value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    });
+                },
+                deep: true
+            },
+            'input.value': function(newValue) {
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.input.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.input.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.input.value = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+        },
         created:function(){
+            var modelDensity = this.density;
+            modelDensity.forEach(data => {
+                var decimal = (data.value+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        data.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        data.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    data.value = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+
+            });
         }
     });
 </script>

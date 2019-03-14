@@ -1567,6 +1567,12 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $changeDefaultPassword,
             'route_name' => 'user.changeDefaultPassword',
         ]);
+        
+        $density = Menu::where('route_name','density.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $density,
+            'route_name' => 'density.index',
+        ]);
 
         $materialFamily = Menu::where('route_name','material_family.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
