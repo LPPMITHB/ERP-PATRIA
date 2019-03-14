@@ -36,6 +36,12 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
+            'route_name' => 'project.copyProjectStructure',
+        ]);
+
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProject,
             'route_name' => 'project.create',
         ]);
 

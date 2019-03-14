@@ -54,6 +54,12 @@ class ResourceController extends Controller
         }
         $resources = Resource::all();
         $resource_categories = Configuration::get('resource_category');
+        foreach($resource_categories as $key => $rc){
+            if($rc->id == 0){
+                unset($resource_categories[$key]);
+            }
+        }
+        rsort($resource_categories);
         $operation_hours = Configuration::get('operation_hours');
         $resourceDetails = ResourceDetail::where('status','!=',0)->get()->jsonSerialize();
 

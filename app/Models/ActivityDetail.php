@@ -27,4 +27,10 @@ class ActivityDetail extends Model
     {
         return $this->belongsTo('App\Models\Uom','area_uom_id');
     }
+
+    public function serviceDetail()
+    {
+        return $this->belongsTo('App\Models\ServiceDetail');
+    }
+
 }
