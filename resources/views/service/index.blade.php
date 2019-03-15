@@ -29,8 +29,7 @@
                             <th style="width: 5%">No</th>
                             <th style="width: 10%">Code</th>
                             <th style="width: 20%">Name</th>
-                            <th style="width: 30%">Description</th>
-                            <th style="width: 25%">Cost Standard Price</th>
+                            <th style="width: 25%">Ship Type</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
@@ -41,8 +40,7 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis">{{ $service->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->name}}">{{ $service->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->description}}">{{ $service->description }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->cost_standard_price}}">Rp {{ number_format($service->cost_standard_price) }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$service->ship_id != '' ? $service->ship->type : 'General'}}">{{ $service->ship_id != '' ? $service->ship->type : 'General' }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('service.show', ['id'=>$service->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('service.edit',['id'=>$service->id]) }}" class="btn btn-primary btn-xs">EDIT</a>

@@ -1041,7 +1041,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 2,
-            'name' => 'BOM / BOS',
+            'name' => 'Manage BOM',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
@@ -1050,10 +1050,21 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $bomRepair =  Menu::where('name','BOM / BOS')->where('menu_id',$repair)->select('id')->first()->id;
+        $bomRepair =  Menu::where('name','Manage BOM')->where('menu_id',$repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Manage BOM / BOS',
+            'name' => 'Needed Material Summary',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'bom_repair.selectProjectSum',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $bomRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage BOM',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom_repair.indexProject',
             'is_active' => true,
@@ -1065,7 +1076,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View BOM / BOS',
+            'name' => 'View BOM',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom_repair.selectProject',
             'is_active' => true,

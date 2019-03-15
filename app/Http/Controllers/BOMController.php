@@ -850,6 +850,10 @@ class BOMController extends Controller
         }
     }
 
+    public function selectProjectSum(Request $request){
+        return view('bom.materialSummary');
+    }
+
     public function getMaterialAPI($id){
 
         return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
