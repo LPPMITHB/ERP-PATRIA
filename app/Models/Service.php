@@ -31,5 +31,8 @@ class Service extends Model
     {
         return $this->belongsTo('App\Models\Uom');
     }
-    
+    public function ship()
+    {
+        return $this->belongsTo('App\Models\Ship');
+    }
 }
