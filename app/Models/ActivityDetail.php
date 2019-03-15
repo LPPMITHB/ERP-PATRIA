@@ -10,7 +10,27 @@ class ActivityDetail extends Model
 
     public function activity()
     {
-        return $this->hasOne('App\Models\Activity');
+        return $this->belongsTo('App\Models\Activity');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo('App\Models\Material');
+    }
+
+    public function dimensionUom()
+    {
+        return $this->belongsTo('App\Models\Uom','dimension_uom_id');
+    }
+
+    public function areaUom()
+    {
+        return $this->belongsTo('App\Models\Uom','area_uom_id');
+    }
+
+    public function serviceDetail()
+    {
+        return $this->belongsTo('App\Models\ServiceDetail');
     }
 
 }

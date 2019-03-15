@@ -50,12 +50,52 @@
                                 <input type="text" id="code" v-model="dataInput.code" class="form-control" placeholder="Please Input Code">
                             </div>
                             <div class="col-sm-12">
+                                <label for="serial_number" class="control-label">Serial Number</label>
+                                <input type="text" id="serial_number" v-model="dataInput.serial_number" class="form-control" placeholder="Please Input Serial Number">
+                            </div>
+                            <div class="col-sm-12">
                                 <label for="brand" class="control-label">Brand*</label>
                                 <input type="text" id="brand" v-model="dataInput.brand" class="form-control" placeholder="Please Input Brand">
                             </div>
                             <div class="col-sm-12">
+                                <label for="quantity" class="control-label">Quantity</label>
+                                <input type="text" id="quantity" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                            </div>
+                            <div class="col-sm-12">
                                 <label for="description" class="control-label">Description</label>
                                 <input type="text" id="description" v-model="dataInput.description" class="form-control" placeholder="Please Input Description">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="kva" class="control-label">Kva</label>
+                                <input type="text" id="kva" v-model="dataInput.kva" class="form-control" placeholder="Please Input Kva">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="amp" class="control-label">Amp</label>
+                                <input type="text" id="amp" v-model="dataInput.amp" class="form-control" placeholder="Please Input Amp">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="volt" class="control-label">Volt</label>
+                                <input type="text" id="volt" v-model="dataInput.volt" class="form-control" placeholder="Please Input Volt">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="phase" class="control-label">Phase</label>
+                                <input type="text" id="phase" v-model="dataInput.phase" class="form-control" placeholder="Please Input Phase">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="length" class="control-label">Length</label>
+                                <input type="text" id="length" v-model="dataInput.length" class="form-control" placeholder="Please Input Length">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="width" class="control-label">Width</label>
+                                <input type="text" id="width" v-model="dataInput.width" class="form-control" placeholder="Please Input Width">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="height" class="control-label">Height</label>
+                                <input type="text" id="height" v-model="dataInput.height" class="form-control" placeholder="Please Input Height">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="manufactured_in" class="control-label">Manufactured In</label>
+                                <input type="text" id="manufactured_in" v-model="dataInput.manufactured_in" class="form-control" placeholder="Please Input Manufactured In">
                             </div>
                             <div class="col-sm-12 p-t-7">
                                 <label for="manufactured_date">Manufactured Date</label>
@@ -136,13 +176,47 @@
     });
 
     var data = {
+        oldData : {
+            code : @json(Request::old('code')),
+            serial_number : @json(Request::old('serial_number')),
+            brand : @json(Request::old('brand')),
+            quantity : @json(Request::old('quantity')),
+            kva : @json(Request::old('kva')),
+            amp :@json(Request::old('amp')),
+            volt : @json(Request::old('volt')),
+            phase : @json(Request::old('phase')),
+            length : @json(Request::old('length')),
+            width : @json(Request::old('width')),
+            height : @json(Request::old('height')),
+            manufactured_in : @json(Request::old('manufactured_in')),
+            manufactured_date : @json(Request::old('manufactured_date')),
+            purchasing_date : @json(Request::old('purchasing_date')),
+            purchasing_price : @json(Request::old('purchasing_price')),
+            lifetime : @json(Request::old('lifetime')),
+            lifetime_uom_id : @json(Request::old('lifetime_uom_id')),
+            cost_per_hour : @json(Request::old('cost_per_hour')),
+            description : @json(Request::old('description')),
+            depreciation_method : @json(Request::old('depreciation_method')),
+            performance : @json(Request::old('performance')),
+            performance_uom_id : @json(Request::old('performance_uom_id')),
+        },
         depreciation_methods : @json($depreciation_methods),
         uom : @json($uom),
         resource : @json($resource),
         dataInput : {
             code : "",
             resource_id : @json($resource->id),
+            serial_number : "",
             brand : "",
+            quantity: "",
+            kva: "",
+            amp: "",
+            volt: "",
+            phase: "",
+            length: "",
+            width: "",
+            height: "",
+            manufactured_in : "",
             manufactured_date : "",
             purchasing_date : "",
             purchasing_price : "",
@@ -195,22 +269,127 @@
         },
         methods: {
             submitForm(){
-                this.dataInput.purchasing_price = (this.dataInput.purchasing_price+"").replace(/,/g , '');
-                this.dataInput.cost_per_hour = (this.dataInput.cost_per_hour+"").replace(/,/g , '');
-                this.dataInput.performance = (this.dataInput.performance+"").replace(/,/g , '');
-                this.dataInput.lifetime = (this.dataInput.lifetime+"").replace(/,/g , '');
+                window.axios.get('/api/getCodeRSCD').then(({ data }) => {
+                    const array = data;
+                    var statsCode = '';
+                    
+                    for (let i = 0;i < array.length; i++){
+                        if(array[i].code == this.dataInput.code){
+                            statsCode = 'yes';
+                            iziToast.error({
+                                title: 'Code has been taken !',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            break;
+                            $('div.overlay').hide();
+                        }
+                    }
 
-                $('div.overlay').show();
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.dataInput));
-                form.appendChild(struturesElem);
-                document.body.appendChild(form);
-                form.submit();
+                    if(statsCode != 'yes'){
+                        $('div.overlay').show();
+                        this.dataInput.purchasing_price = (this.dataInput.purchasing_price+"").replace(/,/g , '');
+                        this.dataInput.cost_per_hour = (this.dataInput.cost_per_hour+"").replace(/,/g , '');
+                        this.dataInput.performance = (this.dataInput.performance+"").replace(/,/g , '');
+                        this.dataInput.lifetime = (this.dataInput.lifetime+"").replace(/,/g , '');
+                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/,/g , '');
+                        this.dataInput.kva = (this.dataInput.kva+"").replace(/,/g , '');
+                        this.dataInput.amp = (this.dataInput.amp+"").replace(/,/g , '');
+                        this.dataInput.volt = (this.dataInput.volt+"").replace(/,/g , '');
+                        this.dataInput.phase = (this.dataInput.phase+"").replace(/,/g , '');
+                        this.dataInput.length = (this.dataInput.length+"").replace(/,/g , '');
+                        this.dataInput.width = (this.dataInput.width+"").replace(/,/g , '');
+                        this.dataInput.height = (this.dataInput.height+"").replace(/,/g , '');
+
+                        let struturesElem = document.createElement('input');
+                        struturesElem.setAttribute('type', 'hidden');
+                        struturesElem.setAttribute('name', 'datas');
+                        struturesElem.setAttribute('value', JSON.stringify(this.dataInput));
+                        form.appendChild(struturesElem);
+                        document.body.appendChild(form);
+                        form.submit();
+                        $('div.overlay').hide();
+                    }
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
             }
         },
         watch : {
+            created: function() {
+                if(this.oldData.code !=null) {
+                    this.dataInput.code=this.oldData.code;
+                }
+                if(this.oldData.serial_number !=null) {
+                    this.dataInput.serial_number=this.oldData.serial_number;
+                }
+                if(this.oldData.brand !=null) {
+                    this.dataInput.brand=this.oldData.brand;
+                }
+                if(this.oldData.quantity !=null) {
+                    this.dataInput.quantity=this.oldData.quantity;
+                }
+                if(this.oldData.kva !=null) {
+                    this.dataInput.kva=this.oldData.kva;
+                }
+                if(this.oldData.amp !=null) {
+                    this.dataInput.amp=this.oldData.amp;
+                }
+                if(this.oldData.volt !=null) {
+                    this.dataInput.volt=this.oldData.volt;
+                }
+                if(this.oldData.phase !=null) {
+                    this.dataInput.phase=this.oldData.phase;
+                }
+                if(this.oldData.length !=null) {
+                    this.dataInput.length=this.oldData.length;
+                }
+                if(this.oldData.width !=null) {
+                    this.dataInput.width=this.oldData.width;
+                }
+                if(this.oldData.height !=null) {
+                    this.dataInput.height=this.oldData.height;
+                }
+                if(this.oldData.manufactured_in !=null) {
+                    this.dataInput.manufactured_in=this.oldData.manufactured_in;
+                }
+                if(this.oldData.manufactured_date !=null) {
+                    this.dataInput.manufactured_date=this.oldData.manufactured_date;
+                }
+                if(this.oldData.purchasing_date !=null) {
+                    this.dataInput.purchasing_date=this.oldData.purchasing_date;
+                }
+                if(this.oldData.purchasing_price !=null) {
+                    this.dataInput.purchasing_price=this.oldData.purchasing_price;
+                }
+                if(this.oldData.lifetime !=null) {
+                    this.dataInput.lifetime=this.oldData.lifetime;
+                }
+                if(this.oldData.lifetime_uom_id !=null) {
+                    this.dataInput.lifetime_uom_id=this.oldData.lifetime_uom_id;
+                }
+                if(this.oldData.cost_per_hour !=null) {
+                    this.dataInput.cost_per_hour=this.oldData.cost_per_hour;
+                }
+                if(this.oldData.description !=null) {
+                    this.dataInput.description=this.oldData.description;
+                }
+                if(this.oldData.depreciation_method !=null) {
+                    this.dataInput.depreciation_method=this.oldData.depreciation_method;
+                }
+                if(this.oldData.performance !=null) {
+                    this.dataInput.performance=this.oldData.performance;
+                }
+                if(this.oldData.performance_uom_id !=null) {
+                    this.dataInput.performance_uom_id=this.oldData.performance_uom_id;
+                }
+            },
             'dataInput.purchasing_price': function(newValue) {
                 var decimal = newValue.replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
@@ -261,6 +440,46 @@
                     }
                 }else{
                     this.dataInput.lifetime = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.quantity': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.kva': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.kva = (this.dataInput.kva+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.amp': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.amp = (this.dataInput.amp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.volt': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.volt = (this.dataInput.volt+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.phase': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.phase = (this.dataInput.phase+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.length': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.length = (this.dataInput.length+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.width': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.width = (this.dataInput.width+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+            'dataInput.height': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.height = (this.dataInput.height+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
         }

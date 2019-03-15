@@ -823,7 +823,7 @@ $color-loader: #3c8dbc;
 }
 
 .border-top-modal{
-    border-top: 1px solid #e5e5e5;
+    border-top: 2px solid #e5e5e5;
 }
 
 .border-right-modal{
@@ -836,4 +836,8 @@ $color-loader: #3c8dbc;
 
 .modal {
     overflow-y:auto;
+}
+
+.selectizeFull>.selectize-dropdown{
+    width: 1000px !important;
 }

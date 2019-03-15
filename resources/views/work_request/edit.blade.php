@@ -48,19 +48,19 @@
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
                                 <div class="col-xs-5 no-padding">Project Number</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.number}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
                                 
                                 <div class="col-xs-5 no-padding">Ship Type</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.ship.type}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
         
                                 <div class="col-xs-5 no-padding">Customer</div>
-                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject.customer.name)"><b>: {{selectedProject.customer.name}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
 
                                 <div class="col-xs-5 no-padding">Start Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_start_date}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
 
                                 <div class="col-xs-5 no-padding">End Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_end_date}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
                             </div>
                             <div class="col-xs-12 col-md-4 p-r-0">
                                 <div class="col-sm-12 col-lg-3 p-l-0 p-r-0 p-t-3">
@@ -87,10 +87,12 @@
                                         <tr>
                                             <th style="width: 5%">No</th>
                                             <th style="width: 15%">WBS Name</th>
-                                            <th style="width: 20%">Material Name</th>
-                                            <th style="width: 10%">Quantity</th>
-                                            <th style="width: 10%">Available</th>
-                                            <th style="width: 20%">Description</th>
+                                            <th style="width: 10%">Material Number</th>
+                                            <th style="width: 15%">Material Description</th>
+                                            <th style="width: 4%">Unit</th>
+                                            <th style="width: 8%">Quantity</th>
+                                            <th style="width: 8%">Available</th>
+                                            <th style="width: 15%">Description</th>
                                             <th style="width: 10%">Required Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
@@ -98,9 +100,11 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }} - {{material.wbs_description}}</td>
                                             <td class="tdEllipsis" v-else>-</td>
-                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }}</td>
+                                            <td class="tdEllipsis">{{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis">{{ material.available }}</td>
@@ -114,37 +118,40 @@
                                         </tr>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft">
+                                            <td class="p-l-0 textLeft no-padding">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
+                                                <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
+                                            <td colspan="2" class="p-l-0 textLeft no-padding" v-show="dataInput.wbs_id == ''">
                                                 <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
                                                 </selectize>  
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0">
+                                            <td colspan="2" class="p-l-0 textLeft no-padding" v-show="dataInput.wbs_id != '' && materials.length == 0">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length > 0">
+                                            <td colspan="2" class="p-l-0 textLeft no-padding" v-show="dataInput.wbs_id != '' && materials.length > 0">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
+                                                <input class="form-control" v-model="dataInput.unit" disabled>
+                                            </td>
+                                            <td class="p-l-0 no-padding">
                                                 <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input class="form-control" v-model="dataInput.available" disabled>
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input class="form-control" v-model="dataInput.description">
                                             </td>
-                                            <td class="no-padding p-l-0 textLeft">
+                                            <td class="no-padding p-l-0 textLeft no-padding">
                                                 <input v-model="dataInput.required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
-                                            <td class="p-l-0  textCenter">
+                                            <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
@@ -157,9 +164,11 @@
                                         <tr>
                                             <th style="width: 5%">No</th>
                                             <th style="width: 15%">WBS Name</th>
-                                            <th style="width: 20%">Material Name</th>
+                                            <th style="width: 10%">Material Number</th>
+                                            <th style="width: 15%">Material Description</th>
+                                            <th style="width: 4%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
-                                            <th style="width: 20%">Description</th>
+                                            <th style="width: 21%">Description</th>
                                             <th style="width: 10%">Required Date</th>
                                             <th style="width: 10%"></th>
                                         </tr>
@@ -167,9 +176,11 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterialFG">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }} - {{ material.wbs_description }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
-                                            <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.material_code }}</td>
+                                            <td class="tdEllipsis">{{ material.material_name }}</td>
+                                            <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis">{{ material.description}}</td>
@@ -182,30 +193,37 @@
                                         </tr>
                                         <tr>
                                             <td class="p-l-10">{{newIndexFG}}</td>
-                                            <td class="p-l-0 textLeft" v-show="wbss.length > 0">
+                                            <td class="p-l-0 textLeft no-padding" v-show="wbss.length > 0">
                                                 <selectize v-model="dataInputFG.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }}</option>
+                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInputFG.wbs_id == ''">
+                                            <td colspan="2" class="p-l-0 textLeft no-padding" v-show="dataInputFG.wbs_id == ''">
                                                 <selectize disabled v-model="dataInputFG.id" :settings="nullSettings" disabled>
                                                 </selectize>  
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInputFG.wbs_id != '' && allmaterial.length > 0">
-                                                <selectize v-model="dataInputFG.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in allmaterial" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                            <td colspan="2" class="p-l-0 textLeft" v-show="dataInputFG.wbs_id != '' && materialWIP.length == 0">
+                                                <selectize disabled v-model="dataInput.material_id" :settings="materialWIPNullSettings">
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0">
+                                            <td colspan="2" class="p-l-0 textLeft no-padding" v-show="dataInputFG.wbs_id != '' && materialWIP.length > 0">
+                                                <selectize v-model="dataInputFG.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in materialWIP" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 no-padding">
+                                                <input class="form-control" v-model="dataInputFG.unit" disabled>
+                                            </td>
+                                            <td class="p-l-0 no-padding">
                                                 <input :disabled="materialFGOk" class="form-control" v-model="dataInputFG.quantity" placeholder="Please Input Quantity">
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input class="form-control" v-model="dataInputFG.description" placeholder="Please Fill in this Field">
                                             </td>
-                                            <td class="p-l-0 textLeft">
-                                                <input v-model="dataInputFG.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="inputFG_required_date" id="inputFG_required_date" placeholder="Required Date">  
+                                            <td class="p-l-0 no-padding textLeft">
+                                                <input v-model="dataInputFG.required_date" required autocomplete="off" type="text" class="form-control datepicker width10 no-padding0" name="inputFG_required_date" id="inputFG_required_date" placeholder="Required Date">  
                                             </td>
-                                            <td class="p-l-0  textCenter">
+                                            <td class="p-l-0 no-padding textCenter">
                                                 <button @click.prevent="addFG" :disabled="createFGOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
@@ -234,6 +252,10 @@
                                             <div class="col-sm-12">
                                                 <label for="material" class="control-label">Material</label>
                                                 <input type="text" id="materiall" class="form-control" disabled> 
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" id="unit" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
@@ -278,6 +300,10 @@
                                             <div class="col-sm-12">
                                                 <label for="material" class="control-label">Material</label>
                                                 <input type="text" id="materiallFG" class="form-control" disabled> 
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" id="unit" v-model="editInputFG.unit" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
@@ -358,7 +384,7 @@
         dataMaterial : @json($modelWRD),
         dataMaterialFG : @json($modelWRDFG),
         materials : [],
-        allmaterial : @json($allmaterial),
+        materialWIP : [],
         wbss : @json($wbss),
         project_id : "",
         projectSettings: {
@@ -371,10 +397,13 @@
             placeholder: 'Please Select WBS'
         },
         nullSettings:{
-            placeholder: '-'
+            placeholder: 'Please Select WBS first !'
         },
         materialNullSettings:{
             placeholder: "WBS doesn't have BOM ! / Material already inputted"
+        },
+        materialWIPNullSettings:{
+            placeholder: "WBS doesn't have BOM with source WIP !"
         },
         dataInput : {
             material_id :"",
@@ -387,7 +416,9 @@
             available : "",
             description : "",
             required_date : "",
+            unit : "",
             wrd_id : null,
+            old_data : false,
         },
         editInput : {
             old_material_id : "",
@@ -398,9 +429,12 @@
             quantityInt : 0,
             wbs_id : "",
             wbs_number : "",
+            wbs_description : "",
             available : "",
             description : "",
+            unit : "",
             required_date : "",
+            
         },
         dataInputFG : {
             material_id :"",
@@ -412,7 +446,10 @@
             wbs_number : "",
             description : "",
             required_date : "",
+            unit : "",
             wrd_id : null,
+            old_data : false,
+
         },
         editInputFG : {
             old_material_id : "",
@@ -423,6 +460,8 @@
             quantityInt : 0,
             wbs_id : "",
             wbs_number : "",
+            wbs_description : "",
+            unit : "",
             description : "",
             required_date : "",
         },
@@ -596,19 +635,21 @@
                 var material = this.dataMaterial[this.editInput.index];
 
                 window.axios.get('/api/getMaterialWr/'+new_material_id).then(({ data }) => {
-                    material.material_name = data.name;
+                    material.material_name = data.description;
                     material.material_code = data.code;
                     material.required_date = this.editInput.required_date;
 
                     if(this.editInput.wbs_id != ''){
                         window.axios.get('/api/getWbsWr/'+this.editInput.wbs_id).then(({ data }) => {
-                            material.wbs_number = data.name;
+                            material.wbs_number = data.number;
+                            material.wbs_description = data.description;
                             material.quantityInt = this.editInput.quantity;
                             material.quantity = this.editInput.quantity;
                             material.material_id = new_material_id;
                             material.wbs_id = this.editInput.wbs_id;
                             material.description = this.editInput.description;
                             material.available = this.editInput.available;
+                            material.unit = this.editInput.unit;
 
                             $('div.overlay').hide();
                         })
@@ -639,19 +680,21 @@
                 var material = this.dataMaterialFG[this.editInputFG.index];
 
                 window.axios.get('/api/getMaterialWr/'+new_material_id).then(({ data }) => {
-                    material.material_name = data.name;
+                    material.material_name = data.description;
                     material.material_code = data.code;
                     material.required_date = this.editInputFG.required_date;
 
                     if(this.editInputFG.wbs_id != ''){
                         window.axios.get('/api/getWbsWr/'+this.editInputFG.wbs_id).then(({ data }) => {
-                            material.wbs_number = data.name;
+                            material.wbs_number = data.number;
+                            material.wbs_description = data.description;
                             material.quantityInt = this.editInputFG.quantity;
                             material.quantity = this.editInputFG.quantity;
                             material.material_id = new_material_id;
                             material.wbs_id = this.editInputFG.wbs_id;
                             material.description = this.editInputFG.description;
                             material.available = this.editInputFG.available;
+                            material.unit = this.editInputFG.unit;
 
                             $('div.overlay').hide();
                         })
@@ -679,7 +722,6 @@
                 })
             },
             openEditModal(data,index){
-                console.log();
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
@@ -688,13 +730,15 @@
                 this.editInput.quantityInt = data.quantityInt;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_number = data.wbs_number;
+                this.editInput.wbs_description = data.wbs_description;
                 this.editInput.available = data.available;
                 this.editInput.description = data.description;
                 this.editInput.required_date = data.required_date;
+                this.editInput.unit = data.unit;
                 this.editInput.index = index;
 
                 document.getElementById('materiall').value = data.material_code+" - "+data.material_name;
-                document.getElementById('wbs').value = data.wbs_number;
+                document.getElementById('wbs').value = data.wbs_number+" - "+data.wbs_description;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -706,7 +750,6 @@
                 });
             },
             openEditModalFG(data,index){
-                console.log();
                 this.editInputFG.material_id = data.material_id;
                 this.editInputFG.old_material_id = data.material_id;
                 this.editInputFG.material_code = data.material_code;
@@ -715,12 +758,14 @@
                 this.editInputFG.quantityInt = data.quantityInt;
                 this.editInputFG.wbs_id = data.wbs_id;
                 this.editInputFG.wbs_number = data.wbs_number;
+                this.editInputFG.wbs_description = data.wbs_description;
                 this.editInputFG.description = data.description;
                 this.editInputFG.required_date = data.required_date;
+                this.editInputFG.unit = data.unit;
                 this.editInputFG.index = index;
 
                 document.getElementById('materiallFG').value = data.material_code+" - "+data.material_name;
-                document.getElementById('wbsFG').value = data.wbs_number;
+                document.getElementById('wbsFG').value = data.wbs_number+" - "+data.wbs_description;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -735,7 +780,7 @@
                 var material_id = this.dataInput.material_id;
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterialWr/'+material_id).then(({ data }) => {
-                    this.dataInput.material_name = data.name;
+                    this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
 
                     var temp_data = JSON.stringify(this.dataInput);
@@ -769,14 +814,14 @@
                 var material_id = this.dataInputFG.material_id;
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterialWr/'+material_id).then(({ data }) => {
-                    this.dataInputFG.material_name = data.name;
+                    this.dataInputFG.material_name = data.description;
                     this.dataInputFG.material_code = data.code;
 
                     var temp_data = JSON.stringify(this.dataInputFG);
                     temp_data = JSON.parse(temp_data);
 
                     this.dataMaterialFG.push(temp_data);
-                    
+
                     this.dataInputFG.material_name = "";
                     this.dataInputFG.material_code = "";
                     this.dataInputFG.quantity = "";
@@ -803,6 +848,19 @@
             'dataInput.material_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
+                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+                        this.dataInput.unit = data.uom.unit;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
                     window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
                         this.availableQuantity = data;
 
@@ -827,6 +885,62 @@
 
                 }
             },
+
+            'dataInputFG.material_id' : function(newValue){
+                if(newValue != ""){
+                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+                        this.dataInputFG.unit = data.uom.unit;
+
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }
+            },
+
+            // 'editInput.material_id' : function(newValue){
+            //     if(newValue != ""){
+            //         $('div.overlay').show();
+            //         window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+            //             this.editInput.unit = data.uom.unit;
+
+            //             $('div.overlay').hide();
+            //         })
+            //         .catch((error) => {
+            //             iziToast.warning({
+            //                 title: 'Please Try Again..',
+            //                 position: 'topRight',
+            //                 displayMode: 'replace'
+            //             });
+            //             $('div.overlay').hide();
+            //         })
+            //     }
+            // },
+
+            // 'editInputFG.material_id' : function(newValue){
+            //     if(newValue != ""){
+            //         window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
+            //             this.editInputFG.unit = data.uom.unit;
+
+            //             $('div.overlay').hide();
+            //         })
+            //         .catch((error) => {
+            //             iziToast.warning({
+            //                 title: 'Please Try Again..',
+            //                 position: 'topRight',
+            //                 displayMode: 'replace'
+            //             });
+            //             $('div.overlay').hide();
+            //         })
+
+            //     }
+            // },
 
             'dataInput.quantity': function(newValue){
                 this.dataInput.quantityInt = newValue;
@@ -854,10 +968,13 @@
             },
             'dataInput.wbs_id': function(newValue){
                 this.dataInput.material_id = "";
+                this.dataInput.unit = "";
+                
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getWbsWREdit/'+newValue+'/'+this.wr_id).then(({ data }) => {
                         this.dataInput.wbs_number = data.wbs.number;
+                        this.dataInput.wbs_description = data.wbs.description;
                         this.materials = data.materials;
                         $('div.overlay').hide();
                     })
@@ -875,10 +992,15 @@
             },
             'dataInputFG.wbs_id': function(newValue){
                 this.dataInputFG.material_id = "";
+                this.dataInputFG.unit = "";
+
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWbsWREdit/'+newValue+'/'+this.wr_id).then(({ data }) => {
+                    window.axios.get('/api/getMaterialWIPEdit/'+newValue+'/'+this.wr_id).then(({ data }) => {
                         this.dataInputFG.wbs_number = data.wbs.number;
+                        this.dataInputFG.wbs_description = data.wbs.description;
+                        this.materialWIP = data.materials;
+                        
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -907,30 +1029,46 @@
                 });
             }
         },
-
+        
         created: function() {
+
             this.newIndex = Object.keys(this.dataMaterial).length+1;
             this.newIndexFG = Object.keys(this.dataMaterialFG).length+1;
             this.dataMaterial.forEach( function (wrd, i) {
                 wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 wrd.available = (wrd.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                if(wrd.required_date != null && wrd.required_date != ''){
+                    var date = wrd.required_date;
+                    wrd.required_date = date.split("-").reverse().join("-");
+                }
                 
-                wrd.material_name = wrd.material.name;
+                wrd.material_name = wrd.material.description;
                 wrd.material_code = wrd.material.code;
+                wrd.unit = wrd.material.uom.unit;
                 wrd.quantityInt = wrd.quantity;
                 wrd.wrd_id = wrd.id;
                 wrd.wbs_number = wrd.wbs.number;
+                wrd.wbs_description = wrd.wbs.description;
+
 
             });
 
             this.dataMaterialFG.forEach( function (wrd, i) {
                 wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                if(wrd.required_date != null && wrd.required_date != ''){
+                    var date = wrd.required_date;
+                    wrd.required_date = date.split("-").reverse().join("-");
+                }
                 
-                wrd.material_name = wrd.material.name;
+                wrd.material_name = wrd.material.description;
                 wrd.material_code = wrd.material.code;
+                wrd.unit = wrd.material.uom.unit;
                 wrd.quantityInt = wrd.quantity;
                 wrd.wrd_id = wrd.id;
                 wrd.wbs_number = wrd.wbs.number;
+                wrd.wbs_description = wrd.wbs.description;
 
             });
 

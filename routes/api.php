@@ -73,6 +73,7 @@ Route::get('/getPRD/{id}', 'GoodsReceiptController@getGRDAPI')->name('api.goods_
 // purchase order
 Route::get('/getVendor', 'PurchaseOrderController@getVendorAPI')->name('api.purchase_order.getVendorAPI');
 Route::get('/getResourcePO/{id}', 'PurchaseOrderController@getResourceAPI')->name('api.purchase_order.getResourceAPI');
+Route::get('/getVendorList/{id}', 'PurchaseOrderController@getVendorListAPI')->name('api.purchase_order.getVendorListAPI');
 
 // stock management
 Route::get('/getSlocSM/{id}', 'StockManagementController@getSlocApi')->name('api.stock_management.getSlocApi');
@@ -87,7 +88,9 @@ Route::get('/getWbsWr/{id}', 'WorkRequestController@getWbsWrAPI')->name('api.wor
 Route::get('/getBomWr/{id}', 'WorkRequestController@getBomWrAPI')->name('api.work_request.getBomWrAPI');
 Route::get('/getBomDetailWr/{id}', 'WorkRequestController@getBomDetailWrAPI')->name('api.work_request.getBomDetailWrAPI');
 Route::get('/getProjectWR/{id}', 'WorkRequestController@getProjectApi')->name('api.work_request.getProjectApi');
+Route::get('/getMaterialWIP/{id}', 'WorkRequestController@getMaterialWIPApi')->name('api.work_request.getMaterialWIPApi');
 Route::get('/getWbsWREdit/{id}/{wr_id}', 'WorkRequestController@getWbsEditAPI')->name('api.work_request.getWbsEditAPI');
+Route::get('/getMaterialWIPEdit/{id}/{wr_id}', 'WorkRequestController@getMaterialWIPEditAPI')->name('api.work_request.getMaterialWIPEditAPI');
 
 // material write off
 Route::get('/getMaterialMwo/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');
@@ -124,6 +127,7 @@ Route::get('/getCategoryAR/{id}', 'ResourceController@getCategoryARApi')->name('
 Route::get('/generateCodeGrResource/{data}', 'ResourceController@generateCodeAPI')->name('api.resource.generateCodeAPI');
 Route::get('/getNewResourceDetail/{id}', 'ResourceController@getNewResourceDetailAPI')->name('api.resource.getNewResourceDetailAPI');
 Route::get('/getSchedule/{id}', 'ResourceController@getScheduleAPI')->name('api.resource.getScheduleAPI');
+Route::get('/getCodeRSCD', 'ResourceController@getCodeRSCDAPI')->name('api.resource.getCodeRSCDAPI');
 
 // yard plan
 Route::get('/getWbs/{id}', 'YardPlanController@getWbsAPI')->name('api.yard_plan.getWbsAPI');

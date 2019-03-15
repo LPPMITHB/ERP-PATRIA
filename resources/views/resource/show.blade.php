@@ -46,6 +46,9 @@
 
                         <div class="col-md-2 col-xs-2 no-padding">Description</div>
                         <div class="col-md-10 col-xs-10 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$resource->description}}"><b>: {{ isset($resource->description) ? $resource->description : '-' }}</b></div>
+                    
+                        <div class="col-md-2 col-xs-2 no-padding">Cost Standard Price</div>
+                        <div class="col-md-10 col-xs-10 no-padding"><b>: {{number_format($resource->cost_standard_price,2)}}</b></div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-4 col-md-12 no-padding ">
@@ -180,7 +183,10 @@
                                     </div>
 
                                     <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 3">
-                                        <div class="col-sm-4 p-l-0">
+                                        <div class="col-sm-3 p-l-0">
+                                            <div class="col-md-6 col-xs-6 no-padding">Serial Number</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.serial_number}}</b></div>
+
                                             <div class="col-md-6 col-xs-6 no-padding">Brand</div>
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.brand}}</b></div>
     
@@ -195,25 +201,53 @@
 
                                             <div class="col-md-6 col-xs-6 no-padding">Running Hours</div>
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{(data.running_hour) ? data.running_hour : '-'}} Hour(s)</b></div>
+
+                                            <div class="col-md-6 col-xs-6 no-padding">Quantity</div>
+                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{(data.quantity)}}</b></div>
                                         </div>
-                                        <div class="col-sm-7 p-l-0">
-                                            <div class="col-md-3 col-xs-3 no-padding">Manufactured Date</div>
-                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.manufactured_date) ? data.manufactured_date : '-'}}</b></div>
-    
-                                            <div class="col-md-3 col-xs-3 no-padding">Purchasing Date</div>
-                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.purchasing_date) ? data.purchasing_date : '-'}}</b></div>
-    
-                                            <div class="col-md-3 col-xs-3 no-padding">Purchasing Price</div>
-                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.purchasing_price) ? 'Rp'+data.purchasing_price : '-'}}</b></div>
+                                        <div class="col-sm-3 p-l-0">
+                                            <div class="col-md-6 col-xs-6 no-padding">Kva</div>
+                                            <div class="col-md-5 col-xs-5 no-padding"><b>: {{(data.kva)}}</b></div>
 
-                                            <div class="col-md-3 col-xs-3 no-padding">Lifetime</div>
-                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{data.lifetime}}</b></div>
+                                            <div class="col-md-6 col-xs-6 no-padding">Amp</div>
+                                            <div class="col-md-5 col-xs-5 no-padding"><b>: {{(data.amp)}}</b></div>
 
-                                            <div class="col-md-3 col-xs-3 no-padding">Depreciation Method</div>
-                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{data.depreciation_method}}</b></div>
+                                            <div class="col-md-6 col-xs-6 no-padding">Volt</div>
+                                            <div class="col-md-5 col-xs-5 no-padding"><b>: {{(data.volt)}}</b></div>
+
+                                            <div class="col-md-6 col-xs-6 no-padding">Phase</div>
+                                            <div class="col-md-5 col-xs-5 no-padding"><b>: {{(data.phase)}}</b></div>
+
+                                            <div class="col-md-6 col-xs-6 no-padding">Length</div>
+                                            <div class="col-md-5 col-xs-5 no-padding"><b>: {{(data.length)}}</b></div>
+
+                                            <div class="col-md-6 col-xs-6 no-padding">Width</div>
+                                            <div class="col-md-5 col-xs-5 no-padding"><b>: {{(data.width)}}</b></div>
+
+                                            <div class="col-md-6 col-xs-6 no-padding">Height</div>
+                                            <div class="col-md-5 col-xs-5 no-padding"><b>: {{(data.height)}}</b></div>
+                                        </div>
+                                        <div class="col-sm-5 p-l-0">
+                                            <div class="col-md-5 col-xs-6 no-padding">Manufactured In</div>
+                                            <div class="col-md-7 col-xs-6 no-padding"><b>: {{(data.manufactured_in) ? data.manufactured_in : '-'}}</b></div>
+
+                                            <div class="col-md-5 col-xs-6 no-padding">Manufactured Date</div>
+                                            <div class="col-md-7 col-xs-6 no-padding"><b>: {{(data.manufactured_date) ? data.manufactured_date : '-'}}</b></div>
+    
+                                            <div class="col-md-5 col-xs-6 no-padding">Purchasing Date</div>
+                                            <div class="col-md-7 col-xs-6 no-padding"><b>: {{(data.purchasing_date) ? data.purchasing_date : '-'}}</b></div>
+    
+                                            <div class="col-md-5 col-xs-6 no-padding">Purchasing Price</div>
+                                            <div class="col-md-7 col-xs-6 no-padding"><b>: {{(data.purchasing_price) ? 'Rp'+data.purchasing_price : '-'}}</b></div>
+
+                                            <div class="col-md-5 col-xs-6 no-padding">Lifetime</div>
+                                            <div class="col-md-7 col-xs-6 no-padding"><b>: {{data.lifetime}}</b></div>
+
+                                            <div class="col-md-5 col-xs-6 no-padding">Depreciation Method</div>
+                                            <div class="col-md-7 col-xs-6 no-padding"><b>: {{data.depreciation_method}}</b></div>
                                             
-                                            <div class="col-md-3 col-xs-3 no-padding">Cost Per Hour</div>
-                                            <div class="col-md-9 col-xs-9 no-padding"><b>: {{(data.cost_per_hour) ? 'Rp'+data.cost_per_hour : '-'}}</b></div>
+                                            <div class="col-md-5 col-xs-6 no-padding">Cost Per Hour</div>
+                                            <div class="col-md-7 col-xs-6 no-padding"><b>: {{(data.cost_per_hour) ? 'Rp'+data.cost_per_hour : '-'}}</b></div>
                                         </div>
                                         <div class="col-sm-1 p-l-0 p-r-0">
                                             <a href="#edit_info" class="btn btn-primary btn-sm pull-right" data-toggle="modal" @click="openEditModal(data.category_id)">EDIT INFORMATION</a>
@@ -317,7 +351,7 @@
                     </div>
 
                     <div class="modal fade" id="edit_info">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modalFull">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -487,12 +521,52 @@
                                                 <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
+                                                <label for="serial_number" class="control-label">Serial Number</label>
+                                                <input type="text" id="serial_number" v-model="editInput.serial_number" class="form-control" placeholder="Please Input Serial Number">
+                                            </div>
+                                            <div class="col-sm-12">
                                                 <label for="brand" class="control-label">Brand*</label>
                                                 <input type="text" id="brand" v-model="editInput.brand" class="form-control" placeholder="Please Input Brand">
                                             </div>
                                             <div class="col-sm-12">
+                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                            <div class="col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
                                                 <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="kva" class="control-label">Kva</label>
+                                                <input type="text" id="kva" v-model="editInput.kva" class="form-control" placeholder="Please Input Kva">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="amp" class="control-label">Amp</label>
+                                                <input type="text" id="amp" v-model="editInput.amp" class="form-control" placeholder="Please Input Amp">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="volt" class="control-label">Volt</label>
+                                                <input type="text" id="volt" v-model="editInput.volt" class="form-control" placeholder="Please Input Volt">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="phase" class="control-label">Phase</label>
+                                                <input type="text" id="phase" v-model="editInput.phase" class="form-control" placeholder="Please Input Phase">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="length" class="control-label">Length</label>
+                                                <input type="text" id="length" v-model="editInput.length" class="form-control" placeholder="Please Input Length">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="width" class="control-label">Width</label>
+                                                <input type="text" id="width" v-model="editInput.width" class="form-control" placeholder="Please Input Width">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="height" class="control-label">Height</label>
+                                                <input type="text" id="height" v-model="editInput.height" class="form-control" placeholder="Please Input Height">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="manufactured_in" class="control-label">Manufactured In</label>
+                                                <input type="text" id="manufactured_in" v-model="editInput.manufactured_in" class="form-control" placeholder="Please Input Manufactured In">
                                             </div>
                                             <div class="col-sm-12 p-t-7">
                                                 <label for="manufactured_date">Manufactured Date</label>
@@ -617,7 +691,16 @@
             rental_duration : "",
             brand : "",
             type : "",
-            description : "",
+            serial_number : "",
+            quantity : "",
+            kva : "",
+            amp : "",
+            volt : "",
+            phase : "",
+            length : "",
+            width : "",
+            height : "",
+            manufactured_in : "",
             performance : "",
             status : "",
             prod_order_detail : [],
@@ -651,6 +734,16 @@
             index : "",
             performance : "",
             performance_uom_id : "",
+            serial_number : "",
+            quantity : "",
+            kva : "",
+            amp : "",
+            volt : "",
+            phase : "",
+            length : "",
+            width : "",
+            height : "",
+            manufactured_in : "",
 
             name:"",
 
@@ -744,6 +837,21 @@
         );
     },
     methods : {
+        getRSD(){
+            window.axios.get('/api/getNewResourceDetail/'+this.data.resource_id).then(({ data }) => {
+                this.data.selectedId = "";
+
+                this.modelRD = data;
+            })
+            .catch((error) => {
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: "Please try again.. "+error,
+                    position: 'topRight',
+                });
+                $('div.overlay').hide();
+            });
+        },
         update(){
             $('div.overlay').show();
             this.editInput.resource_detail_id = this.data.resource_detail_id;
@@ -751,28 +859,43 @@
             this.editInput.lifetime = parseInt((this.editInput.lifetime+"").replace(/,/g , ''));
             this.editInput.cost_per_hour = parseInt((this.editInput.cost_per_hour+"").replace(/,/g , ''));
             this.editInput.purchasing_price = parseInt((this.editInput.purchasing_price+"").replace(/,/g , ''));
+            this.editInput.quantity = parseInt((this.editInput.quantity+"").replace(/,/g , ''));
+            this.editInput.kva = parseInt((this.editInput.kva+"").replace(/,/g , ''));
+            this.editInput.amp = parseInt((this.editInput.amp+"").replace(/,/g , ''));
+            this.editInput.volt = parseInt((this.editInput.volt+"").replace(/,/g , ''));
+            this.editInput.phase = parseInt((this.editInput.phase+"").replace(/,/g , ''));
+            this.editInput.length = parseInt((this.editInput.length+"").replace(/,/g , ''));
+            this.editInput.width = parseInt((this.editInput.width+"").replace(/,/g , ''));
+            this.editInput.height = parseInt((this.editInput.height+"").replace(/,/g , ''));
             let data = this.editInput;
+
             if(this.route == "/resource"){
                 var url = "{{ route('resource.updateDetail') }}";
             }else if(this.route == "/resource_repair"){
                 var url = "{{ route('resource_repair.updateDetail') }}";
             }
             window.axios.put(url,data).then((response) => {
-                window.axios.get('/api/getNewResourceDetail/'+this.data.resource_id).then(({ data }) => {
-                    this.data.selectedId = "";
-                    iziToast.success({
+                if(response.data.error != undefined){
+                    iziToast.warning({
                         displayMode: 'replace',
-                        title: "Sucess Update Resource Information !",
+                        title: response.data.error,
                         position: 'topRight',
                     });
-                    this.modelRD = data;
-                });
+                    $('div.overlay').hide();            
+                }else{
+                    this.getRSD();
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: response.data.response,
+                        position: 'topRight',
+                    });
+                }
                 $('div.overlay').hide();
             })
             .catch((error) => {
                 iziToast.warning({
                     displayMode: 'replace',
-                    title: "Please try again.. ",
+                    title: "Please try again.. "+error,
                     position: 'topRight',
                 });
                 $('div.overlay').hide();
@@ -792,11 +915,21 @@
             this.editInput.sub_con_competency = '';
             this.editInput.name = '';
             this.editInput.brand = '';
+            this.editInput.manufactured_in = '',
             this.editInput.manufactured_date = '';
             this.editInput.purchasing_date = '';
             this.editInput.purchasing_price = '';
             this.editInput.cost_per_hour = '';
             this.editInput.depreciation_method = '';
+            this.editInput.serial_number = '',
+            this.editInput.quantity = '',
+            this.editInput.kva = '',
+            this.editInput.amp = '',
+            this.editInput.volt = '',
+            this.editInput.phase = '',
+            this.editInput.length = '',
+            this.editInput.width = '',
+            this.editInput.height = ''
         },
         openEditModal(category_id){
             this.clearEditData();
@@ -827,6 +960,18 @@
                         this.editInput.purchasing_price = this.data.purchasing_price;
                         this.editInput.cost_per_hour = this.data.cost_per_hour;
                         this.editInput.depreciation_method = this.data.depreciation_method_id;
+                        this.editInput.serial_number = this.data.serial_number;
+                        this.editInput.quantity = this.data.quantity;
+                        this.editInput.kva = this.data.kva;
+                        this.editInput.amp = this.data.amp;
+                        this.editInput.volt = this.data.volt;
+                        this.editInput.phase = this.data.phase;
+                        this.editInput.length = this.data.length;
+                        this.editInput.width = this.data.width;
+                        this.editInput.height = this.data.height;
+                        this.editInput.manufactured_in = this.data.manufactured_in;
+                        
+
                     }
                 }
             });
@@ -861,6 +1006,17 @@
             this.data.avg_productivity = "";
             this.data.resource_detail_id = "";
             this.data.resource_id = "";
+            this.data.serial_number = "",
+            this.data.quantity = "",
+            this.data.kva = "",
+            this.data.amp = "",
+            this.data.volt = "",
+            this.data.phase = "",
+            this.data.length = "",
+            this.data.width = "",
+            this.data.height = "",
+            this.data.manufactured_in = ""
+            
         },
         showDetail(id){
             $('div.overlay').show();
@@ -877,7 +1033,17 @@
                     this.data.resource_id = RD.resource_id;
                     this.data.code = RD.code;
                     this.data.brand = RD.brand;
+                    this.data.serial_number = RD.serial_number;
                     this.data.description = RD.description;
+                    this.data.quantity = RD.quantity;
+                    this.data.kva = RD.kva;
+                    this.data.amp = RD.amp;
+                    this.data.volt = RD.volt;
+                    this.data.phase = RD.phase;
+                    this.data.length = RD.length;
+                    this.data.width = RD.width;
+                    this.data.height = RD.height;
+                    this.data.manufactured_in = RD.manufactured_in;
                     if(RD.performance != null){
                         this.data.performance = (RD.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" "+RD.performance_uom.unit+" / hour";
                     }else{
@@ -936,6 +1102,14 @@
                         this.data.manufactured_date = RD.manufactured_date;
                         this.data.purchasing_date = RD.purchasing_date;
                         this.data.purchasing_price = (RD.purchasing_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.quantity = (RD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.kva = (RD.kva+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.amp = (RD.amp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.volt = (RD.volt+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.phase = (RD.phase+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.length = (RD.length+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.width = (RD.width+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.data.height = (RD.height+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         this.data.cost_per_hour = (RD.cost_per_hour+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         this.depreciation_methods.forEach(depreciation_method => {
                             if(RD.depreciation_method == depreciation_method.id){
@@ -1013,6 +1187,30 @@
         },
         'editInput.purchasing_price': function(newValue){
             this.editInput.purchasing_price = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+        },
+        'editInput.quantity': function(newValue) {
+                this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editInput.kva': function(newValue) {
+                this.editInput.kva = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editInput.amp': function(newValue) {
+                this.editInput.amp = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editInput.volt': function(newValue) {
+                this.editInput.volt = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editInput.phase': function(newValue) {
+                this.editInput.phase = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editInput.length': function(newValue) {
+                this.editInput.length = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editInput.width': function(newValue) {
+                this.editInput.width = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        'editInput.height': function(newValue) {
+                this.editInput.height = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
     }
     });

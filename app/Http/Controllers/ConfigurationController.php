@@ -63,4 +63,68 @@ class ConfigurationController extends Controller
     public function getCurrenciesAPI(){
         return response(Configuration::get('currencies')->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function materialFamilyIndex()
+    {
+        $material_family = Configuration::get('material_family');
+        
+        $id = count($material_family) + 1;
+
+        return view('material_family.index', compact('material_family','id'));
+    }
+
+    public function materialFamilyAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $material_family = Configuration::where('slug','material_family')->first();
+            $material_family->value = $data;
+            $material_family->update();
+
+            DB::commit();
+            return response(json_encode($material_family),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('material_family.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function getMaterialFamilyAPI(){
+        return response(Configuration::get('material_family')->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function densityIndex()
+    {
+        $density = Configuration::get('density');
+        
+        $id = count($density) + 1;
+
+        return view('density.index', compact('density','id'));
+    }
+
+    public function densityAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $density = Configuration::where('slug','density')->first();
+            $density->value = $data;
+            $density->update();
+
+            DB::commit();
+            return response(json_encode($density),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('density.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function getDensityAPI(){
+        return response(Configuration::get('density')->jsonSerialize(), Response::HTTP_OK);
+    }
 }

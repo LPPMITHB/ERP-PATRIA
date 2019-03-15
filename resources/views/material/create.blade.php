@@ -75,7 +75,7 @@
                                     <input type="text" class="form-control" id="cost_standard_price" name="cost_standard_price" required v-model="submittedForm.cost_standard_price">
                                 </div>
                             </div>
-
+                            
                             <div class="form-group">
                                 <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
                                 
@@ -83,7 +83,7 @@
                                     <input type="text"  class="form-control" id="cost_standard_service" name="cost_standard_service" required v-model="submittedForm.cost_standard_service">
                                 </div>
                             </div>
-
+                            
                             <div class="form-group">
                                 <label for="uom" class="col-sm-2 control-label">Unit Of Measurement</label>
                                 
@@ -91,6 +91,24 @@
                                     <selectize name="uom_id" id="uom" v-model="submittedForm.uom_id" :settings="uom_settings">
                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                     </selectize> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="family_id" class="col-sm-2 control-label">Material Family</label>
+                                <div class="col-sm-10">
+                                    <selectize id="family_id" name="family_id" v-model="submittedForm.family_id" :settings="family_id_settings">
+                                        <option v-for="(data, index) in material_families" :value="data.id">{{ data.name }}</option>
+                                    </selectize>   
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="density_id" class="col-sm-2 control-label">Density</label>
+                                <div class="col-sm-10">
+                                    <selectize id="density_id" name="density_id" v-model="submittedForm.density_id" :settings="density_id_settings">
+                                        <option v-for="(data, index) in densities" :value="data.id">{{ data.name }}</option>
+                                    </selectize>   
                                 </div>
                             </div>
 
@@ -165,6 +183,7 @@
                                     </selectize>    
                                 </div>
                             </div>
+                            
 
                             <div class="form-group">
                                 <label for="type" class="col-sm-2 control-label">Type</label>
@@ -266,6 +285,8 @@
                 width_uom_id : @json(Request::old('width_uom_id')),
             },
             uoms : @json($uoms),
+            material_families : @json($material_families),
+            densities : @json($densities),
             submittedForm :{
                 code : "",
                 name : "",
@@ -273,6 +294,7 @@
                 cost_standard_price : "",
                 cost_standard_service : "",
                 uom_id : "",
+                dimension_uom_id : "",
                 min : 0,
                 max : 0,
                 weight : 0,
@@ -283,6 +305,8 @@
                 length_uom_id : "",
                 width :0,
                 width_uom_id : "",
+                family_id : "",
+                density_id : "",
                 status : 1,
                 type : 1,
             },
@@ -301,6 +325,12 @@
             width_uom_settings: {
                 placeholder: 'Select width UOM!'
             },
+            family_id_settings: {
+                placeholder: 'Select Material Family!'
+            },
+            density_id_settings: {
+                placeholder: 'Select Density!'
+            }
         }
     
         var vm = new Vue({
@@ -385,7 +415,7 @@
                     this.submittedForm.height = (this.submittedForm.height+"").replace(/,/g , '');
                     this.submittedForm.lengths = (this.submittedForm.lengths+"").replace(/,/g , '');
                     this.submittedForm.width = (this.submittedForm.width+"").replace(/,/g , '');
-                    this.submittedForm.volume = (this.submittedForm.volume+"").replace(/,/g , '');
+                    // this.submittedForm.volume = (this.submittedForm.volume+"").replace(/,/g , '');
     
                     if(parseInt(this.submittedForm.max) < parseInt(this.submittedForm.min)){
                         iziToast.error({
@@ -576,6 +606,45 @@
                                 displayMode: 'replace'
                             });
                         }
+                    }
+                },
+
+                'submittedForm.weight_uom_id' : function(newValue) {
+                    if(newValue != ""){
+                        this.submittedForm.length_uom_id = newValue;
+                        this.submittedForm.width_uom_id = newValue;
+                        this.submittedForm.height_uom_id = newValue;
+                        this.submittedForm.dimension_uom_id = newValue;
+                    }
+                },
+                
+                'submittedForm.length_uom_id' : function(newValue) {
+                    if(newValue != ""){
+                        this.submittedForm.weight_uom_id = newValue;
+                        this.submittedForm.width_uom_id = newValue;
+                        this.submittedForm.height_uom_id = newValue;
+                        this.submittedForm.dimension_uom_id = newValue;
+
+                    }
+                },
+
+                'submittedForm.width_uom_id' : function(newValue) {
+                    if(newValue != ""){
+                        this.submittedForm.weight_uom_id = newValue;
+                        this.submittedForm.length_uom_id = newValue;
+                        this.submittedForm.height_uom_id = newValue;
+                        this.submittedForm.dimension_uom_id = newValue;
+
+                    }
+                },
+
+                'submittedForm.height_uom_id' : function(newValue) {
+                    if(newValue != ""){
+                        this.submittedForm.weight_uom_id = newValue;
+                        this.submittedForm.length_uom_id = newValue;
+                        this.submittedForm.width_uom_id = newValue;
+                        this.submittedForm.dimension_uom_id = newValue;
+
                     }
                 },
             },

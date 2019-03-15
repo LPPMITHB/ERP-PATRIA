@@ -475,9 +475,13 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             if($project->name == $request->name){
                 if($menu == "building"){
-                    return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                    if($request->name != null){
+                        return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                    }
                 }else{
-                    return redirect()->route('project_repair.create')->with('error','The project number has been taken')->withInput();
+                    if($request->name != null){
+                        return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
+                    }
                 }
             }
             if($project->number == $request->number){
@@ -594,6 +598,7 @@ class ProjectController extends Controller
         try {
             $project = new Project;
             $project->number =  $request->number;
+            $project->person_in_charge = $request->person_in_charge;
             $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
             $project->name = $request->name;
             $project->description = $request->description;
@@ -715,6 +720,104 @@ class ProjectController extends Controller
         self::getOutstandingItem($wbss,$outstanding_item, $project,$today);
         self::getDataForGantt($project, $ganttData, $links, $today);       
 
+        $wbss = $project->wbss->pluck('id')->toArray();
+        $activities = Activity::whereIn('wbs_id',$wbss)->get();
+        $predecessors =$activities->pluck('predecessor','id')->toArray();
+        $predecessor_collection = Collection::make();
+        $predecessor_array = [];
+        $temp_starting_point = [];
+        $starting_point = [];
+        foreach($predecessors as $act_id => $predecessor){
+            if($predecessor != null){
+                $temp = json_decode($predecessor);
+                foreach($temp as $act){
+                    $predecessor_collection->push([
+                        'act_id' => $act_id,
+                        'predecessor' => $act[0],
+                    ]);
+                    array_push($predecessor_array, $act[0]);
+                }
+            }else{
+                array_push($temp_starting_point, $act_id);
+            }
+        }
+
+        foreach($temp_starting_point as $key => $act_id){
+            if(array_search($act_id,$predecessor_array) > -1){
+                array_push($starting_point, $act_id);
+            }
+        }
+
+        $cpm_model = Collection::make();
+        foreach($starting_point as $act_id){
+            $act_ref = Activity::find($act_id);
+            $cpm_collection = Collection::make();
+            $level = 0;
+            $cpm_collection->push([
+                'level'=>$level,
+                'act_id'=>$act_id,
+                'duration'=> $act_ref->planned_duration,
+                'parent'=> null,
+            ]);
+            $cpm_model->put($act_id,$cpm_collection);
+            self::makeCpm($act_id,$act_id, $cpm_model, $predecessor_collection, $level);
+        }
+
+        $separated_model = [];
+        foreach ($cpm_model as $key => $data) {
+            $dataPerLvl = $data->groupBy('level');
+            $separated_model[$key] = [];
+            foreach ($dataPerLvl as $perLvl) {
+
+                if($perLvl[0]['parent'] == null){
+                    $parent = $perLvl[0]['parent'];
+                    $separated_model[$key][$perLvl[0]['act_id']] = [$perLvl[0]];
+                }else{
+                    $temp_parent_coll = $separated_model[$key];
+                    foreach ($perLvl as $dataPerLvl) {
+                        if(isset($temp_parent_coll[$dataPerLvl['parent']])){
+                            $temp_array_data = $temp_parent_coll;
+                            array_push($temp_array_data[$dataPerLvl['parent']],$dataPerLvl);
+                            $separated_model[$key][$dataPerLvl['act_id']] = $temp_array_data[$dataPerLvl['parent']];
+                        }   
+                    }
+                }
+            }
+        }
+
+        $longest_duration = 0;
+        $longest_model = [];
+        foreach ($separated_model as $model) {
+            foreach ($model as $sub_model) {
+                $temp_duration = 0;
+                foreach ($sub_model as $singular) {
+                    $temp_duration += $singular['duration'];
+                }
+                if($longest_duration == $temp_duration){
+                    array_push($longest_model, $sub_model);                    
+                } else if($longest_duration < $temp_duration){
+                    $longest_duration = $temp_duration;
+                    $longest_model = [$sub_model];
+                }
+            }
+        }
+        $cpm_act_code = [];
+        foreach ($longest_model as $model) {
+            foreach ($model as $singular) {
+                $activity_code = Activity::find($singular['act_id'])->code;
+                array_push($cpm_act_code,$activity_code);
+            }
+        }
+
+        $cpm_act_code = array_unique($cpm_act_code);
+        foreach ($ganttData as $key => $data) {
+            if(array_search($data["id"], $cpm_act_code) > -1){
+                $data['is_cpm'] = true;
+                $data['text'] = $data['text']." CPM!";
+                $ganttData[$key] = $data;
+            }
+        }
+
         $ganttData->jsonSerialize();
         $links->jsonSerialize();
         $dataPlannedCost->jsonSerialize();
@@ -805,6 +908,10 @@ class ProjectController extends Controller
             if($project->name == $request->name){
                 if($menu == "building"){
                     return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                }else{
+                    if($request->name != null){
+                        return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
+                    }
                 }
             }
             if($project->number == $request->number){
@@ -824,6 +931,7 @@ class ProjectController extends Controller
             $project->ship_id = $request->ship;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
+            $project->person_in_charge = $request->person_in_charge;
             $project->class_contact_person_name = $request->class_contact_person_name;
             $project->class_contact_person_phone = $request->class_contact_person_phone;
             $project->class_contact_person_email = $request->class_contact_person_email;
@@ -997,6 +1105,23 @@ class ProjectController extends Controller
     }
     
     //Methods
+    public function makeCpm($earliest_act, $current_act, $cpm_model, $predecessor_collection, $level)
+    {
+        $level++;
+        foreach ($predecessor_collection as $activity) {
+            if($current_act == $activity['predecessor']){
+                $act_ref = Activity::find($activity['act_id']);
+                $cpm_model[$earliest_act]->push([
+                    'level'=>$level,
+                    'act_id'=>$activity['act_id'],
+                    'duration'=> $act_ref->planned_duration,
+                    'parent'=> $current_act,
+                ]);
+                self::makeCpm($earliest_act, $activity['act_id'], $cpm_model, $predecessor_collection, $level);
+            }
+        }
+    }
+
     public function generateProjectCode(){
         $code = 'PROJECT';
         $modelProject = Project::orderBy('code', 'desc')->first();
@@ -1475,7 +1600,7 @@ class ProjectController extends Controller
                             "text" => $wbs->actual_duration != null ? "[Actual] ".$wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%" : $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
-                            "duration" => $dwbs->uration, 
+                            "duration" => $wbs->actual_duration != null ? $wbs->actual_duration : $wbs->planned_duration,
                             "parent" => $wbs->wbs->code, 
                             "color" => "green",
                             "progressColor" => $wbs->progress == 0 ? "green" : "green",
@@ -1523,7 +1648,7 @@ class ProjectController extends Controller
                             "text" => $wbs->actual_duration != null ? "[Actual] ".$wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%" : $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
-                            "duration" => $duwbs->ration,  
+                            "duration" => $wbs->actual_duration != null ? $wbs->actual_duration : $wbs->planned_duration,  
                             "color" => "green",
                             "progressColor" => $wbs->progress == 0 ? "green" : "green",
                         ]);
@@ -1545,7 +1670,7 @@ class ProjectController extends Controller
                             "text" => $wbs->actual_duration != null ? "[Actual] ".$wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%" : $wbs->number." - ".$wbs->description." | Weight : ".$wbs->weight."%",
                             "progress" => $wbs->progress / 100,
                             "start_date" =>  date_format($start_date_wbs,"d-m-Y"), 
-                            "duration" => $duwbs->ration,  
+                            "duration" => $wbs->actual_duration != null ? $wbs->actual_duration : $wbs->planned_duration,  
                             "color" => "green",
                             "progressColor" => $wbs->progress == 0 ? "green" : "green",
                         ]);

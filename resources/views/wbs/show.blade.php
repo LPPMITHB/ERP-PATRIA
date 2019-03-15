@@ -349,6 +349,22 @@ var vm = new Vue({
         },
     },
     watch : {
+        editWbs:{
+            handler: function(newValue) {
+                this.editWbs.planned_duration = newValue.planned_duration+"".replace(/\D/g, "");
+                if(parseInt(newValue.planned_duration) < 1 ){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: 'End Date cannot be ahead Start Date',
+                        position: 'topRight',
+                    });
+                    this.editWbs.planned_duration = "";
+                    this.editWbs.planned_end_date = "";
+                    this.editWbs.planned_start_date = "";
+                }
+            },
+            deep: true
+        },
         'editWbs.planned_start_date': function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
@@ -375,6 +391,20 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                     $('#edit_planned_start_date').datepicker('setDate', parent_wbs_end_date);
+                }else if(planned_start_date < pro_planned_start_date){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: "This WBS start date is behind project start date",
+                        position: 'topRight',
+                    });
+                    $('#edit_planned_start_date').datepicker('setDate', pro_planned_start_date);
+                }else if(planned_start_date > pro_planned_end_date){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: "This WBS start date is after project end date",
+                        position: 'topRight',
+                    });
+                    $('#edit_planned_start_date').datepicker('setDate', pro_planned_end_date);
                 }
             }else if(planned_start_date < pro_planned_start_date){
                 iziToast.warning({
@@ -418,6 +448,20 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                     $('#edit_planned_end_date').datepicker('setDate', parent_wbs_end_date);
+                }else if(planned_end_date < pro_planned_start_date){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: "This WBS end date is behind project start date",
+                        position: 'topRight',
+                    });
+                    $('#edit_planned_end_date').datepicker('setDate', pro_planned_start_date);
+                }else if(planned_end_date > pro_planned_end_date){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: "This WBS end date is after project end date",
+                        position: 'topRight',
+                    });
+                    $('#edit_planned_end_date').datepicker('setDate', pro_planned_end_date);
                 }
             }else if(planned_end_date < pro_planned_start_date){
                 iziToast.warning({
@@ -486,6 +530,18 @@ var vm = new Vue({
     }
     
 });
+
+function parseDate(str) {
+    var mdy = str.split('-');
+    var date = new Date(mdy[2], mdy[1]-1, mdy[0]);
+    return date;
+}
+
+function datediff(first, second) {
+    // Take the difference between the dates and divide by milliseconds per day.
+    // Round to nearest whole number to deal with DST.
+    return Math.round(((second-first)/(1000*60*60*24))+1);
+}
 
 function roundNumber(num, scale) {
   if(!("" + num).includes("e")) {

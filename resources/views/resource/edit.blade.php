@@ -65,6 +65,14 @@
                                     <input type="text" class="form-control" id="description" name="description" v-model="dataInput.description">
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="cost_standard_price" v-model="dataInput.cost_standard_price">
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="box-footer">
@@ -97,6 +105,8 @@
             code : @json($resource->code),
             name : @json($resource->name),
             description : @json($resource->description),
+            cost_standard_price : @json($resource->cost_standard_price)
+
         }
     }
 
@@ -117,6 +127,8 @@
             submitForm(){
                 $('div.overlay').show();
 
+                this.dataInput.cost_standard_price = (this.dataInput.cost_standard_price+"").replace(/,/g , '');
+
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
@@ -126,6 +138,19 @@
                 form.submit();
             }
         },
+        watch: {
+            'dataInput.cost_standard_price': function(newValue) {
+                if(newValue != ""){
+                    this.dataInput.cost_standard_price = (this.dataInput.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
+        },
+        created: function(){
+            this.dataInput.cost_standard_price = (this.dataInput.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        }
+
+        
     });
 </script>
 @endpush

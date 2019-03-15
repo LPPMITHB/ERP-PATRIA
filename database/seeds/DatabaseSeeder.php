@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ConfigurationsTableSeeder::class);
         $this->call(PermissionsTableSeeder::class);
         $this->call(SidenavsTableSeeder::class);
+        $this->call(UOMTableSeeder::class);
         $this->call(MstMaterialTableSeeder::class);
         $this->call(ShipsTableSeeder::class);
         $this->call(WarehousesTableSeeder::class);
@@ -30,11 +31,11 @@ class DatabaseSeeder extends Seeder
         $this->call(BusinessUnitsTableSeeder::class);
         $this->call(StocksTableSeeder::class);
         $this->call(YardsTableSeeder::class);
-        $this->call(UOMTableSeeder::class);
         $this->call(MstResourceTableSeeder::class);
         $this->call(MstResourceDetailTableSeeder::class);
         $this->call(MstServiceTableSeeder::class);
         $this->call(MstServiceDetailTableSeeder::class);
+        $this->call(MstWbsConfigurationTableSeeder::class);
         $this->call(ProProjectTableSeeder::class);
         $this->call(ProWbsTableSeeder::class);
         $this->call(ProActivityTableSeeder::class);
@@ -54,8 +55,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstActivityProfileTableSeeder::class);
         $this->call(MstBomProfileTableSeeder::class);        
         $this->call(MstResourceProfileTableSeeder::class);
-        $this->call(MstWbsConfigurationTableSeeder::class);
         $this->call(MstActivityConfigurationTableSeeder::class);
-        
+        $this->call(PurchasingInfoRecordTableSeeder::class);
     }
 }

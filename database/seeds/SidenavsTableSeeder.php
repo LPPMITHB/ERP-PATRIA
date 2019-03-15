@@ -36,6 +36,12 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
+            'route_name' => 'project.copyProjectStructure',
+        ]);
+
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProject,
             'route_name' => 'project.create',
         ]);
 
@@ -1566,6 +1572,18 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $changeDefaultPassword,
             'route_name' => 'user.changeDefaultPassword',
+        ]);
+        
+        $density = Menu::where('route_name','density.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $density,
+            'route_name' => 'density.index',
+        ]);
+
+        $materialFamily = Menu::where('route_name','material_family.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $materialFamily,
+            'route_name' => 'material_family.index',
         ]);
 
         $user = Menu::where('route_name','user.index')->select('id')->first()->id;

@@ -28,6 +28,20 @@ Route::name('currencies.')->prefix('currencies')->group(function() {
     Route::put('/add', 'ConfigurationController@currenciesAdd')->name('add');
 });
 
+// Material Family Routes
+Route::name('material_family.')->prefix('material_family')->group(function() {
+    Route::get('/', 'ConfigurationController@materialFamilyIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@materialFamilyAdd')->name('add');
+});
+
+// Density Routes
+Route::name('density.')->prefix('density')->group(function() {
+    Route::get('/', 'ConfigurationController@densityIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@densityAdd')->name('add');
+});
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');

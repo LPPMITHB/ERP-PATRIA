@@ -13,6 +13,11 @@ class BomDetail extends Model
         return $this->belongsTo('App\Models\Bom');
     }
 
+    public function bomPrep()
+    {
+        return $this->belongsTo('App\Models\BomPrep');
+    }
+
     public function material()
     {
         return $this->belongsTo('App\Models\Material');
