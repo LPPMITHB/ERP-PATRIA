@@ -449,7 +449,7 @@ class BOMController extends Controller
         }
 
         $materials = Material::orderBy('description')->get()->jsonSerialize();
-        $services = Service::orderBy('description')->get()->jsonSerialize();
+        $services = Service::orderBy('name')->get()->jsonSerialize();
 
         if($route == '/bom'){
             if($project->business_unit_id == 1){
