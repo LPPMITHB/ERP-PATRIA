@@ -468,14 +468,17 @@
                                                 </div>   
         
                                                 <div class="form-group">
-                                                    <label for="height" class="col-sm-12 control-label">Quantity</label>
-                                    
-                                                    <div class="col-sm-8">
+                                                    <label for="quantity" class="col-sm-6 control-label">Quantity</label>
+                                                    <label for="quantity" class="p-l-2 col-sm-6 control-label">Source</label>
+                                
+                                                    <div class="col-sm-6">
                                                         <input autocomplete="off" type="text" name="quantity" class="form-control" id="quantity" v-model="editMaterial.quantity" >
                                                     </div>
-                    
-                                                    <div class="col-sm-4 p-l-2">
-                                                        <input autocomplete="off" disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
+                                                    <div class="p-l-2 col-sm-6">
+                                                        <selectize id="source" name="source" v-model="editMaterial.source" :settings="source_settings">
+                                                            <option value="Stock">Stock</option>
+                                                            <option value="WIP">WIP</option>
+                                                        </selectize>  
                                                     </div>
                                                 </div>  
                                                 
@@ -491,12 +494,13 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th class="p-l-5" style="width: 3%">No</th>
-                                                                    <th style="width: 16%">Material</th>
-                                                                    <th style="width: 7%">Length</th>
-                                                                    <th style="width: 7%">Width</th>
-                                                                    <th style="width: 7%">Height</th>
+                                                                    <th style="width: 14%">Material</th>
+                                                                    <th style="width: 6%">Length</th>
+                                                                    <th style="width: 6%">Width</th>
+                                                                    <th style="width: 6%">Height</th>
                                                                     <th style="width: 5%">UOM</th>
                                                                     <th style="width: 7%">Quantity</th>
+                                                                    <th style="width: 6%">Source</th>
                                                                     <th style="width: 6%"></th>
                                                                 </tr>
                                                             </thead>
@@ -513,6 +517,7 @@
                                                                     <td v-if="data.dimension_uom_id != null && data.dimension_uom_id != ''" class="p-b-15 p-t-15">{{ data.unit }}</td>
                                                                     <td v-else class="p-b-15 p-t-15">-</td>
                                                                     <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
+                                                                    <td class="p-b-15 p-t-15">{{ data.source }}</td>
                                                                     <td>
                                                                         <div class="col-sm-12 col-xs-12 no-padding p-r-2">
                                                                             <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterialEdit(data)" data-toggle="modal">
@@ -528,7 +533,7 @@
                                             </div>
 
                                             <div class="m-t-10 border-top-modal">
-                                                <div class="row">
+                                                <div class="row m-t-10">
                                                     <div class="col-sm-12">
                                                         <div class="row">
                                                             <label for="length" class="col-sm-12 control-label">Service</label>
@@ -670,15 +675,20 @@
                                             </div>   
     
                                             <div class="form-group">
-                                                <label for="quantity" class="p-l-0 col-sm-12 control-label">Quantity</label>
+                                                <div class="row">
+                                                    <label for="quantity" class="col-sm-6 control-label">Quantity</label>
+                                                    <label for="quantity" class="col-sm-6 control-label">Source</label>
+                                                </div>
                                 
-                                                <div class="p-l-0 col-sm-8">
-                                                    <input autocomplete="off" type="text" name="quantity" class="form-control" id="quantity" v-model="newMaterial.quantity" >
-                                                </div>
-                
-                                                <div class="col-sm-4 p-l-2">
-                                                    <input autocomplete="off" disabled type="text" name="quantity" class="form-control" id="quantity" value="pcs">
-                                                </div>
+                                                    <div class="p-l-0 col-sm-6">
+                                                        <input autocomplete="off" type="text" name="quantity" class="form-control" id="quantity" v-model="newMaterial.quantity" >
+                                                    </div>
+                                                    <div class="p-l-2 col-sm-6">
+                                                        <selectize id="source" name="source" v-model="newMaterial.source" :settings="source_settings">
+                                                            <option value="Stock">Stock</option>
+                                                            <option value="WIP">WIP</option>
+                                                        </selectize>  
+                                                    </div>
                                             </div>   
 
                                             <div class="form-group">
@@ -693,12 +703,13 @@
                                                         <thead>
                                                             <tr>
                                                                 <th class="p-l-5" style="width: 3%">No</th>
-                                                                <th style="width: 30%">Material</th>
+                                                                <th style="width: 25%">Material</th>
                                                                 <th style="width: 7%">Length</th>
                                                                 <th style="width: 7%">Width</th>
                                                                 <th style="width: 7%">Height</th>
                                                                 <th style="width: 5%">UOM</th>
                                                                 <th style="width: 7%">Quantity</th>
+                                                                <th style="width: 6%">Source</th>
                                                                 <th style="width: 6%"></th>
                                                             </tr>
                                                         </thead>
@@ -715,6 +726,7 @@
                                                                 <td v-if="data.unit != ''" class="p-b-15 p-t-15">{{ data.unit }}</td>
                                                                 <td v-else class="p-b-15 p-t-15">-</td>
                                                                 <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
+                                                                <td class="p-b-15 p-t-15">{{ data.source }}</td>
                                                                 <td>
                                                                     <div class="col-sm-12 col-xs-12 no-padding p-r-2">
                                                                         <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(data)" data-toggle="modal">
@@ -851,6 +863,7 @@ var data = {
         height :"",
         dimension_uom_id : "",
         unit : "",
+        source : "Stock",
     },
 
     editMaterial : {
@@ -863,6 +876,7 @@ var data = {
         height :"",
         dimension_uom_id : "",
         unit : "",
+        source : "Stock",
     },
 
     newActivity : {
@@ -902,13 +916,7 @@ var data = {
         allPredecessor : [],
         activity_configuration_id : "",
 
-        material_id : "",
-        quantity : 1,
-        lengths :"",
-        width : "",
-        height :"",
-        dimension_uom_id : "",
-
+        act_detail_service_id : "",
         service_id: "",
         service_detail_id: "",
         selected_service : "",
@@ -919,6 +927,16 @@ var data = {
         dataMaterial : [],
         deletedActDetail : [],
     },
+    maxWeight : 0,
+    totalWeight : 0,
+    predecessorTable: [],
+    predecessorTableView :[],
+    predecessorTableEdit:[],
+    constWeightAct : 0,
+    oldValueWeight : "",
+    activity_configs : @json($activity_config),
+    first_open_modal_service : true,
+    first_open_modal_area_uom : true,
     activitiesSettings: {
         placeholder: 'Predecessor Activities',
     },
@@ -931,14 +949,6 @@ var data = {
     activityConfigSettings:{
         placeholder: 'Activity Configuration',
     },
-    maxWeight : 0,
-    totalWeight : 0,
-    predecessorTable: [],
-    predecessorTableView :[],
-    predecessorTableEdit:[],
-    constWeightAct : 0,
-    oldValueWeight : "",
-    activity_configs : @json($activity_config),
     weight_uom_settings: {
         placeholder: 'Select weight UOM!'
     },
@@ -971,6 +981,9 @@ var data = {
     },
     service_detail_settings:{
         placeholder: 'Service Detail'
+    },
+    source_settings:{
+        placeholder: 'Source'
     },
 };
 
@@ -1051,6 +1064,10 @@ var vm = new Vue({
             this.newMaterial.quantity == ""){
                 isOk = true;
             }
+
+            if(this.newMaterial.source == ""){
+                isOk = true;
+            }
             
             return isOk;
         },
@@ -1078,6 +1095,10 @@ var vm = new Vue({
             this.editMaterial.quantity == ""){
                 isOk = true;
             }
+
+            if(this.editMaterial.source == ""){
+                isOk = true;
+            }
             
             return isOk;
         },
@@ -1093,7 +1114,8 @@ var vm = new Vue({
                 if(this.newActivity.service_id != ""){
                     if(this.newActivity.area == "" || 
                     this.newActivity.area_uom_id == "" ||
-                    this.newActivity.service_detail_id == "")
+                    this.newActivity.service_detail_id == "" ||
+                    this.newActivity.vendor_id == "")
                     {
                         isOk = true;
                     }
@@ -1120,6 +1142,15 @@ var vm = new Vue({
                     isOk = true;
                 }
 
+                if(this.editActivity.service_id != ""){
+                    if(this.editActivity.area == "" || 
+                    this.editActivity.area_uom_id == "" ||
+                    this.editActivity.service_detail_id == "" ||
+                    this.editActivity.vendor_id == "")
+                    {
+                        isOk = true;
+                    }
+                }
             return isOk;
         },
         predecessorOk: function(){
@@ -1215,6 +1246,7 @@ var vm = new Vue({
             this.newMaterial.height = "";
             this.newMaterial.dimension_uom_id = "";
             this.newMaterial.unit = "";
+            this.newMaterial.source = "Stock";
         },
         addMaterialEdit(){
             var temp = this.editMaterial;
@@ -1235,6 +1267,7 @@ var vm = new Vue({
             this.editMaterial.height = "";
             this.editMaterial.dimension_uom_id = "";
             this.editMaterial.unit = "";
+            this.editMaterial.source = "Stock";
         },
         addPredecessor() {
             this.allActivities.forEach(elementAllActivities => {
@@ -1378,7 +1411,15 @@ var vm = new Vue({
             }
         },
         openModalEditActivity(data){
-            $('div.overlay').show();      
+            $('div.overlay').show();     
+            this.editMaterial.material_id = "";
+            this.editMaterial.material_name = "";
+            this.editMaterial.quantity = 1;
+            this.editMaterial.lengths = "";
+            this.editMaterial.width = "";
+            this.editMaterial.height = "";
+            this.editMaterial.dimension_uom_id = "";
+            this.editMaterial.unit = ""; 
             this.predecessorTableEdit = [];
             document.getElementById("edit_activity_code").innerHTML= data.code;
             this.editActivity.activity_id = data.id;
@@ -1386,6 +1427,8 @@ var vm = new Vue({
             this.editActivity.description = data.description;
             this.editActivity.activity_configuration_id = data.activity_configuration_id;
             this.editActivity.weight = data.weight;
+            this.first_open_modal_service = true;
+            this.first_open_modal_area_uom = true;
             
             var material = [];
             data.activity_details.forEach(act_detail => {
@@ -1406,6 +1449,7 @@ var vm = new Vue({
 
                     material.push(act_detail);
                 }else if(act_detail.service_detail_id != null){
+                    this.editActivity.act_detail_service_id = act_detail.id;
                     this.editActivity.service_id = act_detail.service_detail.service_id;
                     this.editActivity.service_detail_id = act_detail.service_detail_id;
                     this.editActivity.area = (act_detail.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
@@ -1590,7 +1634,7 @@ var vm = new Vue({
             })
 
         },
-        update(){            
+        update(){                 
             var editActivity = this.editActivity;
             var url = "";
             if(this.menu == "building"){
@@ -1603,25 +1647,29 @@ var vm = new Vue({
             window.axios.put(url,editActivity)
             .then((response) => {
                 if(response.data.error != undefined){
-                    iziToast.warning({
-                        displayMode: 'replace',
-                        title: response.data.error,
-                        position: 'topRight',
+                    response.data.error.forEach(error => {
+                        iziToast.warning({
+                            displayMode: 'replace',
+                            title: error,
+                            position: 'topRight',
+                        });
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }else{
                     iziToast.success({
                         displayMode: 'replace',
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }
                 this.newMaterials.forEach(material => {
                     if(material.selected){
                         material.selected = false;
                     }
                 });
+                this.editActivity.deletedActDetail = [];
+                this.editActivity.dataMaterial = [];
                 this.getActivities();
                 this.getAllActivities(); 
             })
@@ -2134,7 +2182,11 @@ var vm = new Vue({
         },
         'editActivity.service_id': function(newValue) {
             if(newValue != ""){
-                this.editActivity.service_detail_id = "";
+                if(this.first_open_modal_service){
+                    this.first_open_modal_service = false;
+                }else{
+                    this.editActivity.service_detail_id = "";
+                }
                 this.services.forEach(service => {
                     if(service.id == newValue){
                         this.editActivity.selected_service = service.service_details;
@@ -2155,6 +2207,20 @@ var vm = new Vue({
             }else{
                 this.editActivity.area_uom_id = "";
             }
+        },
+        'editActivity.area_uom_id' : function(newValue){
+            if(newValue != ""){
+                if(this.first_open_modal_area_uom){
+                    this.first_open_modal_area_uom = false;
+                }else{
+                    this.editActivity.area = "";
+                }
+            }else{
+                this.editActivity.area = "";
+            }
+        },
+        'newActivity.area_uom_id' : function(newValue){
+            this.newActivity.area = "";
         },
         'newMaterial.material_id': function(newValue) {
             if(newValue != ""){

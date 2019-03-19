@@ -26,6 +26,7 @@ class CreateProActivityDetailTable extends Migration
             $table->unsignedInteger('dimension_uom_id')->nullable();
             $table->float('area', 15, 2)->nullable();
             $table->unsignedInteger('area_uom_id')->nullable();
+            $table->string('source')->nullable();
             $table->timestamps();
 
             $table->foreign('activity_id')->references('id')->on('pro_activity');

@@ -35,6 +35,13 @@ Route::name('material_family.')->prefix('material_family')->group(function() {
     Route::put('/add', 'ConfigurationController@materialFamilyAdd')->name('add');
 });
 
+// Density Routes
+Route::name('density.')->prefix('density')->group(function() {
+    Route::get('/', 'ConfigurationController@densityIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@densityAdd')->name('add');
+});
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');
@@ -412,7 +419,12 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
 //BOM Repair Routes
 Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
+
+    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom-repair');
+
+    Route::get('/materialSummary/{id}', 'BOMController@materialSummary')->name('materialSummary')->middleware('can:create-bom-repair');
+
+    Route::post('/storeBomRepair', 'BOMController@storeBomRepair')->name('storeBomRepair')->middleware('can:create-bom-repair');
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom-repair');
 

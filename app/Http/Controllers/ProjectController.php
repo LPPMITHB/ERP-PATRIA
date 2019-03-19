@@ -475,7 +475,9 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             if($project->name == $request->name){
                 if($menu == "building"){
-                    return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                    if($request->name != null){
+                        return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                    }
                 }else{
                     if($request->name != null){
                         return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
@@ -596,6 +598,7 @@ class ProjectController extends Controller
         try {
             $project = new Project;
             $project->number =  $request->number;
+            $project->person_in_charge = $request->person_in_charge;
             $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
             $project->name = $request->name;
             $project->description = $request->description;

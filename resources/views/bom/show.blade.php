@@ -54,7 +54,7 @@
                             <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.project.customer.name)"><b>: {{bom.project.customer.name}}</b></div>
                         </div>
 
-                        <div class="col-xs-12 col-md-3">
+                        <div v-if= "bom.wbs != null" class="col-xs-12 col-md-3">
                             <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                             
                             <div class="col-xs-4 no-padding">Number</div>
@@ -79,7 +79,7 @@
                             
                             <div class="col-md-5 col-xs-4 no-padding">Description</div>
                             <div v-if="bom.description != ''" class="col-md-7 col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.description)"><b>: {{bom.description}}</b></div>
-                            <div v-else class="col-md-7 col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.wbs.description)"><b>: -</b></div>
+                            <div v-else class="col-md-7 col-xs-8 no-padding tdEllipsis" v-tooltip:top="(bom.description)"><b>: -</b></div>
 
                             <div class="col-md-5 col-xs-4 no-padding">RAP Number</div>
                             <div v-if="bom.rap != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showRap(bom.rap.id)" class="text-primary"><b>: {{bom.rap.number}}</b></a></div>
@@ -91,10 +91,15 @@
 
                         </div>
 
-                        <div class="col-md-2 col-xs-12">
-                            <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">EDIT</a>
-                            <a v-else-if="bom.status == 0" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">ADD ADDITIONAL</a>
-                            <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmBom(bom.id)">CONFIRM</a>
+                        <div class="col-md-2 col-xs-12 pull-right">
+                            <template v-if="route == '/bom'">
+                                <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">EDIT</a>
+                                <a v-else-if="bom.status == 0" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">ADD ADDITIONAL</a>
+                                <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmBom(bom.id)">CONFIRM</a>
+                            </template>
+                            <template v-else-if="route == '/bom_repair'">
+                                <a class="btn btn-sm btn-primary pull-right btn-block" :href="editBomRepair(bom.project.id)">EDIT</a>
+                            </template>
                         </div>    
                     </div>
                     <template v-if="route == '/bom'">
@@ -142,13 +147,6 @@
                                         <td>{{ bomDetail.material.description }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
                                         <td>{{ bomDetail.material.uom.unit }}</td>
-                                    </template>
-                                    <template v-else-if="bomDetail.service_id != null">
-                                        <td>Service</td>
-                                        <td>{{ bomDetail.service.code }}</td>
-                                        <td>{{ bomDetail.service.description }}</td>
-                                        <td>{{ bomDetail.quantity }}</td>
-                                        <td>-</td>
                                     </template>
                                 </tr>
                             </tbody>
@@ -240,6 +238,11 @@
                 }else{
                     url = "/bom_repair/"+id+"/edit";
                 }
+                return url;
+            },
+            editBomRepair(id){
+                var url = "";
+                url = "/bom_repair/materialSummary/"+id;
                 return url;
             },
             confirm(id){

@@ -36,6 +36,12 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
+            'route_name' => 'project.copyProjectStructure',
+        ]);
+
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProject,
             'route_name' => 'project.create',
         ]);
 
@@ -299,6 +305,17 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // bom repair
+        $summaryMaterialRepair = Menu::where('route_name','bom_repair.selectProjectSum')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $summaryMaterialRepair,
+            'route_name' => 'bom_repair.selectProjectSum',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $summaryMaterialRepair,
+            'route_name' => 'bom_repair.materialSummary',
+        ]);
+
         $manageBomRepair = Menu::where('route_name','bom_repair.indexProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageBomRepair,
@@ -1560,6 +1577,12 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $changeDefaultPassword,
             'route_name' => 'user.changeDefaultPassword',
+        ]);
+        
+        $density = Menu::where('route_name','density.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $density,
+            'route_name' => 'density.index',
         ]);
 
         $materialFamily = Menu::where('route_name','material_family.index')->select('id')->first()->id;

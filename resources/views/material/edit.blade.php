@@ -69,6 +69,24 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="family_id" class="col-sm-2 control-label">Material Family</label>
+                                <div class="col-sm-10">
+                                    <selectize id="family_id" name="family_id" v-model="submittedForm.family_id" :settings="family_id_settings">
+                                        <option v-for="(data, index) in material_families" :value="data.id">{{ data.name }}</option>
+                                    </selectize>   
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="density_id" class="col-sm-2 control-label">Density</label>
+                                <div class="col-sm-10">
+                                    <selectize id="density_id" name="density_id" v-model="submittedForm.density_id" :settings="density_id_settings">
+                                        <option v-for="(data, index) in densities" :value="data.id">{{ data.name }}</option>
+                                    </selectize>   
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="min" class="col-sm-2 control-label">Min</label>
                                 
                                 <div class="col-sm-10">
@@ -204,6 +222,8 @@
 
     var data = {
         uoms : @json($uoms),
+        material_families : @json($material_families),
+        densities : @json($densities),
         submittedForm :{
             code : @json($material->code),
             description : @json($material->description),
@@ -212,16 +232,19 @@
             uom_id : @json($material->uom_id),
             min : @json($material->min),
             max : @json($material->max),
+            dimension_uom_id : @json($material->dimension_uom_id),
             weight : @json($material->weight),
-            weight_uom_id : @json($material->weight_uom_id),
+            weight_uom_id : @json($material->dimension_uom_id),
             height :@json($material->height),
-            height_uom_id : @json($material->height_uom_id),
+            height_uom_id : @json($material->dimension_uom_id),
             lengths :@json($material->length),
-            length_uom_id : @json($material->length_uom_id),
+            length_uom_id : @json($material->dimension_uom_id),
             width :@json($material->width),
-            width_uom_id : @json($material->width_uom_id),
+            width_uom_id : @json($material->dimension_uom_id),
             status : @json($material->status),
             type : @json($material->type),
+            family_id : @json($material->family_id),
+            density_id : @json($material->density),
         },
         uom_settings: {
             placeholder: 'Select UOM!'
@@ -244,6 +267,12 @@
         width_uom_settings: {
             placeholder: 'Select width UOM!'
         },
+        family_id_settings: {
+            placeholder: 'Select Material Family!'
+        },
+        density_id_settings: {
+            placeholder: 'Select Density!'
+        }
     }
 
     var vm = new Vue({
@@ -498,6 +527,45 @@
                             displayMode: 'replace'
                         });
                     }
+                }
+            },
+
+            'submittedForm.weight_uom_id' : function(newValue) {
+                if(newValue != ""){
+                    this.submittedForm.length_uom_id = newValue;
+                    this.submittedForm.width_uom_id = newValue;
+                    this.submittedForm.height_uom_id = newValue;
+                    this.submittedForm.dimension_uom_id = newValue;
+                }
+            },
+            
+            'submittedForm.length_uom_id' : function(newValue) {
+                if(newValue != ""){
+                    this.submittedForm.weight_uom_id = newValue;
+                    this.submittedForm.width_uom_id = newValue;
+                    this.submittedForm.height_uom_id = newValue;
+                    this.submittedForm.dimension_uom_id = newValue;
+
+                }
+            },
+
+            'submittedForm.width_uom_id' : function(newValue) {
+                if(newValue != ""){
+                    this.submittedForm.weight_uom_id = newValue;
+                    this.submittedForm.length_uom_id = newValue;
+                    this.submittedForm.height_uom_id = newValue;
+                    this.submittedForm.dimension_uom_id = newValue;
+
+                }
+            },
+
+            'submittedForm.height_uom_id' : function(newValue) {
+                if(newValue != ""){
+                    this.submittedForm.weight_uom_id = newValue;
+                    this.submittedForm.length_uom_id = newValue;
+                    this.submittedForm.width_uom_id = newValue;
+                    this.submittedForm.dimension_uom_id = newValue;
+
                 }
             },
         },

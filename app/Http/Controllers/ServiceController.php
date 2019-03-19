@@ -20,7 +20,8 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::all();
+        $services = Service::with('ship')->get();
+        
         
         return view('service.index', compact('services'));
     }
