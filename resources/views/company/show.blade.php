@@ -89,3 +89,10 @@
 </div>
 
 @endsection
+@push('script')
+<script>
+     $(document).ready(function(){
+        $('div.overlay').hide();
+    });
+</script>
+@endpush
