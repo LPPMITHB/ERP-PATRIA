@@ -91,14 +91,14 @@
 
                         </div>
 
-                        <div class="col-md-2 col-xs-12">
+                        <div class="col-md-2 col-xs-12 pull-right">
                             <template v-if="route == '/bom'">
                                 <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">EDIT</a>
                                 <a v-else-if="bom.status == 0" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">ADD ADDITIONAL</a>
                                 <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmBom(bom.id)">CONFIRM</a>
                             </template>
                             <template v-else-if="route == '/bom_repair'">
-                                <a class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">EDIT</a>
+                                <a class="btn btn-sm btn-primary pull-right btn-block" :href="editBomRepair(bom.project.id)">EDIT</a>
                             </template>
                         </div>    
                     </div>
@@ -238,6 +238,11 @@
                 }else{
                     url = "/bom_repair/"+id+"/edit";
                 }
+                return url;
+            },
+            editBomRepair(id){
+                var url = "";
+                url = "/bom_repair/materialSummary/"+id;
                 return url;
             },
             confirm(id){

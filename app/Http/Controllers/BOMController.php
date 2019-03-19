@@ -366,7 +366,6 @@ class BOMController extends Controller
                 $bom->user_id = Auth::user()->id;
                 $bom->save();
 
-                self::createRap($bom);
                 $rap = $bom->rap;
             }else{
                 $bom = Bom::find($datas->existing_bom->id);
@@ -382,7 +381,11 @@ class BOMController extends Controller
                 $bom_prep->update();
             }
 
-            self::saveBomDetailRepair($bom,$datas->bom_preps);
+            self::saveBomDetailRepair($bom,$datas->bom_preps, $rap);
+            if($rap == null){
+                self::createRap($bom);
+            }
+
             DB::commit();
             return redirect()->route('bom_repair.show', ['id' => $bom->id])->with('success', 'BOM/BOS Created');
         } catch (\Exception $e) {
@@ -662,7 +665,8 @@ class BOMController extends Controller
         }
     }
 
-    private function saveBomDetailRepair($bom, $bom_preps){
+    private function saveBomDetailRepair($bom, $bom_preps, $rap){
+        $pr_id = null;
         foreach($bom_preps as $bom_prep){
             $bom_prep_model = BomPrep::find($bom_prep->id);
             if(count($bom_prep->bom_details) > 0){
@@ -674,26 +678,125 @@ class BOMController extends Controller
                             $bom_detail_input->bom_prep_id = $bom_prep->id;
                             $bom_detail_input->material_id = $bom_detail->material_id;
                             $bom_detail_input->quantity = $bom_detail->prepared;
-                            $bom_detail_input->save();
 
                             $stock = Stock::where('material_id', $bom_detail->material_id)->first();
+                            $stock_available_old = $stock->quantity - $stock->reserved;
+                            $still_positive = true;
+                            if($stock_available_old < 0){
+                                $bom_detail_input->pr_quantity = $bom_detail->prepared;
+                                $still_positive = false;
+                            }
+
                             $stock->reserved += $bom_detail->prepared;
+                            $stock_available_new = $stock->quantity - $stock->reserved;
+                            if($stock_available_new < 0 && $still_positive){
+                                $bom_detail_input->pr_quantity = $stock->reserved - $stock->quantity;
+                            }
+
                             $stock->update();
+                            $bom_detail_input->save();
+
+                            if($rap != null){
+                                $rap_details = $rap->rapDetails;
+                                $material_not_found = true;
+                                foreach ($rap_details as $rap_detail) {
+                                    if($rap_detail->material_id == $bom_detail->material_id){
+                                        $rap_detail->quantity += $bom_detail->prepared; 
+                                        $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                        $rap_detail->update(); 
+                                        $material_not_found = false;
+                                    }
+                                }
+
+                                if($material_not_found){
+                                    $rap_detail = new RapDetail;
+                                    $rap_detail->rap_id = $rap->id;
+                                    $rap_detail->material_id = $bom_detail->material_id;
+                                    $rap_detail->quantity = $bom_detail->prepared;
+                                    $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                    $rap_detail->save();
+                                }
+                            }
                         }else{
                             $bom_detail_update = BomDetail::find($bom_detail->id);
                             $temp_quantity = $bom_detail_update->quantity;
                             $bom_detail_update->quantity = $bom_detail->prepared;
-                            $bom_detail_update->update();
 
                             $stock = Stock::where('material_id', $bom_detail_update->material_id)->first();
-                            $stock->reserved += $temp_quantity - $bom_detail->prepared;
+                            $stock_available_old = $stock->quantity - $stock->reserved;
+                            $still_positive = true;
+                            if($stock_available_old < 0){
+                                $bom_detail_update->pr_quantity = $bom_detail->prepared;
+                                $still_positive = false;
+                            }
+                            $stock->reserved += $bom_detail->prepared - $temp_quantity;
+                            $stock_available_new = $stock->quantity - $stock->reserved;
+                            if($stock_available_new < 0 && $still_positive){
+                                $bom_detail_update->pr_quantity = $stock->reserved - $stock->quantity;
+                            }
                             $stock->update();
+                            $bom_detail_update->update();
+
+                            if($rap != null){
+                                $rap_details = $rap->rapDetails;
+                                $material_not_found = true;
+                                foreach ($rap_details as $rap_detail) {
+                                    if($rap_detail->material_id == $bom_detail->material_id){
+                                        $rap_detail->quantity += $bom_detail->prepared - $temp_quantity; 
+                                        $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                        $rap_detail->update(); 
+                                        $material_not_found = false;
+                                    }
+                                }
+
+                                if($material_not_found){
+                                    $rap_detail = new RapDetail;
+                                    $rap_detail->rap_id = $rap->id;
+                                    $rap_detail->material_id = $bom_detail->material_id;
+                                    $rap_detail->quantity = $bom_detail->prepared;
+                                    $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                    $rap_detail->save();
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            
+            if($bom_prep_model->status == 0 && $pr_id == null && $bom_prep_model->bomDetails->sum('pr_quantity') > 0){
+                $pr_number = $this->pr->generatePRNumber();
+                $modelProject = Project::findOrFail($bom->project_id);
+                $PR = new PurchaseRequisition;
+                $PR->number = $pr_number;
+                $PR->business_unit_id = 2;
+                $PR->type = 1;
+                $PR->bom_id = $bom->id;
+                $PR->description = 'AUTO PR FOR '.$modelProject->number;
+                $PR->status = 1;
+                $PR->user_id = Auth::user()->id;
+                $PR->branch_id = Auth::user()->branch->id;
+                $PR->save();
+                $pr_id = $PR->id;
+            }
+
+            if($pr_id != null){
+                $bom_details = $bom_prep_model->bomDetails;
+                foreach ($bom_details as $bom_detail) {
+                    $PRD = new PurchaseRequisitionDetail;
+                    $PRD->purchase_requisition_id = $PR->id;
+                    $PRD->material_id = $bom_detail->material_id;
+                    $PRD->quantity = $bom_detail->pr_quantity;
+                    $PRD->project_id = $modelProject->id;
+                    $PRD->save();
+                }
+            }
+        }
+
+        if($rap != null){
+            $total_price = self::calculateTotalPrice($rap->id);
+    
+            $rap->total_price = $total_price;
+            $rap->update();
         }
     }
 
