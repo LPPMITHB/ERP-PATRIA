@@ -143,6 +143,7 @@ class ActivityController extends Controller
                                     }else{
                                         $bomPrep = new BomPrep;
                                         $bomPrep->project_id = $project_id;
+                                        $bomPrep->activity_id = $activity->id;
                                         $bomPrep->material_id = $material['material_id'];
                                         $bomPrep->quantity = $material['quantity'];
                                         $bomPrep->status = 1;
@@ -153,6 +154,7 @@ class ActivityController extends Controller
                             }else{
                                 $bomPrep = new BomPrep;
                                 $bomPrep->project_id = $project_id;
+                                $bomPrep->activity_id = $activity->id;
                                 $bomPrep->material_id = $material['material_id'];
                                 $bomPrep->quantity = $material['quantity'];
                                 $bomPrep->status = 1;
@@ -264,8 +266,8 @@ class ActivityController extends Controller
                 $activity->predecessor = null;
             }
 
+            $project_id = $activity->wbs->project_id;
             if(count($data['deletedActDetail'])>0){
-                $project_id = $activity->wbs->project_id;
                 foreach ($data['deletedActDetail'] as $act_detail_id) {
                     $activityDetailMaterial = ActivityDetail::find($act_detail_id);
                     $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $activityDetailMaterial->material_id)->get();

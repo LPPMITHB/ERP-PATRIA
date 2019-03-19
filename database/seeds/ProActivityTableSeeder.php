@@ -1029,6 +1029,29 @@ class ProActivityTableSeeder extends Seeder
                 'created_at' => '2019-02-25 17:42:35',
                 'updated_at' => '2019-02-25 17:42:35',
             ),
+            44 => 
+            array (
+                'id' => 45,
+                'code' => 'ACT192020001',
+                'name' => 'Plate',
+                'description' => 'Plate',
+                'status' => 1,
+                'wbs_id' => 28,
+                'activity_configuration_id' => 5,
+                'planned_duration' => 25,
+                'planned_start_date' => '2019-04-01',
+                'planned_end_date' => '2019-04-25',
+                'actual_duration' => NULL,
+                'actual_start_date' => NULL,
+                'actual_end_date' => NULL,
+                'progress' => 0.0,
+                'weight' => 100.0,
+                'predecessor' => NULL,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-03-18 10:35:00',
+                'updated_at' => '2019-03-18 10:35:00',
+            ),
         ));
         
         
