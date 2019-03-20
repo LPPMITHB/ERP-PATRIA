@@ -47,7 +47,6 @@ class MaterialController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
-        // print_r($data);exit();
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
             // 'name' => 'required|string|max:255',
