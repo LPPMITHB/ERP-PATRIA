@@ -1041,7 +1041,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 2,
-            'name' => 'Manage BOM',
+            'name' => 'Bill of Material',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
@@ -1050,10 +1050,10 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $bomRepair =  Menu::where('name','Manage BOM')->where('menu_id',$repair)->select('id')->first()->id;
+        $bomRepair =  Menu::where('name','Bill of Material')->where('menu_id',$repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Needed Material Summary',
+            'name' => 'Material Requirement Summary',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'bom_repair.selectProjectSum',
             'is_active' => true,
