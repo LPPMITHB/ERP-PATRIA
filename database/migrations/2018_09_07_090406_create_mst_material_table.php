@@ -29,7 +29,7 @@ class CreateMstMaterialTable extends Migration
             $table->float('width', 15, 2)->nullable();
             $table->float('height', 15, 2)->nullable();
             $table->unsignedInteger('dimension_uom_id')->nullable();
-            $table->unsignedInteger('family_id')->nullable();
+            $table->text('family_id')->nullable();
             $table->integer('type')->default(1);
             $table->integer('status')->default(1);
             $table->string('image')->nullable();

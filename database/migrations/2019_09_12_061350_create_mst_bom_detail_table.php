@@ -21,6 +21,7 @@ class CreateMstBomDetailTable extends Migration
             $table->unsignedInteger('service_id')->nullable();
             $table->float('quantity',15,2);
             $table->string('source')->default('Stock');
+            $table->float('pr_quantity')->nullable();
             $table->timestamps();
 
             $table->foreign('bom_prep_id')->references('id')->on('mst_bom_prep');
