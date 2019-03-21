@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Service;
+use App\Models\ServiceDetail;
+use App\Models\Ship;
+use App\Models\Uom;
 use Auth;
 use DB;
 
@@ -22,7 +26,6 @@ class ServiceController extends Controller
     {
         $services = Service::with('ship')->get();
         
-        
         return view('service.index', compact('services'));
     }
 
@@ -35,8 +38,9 @@ class ServiceController extends Controller
     {
         $service = new Service;
         $service_code = self::generateServiceCode();
+        $ships = Ship::all();
         
-        return view('service.create', compact('service', 'service_code'));
+        return view('service.create', compact('service', 'service_code','ships'));
     }
 
     /**
@@ -47,22 +51,20 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        $request['cost_standard_price']=str_replace(",","",$request['cost_standard_price']);
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_service|string|max:255',
             'name' => 'required|string|max:255',
-            'cost_standard_price' => 'required|numeric',           
         ]);
 
         DB::beginTransaction();
         try {
-        $service = new Service;
-        $service->code = strtoupper($request->input('code'));
-        $service->name = ucwords($request->input('name'));
-        $service->description = $request->input('description');
-        $service->cost_standard_price = $request->input('cost_standard_price');
-        $service->status = $request->input('status');
-        $service->save();
+            $service = new Service;
+            $service->code = strtoupper($request->input('code'));
+            $service->name = ucwords($request->input('name'));
+            if($request->input('type') != "-1"){
+                $service->ship_id = $request->input('type');
+            }
+            $service->save();
 
         DB::commit();
         return redirect()->route('service.show',$service->id)->with('success', 'Success Created New Service!');
@@ -71,6 +73,37 @@ class ServiceController extends Controller
             return redirect()->route('service.create')->with('error', $e->getMessage());
         }
     }
+
+    public function createServiceDetail(Request $request,$id)
+    {
+        $service = Service::findOrFail($id);
+        $uoms = Uom::all();
+        
+        return view('service.createServiceDetail', compact('service','uoms'));        
+    }
+
+    public function storeServiceDetail(Request $request){
+        
+       
+        $data = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+                $SD = new ServiceDetail;
+                $SD->service_id = $data->service_id;
+                $SD->name = $data->name;
+                $SD->description = $data->description;
+                $SD->uom_id = $data->uom_id;
+                $SD->cost_standard_price = $data->cost_standard_price;
+                $SD->save();
+
+            DB::commit();
+                return redirect()->route('service.show',$data->service_id)->with('success', 'Service Detail Created');
+                
+        } catch (\Exception $e) {
+            DB::rollback();
+                return redirect()->route('service.show',$data->service_id)->with('error', $e->getMessage());
+            }
+        }
 
     /**
      * Display the specified resource.
@@ -81,8 +114,12 @@ class ServiceController extends Controller
     public function show($id)
     {
         $service = Service::findOrFail($id);
+        $service_id = $id;
+        $modelSD = ServiceDetail::where('service_id',$id)->with('uom')->get();
+        $uoms = Uom::all();
         
-        return view('service.show', compact('service'));
+        
+        return view('service.show', compact('service','modelSD','uoms','service_id'));
 
     }
 
@@ -95,8 +132,9 @@ class ServiceController extends Controller
     public function edit($id)
     {
         $service = Service::findOrFail($id);
+        $ships = Ship::all();
         
-        return view('service.create', compact('service'));
+        return view('service.edit', compact('service','ships'));
 
     }
 
@@ -109,20 +147,13 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'code' => 'required|alpha_dash|unique:mst_service,code,'.$id.',id|string|max:255',
-            'name' => 'required|string|max:255',
-            'cost_standard_price' => 'required|numeric',             
-        ]);
-
+        $data = json_decode($request->datas);
         DB::beginTransaction();
         try {
         $service = Service::find($id);
-        $service->code = strtoupper($request->input('code'));
-        $service->name = ucwords($request->input('name'));
-        $service->description = $request->input('description');
-        $service->cost_standard_price = $request->input('cost_standard_price');
-        $service->status = $request->input('status');
+        $service->code = strtoupper($data->code);
+        $service->name = ucwords($data->name);
+        $service->ship_id = $data->ship_id;
         $service->update();
 
         DB::commit();
@@ -134,10 +165,35 @@ class ServiceController extends Controller
         
     }
 
+    public function updateDetail(Request $request)
+    {
+        $data = $request->json()->all();
+        DB::beginTransaction();
+        try {
+            $modelSD = ServiceDetail::findOrFail($data['service_detail_id']);
+            $modelSD->name = $data['name'];
+            $modelSD->description = $data['description'];
+            $modelSD->uom_id = $data['uom_id'];
+            $modelSD->cost_standard_price = $data['cost_standard_price'];
+
+            if(!$modelSD->update()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Service Detail Updated"],Response::HTTP_OK);
+            }
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function destroy($id)
     {
         
     }
+    //Function
 
     public function generateServiceCode(){
         $code = 'SRV';
@@ -150,5 +206,11 @@ class ServiceController extends Controller
 
         $service_code = $code.''.sprintf('%04d', $number);
 		return $service_code;
-	}
+    }
+
+    public function getNewServiceDetailAPI($id){
+        $modelSD = ServiceDetail::where('service_id',$id)->with('uom')->get()->jsonSerialize();
+
+        return response($modelSD, Response::HTTP_OK);
+    }
 }

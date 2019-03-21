@@ -173,3 +173,5 @@ Route::get('/getBomProfile/{id}', 'WBSController@getBomProfileAPI')->name('api.w
 Route::get('/getResourceProfile/{id}', 'WBSController@getResourceProfileAPI')->name('api.wbs.getResourceProfileAPI');
 Route::get('/getRdProfiles/{id}', 'WBSController@getRdProfilesAPI')->name('api.wbs.getRdProfilesAPI');
 
+// service
+Route::get('/getNewServiceDetail/{id}', 'ServiceController@getNewServiceDetailAPI')->name('api.service.getNewServiceDetailAPI');
