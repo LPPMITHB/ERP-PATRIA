@@ -336,11 +336,19 @@ Route::name('service.')->prefix('service')->group(function() {
 
     Route::get('/{id}', 'ServiceController@show')->name('show')->middleware('can:show-service');
 
-    Route::get('/{id}/edit', 'ServiceController@edit')->name('edit')->middleware('can:edit-service');
-
     Route::patch('/{id}', 'ServiceController@update')->name('update')->middleware('can:edit-service');
 
+    Route::get('/{id}/edit', 'ServiceController@edit')->name('edit')->middleware('can:edit-service');
+
+    Route::get('/createServiceDetail/{id}', 'ServiceController@createServiceDetail')->name('createServiceDetail')->middleware('can:create-service');
+
+    Route::post('/storeServiceDetail', 'ServiceController@storeServiceDetail')->name('storeServiceDetail')->middleware('can:create-service');
+    
+    Route::put('/updateDetail', 'ServiceController@updateDetail')->name('updateDetail')->middleware('can:show-service');
+
     Route::post('/', 'ServiceController@store')->name('store')->middleware('can:create-service');
+
+
 });
 
 //StorageLocation Routes
