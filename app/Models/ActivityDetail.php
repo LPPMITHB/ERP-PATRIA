@@ -33,4 +33,8 @@ class ActivityDetail extends Model
         return $this->belongsTo('App\Models\ServiceDetail');
     }
 
+    public function vendor()
+    {
+        return $this->belongsTo('App\Models\Vendor');
+    }
 }

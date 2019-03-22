@@ -428,9 +428,11 @@ Route::name('bom.')->prefix('bom')->group(function() {
 //BOM Repair Routes
 Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
-    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:list-bom-repair');
+    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom-repair');
 
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
+    Route::get('/materialSummary/{id}', 'BOMController@materialSummary')->name('materialSummary')->middleware('can:create-bom-repair');
+
+    Route::post('/storeBomRepair', 'BOMController@storeBomRepair')->name('storeBomRepair')->middleware('can:create-bom-repair');
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom-repair');
 

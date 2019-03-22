@@ -311,6 +311,11 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom_repair.selectProjectSum',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $summaryMaterialRepair,
+            'route_name' => 'bom_repair.materialSummary',
+        ]);
+
         $manageBomRepair = Menu::where('route_name','bom_repair.indexProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageBomRepair,

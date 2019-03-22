@@ -305,7 +305,7 @@
                 length_uom_id : "",
                 width :0,
                 width_uom_id : "",
-                family_id : "",
+                family_id : [],
                 density_id : "",
                 status : 1,
                 type : 1,
@@ -326,10 +326,12 @@
                 placeholder: 'Select width UOM!'
             },
             family_id_settings: {
-                placeholder: 'Select Material Family!'
+                placeholder: 'Select Material Family!',
+                maxItems: null,
+                plugins: ['remove_button'],
             },
             density_id_settings: {
-                placeholder: 'Select Density!'
+                placeholder: 'Select Density!',
             }
         }
     
@@ -647,6 +649,9 @@
 
                     }
                 },
+                'submittedForm.family_id' : function(newValue){
+                    console.log(this.submittedForm.family_id);
+                }
             },
         });
     });

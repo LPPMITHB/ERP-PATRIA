@@ -10,7 +10,9 @@ use App\Models\Branch;
 use App\Models\Material;
 use App\Models\Resource;
 use App\Models\WBS;
+use App\Models\Activity;
 use App\Models\Project;
+use App\Models\ServiceDetail;
 use DateTime;
 use Auth;
 use DB;
@@ -94,11 +96,12 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        print_r($datas);exit();
         $pr_number = $this->generatePRNumber();
 
         DB::beginTransaction();
         try {
-            if($datas->resource == ""){
+            if($datas->pr_type == "Material"){
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
@@ -158,7 +161,7 @@ class PurchaseRequisitionController extends Controller
                         $PRD->save();
                     }
                 }
-            }else{
+            }elseif($datas->pr_type == "Resource"){
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
@@ -215,6 +218,31 @@ class PurchaseRequisitionController extends Controller
                         $PRD->user_id = Auth::user()->id;
                         $PRD->save();
                     }
+                }
+            }elseif($datas->pr_type == "Subcon"){
+                $PR = new PurchaseRequisition;
+                $PR->description = $datas->description;
+                $PR->number = $pr_number;
+                if($route == '/purchase_requisition'){
+                    $PR->business_unit_id = 1;
+                }else if($route == '/purchase_requisition_repair'){
+                    $PR->business_unit_id = 2;
+                }
+                $PR->status = 1;
+                $PR->type = 3;
+                $PR->user_id = Auth::user()->id;
+                $PR->branch_id = Auth::user()->branch->id;
+                $PR->save();
+                foreach($datas->datas as $data){
+                    $PRD = new PurchaseRequisitionDetail;
+                    $PRD->purchase_requisition_id = $PR->id;
+                    $PRD->quantity = 1;
+                    $PRD->service_detail_id = $data->service_detail_id;
+                    $PRD->project_id = $data->project_id;
+                    $PRD->wbs_id = $data->wbs_id;
+                    $PRD->vendor_id = $data->vendor_id;
+                    $PRD->user_id = Auth::user()->id;
+                    $PRD->save();
                 }
             }
             DB::commit();
@@ -795,5 +823,24 @@ class PurchaseRequisitionController extends Controller
     public function getPRDAPI($id){
 
         return response(PurchaseRequisitionDetail::where('purchase_requisition_id',$id)->with('material','wbs')->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getModelWbsAPI($id){
+
+        return response(WBS::where('project_id',$id)->with('project')->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getModelActivityAPI($id){
+        $modelActivity = Activity::where('wbs_id',$id)->with('activityDetails.serviceDetail','activityDetails.serviceDetail.service','activityDetails.vendor')->get();
+        $serviceDetails = Collection::make();
+
+        foreach($modelActivity as $activity){
+            foreach($activity->activityDetails as $AD){
+                if($AD->service_detail_id != null){
+                    $serviceDetails->push($AD);
+                }
+            }
+        }
+        return response($serviceDetails->jsonSerialize(), Response::HTTP_OK);
     }
 }

@@ -38,4 +38,9 @@ class ServiceDetail extends Model
         return $this->belongsTo('App\Models\Service');
     }
 
+    public function activityDetails()
+    {
+        return $this->hasMany('App\Models\ActivityDetail');
+    }
+
 }

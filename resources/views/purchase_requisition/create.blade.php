@@ -33,8 +33,8 @@
                                     <option v-for="(type, index) in types" :value="type">{{ type }}</option>
                                 </selectize>  
                             </div>
-                            <div class="col-xs-12 col-md-4">
-                                    <label for="">Default Required Date</label>
+                            <div class="col-xs-12 col-md-4" v-if="pr_type != 'Subcon'">
+                                <label for="">Default Required Date</label>
                                 <div class="col-sm-12 p-l-0">
                                     <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
                                 </div>
@@ -50,105 +50,145 @@
                         </div>
                         <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                <template v-if="pr_type != 'Subcon'">
-                                    <table class="table table-bordered tableFixed m-b-0" >
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 5%">No</th>
-                                                <th v-if="pr_type == 'Material'" style="width: 22%">Material Number</th>
-                                                <th v-else-if="pr_type == 'Resource'" style="width: 22%">Resource Number</th>
-                                                <th v-if="pr_type == 'Material'" style="width: 25%">Material Description</th>
-                                                <th v-else-if="pr_type == 'Resource'" style="width: 25%">Resource Description</th>
-                                                <th style="width: 12%">Quantity</th>
-                                                <th style="width: 8%">Unit</th>
-                                                <th style="width: 15%">Project Number</th>
-                                                <th style="width: 13%">Required Date</th>
-                                                <th style="width: 15%">Alocation</th>
-                                                <th style="width: 13%"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(data,index) in dataMaterial">
-                                                <td>{{ index + 1 }}</td>
-                                                <template v-if="data.material_code != ''">
-                                                    <td class="tdEllipsis">{{ data.material_code }}</td>
-                                                    <td class="tdEllipsis">{{ data.material_name }}</td>
-                                                </template>
-                                                <template v-else-if="data.resource_code != ''">
-                                                    <td class="tdEllipsis">{{ data.resource_code }}</td>
-                                                    <td class="tdEllipsis">{{ data.resource_name }}</td>
-                                                </template>
-                                                <td class="tdEllipsis">{{ data.quantity }}</td>
-                                                <td class="tdEllipsis">{{ data.unit }}</td>
-                                                <td class="tdEllipsis">{{ data.project_number }}</td>
-                                                <td class="tdEllipsis">{{ data.required_date }}</td>
-                                                <td class="tdEllipsis">{{ data.alocation }}</td>
-                                                <td class="p-l-0 textCenter">
-                                                    <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                                        EDIT
-                                                    </a>
-                                                    <a v-else-if="pr_type == 'Resource'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(data,index)">
-                                                        EDIT
-                                                    </a>
-                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                        DELETE
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td class="p-l-10">{{newIndex}}</td>
-                                                <td v-show="pr_type == 'Material'" class="p-l-0 textLeft" colspan="2">
-                                                    <selectize v-model="dataInput.material_id" :settings="materialSettings" class="selectizeFull">
-                                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td v-show="pr_type == 'Resource'" class="p-l-0 textLeft" colspan="2">
-                                                    <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
-                                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="materialOk">
-                                                </td>
-                                                <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.unit" disabled>
-                                                </td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.project_id" :settings="projectSettings">
-                                                        <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
-                                                    </selectize>  
-                                                </td>
-                                                <td class="p-l-0 textLeft">
-                                                    <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
-                                                </td>
-                                                <td class="p-l-0 textLeft">
-                                                    <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
-                                                        <option value="Consumption">Consumption</option>
-                                                        <option value="Stock">Stock</option>
-                                                    </selectize>
-                                                </td>
-                                                <td class="p-l-0  textCenter">
-                                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </template>
-                                <template v-else>
-                                    <table class="table table-bordered tableFixed m-b-0">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 5%">No</th>
-                                                <th style="width: 25%">WBS</th>
-                                                <th style="width: 40%">Job Order</th>
-                                                <th style="width: 20%">Vendor</th>
-                                                <th style="width: 10%"></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </template>
+                                <table class="table table-bordered tableFixed m-b-0" v-show="pr_type != 'Subcon'">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%">No</th>
+                                            <th v-if="pr_type == 'Material'" style="width: 22%">Material Number</th>
+                                            <th v-else-if="pr_type == 'Resource'" style="width: 22%">Resource Number</th>
+                                            <th v-if="pr_type == 'Material'" style="width: 25%">Material Description</th>
+                                            <th v-else-if="pr_type == 'Resource'" style="width: 25%">Resource Description</th>
+                                            <th style="width: 12%">Quantity</th>
+                                            <th style="width: 8%">Unit</th>
+                                            <th style="width: 15%">Project Number</th>
+                                            <th style="width: 13%">Required Date</th>
+                                            <th style="width: 15%">Alocation</th>
+                                            <th style="width: 13%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(data,index) in dataMaterial">
+                                            <td>{{ index + 1 }}</td>
+                                            <template v-if="data.material_code != ''">
+                                                <td class="tdEllipsis">{{ data.material_code }}</td>
+                                                <td class="tdEllipsis">{{ data.material_name }}</td>
+                                            </template>
+                                            <template v-else-if="data.resource_code != ''">
+                                                <td class="tdEllipsis">{{ data.resource_code }}</td>
+                                                <td class="tdEllipsis">{{ data.resource_name }}</td>
+                                            </template>
+                                            <td class="tdEllipsis">{{ data.quantity }}</td>
+                                            <td class="tdEllipsis">{{ data.unit }}</td>
+                                            <td class="tdEllipsis">{{ data.project_number }}</td>
+                                            <td class="tdEllipsis">{{ data.required_date }}</td>
+                                            <td class="tdEllipsis">{{ data.alocation }}</td>
+                                            <td class="p-l-0 textCenter">
+                                                <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
+                                                    EDIT
+                                                </a>
+                                                <a v-else-if="pr_type == 'Resource'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_resource" @click="openEditModal(data,index)">
+                                                    EDIT
+                                                </a>
+                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="p-l-10">{{newIndex}}</td>
+                                            <td v-show="pr_type == 'Material'" class="p-l-0 textLeft" colspan="2">
+                                                <selectize v-model="dataInput.material_id" :settings="materialSettings" class="selectizeFull">
+                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td v-show="pr_type == 'Resource'" class="p-l-0 textLeft" colspan="2">
+                                                <selectize v-model="dataInput.resource_id" :settings="resourceSettings">
+                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" :disabled="materialOk">
+                                            </td>
+                                            <td class="p-l-0">
+                                                <input class="form-control" v-model="dataInput.unit" disabled>
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.project_id" :settings="projectSettings">
+                                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
+                                                    <option value="Consumption">Consumption</option>
+                                                    <option value="Stock">Stock</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0  textCenter">
+                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <table class="table table-bordered tableFixed m-b-0" v-show="pr_type == 'Subcon'">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 15%">Project Number</th>
+                                            <th style="width: 20%">WBS</th>
+                                            <th style="width: 35%">Job Order</th>
+                                            <th style="width: 15%">Vendor</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(data,index) in dataMaterial">
+                                            <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ data.project_number }}</td>
+                                            <td class="tdEllipsis">{{ data.wbs_number }} - {{ data.wbs_description }}</td>
+                                            <td class="tdEllipsis">{{ data.service }} - {{ data.service_detail }}</td>
+                                            <td class="tdEllipsis">{{ data.vendor_name }}</td>
+                                            <td class="p-l-0 textCenter">
+                                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
+                                                    EDIT
+                                                </a>
+                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="p-l-10">{{newIndex}}</td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="subConInput.project_id" :settings="projectSettings">
+                                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="subConInput.wbs_id" :settings="wbsSettings" >
+                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="subConInput.activity_id" :settings="jobOrderSettings" >
+                                                    <option v-for="(activity, index) in modelActivity" :value="activity.id">{{ activity.service_detail.service.name }} - {{ activity.service_detail.name }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="no-padding">
+                                                <input v-model="subConInput.vendor_name" type="text" class="form-control" disabled/>
+                                            </td>
+                                            <td class="p-l-0  textCenter"> 
+                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
 
@@ -265,9 +305,6 @@
 
     $(document).ready(function(){
         $('div.overlay').hide();
-        var a = $('table').width();
-        var b = $('selectize').width();
-        console.log(b);
     });
 
     var data = {
@@ -280,6 +317,21 @@
         materials : @json($modelMaterial),
         resources : @json($modelResource),
         projects : @json($modelProject),
+        modelWBS : [],
+        modelActivity : [],
+        subConInput : {
+            project_id : "",
+            project_number : "",
+            wbs_id : "",
+            wbs_number : "",
+            wbs_description : "",
+            vendor_id : "",
+            vendor_name : "",
+            activity_id : "",
+            service : "",
+            service_detail : "",
+            service_detail_id : "",
+        },
         dataInput : {
             material_id :"",
             material_code : "",
@@ -318,6 +370,9 @@
         projectSettings: {
             placeholder: 'Please Select Project'
         },
+        wbsSettings: {
+            placeholder: 'Please Select WBS'
+        },
         materialSettings: {
             placeholder: 'Please Select Material',
         },
@@ -333,6 +388,10 @@
         typeSettings: {
             placeholder: 'Please Select Type'
         },
+        jobOrderSettings: {
+            placeholder: 'Please Select Job Order'
+        },
+        activity_ids: [],
     }
 
     var vm = new Vue({
@@ -398,7 +457,12 @@
                     if(this.dataInput.resource_id == "" || this.dataInput.quantity == ""){
                         isOk = true;
                     }
+                }else if(this.pr_type == 'Subcon'){
+                    if(this.subConInput.project_id == "" || this.subConInput.wbs_id == "" || this.subConInput.activity_id == ""){
+                        isOk = true;
+                    }
                 }
+
                 return isOk;
             },
             updateOk: function(){
@@ -451,6 +515,12 @@
                     this.dataInput.alocation = "Stock";
                 }
 
+                this.subConInput.project_id = "";
+                this.subConInput.wbs_id = "";
+                this.subConInput.activity_id = "";
+                this.subConInput.vendor_id = "";
+                this.subConInput.vendor_name = "";
+
                 this.newIndex = Object.keys(this.dataMaterial).length+1;
             },
             submitForm(){
@@ -459,7 +529,7 @@
                     data.quantity = (data.quantity+"").replace(/,/g , '');
                 })
 
-                this.submittedForm.resource = this.isResource;
+                this.submittedForm.pr_type = this.pr_type;
                 this.submittedForm.description = this.description;
                 this.submittedForm.datas = this.dataMaterial;    
                 
@@ -514,11 +584,15 @@
             },
             add(){
                 $('div.overlay').show();
-                var data = JSON.stringify(this.dataInput);
+                if(this.pr_type == 'Subcon'){
+                    var data = JSON.stringify(this.subConInput);
+                    this.activity_ids.push(this.subConInput.activity_id)
+                }else{
+                    var data = JSON.stringify(this.dataInput);
+                }
                 data = JSON.parse(data);
 
                 this.dataMaterial.push(data);
-
                 this.clearData();
                 $('div.overlay').hide();
             },
@@ -572,13 +646,18 @@
                     this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
-            pr_type : function(newValue){
+            'pr_type' : function(newValue){
                 this.clearData();
                 if(newValue == 'Material'){
                     this.isResource = "";
                 }else if(newValue == 'Resource'){
                     this.isResource = "ok";
                     this.dataInput.alocation = "";
+                }else if(newValue == 'Subcon'){
+                    this.isResource = "";
+                }else if(newValue == ''){
+                    // HAHAHA THIS IS TRAP
+                    location.reload();
                 }
             },
             'required_date': function(newValue){
@@ -670,13 +749,98 @@
             },
             'editInput.project_id': function(newValue){
                 if(newValue != ""){
+                    $('div.overlay').show();
                     window.axios.get('/api/getProjectPR/'+newValue).then(({ data }) => {
                         this.editInput.project_number = data.number;
+                        $('div.overlay').hide();
                     });
                 }else{
                     this.editInput.project_number = "-";
                 }
-            }
+            },
+            'subConInput.project_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getModelWbsPR/'+newValue).then(({ data }) => {
+                        this.modelWBS = data;
+                        $('div.overlay').hide();
+                    });
+                }else{
+                    this.modelWBS = [];
+                    this.subConInput.project_id = "";
+                    this.subConInput.project_number = "";
+                    this.subConInput.wbs_id = "";
+                    this.subConInput.wbs_number = "";
+                    this.subConInput.wbs_description = "";
+                    this.subConInput.activity_id = "";
+                    this.subConInput.vendor_id = "";
+                    this.subConInput.vendor_code = "";
+                    this.subConInput.vendor_name = "";
+                    this.subConInput.service = "";
+                    this.subConInput.service_detail = "";
+                }
+            },
+            'subConInput.wbs_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getModelActivityPR/'+newValue).then(({ data }) => {
+                        this.modelActivity = data;
+                        this.modelActivity.forEach(activity =>{
+                            this.activity_ids.forEach(id =>{
+                                if(activity.id == id){
+                                    let index = this.modelActivity.indexOf(activity);
+                                    this.modelActivity.splice(index, 1);
+                                }
+                            })
+                        })
+                        this.modelWBS.forEach(wbs =>{
+                            if(wbs.id == newValue){
+                                this.subConInput.wbs_number = wbs.number;
+                                this.subConInput.wbs_description = wbs.description;
+                                this.subConInput.project_number = wbs.project.number;
+                            }
+                        })
+                        $('div.overlay').hide();
+                    });
+                }else{
+                    this.modelActivity = [];
+                    this.subConInput.wbs_id = "";
+                    this.subConInput.wbs_number = "";
+                    this.subConInput.wbs_description = "";
+                    this.subConInput.activity_id = "";
+                    this.subConInput.vendor_id = "";
+                    this.subConInput.vendor_code = "";
+                    this.subConInput.vendor_name = "";
+                    this.subConInput.service = "";
+                    this.subConInput.service_detail = "";
+                }
+            },
+            'subConInput.activity_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    this.modelActivity.forEach(activity => {
+                        if(activity.id == newValue){
+                            this.subConInput.vendor_id = activity.vendor_id;
+                            if(activity.vendor){
+                                this.subConInput.vendor_code = activity.vendor.code;
+                                this.subConInput.vendor_name = activity.vendor.name;
+                            }
+                            this.subConInput.service = activity.service_detail.service.name;
+                            this.subConInput.service_detail = activity.service_detail.name;
+                            this.subConInput.service_detail_id = activity.service_detail.id;
+                        }
+                    })
+                        $('div.overlay').hide();
+                }else{
+                    this.subConInput.activity_id = "";
+                    this.subConInput.vendor_id = "";
+                    this.subConInput.vendor_code = "";
+                    this.subConInput.vendor_name = "";
+                    this.subConInput.service = "";
+                    this.subConInput.service_detail = "";
+                    this.subConInput.service_detail_id = "";
+                }
+            },
         },
         created: function() {
             this.clearData();

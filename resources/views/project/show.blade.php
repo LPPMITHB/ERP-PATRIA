@@ -649,9 +649,9 @@
                 template:function(obj){  
                     if(obj.status != undefined){
                         if(obj.status == 0){
-                            return "<i class='fa fa-check'></i>"
+                            return "<i class='fa fa-check text-success'></i>"
                         }else{
-                            return "<i class='fa fa-times'></i>"
+                            return "<i class='fa fa-times text-danger'></i>"
                         }
                     }else{
                         return obj.progress * 100+" %"

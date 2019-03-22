@@ -244,7 +244,3 @@ var data = {
         });
     }
 });
-
-</script>
-    
-@endpush

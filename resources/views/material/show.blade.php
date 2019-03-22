@@ -69,7 +69,7 @@
                         <tr>
                             <td>6</td>
                             <td>Material Family</td>
-                            <td>{{ $nameMaterialFamily != null ? $nameMaterialFamily : "-"  }}</td>
+                            <td>{{ $arrayFamily != null ? $arrayFamily : "-"  }}</td>
                         </tr>
 
                         <tr>
