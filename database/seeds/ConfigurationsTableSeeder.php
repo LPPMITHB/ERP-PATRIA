@@ -71,19 +71,19 @@ class ConfigurationsTableSeeder extends Seeder
         $resource_category = array(
             
             0 => array(
-                'id' => 0,
+                'id' => 1,
                 'name' => 'Subcon',
             ),
             1 => array(
-                'id' => 1,
+                'id' => 2,
                 'name' => 'Others',
             ),
             2 => array(
-                'id' => 2,
+                'id' => 3,
                 'name' => 'External Equipment',
             ),
             3 => array(
-                'id' => 3,
+                'id' => 4,
                 'name' => 'Internal Equipment',
             ),
         );
