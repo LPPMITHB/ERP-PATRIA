@@ -47,6 +47,7 @@ class MaterialController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
+
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material|string|max:255',
             // 'name' => 'required|string|max:255',
@@ -76,7 +77,7 @@ class MaterialController extends Controller
             $material->width = $data->width;
             $material->height = $data->height;
             $material->type = $data->type;
-            $material->family_id = $data->family_id == "" ? null : $data->family_id;
+            $material->family_id = $data->family_id == "" ? null : json_encode($data->family_id);
             $material->density = $data->density_id == "" ? null : $data->density_id;
             $material->dimension_uom_id = $data->dimension_uom_id == "" ? null : $data->dimension_uom_id;
             $material->status = $data->status;
@@ -116,16 +117,27 @@ class MaterialController extends Controller
     public function show($id)
     {
         $material = Material::findOrFail($id);
+
         $dataFamily = Configuration::get('material_family');
+
+        $arrayMaterialFamily = json_decode($material->family_id);
+
+        $array = array();
         
-        foreach($dataFamily as $data){
-            if($data->id == $material->family_id){
-                $nameMaterialFamily = $data->name;
-                break;
-            }else{
-                $nameMaterialFamily = null;
+        if($material->family_id != null){
+            foreach($arrayMaterialFamily as $dataArray){
+                foreach($dataFamily as $data){
+                    if($data->id == $dataArray){
+                        array_push($array,$data->name);
+                    }
+                }
             }
+            $arrayFamily = implode(", ", $array);
+
+        }else{
+            $arrayFamily = null;
         }
+
         $dataDensity = Configuration::get('density');
         foreach($dataDensity as $data){
             if($data->id == $material->density){
@@ -137,7 +149,7 @@ class MaterialController extends Controller
         }
         $uoms = Uom::all();
 
-        return view('material.show', compact('material','uoms','nameMaterialFamily','nameDensity'));
+        return view('material.show', compact('material','uoms','arrayFamily','nameDensity'));
     }
 
     /**
@@ -149,11 +161,16 @@ class MaterialController extends Controller
     public function edit($id)
     {
         $material = Material::findOrFail($id);
+        if($material->family_id != null){
+            $dataFamily = json_decode($material->family_id);
+        }else{
+            $dataFamily = "";
+        }
         $material_families = Configuration::get('material_family');
         $densities = Configuration::get('density');
         $uoms = Uom::all();
         
-        return view('material.edit', compact('material','uoms','material_families','densities'));
+        return view('material.edit', compact('material','uoms','material_families','densities','dataFamily'));
     }
 
     /**
@@ -210,7 +227,7 @@ class MaterialController extends Controller
         $material->length = $data->lengths;
         $material->width = $data->width;
         $material->type = $data->type;
-        $material->family_id = $data->family_id == "" ? null : $data->family_id;
+        $material->family_id = $data->family_id == "" ? null : json_encode($data->family_id);
         $material->density = $data->density_id == "" ? null : $data->density_id;
         $material->dimension_uom_id = $data->dimension_uom_id == "" ? null : $data->dimension_uom_id;
         $material->status = $data->status;

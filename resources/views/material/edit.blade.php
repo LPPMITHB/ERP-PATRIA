@@ -243,7 +243,7 @@
             width_uom_id : @json($material->dimension_uom_id),
             status : @json($material->status),
             type : @json($material->type),
-            family_id : @json($material->family_id),
+            family_id : @json($dataFamily),
             density_id : @json($material->density),
         },
         uom_settings: {
@@ -268,7 +268,9 @@
             placeholder: 'Select width UOM!'
         },
         family_id_settings: {
-            placeholder: 'Select Material Family!'
+            placeholder: 'Select Material Family!',
+            maxItems: null,
+            plugins: ['remove_button'],
         },
         density_id_settings: {
             placeholder: 'Select Density!'
@@ -642,7 +644,7 @@
                 this.submittedForm.width = (this.submittedForm.width+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
 
-        }
+        },
     });
 </script>
 

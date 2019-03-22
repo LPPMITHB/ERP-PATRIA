@@ -466,9 +466,6 @@
         'ordering'    : true,
         'info'        : true,
         'autoWidth'   : false,
-        'initComplete': function(){
-            $('div.overlay').hide();
-        }
     });
     jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
@@ -1109,6 +1106,9 @@
                         }
                 },    
             },
+            created: function(){
+                $('div.overlay').hide();
+            }
         });
 
         function parseDate(str) {
@@ -1123,18 +1123,18 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            if(vm.menu == "building"){
-                var url = "/production_order/checkProdOrder/"+id;
+            // if(vm.menu == "building"){
+            //     var url = "/production_order/checkProdOrder/"+id;
 
-                const form = document.getElementById('form');
-                form.setAttribute('action', url);
-                form.submit();
-            }else{
-                var url = "/production_order_repair/checkProdOrder/"+id;
-                const form = document.getElementById('form');
-                form.setAttribute('action', url);
-                form.submit();
-            }
+            //     const form = document.getElementById('form');
+            //     form.setAttribute('action', url);
+            //     form.submit();
+            // }else{
+            //     var url = "/production_order_repair/checkProdOrder/"+id;
+            //     const form = document.getElementById('form');
+            //     form.setAttribute('action', url);
+            //     form.submit();
+            // }
             return true;
         });
     });
