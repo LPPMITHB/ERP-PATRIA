@@ -64,6 +64,8 @@ class ServiceController extends Controller
             if($request->input('type') != "-1"){
                 $service->ship_id = $request->input('type');
             }
+            $service->user_id = Auth::user()->id;
+            $service->branch_id = Auth::user()->branch->id;
             $service->save();
 
         DB::commit();
@@ -133,7 +135,7 @@ class ServiceController extends Controller
     {
         $service = Service::findOrFail($id);
         $ships = Ship::all();
-        
+        // print_r($service);exit();
         return view('service.edit', compact('service','ships'));
 
     }
@@ -148,12 +150,17 @@ class ServiceController extends Controller
     public function update(Request $request, $id)
     {
         $data = json_decode($request->datas);
+        // print_r($data);exit();
         DB::beginTransaction();
         try {
         $service = Service::find($id);
         $service->code = strtoupper($data->code);
         $service->name = ucwords($data->name);
-        $service->ship_id = $data->ship_id;
+        if($data->ship_id = NULL){
+            $service->ship_id = NULL;
+        }else{
+            $service->ship_id = $data->ship_id;}
+        
         $service->update();
 
         DB::commit();
