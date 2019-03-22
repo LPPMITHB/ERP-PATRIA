@@ -516,8 +516,9 @@
                 POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;    
 
                 // quantity
-                if(POD.material.uom.is_decimal == 0){
-                        POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                if(POD.purchase_requisition_detail.purchase_requisition.type == 1){
+                    if(POD.material.uom.is_decimal == 0){
+                            POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }else{
                         var decimal = (POD.purchase_requisition_detail.quantity+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
@@ -531,6 +532,7 @@
                             POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
                     }    
+                }
                 var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
                     var maxDecimal = 2;
