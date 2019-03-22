@@ -228,6 +228,7 @@
 <script>
     $(document).ready(function(){
         $('div.overlay').hide();
+        $("textarea").keydown(false);
     });
 
     var data = {
