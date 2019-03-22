@@ -35,8 +35,10 @@
                                 <td>{{ $loop->iteration }}</td>
                                 @if($modelPR->type == 1)
                                     <td class="tdEllipsis">Material</td>
-                                @else
+                                @elseif($modelPR->type == 2)
                                     <td class="tdEllipsis">Resource</td>
+                                @elseif($modelPR->type == 3)
+                                    <td class="tdEllipsis">Subcon</td>
                                 @endif
                                 <td class="tdEllipsis">{{ $modelPR->number }}</td>
                                 <td class="tdEllipsis">{{ isset($modelPR->description) ? $modelPR->description : '-' }}</td>
