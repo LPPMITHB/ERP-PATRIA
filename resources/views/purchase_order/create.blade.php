@@ -300,6 +300,8 @@
             ordering        : false,
         });
 
+        
+        
         $('div.overlay').hide();
     });
 
@@ -421,6 +423,7 @@
                 })
             },
             openEditModal(PRD,index){
+               
                 this.editRemark.remark = PRD.remark;
                 this.editRemark.index = index;
             },

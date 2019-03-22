@@ -59,9 +59,9 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_requisition"){
-            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',1)->with('project')->get();
+            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',1)->where('type','!=',3)->with('project')->get();
         }elseif($route == "/purchase_requisition_repair"){
-            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',2)->with('project')->get();
+            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',2)->where('type','!=',3)->with('project')->get();
         }
         
         return view('purchase_requisition.indexConsolidation', compact('modelPRs','route'));
@@ -96,7 +96,6 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        print_r($datas);exit();
         $pr_number = $this->generatePRNumber();
 
         DB::beginTransaction();
@@ -237,11 +236,12 @@ class PurchaseRequisitionController extends Controller
                     $PRD = new PurchaseRequisitionDetail;
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->quantity = 1;
-                    $PRD->service_detail_id = $data->service_detail_id;
+                    $PRD->activity_detail_id = $data->activity_detail_id;
                     $PRD->project_id = $data->project_id;
                     $PRD->wbs_id = $data->wbs_id;
                     $PRD->vendor_id = $data->vendor_id;
                     $PRD->user_id = Auth::user()->id;
+                    $PRD->status = 1;
                     $PRD->save();
                 }
             }
@@ -475,6 +475,17 @@ class PurchaseRequisitionController extends Controller
                     "required_date" => $data->required_date,
                     "alocation" => $data->alocation,
                 ]);
+            }elseif($data->purchaseRequisition->type == 3){
+                $modelPRD->push([
+                    "id" => $data->id, 
+                    "project_number" => $data->project->number, 
+                    "wbs_number" => $data->wbs->number,
+                    "wbs_description" => $data->wbs->description,
+                    "service" => $data->activityDetail->serviceDetail->service->name,
+                    "service_detail" => $data->activityDetail->serviceDetail->name,
+                    "vendor_name" => $data->vendor->name,
+                    "activity_id" => $data->activity_detail_id,
+                ]);
             }
         }
         
@@ -586,7 +597,7 @@ class PurchaseRequisitionController extends Controller
                     }
                 }
                 $this->destroy(json_encode($prd_id));
-            }else{
+            }elseif($PR->type == 2){
                 foreach($datas->datas as $data){
                     if($data->required_date != null && $data->required_date != ''){
                         $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
@@ -658,6 +669,21 @@ class PurchaseRequisitionController extends Controller
                     }
                 }
                 $this->destroy(json_encode($prd_id));
+            }elseif($PR->type == 3){
+                foreach($datas->datas as $data){
+                    if($data->prd_id == null){
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $PR->id;
+                        $PRD->quantity = 1;
+                        $PRD->activity_detail_id = $data->activity_detail_id;
+                        $PRD->project_id = $data->project_id;
+                        $PRD->wbs_id = $data->wbs_id;
+                        $PRD->vendor_id = $data->vendor_id;
+                        $PRD->user_id = Auth::user()->id;
+                        $PRD->status = 1;
+                        $PRD->save();
+                    }
+                }
             }
             DB::commit();
             if($route == "/purchase_requisition"){
@@ -746,6 +772,12 @@ class PurchaseRequisitionController extends Controller
                 $modelPR->revision_description = $datas->desc;
                 $modelPR->approved_by = Auth::user()->id;
                 $modelPR->update();
+                if($modelPR->type == 3){
+                    foreach($modelPR->purchaseRequisitionDetails as $PRD){
+                        $PRD->status = 0;
+                        $PRD->update();
+                    }
+                }
                 DB::commit();
                 if($route == "/purchase_requisition"){
                     return redirect()->route('purchase_requisition.show',$datas->pr_id)->with('success', 'Purchase Requisition Rejected');
@@ -830,17 +862,37 @@ class PurchaseRequisitionController extends Controller
         return response(WBS::where('project_id',$id)->with('project')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getModelActivityAPI($id){
+    public function getModelActivityAPI($id,$ids){
+        $ids = json_decode($ids);
         $modelActivity = Activity::where('wbs_id',$id)->with('activityDetails.serviceDetail','activityDetails.serviceDetail.service','activityDetails.vendor')->get();
         $serviceDetails = Collection::make();
 
         foreach($modelActivity as $activity){
             foreach($activity->activityDetails as $AD){
                 if($AD->service_detail_id != null){
-                    $serviceDetails->push($AD);
+                    $status = true;
+                    foreach($ids as $id){
+                        if($id == $AD->id){
+                            $status = false;
+                        }
+                    }
+                    if($status){
+                        $serviceDetails->push($AD);
+                    }
                 }
             }
         }
         return response($serviceDetails->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getActivityIdAPI(){
+        $activity_id = [];
+        $modelPRD = PurchaseRequisitionDetail::where('activity_detail_id','!=',null)->where('status',1)->get();
+
+        foreach($modelPRD as $PRD){
+            array_push($activity_id,$PRD->activity_detail_id);
+        }
+
+        return response(json_encode($activity_id), Response::HTTP_OK);
     }
 }
