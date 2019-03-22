@@ -43,7 +43,7 @@
                             <div class="form-group">
                                     <label for="name" class="col-sm-2 control-label">Ship Type</label>
                                     <div class="col-sm-10">
-                                        <selectize id="ship" v-model="dataInput.ship_id">
+                                        <selectize id="ship" v-model="dataInput.ship_id" :settings="shipTypeSettings">
                                             <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.type }}</option>
                                         </selectize>
                                     </div>
@@ -79,7 +79,10 @@
             code : @json($service->code),
             name : @json($service->name),
             ship_id : @json($service->ship_id),
-        }
+        },
+        shipTypeSettings: {
+            placeholder: 'Please Select Ship Type',
+        },
     }
 
     var vm = new Vue({
@@ -103,12 +106,12 @@
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.dataInput));
+                
                 form.appendChild(struturesElem);
                 document.body.appendChild(form);
                 form.submit();
             }
         },
-        
     });
 </script>
 @endpush
