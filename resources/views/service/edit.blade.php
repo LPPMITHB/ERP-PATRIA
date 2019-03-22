@@ -45,7 +45,7 @@
                                     <div class="col-sm-10">
                                         <selectize id="ship" v-model="dataInput.ship_id">
                                             <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.type }}</option>
-                                        </selectize>  
+                                        </selectize>
                                     </div>
                                 </div>
                             </div>
