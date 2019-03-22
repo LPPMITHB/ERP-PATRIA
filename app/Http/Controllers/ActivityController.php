@@ -136,20 +136,25 @@ class ActivityController extends Controller
 
                             $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $material['material_id'])->get();
                             if(count($modelBomPrep) > 0){
+                                $found_bom_prep = false;
                                 foreach ($modelBomPrep as $bomPrep) {
-                                    if($bomPrep->status != 0){
+                                    if($bomPrep->status == 1){
                                         //Masih belum pakai hitungan rumus
                                         $bomPrep->quantity += $material['quantity'];
                                     }else{
-                                        $bomPrep = new BomPrep;
-                                        $bomPrep->project_id = $project_id;
-                                        $bomPrep->activity_id = $activity->id;
-                                        $bomPrep->material_id = $material['material_id'];
-                                        $bomPrep->quantity = $material['quantity'];
-                                        $bomPrep->status = 1;
-                                        $bomPrep->source = $material['source'];
-                                        $bomPrep->save();
+                                        $found_bom_prep = true;
                                     }
+
+                                }
+                                if($found_bom_prep){
+                                    $bomPrep = new BomPrep;
+                                    $bomPrep->project_id = $project_id;
+                                    $bomPrep->activity_id = $activity->id;
+                                    $bomPrep->material_id = $material['material_id'];
+                                    $bomPrep->quantity = $material['quantity'];
+                                    $bomPrep->status = 1;
+                                    $bomPrep->source = $material['source'];
+                                    $bomPrep->save();
                                 }
                             }else{
                                 $bomPrep = new BomPrep;

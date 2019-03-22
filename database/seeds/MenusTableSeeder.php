@@ -1015,17 +1015,17 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Manage WBS Profile',
-            'icon' => 'fa-briefcase',
-            'route_name'=> 'wbs_repair.createWbsProfile',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectManagementRepair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Manage WBS Profile',
+        //     'icon' => 'fa-briefcase',
+        //     'route_name'=> 'wbs_repair.createWbsProfile',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN,PAMI',
+        //     'menu_id'=> $projectManagementRepair,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
         DB::table('menus')->insert([
             'level' => 3,
