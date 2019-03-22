@@ -119,10 +119,8 @@ class ServiceController extends Controller
         $service_id = $id;
         $modelSD = ServiceDetail::where('service_id',$id)->with('uom')->get();
         $uoms = Uom::all();
-        
-        
-        return view('service.show', compact('service','modelSD','uoms','service_id'));
 
+        return view('service.show', compact('service','modelSD','uoms','service_id'));
     }
 
     /**
