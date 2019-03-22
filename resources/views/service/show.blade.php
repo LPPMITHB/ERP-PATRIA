@@ -99,6 +99,9 @@
                                         <button type="button" class="btn btn-primary" data-dismiss="modal" :disabled="inputOk" @click.prevent="update()">SAVE</button>
                                     </div>
                                 </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" :disabled="inputOk" @click.prevent="update()">SAVE</button>
+                                    </div>
                             </div>
                         </div>
                     </div>
