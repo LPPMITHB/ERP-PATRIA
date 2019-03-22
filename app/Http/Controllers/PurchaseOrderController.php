@@ -683,7 +683,11 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+        if($modelPO->purchaseRequisition->type != 3){
+            $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+        }else{
+            $pdf->loadView('purchase_order.pdf_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+        }
         $now = date("Y_m_d_H_i_s");
 
         return $pdf->download('Purchase_Order_'.$now.'.pdf');
