@@ -1,21 +1,6 @@
 @extends('layouts.main')
 @section('content-header')
 
-@if($service->id)
-@breadcrumb(
-    [
-        'title' => 'Edit Service',
-        'subtitle' => 'Edit',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Services' => route('service.index'),
-            $service->name => route('service.show',$service->id),
-            'Edit Service' => route('service.edit',$service->id),
-        ]
-    ]
-)
-@endbreadcrumb
-@else
 @breadcrumb(
     [
         'title' => 'Create Service',
@@ -27,7 +12,7 @@
     ]
 )
 @endbreadcrumb
-@endif
+
 @endsection
 
 @section('content')
@@ -46,13 +31,7 @@
                         </ul>
                     </div>
                 @endif -->
-
-                @if($service->id)
-                    <form class="form-horizontal" method="POST" action="{{ route('service.update',['id'=>$service->id]) }}">
-                    <input type="hidden" name="_method" value="PATCH">
-                @else
                     <form class="form-horizontal" method="POST" action="{{ route('service.store') }}">
-                @endif
                     @csrf
                     <div class="box-body">
 
@@ -76,25 +55,19 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="description" class="col-sm-2 control-label">Description</label>
-            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description" 
-                                @if($service->description != null) value="{{ $service->description }}"
-                                @else value="{{ old('description') }}"
-                                @endif>
+                            <label for="name" class="col-sm-2 control-label">Ship Type</label>
+                
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="type" id="type" required>
+                                        <option value="-1" selected>General</option>
+                                        @foreach ($ships as $ship)
+                                        <option value="{{$ship->id}}">{{$ship->type}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price</label>
-            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeyup="validate(event)" id="cost_standard_price" name="cost_standard_price" required value="{{ number_format($service->cost_standard_price) }}">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="status" class="col-sm-2 control-label">Status</label>
             
                             <div class="col-sm-10">
@@ -103,15 +76,11 @@
                                     <option value="0">Non Active</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        @if($service->id)
-                            <button type="submit" class="btn btn-primary pull-right">SAVE</button>
-                        @else
                             <button type="submit" class="btn btn-primary pull-right">CREATE</button>
-                        @endif
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -142,9 +111,9 @@
     
     document.getElementById("code").readOnly = true;
 
-function validate(evt) {
-    document.getElementById('cost_standard_price').value = document.getElementById('cost_standard_price').value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+// function validate(evt) {
+//     document.getElementById('cost_standard_price').value = document.getElementById('cost_standard_price').value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+// }
     
 </script>
 @endpush

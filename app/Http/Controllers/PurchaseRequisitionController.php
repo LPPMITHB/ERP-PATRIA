@@ -96,6 +96,7 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        print_r($datas);exit();
         $pr_number = $this->generatePRNumber();
 
         DB::beginTransaction();
