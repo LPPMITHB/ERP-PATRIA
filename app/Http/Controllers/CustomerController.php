@@ -165,7 +165,7 @@ class CustomerController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_customer,code,'.$id.',id|string|max:255',
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:mst_customer|max:255',
+            'email' => 'nullable|email|unique:mst_customer,email,'.$id.',id|max:255',
         ]);
 
         DB::beginTransaction();
