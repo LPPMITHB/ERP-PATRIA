@@ -1029,6 +1029,7 @@ class BOMController extends Controller
         $stocks = Stock::with('material')->get();
         $existing_bom = $project->boms->first();
         foreach ($bomPreps as $bomPrep) {
+            $bomPrep['quantity'] = ceil($bomPrep->weight/$bomPrep->material->weight);
             if(count($bomPrep->bomDetails) > 0){
                 $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
                 foreach ($bomPrep->bomDetails as $bomDetail) {

@@ -37,4 +37,9 @@ class ActivityDetail extends Model
     {
         return $this->belongsTo('App\Models\Vendor');
     }
+
+    public function bomPrep()
+    {
+        return $this->belongsTo('App\Models\BomPrep');
+    }
 }

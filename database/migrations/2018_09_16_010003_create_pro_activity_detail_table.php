@@ -23,9 +23,11 @@ class CreateProActivityDetailTable extends Migration
             $table->float('length', 15, 2)->nullable();
             $table->float('width', 15, 2)->nullable();
             $table->float('height', 15, 2)->nullable();
+            $table->float('weight', 15, 2)->nullable();
             $table->unsignedInteger('dimension_uom_id')->nullable();
             $table->float('area', 15, 2)->nullable();
             $table->unsignedInteger('area_uom_id')->nullable();
+            $table->unsignedInteger('bom_prep_id')->nullable();
             $table->string('source')->nullable();
             $table->timestamps();
 
@@ -35,6 +37,7 @@ class CreateProActivityDetailTable extends Migration
             $table->foreign('vendor_id')->references('id')->on('mst_vendor');
             $table->foreign('dimension_uom_id')->references('id')->on('mst_uom');
             $table->foreign('area_uom_id')->references('id')->on('mst_uom');
+            $table->foreign('bom_prep_id')->references('id')->on('mst_bom_prep');
         });
     }
 
