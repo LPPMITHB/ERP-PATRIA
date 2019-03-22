@@ -797,17 +797,11 @@
             'subConInput.wbs_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getModelActivityPR/'+newValue).then(({ data }) => {
-                        
+                    let activity_ids = JSON.stringify(this.activity_ids);
+
+                    window.axios.get('/api/getModelActivityPR/'+newValue+"/"+activity_ids).then(({ data }) => {
                         this.modelActivity = data;
-                        this.modelActivity.forEach(activity =>{
-                            this.activity_ids.forEach(id =>{
-                                if(activity.id == id){
-                                    let index = this.modelActivity.indexOf(activity);
-                                    this.modelActivity.splice(index, 1);
-                                }
-                            })
-                        })
+
                         this.modelWBS.forEach(wbs =>{
                             if(wbs.id == newValue){
                                 this.subConInput.wbs_number = wbs.number;
@@ -816,7 +810,6 @@
                             }
                         })
                         $('div.overlay').hide();
-                        
                     });
                 }else{
                     this.modelActivity = [];
