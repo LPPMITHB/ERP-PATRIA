@@ -16,9 +16,9 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            @if($menu == "building")
+            @if($route == "/work_order")
                 <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('work_order.update') }}">
-            @else
+            @elseif($route == "/work_order_repair")
                 <form id="edit-po" class="form-horizontal" method="POST" action="{{ route('work_order_repair.update') }}">
             @endif
             <input type="hidden" name="_method" value="PATCH">
