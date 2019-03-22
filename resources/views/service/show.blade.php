@@ -17,28 +17,27 @@
 @section('content')
 
 <div class="row">
-        <div class="col-sm-12">
-            <div class="box">
-                <div class="box-header">
-                    <div class="col-xs-12 col-lg-8 col-md-12 no-padding">
-                        <div class="box-body no-padding">
-                            <div class="col-sm-12 no-padding"><b>Service Information</b></div>
-                            
-                            <div class="col-md-2 col-xs-2 no-padding">Code</div>
-                            <div class="col-md-10 col-xs-10 no-padding"><b>: {{$service->code}}</b></div>
-                            
-                            <div class="col-md-2 col-xs-2 no-padding">Name</div>
-                            <div class="col-md-10 col-xs-10 no-padding"><b>: {{$service->name}}</b></div>
-    
-                            <div class="col-md-2 col-xs-2 no-padding">Ship Type</div>
-                            <div class="col-md-10 col-xs-10 no-padding"><b>: {{ $service->ship_id != '' ? $service->ship->type : 'General' }}</b></div>
+    <div class="col-sm-12">
+        <div class="box">
+            <div class="box-header">
+                <div class="col-xs-12 col-lg-8 col-md-12 no-padding">
+                    <div class="box-body no-padding">
+                        <div class="col-sm-12 no-padding"><b>Service Information</b></div>
                         
-                        </div>
+                        <div class="col-md-2 col-xs-2 no-padding">Code</div>
+                        <div class="col-md-10 col-xs-10 no-padding"><b>: {{$service->code}}</b></div>
+                        
+                        <div class="col-md-2 col-xs-2 no-padding">Name</div>
+                        <div class="col-md-10 col-xs-10 no-padding"><b>: {{$service->name}}</b></div>
+
+                        <div class="col-md-2 col-xs-2 no-padding">Ship Type</div>
+                        <div class="col-md-10 col-xs-10 no-padding"><b>: {{ $service->ship_id != '' ? $service->ship->type : 'General' }}</b></div>
                     </div>
+                </div>
                     <div class="col-xs-12 col-lg-4 col-md-12 no-padding ">
                             <a href="{{ route('service.createServiceDetail',$service->id) }}" class="btn btn-primary btn-sm pull-right">INPUT SERVICE DETAIL</a>
                     </div>
-                </div>
+            </div>
                 @verbatim
                     <div id="detail">
                         <div class="box-body p-t-0 p-b-0">
@@ -66,45 +65,46 @@
                             </table>
                         </div>
                     <div class="modal fade" id="edit_info">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                        <h4 class="modal-title">Edit Service Detail Information</h4>
-                                    </div>
-                                    <div class="modal-body p-t-0">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <label for="name" class="control-label">Name</label>
-                                                <input type="text" id="name" v-model="editInput.name" class="form-control">
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <label for="description" class="control-label">Description</label>
-                                                <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
-                                            </div>
-                                            <div class="col-sm-12">
-                                                    <label for="uom" class="control-label">Unit Of Measurement</label>
-                                                        <selectize id="uom" v-model="editInput.uom_id" :settings="uomSettings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.name }}</option>
-                                                        </selectize> 
-                                            </div>
-                                            <div class="col-sm-12">
-                                                    <label for="cost_standard_price" class="control-label">Cost Standard Price</label>
-                                                    <input type="text" id="cost_standard_price" v-model="editInput.cost_standard_price" class="form-control" placeholder="Please Input Cost Standard Price">
-                                            </div>
-                                        </div>
-                                    </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal" :disabled="inputOk" @click.prevent="update()">SAVE</button>
-                                        </div>
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Edit Service Detail Information</h4>
                                 </div>
+                                <div class="modal-body p-t-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label for="name" class="control-label">Name</label>
+                                            <input type="text" id="name" v-model="editInput.name" class="form-control">
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <label for="description" class="control-label">Description</label>
+                                            <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
+                                        </div>
+                                        <div class="col-sm-12">
+                                                <label for="uom" class="control-label">Unit Of Measurement</label>
+                                                    <selectize id="uom" v-model="editInput.uom_id" :settings="uomSettings">
+                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.name }}</option>
+                                                    </selectize> 
+                                        </div>
+                                        <div class="col-sm-12">
+                                                <label for="cost_standard_price" class="control-label">Cost Standard Price</label>
+                                                <input type="text" id="cost_standard_price" v-model="editInput.cost_standard_price" class="form-control" placeholder="Please Input Cost Standard Price">
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" :disabled="inputOk" @click.prevent="update()">SAVE</button>
+                                    </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
         @endverbatim
 @endsection
 @push('script')
@@ -244,3 +244,7 @@ var data = {
         });
     }
 });
+
+</script>
+    
+@endpush
