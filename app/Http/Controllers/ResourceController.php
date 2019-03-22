@@ -85,7 +85,11 @@ class ResourceController extends Controller
             $resource->code = strtoupper($data->code);
             $resource->name = ucwords($data->name);
             $resource->description = $data->description;
-            $resource->cost_standard_price = $data->cost_standard_price;
+            if($data->cost_standard_price != null || $data->cost_standard_price != ""){
+                $resource->cost_standard_price = $data->cost_standard_price;
+            }else{
+                $resource->cost_standard_price = 0;
+            }
             $resource->user_id = Auth::user()->id;
             $resource->branch_id = Auth::user()->branch->id;
             $resource->save();
@@ -500,7 +504,11 @@ class ResourceController extends Controller
             $resource->code = strtoupper($data->code);
             $resource->name = ucwords($data->name);
             $resource->description = $data->description;
-            $resource->cost_standard_price = $data->cost_standard_price;
+            if($data->cost_standard_price != null || $data->cost_standard_price != ""){
+                $resource->cost_standard_price = $data->cost_standard_price;
+            }else{
+                $resource->cost_standard_price = 0;
+            }
             $resource->update();
 
             DB::commit();
