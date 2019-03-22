@@ -299,30 +299,32 @@ class ActivityController extends Controller
             }
 
             $project_id = $activity->wbs->project_id;
-            if(count($data['deletedActDetail'])>0){
-                foreach ($data['deletedActDetail'] as $act_detail_id) {
-                    $activityDetailMaterial = ActivityDetail::find($act_detail_id);
-                    $bomPrep = $activityDetailMaterial->bomPrep;
-                    $delete_bom_prep = false;
-                    if($bomPrep->status == 0){
-                        array_push($error, ["Failed to delete, this activity material has been already summarized"]);                
-                        return response(["error"=> $error],Response::HTTP_OK);
-                    }else{
-                        if(count($bomPrep->bomDetails) > 0){
-                            array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);                
+            if(isset($data['deletedActDetail'])){
+                if(count($data['deletedActDetail'])>0){
+                    foreach ($data['deletedActDetail'] as $act_detail_id) {
+                        $activityDetailMaterial = ActivityDetail::find($act_detail_id);
+                        $bomPrep = $activityDetailMaterial->bomPrep;
+                        $delete_bom_prep = false;
+                        if($bomPrep->status == 0){
+                            array_push($error, ["Failed to delete, this activity material has been already summarized"]);                
                             return response(["error"=> $error],Response::HTTP_OK);
                         }else{
-                            $bomPrep->weight -= $act_detail->weight;
-                            if($bomPrep->weight == 0){
-                                $delete_bom_prep = true;
+                            if(count($bomPrep->bomDetails) > 0){
+                                array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);                
+                                return response(["error"=> $error],Response::HTTP_OK);
                             }else{
-                                $bomPrep->update();
+                                $bomPrep->weight -= $act_detail->weight;
+                                if($bomPrep->weight == 0){
+                                    $delete_bom_prep = true;
+                                }else{
+                                    $bomPrep->update();
+                                }
                             }
                         }
-                    }
-                    $activityDetailMaterial->delete();
-                    if($delete_bom_prep){
-                        $bomPrep->delete();
+                        $activityDetailMaterial->delete();
+                        if($delete_bom_prep){
+                            $bomPrep->delete();
+                        }
                     }
                 }
             }
