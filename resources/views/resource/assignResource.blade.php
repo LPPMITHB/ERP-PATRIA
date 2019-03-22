@@ -661,15 +661,19 @@
                 if(this.dataInput.category_id == 3){
                     let start_date = this.dataInput.start_date;
                     this.modelAssignResource.forEach(TrxResource =>{
-                        if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
-                            status = true;
+                        if(TrxResource.resource_detail_id == this.dataInput.resource_detail_id){
+                            if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
+                                status = true;
+                            }
                         }
                     })
                     if(!status){
                         let end_date = this.dataInput.end_date;
                         this.modelAssignResource.forEach(TrxResource =>{
-                            if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
-                                status = true;
+                            if(TrxResource.resource_detail_id == this.dataInput.resource_detail_id){
+                                if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
+                                    status = true;
+                                }
                             }
                         })
                     }
