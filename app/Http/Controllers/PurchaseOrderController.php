@@ -668,6 +668,7 @@ class PurchaseOrderController extends Controller
     { 
         $branch = Auth::user()->branch; 
         $modelPO = PurchaseOrder::find($id);
+        print_r($modelPO);exit();
         $discount = 0;
         $tax = 0;
         $freight = 0;
