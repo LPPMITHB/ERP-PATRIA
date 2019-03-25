@@ -106,7 +106,7 @@
                                         <div class="col-sm-12">
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
-                                        <div class="col-sm-12 p-t-5">
+                                        <div class="col-sm-12 p-t-5" v-if="modelPR.type != 3">
                                             <a class="btn btn-primary btn-xs pull-right" data-toggle="modal" href="#vendor_list" @click.prevent="vendor_list">
                                                 VENDOR LIST
                                             </a>
@@ -118,7 +118,7 @@
                         <div class="box-body p-t-0">
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-15 p-t-0">
-                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;">
+                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;" v-if="modelPR.type != 3">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
@@ -173,6 +173,17 @@
                                                 </td>
                                             </tr>
                                         </tbody>
+                                    </table>
+                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;" v-if="modelPR.type == 3">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%">No</th>
+                                                <th style="width: 40%">Job Order</th>
+                                                <th style="width: 20%">Price / Service ({{selectedCurrency}})</th>
+                                                <th style="width: 10%">Disc. (%)</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
                                     </table>
                                 </div>
                             </div>
@@ -708,7 +719,7 @@
                         this.delivery_date = "ok";
                     }
                 });
-            }else{
+            }else if(this.modelPR.type == 2){
                 data.forEach(PRD => {
                     PRD.quantity = PRD.quantity - PRD.reserved;
                     PRD.sugQuantity = PRD.quantity;
@@ -741,7 +752,7 @@
                 this.PRDetail.forEach(prd => {
                     prd.material.price = parseInt((prd.material.cost_standard_price+"").replace(/,/g , ''));
                 });
-            }else{
+            }else if(this.modelPR.type == 2){
                 this.PRDetail.forEach(prd => {
                     prd.resource.price = parseInt((prd.resource.cost_standard_price+"").replace(/,/g , ''));
                 });

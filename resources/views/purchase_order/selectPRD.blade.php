@@ -1,8 +1,10 @@
 @extends('layouts.main')
 @if($modelPR->type == 1)
     @php($type = 'Material')
-@else  
+@elseif($modelPR->type == 2)
     @php($type = 'Resource')
+@elseif($modelPR->type == 3)
+    @php($type = 'Subcon')
 @endif
 @section('content-header')
 @if($route == "/purchase_order")
@@ -46,7 +48,7 @@
                 @csrf
                     @verbatim
                     <div id="prd">
-                        <table class="table table-bordered tableFixed tablePagingVue">
+                        <table class="table table-bordered tableFixed tablePagingVue" v-if="modelPR.type != 3">
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
@@ -71,30 +73,55 @@
                                 <tr v-for="(PRD,index) in modelPRD">
                                     <td>{{ index+1 }}</td>
                                     <template v-if="modelPR.type == 1">
-                                        <td>{{ PRD.material.code }}</td>
-                                        <td>{{ PRD.material.description }}</td>
-                                        <td>{{ PRD.quantity }}</td>
-                                        <td>{{ PRD.reserved }}</td>
-                                        <td>{{ PRD.remaining }}</td>
-                                        <td>{{ PRD.material.uom.unit }}</td>
-                                        <td v-if="PRD.project != null">{{ PRD.project.number }}</td>
-                                        <td v-else>-</td>
-                                        <td v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
-                                        <td v-else>-</td>
+                                        <td class="tdEllipsis">{{ PRD.material.code }}</td>
+                                        <td class="tdEllipsis">{{ PRD.material.description }}</td>
+                                        <td class="tdEllipsis">{{ PRD.quantity }}</td>
+                                        <td class="tdEllipsis">{{ PRD.reserved }}</td>
+                                        <td class="tdEllipsis">{{ PRD.remaining }}</td>
+                                        <td class="tdEllipsis">{{ PRD.material.uom.unit }}</td>
+                                        <td class="tdEllipsis" v-if="PRD.project != null">{{ PRD.project.number }}</td>
+                                        <td class="tdEllipsis" v-else>-</td>
+                                        <td class="tdEllipsis" v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
+                                        <td class="tdEllipsis" v-else>-</td>
                                     </template>
                                     <template v-else>
-                                        <td>{{ PRD.resource.code }}</td>
-                                        <td>{{ PRD.resource.name }}</td>
-                                        <td>{{ PRD.quantity }}</td>
-                                        <td>{{ PRD.reserved }}</td>
-                                        <td>{{ PRD.remaining }}</td>
-                                        <td>-</td>
-                                        <td v-if="PRD.project != null">{{ PRD.project.number }}</td>
-                                        <td v-else>-</td>
-                                        <td v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
-                                        <td v-else>-</td>
+                                        <td class="tdEllipsis">{{ PRD.resource.code }}</td>
+                                        <td class="tdEllipsis">{{ PRD.resource.name }}</td>
+                                        <td class="tdEllipsis">{{ PRD.quantity }}</td>
+                                        <td class="tdEllipsis">{{ PRD.reserved }}</td>
+                                        <td class="tdEllipsis">{{ PRD.remaining }}</td>
+                                        <td class="tdEllipsis">-</td>
+                                        <td class="tdEllipsis" v-if="PRD.project != null">{{ PRD.project.number }}</td>
+                                        <td class="tdEllipsis" v-else>-</td>
+                                        <td class="tdEllipsis" v-if="PRD.alocation != null">{{ PRD.alocation }}</td>
+                                        <td class="tdEllipsis" v-else>-</td>
                                     </template>
                                     <td class="no-padding p-t-2 p-b-2" align="center">
+                                        <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered tableFixed tablePagingVue" v-else-if="modelPR.type == 3">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="15%">Project Number</th>
+                                    <th width="20%">WBS</th>
+                                    <th width="35%">Job Order</th>
+                                    <th width="15%">Vendor</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(PRD,index) in modelPRD">
+                                    <td class="tdEllipsis">{{ index+1 }}</td>
+                                    <td class="tdEllipsis">{{ PRD.project.number }}</td>
+                                    <td class="tdEllipsis">{{ PRD.wbs.number }} - {{ PRD.wbs.description }}</td>
+                                    <td class="tdEllipsis">{{ PRD.activity_detail.service_detail.service.name }} - {{ PRD.activity_detail.service_detail.name }}</td>
+                                    <td class="tdEllipsis" v-if="PRD.vendor != null">{{ PRD.vendor.name }}</td>
+                                    <td class="tdEllipsis" v-else>-</td>
+                                    <td class="tdEllipsis" class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
                                     </td>
                                 </tr>
