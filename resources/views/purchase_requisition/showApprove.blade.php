@@ -92,48 +92,73 @@
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable tableFixed tableNonPagingVue">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            @if($modelPR->type == 1)
-                                <th width="20%">Material Number</th>
-                                <th width="25%">Material Description</th>
-                            @else
-                                <th width="20%">Resource Number</th>
-                                <th width="25%">Resource Description</th>
-                            @endif
-                            <th width="8%">Qty</th>
-                            <th width="7%">Unit</th>
-                            <th width="14%">Project Number</th>
-                            <th width="13%">Required Date</th>
-                            <th width="10%">Alocation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($modelPR->PurchaseRequisitionDetails as $PRD)
+                @if($modelPR->type != 3)
+                    <table class="table table-bordered showTable tableFixed tableNonPagingVue">
+                        <thead>
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <th width="5%">No</th>
                                 @if($modelPR->type == 1)
-                                    <td class="tdEllipsis">{{ $PRD->material->code }}</td>
-                                    <td class="tdEllipsis">{{ $PRD->material->description }}</td>
+                                    <th width="20%">Material Number</th>
+                                    <th width="25%">Material Description</th>
                                 @else
-                                    <td class="tdEllipsis">{{ $PRD->resource->code }}</td>
-                                    <td class="tdEllipsis">{{ $PRD->resource->name }}</td>
+                                    <th width="20%">Resource Number</th>
+                                    <th width="25%">Resource Description</th>
                                 @endif
-                                <td>{{ number_format((float)$PRD->quantity,2) }}</td>
-                                @if($modelPR->type == 1)
-                                    <td>{{ $PRD->material->uom->unit}}</td>
-                                @else
-                                    <td>-</td>
-                                @endif
-                                <td class="tdEllipsis">{{ isset($PRD->project) ? $PRD->project->number : '-' }}</td>
-                                <td>{{ isset($PRD->required_date) ? date('d-m-Y', strtotime($PRD->required_date)) : '-' }}</td>
-                                <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
+                                <th width="8%">Qty</th>
+                                <th width="7%">Unit</th>
+                                <th width="14%">Project Number</th>
+                                <th width="13%">Required Date</th>
+                                <th width="10%">Alocation</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach($modelPR->PurchaseRequisitionDetails as $PRD)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    @if($modelPR->type == 1)
+                                        <td class="tdEllipsis">{{ $PRD->material->code }}</td>
+                                        <td class="tdEllipsis">{{ $PRD->material->description }}</td>
+                                    @else
+                                        <td class="tdEllipsis">{{ $PRD->resource->code }}</td>
+                                        <td class="tdEllipsis">{{ $PRD->resource->name }}</td>
+                                    @endif
+                                    <td>{{ number_format((float)$PRD->quantity,2) }}</td>
+                                    @if($modelPR->type == 1)
+                                        <td>{{ $PRD->material->uom->unit}}</td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
+                                    <td class="tdEllipsis">{{ isset($PRD->project) ? $PRD->project->number : '-' }}</td>
+                                    <td>{{ isset($PRD->required_date) ? date('d-m-Y', strtotime($PRD->required_date)) : '-' }}</td>
+                                    <td>{{ isset($PRD->alocation) ? $PRD->alocation : '-' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @elseif($modelPR->type == 3)
+                        <table class="table table-bordered showTable tableFixed tableNonPagingVue">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="15%">Project Number</th>
+                                    <th width="25%">WBS</th>
+                                    <th width="40%">Job Order</th>
+                                    <th width="15%">Vendor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($modelPR->PurchaseRequisitionDetails as $PRD)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $PRD->project->number}}</td>
+                                        <td>{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}</td>
+                                        <td>{{ $PRD->activityDetail->serviceDetail->service->name}} - {{ $PRD->activityDetail->serviceDetail->name}}</td>
+                                        <td class="tdEllipsis">{{ isset($PRD->vendor) ? $PRD->vendor->name : '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 @verbatim
                 <div id="approval">
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10" v-if="modelPR.status == 1 || modelPR.status == 4">

@@ -1,16 +1,30 @@
 @extends('layouts.main')
 @section('content-header')
-
-@breadcrumb(
-    [
-        'title' => 'Create Resource',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Create Resource' => '',
+@if($route == "/resource")
+    @breadcrumb(
+        [
+            'title' => 'Create Resource',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource.index'),
+                'Create Resource' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($route == "/resource_repair")
+    @breadcrumb(
+        [
+            'title' => 'Create Resource',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Resources' => route('resource_repair.index'),
+                'Create Resource' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 
 @endsection
 

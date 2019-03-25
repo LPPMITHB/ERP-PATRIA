@@ -100,7 +100,11 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
-        $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','project','resource','material.uom')->get();
+        if($modelPR->type != 3){
+            $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','project','resource','material.uom')->get();
+        }else{
+            $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('activityDetail.serviceDetail.service','activityDetail.serviceDetail','project','wbs','vendor')->get();
+        }
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
                 $modelPRD->forget($key);
@@ -668,6 +672,7 @@ class PurchaseOrderController extends Controller
     { 
         $branch = Auth::user()->branch; 
         $modelPO = PurchaseOrder::find($id);
+        print_r($modelPO);exit();
         $discount = 0;
         $tax = 0;
         $freight = 0;
@@ -683,7 +688,11 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+        if($modelPO->purchaseRequisition->type != 3){
+            $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+        }else{
+            $pdf->loadView('purchase_order.pdf_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+        }
         $now = date("Y_m_d_H_i_s");
 
         return $pdf->download('Purchase_Order_'.$now.'.pdf');

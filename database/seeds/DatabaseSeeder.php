@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstBomProfileTableSeeder::class);        
         $this->call(MstResourceProfileTableSeeder::class);
         $this->call(PurchasingInfoRecordTableSeeder::class);
-        $this->call(ProActivityDetailTableSeeder::class);
         $this->call(MstBomPrepTableSeeder::class);
+        $this->call(ProActivityDetailTableSeeder::class);
     }
 }

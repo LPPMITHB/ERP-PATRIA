@@ -153,9 +153,6 @@
                                             <td class="tdEllipsis">{{ data.service }} - {{ data.service_detail }}</td>
                                             <td class="tdEllipsis">{{ data.vendor_name }}</td>
                                             <td class="p-l-0 textCenter">
-                                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                                    EDIT
-                                                </a>
                                                 <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
                                                     DELETE
                                                 </a>
@@ -286,6 +283,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                     @endverbatim
                 </form>
@@ -331,6 +329,7 @@
             service : "",
             service_detail : "",
             service_detail_id : "",
+            activity_detail_id : "",
         },
         dataInput : {
             material_id :"",
@@ -516,10 +515,17 @@
                 }
 
                 this.subConInput.project_id = "";
+                this.subConInput.project_number = "";
                 this.subConInput.wbs_id = "";
-                this.subConInput.activity_id = "";
+                this.subConInput.wbs_number = "";
+                this.subConInput.wbs_description = "";
                 this.subConInput.vendor_id = "";
                 this.subConInput.vendor_name = "";
+                this.subConInput.activity_id = "";
+                this.subConInput.service = "";
+                this.subConInput.service_detail = "";
+                this.subConInput.service_detail_id = "";
+                this.subConInput.activity_detail_id = "";
 
                 this.newIndex = Object.keys(this.dataMaterial).length+1;
             },
@@ -597,6 +603,13 @@
                 $('div.overlay').hide();
             },
             removeRow(index){
+                this.activity_ids.forEach(id =>{
+                    if(this.dataMaterial[index].activity_id == id){
+                        let index_id =  this.activity_ids.indexOf(id);
+                        this.activity_ids.splice(index_id,1);
+                    }
+                })
+
                 this.dataMaterial.splice(index, 1);
                 this.clearData();
             }
@@ -778,21 +791,17 @@
                     this.subConInput.vendor_name = "";
                     this.subConInput.service = "";
                     this.subConInput.service_detail = "";
+                    this.subConInput.activity_detail_id = "";
                 }
             },
             'subConInput.wbs_id' : function(newValue){
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getModelActivityPR/'+newValue).then(({ data }) => {
+                    let activity_ids = JSON.stringify(this.activity_ids);
+
+                    window.axios.get('/api/getModelActivityPR/'+newValue+"/"+activity_ids).then(({ data }) => {
                         this.modelActivity = data;
-                        this.modelActivity.forEach(activity =>{
-                            this.activity_ids.forEach(id =>{
-                                if(activity.id == id){
-                                    let index = this.modelActivity.indexOf(activity);
-                                    this.modelActivity.splice(index, 1);
-                                }
-                            })
-                        })
+
                         this.modelWBS.forEach(wbs =>{
                             if(wbs.id == newValue){
                                 this.subConInput.wbs_number = wbs.number;
@@ -813,6 +822,7 @@
                     this.subConInput.vendor_name = "";
                     this.subConInput.service = "";
                     this.subConInput.service_detail = "";
+                    this.subConInput.activity_detail_id = "";
                 }
             },
             'subConInput.activity_id' : function(newValue){
@@ -824,10 +834,14 @@
                             if(activity.vendor){
                                 this.subConInput.vendor_code = activity.vendor.code;
                                 this.subConInput.vendor_name = activity.vendor.name;
+                            }else{
+                                this.subConInput.vendor_name = '-';
                             }
+                            console.log(activity);
                             this.subConInput.service = activity.service_detail.service.name;
                             this.subConInput.service_detail = activity.service_detail.name;
                             this.subConInput.service_detail_id = activity.service_detail.id;
+                            this.subConInput.activity_detail_id = activity.id;
                         }
                     })
                         $('div.overlay').hide();
@@ -839,11 +853,17 @@
                     this.subConInput.service = "";
                     this.subConInput.service_detail = "";
                     this.subConInput.service_detail_id = "";
+                    this.subConInput.activity_detail_id = "";
                 }
             },
         },
         created: function() {
             this.clearData();
+            window.axios.get('/api/getActivityId').then(({ data }) => {
+                data.forEach(id=>{
+                    this.activity_ids.push(id);
+                })
+            });
         },
     });
 </script>

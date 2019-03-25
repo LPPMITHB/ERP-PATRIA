@@ -489,11 +489,11 @@ class GoodsReturnController extends Controller
         // }
 
         if($menu == "building"){
-            $modelPR = PurchaseRequisition::where('business_unit_id',1)->pluck('id')->toArray();
+            $modelPR = PurchaseRequisition::where('business_unit_id',1)->where('type', 1)->pluck('id')->toArray();
             $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPR)->where('status',2)->get();
             
         }elseif($menu == "repair"){
-            $modelPR = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
+            $modelPR = PurchaseRequisition::where('business_unit_id',2)->where('type', 1)->pluck('id')->toArray();
             $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPR)->where('status',2)->get();
 
         }

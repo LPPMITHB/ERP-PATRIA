@@ -202,31 +202,31 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'wbs.createResourceProfile',
         ]);
 
-        $wbsProfileRepair = Menu::where('route_name','wbs_repair.createWbsProfile')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $wbsProfileRepair,
-            'route_name' => 'wbs_repair.createWbsProfile',
-        ]);
+        // $wbsProfileRepair = Menu::where('route_name','wbs_repair.createWbsProfile')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $wbsProfileRepair,
+        //     'route_name' => 'wbs_repair.createWbsProfile',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $wbsProfileRepair,
-            'route_name' => 'wbs_repair.createSubWbsProfile',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $wbsProfileRepair,
+        //     'route_name' => 'wbs_repair.createSubWbsProfile',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $wbsProfileRepair,
-            'route_name' => 'activity_repair.createActivityProfile',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $wbsProfileRepair,
+        //     'route_name' => 'activity_repair.createActivityProfile',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $wbsProfileRepair,
-            'route_name' => 'wbs_repair.createBomProfile',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $wbsProfileRepair,
+        //     'route_name' => 'wbs_repair.createBomProfile',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $wbsProfileRepair,
-            'route_name' => 'wbs_repair.createResourceProfile',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $wbsProfileRepair,
+        //     'route_name' => 'wbs_repair.createResourceProfile',
+        // ]);
 
         $wbsConfigRepair = Menu::where('route_name','wbs_repair.createWbsConfiguration')->select('id')->first()->id;
         DB::table('sidenav')->insert([

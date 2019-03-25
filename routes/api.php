@@ -54,8 +54,9 @@ Route::get('/getResourcePR/{id}', 'PurchaseRequisitionController@getResourceAPI'
 // Route::get('/getMaterials/{id}', 'PurchaseRequisitionController@getMaterialsAPI')->name('api.purchase_requisition.getMaterialsAPI');
 Route::get('/getWbsPR/{id}', 'PurchaseRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
 Route::get('/getModelWbsPR/{id}', 'PurchaseRequisitionController@getModelWbsAPI')->name('api.purchase_requisition.getModelWbsAPI');
-Route::get('/getModelActivityPR/{id}', 'PurchaseRequisitionController@getModelActivityAPI')->name('api.purchase_requisition.getModelActivityAPI');
+Route::get('/getModelActivityPR/{id}/{ids}', 'PurchaseRequisitionController@getModelActivityAPI')->name('api.purchase_requisition.getModelActivityAPI');
 Route::get('/getPRD/{id}', 'PurchaseRequisitionController@getPRDAPI')->name('api.purchase_requisition.getPRDAPI');
+Route::get('/getActivityId', 'PurchaseRequisitionController@getActivityIdAPI')->name('api.purchase_requisition.getActivityIdAPI');
 
 // material_requisition
 Route::get('/getWbsMR/{id}', 'MaterialRequisitionController@getWbsAPI')->name('api.material_requisition.getWbsAPI');

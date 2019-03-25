@@ -1042,30 +1042,17 @@ var vm = new Vue({
     computed:{
         addMaterialOk: function(){
             let isOk = false;
-            if(this.newMaterial.dimension_uom_id != ""){
-                if(this.newMaterial.height == ""){
-                    isOk = true;
-                }
-            }
-
-            if(this.newMaterial.dimension_uom_id != ""){
-                if(this.newMaterial.lengths == ""){
-                    isOk = true;
-                }
-            }
-
-            if(this.newMaterial.dimension_uom_id != ""){
-                if(this.newMaterial.width == ""){
-                    isOk = true;
-                }
-            }
 
             if(this.newMaterial.material_id == "" || 
-            this.newMaterial.quantity == ""){
-                isOk = true;
-            }
-
-            if(this.newMaterial.source == ""){
+            this.newMaterial.quantity == "" ||
+            this.newMaterial.dimension_uom_id == "" ||
+            this.newMaterial.height == "" || 
+            this.newMaterial.height == 0 || 
+            this.newMaterial.lengths == "" ||
+            this.newMaterial.lengths == 0 ||
+            this.newMaterial.width == "" ||
+            this.newMaterial.width == 0 ||
+            this.newMaterial.source == ""){
                 isOk = true;
             }
             
@@ -1073,30 +1060,17 @@ var vm = new Vue({
         },
         addMaterialEditOk: function(){
             let isOk = false;
-            if(this.editMaterial.dimension_uom_id != ""){
-                if(this.editMaterial.height == ""){
-                    isOk = true;
-                }
-            }
-
-            if(this.editMaterial.dimension_uom_id != ""){
-                if(this.editMaterial.lengths == ""){
-                    isOk = true;
-                }
-            }
-
-            if(this.editMaterial.dimension_uom_id != ""){
-                if(this.editMaterial.width == ""){
-                    isOk = true;
-                }
-            }
-
+            
             if(this.editMaterial.material_id == "" || 
-            this.editMaterial.quantity == ""){
-                isOk = true;
-            }
-
-            if(this.editMaterial.source == ""){
+            this.editMaterial.quantity == "" ||
+            this.editMaterial.dimension_uom_id == "" ||
+            this.editMaterial.height == "" || 
+            this.editMaterial.height == 0 || 
+            this.editMaterial.lengths == "" ||
+            this.editMaterial.lengths == 0 ||
+            this.editMaterial.width == "" ||
+            this.editMaterial.width == 0 ||
+            this.editMaterial.source == ""){
                 isOk = true;
             }
             

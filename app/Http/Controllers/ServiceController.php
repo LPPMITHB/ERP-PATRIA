@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use App\Models\Service;
 use App\Models\ServiceDetail;
 use App\Models\Ship;
@@ -64,6 +65,8 @@ class ServiceController extends Controller
             if($request->input('type') != "-1"){
                 $service->ship_id = $request->input('type');
             }
+            $service->user_id = Auth::user()->id;
+            $service->branch_id = Auth::user()->branch->id;
             $service->save();
 
         DB::commit();
@@ -117,10 +120,8 @@ class ServiceController extends Controller
         $service_id = $id;
         $modelSD = ServiceDetail::where('service_id',$id)->with('uom')->get();
         $uoms = Uom::all();
-        
-        
-        return view('service.show', compact('service','modelSD','uoms','service_id'));
 
+        return view('service.show', compact('service','modelSD','uoms','service_id'));
     }
 
     /**
@@ -131,11 +132,25 @@ class ServiceController extends Controller
      */
     public function edit($id)
     {
+        $ships = Collection::make();
         $service = Service::findOrFail($id);
-        $ships = Ship::all();
-        
-        return view('service.edit', compact('service','ships'));
+        if($service->ship_id == null){
+            $service->ship_id = 0;
+        }
+        $ships_data = Ship::all();
 
+        $ships->push([
+            "id" => 0 , 
+            "type" => "General",
+        ]);
+
+        foreach($ships_data as $ship){
+            $ships->push([
+                "id" => $ship->id , 
+                "type" => $ship->type,
+            ]);
+        }
+        return view('service.edit', compact('service','ships'));
     }
 
     /**
@@ -148,16 +163,21 @@ class ServiceController extends Controller
     public function update(Request $request, $id)
     {
         $data = json_decode($request->datas);
+
         DB::beginTransaction();
         try {
-        $service = Service::find($id);
-        $service->code = strtoupper($data->code);
-        $service->name = ucwords($data->name);
-        $service->ship_id = $data->ship_id;
-        $service->update();
+            $service = Service::find($id);
+            $service->code = strtoupper($data->code);
+            $service->name = ucwords($data->name);
+            if($data->ship_id == 0){
+                $service->ship_id = NULL;
+            }else{
+                $service->ship_id = $data->ship_id;}
+            
+            $service->update();
 
-        DB::commit();
-        return redirect()->route('service.show',$service->id)->with('success', 'Service Updated Succesfully');
+            DB::commit();
+            return redirect()->route('service.show',$service->id)->with('success', 'Service Updated Succesfully');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('service.update',$service->id)->with('error', $e->getMessage());

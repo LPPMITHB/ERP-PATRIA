@@ -71,7 +71,7 @@
                                     <td v-else>-</td>
                                     <td>{{ data.quantity }}</td>
                                     <td class="p-l-3 textCenter">
-                                        <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
+                                        <a class="btn btn-primary btn-xs" @click="openEditModal(data,index)">
                                             EDIT
                                         </a>
                                         <a href="#" @click="removeRow(data.id)" class="btn btn-danger btn-xs">
@@ -435,6 +435,8 @@
                 this.editInput.old_resource_detail_id = data.resource_detail_id;
                 this.editInput.quantity = data.quantity;
                 this.editInput.id = data.id;
+                $('#edit_item').modal();
+                $('div.overlay').hide();
             },
             update(){
                 $('div.overlay').show();   

@@ -128,38 +128,38 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // WBS Profile Repair
-        $manageWbsProfileRepair = Menu::where('name','Manage WBS Profile')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
-        DB::table('permissions')->insert([
-            'name' => 'Manage Wbs Profile Repair',
-            'menu_id' => $manageWbsProfileRepair,
-            'middleware' => 'manage-wbs-profile-repair',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
+        // $manageWbsProfileRepair = Menu::where('name','Manage WBS Profile')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
+        // DB::table('permissions')->insert([
+        //     'name' => 'Manage Wbs Profile Repair',
+        //     'menu_id' => $manageWbsProfileRepair,
+        //     'middleware' => 'manage-wbs-profile-repair',
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d'),
+        // ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Manage Activity Profile Repair',
-            'menu_id' => $manageWbsProfileRepair,
-            'middleware' => 'manage-activity-profile-repair',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
+        // DB::table('permissions')->insert([
+        //     'name' => 'Manage Activity Profile Repair',
+        //     'menu_id' => $manageWbsProfileRepair,
+        //     'middleware' => 'manage-activity-profile-repair',
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d'),
+        // ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Manage Bom Profile Repair',
-            'menu_id' => $manageWbsProfileRepair,
-            'middleware' => 'manage-bom-profile-repair',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
+        // DB::table('permissions')->insert([
+        //     'name' => 'Manage Bom Profile Repair',
+        //     'menu_id' => $manageWbsProfileRepair,
+        //     'middleware' => 'manage-bom-profile-repair',
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d'),
+        // ]);
 
-        DB::table('permissions')->insert([
-            'name' => 'Manage Resource Profile Repair',
-            'menu_id' => $manageWbsProfileRepair,
-            'middleware' => 'manage-resource-profile-repair',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
+        // DB::table('permissions')->insert([
+        //     'name' => 'Manage Resource Profile Repair',
+        //     'menu_id' => $manageWbsProfileRepair,
+        //     'middleware' => 'manage-resource-profile-repair',
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d'),
+        // ]);
 
         // WBS Configuration Repair
         $manageWbsConfigurationRepair = Menu::where('name','Manage WBS Configuration')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;

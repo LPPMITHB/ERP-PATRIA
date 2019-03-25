@@ -159,8 +159,8 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $PRD->project->number}}</td>
                                     <td>{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}</td>
-                                    <td>{{ $PRD->serviceDetail->service->name}} - {{ $PRD->serviceDetail->name}}</td>
-                                    <td class="tdEllipsis">{{ $PRD->vendor->name }}</td>
+                                    <td>{{ $PRD->activityDetail->serviceDetail->service->name}} - {{ $PRD->activityDetail->serviceDetail->name}}</td>
+                                    <td class="tdEllipsis">{{ isset($PRD->vendor) ? $PRD->vendor->name : '-' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

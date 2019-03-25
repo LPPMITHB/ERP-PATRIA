@@ -206,8 +206,14 @@
                 return status;
             },
             submitForm(){
+                let data = [];
+                for(var i = 0; i < this.dataSLD.length; i++){
+                    if(this.dataSLD[i].quantity != "" && this.dataSLD[i].quantity != null){
+                        data.push(this.dataSLD[i])
+                    }
+                }
                 this.submittedForm.dataHeader = this.dataHeader;
-                this.submittedForm.dataSLD = this.dataSLD;     
+                this.submittedForm.dataSLD = data;    
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');

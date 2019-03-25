@@ -23,8 +23,9 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('vendor_id')->nullable();
-            $table->unsignedInteger('service_detail_id')->nullable();
+            $table->unsignedInteger('activity_detail_id')->nullable();
             $table->string('alocation')->nullable();
+            $table->integer('status')->nullable();
             $table->unsignedInteger('user_id')->nullable();
             $table->unsignedInteger('project_id')->nullable();
             $table->timestamps();

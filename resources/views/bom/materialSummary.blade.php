@@ -361,6 +361,8 @@
                                         detail.const_available_quantity += bom_detail.quantity;
                                         detail.prepared = bom_detail.quantity;
                                     }else{
+                                        detail.available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
+                                        detail.const_available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
                                         detail.prepared = bom_detail.prepared;
                                     }
                                 }

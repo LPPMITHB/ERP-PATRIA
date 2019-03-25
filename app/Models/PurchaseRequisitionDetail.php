@@ -33,9 +33,9 @@ class PurchaseRequisitionDetail extends Model
         return $this->belongsTo('App\Models\Project');
     }
 
-    public function serviceDetail()
+    public function activityDetail()
     {
-        return $this->belongsTo('App\Models\ServiceDetail');
+        return $this->belongsTo('App\Models\ActivityDetail');
     }
 
     public function wbs()

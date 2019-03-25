@@ -2,8 +2,10 @@
 @section('content-header')
 @if($modelPR->type == 1)
     @php($type = "Material")
-@else
+@elseif($modelPR->type == 2)
     @php($type = "Resource")
+@elseif($modelPR->type == 3)
+    @php($type = "Subcon")
 @endif
 @if($route == "/purchase_requisition")
     @breadcrumb(
@@ -55,11 +57,11 @@
                                     <textarea class="form-control" rows="3" v-model="modelPR.description"></textarea>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-md-4">
+                            <div class="col-xs-12 col-md-4" v-if="modelPR.type != 3">
                                 <div class="col-sm-12 p-l-0">
                                     <label for="">Required Date</label>
                                 </div>
-                                <div class="col-sm-12 p-l-0">
+                                <div class="col-sm-12 p-l-0" >
                                     <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
                                 </div>
                             </div>
@@ -74,7 +76,7 @@
                         </div>
                         <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                <table class="table table-bordered tableFixed m-b-0">
+                                <table class="table table-bordered tableFixed m-b-0" v-show="modelPR.type != 3">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
@@ -160,6 +162,61 @@
                                                 </selectize>
                                             </td>
                                             <td class="no-padding textCenter">
+                                                <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <table class="table table-bordered tableFixed m-b-0" v-show="modelPR.type == 3">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 15%">Project Number</th>
+                                            <th style="width: 20%">WBS</th>
+                                            <th style="width: 35%">Job Order</th>
+                                            <th style="width: 15%">Vendor</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(data,index) in dataMaterial">
+                                            <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ data.project_number }}</td>
+                                            <td class="tdEllipsis">{{ data.wbs_number }} - {{ data.wbs_description }}</td>
+                                            <td class="tdEllipsis">{{ data.service }} - {{ data.service_detail }}</td>
+                                            <td class="tdEllipsis">{{ data.vendor_name }}</td>
+                                            <td class="p-l-0 textCenter">
+                                                <a v-show="data.prd_id == null" href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                                <a v-show="data.prd_id != null" href="#" @click="removeRowDb(index,data.id)" class="btn btn-danger btn-xs">
+                                                    DELETE
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="p-l-10">{{newIndex}}</td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="subConInput.project_id" :settings="projectSettings">
+                                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="subConInput.wbs_id" :settings="wbsSettings" >
+                                                    <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="p-l-0 textLeft">
+                                                <selectize v-model="subConInput.activity_id" :settings="jobOrderSettings" >
+                                                    <option v-for="(activity, index) in modelActivity" :value="activity.id">{{ activity.service_detail.service.name }} - {{ activity.service_detail.name }}</option>
+                                                </selectize>  
+                                            </td>
+                                            <td class="no-padding">
+                                                <input v-model="subConInput.vendor_name" type="text" class="form-control" disabled/>
+                                            </td>
+                                            <td class="p-l-0  textCenter"> 
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
@@ -339,10 +396,34 @@
             is_decimal : "",
             material_ok : ""
         },
+        subConInput : {
+            prd_id :null,
+            project_id : "",
+            project_number : "",
+            wbs_id : "",
+            wbs_number : "",
+            wbs_description : "",
+            vendor_id : "",
+            vendor_name : "",
+            activity_id : "",
+            service : "",
+            service_detail : "",
+            service_detail_id : "",
+            activity_detail_id : "",
+        },
         material_id:[],
         required_date : "",
         submittedForm : {},
-        deletedId : []
+        deletedId : [],
+        jobOrderSettings: {
+            placeholder: 'Please Select Job Order'
+        },
+        wbsSettings: {
+            placeholder: 'Please Select WBS'
+        },
+        modelWBS : [],
+        modelActivity : [],
+        activity_ids: [],
     }
 
     var vm = new Vue({
@@ -460,6 +541,19 @@
                 this.dataInput.required_date = "";
                 this.dataInput.alocation = "Stock";
 
+                this.subConInput.project_id = "";
+                this.subConInput.project_number = "";
+                this.subConInput.wbs_id = "";
+                this.subConInput.wbs_number = "";
+                this.subConInput.wbs_description = "";
+                this.subConInput.vendor_id = "";
+                this.subConInput.vendor_name = "";
+                this.subConInput.activity_id = "";
+                this.subConInput.service = "";
+                this.subConInput.service_detail = "";
+                this.subConInput.service_detail_id = "";
+                this.subConInput.activity_detail_id = "";
+
                 this.newIndex = Object.keys(this.dataMaterial).length+1;
             },
             submitForm(){
@@ -530,7 +624,12 @@
             },
             add(){
                 $('div.overlay').show();
-                var data = JSON.stringify(this.dataInput);
+                if(this.modelPR.type != 3){
+                    var data = JSON.stringify(this.dataInput);
+                }else if(this.modelPR.type == 3){
+                    var data = JSON.stringify(this.subConInput);
+                    this.activity_ids.push(this.subConInput.activity_id);
+                }
                 data = JSON.parse(data);
 
                 this.dataMaterial.push(data);
@@ -539,15 +638,30 @@
                 $('div.overlay').hide();
             },
             removeRow(index){
+                this.activity_ids.forEach(id =>{
+                    if(this.dataMaterial[index].activity_id == id){
+                        let index_id =  this.activity_ids.indexOf(id);
+                        this.activity_ids.splice(index_id,1);
+                    }
+                })
+
                 this.dataMaterial.splice(index, 1);
-                
                 this.newIndex = this.dataMaterial.length + 1;
+                this.clearData();
             },
             removeRowDb(index,id){
+                this.activity_ids.forEach(id =>{
+                    if(this.dataMaterial[index].activity_id == id){
+                        let index_id =  this.activity_ids.indexOf(id);
+                        this.activity_ids.splice(index_id,1);
+                    }
+                })
+
                 this.dataMaterial.splice(index, 1);
                 this.deletedId.push(id);
 
                 this.newIndex = this.dataMaterial.length + 1;
+                this.clearData();
             },
 
         },
@@ -691,9 +805,98 @@
                 }else{
                     this.editInput.project_number = "-";
                 }
-            }
+            },
+            'subConInput.project_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getModelWbsPR/'+newValue).then(({ data }) => {
+                        this.modelWBS = data;
+                        $('div.overlay').hide();
+                    });
+                }else{
+                    this.modelWBS = [];
+                    this.subConInput.project_id = "";
+                    this.subConInput.project_number = "";
+                    this.subConInput.wbs_id = "";
+                    this.subConInput.wbs_number = "";
+                    this.subConInput.wbs_description = "";
+                    this.subConInput.activity_id = "";
+                    this.subConInput.vendor_id = "";
+                    this.subConInput.vendor_code = "";
+                    this.subConInput.vendor_name = "";
+                    this.subConInput.service = "";
+                    this.subConInput.service_detail = "";
+                    this.subConInput.activity_detail_id = "";
+                }
+            },
+            'subConInput.wbs_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    let activity_ids = JSON.stringify(this.activity_ids);
+
+                    window.axios.get('/api/getModelActivityPR/'+newValue+"/"+activity_ids).then(({ data }) => {
+                        this.modelActivity = data;
+
+                        this.modelWBS.forEach(wbs =>{
+                            if(wbs.id == newValue){
+                                this.subConInput.wbs_number = wbs.number;
+                                this.subConInput.wbs_description = wbs.description;
+                                this.subConInput.project_number = wbs.project.number;
+                            }
+                        })
+                        $('div.overlay').hide();
+                    });
+                }else{
+                    this.modelActivity = [];
+                    this.subConInput.wbs_id = "";
+                    this.subConInput.wbs_number = "";
+                    this.subConInput.wbs_description = "";
+                    this.subConInput.activity_id = "";
+                    this.subConInput.vendor_id = "";
+                    this.subConInput.vendor_code = "";
+                    this.subConInput.vendor_name = "";
+                    this.subConInput.service = "";
+                    this.subConInput.service_detail = "";
+                    this.subConInput.activity_detail_id = "";
+                }
+            },
+            'subConInput.activity_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    this.modelActivity.forEach(activity => {
+                        if(activity.id == newValue){
+                            this.subConInput.vendor_id = activity.vendor_id;
+                            if(activity.vendor){
+                                this.subConInput.vendor_code = activity.vendor.code;
+                                this.subConInput.vendor_name = activity.vendor.name;
+                            }else{
+                                this.subConInput.vendor_name = '-';
+                            }
+                            this.subConInput.service = activity.service_detail.service.name;
+                            this.subConInput.service_detail = activity.service_detail.name;
+                            this.subConInput.service_detail_id = activity.service_detail.id;
+                            this.subConInput.activity_detail_id = activity.id;
+                        }
+                    })
+                        $('div.overlay').hide();
+                }else{
+                    this.subConInput.activity_id = "";
+                    this.subConInput.vendor_id = "";
+                    this.subConInput.vendor_code = "";
+                    this.subConInput.vendor_name = "";
+                    this.subConInput.service = "";
+                    this.subConInput.service_detail = "";
+                    this.subConInput.service_detail_id = "";
+                    this.subConInput.activity_detail_id = "";
+                }
+            },
         },
         created: function() {
+            window.axios.get('/api/getActivityId').then(({ data }) => {
+                data.forEach(id=>{
+                    this.activity_ids.push(id);
+                })
+            });
             var data = this.modelPRD;
             data.forEach(prd => {
                 if(prd.required_date != null && prd.required_date != ''){
