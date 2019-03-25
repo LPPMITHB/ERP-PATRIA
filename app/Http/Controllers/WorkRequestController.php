@@ -59,15 +59,18 @@ class WorkRequestController extends Controller
     public function create(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
-        if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
-        }elseif($menu == "building"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
-        }
-
         $allmaterial = Material::all();
 
-        return view('work_request.create', compact('modelProject', 'menu','allmaterial'));
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+            return view('work_request.createRepair', compact('modelProject', 'menu','allmaterial'));
+
+        }elseif($menu == "building"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+
+            return view('work_request.create', compact('modelProject', 'menu','allmaterial'));
+        }
+
     }
 
     /**
@@ -612,6 +615,12 @@ class WorkRequestController extends Controller
     }
 
     public function getMaterialsAPI($ids){
+        $ids = json_decode($ids);
+
+        return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getActivityWRAPI($ids){
         $ids = json_decode($ids);
 
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
