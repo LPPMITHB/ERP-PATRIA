@@ -160,6 +160,19 @@ class MstBomTableSeeder extends Seeder
                 'created_at' => '2019-02-26 12:05:37',
                 'updated_at' => '2019-02-26 12:05:37',
             ),
+            11 => 
+            array (
+                'id' => 12,
+                'code' => 'BOM19020001',
+                'description' => 'Test',
+                'project_id' => 3,
+                'wbs_id' => NULL,
+                'branch_id' => 2,
+                'user_id' => 3,
+                'status' => 1,
+                'created_at' => '2019-03-25 21:21:27',
+                'updated_at' => '2019-03-25 21:21:27',
+            ),
         ));
         
         

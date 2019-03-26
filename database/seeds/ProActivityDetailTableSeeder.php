@@ -57,6 +57,26 @@ class ProActivityDetailTableSeeder extends Seeder
                 'created_at' => '2019-03-22 14:49:00',
                 'updated_at' => '2019-03-22 14:49:00',
             ),
+            2 => 
+            array (
+                'id' => 3,
+                'activity_id' => 45,
+                'material_id' => NULL,
+                'service_detail_id' => 1,
+                'vendor_id' => 1,
+                'quantity_material' => NULL,
+                'length' => NULL,
+                'width' => NULL,
+                'height' => NULL,
+                'weight' => NULL,
+                'dimension_uom_id' => NULL,
+                'area' => 10000.0,
+                'area_uom_id' => 2,
+                'bom_prep_id' => NULL,
+                'source' => NULL,
+                'created_at' => '2019-03-25 21:13:39',
+                'updated_at' => '2019-03-25 21:13:39',
+            ),
         ));
         
         

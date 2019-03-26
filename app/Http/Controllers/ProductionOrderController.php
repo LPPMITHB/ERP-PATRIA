@@ -257,92 +257,93 @@ class ProductionOrderController extends Controller
         $materials = Collection::make();
         $services = Collection::make();
         $resources = Collection::make();
-        if($route == '/production_order'){
-            foreach($modelPrOD as $prOD){
-                if($prOD->quantity > 0){
-                    if($prOD->material_id != ""){
-                        $materials->push([
+        foreach($modelPrOD as $prOD){
+            if($prOD->quantity > 0){
+                if($prOD->material_id != ""){
+                    $materials->push([
+                        "id" => $prOD->id , 
+                        "material" => [
+                            "code" => $prOD->material->code,
+                            "name" => $prOD->material->name,
+                            "description" => $prOD->material->description,
+                            "unit" => $prOD->material->uom->unit,
+                            "source" => $prOD->source,
+                        ],
+                        "quantity" => $prOD->quantity,
+                        "material_id" => $prOD->material_id,
+                    ]);
+                }elseif($prOD->resource_id != ""){
+                    $qty =  $prOD->quantity;
+                    for ($x = 0; $x < $qty; $x++) {
+                        $resources->push([
                             "id" => $prOD->id , 
-                            "material" => [
-                                "code" => $prOD->material->code,
-                                "name" => $prOD->material->name,
-                                "description" => $prOD->material->description,
-                                "unit" => $prOD->material->uom->unit,
-                                "source" => $prOD->source,
+                            "resource" => [
+                                "code" => $prOD->resource->code,
+                                "name" => $prOD->resource->name,
+                                "description" => $prOD->resource->description,
                             ],
                             "quantity" => $prOD->quantity,
-                            "material_id" => $prOD->material_id,
+                            "resource_id" => $prOD->resource_id,
+                            "trx_resource_id" => '',
+                            "trx_resource_code" => null,
+                            "status" => null,
                         ]);
-                    }elseif($prOD->resource_id != ""){
-                        $qty =  $prOD->quantity;
-                        for ($x = 0; $x < $qty; $x++) {
-                            $resources->push([
-                                "id" => $prOD->id , 
-                                "resource" => [
-                                    "code" => $prOD->resource->code,
-                                    "name" => $prOD->resource->name,
-                                    "description" => $prOD->resource->description,
-                                ],
-                                "quantity" => $prOD->quantity,
-                                "resource_id" => $prOD->resource_id,
-                                "trx_resource_id" => '',
-                                "trx_resource_code" => null,
-                                "status" => null,
-                            ]);
-                        } 
-                    }
+                    } 
                 }
             }
-        }elseif($route == '/production_order_repair'){
-            foreach($modelPrOD as $prOD){
-                if($prOD->quantity > 0){
-                    if($prOD->material_id != ""){
-                        $materials->push([
+        }
+        return view('production_order.release', compact('modelPrO','project','modelPrOD','materials','services','resources','route','wbs','activities'));
+    }
+
+    public function releaseRepair(Request $request, $id){
+        $route = $request->route()->getPrefix();
+        $modelPrO = ProductionOrder::where('id',$id)->first();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->get();
+        $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
+        $wbs = WBS::findOrFail($modelPrO->wbs_id);
+
+        $activities = Activity::where('wbs_id',$modelPrO->wbs_id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom','activityDetails.serviceDetail.service','activityDetails.vendor')->get();
+        $materials = Collection::make();
+        $services = Collection::make();
+        $resources = Collection::make();
+        foreach($modelPrOD as $prOD){
+            if($prOD->quantity > 0){
+                if($prOD->material_id != ""){
+                    $materials->push([
+                        "id" => $prOD->id , 
+                        "material" => [
+                            "code" => $prOD->material->code,
+                            "name" => $prOD->material->name,
+                            "description" => $prOD->material->description,
+                            "unit" => $prOD->material->uom->unit,
+                            "source" => $prOD->source,
+                        ],
+                        "quantity" => $prOD->quantity,
+                        "material_id" => $prOD->material_id,
+                        'allocated' => "",
+                    ]);
+                }elseif($prOD->resource_id != ""){
+                    $qty =  $prOD->quantity;
+                    for ($x = 0; $x < $qty; $x++) {
+                        $resources->push([
                             "id" => $prOD->id , 
-                            "material" => [
-                                "code" => $prOD->material->code,
-                                "name" => $prOD->material->name,
-                                "description" => $prOD->material->description,
-                                "unit" => $prOD->material->uom->unit,
-                                "source" => $prOD->source,
+                            "resource" => [
+                                "code" => $prOD->resource->code,
+                                "name" => $prOD->resource->name,
+                                "description" => $prOD->resource->description,
                             ],
                             "quantity" => $prOD->quantity,
-                            "material_id" => $prOD->material_id,
+                            "resource_id" => $prOD->resource_id,
+                            "trx_resource_id" => '',
+                            "trx_resource_code" => null,
+                            "status" => null,
                         ]);
-                    }elseif($prOD->resource_id != ""){
-                        $qty =  $prOD->quantity;
-                        for ($x = 0; $x < $qty; $x++) {
-                            $resources->push([
-                                "id" => $prOD->id , 
-                                "resource" => [
-                                    "code" => $prOD->resource->code,
-                                    "name" => $prOD->resource->name,
-                                    "description" => $prOD->resource->description,
-                                ],
-                                "quantity" => $prOD->quantity,
-                                "resource_id" => $prOD->resource_id,
-                                "trx_resource_id" => '',
-                                "trx_resource_code" => null,
-                                "status" => null,
-                            ]);
-                        } 
-                    }elseif($prOD->service_id != ""){
-                        $services->push([
-                            "id" => $prOD->id , 
-                            "service" => [
-                                "code" => $prOD->service->code,
-                                "name" => $prOD->service->name,
-                                "description" => $prOD->service->description,
-                            ],
-                            "quantity" => $prOD->quantity,
-                            "service_id" => $prOD->service_id,
-                        ]);
-                    }
+                    } 
                 }
             }
         }
 
-        return view('production_order.release', compact('modelPrO','project','modelPrOD','materials','services','resources','route','wbs','activities'));
+        return view('production_order.releaseRepair', compact('modelPrO','project','modelPrOD','materials','services','resources','route','wbs','activities'));
     }
 
     public function confirm(Request $request,$id){
@@ -469,6 +470,48 @@ class ProductionOrderController extends Controller
         }
     }
 
+    public function createRepair(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $wbs = WBS::find($id);
+        $project = Project::findOrFail($wbs->project_id);
+        $materials = Material::all()->jsonSerialize();
+        $resources = Resource::all()->jsonSerialize();
+        $services = Service::all()->jsonSerialize();
+        $modelActivities = Activity::where('wbs_id',$id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom','activityDetails.serviceDetail.service','activityDetails.vendor')->get();
+
+        if(count($modelActivities) > 0){
+            $modelBOM = Bom::where('project_id',$project->id)->first();
+            $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
+            $modelBOMD = $modelBOM->bomDetails;
+            foreach ($modelBOMD as $bomd) {
+                $prod_order = ProductionOrder::where('project_id',$project->id)->where('status',2)->get();
+                if(count($prod_order)>0){
+                    $prod_order_id = $prod_order->pluck('id')->toArray();
+                    $prod_order_details = ProductionOrderDetail::whereIn('production_order_id', $prod_order_id)->get();
+                    $temp_used = 0;
+                    foreach ($prod_order_details as $prod_order_detail) {
+                        if($bomd->material_id == $prod_order_detail->material_id){
+                            $temp_used += $prod_order_detail->quantity;
+                        }
+                    } 
+                    $bomd['used'] = $temp_used;
+                }else{
+                    $bomd['used'] = 0;
+                }
+            }
+            if($modelBOM != null){
+                return view('production_order.createPrORepair', compact('modelBOMD','wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+            }else{                
+                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }
+        }else{
+            return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have Activities");
+        }
+        
+        
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -481,7 +524,6 @@ class ProductionOrderController extends Controller
         $datas = json_decode($request->datas);
         $arrData = $datas->datas;
         $po_number = $this->generatePrONumber();
-
         DB::beginTransaction();
         try {
             $PrO = new ProductionOrder;
@@ -504,12 +546,6 @@ class ProductionOrderController extends Controller
                         $PrOD->quantity = $material->quantity;
                         $PrOD->source = $material->source;
                         $PrOD->save();
-                    }elseif($material->service_id != ""){
-                        $PrOD = new ProductionOrderDetail;
-                        $PrOD->production_order_id = $PrO->id;
-                        $PrOD->service_id = $material->service_id;
-                        $PrOD->quantity = $material->quantity;
-                        $PrOD->save();
                     }
                 }
             }
@@ -531,6 +567,7 @@ class ProductionOrderController extends Controller
             }
             
             foreach($arrData as $data){
+                $data->type = "Material";
                 if($data->type == "Material"){
                     $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('material_id' , $data->id)->first();
                     if($existing != null){
@@ -553,18 +590,6 @@ class ProductionOrderController extends Controller
                         $PrOD = new ProductionOrderDetail;
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->resource_id = $data->id;
-                        $PrOD->quantity = $data->quantity;
-                        $PrOD->save();
-                    }
-                }elseif($data->type == "Service"){
-                    $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('service_id' , $data->id)->first();
-                    if($existing != null){
-                        $existing->quantity += $data->quantity;
-                        $existing->update();
-                    }else{
-                        $PrOD = new ProductionOrderDetail;
-                        $PrOD->production_order_id = $PrO->id;
-                        $PrOD->service_id = $data->id;
                         $PrOD->quantity = $data->quantity;
                         $PrOD->save();
                     }
@@ -631,6 +656,56 @@ class ProductionOrderController extends Controller
             }elseif($route == "/production_order_repair"){
                 return redirect()->route('production_order_repair.selectProjectRelease')->with('error', $e->getMessage());
             }
+        }
+    }
+
+    public function storeReleaseRepair(Request $request){
+        $datas = json_decode($request->datas);
+        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $modelPrO = ProductionOrder::findOrFail($pro_id);
+        DB::beginTransaction();
+        try {
+            foreach($modelPrO->productionOrderDetails as $prod){
+                if($prod->quantity == 0){
+                    $prod->delete();
+                }else{
+                    foreach ($datas->materials as $material) {
+                        if($prod->material_id == $material->material_id){
+                            if($material->allocated == ""){
+                                $prod->delete();
+                            }else{
+                                $prod->quantity = $material->allocated;
+                                $prod->update();
+                            }
+                        }
+                    }
+                }
+
+            }
+            $modelPrO->status = 2;
+            $modelPrO->update();
+
+            foreach($datas->resources as $resource){
+                $PrOD = new ProductionOrderDetail;
+                $PrOD->production_order_id = $pro_id;
+                $PrOD->production_order_detail_id = $resource->id;
+                $PrOD->resource_id = $resource->resource_id;
+                $PrOD->resource_detail_id = $resource->trx_resource_id;
+                $PrOD->quantity = 1;
+                $PrOD->status = "UNACTUALIZED";
+                $PrOD->save();
+
+                $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
+                $RD->status = 2;
+                $RD->update();
+            }
+            $this->createMR($datas->modelPrOD);
+
+            DB::commit();
+            return redirect()->route('production_order_repair.showRelease',$modelPrO->id)->with('success', 'Production Order Released');
+        }catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('production_order_repair.selectProjectRelease')->with('error', $e->getMessage());
         }
     }
 
