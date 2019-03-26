@@ -27,7 +27,7 @@ class CreateTrxPurchaseOrderDetailTable extends Migration
             $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('activity_detail_id')->nullable();
             $table->double('total_price')->nullable();
-            $table->date('delivery_date');
+            $table->date('delivery_date')->nullable();
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('mst_material');

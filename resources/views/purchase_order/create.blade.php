@@ -97,6 +97,14 @@
                                             <input class="form-control" v-model="payment_terms" placeholder="Payment Terms">
                                         </div>
                                     </div>
+                                    <div class="row" v-if="modelPR.type == 3">
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="delivery_date_subcon">Delivery Date</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input v-model="delivery_date_subcon" autocomplete="off" type="text" class="form-control datepicker" name="delivery_date_subcon" id="delivery_date_subcon" placeholder="Delivery Date">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
@@ -178,12 +186,33 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th style="width: 40%">Job Order</th>
+                                                <th style="width: 35%">Job Order</th>
+                                                <th style="width: 10%">Area</th>
+                                                <th style="width: 10%">Area Unit</th>
                                                 <th style="width: 20%">Price / Service ({{selectedCurrency}})</th>
                                                 <th style="width: 10%">Disc. (%)</th>
                                                 <th style="width: 10%"></th>
                                             </tr>
                                         </thead>
+                                        <tbody>
+                                            <tr v-for="(PRD,index) in PRDetail">
+                                                <td>{{ index + 1 }}</td>
+                                                <td class="tdEllipsis">{{PRD.activity_detail.service_detail.service.name}} - {{PRD.activity_detail.service_detail.name}}</td>
+                                                <td class="tdEllipsis">{{PRD.activity_detail.area}}</td>
+                                                <td class="tdEllipsis">{{PRD.activity_detail.area_uom.name}}</td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control width100" v-model="PRD.activity_detail.service_detail.cost_standard_price" placeholder="Please Input Total Price">
+                                                </td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control width100" v-model="PRD.discount" placeholder="Discount">
+                                                </td>
+                                                <td class="textCenter">
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(PRD,index)">
+                                                        REMARK
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -340,6 +369,7 @@
         payment_terms : "",
         vendor_id : "",
         delivery_date : "",
+        delivery_date_subcon : "",
         description : "",
         editRemark : {
             remark : "",
@@ -366,12 +396,23 @@
                     });
                 }
             );
+            $("#delivery_date_subcon").datepicker().on(
+                "changeDate", () => {
+                    this.delivery_date_subcon = $('#delivery_date_subcon').val();
+                }
+            );
         },
         computed : {
             dataOk: function(){
                 let isOk = false;
-                if(this.vendor_id == "" || this.delivery_date == "" || this.currency == ""){
-                    isOk = true;
+                if(this.modelPR.type != 3){
+                    if(this.vendor_id == "" || this.delivery_date == "" || this.currency == ""){
+                        isOk = true;
+                    }
+                }else{
+                    if(this.vendor_id == "" || this.currency == ""){
+                        isOk = true;
+                    }
                 }
                 return isOk;
             },
@@ -455,10 +496,14 @@
                         PRD.quantity = PRD.quantity.replace(/,/g , '');      
                         PRD.material.cost_standard_price = PRD.material.cost_standard_price.replace(/,/g , '');      
                     });
-                }else{
+                }else if(this.modelPR.type == 2){
                     data.forEach(PRD => {
                         PRD.quantity = PRD.quantity.replace(/,/g , '');      
                         PRD.resource.cost_standard_price = PRD.resource.cost_standard_price.replace(/,/g , '');      
+                    });
+                }else{
+                    data.forEach(PRD => {
+                        PRD.activity_detail.service_detail.cost_standard_price = PRD.activity_detail.service_detail.cost_standard_price.replace(/,/g , '');      
                     });
                 }
                 this.estimated_freight = this.estimated_freight.replace(/,/g , '');      
@@ -474,6 +519,7 @@
                 this.submittedForm.estimated_freight = this.estimated_freight;
                 this.submittedForm.delivery_terms = this.delivery_terms;
                 this.submittedForm.payment_terms = this.payment_terms;
+                this.submittedForm.delivery_date_subcon = this.delivery_date_subcon;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -551,7 +597,7 @@
                                 this.delivery_date = "ok";
                             }
                         });
-                    }else{
+                    }else if(this.modelPR.type == 2){
                         data.forEach(PRD => {
                             PRD.quantity = (PRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
                             var decimal = (PRD.resource.cost_standard_price+"").replace(/,/g, '').split('.');
@@ -592,6 +638,44 @@
                             if(status == 0){
                                 this.delivery_date = "ok";
                             }
+                        });
+                    }else{
+                        data.forEach(PRD => {
+                        
+                        // cost standard price
+                        var decimal = (PRD.activity_detail.service_detail.cost_standard_price+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                PRD.activity_detail.service_detail.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                PRD.activity_detail.service_detail.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            PRD.activity_detail.service_detail.cost_standard_price = (PRD.activity_detail.service_detail.cost_standard_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }  
+
+                        // discount
+                        var discount = parseInt((PRD.discount+"").replace(/,/g, ''));
+                        if(discount > 100){
+                            iziToast.warning({
+                                title: 'Discount cannot exceed 100% !',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            PRD.discount = 100;
+                        }
+                        var decimal = (PRD.discount+"").replace(/,/g, '').split('.');
+                        if(decimal[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimal[1]+"").length > maxDecimal){
+                                PRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                PRD.discount = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            PRD.discount = (PRD.discount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
                         });
                     }
                 },
@@ -643,9 +727,13 @@
                             this.PRDetail.forEach(prd => {
                                 prd.material.cost_standard_price = parseInt((prd.material.price+"").replace(/,/g , '')) / data.value;
                             });
-                        }else{
+                        }else if(this.modelPR.type == 2){
                             this.PRDetail.forEach(prd => {
                                 prd.resource.cost_standard_price = parseInt((prd.resource.price+"").replace(/,/g , '')) / data.value;
+                            });
+                        }else{
+                            this.PRDetail.forEach(prd => {
+                                prd.activity_detail.service_detail.cost_standard_price = parseInt((prd.activity_detail.service_detail.price+"").replace(/,/g , '')) / data.value;
                             });
                         }
                     }
@@ -736,6 +824,10 @@
                         this.delivery_date = "ok";
                     }
                 });
+            }else{
+                data.forEach(PRD => {
+                    PRD.activity_detail.service_detail.cost_standard_price = (PRD.activity_detail.service_detail.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                });
             }
             Vue.directive('tooltip', function(el, binding){
                 $(el).tooltip({
@@ -755,6 +847,10 @@
             }else if(this.modelPR.type == 2){
                 this.PRDetail.forEach(prd => {
                     prd.resource.price = parseInt((prd.resource.cost_standard_price+"").replace(/,/g , ''));
+                });
+            }else{
+                this.PRDetail.forEach(prd => {
+                    prd.activity_detail.service_detail.price = parseInt((prd.activity_detail.service_detail.cost_standard_price+"").replace(/,/g , ''));
                 });
             }
         },
