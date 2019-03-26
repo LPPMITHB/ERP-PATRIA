@@ -37,4 +37,9 @@ class PurchaseOrderDetail extends Model
     {
         return $this->belongsTo('App\Models\Resource');
     }
+    
+    public function activityDetail()
+    {
+        return $this->belongsTo('App\Models\ActivityDetail');
+    }
 }

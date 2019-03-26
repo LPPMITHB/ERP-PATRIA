@@ -673,7 +673,6 @@ class PurchaseOrderController extends Controller
         $branch = Auth::user()->branch;
         $modelPO = PurchaseOrder::find($id);
         $projectName = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPO->purchase_requisition_id)->first();
-        // print_r($projectName);exit();
         $discount = 0;
         $tax = 0;
         $freight = 0;
@@ -684,6 +683,7 @@ class PurchaseOrderController extends Controller
                 $freight += $POD->estimated_freight;
             }
         }
+        // print_r($POD);exit();
         $total_price = $modelPO->total_price - $discount + $tax + $freight;
         $words = numberConverter::longform($total_price);
         $route = $request->route()->getPrefix();
@@ -696,10 +696,10 @@ class PurchaseOrderController extends Controller
             return $pdf->download('Purchase_Order_'.$now.'.pdf');
         }
         else{
-            $pdf->loadView('purchase_order.pdf_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
+            $pdf->loadView('purchase_order.pdf_JO_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
             
             $now = date("Y_m_d_H_i_s");
-            return $pdf->stream('Job_Order_'.$now.'.pdf');
+            return $pdf->download('Job_Order_'.$now.'.pdf');
         }
     }
 
