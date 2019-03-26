@@ -670,9 +670,10 @@ class PurchaseOrderController extends Controller
 
     public function printPdf($id, Request $request)
     { 
-        $branch = Auth::user()->branch; 
+        $branch = Auth::user()->branch;
         $modelPO = PurchaseOrder::find($id);
-        print_r($modelPO);exit();
+        $projectName = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPO->purchase_requisition_id)->first();
+        // print_r($projectName);exit();
         $discount = 0;
         $tax = 0;
         $freight = 0;
@@ -690,12 +691,16 @@ class PurchaseOrderController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         if($modelPO->purchaseRequisition->type != 3){
             $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
-        }else{
-            $pdf->loadView('purchase_order.pdf_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+            
+            $now = date("Y_m_d_H_i_s");
+            return $pdf->download('Purchase_Order_'.$now.'.pdf');
         }
-        $now = date("Y_m_d_H_i_s");
-
-        return $pdf->download('Purchase_Order_'.$now.'.pdf');
+        else{
+            $pdf->loadView('purchase_order.pdf_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
+            
+            $now = date("Y_m_d_H_i_s");
+            return $pdf->stream('Job_Order_'.$now.'.pdf');
+        }
     }
 
     // function

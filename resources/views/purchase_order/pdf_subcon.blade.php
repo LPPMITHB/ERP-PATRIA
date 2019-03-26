@@ -27,7 +27,7 @@
                 }
                 #footer{
                     position: fixed;
-                    bottom: 0px;
+                    bottom: 208px;
                     left: 10px;
                     right: 0cm;
                 }
@@ -73,6 +73,11 @@
                             </div>
                         </div>
                         <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Job Order</b></h2>
+                        <div class="col-xs-12">
+                            <div style="line-height:11px;margin-right:40px; margin-top:-70px; word-wrap:break-word;width: 720px;">
+                                <b>Surat Perintah Kerja (SPK)</b>
+                            </div>
+                        </div>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                     <div>
@@ -86,8 +91,20 @@
                     </div>
                     <div style="margin-top:-100px; padding-top: -15px">
                         <div style="margin-left: 450px;">
-                            <div style="font-size: 11px;">PO Number  </div>
+                            <div style="font-size: 11px;">Vessel Name   </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
+                                {{$projectName->project->name}}                    
+                            </div>
+                        </div>
+                        <div style="margin-left: 450px; ">
+                            <div style="font-size: 11px;">Class  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
+                                {{$projectName->project->class_name}}                    
+                            </div>
+                        </div>
+                        <div style="margin-left: 450px; ">
+                            <div style="font-size: 11px;">PO Number  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
                                 {{$modelPO->number}}                    
                             </div>
                         </div>
@@ -124,8 +141,8 @@
                     </div>
                 </div>
                 <div class="col-xs-12">
-                    <div style="line-height:11px;margin-left: -755px; margin-top: 241px; word-wrap:break-word;width: 720px;">
-                        <i style="font-size: 9px;"><b>Please deliver all the items mentioned to the above address according to agreed delivery date and according to the terms of payment as indicated. Please quote the PO number in all succeeding communications (DO and Invoice) for reference</b></i>
+                    <div style="line-height:11px;margin-left: -755px; margin-top: 243px; word-wrap:break-word;width: 720px;">
+                        <i style="font-size: 9px;"><b>In relation to the project, PT Patria Maritime Industry appointed subcontractor above to do jobs listed below :</b></i>
                     </div>
                 </div>
             </div>
@@ -134,11 +151,11 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_order_pdf" style="width: 100%; margin-left: -10px">
+                        <table class="table-bordered" id="work_order_pdf" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="5%" class="text-center">No</th>
-                                    <th style="font-size: 11px" width="15%" class="text-center" >Service Number</th>
+                                    <th style="font-size: 11px" width="15%" class="text-center">Service Number</th>
                                     <th style="font-size: 11px" width="20%" class="text-center">Service Description</th>
                                     <th style="font-size: 11px" width="7%" class="text-center">Qty</th>
                                     <th style="font-size: 11px" width="8%" class="text-center">Unit</th>
@@ -170,7 +187,25 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div id="footer" style="page-break-inside:avoid;margin-left: -10px; ">
+                        <div id="footer" style="page-break-inside:avoid;margin-left: -10px;">
+                            <div class="col-xs-12" style="margin-left: -14px;">
+                                <i style="font-size: 9px;"><b>Subcontractors formally declare their willingness and ability to fulfill all of the above work according to the schedule provided by the company.</b></i>
+                            </div>
+                            <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+                            <div style="font-size: 10px; margin-top:-20px;">
+                            Catatan : <br>
+                                1. Surat perintah kerja (asli) ini harus dilampirkan saat penagihan dilengkapi surat keterangan penyelesaian pekerjaan <br>
+                                2. Subkontraktor harus mematuhi semua peraturan dalam docyard <br>
+                                3. Material disediakan oleh subkontraktor <br>
+                                4. Arus listrik dan alat berat disediakan oleh docyard <br>
+                                5. Welding electrode dan consumable disiapkan oleh dockyard / subkontraktor <br>
+                                6. Semua peralatan kerja pendukung disediakan oleh subkontraktor <br>
+                                7. Semua kerugian akibat kelalaian/kesalahan pekerjaan menjadi tanggung jawab subkontraktor <br>
+                                8. Pengembalian sisa material menjadi tanggung jawab subkontraktor dan dockyard <br>
+                                9. Sebagian pekerjaan bisa dialihkan ke subkontraktor lain dalam dalam kondisi subkontraktor yang bersangkutan dirasa tidak mampu menyelesaikan pekerjaan dengan jadwal yang ditentukan <br>
+                                10. Pembersihan alat kerja consumable dan hasil kerja menjadi tanggung jawab subkontraktor <br>
+                                11. Pengecekan hasil pekerjaan dan pengetasan dilaksakan oleh subkontraktor dan dockyard <br>
+                            </div>    
                             <div style="font-size: 11px; margin-top:5px;">Say :</div>
                             <div style="height: 20px; font-size: 9px; width:420px; padding-left:5px; margin-left:30px; margin-top:-16px; border: black 1px solid; border-radius: 5px;">
                                     {{$words}} IDR
