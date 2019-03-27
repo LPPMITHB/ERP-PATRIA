@@ -678,9 +678,17 @@
                             material.description = this.editInputFG.description;
                             material.unit = this.editInputFG.unit;
 
-                            window.axios.get('/api/getDataActivityWr/'+this.editInputFG.activity_id).then(({ data }) => {
+                            window.axios.get('/api/getDataActivityWR/'+this.editInputFG.activity_id).then(({ data }) => {
                                 material.activity_code = data.code;
                                 material.activity_desc = data.name;
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
                             })
 
                             $('div.overlay').hide();

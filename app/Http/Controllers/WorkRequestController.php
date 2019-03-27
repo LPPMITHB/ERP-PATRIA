@@ -136,7 +136,7 @@ class WorkRequestController extends Controller
                         $WRD->material_id = $data->material_id;
                         $WRD->required_date = $required_date;
                         $WRD->type = 0;
-                        $WRD->wbs_id = $data->wbs_id;
+                        $WRD->wbs_id = $data->wbs_id != "" ? $data->wbs_id : null;
                         $WRD->save();
 
                         // $this->reserveStock($data->material_id, $data->quantityInt);
@@ -149,7 +149,7 @@ class WorkRequestController extends Controller
                     $WRD->material_id = $data->material_id;
                     $WRD->required_date = $required_date;
                     $WRD->type = 0;
-                    $WRD->wbs_id = $data->wbs_id;
+                    $WRD->wbs_id = $data->wbs_id != "" ? $data->wbs_id : null;
                     $WRD->save();
 
                     // $this->reserveStock($data->material_id, $data->quantityInt);

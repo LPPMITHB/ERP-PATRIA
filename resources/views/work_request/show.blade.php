@@ -125,11 +125,11 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="10%">Material Number</th>
+                            <th width="15%">Material Number</th>
                             <th width="15%">Material Description</th>
                             <th width="5%">Unit</th>
-                            <th width="10%">Quantity</th>
-                            <th width="23%">Work Name</th>
+                            <th width="10%">Qty</th>
+                            <th width="15%">Work Name</th>
                             <th width="10%">Description</th>
                             <th width="12%">Type</th>
                             <th width="10%">Required Date</th>
@@ -145,6 +145,8 @@
                                 <td>{{ number_format($WRD->quantity) }}</td>
                                 @if(isset($WRD->wbs))
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}">{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}</td>
+                                @else
+                                <td class="tdEllipsis">-</td>
                                 @endif
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{ isset($WRD->description) ? $WRD->description : '-' }}</td>
                                 <td>{{ ($WRD->type == 0) ? 'Raw Material' : 'Finished Goods' }}</td>
