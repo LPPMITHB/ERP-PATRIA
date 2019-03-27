@@ -387,7 +387,7 @@ class BOMController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('bom_repair.show', ['id' => $bom->id])->with('success', 'BOM/BOS Created');
+            return redirect()->route('bom_repair.show', ['id' => $bom->project->id])->with('success', 'BOM Created');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('bom_repair.materialSummary',['id' => $datas->project_id])->with('error', $e->getMessage());
@@ -471,6 +471,15 @@ class BOMController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelBOM = Bom::where('id',$id)->with('project','bomDetails','user','branch','wbs','project.customer','project.ship','rap','purchaseRequisition')->first();
+        $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service','material.uom')->get();
+
+        return view('bom.show', compact('modelBOM','modelBOMDetail','route'));
+    }
+
+    public function showRepair(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $modelBOM = Bom::where('project_id',$id)->with('project','bomDetails','user','branch','wbs','project.customer','project.ship','rap','purchaseRequisition')->first();
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service','material.uom')->get();
 
         return view('bom.show', compact('modelBOM','modelBOMDetail','route'));

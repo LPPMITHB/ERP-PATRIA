@@ -41,7 +41,7 @@
                                     @if($route == '/bom')
                                         <a class="btn btn-primary btn-xs" href="{{ route('bom.indexBom', ['id'=>$project->id]) }}">SELECT</a>
                                     @elseif($route == '/bom_repair')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.indexBom', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.show', ['id'=>$project->id]) }}">SELECT</a>
                                     @endif
                                 </td>
                             </tr>

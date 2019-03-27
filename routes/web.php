@@ -432,7 +432,7 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/materialSummary/{id}', 'BOMController@materialSummary')->name('materialSummary')->middleware('can:create-bom-repair');
 
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom-repair');
+    Route::post('/storeBom', 'BOMController@storeBomRepair')->name('storeBomRepair')->middleware('can:create-bom-repair');
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom-repair');
 
@@ -448,7 +448,7 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:list-bom-repair');
 
-    Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom-repair');
+    Route::get('/{id}', 'BOMController@showRepair')->name('show')->middleware('can:show-bom-repair');
 
     Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom-repair');
 
@@ -1471,7 +1471,7 @@ Route::name('production_order_repair.')->prefix('production_order_repair')->grou
 
     Route::get('/selectWBS/{id}', 'ProductionOrderController@selectWBS')->name('selectWBS')->middleware('can:create-production-order-repair');
 
-    Route::get('/create/{id}', 'ProductionOrderController@create')->name('create')->middleware('can:create-production-order-repair');
+    Route::get('/create/{id}', 'ProductionOrderController@createRepair')->name('create')->middleware('can:create-production-order-repair');
 
     Route::post('/', 'ProductionOrderController@store')->name('store')->middleware('can:create-production-order-repair');
 
@@ -1479,9 +1479,9 @@ Route::name('production_order_repair.')->prefix('production_order_repair')->grou
 
     Route::get('/selectPrO/{id}', 'ProductionOrderController@selectPrO')->name('selectPrO')->middleware('can:release-production-order-repair');
 
-    Route::get('/release/{id}', 'ProductionOrderController@release')->name('release')->middleware('can:release-production-order-repair');
+    Route::get('/release/{id}', 'ProductionOrderController@releaseRepair')->name('release')->middleware('can:release-production-order-repair');
 
-    Route::patch('/storeRelease', 'ProductionOrderController@storeRelease')->name('storeRelease')->middleware('can:release-production-order-repair');
+    Route::patch('/storeRelease', 'ProductionOrderController@storeReleaseRepair')->name('storeRelease')->middleware('can:release-production-order-repair');
 
     Route::get('/selectProjectConfirm', 'ProductionOrderController@selectProjectConfirm')->name('selectProjectConfirm')->middleware('can:confirm-production-order-repair');
     
