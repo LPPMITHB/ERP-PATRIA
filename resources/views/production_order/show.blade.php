@@ -180,7 +180,7 @@
                     <tbody>
                         @php($counter=1)
                         @foreach($modelPrO->ProductionOrderDetails as $PrOD)
-                        @if($PrOD->material_id != "")
+                        @if($PrOD->material_id != "" && $PrOD->production_order_detail_id == null)
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->code }}">{{ $PrOD->material->code }}</td>

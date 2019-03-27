@@ -151,7 +151,7 @@
                                 <td class="tdEllipsis">{{ data.material.code }}</td>
                                 <td class="tdEllipsis">{{ data.material.description }}</td>
                                 <td class="tdEllipsis">{{ data.sugQuantity }}</td>
-                                <td class="p-l-0 p-r-0 p-t-0 p-b-0">
+                                <td class="no-padding">
                                     <input class="form-control" v-model="data.allocated" placeholder="Allocated">
                                 </td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>

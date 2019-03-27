@@ -62,4 +62,9 @@ class WBS extends Model
     {
         return $this->hasOne('App\Models\ProductionOrder', 'wbs_id');
     }
+
+    public function goodsReceipt()
+    {
+        return $this->hasOne('App\Models\GoodsReceipt', 'wbs_id');
+    }
 }
