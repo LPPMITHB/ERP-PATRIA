@@ -79,7 +79,7 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 15%">WBS Name</th>
+                                            <th style="width: 15%">Activity Name</th>
                                             <th style="width: 10%">Material Number</th>
                                             <th style="width: 15%">Material Description</th>
                                             <th style="width: 4%">Unit</th>
@@ -166,7 +166,7 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 15%">WBS Name</th>
+                                            <th style="width: 15%">Activity Name</th>
                                             <th style="width: 10%">Material Number</th>
                                             <th style="width: 15%">Material Description</th>
                                             <th style="width: 4%">Unit</th>
@@ -404,13 +404,13 @@
             placeholder: 'Please Select Project'
         },
         wbsSettings: {
-            placeholder: 'Please Select WBS'
+            placeholder: 'Please Select Activity'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
         },
         nullSettings:{
-            placeholder: 'Please Select WBS First !'
+            placeholder: 'Please Select Activity First !'
         },
         wbsNullSettings:{
             placeholder: "Project doesn't have WBS !"

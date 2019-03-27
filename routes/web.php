@@ -852,7 +852,7 @@ Route::name('work_request.')->prefix('work_request')->group(function() {
     Route::get('/print/{id}', 'WorkRequestController@printPdf')->name('print')->middleware('can:show-work-request');    
 });
 
-//Work Request Routes
+//Work Request Repair Routes
 Route::name('work_request_repair.')->prefix('work_request_repair')->group(function() {
     Route::patch('/{id}', 'WorkRequestController@update')->name('update')->middleware('can:edit-work-request-repair');
 
