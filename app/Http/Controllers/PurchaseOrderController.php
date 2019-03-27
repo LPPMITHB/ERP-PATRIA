@@ -836,7 +836,7 @@ class PurchaseOrderController extends Controller
                 $freight += $POD->estimated_freight;
             }
         }
-        // print_r($POD);exit();
+        // print_r($modelPO);exit();
         $total_price = $modelPO->total_price - $discount + $tax + $freight;
         $words = numberConverter::longform($total_price);
         $route = $request->route()->getPrefix();
@@ -873,12 +873,12 @@ class PurchaseOrderController extends Controller
         // }
         // print_r($POD);exit();
         // $total_price = $modelPO->total_price - $discount + $tax + $freight;
-        $words = numberConverter::longform($total_price);
+        // $words = numberConverter::longform($total_price);
         $route = $request->route()->getPrefix();
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
         if($modelPO->purchaseRequisition->type == 3){
-            $pdf->loadView('purchase_order.pdf_JO_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
+            $pdf->loadView('purchase_order.pdf_JO_subcon',['modelPO' => $modelPO,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
             
             $now = date("Y_m_d_H_i_s");
             return $pdf->stream('Job_Order_'.$now.'.pdf');

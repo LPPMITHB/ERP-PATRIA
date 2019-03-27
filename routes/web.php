@@ -998,7 +998,7 @@ Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(fu
 
     Route::get('/print/{id}', 'PurchaseOrderController@printPdf')->name('print')->middleware('can:show-purchase-order-repair');  
     
-    Route::get('/printJobOrder/{id}', 'PurchaseOrderController@printPdfJobOrder')->name('print')->middleware('can:show-purchase-order-repair');  
+    Route::get('/printJobOrder/{id}', 'PurchaseOrderController@printPdfJobOrder')->name('printJobOrder')->middleware('can:show-purchase-order-repair');  
 });
 
 //Work Order Routes

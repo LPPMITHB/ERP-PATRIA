@@ -87,20 +87,26 @@
                     <div style="margin-top:-100px; padding-top: -5px">
                         <div style="margin-left: 450px;">
                             <div style="font-size: 11px;">Vessel Name   </div>
-                            <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
-                                {{$projectName->project->name}}                    
+                            <div class="p-l-5" style="font-size: 11px; margin-left: 90px; margin-top:-20px">
+                                : {{$projectName->project->name}}                    
+                            </div>
+                        </div>
+                        <div style="margin-left: 450px;">
+                            <div style="font-size: 11px;">Date   </div>
+                            <div class="p-l-5" style="font-size: 11px; margin-left: 90px; margin-top:-20px">
+                                : {{date("D, d M Y", strtotime($modelPO->created_at))}}                   
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">Class  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                                {{$projectName->project->class_name}}                    
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 90px; margin-top:-20px">
+                                : {{$projectName->project->class_name}}                    
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Job  </div>
-                            <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
-                                {{($modelPO->project) ? $modelPO->project->number : '-'}}                 
+                            <div class="p-l-5" style="font-size: 11px; margin-left: 90px; margin-top:-20px">
+                                : {{($modelPO->project) ? $modelPO->project->number : '-'}}                 
                             </div>
                         </div>
                     </div>
@@ -132,9 +138,9 @@
                                 @foreach($modelPO->purchaseOrderDetails as $POD)
                                         <tr>
                                             <td style="font-size: 11px" class="text-center" width="3%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="25%" class="tdBreakWord">{{ $POD->activityDetail->serviceDetail->service->name }} - {{ $POD->activityDetail->serviceDetail->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord">{{ $POD->activityDetail->area }} {{ $POD->activityDetail->areaUom->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord">{{ $POD->remark }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="25%" class="tdBreakWord p-l-5">{{ $POD->activityDetail->serviceDetail->service->name }} - {{ $POD->activityDetail->serviceDetail->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord text-center">{{ $POD->activityDetail->area }} {{ $POD->activityDetail->areaUom->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord p-l-5">{{ $POD->remark }}</td>
                                         </tr>
                                         @php($discount += $POD->total_price * (($POD->discount)/100))
                                         @php($tax += $POD->total_price * (($POD->tax)/100))
@@ -143,8 +149,10 @@
                             </tbody>
                         </table>
                         <div id="footer" style="page-break-inside:avoid;margin-left: -10px;">
-                            <div class="col-xs-12" style="margin-left: -14px;margin-top:-20px;">
-                                <i style="font-size: 9px;"><b>Subkontraktor secara resmi menyatakan kesediaan dan kesanggupan untuk memenuhi semua pekerjaan di atas sesuai dengan jadwal yang diberikan oleh PT. Patria Maritime Industry</b></i>
+                            <div class="col-xs-12">
+                                <div style="margin-left: -14px;margin-top:-10px;line-height:11px;word-wrap:break-word;width: 720px;">
+                                    <i style="font-size: 9px;"><b>Subkontraktor secara resmi menyatakan kesediaan dan kesanggupan untuk memenuhi semua pekerjaan di atas sesuai dengan jadwal yang diberikan oleh PT. Patria Maritime Industry</b></i>
+                                </div>
                             </div>
                             <hr style="height:1px;border:none;color:#333;background-color:#333;" />
                             <div style="font-size: 10px; margin-top:-20px;">
