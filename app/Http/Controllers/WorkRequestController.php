@@ -10,7 +10,10 @@ use App\Models\Branch;
 use App\Models\Material;
 use App\Models\Stock;
 use App\Models\WBS;
+use App\Models\Activity;
+use App\Models\ActivityDetail;
 use App\Models\Bom;
+use App\Models\BomPrep;
 use App\Models\BomDetail;
 use App\Models\Project;
 use DateTime;
@@ -620,10 +623,27 @@ class WorkRequestController extends Controller
         return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getActivityWRAPI($ids){
-        $ids = json_decode($ids);
+    public function getActivityWRAPI($id){
+        $data = array();
 
-        return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+        $wbs = WBS::findOrFail($id);
+        $data['wbs'] = $wbs->jsonSerialize();
+
+        if($wbs->activities != null){
+            $activity_ids = $wbs->activities->pluck('id')->toArray();
+            $data['activity'] = Activity::whereIn('id',$activity_ids)->get();
+        }else{
+            $data['activity'] = [];
+        }
+
+
+        return response($data, Response::HTTP_OK);
+    }
+
+    public function getDataActivityWRAPI($id){
+        $data = Activity::where('id',$id)->first()->jsonSerialize();
+
+        return response($data, Response::HTTP_OK);
     }
 
     public function getMaterialWIPApi($id){
@@ -639,6 +659,23 @@ class WorkRequestController extends Controller
         }
 
         $data['wbs'] = $wbs->jsonSerialize();
+
+        return response($data, Response::HTTP_OK);
+    }
+
+    public function getMaterialActivityWIPAPI($id){
+        $data = array();
+
+        $data['activity'] = ActivityDetail::where('activity_id',$id)->where('source','WIP')->with('material')->get();
+
+        return response($data, Response::HTTP_OK);
+    }
+
+    public function getBomPrepWRAPI($id){
+        $data = array();
+
+        $bomPrep = BomPrep::where('project_id',$id)->pluck('id')->toArray();
+        $data['bom'] = BomDetail::whereIn('bom_prep_id',$bomPrep)->where('source','Stock')->with('material')->get();
 
         return response($data, Response::HTTP_OK);
     }

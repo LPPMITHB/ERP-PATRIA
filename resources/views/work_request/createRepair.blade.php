@@ -79,9 +79,8 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 15%">Activity Name</th>
-                                            <th style="width: 10%">Material Number</th>
-                                            <th style="width: 15%">Material Description</th>
+                                            <th style="width: 25%">Material Number</th>
+                                            <th style="width: 25%">Material Description</th>
                                             <th style="width: 4%">Unit</th>
                                             <th style="width: 8%">Quantity</th>
                                             <th style="width: 8%">Available</th>
@@ -93,8 +92,6 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }} - {{ material.wbs_desc }}</td>
-                                            <td class="tdEllipsis" v-else>-</td>
                                             <td class="tdEllipsis">{{ material.material_code }}</td>
                                             <td class="tdEllipsis">{{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.unit }}</td>
@@ -117,26 +114,13 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft" v-show="wbss.length > 0">
-                                                <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description}}</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="p-l-0 textLeft" v-show="wbss.length == 0">
-                                                <selectize disabled v-model="dataInput.wbs_id" :settings="wbsNullSettings">
-                                                </selectize>
-                                            </td>
-                                            <td colspan="2" class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
-                                                <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
-                                                </selectize>  
-                                            </td>
-                                            <td colspan="2" class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0">
+                                            <td colspan="2" class="p-l-0 textLeft" v-show="materials.length == 0">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
                                                 </selectize>
                                             </td>
-                                            <td colspan="2" class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length > 0">
+                                            <td colspan="2" class="p-l-0 textLeft" v-show="materials.length > 0">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <option v-for="(material, index) in materials" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
@@ -166,9 +150,10 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
+                                            <th style="width: 15%">WBS Name</th>
                                             <th style="width: 15%">Activity Name</th>
                                             <th style="width: 10%">Material Number</th>
-                                            <th style="width: 15%">Material Description</th>
+                                            <th style="width: 10%">Material Description</th>
                                             <th style="width: 4%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 21%">Description</th>
@@ -181,6 +166,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }} - {{ material.wbs_desc }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
+                                            <td class="tdEllipsis">{{ material.activity_code }} - {{ material.activity_desc }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }}</td>
                                             <td class="tdEllipsis">{{ material.material_name }}</td>
                                             <td class="tdEllipsis">{{ material.unit }}</td>
@@ -210,6 +196,15 @@
                                                 <selectize disabled v-model="dataInputFG.wbs_id" :settings="wbsNullSettings">
                                                 </selectize>
                                             </td>
+                                            <td class="p-l-0 textLeft" v-show="activityFG.length > 0">
+                                                <selectize v-model="dataInputFG.activity_id" :settings="activitySettings">
+                                                    <option v-for="(data, index) in activityFG" :value="data.id">{{ data.code }} - {{ data.name}}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="activityFG.length == 0">
+                                                <selectize disabled v-model="dataInputFG.activity_id" :settings="activityNullSettings">
+                                                </selectize>
+                                            </td>
                                             <td colspan="2" class="p-l-0 textLeft" v-show="dataInputFG.wbs_id == ''">
                                                 <selectize disabled v-model="dataInputFG.id" :settings="nullSettings" disabled>
                                                 </selectize>  
@@ -220,7 +215,7 @@
                                             </td>
                                             <td colspan="2" class="p-l-0 textLeft" v-show="dataInputFG.wbs_id != '' && materialWIP.length > 0">
                                                 <selectize v-model="dataInputFG.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materialWIP" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <option v-for="(material, index) in materialWIP" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0">
@@ -259,26 +254,10 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInput.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12" v-show="editInput.wbs_id != '' && materialsEdit.length > 0">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materialsEdit" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <option v-for="(material, index) in materials" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
                                                 </selectize>
-                                            </div>
-                                            <div class="col-sm-12" v-show="editInput.wbs_id != '' && materialsEdit.length == 0">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize disabled :settings="materialNullSettings" >
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12" v-show="editInput.wbs_id == ''">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize disabled :settings="nullSettings" disabled >
-                                                </selectize>  
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="unit" class="control-label">Unit</label>
@@ -326,6 +305,21 @@
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </div>
+                                            <div class="col-sm-12"  v-show="activityFGEdit.length > 0">
+                                                <td class="col-sm-12">
+                                                    <label class="control-label">Activity Name</label>
+                                                    <selectize v-model="editInputFG.activity_id" :settings="activitySettings">
+                                                        <option v-for="(data, index) in activityFGEdit" :value="data.id">{{ data.code }} - {{ data.name}}</option>
+                                                    </selectize>
+                                                </td>
+                                            </div>
+                                            <div class="col-sm-12"  v-show="activityFGEdit.length == 0">
+                                                <td class="col-sm-12">
+                                                    <label class="control-label">Activity Name</label>
+                                                    <selectize disabled v-model="editInputFG.activity_id" :settings="activityNullSettings">
+                                                    </selectize>
+                                                </td>
+                                            </div>
                                             <div class="col-sm-12" v-show="editInputFG.wbs_id != '' && materialWIPEdit.length == 0">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize disabled v-model="editInputFG.material_id" :settings="materialWIPNullSettings">
@@ -334,7 +328,7 @@
                                             <div class="col-sm-12" v-show="editInputFG.wbs_id != '' && materialWIPEdit.length > 0">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInputFG.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materialWIPEdit" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <option v-for="(material, index) in materialWIPEdit" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-12" v-show="editInputFG.wbs_id == ''">
@@ -399,24 +393,33 @@
         materialWIPEdit : [],
         projects : @json($modelProject),
         wbss : [],
+        activity : [],
+        activityFG : [],
+        activityFGEdit : [],
         project_id : "",
         projectSettings: {
             placeholder: 'Please Select Project'
         },
         wbsSettings: {
+            placeholder: 'Please Select WBS'
+        },
+        activitySettings: {
             placeholder: 'Please Select Activity'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
         },
         nullSettings:{
-            placeholder: 'Please Select Activity First !'
+            placeholder: 'Please Select WBS First !'
         },
         wbsNullSettings:{
             placeholder: "Project doesn't have WBS !"
         },
+        activityNullSettings:{
+            placeholder: "WBS doesn't have activities !"
+        },
         materialNullSettings:{
-            placeholder: "WBS doesn't have BOM !"
+            placeholder: "Project doesn't have BOM !"
         },
         materialWIPNullSettings:{
             placeholder: "WBS doesn't have BOM with source WIP !"
@@ -433,6 +436,9 @@
             wbs_id : "",
             wbs_number : "",
             wbs_desc :"",
+            activity_id : "",
+            activity_code : "",
+            activity_desc :"",
             available : "",
             description : "",
             required_date : "",
@@ -448,6 +454,9 @@
             wbs_id : "",
             wbs_number : "",
             wbs_desc :"",
+            activity_id : "",
+            activity_code : "",
+            activity_desc :"",
             available : "",
             description : "",
             required_date : "",
@@ -462,6 +471,9 @@
             wbs_id : "",
             wbs_number : "",
             wbs_desc :"",
+            activity_id : "",
+            activity_code : "",
+            activity_desc :"",
             description : "",
             required_date : "",
             unit : "",
@@ -476,6 +488,9 @@
             wbs_id : "",
             wbs_number : "",
             wbs_desc :"",
+            activity_id : "",
+            activity_code : "",
+            activity_desc :"",
             description : "",
             required_date : "",
             unit : "",
@@ -516,7 +531,7 @@
                 var string_newValue = this.dataInput.quantity+"";
                 this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.wbs_id == "" || this.dataInput.description == ""){
+                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.description == ""){
                     isOk = true;
                 }
                 
@@ -540,7 +555,7 @@
                 var string_newValue = this.editInput.quantityInt+"";
                 this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt) || this.editInput.wbs_id == ""){
+                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt)){
                     isOk = true;
                 }
 
@@ -625,33 +640,13 @@
                     material.material_code = data.code;
                     material.required_date = this.editInput.required_date;
 
-
-                    if(this.editInput.wbs_id != ''){
-                        window.axios.get('/api/getWbsWr/'+this.editInput.wbs_id).then(({ data }) => {
-                            material.wbs_number = data.number;
-                            material.wbs_desc = data.description;
-                            material.quantityInt = this.editInput.quantityInt;
-                            material.quantity = this.editInput.quantity;
-                            material.material_id = new_material_id;
-                            material.wbs_id = this.editInput.wbs_id;
-                            material.description = this.editInput.description;
-                            material.available = this.editInput.available;
-                            material.unit = this.editInput.unit;
-
-                            $('div.overlay').hide();
-                        })
-                        .catch((error) => {
-                            iziToast.warning({
-                                title: 'Please Try Again..',
-                                position: 'topRight',
-                                displayMode: 'replace'
-                            });
-                            $('div.overlay').hide();
-                        })
-                    }else{
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                    }
+                    material.quantityInt = this.editInput.quantityInt;
+                    material.quantity = this.editInput.quantity;
+                    material.material_id = new_material_id;
+                    material.description = this.editInput.description;
+                    material.available = this.editInput.available;
+                    material.unit = this.editInput.unit;
+                          
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -682,6 +677,11 @@
                             material.wbs_id = this.editInputFG.wbs_id;
                             material.description = this.editInputFG.description;
                             material.unit = this.editInputFG.unit;
+
+                            window.axios.get('/api/getDataActivityWr/'+this.editInputFG.activity_id).then(({ data }) => {
+                                material.activity_code = data.code;
+                                material.activity_desc = data.name;
+                            })
 
                             $('div.overlay').hide();
                         })
@@ -738,6 +738,9 @@
                 this.editInputFG.old_material_id = data.material_id;
                 this.editInputFG.material_code = data.material_code;
                 this.editInputFG.material_name = data.material_name;
+                this.editInputFG.activity_id = data.activity_id;
+                this.editInputFG.activity_code = data.activity_code;
+                this.editInputFG.activity_desc = data.activity_desc;
                 this.editInputFG.quantity = data.quantity;
                 this.editInputFG.quantityInt = data.quantityInt;
                 this.editInputFG.old_wbs_id = data.wbs_id;
@@ -773,8 +776,6 @@
                     this.dataInput.material_code = "";
                     this.dataInput.quantity = "";
                     this.dataInput.material_id = "";
-                    this.dataInput.wbs_id = "";
-                    this.dataInput.wbs_number = "";
                     this.dataInput.description = "";
                     this.dataInput.available = "";
                     this.dataInput.required_date = "";
@@ -794,26 +795,36 @@
             },
             addFG(){
                 var material_id = this.dataInputFG.material_id;
+                var activity_id = this.dataInputFG.activity_id;
+
                 $('div.overlay').show();
                 window.axios.get('/api/getMaterialWr/'+material_id).then(({ data }) => {
                     this.dataInputFG.material_name = data.description;
                     this.dataInputFG.material_code = data.code;
 
-                    var temp_data = JSON.stringify(this.dataInputFG);
-                    temp_data = JSON.parse(temp_data);
+                    window.axios.get('/api/getDataActivityWR/'+activity_id).then(({ data }) => {
 
-                    this.dataMaterialFG.push(temp_data);
-                    
-                    this.dataInputFG.material_name = "";
-                    this.dataInputFG.material_code = "";
-                    this.dataInputFG.quantity = "";
-                    this.dataInputFG.material_id = "";
-                    this.dataInputFG.wbs_id = "";
-                    this.dataInputFG.wbs_number = "";
-                    this.dataInputFG.description = "";
-                    this.dataInputFG.required_date = "";
-                    
-                    this.newIndexFG = Object.keys(this.dataMaterialFG).length+1;
+                        this.dataInputFG.activity_code = data.code;
+                        this.dataInputFG.activity_desc = data.name;
+
+                        var temp_data = JSON.stringify(this.dataInputFG);
+                        temp_data = JSON.parse(temp_data);
+
+                        this.dataMaterialFG.push(temp_data);
+                        
+                        this.dataInputFG.material_name = "";
+                        this.dataInputFG.material_code = "";
+                        this.dataInputFG.activity_desc = "";
+                        this.dataInputFG.activity_code = "";
+                        this.dataInputFG.quantity = "";
+                        this.dataInputFG.material_id = "";
+                        this.dataInputFG.wbs_id = "";
+                        this.dataInputFG.wbs_number = "";
+                        this.dataInputFG.description = "";
+                        this.dataInputFG.required_date = "";
+                        
+                        this.newIndexFG = Object.keys(this.dataMaterialFG).length+1;
+                    })
                     
                     $('div.overlay').hide();
                 })
@@ -956,6 +967,9 @@
                 
                 this.dataInput.wbs_id = "";
                 if(newValue != ""){
+                    this.dataInput.quantity = "";
+                    this.dataInput.available = "";
+                    this.dataInput.unit = "";
                     $('div.overlay').show();
                     window.axios.get('/api/getProjectMR/'+newValue).then(({ data }) => {
                         this.selectedProject = [];
@@ -969,6 +983,18 @@
                         });
                         this.wbss = data.wbss;
                         $('div.overlay').hide();
+
+                        window.axios.get('/api/getBomPrepWR/'+newValue).then(({ data }) => {
+                            this.materials = data.bom;
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
                     })
                     .catch((error) => {
                         iziToast.warning({
@@ -1006,15 +1032,17 @@
                 quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 Vue.nextTick(() => this.editInputFG.quantity = quantity_string);
             },
+
             'dataInput.wbs_id': function(newValue){
                 this.dataInput.material_id = "";
                 this.dataInput.unit = "";
+                this.dataInput.activity_id = "";
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getActivityWR/'+newValue).then(({ data }) => {
                         this.dataInput.wbs_number = data.wbs.number;
                         this.dataInput.wbs_desc = data.wbs.description;
-                        this.materials = data.materials;
+                        this.activity = data.activity;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -1058,13 +1086,14 @@
             'dataInputFG.wbs_id': function(newValue){
                 this.dataInputFG.material_id = "";
                 this.dataInputFG.unit = "";
+                this.dataInputFG.activity_id = "";
 
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getMaterialWIP/'+newValue).then(({ data }) => {
+                    window.axios.get('/api/getActivityWR/'+newValue).then(({ data }) => {
                         this.dataInputFG.wbs_number = data.wbs.number;
                         this.dataInputFG.wbs_desc = data.wbs.description;
-                        this.materialWIP = data.materials;
+                        this.activityFG = data.activity;
                         
                         $('div.overlay').hide();
                     })
@@ -1089,9 +1118,9 @@
                 }
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getMaterialWIP/'+newValue).then(({ data }) => {
-                        this.materialWIPEdit = data.materials;
-                        
+                    window.axios.get('/api/getActivityWR/'+newValue).then(({ data }) => {
+                        this.activityFGEdit = data.activity;
+
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -1104,6 +1133,46 @@
                     })
                 }else{
                     this.editInputFG.wbs_id = "";
+                }
+            },
+            'dataInputFG.activity_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialActivityWIP/'+newValue).then(({ data }) => {
+                        this.materialWIP = data.activity;
+                        
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else{
+                    this.dataInputFG.activity_id = "";
+                }
+            },
+            'editInputFG.activity_id' : function(newValue){
+                if(newValue != ""){
+                    $('div.overlay').show();
+                    window.axios.get('/api/getMaterialActivityWIP/'+newValue).then(({ data }) => {
+                        this.materialWIPEdit = data.activity;
+                        
+                        $('div.overlay').hide();
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    })
+                }else{
+                    this.editInputFG.activity_id = "";
                 }
             },
             'required_date': function(newValue){
