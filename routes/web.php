@@ -969,7 +969,7 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
     Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order');
 
-    Route::get('/print/{id}', 'PurchaseOrderController@printPdf')->name('print')->middleware('can:show-purchase-order');  
+    Route::get('/print/{id}', 'PurchaseOrderController@printPdf')->name('print')->middleware('can:show-purchase-order');
 });
 
 //Purchase Order Repair Routes
@@ -997,6 +997,8 @@ Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(fu
     Route::post('/', 'PurchaseOrderController@store')->name('store')->middleware('can:create-purchase-order-repair');
 
     Route::get('/print/{id}', 'PurchaseOrderController@printPdf')->name('print')->middleware('can:show-purchase-order-repair');  
+    
+    Route::get('/printJobOrder/{id}', 'PurchaseOrderController@printPdfJobOrder')->name('print')->middleware('can:show-purchase-order-repair');  
 });
 
 //Work Order Routes

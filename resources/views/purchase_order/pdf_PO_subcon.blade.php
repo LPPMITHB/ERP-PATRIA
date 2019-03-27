@@ -27,7 +27,7 @@
                 }
                 #footer{
                     position: fixed;
-                    bottom: 100px;
+                    bottom: 0px;
                     left: 10px;
                     right: 0cm;
                 }
@@ -72,57 +72,80 @@
                                 T.{{$branch->phone_number}} F.{{$branch->fax}}
                             </div>
                         </div>
-                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Job Order</b></h2>
+                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Purchase Order</b></h2>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                     <div>
                         <div>
                             <div style="font-size: 11px;">Vendor   :</div>
-                            <div class="p-l-5" style="word-wrap:break-word;width: 340px; border: black 1px solid; border-radius: 5px; margin-left: 65px; margin-top: -80px;">
+                            <div class="p-l-5" style="word-wrap:break-word;width: 340px; border: black 1px solid; border-radius: 5px; margin-left: 65px; margin-top: -60px;">
                                 <b style="font-size: 12px;">{{$modelPO->vendor->name}}</b>
                                 <p style="font-size: 11px; margin-top:10px">{{$modelPO->vendor->address}} <br>T.{{$modelPO->vendor->phone_number_1}}</p>
                             </div>
                         </div>
                     </div>
-                    <div style="margin-top:-100px; padding-top: -5px">
+                    <div style="margin-top:-100px; padding-top: -15px">
                         <div style="margin-left: 450px;">
-                            <div style="font-size: 11px;">Vessel Name   </div>
-                            <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
-                                {{$projectName->project->name}}                    
+                            <div style="font-size: 11px;">PO Number  </div>
+                            <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
+                                {{$modelPO->number}}                    
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
-                            <div style="font-size: 11px;">Class  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                                {{$projectName->project->class_name}}                    
+                            <div style="font-size: 11px;">PO Date  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
+                                {{date("d-m-Y", strtotime($modelPO->created_at))}}                    
+                            </div>
+                        </div>
+                        <div  style="margin-left: 450px;">
+                            <div style="font-size: 11px;">PR Number  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
+                                {{$modelPO->purchaseRequisition->number}}                    
+                            </div>
+                        </div>
+                        <div  style="margin-left: 450px;">
+                            <div style="font-size: 11px;">Payment Terms  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
+                                {{($modelPO->payment_terms != null) ? $modelPO->payment_terms : '-'}}                     
+                            </div>
+                        </div>
+                        <div  style="margin-left: 450px;">
+                            <div style="font-size: 11px;">Delivery Terms  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
+                                {{($modelPO->delivery_terms != null) ? $modelPO->delivery_terms : '-'}}                    
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Job  </div>
-                            <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
+                            <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
                                 {{($modelPO->project) ? $modelPO->project->number : '-'}}                 
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12">
-                    <div style="line-height:11px;margin-left: -755px; margin-top: 220px; word-wrap:break-word;width: 720px;">
-                        <i style="font-size: 9px;"><b>Sehubungan dengan proyek di PT. Patria Maritime Industry menunjuk subkontraktor di atas untuk melaksanakan pekerjaan dibawah ini :</b></i>
+                    <div style="line-height:11px;margin-left: -755px; margin-top: 241px; word-wrap:break-word;width: 720px;">
+                        <i style="font-size: 9px;"><b>Please deliver all the items mentioned to the above address according to agreed delivery date and according to the terms of payment as indicated. Please quote the PO number in all succeeding communications (DO and Invoice) for reference</b></i>
                     </div>
                 </div>
             </div>
         </header>
-        <main style="margin-top: -30px">
+        <main style="margin-top: -5px">
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_order_pdf" style="width: 100%;">
+                        <table class="table-bordered" id="purchase_order_pdf" style="width:100%; margin-left:-10px">
                             <thead>
                                 <tr>
-                                    <th style="font-size: 11px" width="3%" class="text-center">No</th>
-                                    <th style="font-size: 11px" width="25%" class="text-center">Service Description</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center">Detail</th>
-                                    <th style="font-size: 11px" width="15%" class="text-center">Remark</th>
+                                    <th style="font-size: 11px" width="5%" class="text-center">No</th>
+                                    <th style="font-size: 11px" width="15%" class="text-center" >Service Number</th>
+                                    <th style="font-size: 11px" width="20%" class="text-center">Service Description</th>
+                                    <th style="font-size: 11px" width="7%" class="text-center">Qty</th>
+                                    <th style="font-size: 11px" width="8%" class="text-center">Unit</th>
+                                    <th style="font-size: 11px" width="15%" class="text-center">Unit Price</th>
+                                    <th style="font-size: 11px" width="5%" class="text-center">Disc (%)</th>
+                                    <th style="font-size: 11px" width="15%" class="text-center">Amount</th>
+                                    <th style="font-size: 11px" width="10%" class="text-center">Delivery Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,48 +153,69 @@
                                 @php($tax = 0)
                                 @php($freight = 0)
                                 @foreach($modelPO->purchaseOrderDetails as $POD)
+                                    @if($POD->quantity > 0)
                                         <tr>
-                                            <td style="font-size: 11px" class="text-center" width="3%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="25%" class="tdBreakWord">{{ $POD->activityDetail->serviceDetail->service->name }} - {{ $POD->activityDetail->serviceDetail->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord">{{ $POD->activityDetail->area }} {{ $POD->activityDetail->areaUom->name }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord">{{ $POD->remark }}</td>
+                                            <td style="font-size: 11px" width="5%">{{ $loop->iteration }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord">{{ $POD->activityDetail->serviceDetail->service->code }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $POD->activityDetail->serviceDetail->service->name }} - {{ $POD->activityDetail->serviceDetail->name }}</td>
+                                            <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{ number_format($POD->quantity) }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="8%" class="tdBreakWord text-center">{{ $POD->service->uom->unit }}</td>
+                                            <td style="font-size: 11px" width="15%" class="tdBreakWord text-right">{{ number_format($POD->total_price / $POD->quantity,2) }}</td>
+                                            <td style="font-size: 11px" width="5%" class="tdBreakWord text-center">{{ number_format($POD->discount,2) }}</td>
+                                            <td style="font-size: 11px" width="15%" class="tdBreakWord text-right">{{ number_format($POD->total_price - ($POD->total_price * ($POD->discount/100)),2) }}</td>
+                                            <td style="font-size: 11px" width="10%" class="tdBreakWord">{{ isset($POD->delivery_date) ? date('d-m-Y', strtotime($POD->delivery_date)) : '-' }}</td>
                                         </tr>
                                         @php($discount += $POD->total_price * (($POD->discount)/100))
                                         @php($tax += $POD->total_price * (($POD->tax)/100))
                                         @php($freight += $POD->estimated_freight)
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
-                        <div id="footer" style="page-break-inside:avoid;margin-left: -10px;">
-                            <div class="col-xs-12" style="margin-left: -14px;margin-top:-20px;">
-                                <i style="font-size: 9px;"><b>Subkontraktor secara resmi menyatakan kesediaan dan kesanggupan untuk memenuhi semua pekerjaan di atas sesuai dengan jadwal yang diberikan oleh PT. Patria Maritime Industry</b></i>
+                        <div id="footer" style="page-break-inside:avoid;margin-left: -10px; ">
+                            <div style="font-size: 11px; margin-top:5px;">Say :</div>
+                            <div style="height: 20px; font-size: 9px; width:420px; padding-left:5px; margin-left:30px; margin-top:-16px; border: black 1px solid; border-radius: 5px;">
+                                    {{$words}} IDR
                             </div>
-                            <hr style="height:1px;border:none;color:#333;background-color:#333;" />
-                            <div style="font-size: 10px; margin-top:-20px;">
-                            Catatan : <br>
-                                1. Surat perintah kerja (asli) ini harus dilampirkan saat penagihan dilengkapi surat keterangan penyelesaian pekerjaan <br>
-                                2. Subkontraktor harus mematuhi semua peraturan dalam docyard <br>
-                                3. Material disediakan oleh subkontraktor <br>
-                                4. Arus listrik dan alat berat disediakan oleh docyard <br>
-                                5. Welding electrode dan consumable disiapkan oleh dockyard / subkontraktor <br>
-                                6. Semua peralatan kerja pendukung disediakan oleh subkontraktor <br>
-                                7. Semua kerugian akibat kelalaian/kesalahan pekerjaan menjadi tanggung jawab subkontraktor <br>
-                                8. Pengembalian sisa material menjadi tanggung jawab subkontraktor dan dockyard <br>
-                                9. Sebagian pekerjaan bisa dialihkan ke subkontraktor lain dalam dalam kondisi subkontraktor yang bersangkutan dirasa tidak mampu menyelesaikan pekerjaan dengan jadwal yang ditentukan <br>
-                                10. Pembersihan alat kerja consumable dan hasil kerja menjadi tanggung jawab subkontraktor <br>
-                                11. Pengecekan hasil pekerjaan dan pengetasan dilaksakan oleh subkontraktor dan dockyard <br>
-                            </div>    
-                            <hr style="height:1px;border:none;color:#333;background-color:#333;margin-top: 5px;" />
+                            <div class="col-xs-12" style="margin-top:3px; width:435px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:80px;">
+                                <div style="font-size: 11px"><b>Description</b></div>
+                                <div style="font-size: 11px">{{$modelPO->description}}</div>
+                            </div>
+                            <div style="margin-left: 430px; margin-top: -20px">
+                                <div style="width:265px; margin-left:30px; margin-top:-5px; border: black 1px solid; border-radius: 5px;">
+                                    <div style="margin-left: 48px; font-size: 12px">Sub Total</div>
+                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($modelPO->total_price,2)}}</div>
+                                    <div style="margin-left: 52px; font-size: 12px">Discount</div>
+                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($discount,2)}}</div>
+                                </div>
+                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
+                                    <div style="margin-left: 79px; font-size: 12px">Tax</div>
+                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($tax,2)}}</div>
+                                </div>
+                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius:05px;">
+                                    <div style="margin-left: 6px; font-size: 12px">Estimated Freight</div>
+                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px">:</div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right">{{number_format($freight,2)}}</div>
+                                </div>
+                                <div style="width:265px; margin-left:30px; margin-top:3px; border: black 1px solid; border-radius: 5px;">
+                                    <div style="margin-left: 36px; font-size: 12px"><b>Total Order</b></div>
+                                    <div style="margin-left: 103px; margin-top:-20px; font-size: 12px"><b>:</b></div>
+                                    <div class="p-r-5" style="margin-top:-20px; font-size: 12px" align="right"><b>IDR {{number_format(($modelPO->total_price - $discount + $tax + $freight),2)}}</b></div>
+                                </div>
+                            </div>
                             <div>
-                                <div style="margin-top: -15px; font-size: 12px">Prepared by</div>
+                                <div style="margin-top: 10px; font-size: 12px">Prepared by</div>
                                 <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
                             </div>
                             <div style="margin-left: 250px; margin-top:-150px">
-                                <div style="margin-top: -15px; font-size: 12px">Aproved by</div>
+                                <div style="margin-top: 10px; font-size: 12px">Aproved by</div>
                                 <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
                             </div>
                             <div style="margin-left: 500px; margin-top:-150px">
-                                <div style="margin-top: -15px; font-size: 12px">Supplier Confirmation</div>
+                                <div style="margin-top: 10px; font-size: 12px">Supplier Confirmation</div>
                                 <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
                                 <div style="margin-top: -20px; font-size: 12px;">Chop and Sign</div>
                                 <div style=" font-size: 12px">Date</div>

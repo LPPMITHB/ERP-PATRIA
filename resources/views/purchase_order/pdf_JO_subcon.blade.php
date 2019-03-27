@@ -116,7 +116,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_order_pdf" style="width: 100%;">
+                        <table class="table-bordered" id="job_order_pdf" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="3%" class="text-center">No</th>
