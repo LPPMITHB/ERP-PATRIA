@@ -42,33 +42,36 @@
                     @verbatim
                     <div id="pod">
                         <div class="col-sm-12 no-padding">
-                            <div class="box-header">
-                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
+                            <div class="box-header no-padding">
+                                <div class="col-xs-12 col-md-4 no-padding">    
                                     <div class="box-body no-padding col-md-10">
-                                        <div class="col-md-3 col-xs-4 no-padding">PO Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.number }}</b></div>
+                                        <div class="col-md-5 col-xs-4 no-padding">PO Number</div>
+                                        <div class="col-md-6 col-xs-8 no-padding"><b>: {{ modelPO.number }}</b></div>
                                         
-                                        <div class="col-md-3 col-xs-4 no-padding">Vendor</div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.name)"><b>: {{ modelPO.vendor.name }}</b></div>
+                                        <div class="col-md-5 col-xs-4 no-padding">Vendor</div>
+                                        <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.name)"><b>: {{ modelPO.vendor.name }}</b></div>
                 
-                                        <div class="col-md-3 col-xs-4 no-padding">Address</div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.address)"><b>: {{ modelPO.vendor.address }}</b></div>
+                                        <div class="col-md-5 col-xs-4 no-padding">Address</div>
+                                        <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.address)"><b>: {{ modelPO.vendor.address }}</b></div>
 
-                                        <div class="col-md-3 col-xs-4 no-padding">Phone Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelPO.vendor.phone_number }}</b></div>
+                                        <div class="col-md-5 col-xs-4 no-padding">Phone Number</div>
+                                        <div class="col-md-6 col-xs-8 no-padding"><b>: {{ modelPO.vendor.phone_number }}</b></div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
-                                    <div class="col-md-12 col-xs-12 p-l-0"> GR Description : </div>
-                                    <div class="col-sm-12 col-md-12  p-l-0 p-t-0 ">
-                                        <textarea class="form-control" rows="3" v-model="description" style="width:260px"></textarea>
+                                <div class="col-sm-4 no-padding">
+                                    <div class="col-md-4 no-padding">
+                                        <label for="" >Shipping Date :</label>
+                                    </div>
+                                    <div class="col-md-4 no-padding">
+                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker" name="ship_date" id="ship_date" placeholder="Ship Date" style="width: 180px">
                                     </div>
                                 </div>
-
-                                <div class="col-xs-12 col-lg-3 col-md-12 p-l-0">
-                                    <div class="col-md-8 col-xs-12 p-l-0">Ship Date:</div>
-                                    <div class="col-sm-12 col-lg-8  p-l-0 p-t-0 ">
-                                        <input v-model="ship_date" autocomplete="off" type="text" class="form-control datepicker" name="ship_date" id="ship_date" placeholder="Ship Date" style="width: 150px">
+                                <div class="col-sm-4 no-padding">
+                                    <div class="col-xs-12 col-md-4 no-padding">
+                                            <label for="">GR Description :</label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <textarea class="form-control" rows="3" v-model="description" style="width:220px"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -77,15 +80,15 @@
                                     <table class="table table-bordered tablePagingVue tableFixed">
                                         <thead>
                                             <tr>
-                                                <th width="5%">No</th>
-                                                <th width="17%">Material Number</th>
-                                                <th width="18%">Material Description</th>
-                                                <th width="5%">Unit</th>
-                                                <th width="10%">Quantity</th>
-                                                <th width="10%">Received</th>
-                                                <th width="15%">Storage Location</th>
-                                                <th width="10%">Received Date</th>
-                                                <th width="10%">Item OK</th>
+                                                <th width="4%">No</th>
+                                                <th width="10%">Material Number</th>
+                                                <th width="12%">Material Description</th>
+                                                <th width="4%">Qty</th>
+                                                <th width="6.5%">Received</th>
+                                                <th width="4%">Unit</th>
+                                                <th width="14%">Storage Location</th>
+                                                <th width="9%">Received Date</th>
+                                                <th width="7%">Item OK</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -93,20 +96,20 @@
                                                 <td>{{ index+1 }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(POD.material_code)">{{ POD.material_code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(POD.material_name)">{{ POD.material_name }}</td>
-                                                <td>{{ POD.unit }}</td>
                                                 <td>{{ POD.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.received" placeholder="Please Input Received Quantity">
                                                 </td>
+                                                <td>{{ POD.unit }}</td>
                                                 <td class="no-padding">
                                                     <selectize v-model="POD.sloc_id" :settings="slocSettings">
                                                         <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
                                                     </selectize>  
                                                 </td>
-                                                <td class="p-l-0 textLeft">
+                                                <td class="no-padding textLeft">
                                                     <input v-model="POD.received_date" required autocomplete="off" type="text" class="form-control datepicker width100 received_date" name="input_received_date" :id="makeId(POD.id)" placeholder="Received Date">  
                                                 </td>
-                                                <td class="no-padding p-t-2 p-b-2" align="center">
+                                                <td class="no-padding p-t-1 p-b-1" align="center">
                                                     <input type="checkbox" v-icheck="" v-model="checkedPOD" :value="POD.id">
                                                 </td>
                                             </tr>

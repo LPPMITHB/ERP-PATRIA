@@ -96,6 +96,14 @@
                                             <input class="form-control" v-model="modelPO.payment_terms" placeholder="Payment Terms">
                                         </div>
                                     </div>
+                                    <div class="row" v-if="modelPO.purchase_requisition.type == 3">
+                                        <div class="col-sm-5 p-t-15">
+                                            <label for="delivery_date_subcon">Delivery Date</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                            <input v-model="delivery_date_subcon" autocomplete="off" type="text" class="form-control datepicker" name="delivery_date_subcon" id="delivery_date_subcon" placeholder="Delivery Date">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
@@ -120,7 +128,7 @@
                         <div class="box-body">
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-15 p-t-0">
-                                    <table class="table table-bordered tableFixed p-t-10 m-b-5" style="border-collapse:collapse;">
+                                    <table class="table table-bordered tableFixed p-t-10 m-b-5" style="border-collapse:collapse;" v-if="modelPO.purchase_requisition.type != 3">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
@@ -166,6 +174,38 @@
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input v-model="POD.delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100 delivery_date" name="delivery_date" :id="makeId(POD.id)" placeholder="Delivery Date">
+                                                </td>
+                                                <td class="textCenter">
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(POD,index)">
+                                                        REMARK
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;" v-if="modelPO.purchase_requisition.type == 3">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%">No</th>
+                                                <th style="width: 35%">Job Order</th>
+                                                <th style="width: 10%">Area</th>
+                                                <th style="width: 10%">Area Unit</th>
+                                                <th style="width: 20%">Price / Service ({{selectedCurrency}})</th>
+                                                <th style="width: 10%">Disc. (%)</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(POD,index) in PODetail">
+                                                <td>{{ index + 1 }}</td>
+                                                <td class="tdEllipsis">{{POD.activity_detail.service_detail.service.name}} - {{POD.activity_detail.service_detail.name}}</td>
+                                                <td class="tdEllipsis">{{POD.activity_detail.area}}</td>
+                                                <td class="tdEllipsis">{{POD.activity_detail.area_uom.name}}</td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control width100" v-model="POD.total_price" placeholder="Please Input Total Price">
+                                                </td>
+                                                <td class="tdEllipsis no-padding">
+                                                    <input class="form-control width100" v-model="POD.discount" placeholder="Discount">
                                                 </td>
                                                 <td class="textCenter">
                                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(POD,index)">
@@ -242,6 +282,8 @@
             remark : "",
         },
         delivery_date : "",
+        delivery_date_subcon : @json($modelPO->delivery_date),
+
     }
 
     var vm = new Vue({
@@ -259,12 +301,23 @@
                     });
                 }
             );
+            $("#delivery_date_subcon").datepicker().on(
+                "changeDate", () => {
+                    this.delivery_date_subcon = $('#delivery_date_subcon').val();
+                }
+            );
         },
         computed : {
             dataOk: function(){
                 let isOk = false;
-                if(this.modelPO.vendor_id == "" || this.modelPO.currency == "" || this.delivery_date == ""){
-                    isOk = true;
+                if(this.modelPO.purchase_requisition.type != 3){
+                    if(this.modelPO.vendor_id == "" || this.modelPO.currency == "" || this.delivery_date == ""){
+                        isOk = true;
+                    }
+                }else{
+                    if(this.modelPO.vendor_id == "" || this.modelPO.currency == ""){
+                        isOk = true;
+                    }
                 }
                 return isOk;
             },
@@ -360,6 +413,7 @@
                 this.submittedForm.modelPO = this.modelPO;
                 this.submittedForm.PODetail = data;
                 this.submittedForm.type = this.type;
+                this.submittedForm.delivery_date_subcon = this.delivery_date_subcon;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -427,18 +481,29 @@
                                     POD.quantity = (POD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 } 
                             }
+                            // delivery date
+                            if(POD.delivery_date == null || POD.delivery_date == ""){
+                                this.delivery_date = "";
+                                status = 1;
+                            }
+                            if(status == 0){
+                                this.delivery_date = "ok";
+                            }
+                        }else if(POD.purchase_requisition_detail.purchase_requisition.type == 2){
+                            POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+
+                            // delivery date
+                            if(POD.delivery_date == null || POD.delivery_date == ""){
+                                this.delivery_date = "";
+                                status = 1;
+                            }
+                            if(status == 0){
+                                this.delivery_date = "ok";
+                            }
                         }else{
                             POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
                         }
 
-                        // delivery date
-                        if(POD.delivery_date == null || POD.delivery_date == ""){
-                            this.delivery_date = "";
-                            status = 1;
-                        }
-                        if(status == 0){
-                            this.delivery_date = "ok";
-                        }
                     });
                 },
                 deep: true
@@ -511,7 +576,9 @@
 
             var data = this.PODetail;
             data.forEach(POD => {
-                POD.delivery_date = POD.delivery_date.split("-").reverse().join("-");
+                if(POD.purchase_requisition_detail.purchase_requisition.type != 3){
+                    POD.delivery_date = POD.delivery_date.split("-").reverse().join("-");
+                }
                 POD.price = parseFloat((POD.total_price / POD.quantity+"").replace(/,/g , ''));
                 POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;    
 
@@ -545,13 +612,16 @@
                     POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 } 
 
-                if(POD.delivery_date == null || POD.delivery_date == ""){
-                    this.delivery_date = "";
-                    status = 1;
+                if(POD.purchase_requisition_detail.purchase_requisition.type != 3){
+                    if(POD.delivery_date == null || POD.delivery_date == ""){
+                        this.delivery_date = "";
+                        status = 1;
+                    }
+                    if(status == 0){
+                        this.delivery_date = "ok";
+                    }
                 }
-                if(status == 0){
-                    this.delivery_date = "ok";
-                }
+
             });
 
             this.currencies.forEach(data => {

@@ -28,6 +28,7 @@ class CreateTrxPurchaseOrderTable extends Migration
             $table->string('delivery_terms')->nullable();
             $table->string('payment_terms')->nullable();
             $table->double('total_price')->nullable();
+            $table->date('delivery_date')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('approved_by')->nullable();

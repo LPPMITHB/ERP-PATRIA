@@ -71,7 +71,7 @@ class PurchaseOrderController extends Controller
         $datas = json_decode($request->datas);
         $currencies = Configuration::get('currencies');
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
-        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','project','resource','material.uom')->get();
+        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','project','resource','material.uom','activityDetail','activityDetail.areaUom','activityDetail.serviceDetail','activityDetail.serviceDetail.service')->get();
         $materials = Material::all();
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
@@ -85,9 +85,22 @@ class PurchaseOrderController extends Controller
                     $PRD['discount'] = 0;
                     $PRD['old_price'] = $PRD->resource->cost_standard_price;
                     $PRD['remark'] = $PRD->remark;
+                }elseif($PRD->purchaseRequisition->type == 3){
+                    $PRD['discount'] = 0;
+                    $PRD['old_price'] = $PRD->activityDetail->serviceDetail->cost_standard_price;
+                    $PRD['remark'] = $PRD->remark;
                 }
             }
         }
+        // foreach($modelSRD as $key=>$SRD){
+        //     if($SRD->reserved >= $SRD->quantity){
+        //         $modelSRD->forget($key);
+        //     }else{
+        //         $SRD['discount'] = 0;
+        //         $SRD['old_price'] = $SRD->activityDetail->serviceDetail->cost_standard_price;
+        //         $SRD['remark'] = $SRD->remark;
+        //     }
+        // }
         if($modelPR->project_id){
             $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
         }else{
@@ -119,6 +132,7 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        // print_r($datas);exit();
         $po_number = $this->generatePONumber();
         $value = "";
         $valueCurrency = Configuration::get('currencies');
@@ -149,6 +163,16 @@ class PurchaseOrderController extends Controller
             $PO->payment_terms = $datas->payment_terms;
             $PO->value = $value;
             $PO->description = $datas->description;
+            if($datas->type == 3){
+
+                $delivery_date_subcon = DateTime::createFromFormat('d-m-Y', $datas->delivery_date_subcon);
+                if($delivery_date_subcon){
+                    $delivery_date_subcon = $delivery_date_subcon->format('Y-m-d');
+                }else{
+                    $delivery_date_subcon = null;
+                }
+                $PO->delivery_date = $delivery_date_subcon;
+            }
             $PO->status = 1;
             $PO->user_id = Auth::user()->id;
             $PO->branch_id = Auth::user()->branch->id;
@@ -160,24 +184,33 @@ class PurchaseOrderController extends Controller
                 $POD = new PurchaseOrderDetail;
                 $POD->purchase_order_id = $PO->id;
                 $POD->purchase_requisition_detail_id = $data->id;
-                $POD->quantity = $data->quantity;
+                if($datas->type != 3){
+                    $POD->quantity = $data->quantity;
+                }elseif($datas->type == 3){
+                    $POD->quantity = 1;
+                }
                 if($datas->type == 1){
                     $POD->material_id = $data->material_id;
                     $POD->total_price = $data->material->cost_standard_price * $value * $data->quantity;
                 }elseif($datas->type == 2){
                     $POD->resource_id = $data->resource_id;
                     $POD->total_price = $data->resource->cost_standard_price * $value * $data->quantity;
+                }else{
+                    $POD->activity_detail_id = $data->activity_detail_id;
+                    $POD->total_price = $data->activity_detail->service_detail->cost_standard_price * $value;
                 }
                 $POD->discount = $data->discount;
                 $POD->project_id = $data->project_id;
                 $POD->remark = $data->remark;
-                $delivery_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
-                if($delivery_date){
-                    $delivery_date = $delivery_date->format('Y-m-d');
-                }else{
-                    $delivery_date = null;
+                if($datas->type != 3){
+                    $delivery_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
+                    if($delivery_date){
+                        $delivery_date = $delivery_date->format('Y-m-d');
+                    }else{
+                        $delivery_date = null;
+                    }
+                    $POD->delivery_date = $delivery_date;
                 }
-                $POD->delivery_date = $delivery_date;
                 $POD->save();
 
                 $statusPR = $this->updatePR($data->id,$data->quantity);
@@ -353,6 +386,62 @@ class PurchaseOrderController extends Controller
                     ]);
                 }
             }
+        }else{
+            foreach($modelPO->purchaseOrderDetails as $POD){
+                if(count($datas) > 0){
+                    $status = 0;
+                    foreach($datas as $key => $data){
+                         if($data['service_code'] == $POD->activityDetail->serviceDetail->service->name){
+                            $quantity = $data['quantity'] + $POD->quantity;
+                            $sub_total = $data['sub_total'] + $POD->total_price;
+
+                            $datas->push([
+                                "id" => $POD->id, 
+                                "service_code" => $POD->activityDetail->serviceDetail->service->name, 
+                                "service_name" => $POD->activityDetail->serviceDetail->name,
+                                "quantity" => $quantity,
+                                "discount" => $POD->discount,
+                                "price" => $POD->total_price / $POD->quantity,
+                                "sub_total" => $sub_total,
+                                "remark" => $POD->remark,
+                                "unit" => $POD->activityDetail->serviceDetail->uom->unit,
+
+                            ]);
+                            $status = 1;
+                            $datas->forget($key);
+                        }
+                    }
+                    if($status == 0){
+                        $total_discount += $POD->total_price * ($POD->discount/100);
+                        $datas->push([
+                            "id" => $POD->id, 
+                            "service_code" => $POD->activityDetail->serviceDetail->service->name, 
+                            "service_name" => $POD->activityDetail->serviceDetail->name,
+                            "quantity" => $POD->quantity,
+                            "discount" => $POD->discount,
+                            "price" => $POD->total_price / $POD->quantity,
+                            "sub_total" => $POD->total_price,
+                            "remark" => $POD->remark,
+                            "unit" => $POD->activityDetail->serviceDetail->uom->unit,
+
+                        ]);
+                    }
+                }else{
+                    $total_discount += $POD->total_price * ($POD->discount/100);
+                    $datas->push([
+                        "id" => $POD->id, 
+                        "service_code" => $POD->activityDetail->serviceDetail->service->name, 
+                        "service_name" => $POD->activityDetail->serviceDetail->name,
+                        "quantity" => $POD->quantity,
+                        "discount" => $POD->discount,
+                        "price" => $POD->total_price / $POD->quantity,
+                        "sub_total" => $POD->total_price,
+                        "remark" => $POD->remark,
+                        "unit" => $POD->activityDetail->serviceDetail->uom->unit,
+
+                    ]);
+                }
+            }
         }
         $tax = ($datas->sum('sub_total') - $total_discount) * ($modelPO->tax/100);
         return view('purchase_order.show', compact('modelPO','unit','route','datas','total_discount','tax','statusPO'));
@@ -498,6 +587,59 @@ class PurchaseOrderController extends Controller
                     ]);
                 }
             }
+        }else{
+            foreach($modelPO->purchaseOrderDetails as $POD){
+                if(count($datas) > 0){
+                    $status = 0;
+                    foreach($datas as $key => $data){
+                        if($data['service_code'] == $POD->activityDetail->serviceDetail->service->name){
+                            $quantity = $data['quantity'] + $POD->quantity;
+                            $sub_total = $data['sub_total'] + $POD->total_price;
+
+                            $datas->push([
+                                "id" => $POD->id, 
+                                "service_code" => $POD->activityDetail->serviceDetail->service->name, 
+                                "service_name" => $POD->activityDetail->serviceDetail->name,
+                                "quantity" => $quantity,
+                                "discount" => $POD->discount,
+                                "price" => $POD->total_price / $POD->quantity,
+                                "sub_total" => $sub_total,
+                                "remark" => $POD->remark,
+                                "unit" => $POD->activityDetail->serviceDetail->uom->unit,
+                            ]);
+                            $status = 1;
+                            $datas->forget($key);
+                        }
+                    }
+                    if($status == 0){
+                        $total_discount += $POD->total_price * ($POD->discount/100);
+                        $datas->push([
+                            "id" => $POD->id, 
+                            "service_code" => $POD->activityDetail->serviceDetail->service->name , 
+                            "service_name" => $POD->activityDetail->serviceDetail->name,
+                            "quantity" => $POD->quantity,
+                            "discount" => $POD->discount,
+                            "price" => $POD->total_price / $POD->quantity,
+                            "sub_total" => $POD->total_price,
+                            "remark" => $POD->remark,
+                            "unit" => $POD->activityDetail->serviceDetail->uom->unit,
+                        ]);
+                    }
+                }else{
+                    $total_discount += $POD->total_price * ($POD->discount/100);
+                    $datas->push([
+                        "id" => $POD->id, 
+                        "service_code" => $POD->activityDetail->serviceDetail->service->name , 
+                        "service_name" => $POD->activityDetail->serviceDetail->name,
+                        "quantity" => $POD->quantity,
+                        "discount" => $POD->discount,
+                        "price" => $POD->total_price / $POD->quantity,
+                        "sub_total" => $POD->total_price,
+                        "remark" => $POD->remark,
+                        "unit" => $POD->activityDetail->serviceDetail->uom->unit,
+                    ]);
+                }
+            }
         }
         $tax = ($datas->sum('sub_total') - $total_discount) * ($modelPO->tax/100);
         return view('purchase_order.showApprove', compact('modelPO','route','datas','total_discount','tax','unit','statusPO'));
@@ -507,7 +649,7 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource','material.uom','purchaseRequisitionDetail.purchaseRequisition')->get();
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource','material.uom','purchaseRequisitionDetail.purchaseRequisition','activityDetail','activityDetail.areaUom','activityDetail.serviceDetail','activityDetail.serviceDetail.service')->get();
         $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
         foreach($modelPOD as $POD){
             $POD['old_price'] = $POD->total_price / $POD->quantity;
@@ -542,13 +684,15 @@ class PurchaseOrderController extends Controller
                 $POD->quantity = $data->quantity;
                 $POD->total_price = $data->quantity * ($data->total_price * $PO->value);
                 $POD->remark = $data->remark;
-                $delivery_date = DateTime::createFromFormat('d-m-Y', $data->delivery_date);
-                if($delivery_date){
-                    $delivery_date = $delivery_date->format('Y-m-d');
-                }else{
-                    $delivery_date = null;
+                if($datas->modelPO->purchase_requisition->type != 3){
+                    $delivery_date = DateTime::createFromFormat('d-m-Y', $data->delivery_date);
+                    if($delivery_date){
+                        $delivery_date = $delivery_date->format('Y-m-d');
+                    }else{
+                        $delivery_date = null;
+                    }
+                    $POD->delivery_date = $delivery_date;
                 }
-                $POD->delivery_date = $delivery_date;
                 $POD->discount = $data->discount;
                 $POD->save();
 
@@ -568,6 +712,15 @@ class PurchaseOrderController extends Controller
             }
             $PO->delivery_terms = $datas->modelPO->delivery_terms;
             $PO->payment_terms = $datas->modelPO->payment_terms;
+            if($datas->type == 3){
+                $delivery_date_subcon = DateTime::createFromFormat('d-m-Y', $datas->delivery_date_subcon);
+                if($delivery_date_subcon){
+                    $delivery_date_subcon = $delivery_date_subcon->format('Y-m-d');
+                }else{
+                    $delivery_date_subcon = null;
+                }
+                $PO->delivery_date = $delivery_date_subcon;
+            }
             
             if($datas->modelPO->currency != $PO->currency){
                 $PO->value = $value;
@@ -670,9 +823,9 @@ class PurchaseOrderController extends Controller
 
     public function printPdf($id, Request $request)
     { 
-        $branch = Auth::user()->branch; 
+        $branch = Auth::user()->branch;
         $modelPO = PurchaseOrder::find($id);
-        print_r($modelPO);exit();
+        $projectName = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPO->purchase_requisition_id)->first();
         $discount = 0;
         $tax = 0;
         $freight = 0;
@@ -683,6 +836,7 @@ class PurchaseOrderController extends Controller
                 $freight += $POD->estimated_freight;
             }
         }
+        // print_r($modelPO);exit();
         $total_price = $modelPO->total_price - $discount + $tax + $freight;
         $words = numberConverter::longform($total_price);
         $route = $request->route()->getPrefix();
@@ -690,12 +844,45 @@ class PurchaseOrderController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         if($modelPO->purchaseRequisition->type != 3){
             $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
-        }else{
-            $pdf->loadView('purchase_order.pdf_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
+            
+            $now = date("Y_m_d_H_i_s");
+            return $pdf->download('Purchase_Order_'.$now.'.pdf');
         }
-        $now = date("Y_m_d_H_i_s");
+        else{
+            $pdf->loadView('purchase_order.pdf_PO_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
+            
+            $now = date("Y_m_d_H_i_s");
+            return $pdf->stream('Purchase_Order_Subcon'.$now.'.pdf');
+        }
+    }
 
-        return $pdf->download('Purchase_Order_'.$now.'.pdf');
+    public function printPdfJobOrder($id, Request $request)
+    { 
+        $branch = Auth::user()->branch;
+        $modelPO = PurchaseOrder::find($id);
+        $projectName = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPO->purchase_requisition_id)->first();
+        // $discount = 0;
+        // $tax = 0;
+        // $freight = 0;
+        // foreach($modelPO->purchaseOrderDetails as $POD){
+        //     if($POD->quantity > 0){
+        //         $discount += $POD->total_price * (($POD->discount)/100);
+        //         $tax += $POD->total_price * (($POD->tax)/100);
+        //         $freight += $POD->estimated_freight;
+        //     }
+        // }
+        // print_r($POD);exit();
+        // $total_price = $modelPO->total_price - $discount + $tax + $freight;
+        // $words = numberConverter::longform($total_price);
+        $route = $request->route()->getPrefix();
+        $pdf = app('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        if($modelPO->purchaseRequisition->type == 3){
+            $pdf->loadView('purchase_order.pdf_JO_subcon',['modelPO' => $modelPO,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
+            
+            $now = date("Y_m_d_H_i_s");
+            return $pdf->stream('Job_Order_'.$now.'.pdf');
+        }
     }
 
     // function
