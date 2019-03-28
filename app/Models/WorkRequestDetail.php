@@ -17,4 +17,9 @@ class WorkRequestDetail extends Model
     {
         return $this->belongsTo('App\Models\WBS');
     }
+
+    public function activity()
+    {
+        return $this->belongsTo('App\Models\Activity');
+    }
 }

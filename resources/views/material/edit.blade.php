@@ -244,7 +244,7 @@
             status : @json($material->status),
             type : @json($material->type),
             family_id : @json($dataFamily),
-            density_id : @json($material->density),
+            density_id : @json($material->density_id),
         },
         uom_settings: {
             placeholder: 'Select UOM!'
