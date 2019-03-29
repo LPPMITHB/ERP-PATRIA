@@ -1016,7 +1016,8 @@ class ProductionOrderController extends Controller
 
     public function createMR($modelPrOD){
         $mr_number = $this->generateMRNumber();
-        $project_id = ProductionOrder::findOrFail($modelPrOD[0]->production_order_id)->project_id;
+        $prod_order = ProductionOrder::findOrFail($modelPrOD[0]->production_order_id);
+        $project_id = $prod_order->project_id;
 
         $MR = new MaterialRequisition;
         $MR->number = $mr_number;
@@ -1035,6 +1036,7 @@ class ProductionOrderController extends Controller
                     $MRD->quantity = $PrOD->quantity;
                     $MRD->issued = 0;
                     $MRD->material_id = $PrOD->material_id;
+                    $MRD->wbs_id = $prod_order->wbs_id;
                     $MRD->save();
                 }
             }

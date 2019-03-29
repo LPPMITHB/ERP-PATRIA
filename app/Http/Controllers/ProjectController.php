@@ -824,9 +824,23 @@ class ProjectController extends Controller
         $dataActualCost->jsonSerialize();
         $dataActualProgress->jsonSerialize();
         $dataPlannedProgress->jsonSerialize();
+
+        $activities = [];
+        if($menu == "building"){
+            $wbss = WBS::where('project_id', $project->id)->with('bom.purchaseRequisition.purchaseOrders.vendor', 
+            'bom.purchaseRequisition.purchaseOrders.goodsReceipts.purchaseOrder','productionOrder',
+            'materialRequisitionDetails.material_requisition.goodsIssues.materialRequisition')->get();
+        }else{
+            $wbs_id = WBS::where('project_id', $project->id)->pluck('id')->toArray();
+            if(count($wbs_id)>0){
+                $activities = Activity::whereIn("wbs_id",$wbs_id)->with('activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.vendor',
+                'activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.goodsReceipts.purchaseOrder',
+                'wbs.productionOrder','wbs.materialRequisitionDetails.material_requisition.goodsIssues.materialRequisition')->get();
+            }
+        }
         
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project.show', compact('project','today','ganttData','links','outstanding_item','modelPrO','menu',
+        return view('project.show', compact('activities','wbss','project','today','ganttData','links','outstanding_item','modelPrO','menu',
         'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress', 'progressStatus'));
     }
 

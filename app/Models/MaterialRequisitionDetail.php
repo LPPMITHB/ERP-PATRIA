@@ -20,6 +20,6 @@ class MaterialRequisitionDetail extends Model
 
     public function material_requisition()
     {
-        return $this->belongsTo('App\Models\MaterialRequisition', 'wbs_id');
+        return $this->belongsTo('App\Models\MaterialRequisition');
     }
 }
