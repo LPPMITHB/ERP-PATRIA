@@ -94,7 +94,10 @@ Route::get('/getProjectWR/{id}', 'WorkRequestController@getProjectApi')->name('a
 Route::get('/getMaterialWIP/{id}', 'WorkRequestController@getMaterialWIPApi')->name('api.work_request.getMaterialWIPApi');
 Route::get('/getWbsWREdit/{id}/{wr_id}', 'WorkRequestController@getWbsEditAPI')->name('api.work_request.getWbsEditAPI');
 Route::get('/getMaterialWIPEdit/{id}/{wr_id}', 'WorkRequestController@getMaterialWIPEditAPI')->name('api.work_request.getMaterialWIPEditAPI');
-Route::get('/getActivityWR/{id}/{wr_id}', 'WorkRequestController@getActivityWRAPI')->name('api.work_request.getActivityWRAPI');
+Route::get('/getActivityWR/{id}', 'WorkRequestController@getActivityWRAPI')->name('api.work_request.getActivityWRAPI');
+Route::get('/getMaterialActivityWIP/{id}', 'WorkRequestController@getMaterialActivityWIPAPI')->name('api.work_request.getMaterialActivityWIPAPI');
+Route::get('/getBomPrepWR/{id}', 'WorkRequestController@getBomPrepWRAPI')->name('api.work_request.getBomPrepWRAPI');
+Route::get('/getDataActivityWR/{id}', 'WorkRequestController@getDataActivityWRAPI')->name('api.work_request.getDataActivityWRAPI');
 
 // material write off
 Route::get('/getMaterialMwo/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');

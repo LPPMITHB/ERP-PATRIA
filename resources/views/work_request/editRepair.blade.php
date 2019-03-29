@@ -1,16 +1,32 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Create Work Request',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Create Work Request' => route('work_request.create'),
+@if($menu == "building")
+    @breadcrumb(
+        [
+            'title' => 'Edit Work Request',
+            'subtitle' => '',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Work Request' => route('work_request.index'),
+                'Edit Work Request' => route('work_request.edit',$modelWR->id),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@else
+    @breadcrumb(
+        [
+            'title' => 'Edit Work Request',
+            'subtitle' => '',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View All Work Request' => route('work_request_repair.index'),
+                'Edit Work Request' => route('work_request_repair.edit',$modelWR->id),
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -19,60 +35,51 @@
         <div class="box">
             <div class="box-body">
                 @if($menu == "building")
-                    <form id="create-wr" class="form-horizontal" method="POST" action="{{ route('work_request.store') }}">
+                    <form id="edit-wr" class="form-horizontal" method="POST" action="{{ route('work_request.update',['id'=>$modelWR->id]) }}">
                 @else
-                    <form id="create-wr" class="form-horizontal" method="POST" action="{{ route('work_request_repair.store') }}">
+                    <form id="edit-wr" class="form-horizontal" method="POST" action="{{ route('work_request_repair.update',['id'=>$modelWR->id]) }}">
                 @endif
+                <input type="hidden" name="_method" value="PATCH">
                 @csrf
                     @verbatim
                     <div id="wr">
                         <div class="box-header no-padding">
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4">
-                                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
-                                    
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="selectedProject[0].customer.name" @mouseover="changeText"><b>: {{selectedProject[0].customer.name}}</b></div>
+                            <div class="col-xs-12 col-md-4" v-if="selectedProject != null">
+                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+        
+                                <div class="col-xs-5 no-padding">Project Number</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
+                                
+                                <div class="col-xs-5 no-padding">Ship Type</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
+        
+                                <div class="col-xs-5 no-padding">Customer</div>
+                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
 
-                                    <div class="col-xs-5 no-padding">Start Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
+                                <div class="col-xs-5 no-padding">Start Date</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
 
-                                    <div class="col-xs-5 no-padding">End Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
-                                </div>
-                            </template>
-                            <div class="col-xs-12 col-md-4">
-                                <label for="" >Project Name</label>
-                                <selectize v-model="project_id" :settings="projectSettings" :disabled="dataOk">
-                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
-                                </selectize>  
-                                <template v-if="selectedProject.length > 0">
-                                    <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
-                                        <label for="">Required Date</label>
-                                    </div>
-                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
-                                        <input v-model="required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
-                                    </div>
-                                </template>
+                                <div class="col-xs-5 no-padding">End Date</div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
                             </div>
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4 p-r-0">
-                                    <div class="col-sm-12 p-l-0">
-                                        <label for="">WR Description</label>
-                                    </div>
-                                    <div class="col-sm-12 p-l-0">
-                                        <textarea class="form-control" rows="4" v-model="description" ></textarea>
-                                    </div>
+                            <div class="col-xs-12 col-md-4 p-r-0">
+                                <div class="col-sm-12 col-lg-3 p-l-0 p-r-0 p-t-3">
+                                    <label for="">Required Date</label>
                                 </div>
-                            </template>
+                                <div class="col-sm-12 col-lg-8 p-l-0">
+                                    <input v-model="required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="required_date" id="required_date" placeholder="Set Default Required Date">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-4 p-r-0">
+                                <div class="col-sm-12 p-l-0">
+                                    <label for="">WR Description</label>
+                                </div>
+                                <div class="col-sm-12 p-l-0">
+                                    <textarea class="form-control" rows="4" v-model="description"></textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row" v-if="selectedProject.length > 0">
+                        <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <h4>Raw Material</h4>
                                 <table class="table table-bordered tableFixed" >
@@ -97,52 +104,46 @@
                                             <td class="tdEllipsis">{{ material.unit }}</td>
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
-                                            <td v-if="material.available != ''"class="tdEllipsis">{{ material.available }}</td>
-                                            <td v-else class="tdEllipsis">-</td>
+                                            <td class="tdEllipsis">{{ material.available }}</td>
                                             <td class="tdEllipsis">{{ material.description}}</td>
-                                            <td class="tdEllipsis">{{ material.required_date}}</td>
+                                            <td class="tdEllipsis">{{ material.required_date }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
                                                     EDIT
                                                 </a>
-                                                <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                    DELETE
-                                                </a>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                    <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td colspan="2" class="p-l-0 textLeft" v-show="materials.length == 0">
+                                            <td colspan="2" class="p-l-0 textLeft no-padding" v-show="materials.length == 0">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
                                                 </selectize>
                                             </td>
-                                            <td colspan="2" class="p-l-0 textLeft" v-show="materials.length > 0">
+                                            <td colspan="2" class="p-l-0 textLeft no-padding" v-show="materials.length > 0">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input class="form-control" v-model="dataInput.unit" disabled>
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input :disabled="materialOk" class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input class="form-control" v-model="dataInput.available" disabled>
                                             </td>
-                                            <td class="p-l-0">
-                                                <input class="form-control" v-model="dataInput.description" placeholder="Please Fill in this Field">
+                                            <td class="p-l-0 no-padding">
+                                                <input class="form-control" v-model="dataInput.description">
                                             </td>
-                                            <td class="p-l-0 textLeft">
-                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
+                                            <td class="no-padding p-l-0 textLeft no-padding">
+                                                <input v-model="dataInput.required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
-                                            <td class="p-l-0  textCenter">
+                                            <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tbody>
                                 </table>
 
                                 <h4>Finished Goods</h4>
@@ -164,7 +165,7 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterialFG">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }} - {{ material.wbs_desc }}</td>
+                                            <td class="tdEllipsis" v-if="material.wbs_number != ''">{{ material.wbs_number }} - {{ material.wbs_description }}</td>
                                             <td class="tdEllipsis" v-else>-</td>
                                             <td class="tdEllipsis">{{ material.activity_code }} - {{ material.activity_desc }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }}</td>
@@ -173,18 +174,13 @@
                                             <td v-if="material.quantity != null" class="tdEllipsis">{{ material.quantity }}</td>
                                             <td v-else class="tdEllipsis">-</td>
                                             <td class="tdEllipsis">{{ material.description}}</td>
-                                            <td class="tdEllipsis">{{ material.required_date}}</td>
+                                            <td class="tdEllipsis">{{ material.required_date }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a class="btn btn-primary btn-xs" data-toggle="modal" href="#editFG_item" @click="openEditModalFG(material,index)">
                                                     EDIT
                                                 </a>
-                                                <a href="#" @click="removeRowFG(index)" class="btn btn-danger btn-xs">
-                                                    DELETE
-                                                </a>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                    <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndexFG}}</td>
                                             <td class="p-l-0 textLeft" v-show="wbss.length > 0">
@@ -218,30 +214,29 @@
                                                     <option v-for="(material, index) in materialWIP" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input class="form-control" v-model="dataInputFG.unit" disabled>
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input :disabled="materialFGOk" class="form-control" v-model="dataInputFG.quantity" placeholder="Please Input Quantity">
                                             </td>
-                                            <td class="p-l-0">
+                                            <td class="p-l-0 no-padding">
                                                 <input class="form-control" v-model="dataInputFG.description" placeholder="Please Fill in this Field">
                                             </td>
-                                            <td class="p-l-0 textLeft">
-                                                <input v-model="dataInputFG.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="inputFG_required_date" id="inputFG_required_date" placeholder="Required Date">  
+                                            <td class="p-l-0 no-padding textLeft">
+                                                <input v-model="dataInputFG.required_date" required autocomplete="off" type="text" class="form-control datepicker width10 no-padding0" name="inputFG_required_date" id="inputFG_required_date" placeholder="Required Date">  
                                             </td>
-                                            <td class="p-l-0  textCenter">
+                                            <td class="p-l-0 no-padding textCenter">
                                                 <button @click.prevent="addFG" :disabled="createFGOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-12 p-t-10">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
-                            </div>
                         </div>
-                            
+                        <div class="col-md-12 p-r-0 p-t-10">
+                            <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">SAVE</button>
+                        </div>
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -254,10 +249,8 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
-                                                </selectize>
+                                                <label for="material" class="control-label">Material</label>
+                                                <input type="text" id="materiall" class="form-control" disabled> 
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="unit" class="control-label">Unit</label>
@@ -265,7 +258,7 @@
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="available" class="control-label">Available</label>
@@ -277,7 +270,7 @@
                                             </div>
                                             <div class="col-sm-12"> 
                                                 <label for="type" class="control-label">Required Date</label>
-                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
+                                                <input v-model="editInput.required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
                                             </div>
                                         </div>
                                     </div>
@@ -299,42 +292,17 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
+                                            <div class="col-sm-12"> 
+                                                <label for="wbs" class="control-label">WBS Name</label>
+                                                <input type="text" id="wbsFG" class="form-control" disabled> 
+                                            </div>
+                                            <div class="col-sm-12"> 
+                                                <label for="activity" class="control-label">Activity Name</label>
+                                                <input type="text" id="activityFG" class="form-control" disabled> 
+                                            </div>
                                             <div class="col-sm-12">
-                                                <label for="type" class="control-label">WBS Name</label>
-                                                <selectize id="edit_modal" v-model="editInputFG.wbs_id" :settings="wbsSettings">
-                                                    <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12"  v-show="activityFGEdit.length > 0">
-                                                <td class="col-sm-12">
-                                                    <label class="control-label">Activity Name</label>
-                                                    <selectize v-model="editInputFG.activity_id" :settings="activitySettings">
-                                                        <option v-for="(data, index) in activityFGEdit" :value="data.id">{{ data.code }} - {{ data.name}}</option>
-                                                    </selectize>
-                                                </td>
-                                            </div>
-                                            <div class="col-sm-12"  v-show="activityFGEdit.length == 0">
-                                                <td class="col-sm-12">
-                                                    <label class="control-label">Activity Name</label>
-                                                    <selectize disabled v-model="editInputFG.activity_id" :settings="activityNullSettings">
-                                                    </selectize>
-                                                </td>
-                                            </div>
-                                            <div class="col-sm-12" v-show="editInputFG.wbs_id != '' && materialWIPEdit.length == 0">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize disabled v-model="editInputFG.material_id" :settings="materialWIPNullSettings">
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12" v-show="editInputFG.wbs_id != '' && materialWIPEdit.length > 0">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize id="edit_modal" v-model="editInputFG.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materialWIPEdit" :value="material.material.id">{{ material.material.code }} - {{ material.material.description }}</option>
-                                                </selectize>
-                                            </div>
-                                            <div class="col-sm-12" v-show="editInputFG.wbs_id == ''">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize disabled :settings="nullSettings" disabled >
-                                                </selectize>  
+                                                <label for="material" class="control-label">Material</label>
+                                                <input type="text" id="materiallFG" class="form-control" disabled> 
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="unit" class="control-label">Unit</label>
@@ -342,7 +310,7 @@
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input :disabled="materialEditFGOk" type="text" id="quantity" v-model="editInputFG.quantity" class="form-control" placeholder="Please Input Quantity">
+                                                <input type="text" id="quantity" v-model="editInputFG.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
@@ -350,7 +318,7 @@
                                             </div>
                                             <div class="col-sm-12"> 
                                                 <label for="type" class="control-label">Required Date</label>
-                                                <input v-model="editInputFG.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="editFG_required_date" id="editFG_required_date" placeholder="Required Date">  
+                                                <input v-model="editInputFG.required_date" autocomplete="off" type="text" class="form-control datepicker width100" name="editFG_required_date" id="editFG_required_date" placeholder="Required Date">  
                                             </div>
                                         </div>
                                     </div>
@@ -375,58 +343,83 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-wr');
+    const form = document.querySelector('form#edit-wr');
 
     $(document).ready(function(){
+        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+            var title = $(this).text();
+            if(title == 'No' || title == 'Quantity' || title == ""){
+                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+            }else{
+                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+            }
+
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tableNonPagingVue.column(i).search() !== this.value ) {
+                    tableNonPagingVue
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            });
+        });
+
+        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+            orderCellsTop   : true,
+            paging          : false,
+            autoWidth       : false,
+            lengthChange    : false,
+            info            : false,
+        });
+
         $('div.overlay').hide();
     });
 
     var data = {
-        description : "",
+        tempAvailable: 0,
+        description : @json($modelWR->description),
+        wr_id : @json($modelWR->id),
         availableQuantity : [],
         newIndex : "",
-        newIndexFG : "",
-        boms : [],
-        materials : [],
+        modelWR : @json($modelWR),
+        selectedProject : @json($project),
+        dataMaterial : @json($modelWRD),
+        dataMaterialFG : @json($modelWRDFG),
+        materials : @json($materials),
         materialWIP : [],
-        materialsEdit : [],
-        materialWIPEdit : [],
-        projects : @json($modelProject),
-        wbss : [],
         activity : [],
         activityFG : [],
         activityFGEdit : [],
+        wbss : @json($wbss),
         project_id : "",
         projectSettings: {
             placeholder: 'Please Select Project'
         },
-        wbsSettings: {
-            placeholder: 'Please Select WBS'
-        },
-        activitySettings: {
-            placeholder: 'Please Select Activity'
-        },
         materialSettings: {
             placeholder: 'Please Select Material'
         },
+        wbsSettings: {
+            placeholder: 'Please Select WBS'
+        },
         nullSettings:{
-            placeholder: 'Please Select WBS First !'
+            placeholder: 'Please Select WBS first !'
         },
         wbsNullSettings:{
             placeholder: "Project doesn't have WBS !"
+        },
+        activitySettings: {
+            placeholder: 'Please Select Activity'
         },
         activityNullSettings:{
             placeholder: "WBS doesn't have activities !"
         },
         materialNullSettings:{
-            placeholder: "Project doesn't have BOM !"
+            placeholder: "WBS doesn't have BOM ! / Material already inputted"
         },
         materialWIPNullSettings:{
             placeholder: "WBS doesn't have BOM with source WIP !"
         },
-        selectedProject : [],
-        dataMaterial : [],
-        dataMaterialFG : [],
         dataInput : {
             material_id :"",
             material_code : "",
@@ -435,14 +428,12 @@
             quantityInt : 0,
             wbs_id : "",
             wbs_number : "",
-            wbs_desc :"",
-            activity_id : "",
-            activity_code : "",
-            activity_desc :"",
             available : "",
             description : "",
             required_date : "",
             unit : "",
+            wrd_id : null,
+            old_data : false,
         },
         editInput : {
             old_material_id : "",
@@ -453,14 +444,12 @@
             quantityInt : 0,
             wbs_id : "",
             wbs_number : "",
-            wbs_desc :"",
-            activity_id : "",
-            activity_code : "",
-            activity_desc :"",
+            wbs_description : "",
             available : "",
             description : "",
-            required_date : "",
             unit : "",
+            required_date : "",
+            
         },
         dataInputFG : {
             material_id :"",
@@ -470,13 +459,16 @@
             quantityInt : 0,
             wbs_id : "",
             wbs_number : "",
-            wbs_desc :"",
+            wbs_description : "",
             activity_id : "",
             activity_code : "",
             activity_desc :"",
             description : "",
             required_date : "",
             unit : "",
+            wrd_id : null,
+            old_data : false,
+
         },
         editInputFG : {
             old_material_id : "",
@@ -485,15 +477,15 @@
             material_name : "",
             quantity : "",
             quantityInt : 0,
-            wbs_id : "",
-            wbs_number : "",
-            wbs_desc :"",
             activity_id : "",
             activity_code : "",
             activity_desc :"",
+            wbs_id : "",
+            wbs_number : "",
+            wbs_description : "",
+            unit : "",
             description : "",
             required_date : "",
-            unit : "",
         },
         material_id:[],
         material_id_modal:[],
@@ -506,7 +498,57 @@
     var vm = new Vue({
         el : '#wr',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format: 'dd-mm-yyyy',
+            });
+            $("#required_date").datepicker().on(
+                "changeDate", () => {
+                    this.required_date = $('#required_date').val();
+                }
+            );
+            $("#input_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.dataInput.required_date = $('#input_required_date').val();
+                }
+            );
+            $("#edit_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.editInput.required_date = $('#edit_required_date').val();
+                }
+            );
+
+            $("#inputFG_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.dataInputFG.required_date = $('#inputFG_required_date').val();
+                }
+            );
+            $("#editFG_required_date").datepicker().on(
+                "changeDate", () => {
+                    this.editInputFG.required_date = $('#editFG_required_date').val();
+                }
+            );
+        },
         computed : {
+            materialOk: function(){
+                let isOk = false;
+
+                if(this.dataInput.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
+            materialFGOk: function(){
+                let isOk = false;
+
+                if(this.dataInputFG.material_id == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
             dataOk: function(){
                 let isOk = false;
                 
@@ -531,7 +573,7 @@
                 var string_newValue = this.dataInput.quantity+"";
                 this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.description == ""){
+                if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt)){
                     isOk = true;
                 }
                 
@@ -543,7 +585,7 @@
                 var string_newValue = this.dataInputFG.quantity+"";
                 this.dataInputFG.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
 
-                if(this.dataInputFG.material_id == "" || this.dataInputFG.quantityInt < 1 || this.dataInputFG.quantityInt == "" || isNaN(this.dataInputFG.quantityInt) || this.dataInputFG.wbs_id == "" || this.dataInputFG.description == ""){
+                if(this.dataInputFG.material_id == "" || this.dataInputFG.quantityInt < 1 || this.dataInputFG.quantityInt == "" || isNaN(this.dataInputFG.quantityInt) || this.dataInputFG.wbs_id == ""){
                     isOk = true;
                 }
                 
@@ -572,56 +614,35 @@
                 }
 
                 return isOk;
-            },
-            materialOk: function(){
-                let isOk = false;
-
-                if(this.dataInput.material_id == ""){
-                    isOk = true;
-                }
-
-                return isOk;
-            },
-            materialFGOk: function(){
-                let isOk = false;
-
-                if(this.dataInputFG.material_id == ""){
-                    isOk = true;
-                }
-
-                return isOk;
-            },
-            materialEditOk: function(){
-                let isOk = false;
-
-                if(this.editInput.material_id == ""){
-                    isOk = true;
-                }
-
-                return isOk;
-            },
-            materialEditFGOk: function(){
-                let isOk = false;
-
-                if(this.editInputFG.material_id == ""){
-                    isOk = true;
-                }
-
-                return isOk;
-            },
+            }
         },
         methods : {
-            changeText(){
-                if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
-                    if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != this.selectedProject[0].customer.name ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML=this.selectedProject[0].customer.name;    
-                    }
-                }
-            },  
+            tooltip(text){
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).tooltip('destroy');
+                    $(el).tooltip({
+                        title: text,
+                        placement: binding.arg,
+                        trigger: 'hover'             
+                    })
+                })
+                return text
+            }, 
             submitForm(){
                 this.submit = "";
                 this.submittedForm.description = this.description;
-                this.submittedForm.project_id = this.project_id;     
+                this.submittedForm.project_id = this.project_id;    
+
+                var data = this.dataMaterial;
+                data.forEach(wrd => {
+                    wrd.quantity = parseInt((wrd.quantity+"").replace(/,/g , ''));
+                });
+
+                var data = this.dataMaterialFG;
+                data.forEach(wrd => {
+                    wrd.quantity = parseInt((wrd.quantity+"").replace(/,/g , ''));
+                });
+
                 this.submittedForm.materials = this.dataMaterial;
                 this.submittedForm.materialsFG = this.dataMaterialFG;
 
@@ -640,18 +661,21 @@
                     material.material_code = data.code;
                     material.required_date = this.editInput.required_date;
 
-                    material.quantityInt = this.editInput.quantityInt;
+                    material.wbs_number = data.number;
+                    material.wbs_description = data.description;
+                    material.quantityInt = this.editInput.quantity;
                     material.quantity = this.editInput.quantity;
                     material.material_id = new_material_id;
+                    material.wbs_id = this.editInput.wbs_id;
                     material.description = this.editInput.description;
                     material.available = this.editInput.available;
                     material.unit = this.editInput.unit;
-                          
+
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
                     iziToast.warning({
-                        title: 'Please Try Again..',
+                        title: 'Please Try Again..'+error,
                         position: 'topRight',
                         displayMode: 'replace'
                     });
@@ -666,36 +690,36 @@
                     material.material_code = data.code;
                     material.required_date = this.editInputFG.required_date;
 
-
                     if(this.editInputFG.wbs_id != ''){
                         window.axios.get('/api/getWbsWr/'+this.editInputFG.wbs_id).then(({ data }) => {
                             material.wbs_number = data.number;
-                            material.wbs_desc = data.description;
-                            material.quantityInt = this.editInputFG.quantityInt;
+                            material.wbs_description = data.description;
+                            material.quantityInt = this.editInputFG.quantity;
                             material.quantity = this.editInputFG.quantity;
                             material.material_id = new_material_id;
                             material.wbs_id = this.editInputFG.wbs_id;
                             material.description = this.editInputFG.description;
+                            material.available = this.editInputFG.available;
                             material.unit = this.editInputFG.unit;
 
-                            window.axios.get('/api/getDataActivityWR/'+this.editInputFG.activity_id).then(({ data }) => {
-                                material.activity_code = data.code;
-                                material.activity_desc = data.name;
-                            })
-                            .catch((error) => {
-                                iziToast.warning({
-                                    title: 'Please Try Again..',
-                                    position: 'topRight',
-                                    displayMode: 'replace'
-                                });
-                                $('div.overlay').hide();
-                            })
+                            // window.axios.get('/api/getDataActivityWR/'+this.editInputFG.activity_id).then(({ data }) => {
+                            //     material.activity_code = data.code;
+                            //     material.activity_desc = data.name;
+                            // })
+                            // .catch((error) => {
+                            //     iziToast.warning({
+                            //         title: 'Please Try Again..',
+                            //         position: 'topRight',
+                            //         displayMode: 'replace'
+                            //     });
+                            //     $('div.overlay').hide();
+                            // })
 
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
                             iziToast.warning({
-                                title: 'Please Try Again..',
+                                title: 'Please Try Again..'+error,
                                 position: 'topRight',
                                 displayMode: 'replace'
                             });
@@ -709,7 +733,7 @@
                 })
                 .catch((error) => {
                     iziToast.warning({
-                        title: 'Please Try Again..',
+                        title: 'Please Try Again..'+error,
                         position: 'topRight',
                         displayMode: 'replace'
                     });
@@ -723,14 +747,13 @@
                 this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.quantityInt = data.quantityInt;
-                this.editInput.old_wbs_id = data.wbs_id;
-                this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_number = data.wbs_number;
-                this.editInput.index = index;
                 this.editInput.available = data.available;
                 this.editInput.description = data.description;
                 this.editInput.required_date = data.required_date;
                 this.editInput.unit = data.unit;
+                this.editInput.index = index;
+
+                document.getElementById('materiall').value = data.material_code+" - "+data.material_name;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -746,18 +769,21 @@
                 this.editInputFG.old_material_id = data.material_id;
                 this.editInputFG.material_code = data.material_code;
                 this.editInputFG.material_name = data.material_name;
-                this.editInputFG.activity_id = data.activity_id;
-                this.editInputFG.activity_code = data.activity_code;
-                this.editInputFG.activity_desc = data.activity_desc;
                 this.editInputFG.quantity = data.quantity;
                 this.editInputFG.quantityInt = data.quantityInt;
-                this.editInputFG.old_wbs_id = data.wbs_id;
                 this.editInputFG.wbs_id = data.wbs_id;
                 this.editInputFG.wbs_number = data.wbs_number;
-                this.editInputFG.index = index;
+                this.editInputFG.wbs_description = data.wbs_description;
+                this.editInputFG.activity_code = data.activity_code;
+                this.editInputFG.activity_desc = data.activity_desc;
                 this.editInputFG.description = data.description;
                 this.editInputFG.required_date = data.required_date;
                 this.editInputFG.unit = data.unit;
+                this.editInputFG.index = index;
+
+                document.getElementById('materiallFG').value = data.material_code+" - "+data.material_name;
+                document.getElementById('wbsFG').value = data.wbs_number+" - "+data.wbs_description;
+                document.getElementById('activityFG').value = data.activity_code+" - "+data.activity_desc;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -779,7 +805,7 @@
                     temp_data = JSON.parse(temp_data);
 
                     this.dataMaterial.push(temp_data);
-
+                    
                     this.dataInput.material_name = "";
                     this.dataInput.material_code = "";
                     this.dataInput.quantity = "";
@@ -789,12 +815,11 @@
                     this.dataInput.required_date = "";
                     
                     this.newIndex = Object.keys(this.dataMaterial).length+1;
-                    
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
                     iziToast.warning({
-                        title: 'Please Try Again..',
+                        title: 'Please Try Again..'+error,
                         position: 'topRight',
                         displayMode: 'replace'
                     });
@@ -819,11 +844,9 @@
                         temp_data = JSON.parse(temp_data);
 
                         this.dataMaterialFG.push(temp_data);
-                        
+
                         this.dataInputFG.material_name = "";
                         this.dataInputFG.material_code = "";
-                        this.dataInputFG.activity_desc = "";
-                        this.dataInputFG.activity_code = "";
                         this.dataInputFG.quantity = "";
                         this.dataInputFG.material_id = "";
                         this.dataInputFG.wbs_id = "";
@@ -831,30 +854,20 @@
                         this.dataInputFG.description = "";
                         this.dataInputFG.required_date = "";
                         
-                        this.newIndexFG = Object.keys(this.dataMaterialFG).length+1;
+                        this.newIndex = Object.keys(this.dataMaterialFG).length+1;
                     })
-                    
+
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
                     iziToast.warning({
-                        title: 'Please Try Again..',
+                        title: 'Please Try Again..'+error,
                         position: 'topRight',
                         displayMode: 'replace'
                     });
                     $('div.overlay').hide();
                 })
             },
-            removeRow(index){
-                this.dataMaterial.splice(index, 1);
-                
-                this.newIndex = this.dataMaterial.length + 1;
-            },
-            removeRowFG(index){
-                this.dataMaterialFG.splice(index, 1);
-                
-                this.newIndexFG = this.dataMaterialFG.length + 1;
-            }
         },
         watch : {
             'dataInput.material_id' : function(newValue){
@@ -876,21 +889,22 @@
                     window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
                         this.availableQuantity = data;
 
-                        this.dataInput.available = data.quantity - data.reserved;
-                        this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            this.dataInput.available = data.quantity - data.reserved;
+                            this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
                         iziToast.warning({
-                            title: 'Please Try Again..',
+                            title: 'Please Try Again..'+error,
                             position: 'topRight',
                             displayMode: 'replace'
                         });
                         $('div.overlay').hide();
                     })
 
+                    this.dataInput.quantity = "";
                 
                 }else{
 
@@ -915,107 +929,6 @@
                 }
             },
 
-            'editInput.material_id' : function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
-                        this.editInput.unit = data.uom.unit;
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                    window.axios.get('/api/getQuantityReserved/'+newValue).then(({ data }) => {
-                        this.availableQuantity = data;
-
-                        this.editInput.available = data.quantity - data.reserved;
-                        this.editInput.available = (this.editInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-
-                
-                }
-            },
-
-            'editInputFG.material_id' : function(newValue){
-                if(newValue != ""){
-                    window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
-                        this.editInputFG.unit = data.uom.unit;
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-
-                }
-            },
-
-            'project_id' : function(newValue){
-                
-                this.dataInput.wbs_id = "";
-                if(newValue != ""){
-                    this.dataInput.quantity = "";
-                    this.dataInput.available = "";
-                    this.dataInput.unit = "";
-                    $('div.overlay').show();
-                    window.axios.get('/api/getProjectMR/'+newValue).then(({ data }) => {
-                        this.selectedProject = [];
-                        this.selectedProject.push(data);
-                        this.selectedProject.forEach(data => {
-                            var date_planned = data.planned_start_date;
-                            var date_ended = data.planned_end_date;
-
-                            data.planned_start_date = date_planned.split("-").reverse().join("-");
-                            data.planned_end_date = date_ended.split("-").reverse().join("-");
-                        });
-                        this.wbss = data.wbss;
-                        $('div.overlay').hide();
-
-                        window.axios.get('/api/getBomPrepWR/'+newValue).then(({ data }) => {
-                            this.materials = data.bom;
-                        })
-                        .catch((error) => {
-                            iziToast.warning({
-                                title: 'Please Try Again..',
-                                position: 'topRight',
-                                displayMode: 'replace'
-                            });
-                            $('div.overlay').hide();
-                        })
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.selectedProject = [];
-                }
-            },
             'dataInput.quantity': function(newValue){
                 this.dataInput.quantityInt = newValue;
                 var string_newValue = newValue+"";
@@ -1040,57 +953,6 @@
                 quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 Vue.nextTick(() => this.editInputFG.quantity = quantity_string);
             },
-
-            'dataInput.wbs_id': function(newValue){
-                this.dataInput.material_id = "";
-                this.dataInput.unit = "";
-                this.dataInput.activity_id = "";
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getActivityWR/'+newValue).then(({ data }) => {
-                        this.dataInput.wbs_number = data.wbs.number;
-                        this.dataInput.wbs_desc = data.wbs.description;
-                        this.activity = data.activity;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.dataInput.wbs_id = "";
-                }
-            },
-            'editInput.wbs_id': function(newValue){
-                if(this.editInput.old_wbs_id != newValue){
-                    this.editInput.material_id = "";
-                    this.editInput.quantity = "";
-                    this.editInput.unit = "";
-                    this.editInput.quantityInt = 0;
-                }
-
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
-                        this.materialsEdit = data.materials;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.editInput.wbs_id = "";
-                }
-            },
             'dataInputFG.wbs_id': function(newValue){
                 this.dataInputFG.material_id = "";
                 this.dataInputFG.unit = "";
@@ -1100,7 +962,7 @@
                     $('div.overlay').show();
                     window.axios.get('/api/getActivityWR/'+newValue).then(({ data }) => {
                         this.dataInputFG.wbs_number = data.wbs.number;
-                        this.dataInputFG.wbs_desc = data.wbs.description;
+                        this.dataInputFG.wbs_description = data.wbs.description;
                         this.activityFG = data.activity;
                         
                         $('div.overlay').hide();
@@ -1115,32 +977,6 @@
                     })
                 }else{
                     this.dataInputFG.wbs_id = "";
-                }
-            },
-            'editInputFG.wbs_id': function(newValue){
-                if(this.editInputFG.old_wbs_id != newValue){
-                    this.editInputFG.material_id = "";
-                    this.editInputFG.quantity = "";
-                    this.editInputFG.unit = "";
-                    this.editInputFG.quantityInt = 0;
-                }
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getActivityWR/'+newValue).then(({ data }) => {
-                        this.activityFGEdit = data.activity;
-
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.editInputFG.wbs_id = "";
                 }
             },
             'dataInputFG.activity_id' : function(newValue){
@@ -1163,26 +999,6 @@
                     this.dataInputFG.activity_id = "";
                 }
             },
-            'editInputFG.activity_id' : function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getMaterialActivityWIP/'+newValue).then(({ data }) => {
-                        this.materialWIPEdit = data.activity;
-                        
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.editInputFG.activity_id = "";
-                }
-            },
             'required_date': function(newValue){
                 this.dataMaterial.forEach(data =>{
                     if(newValue != ''){
@@ -1197,10 +1013,48 @@
                 });
             }
         },
+        
         created: function() {
-            
+
             this.newIndex = Object.keys(this.dataMaterial).length+1;
             this.newIndexFG = Object.keys(this.dataMaterialFG).length+1;
+            this.dataMaterial.forEach( function (wrd, i) {
+                wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                wrd.available = (wrd.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                if(wrd.required_date != null && wrd.required_date != ''){
+                    var date = wrd.required_date;
+                    wrd.required_date = date.split("-").reverse().join("-");
+                }
+                
+                wrd.material_name = wrd.material.description;
+                wrd.material_code = wrd.material.code;
+                wrd.unit = wrd.material.uom.unit;
+                wrd.quantityInt = wrd.quantity;
+                wrd.wrd_id = wrd.id;
+
+            });
+
+            this.dataMaterialFG.forEach( function (wrd, i) {
+                wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                if(wrd.required_date != null && wrd.required_date != ''){
+                    var date = wrd.required_date;
+                    wrd.required_date = date.split("-").reverse().join("-");
+                }
+                
+                wrd.material_name = wrd.material.description;
+                wrd.material_code = wrd.material.code;
+                wrd.activity_code = wrd.activity.code;
+                wrd.activity_desc = wrd.activity.name;
+                wrd.unit = wrd.material.uom.unit;
+                wrd.quantityInt = wrd.quantity;
+                wrd.wrd_id = wrd.id;
+                wrd.wbs_number = wrd.wbs.number;
+                wrd.wbs_description = wrd.wbs.description;
+
+            });
+
             Vue.directive('tooltip', function(el, binding){
                 $(el).tooltip({
                     title: binding.value,
@@ -1209,37 +1063,6 @@
                 })
             })
         },
-        updated: function(){
-            $('.datepicker').datepicker({
-                autoclose : true,
-                format: 'dd-mm-yyyy',
-            });
-            $("#required_date").datepicker().on(
-                "changeDate", () => {
-                    this.required_date = $('#required_date').val();
-                }
-            );
-            $("#input_required_date").datepicker().on(
-                "changeDate", () => {
-                    this.dataInput.required_date = $('#input_required_date').val();
-                }
-            );
-            $("#edit_required_date").datepicker().on(
-                "changeDate", () => {
-                    this.editInput.required_date = $('#edit_required_date').val();
-                }
-            );
-            $("#inputFG_required_date").datepicker().on(
-                "changeDate", () => {
-                    this.dataInputFG.required_date = $('#inputFG_required_date').val();
-                }
-            );
-            $("#editFG_required_date").datepicker().on(
-                "changeDate", () => {
-                    this.editInputFG.required_date = $('#editFG_required_date').val();
-                }
-            );
-        }
     });
 </script>
 @endpush

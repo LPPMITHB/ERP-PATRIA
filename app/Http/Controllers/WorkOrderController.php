@@ -199,8 +199,9 @@ class WorkOrderController extends Controller
         $modelWO = WorkOrder::where('id',$id)->with('workRequest')->first();
         $modelWOD = WorkOrderDetail::where('work_order_id',$id)->with('material','workRequestDetail','wbs')->get();
         $modelProject = Project::where('id',$modelWO->workRequest->project_id)->with('ship','customer')->first();
+        $currencies = Configuration::get('currencies');
 
-        return view('work_order.edit', compact('modelWO','modelWOD','modelProject','route'));
+        return view('work_order.edit', compact('modelWO','modelWOD','modelProject','route','currencies'));
     }
 
     public function update(Request $request)
