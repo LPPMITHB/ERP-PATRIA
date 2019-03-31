@@ -33,6 +33,11 @@ class ProductionOrderDetail extends Model
         return $this->hasMany('App\Models\ProductionOrderDetail');
     }
 
+    public function goodsReceiptDetails()
+    {
+        return $this->hasMany('App\Models\GoodsReceiptDetail');
+    }
+
     public function resourceDetail()
     {
         return $this->belongsTo('App\Models\ResourceDetail');
@@ -41,5 +46,10 @@ class ProductionOrderDetail extends Model
     public function performanceUom()
     {
         return $this->belongsTo('App\Models\Uom', 'performance_uom_id');
+    }
+
+    public function dimensionUom()
+    {
+        return $this->belongsTo('App\Models\Uom','dimension_uom_id');
     }
 }

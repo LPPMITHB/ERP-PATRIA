@@ -316,46 +316,10 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom_repair.materialSummary',
         ]);
 
-        $manageBomRepair = Menu::where('route_name','bom_repair.indexProject')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBomRepair,
-            'route_name' => 'bom_repair.indexProject',
-        ]);
-
-         DB::table('sidenav')->insert([
-            'menu_id' => $manageBomRepair,
-            'route_name' => 'bom_repair.selectWBS',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBomRepair,
-            'route_name' => 'bom_repair.index',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBomRepair,
-            'route_name' => 'bom_repair.create',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBomRepair,
-            'route_name' => 'bom_repair.edit',
-        ]);
-
         $viewBom = Menu::where('route_name','bom_repair.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewBom,
-            'route_name' => 'bom_repair.selectProject',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewBom,
-            'route_name' => 'bom_repair.indexBom',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewBom,
-            'route_name' => 'bom_repair.show',
+            'route_name' => 'bom_repair.index',
         ]);
 
         $viewRap = Menu::where('route_name','rap.indexSelectProject')->select('id')->first()->id;

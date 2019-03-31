@@ -200,13 +200,13 @@ class ActivityController extends Controller
                         }
                     }
                     if($data['service_id'] != null){
-                        $activityDetailSerivice = new ActivityDetail;
-                        $activityDetailSerivice->activity_id = $activity->id;
-                        $activityDetailSerivice->service_detail_id = $data['service_detail_id'];
-                        $activityDetailSerivice->area = $data['area'];
-                        $activityDetailSerivice->vendor_id = $data['vendor_id'];
-                        $activityDetailSerivice->area_uom_id = $data['area_uom_id'];
-                        $activityDetailSerivice->save();
+                        $activityDetailService = new ActivityDetail;
+                        $activityDetailService->activity_id = $activity->id;
+                        $activityDetailService->service_detail_id = $data['service_detail_id'];
+                        $activityDetailService->area = $data['area'];
+                        $activityDetailService->vendor_id = $data['vendor_id'];
+                        $activityDetailService->area_uom_id = $data['area_uom_id'];
+                        $activityDetailService->save();
                     }
                 }
             }
@@ -334,6 +334,7 @@ class ActivityController extends Controller
             }
             
             if($activity->wbs->project->business_unit_id == 2){
+
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
                     if(count($data['dataMaterial']) > 0){
                         // print_r(count($data['dataMaterial'])); exit();
@@ -347,6 +348,7 @@ class ActivityController extends Controller
                                         $material_density = $density->value;
                                     }
                                 }
+
                                 if($material_density == 0){
                                     DB::rollback();
                                     return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
@@ -414,12 +416,24 @@ class ActivityController extends Controller
                         }
                     }
                     if($data['service_id'] != null){
-                        $activityDetailSerivice = ActivityDetail::find($data['act_detail_service_id']);
-                        $activityDetailSerivice->service_detail_id = $data['service_detail_id'];
-                        $activityDetailSerivice->area = $data['area'];
-                        $activityDetailSerivice->vendor_id = $data['vendor_id'];
-                        $activityDetailSerivice->area_uom_id = $data['area_uom_id'];
-                        $activityDetailSerivice->update();
+                        $activityDetailService = ActivityDetail::find($data['act_detail_service_id']);
+                        $new = false;
+                        if($activityDetailService == null){
+                            $activityDetailService = new ActivityDetail;
+                            $activityDetailService->activity_id = $activity->id;
+                            $new = true;
+                        }
+                        $activityDetailService->service_detail_id = $data['service_detail_id'];
+                        $activityDetailService->area = $data['area'];
+                        $activityDetailService->vendor_id = $data['vendor_id'];
+                        $activityDetailService->area_uom_id = $data['area_uom_id'];
+                        
+                        if($new){
+                            $activityDetailService->save();
+                        }else{
+                            $activityDetailService->update();
+                        }
+
                     }
                 }
             }

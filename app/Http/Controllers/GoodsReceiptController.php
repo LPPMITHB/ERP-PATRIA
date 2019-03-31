@@ -363,7 +363,6 @@ class GoodsReceiptController extends Controller
  
     public function updateStock($material_id,$received){
         $modelStock = Stock::where('material_id',$material_id)->first();
-       
 
         if($modelStock){
             $modelStock->quantity += $received;
