@@ -72,7 +72,7 @@
                                         <label for="">Currency</label>
                                     </div>
                                     <div class="col-sm-9 p-t-13 p-l-0">
-                                        <selectize v-model="currency" :settings="currencySettings">
+                                        <selectize :disabled="currencyOk" v-model="currency" :settings="currencySettings">
                                             <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
                                         </selectize>
                                     </div>
@@ -104,18 +104,20 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th style="width: 30%">Material Name</th>
+                                                <th style="width: 25%">Material Number</th>
+                                                <th style="width: 25%">Material Description</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
                                                 <th style="width: 15%">Price / pcs (Rp.)</th>
                                                 <th style="width: 10%">Discount (%)</th>
-                                                <th style="width: 30%">WBS Name</th>
+                                                <th style="width: 20%">WBS Name</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(WOD,index) in WODetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ WOD.material.code }} - {{ WOD.material.name }}</td>
+                                                <td class="tdEllipsis">{{ WOD.material.code }} </td>
+                                                <td class="tdEllipsis">{{ WOD.material.description }}</td>
                                                 <td class="tdEllipsis">{{ WOD.work_request_detail.quantity }}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control" v-model="WOD.quantity" placeholder="Please Input Quantity">
@@ -161,10 +163,16 @@
         modelWO : @json($modelWO),
         WODetail : @json($modelWOD),
         modelProject : @json($modelProject),
+        currencies : @json($currencies),
         modelVendor : [],
         vendorSettings: {
             placeholder: 'Please Select Vendor'
         },
+        currencySettings: {
+            placeholder: 'Please Select Currency'
+        },
+        currency : "",
+
         submittedForm : {},
     }
 

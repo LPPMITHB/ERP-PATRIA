@@ -148,6 +148,8 @@
                                 <td>{{ number_format($WRD->quantity) }}</td>
                                 @if(isset($WRD->wbs))
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}">{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}</td>
+                                @else
+                                <td class="tdEllipsis">-</td>
                                 @endif
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->description}}">{{$WRD->description}}</td>
                                 <td>{{ ($WRD->type == 0) ? 'Raw Material' : 'Finished Goods' }}</td>
