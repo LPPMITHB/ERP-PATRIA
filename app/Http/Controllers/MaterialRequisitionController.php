@@ -170,7 +170,11 @@ class MaterialRequisitionController extends Controller
         $modelMRD = $modelMR->materialRequisitionDetails;
         foreach($modelMRD as $MRD){
             $issued = MaterialRequisitionDetail::where('material_id',$MRD->material_id)->where('wbs_id',$MRD->wbs_id)->get()->sum('issued');
-            $MRD['planned_quantity'] = $MRD->wbs != null ? $MRD->wbs->bom->bomDetails->where('material_id',$MRD->material_id)->first()->quantity : "-";
+            if($route == "/material_requisition"){
+                $MRD['planned_quantity'] = $MRD->wbs != null ? $MRD->wbs->bom->bomDetails->where('material_id',$MRD->material_id)->first()->quantity : "-";
+            }else{
+                $MRD['planned_quantity'] = "-";
+            }
             $MRD['issued'] = $issued;
         }
 
