@@ -1551,13 +1551,15 @@
                             activity.activity_details.forEach(act_detail => {
                                 if(act_detail.material_id != null){
                                         act_detail.bom_prep.bom_details.forEach(bom_detail => {
-                                            temp_pr.push(bom_detail.bom.purchase_requisition);  
-                                            bom_detail.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
-                                                temp_po.push(purchase_order);
-                                                purchase_order.goods_receipts.forEach(gr => {
-                                                    temp_gr.push(gr);
-                                                });
-                                            });                                     
+                                            if(bom_detail.bom.purchase_requisition != null){
+                                                temp_pr.push(bom_detail.bom.purchase_requisition);  
+                                                bom_detail.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
+                                                    temp_po.push(purchase_order);
+                                                    purchase_order.goods_receipts.forEach(gr => {
+                                                        temp_gr.push(gr);
+                                                    });
+                                                });                                     
+                                            }
                                     });
                                     
                                     
