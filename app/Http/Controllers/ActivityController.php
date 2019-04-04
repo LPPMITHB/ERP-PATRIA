@@ -50,7 +50,7 @@ class ActivityController extends Controller
             }
             $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
             $vendors = Vendor::all();
-            $uoms = UOM::all();
+            // $uoms = UOM::all();
             $project = $wbs->project;
             $menu = "repair";
     
