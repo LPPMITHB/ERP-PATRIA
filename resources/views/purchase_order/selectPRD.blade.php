@@ -65,7 +65,7 @@
                                     <th width="8%">Rmn</th>
                                     <th width="6%">Unit</th>
                                     <th width="15%">Project Number</th>
-                                    <th width="10%">Alocation</th>
+                                    <th width="10%">Allocation</th>
                                     <th width="5%"></th>
                                 </tr>
                             </thead>

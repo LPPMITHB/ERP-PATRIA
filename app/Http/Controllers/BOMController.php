@@ -796,6 +796,7 @@ class BOMController extends Controller
                     $PRD->material_id = $bom_detail->material_id;
                     $PRD->quantity = $bom_detail->pr_quantity;
                     $PRD->project_id = $modelProject->id;
+                    $PRD->alocation = "Stock";
                     $PRD->save();
                 }
             }

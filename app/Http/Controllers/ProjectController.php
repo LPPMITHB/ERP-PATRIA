@@ -51,53 +51,6 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
    
-    //  public function tableRequest(Request $request) {
-    //     $data = $request->json()->all();
-
-    //     $columns = $data['columnFilters'];
-
-    //     foreach ($columns as $key => $value) {
-    //         $likes[] = [$key,'like',"%$value%"];
-    //     }
-
-    //     $sortType = $data['sort']['type'];
-    //     $sortField = $data['sort']['field'];
-
-    //     $skip = ($data['page'] - 1) * $data['perPage'];
-        
-    //     $totalRecords = SalesOrder::where('status', 1)->count();
-
-    //     $take = $data['perPage'] == '-1' ? $totalRecords : $data['perPage'];
-
-    //     $sos = SalesOrder::
-    //                     orderBy($sortField, $sortType)
-    //                     ->where('status', 1)
-    //                     ->where($likes)
-    //                     ->skip($skip)
-    //                     ->take($take)
-    //                     ->get();
-
-    //     $modelSO = array();
-        
-    //     foreach($sos as $data){
-    //         $arr = array(
-    //             'number'    => $data->number,
-    //             'customer'  => $data->quotation->customer->name,
-    //             'product'   => $data->quotation->estimator->ship->type,
-    //             'created_at'=> substr($data->created_at, 0, 10),
-    //         );
-
-    //         $modelSO[] = $arr;
-    //     }      
-
-    //     $rows = [
-    //         'modelSO' => $modelSO,
-    //         'totalRecords' => $totalRecords
-    //     ];
-
-    //     return response($rows ,200);
-    // }
-
     public function listWBS($id, $menu){
         $project = Project::find($id);
         $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
@@ -838,10 +791,69 @@ class ProjectController extends Controller
                 'wbs.productionOrder','wbs.materialRequisitionDetails.material_requisition.goodsIssues.materialRequisition')->get();
             }
         }
-        
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
-        return view('project.show', compact('activities','wbss','project','today','ganttData','links','outstanding_item','modelPrO','menu',
-        'dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress', 'progressStatus'));
+
+        // ngitung expected end date
+        $modelWBS = WBS::where('project_id',$project->id)->get();
+        $WbsAll = WBS::where('project_id',$project->id)->get();
+        if(count($modelWBS)> 0){
+
+            foreach($modelWBS as $key => $wbs){
+                foreach($WbsAll as $dataWbs){
+                    if($dataWbs->wbs_id == $wbs->id){
+                        $modelWBS->forget($key);
+                    }
+                }
+            }
+            $dateGlobal = date("Y-m-d");
+            $date = date_create($dateGlobal);
+            $late_days = 0;
+            foreach($modelWBS as $wbs){
+                if($wbs->progress >= 100){
+                    $planned_end_date = date_create($wbs->planned_end_date);
+                    $actual_end_date = date_create($wbs->actual_end_date);
+                    $diff=date_diff($actual_end_date,$planned_end_date);
+                    if($diff->invert == 0){
+                        $late_days += $diff->d * -1;
+                    }else{
+                        $late_days += $diff->d;
+                    }
+                }else{
+                    if($wbs->planned_end_date < $dateGlobal){
+                        $planned_end_date = date_create($wbs->planned_end_date);
+                        $diff=date_diff($date,$planned_end_date);
+                        $late_days += $diff->d;
+                    }
+                }
+            }
+            $latestDate = WBS::orderBy('planned_end_date','desc')->where('project_id',$project->id)->first()->planned_end_date;
+            $expectedDate = date($latestDate);
+            $expectedDate = strtotime($expectedDate);
+            $expectedDate = date("Y-m-d",strtotime("$late_days day", $expectedDate));
+    
+            $project_end_date = date_create($project->planned_end_date);
+            $expected_end_date = date_create($expectedDate);
+            $diff=date_diff($expected_end_date,$project_end_date);
+    
+            if($expectedDate == $project->planned_end_date){
+                $expectedDate = date("d-m-Y", strtotime($expectedDate));
+                $expectedStatus = 0;
+                $str_expected_date = "$expectedDate, On Time";
+            }elseif($expectedDate < $project->planned_end_date){
+                $expectedDate = date("d-m-Y", strtotime($expectedDate));
+                $expectedStatus = 1;
+                $str_expected_date = "$expectedDate, $diff->d day(s) early than project's planned end date";
+            }elseif($expectedDate > $project->planned_end_date){
+                $expectedDate = date("d-m-Y", strtotime($expectedDate));
+                $expectedStatus = 2;
+                $str_expected_date = "$expectedDate, $diff->d day(s) late than project's planned end date";
+            }
+        }else{
+            $str_expected_date = null;
+            $expectedStatus = null;
+        }
+
+        return view('project.show', compact('activities','wbss','project','today','ganttData','links','outstanding_item','modelPrO','menu','dataPlannedCost','dataActualCost','dataActualProgress','dataPlannedProgress', 'progressStatus','str_expected_date','expectedStatus'));
     }
 
 

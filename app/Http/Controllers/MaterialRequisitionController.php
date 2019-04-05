@@ -63,6 +63,22 @@ class MaterialRequisitionController extends Controller
         return view('material_requisition.create', compact('modelProject','menu','stocks'));
     }
 
+    public function createRepair(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        if($menu == "repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }elseif($menu == "building"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }    
+
+        $stocks = Stock::all();
+        foreach($stocks as $stock){
+            $stock['available'] = $stock->quantity - $stock->reserved;
+        }
+        return view('material_requisition.createRepair', compact('modelProject','menu','stocks'));
+    }
+
     public function store(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
@@ -457,8 +473,7 @@ class MaterialRequisitionController extends Controller
     }
 
     public function getProjectApi($id){
-        $project = Project::where('id',$id)->with('ship','customer','wbss')->first()->jsonSerialize();
-
+        $project = Project::where('id',$id)->with('ship','customer','wbss','boms.bomDetails.material')->first()->jsonSerialize();
         return response($project, Response::HTTP_OK);
     }
 
@@ -478,6 +493,29 @@ class MaterialRequisitionController extends Controller
         $data = [];
 
         $bom = Bom::where('wbs_id',$wbs_id)->first();
+        $planned_quantity = $bom->bomDetails->where('material_id', $id)->first()->quantity;
+
+        // $stock = Stock::where('material_id',$id)->first();
+        // $available = $stock->quantity - $stock->reserved;
+        // if($available < 0){
+        //     $available = 0;
+        // }
+        // $data['available'] = $available;
+        $material = Material::where('id',$id)->first();
+        $data['is_decimal'] = $material->uom->is_decimal == 1 ? true:false;
+        $data['unit'] = $material->uom->unit;
+        $data['planned_quantity'] = $planned_quantity;
+
+        return response($data, Response::HTTP_OK);
+
+        
+    }
+
+    public function getMaterialInfoRepairAPI($id, $project_id)
+    {
+        $data = [];
+
+        $bom = Bom::where('project_id',$project_id)->first();
         $planned_quantity = $bom->bomDetails->where('material_id', $id)->first()->quantity;
 
         // $stock = Stock::where('material_id',$id)->first();
