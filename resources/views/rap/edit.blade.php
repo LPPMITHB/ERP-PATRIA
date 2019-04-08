@@ -77,7 +77,7 @@
                                     <th width="30%">Material Description</th>
                                     <th width="5%">Unit</th>
                                     <th width="15%">Quantity</th>
-                                    <th width="25%">Cost per pcs (Rp.)</th>
+                                    <th width="25%">Cost per unit (Rp.)</th>
                                     <th width="25%">Sub Total Cost (Rp.)</th>
                                 </tr>
                             </thead>
@@ -186,7 +186,8 @@
                 handler: function(newValue) {
                     this.modelRAPD.forEach(rapDetail => {
                         rapDetail.price = (rapDetail.price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
-                        rapDetail.priceTotal = parseInt((rapDetail.price+"").replace(/,/g , '')) * rapDetail.quantity;
+                        let total = parseInt((rapDetail.price+"").replace(/,/g , '')) * rapDetail.quantity;
+                        rapDetail.priceTotal = (total+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
                     });
                 },
                 deep: true
