@@ -169,7 +169,7 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="30%">Material Name</th>
+                            <th width="15%">Material Code</th>
                             <th width="31%">Description</th>
                             <th width="7%">Quantity</th>
                             <th width="7%">Used</th>
@@ -180,10 +180,10 @@
                     <tbody>
                         @php($counter=1)
                         @foreach($modelPrO->ProductionOrderDetails as $PrOD)
-                        @if($PrOD->material_id != "")
+                        @if($PrOD->material_id != "" && $PrOD->production_order_detail_id == null)
                             <tr>
                                 <td>{{ $counter++ }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->code }} - {{ $PrOD->material->name }}">{{ $PrOD->material->code }} - {{ $PrOD->material->name }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->code }}">{{ $PrOD->material->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->description }}">{{ $PrOD->material->description }}</td>
                                 <td>{{ number_format($PrOD->quantity) }}</td>
                                 <td>{{ number_format($PrOD->actual) }}</td>
@@ -263,37 +263,6 @@
                 </div>
             @endif
 
-            @if($route == "/production_order_repair")
-                {{-- table service --}}
-                <div class="box-body p-t-0 p-b-5">
-                    <h4>Service</h4>
-                    <table class="table table-bordered showTable" id="service-table">
-                        <thead>
-                            <tr>
-                                <th width="5%">No</th>
-                                <th width="30%">Service Name</th>
-                                <th width="31%">Description</th>
-                                <th width="17%">Quantity</th>
-                                <th width="17%">Used</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php($counter=1)
-                            @foreach($modelPrO->ProductionOrderDetails as $PrOD)
-                                @if($PrOD->service_id != "")
-                                    <tr>
-                                        <td>{{ $counter++ }}</td>
-                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->service->code }} - {{ $PrOD->service->name }}">{{ $PrOD->service->code }} - {{ $PrOD->service->name }}</td>
-                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->service->description }}">{{ $PrOD->service->description }}</td>
-                                        <td>{{ number_format($PrOD->quantity) }}</td>
-                                        <td>{{ number_format($PrOD->actual) }}</td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>

@@ -72,7 +72,7 @@
                                 T.{{$branch->phone_number}} F.{{$branch->fax}}
                             </div>
                         </div>
-                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Job Order</b></h2>
+                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Purchase Order</b></h2>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                     <div>
@@ -87,38 +87,44 @@
                     <div style="margin-top:-100px; padding-top: -15px">
                         <div style="margin-left: 450px;">
                             <div style="font-size: 11px;">PO Number  </div>
-                            <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                {{$modelPO->number}}                    
+                            <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
+                                : {{$modelPO->number}}                    
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">PO Date  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{date("d-m-Y", strtotime($modelPO->created_at))}}                    
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                : {{date("D, d M Y", strtotime($modelPO->created_at))}}                    
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">PR Number  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelPO->purchaseRequisition->number}}                    
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                : {{$modelPO->purchaseRequisition->number}}                    
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Payment Terms  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{($modelPO->payment_terms != null) ? $modelPO->payment_terms : '-'}}                     
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                : {{($modelPO->payment_terms != null) ? $modelPO->payment_terms : '-'}}                     
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Delivery Terms  </div>
-                            <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{($modelPO->delivery_terms != null) ? $modelPO->delivery_terms : '-'}}                    
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                : {{($modelPO->delivery_terms != null) ? $modelPO->delivery_terms : '-'}}                    
+                            </div>
+                        </div>
+                        <div  style="margin-left: 450px;">
+                            <div style="font-size: 11px;">Delivery Date  </div>
+                            <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                : {{date("D, d M Y", strtotime($modelPO->delivery_date))}}
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Job  </div>
-                            <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                {{($modelPO->project) ? $modelPO->project->number : '-'}}                 
+                            <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
+                                : {{($modelPO->project) ? $modelPO->project->number : '-'}}                 
                             </div>
                         </div>
                     </div>
@@ -134,14 +140,13 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div>
-                        <table class="table-bordered" id="work_order_pdf" style="width: 100%; margin-left: -10px">
+                        <table class="table-bordered" id="purchase_order_pdf" style="width:100%; margin-left:-10px">
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="5%" class="text-center">No</th>
                                     <th style="font-size: 11px" width="15%" class="text-center" >Service Number</th>
                                     <th style="font-size: 11px" width="20%" class="text-center">Service Description</th>
-                                    <th style="font-size: 11px" width="7%" class="text-center">Qty</th>
-                                    <th style="font-size: 11px" width="8%" class="text-center">Unit</th>
+                                    <th style="font-size: 11px" width="15%" class="text-center">Area / Detail</th>
                                     <th style="font-size: 11px" width="15%" class="text-center">Unit Price</th>
                                     <th style="font-size: 11px" width="5%" class="text-center">Disc (%)</th>
                                     <th style="font-size: 11px" width="15%" class="text-center">Amount</th>
@@ -154,14 +159,13 @@
                                 @foreach($modelPO->purchaseOrderDetails as $POD)
                                     @if($POD->quantity > 0)
                                         <tr>
-                                            <td style="font-size: 11px" width="5%">{{ $loop->iteration }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="15%" class="tdBreakWord">{{ $POD->service->code }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="20%" class="tdBreakWord">{{ $POD->service->description }}</td>
-                                            <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{ number_format($POD->quantity) }}</td>
-                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="8%" class="tdBreakWord text-center">{{ $POD->service->uom->unit }}</td>
-                                            <td style="font-size: 11px" width="15%" class="tdBreakWord text-right">{{ number_format($POD->total_price / $POD->quantity,2) }}</td>
+                                            <td style="font-size: 11px" width="5%" class="text-center">{{ $loop->iteration }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="13%" class="tdBreakWord p-l-5">{{ $POD->activityDetail->serviceDetail->service->code }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="22%" class="tdBreakWord p-l-5">{{ $POD->activityDetail->serviceDetail->service->name }} - {{ $POD->activityDetail->serviceDetail->name }}</td>
+                                            <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">{{ $POD->activityDetail->area }} {{ $POD->activityDetail->areaUom->name }}</td>
+                                            <td style="font-size: 11px" width="15%" class="tdBreakWord text-right p-r-2">Rp. {{ number_format($POD->total_price / $POD->quantity,2) }}</td>
                                             <td style="font-size: 11px" width="5%" class="tdBreakWord text-center">{{ number_format($POD->discount,2) }}</td>
-                                            <td style="font-size: 11px" width="15%" class="tdBreakWord text-right">{{ number_format($POD->total_price - ($POD->total_price * ($POD->discount/100)),2) }}</td>
+                                            <td style="font-size: 11px" width="15%" class="tdBreakWord text-right p-l-2">Rp. {{ number_format($POD->total_price - ($POD->total_price * ($POD->discount/100)),2) }}</td>
                                         </tr>
                                         @php($discount += $POD->total_price * (($POD->discount)/100))
                                         @php($tax += $POD->total_price * (($POD->tax)/100))

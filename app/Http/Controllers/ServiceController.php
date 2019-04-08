@@ -187,7 +187,9 @@ class ServiceController extends Controller
 
     public function updateDetail(Request $request)
     {
+        
         $data = $request->json()->all();
+        
         DB::beginTransaction();
         try {
             $modelSD = ServiceDetail::findOrFail($data['service_detail_id']);

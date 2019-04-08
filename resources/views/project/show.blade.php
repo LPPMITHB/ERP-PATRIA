@@ -38,7 +38,7 @@
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
             <a href="{{ route('activity.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
-            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
+            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait" style="display: none">PROJECT COST EVALUATION</a>
         </div>
     @else
         <div class="box-tools pull-left m-l-15">
@@ -72,10 +72,10 @@
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Description</div>
-                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->description}}"><b>: {{$project->description}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->description}}"><b>: {{isset($project->description) ? $project->description : '-'}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Status</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status = 1 ? "Open" : "Closed" }}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status = 1 ? "OPEN" : "CLOSED" }}</b></div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-3 col-md-12">    
@@ -200,12 +200,13 @@
                         <thead>
                             <tr>
                                 <th style="vertical-align: middle" class="textCenter" rowspan="2">Comp. %</th>
-                                <th class="textCenter" colspan="4">In-Wk & Cum Performance</th>
+                                <th class="textCenter" colspan="3">In-Week Performance</th>
+                                <th class="textCenter">Cum. Performance</th>
                             </tr>
                             <tr>
                                 <th class="textCenter">Last Week</th>
                                 <th class="textCenter">This Week</th>
-                                <th class="textCenter">In-Wk Gain</th>
+                                <th class="textCenter">In-Week Gain</th>
                                 <th style="width: 10%" class="textCenter">Status</th>
                             </tr>
                         </thead>
@@ -214,14 +215,14 @@
                                 <th>Expected Comp. %</th>
                                 <td class="textCenter">{{progressStatus.last_week_planned}} %</td>
                                 <td class="textCenter">{{progressStatus.this_week_planned}} %</td>
-                                <td class="textCenter">{{progressStatus.this_week_planned - progressStatus.last_week_planned}} %</td>
+                                <td class="textCenter">{{progressStatus.expected_in_week_gain}} %</td>
                                 <td v-if="progressStatus.this_week_actual - progressStatus.this_week_planned < 0" rowspan="2" class="textCenter" style="background-color: red; color: white; font-size:1.2em">
                                     <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
                                 </td>
-                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned > 0" rowspan="2" class="textCenter" style="background-color: green; color: white; font-size:1.2em">
+                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned > 0" rowspan="2" class="textCenter" style="background-color: #3db9d3; color: white; font-size:1.2em">
                                     <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
                                 </td>
-                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned == 0" rowspan="2" class="textCenter" style="background-color: green; color: white; font-size:1.2em">
+                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned == 0" rowspan="2" class="textCenter" style="background-color: #3db9d3; color: white; font-size:1.2em">
                                     <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i>
                                 </td>
                             </tr>
@@ -230,6 +231,12 @@
                                 <td class="textCenter">{{progressStatus.last_week_actual}} %</td>
                                 <td class="textCenter">{{progressStatus.this_week_actual}} %</td>
                                 <td class="textCenter">{{progressStatus.this_week_actual - progressStatus.last_week_actual}} %</td>
+                            </tr>
+                            <tr>
+                                <th v-if="expectedStatus != null">Expected End Date</th>
+                                <td colspan="4" v-if="expectedStatus == 0" style="background-color: #3db9d3; color: white;">{{str_expected_date}}</td>
+                                <td colspan="4" v-else-if="expectedStatus == 1" style="background-color: #3db9d3; color: white;">{{str_expected_date}}</td>
+                                <td colspan="4" v-else-if="expectedStatus == 2" style="background-color: red; color: white;">{{str_expected_date}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -351,6 +358,290 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+
+    <div class="modal fade" id="mm_prod_info">
+        <div class="modal-dialog modalPredecessor">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Material Management and Production Execution Information</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box-group accordion" id="accordion_pr">
+                        <div class="panel box box-primary">
+                            <div class="no-padding box-header with-border">
+                                <h5 class="pull-left">
+                                    <a data-toggle="collapse" data-parent="#accordion_pr" href="#pr">
+                                        Purchase Requisitions <template v-if="active_pr.length == 0">(NO TRANSACTION RECORDED)</template>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="pr" class="panel-collapse collapse in" v-if="active_pr.length > 0">
+                                <div class="p-l-0 p-r-0 box-body">
+                                    <table class="table table-bordered tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th class="p-l-5" style="width: 5%">No</th>
+                                                <th style="width: 15%">Number</th>
+                                                <th style="width: 29%">Description</th>
+                                                <th style="width: 12%">Status</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data,index) in active_pr">
+                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td v-if="data.status == 0" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('ORDERED')">ORDERED</td>
+                                                <td v-else-if="data.status == 1" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('OPEN')">OPEN</td>
+                                                <td v-else-if="data.status == 2" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('APPROVED')">APPROVED</td>
+                                                <td v-else-if="data.status == 3" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('NEEDS REVISION')">NEEDS REVISION</td>
+                                                <td v-else-if="data.status == 4" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REVISED')">REVISED</td>
+                                                <td v-else-if="data.status == 5" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REJECTED')">REJECTED</td>
+                                                <td v-else-if="data.status == 6" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('CONSOLIDATED')">CONSOLIDATED</td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openPr(data.id)" target="_blank">
+                                                        DETAILS
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-group accordion" id="accordion_po">
+                        <div class="panel box box-primary">
+                            <div class="no-padding box-header with-border">
+                                <h5 class="pull-left">
+                                    <a data-toggle="collapse" data-parent="#accordion_po" href="#po">
+                                        Purchase Orders <template v-if="active_po.length == 0">(NO TRANSACTION RECORDED)</template>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="po" class="panel-collapse collapse in" v-if="active_po.length > 0">
+                                <div class="p-l-0 p-r-0 box-body">
+                                    <table class="table table-bordered tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th class="p-l-5" style="width: 5%">No</th>
+                                                <th style="width: 15%">Number</th>
+                                                <th style="width: 29%">Description</th>
+                                                <th style="width: 12%">Vendor</th>
+                                                <th style="width: 12%">Status</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data,index) in active_po">
+                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.vendor.code+' - '+data.vendor.name)">
+                                                        {{data.vendor.code}} - {{data.vendor.name}}
+                                                    </td>
+                                                <td v-if="data.status == 0" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('RECEIVED')">RECEIVED</td>
+                                                <td v-else-if="data.status == 1" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('OPEN')">OPEN</td>
+                                                <td v-else-if="data.status == 2" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('APPROVED')">APPROVED</td>
+                                                <td v-else-if="data.status == 3" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('NEEDS REVISION')">NEEDS REVISION</td>
+                                                <td v-else-if="data.status == 4" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REVISED')">REVISED</td>
+                                                <td v-else-if="data.status == 5" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REJECTED')">REJECTED</td>
+                                                <td v-else-if="data.status == 6" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('CONSOLIDATED')">CONSOLIDATED</td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openPo(data.id)" target="_blank">
+                                                        DETAILS
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-group accordion" id="accordion_gr">
+                        <div class="panel box box-primary">
+                            <div class="no-padding box-header with-border">
+                                <h5 class="pull-left">
+                                    <a data-toggle="collapse" data-parent="#accordion_gr" href="#gr">
+                                        Goods Receipts <template v-if="active_gr.length == 0">(NO TRANSACTION RECORDED)</template>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="gr" class="panel-collapse collapse in" v-if="active_gr.length > 0">
+                                <div class="p-l-0 p-r-0 box-body">
+                                    <table class="table table-bordered tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th class="p-l-5" style="width: 5%">No</th>
+                                                <th style="width: 15%">Number</th>
+                                                <th style="width: 29%">Description</th>
+                                                <th style="width: 12%">PO Number</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data,index) in active_gr">
+                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.purchase_order.number)">
+                                                    <a :href="openPo(data.purchase_order.id)" target="_blank">
+                                                        {{data.purchase_order.number}}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openGr(data.id)" target="_blank">
+                                                        DETAILS
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-group accordion" id="accordion_mr">
+                        <div class="panel box box-primary">
+                            <div class="no-padding box-header with-border">
+                                <h5 class="pull-left">
+                                    <a data-toggle="collapse" data-parent="#accordion_mr" href="#mr">
+                                        Material Requisitions <template v-if="active_mr.length == 0">(NO TRANSACTION RECORDED)</template>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="mr" class="panel-collapse collapse in" v-if="active_mr.length > 0">
+                                <div class="p-l-0 p-r-0 box-body">
+                                    <table class="table table-bordered tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th class="p-l-5" style="width: 5%">No</th>
+                                                <th style="width: 15%">Number</th>
+                                                <th style="width: 29%">Description</th>
+                                                <th style="width: 12%">Status</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data,index) in active_mr">
+                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td v-if="data.status == 0" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('ORDERED')">ORDERED</td>
+                                                <td v-else-if="data.status == 1" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('OPEN')">OPEN</td>
+                                                <td v-else-if="data.status == 2" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('APPROVED')">APPROVED</td>
+                                                <td v-else-if="data.status == 3" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('NEEDS REVISION')">NEEDS REVISION</td>
+                                                <td v-else-if="data.status == 4" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REVISED')">REVISED</td>
+                                                <td v-else-if="data.status == 5" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REJECTED')">REJECTED</td>
+                                                <td v-else-if="data.status == 6" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('CONSOLIDATED')">CONSOLIDATED</td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openMr(data.id)" target="_blank">
+                                                        DETAILS
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-group accordion" id="accordion_gi">
+                        <div class="panel box box-primary">
+                            <div class="no-padding box-header with-border">
+                                <h5 class="pull-left">
+                                    <a data-toggle="collapse" data-parent="#accordion_gi" href="#gi">
+                                        Goods Issues <template v-if="active_gi.length == 0">(NO TRANSACTION RECORDED)</template>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="gi" class="panel-collapse collapse in" v-if="active_gi.length > 0">
+                                <div class="p-l-0 p-r-0 box-body">
+                                    <table class="table table-bordered tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th class="p-l-5" style="width: 5%">No</th>
+                                                <th style="width: 15%">Number</th>
+                                                <th style="width: 29%">Description</th>
+                                                <th style="width: 15%">MR Number</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data,index) in active_gi">
+                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material_requisition.number)">
+                                                    <a :href="openMr(data.material_requisition_id)" target="_blank">
+                                                        {{data.material_requisition.number}}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openGi(data.id)" target="_blank">
+                                                        DETAILS
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-group accordion" id="accordion_prod">
+                        <div class="panel box box-primary">
+                            <div class="no-padding box-header with-border">
+                                <h5 class="pull-left">
+                                    <a data-toggle="collapse" data-parent="#accordion_prod" href="#prod">
+                                        Production Orders <template v-if="active_prod.length == 0">(NO TRANSACTION RECORDED)</template>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="prod" class="panel-collapse collapse in" v-if="active_prod.length > 0">
+                                <div class="p-l-0 p-r-0 box-body">
+                                    <table class="table table-bordered tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th class="p-l-5" style="width: 5%">No</th>
+                                                <th style="width: 15%">Number</th>
+                                                <th style="width: 12%">Status</th>
+                                                <th style="width: 10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data,index) in active_prod">
+                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
+                                                <td v-if="data.status == 0" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('CLOSED')">CLOSED</td>
+                                                <td v-else-if="data.status == 1" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('UNRELEASED')">UNRELEASED</td>
+                                                <td v-else-if="data.status == 2" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('RELEASED')">RELEASED</td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openProd(data.id)" target="_blank">
+                                                        DETAILS
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSave" type="button" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 </div>
 @endverbatim
         
@@ -405,7 +696,7 @@
     </div>
 </div>
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-sm-6" style="margin-top: -5px;">
         <div class="box box-solid">
             <div class="box-header with-border"><h4><b>Outstanding Item Report</b></h4></div>
@@ -447,7 +738,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 <form id="form" class="form-horizontal" method="POST">
     <input type="hidden" name="_method" value="PATCH">
@@ -783,11 +1074,14 @@
             })
         })
 
+        
         var data = {
             menu : @json($menu),
             project_id : @json($project->id),
             project : @json($project),
             today : @json($today),
+            activities : @json($activities),
+            wbss : @json($wbss),
             progressStatus : @json($progressStatus),
             predecessorActivities : [],
             activity:"",
@@ -799,8 +1093,15 @@
                 current_progress : 0,
             },
             havePredecessor : false,
+            active_pr : [],
+            active_po : [],
+            active_gr : [],
+            active_mr : [],
+            active_gi : [],
+            active_prod : [],
+            str_expected_date : @json($str_expected_date),
+            expectedStatus : @json($expectedStatus),
         };
-
         var vm = new Vue({
             el: '#confirm_activity',
             data: data,
@@ -846,6 +1147,60 @@
 
             }, 
             methods:{
+                openPr(id){
+                    if(this.menu == "building"){
+                        url = "/purchase_requisition/"+id;
+                    }else{
+                        url = "/purchase_requisition_repair/"+id;
+                    }
+                    
+                    return url
+                },
+                openPo(id){
+                    if(this.menu == "building"){
+                        url = "/purchase_order/"+id;
+                    }else{
+                        url = "/purchase_order_repair/"+id;
+                    }
+                    
+                    return url
+                },
+                openGr(id){
+                    if(this.menu == "building"){
+                        url = "/goods_receipt/"+id;
+                    }else{
+                        url = "/goods_receipt_repair/"+id;
+                    }
+                    
+                    return url
+                },
+                openMr(id){
+                    if(this.menu == "building"){
+                        url = "/material_requisition/"+id;
+                    }else{
+                        url = "/material_requisition_repair/"+id;
+                    }
+                    
+                    return url
+                },
+                openGi(id){
+                    if(this.menu == "building"){
+                        url = "/goods_issue/"+id;
+                    }else{
+                        url = "/goods_issue_repair/"+id;
+                    }
+                    
+                    return url
+                },
+                openProd(id){
+                    if(this.menu == "building"){
+                        url = "/production_order/"+id;
+                    }else{
+                        url = "/production_order_repair/"+id;
+                    }
+                    
+                    return url
+                },
                 getStatus:function(data){
                     text = "";
                     if(data < 0){
@@ -1107,6 +1462,11 @@
                 },    
             },
             created: function(){
+                this.progressStatus.last_week_actual = parseFloat(this.progressStatus.last_week_actual).toFixed(2);
+                this.progressStatus.last_week_planned = parseFloat(this.progressStatus.last_week_planned).toFixed(2);
+                this.progressStatus.this_week_actual = parseFloat(this.progressStatus.this_week_actual).toFixed(2);
+                this.progressStatus.this_week_planned = parseFloat(this.progressStatus.this_week_planned).toFixed(2);
+                this.progressStatus.expected_in_week_gain = parseFloat(this.progressStatus.this_week_planned - this.progressStatus.last_week_planned).toFixed(2);
                 $('div.overlay').hide();
             }
         });
@@ -1123,18 +1483,131 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            // if(vm.menu == "building"){
-            //     var url = "/production_order/checkProdOrder/"+id;
+            if(e.target.classList[0] != "gantt_tree_icon"){
+                if(vm.menu == "building"){
+                    if(id.indexOf("WBS") !== -1){
+                        var temp_pr = [];
+                        var temp_po = [];
+                        var temp_gr = [];
+                        var temp_mr = [];
+                        var temp_gi = [];
+                        var temp_prod = [];
+        
+                        vm.wbss.forEach(wbs => {
+                            if(wbs.code == id){
+                                if(wbs.bom != null){
+                                    if(wbs.bom.purchase_requisition != null){
+                                        temp_pr.push(wbs.bom.purchase_requisition);  
+                                        wbs.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
+                                            temp_po.push(purchase_order);
+                                            purchase_order.goods_receipts.forEach(gr => {
+                                                temp_gr.push(gr);
+                                            });
+                                        });     
+                                    }
+                                }
+                                if(wbs.production_order != null){
+                                    temp_prod.push(wbs.production_order);
+                                }
 
-            //     const form = document.getElementById('form');
-            //     form.setAttribute('action', url);
-            //     form.submit();
-            // }else{
-            //     var url = "/production_order_repair/checkProdOrder/"+id;
-            //     const form = document.getElementById('form');
-            //     form.setAttribute('action', url);
-            //     form.submit();
-            // }
+                                var temp_mr_id = []
+                                if(wbs.material_requisition_details.length > 0){
+                                    wbs.material_requisition_details.forEach(mrd => {
+                                        if(temp_mr_id.includes(mrd.material_requisition_id) == false){
+                                            temp_mr_id.push(mrd.material_requisition_id);
+                                            temp_mr.push(mrd.material_requisition);
+                                        }
+                                    });
+                                }
+            
+                                temp_mr.forEach(mr => {
+                                    mr.goods_issues.forEach(gi => {
+                                        temp_gi.push(gi); 
+                                    });
+                                });
+                            }
+
+                        });
+
+                        vm.active_pr = [];
+                        vm.active_po = [];
+                        vm.active_gr = [];
+                        vm.active_mr = [];
+                        vm.active_gi = [];
+                        vm.active_prod = [];
+        
+                        vm.active_pr = temp_pr;
+                        vm.active_po = temp_po;
+                        vm.active_gr = temp_gr;
+                        vm.active_mr = temp_mr;
+                        vm.active_gi = temp_gi;
+                        vm.active_prod = temp_prod;
+                        $('#mm_prod_info').modal();
+                    }
+                }else{
+                    if(id.indexOf("ACT") !== -1){
+                        var temp_pr = [];
+                        var temp_po = [];
+                        var temp_gr = [];
+                        var temp_mr = [];
+                        var temp_gi = [];
+                        var temp_prod = [];
+
+                        vm.activities.forEach(activity => {
+                        if(activity.code == id){
+                                activity.activity_details.forEach(act_detail => {
+                                    if(act_detail.material_id != null){
+                                            act_detail.bom_prep.bom_details.forEach(bom_detail => {
+                                                temp_pr.push(bom_detail.bom.purchase_requisition);  
+                                                bom_detail.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
+                                                    temp_po.push(purchase_order);
+                                                    purchase_order.goods_receipts.forEach(gr => {
+                                                        temp_gr.push(gr);
+                                                    });
+                                                });                                     
+                                        });
+                                        
+                                        
+                                    }
+                                });
+                                if(activity.wbs.production_order != null){
+                                    temp_prod.push(activity.wbs.production_order);
+                                }
+
+                                var temp_mr_id = []
+                                if(activity.wbs.material_requisition_details.length > 0){
+                                    activity.wbs.material_requisition_details.forEach(mrd => {
+                                        if(temp_mr_id.includes(mrd.material_requisition_id) == false){
+                                            temp_mr_id.push(mrd.material_requisition_id);
+                                            temp_mr.push(mrd.material_requisition);
+                                        }
+                                    });
+                                }
+
+                                temp_mr.forEach(mr => {
+                                    mr.goods_issues.forEach(gi => {
+                                    temp_gi.push(gi); 
+                                    });
+                                });
+                        } 
+                        });
+                        vm.active_pr = [];
+                        vm.active_po = [];
+                        vm.active_gr = [];
+                        vm.active_mr = [];
+                        vm.active_gi = [];
+                        vm.active_prod = [];
+
+                        vm.active_pr = temp_pr;
+                        vm.active_po = temp_po;
+                        vm.active_gr = temp_gr;
+                        vm.active_mr = temp_mr;
+                        vm.active_gi = temp_gi;
+                        vm.active_prod = temp_prod;
+                        $('#mm_prod_info').modal();
+                    }
+                }
+            }
             return true;
         });
     });

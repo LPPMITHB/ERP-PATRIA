@@ -95,7 +95,7 @@
 
             <div class="box-body p-t-0 p-b-5">
                 <h4>Activity</h4>
-                <table class="table table-bordered showTable tableFixed" id="activity-table">
+                <table class="table table-bordered tableFixed" id="activity-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -103,6 +103,7 @@
                             <th width="30%">Description</th>
                             <th width="15%">Planned Start Date</th>
                             <th width="15%">Planned End Date</th>
+                            <th width="8%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,6 +120,9 @@
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->description}}">{{ $activity->description }}</td>
                                     <td>{{ $planned_start_date }}</td>
                                     <td>{{ $planned_end_date }}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs col-xs-12 buttonDetail" id="{{$activity->id}}">DETAILS</button>
+                                    </td>
                                 </tr>
                             @endif
                         @endforeach
@@ -135,19 +139,21 @@
                             <th width="15%">Material Code</th>
                             <th width="30%">Description</th>
                             <th width="10%">Quantity</th>
+                            <th width="10%">Used</th>
                             <th width="10%">Unit</th>
                             <th width="10%">Source</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php($counter = 1)
-                        @foreach($modelBOM->bomDetails as $BOMD)
+                        @foreach($modelBOMD as $BOMD)
                             @if($BOMD->material_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">{{ $BOMD->material->code }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
                                     <td>{{ number_format($BOMD->quantity) }}</td>
+                                    <td>{{ number_format($BOMD->used) }}</td>
                                     <td>{{ $BOMD->material->uom->unit }}</td>
                                     <td>{{ $BOMD->source }}</td>
                                 </tr>
@@ -157,7 +163,7 @@
                 </table>
             </div> <!-- /.box-body -->
 
-            {{-- <div class="box-body p-t-0 p-b-5">
+            <div class="box-body p-t-0 p-b-5">
                 <h4>Resource</h4>
                 <table class="table table-bordered showTable tableFixed" id="resource-table">
                     <thead>
@@ -179,63 +185,31 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div> <!-- /.box-body --> --}}
-            
-            @if($route == '/production_order_repair')
-            <div class="box-body p-t-0 p-b-5">
-                    <h4>Service</h4>
-                <table class="table table-bordered showTable" id="service-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="35%">Service Name</th>
-                            <th width="30%">Description</th>
-                            <th width="30%">Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php($counter = 1)
-                        @foreach($modelBOM->bomDetails as $BOMD)
-                            @if($BOMD->service_id != "")
-                                <tr>
-                                    <td>{{ $counter++ }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->code }} - {{ $BOMD->service->name }}">{{ $BOMD->service->code }} - {{ $BOMD->service->name }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->description }}">{{ $BOMD->service->description }}</td>
-                                    <td>{{ number_format($BOMD->quantity) }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
             </div> <!-- /.box-body -->
-            @endif
 
             @if($route == "/production_order")
-                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.store') }}">
+                <form id="create-PrO" class="form-horizontal" method="POST" action="{{ route('production_order.store') }}">
             @elseif($route == "/production_order_repair")
-                <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.store') }}">
+                <form id="create-PrO" class="form-horizontal" method="POST" action="{{ route('production_order_repair.store') }}">
             @endif
                 @csrf
             @verbatim
             <div id="production_order">
                 <div class="box-body">
-                    <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material</h4>
-                    <h4 class="box-title m-t-0" v-else-if="route == '/production_order_repair'">Add Additional Material / Resource / Service</h4>
+                    <h4 class="box-title m-t-0">Add Additional Material</h4>
                     <table id="activity-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 10%">Type</th>
-                                <th style="width: 30%">Material Number</th>
-                                <th style="width: 30%">Material Description</th>
-                                <th style="width: 13%">Quantity</th>
-                                <th style="width: 12%"></th>
+                                <th style="width: 15%">Code</th>
+                                <th style="width: 35%">Description</th>
+                                <th style="width: 10%">Quantity</th>
+                                <th style="width: 10%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in datas">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.type }}</td>
                                 <td class="tdEllipsis">{{ data.code }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>
@@ -252,23 +226,16 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft">
-                                    <selectize v-model="dataInput.type" :settings="typeSettings">
-                                        <option value="Material">Material</option>
-                                    </selectize>
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'" colspan="2">
-                                    <selectize v-model="dataInput.id" :settings="materialSettings" >
+                                <td class="p-l-0 textLeft" colspan="2">
+                                    <selectize class="selectizeFull" v-model="dataInput.id" :settings="materialSettings" >
                                         <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                     </selectize>  
                                 </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == ''" colspan="2">
-                                    <selectize v-model="dataInput.id" :settings="nullSettings" disabled>
-                                        <option v-for="(resource, index) in resources" :value="resource.id"></option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0">
+                                <td class="p-l-0" v-if="dataInput.id != ''">
                                     <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
+                                </td>
+                                <td class="p-l-0" v-else>
+                                    <input class="form-control" :value="''" placeholder="Please Input Quantity" disabled> 
                                 </td>
                                 <td class="p-l-0 textCenter">
                                     <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
@@ -288,72 +255,121 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Edit Additional Material / Service / Resource</h4>
+                                <h4 class="modal-title">Edit Additional Material</h4>
                             </div>
                             <div class="modal-body p-t-0">
-                                <div class="row" v-if="editInput.type == 'Material'">
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Material Name</label>
-                                        <selectize v-model="editInput.id" disabled>
-                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }} - {{ material.name }}</option>
-                                        </selectize>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Description</label>
-                                        <input class="form-control" v-model="editInput.description" disabled>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Quantity</label>
-                                        <input class="form-control" v-model="editInput.quantity">
-                                    </div>
+                                <div class="col-sm-12">
+                                    <label for="type" class="control-label p-b-10">Material Name</label>
+                                    <selectize v-model="editInput.id" disabled>
+                                        <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }} - {{ material.name }}</option>
+                                    </selectize>
                                 </div>
 
-                                <div class="row" v-if="editInput.type == 'Resource'">
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Resource Name</label>
-                                        <selectize v-model="editInput.id" disabled>
-                                            <option v-for="(resource, index) in resources" :value="resource.id" disabled>{{ resource.code }} - {{ resource.brand }}</option>
-                                        </selectize>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Description</label>
-                                        <input class="form-control" v-model="editInput.description" disabled>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Quantity</label>
-                                        <input class="form-control" v-model="editInput.quantity">
-                                    </div>
+                                <div class="col-sm-12">
+                                    <label for="type" class="control-label p-b-10">Description</label>
+                                    <input class="form-control" v-model="editInput.description" disabled>
                                 </div>
 
-                                <div class="row" v-if="editInput.type == 'Service'">
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Service Name</label>
-                                        <selectize v-model="editInput.id" disabled>
-                                            <option v-for="(service, index) in services" :value="service.id" disabled>{{ service.code }} - {{ service.name }}</option>
-                                        </selectize>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Description</label>
-                                        <input class="form-control" v-model="editInput.description" disabled>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Quantity</label>
-                                        <input class="form-control" v-model="editInput.quantity">
-                                    </div>
+                                <div class="col-sm-12">
+                                    <label for="type" class="control-label p-b-10">Quantity</label>
+                                    <input class="form-control" v-model="editInput.quantity">
                                 </div>
-                                
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" :disabled="editOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="modal fade" id="activity_detail">
+                    <div class="modal-dialog modalPredecessor">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Activity Details</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <label for="activity-material-table" class="col-sm-12">Material</label>
+                                    <div class="col-sm-12">
+                                        <table class="table table-bordered showTable tableFixed" id="activity-material-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="p-l-5" style="width: 3%">No</th>
+                                                    <th style="width: 25%">Material</th>
+                                                    <th style="width: 7%">Length</th>
+                                                    <th style="width: 7%">Width</th>
+                                                    <th style="width: 7%">Height</th>
+                                                    <th style="width: 5%">UOM</th>
+                                                    <th style="width: 7%">Quantity</th>
+                                                    <th style="width: 6%">Source</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(data,index) in activityDetailMaterials">
+                                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material.code +' - '+  data.material.description)">{{ data.material.code }} - {{ data.material.description }}</td>
+                                                    <td v-if="data.length != ''" class="p-b-15 p-t-15">{{ data.length }}</td>
+                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                    <td v-if="data.width != ''" class="p-b-15 p-t-15">{{ data.width }}</td>
+                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                    <td v-if="data.height != ''" class="p-b-15 p-t-15">{{ data.height }}</td>
+                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                    <td v-if="data.unit != ''" class="p-b-15 p-t-15">{{ data.dimension_uom.unit }}</td>
+                                                    <td v-else class="p-b-15 p-t-15">-</td>
+                                                    <td class="p-b-15 p-t-15">{{ data.quantity_material }}</td>
+                                                    <td class="p-b-15 p-t-15">{{ data.source }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <label for="activity-material-table" class="col-sm-12">Service</label>
+
+                                    <template v-if="activityDetailService != ''">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div for="length" class="col-sm-3">Service Name</div>
+                
+                                                <div class="col-sm-9">
+                                                    : <b>{{activityDetailService.service_detail.service.name}} - {{activityDetailService.service_detail.name}}</b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div for="length" class="col-sm-3">Area</div>
+            
+                                                <div class="col-sm-9">
+                                                    : <b>{{(activityDetailService.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} {{activityDetailService.area_uom.unit}}</b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div for="length" class="col-sm-3">Vendor</div>
+            
+                                                <div class="col-sm-9">
+                                                    : <b>{{activityDetailService.vendor.name}}</b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button :disabled="createOk" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">CLOSE</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
                 </div>
 
             </div>
@@ -369,51 +385,46 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-wo');
+    const form = document.querySelector('form#create-PrO');
     $(document).ready(function(){
         $('div.overlay').hide();
     });
 
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
+
     var data = {
         dataInput : {
             id : "",
-            type :"Material",
             code : "",
-            name : "",
             description : "",
             quantity : "",
-        },
-        typeSettings: {
-            placeholder: 'Please Select Type'
-        },
-        resourceSettings: {
-            placeholder: 'Please Select Resource'
         },
         materialSettings: {
             placeholder: 'Please Select Material'
         },
-        serviceSettings: {
-            placeholder: 'Please Select Service'
-        },
-        nullSettings:{
-            placeholder: 'Please Select Type First !'
-        },
         datas : [],
+        activityDetailMaterials : [],
+        activityDetailService : "",
         project_id :@json($project->id),
         wbs_id :@json($wbs->id),
         materials : @json($materials),
-        resources : [],
-        services : [],
+        resources : @json($resources),
+        services : @json($services),
+        activities : @json($modelActivities),
         bom : @json($modelBOM->bomDetails),
-        assignedResource : [],
+        assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
         route : @json($route),
         editInput : {
-            type : "",
             id : "",
             code : "",
-            name : "",
             description : "",
             quantity : ""
         }
@@ -426,7 +437,7 @@
             dataOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.type == "" || this.dataInput.id == "" || this.dataInput.quantity == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1){
+                if(this.dataInput.id == "" || this.dataInput.quantity == "" || parseInt(this.dataInput.quantity.replace(/,/g , '')) < 1){
                     isOk = true;
                 }
                 return isOk;
@@ -449,8 +460,29 @@
             }
         },
         methods: {
+            tooltipText: function(text) {
+                return text
+            },
+            openActDetails(id){
+                this.activityDetailMaterials = [];
+                var temp_material = [];
+                var temp_service = "";
+                this.activities.forEach(activity => {
+                    if(activity.id == id){
+                        activity.activity_details.forEach(act_detail => {
+                            if(act_detail.material_id != null){
+                                temp_material.push(act_detail);
+                            }else if(act_detail.service_detail_id != null){
+                                temp_service = act_detail;
+                            }
+                        });
+                        this.activityDetailMaterials = temp_material;
+                        this.activityDetailService = temp_service;
+                    }
+                });
+                $('#activity_detail').modal();
+            },
             clearEditInput(){
-                this.editInput.type = "Material";
                 this.editInput.id = "";
                 this.editInput.code = "";
                 this.editInput.name = "";
@@ -462,7 +494,6 @@
                 this.editInput.index = index;
                 this.editInput.id = data.id;
                 this.editInput.description = data.description;
-                this.editInput.type = data.type;
                 this.editInput.quantity = data.quantity;
             },
             submitToTable(){
@@ -476,9 +507,7 @@
                 this.newIndex = this.datas.length + 1;
 
                 this.dataInput.id = "";
-                this.dataInput.type = "Material";
                 this.dataInput.code = "";
-                this.dataInput.name = "";
                 this.dataInput.description = "";
                 this.dataInput.quantity = "";
             },
@@ -512,43 +541,16 @@
         watch: {
             'dataInput.id': function(newValue){
                 if(newValue != ""){
-                    if(this.dataInput.type == "Resource"){
-                        window.axios.get('/api/getResourcePrO/'+newValue).then(({ data }) => {
-                            if(data.description == "" || data.description == null){
-                                this.dataInput.description = '-';
-                            }else{
-                                this.dataInput.description = data.description;
-                            }
-                            this.dataInput.name = data.name;
-                            this.dataInput.code = data.code;
-                        });
-                    }else if(this.dataInput.type == "Material"){
-                        window.axios.get('/api/getMaterialPrO/'+newValue).then(({ data }) => {
-                            if(data.description == "" || data.description == null){
-                                this.dataInput.description = '-';
-                            }else{
-                                this.dataInput.description = data.description;
-                            }
-                            this.dataInput.name = data.name;
-                            this.dataInput.code = data.code;
-                        });
-                    }else if(this.dataInput.type == "Service"){
-                        window.axios.get('/api/getServicePrO/'+newValue).then(({ data }) => {
-                            if(data.description == "" || data.description == null){
-                                this.dataInput.description = '-';
-                            }else{
-                                this.dataInput.description = data.description;
-                            }
-                            this.dataInput.name = data.name;
-                            this.dataInput.code = data.code;
-                        });
-                    }
+                    window.axios.get('/api/getMaterialPrO/'+newValue).then(({ data }) => {
+                        if(data.description == "" || data.description == null){
+                            this.dataInput.description = '-';
+                        }else{
+                            this.dataInput.description = data.description;
+                        }
+                        this.dataInput.code = data.code;
+                        this.dataInput.description = data.description;
+                    });
                 }
-            },
-            'dataInput.type': function(newValue){
-                this.dataInput.id = "";
-                this.dataInput.description = "";
-                this.dataInput.quantity = "";
             },
             'dataInput.quantity' : function(newvalue){
                 this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
@@ -560,6 +562,11 @@
         created: function() {
             this.newIndex = Object.keys(this.datas).length+1;
         },
+    });
+
+    $('.buttonDetail').on( 'click', function () {
+        var id = this.id;
+        vm.openActDetails(id);
     });
 </script>
 @endpush

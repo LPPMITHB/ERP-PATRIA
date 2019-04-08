@@ -2,13 +2,13 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => "Add Activities",
+            'title' => "Manage Activities",
             'items' => [
                 'Dashboard' => route('index'),
                 'View all Projects' => route('project_repair.index'),
                 'Project|'.$project->number => route('project_repair.show', ['id' => $project->id]),
                 'Select WBS' => route('project_repair.listWBS',['id'=>$project->id,'menu'=>'addAct']),
-                'Add Activities' => ""
+                'Manage Activities' => ""
             ]
         ]
     )
@@ -1533,7 +1533,7 @@ var vm = new Vue({
         },
         add(){            
             var newActivity = this.newActivity;
-            this.newActivity.dataMaterial.forEach(material => {
+            newActivity.dataMaterial.forEach(material => {
                 material.lengths = (material.lengths+"").replace(/,/g , '');
                 material.width = (material.width+"").replace(/,/g , '');
                 material.height = (material.height+"").replace(/,/g , '');
@@ -1610,6 +1610,13 @@ var vm = new Vue({
         },
         update(){                 
             var editActivity = this.editActivity;
+            editActivity.dataMaterial.forEach(material => {
+                material.lengths = (material.lengths+"").replace(/,/g , '');
+                material.width = (material.width+"").replace(/,/g , '');
+                material.height = (material.height+"").replace(/,/g , '');
+                material.quantity = (material.quantity+"").replace(/,/g , '');
+            });
+            editActivity.area = (editActivity.area+"").replace(/,/g , '');        
             var url = "";
             if(this.menu == "building"){
                 var url = "/activity/update/"+editActivity.activity_id;

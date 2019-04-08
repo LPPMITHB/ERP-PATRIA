@@ -92,7 +92,7 @@
                                             <th style="width: 8%">Unit</th>
                                             <th style="width: 15%">Project Number</th>
                                             <th style="width: 13%">Required Date</th>
-                                            <th style="width: 15%">Alocation</th>
+                                            <th style="width: 15%">Allocation</th>
                                             <th style="width: 13%"></th>
                                         </tr>
                                     </thead>
@@ -263,7 +263,7 @@
                                                 <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
                                             </div>
                                             <div class="col-sm-12">
-                                                <label for="alocation" class="control-label">Alocation</label>
+                                                <label for="alocation" class="control-label">Allocation</label>
                                                 <selectize v-model="editInput.alocation" :settings="alocationSettings">
                                                     <option value="Consumption">Consumption</option>
                                                     <option value="Stock">Stock</option>
@@ -360,7 +360,7 @@
             placeholder: '-'
         },
         alocationSettings: {
-            placeholder: 'Please Select Alocation'
+            placeholder: 'Please Select Allocation'
         },
         dataInput : {
             prd_id :null,

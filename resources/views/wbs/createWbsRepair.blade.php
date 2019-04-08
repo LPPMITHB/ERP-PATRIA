@@ -3,12 +3,12 @@
     @if ($menu == "building")
         @breadcrumb(
             [
-                'title' => 'Add Work Breakdown Structures',
+                'title' => 'Manage Work Breakdown Structures',
                 'items' => [
                     'Dashboard' => route('index'),
                     'View all Projects' => route('project.index'),
                     'Project|'.$project->number => route('project.show',$project->id),
-                    'Add WBS' => ""
+                    'Manage WBS' => ""
                 ]
             ]
         )
@@ -16,12 +16,12 @@
     @else
         @breadcrumb(
             [
-                'title' => 'Add Work Breakdown Structures',
+                'title' => 'Manage Work Breakdown Structures',
                 'items' => [
                     'Dashboard' => route('index'),
                     'View all Projects' => route('project_repair.index'),
                     'Project|'.$project->number => route('project_repair.show',$project->id),
-                    'Add WBS' => ""
+                    'Manage WBS' => ""
                 ]
             ]
         )

@@ -115,7 +115,7 @@
                                 <th width="7%">Unit</th>
                                 <th width="14%">Project Number</th>
                                 <th width="13%">Required Date</th>
-                                <th width="10%">Alocation</th>
+                                <th width="10%">Allocation</th>
                             </tr>
                         </thead>
                         <tbody>

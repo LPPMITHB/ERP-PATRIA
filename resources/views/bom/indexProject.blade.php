@@ -54,7 +54,7 @@
                                     @if($route == '/bom')
                                         <a onClick="loading()" class="btn btn-primary btn-xs" href="{{ route('bom.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
                                     @elseif($route == '/bom_repair')
-                                        <a onClick="loading()" class="btn btn-primary btn-xs" href="{{ route('bom_repair.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                        <a onClick="loading()" class="btn btn-primary btn-xs" href="{{ route('bom_repair.materialSummary', ['id'=>$project->id]) }}">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
