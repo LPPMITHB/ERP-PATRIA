@@ -412,7 +412,7 @@
                     if(this.menu == "building"){
                         var url = "{{ route('bom.storeBom') }}";
                     }else{
-                        var url = "{{ route('bom_repair.storeBom') }}";
+                        var url = "{{ route('bom_repair.storeBomRepair') }}";
                     }
 
                     window.axios.post(url,newMaterial).then((response) => {

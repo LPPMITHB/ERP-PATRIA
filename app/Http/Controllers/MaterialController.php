@@ -78,7 +78,7 @@ class MaterialController extends Controller
             $material->height = $data->height;
             $material->type = $data->type;
             $material->family_id = $data->family_id == "" ? null : json_encode($data->family_id);
-            $material->density = $data->density_id == "" ? null : $data->density_id;
+            $material->density_id = $data->density_id == "" ? null : $data->density_id;
             $material->dimension_uom_id = $data->dimension_uom_id == "" ? null : $data->dimension_uom_id;
             $material->status = $data->status;
             if($request->hasFile('image')){

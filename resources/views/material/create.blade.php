@@ -610,19 +610,9 @@
                         }
                     }
                 },
-
-                'submittedForm.weight_uom_id' : function(newValue) {
-                    if(newValue != ""){
-                        this.submittedForm.length_uom_id = newValue;
-                        this.submittedForm.width_uom_id = newValue;
-                        this.submittedForm.height_uom_id = newValue;
-                        this.submittedForm.dimension_uom_id = newValue;
-                    }
-                },
                 
                 'submittedForm.length_uom_id' : function(newValue) {
                     if(newValue != ""){
-                        this.submittedForm.weight_uom_id = newValue;
                         this.submittedForm.width_uom_id = newValue;
                         this.submittedForm.height_uom_id = newValue;
                         this.submittedForm.dimension_uom_id = newValue;
@@ -632,7 +622,6 @@
 
                 'submittedForm.width_uom_id' : function(newValue) {
                     if(newValue != ""){
-                        this.submittedForm.weight_uom_id = newValue;
                         this.submittedForm.length_uom_id = newValue;
                         this.submittedForm.height_uom_id = newValue;
                         this.submittedForm.dimension_uom_id = newValue;
@@ -642,16 +631,12 @@
 
                 'submittedForm.height_uom_id' : function(newValue) {
                     if(newValue != ""){
-                        this.submittedForm.weight_uom_id = newValue;
                         this.submittedForm.length_uom_id = newValue;
                         this.submittedForm.width_uom_id = newValue;
                         this.submittedForm.dimension_uom_id = newValue;
 
                     }
                 },
-                'submittedForm.family_id' : function(newValue){
-                    console.log(this.submittedForm.family_id);
-                }
             },
         });
     });
