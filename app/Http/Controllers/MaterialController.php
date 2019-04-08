@@ -73,6 +73,7 @@ class MaterialController extends Controller
             $material->min = $data->min == "" ? 0 : $data->min;
             $material->max = $data->max == "" ? 0 : $data->max;
             $material->weight = $data->weight;
+            $material->weight_uom_id = $data->weight_uom_id;
             $material->length = $data->lengths;
             $material->width = $data->width;
             $material->height = $data->height;
@@ -223,6 +224,7 @@ class MaterialController extends Controller
         $material->min = $data->min == "" ? 0 : $data->min;
         $material->max = $data->max == "" ? 0 : $data->max;
         $material->weight = $data->weight;
+        $material->weight_uom_id = $data->weight_uom_id;
         $material->height = $data->height;
         $material->length = $data->lengths;
         $material->width = $data->width;

@@ -234,7 +234,7 @@
             max : @json($material->max),
             dimension_uom_id : @json($material->dimension_uom_id),
             weight : @json($material->weight),
-            weight_uom_id : @json($material->dimension_uom_id),
+            weight_uom_id : @json($material->weight_uom_id),
             height :@json($material->height),
             height_uom_id : @json($material->dimension_uom_id),
             lengths :@json($material->length),
@@ -531,19 +531,9 @@
                     }
                 }
             },
-
-            'submittedForm.weight_uom_id' : function(newValue) {
-                if(newValue != ""){
-                    this.submittedForm.length_uom_id = newValue;
-                    this.submittedForm.width_uom_id = newValue;
-                    this.submittedForm.height_uom_id = newValue;
-                    this.submittedForm.dimension_uom_id = newValue;
-                }
-            },
             
             'submittedForm.length_uom_id' : function(newValue) {
                 if(newValue != ""){
-                    this.submittedForm.weight_uom_id = newValue;
                     this.submittedForm.width_uom_id = newValue;
                     this.submittedForm.height_uom_id = newValue;
                     this.submittedForm.dimension_uom_id = newValue;
@@ -553,7 +543,6 @@
 
             'submittedForm.width_uom_id' : function(newValue) {
                 if(newValue != ""){
-                    this.submittedForm.weight_uom_id = newValue;
                     this.submittedForm.length_uom_id = newValue;
                     this.submittedForm.height_uom_id = newValue;
                     this.submittedForm.dimension_uom_id = newValue;
@@ -563,7 +552,6 @@
 
             'submittedForm.height_uom_id' : function(newValue) {
                 if(newValue != ""){
-                    this.submittedForm.weight_uom_id = newValue;
                     this.submittedForm.length_uom_id = newValue;
                     this.submittedForm.width_uom_id = newValue;
                     this.submittedForm.dimension_uom_id = newValue;
