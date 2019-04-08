@@ -139,7 +139,7 @@
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <label for="">PO Description</label>
+                                            <label for="">WO Description</label>
                                         </div>
                                         <div class="col-sm-12">
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>

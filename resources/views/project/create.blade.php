@@ -378,7 +378,7 @@ $(document).ready(function(){
             if(this.oldData.class_name !=null) {
                 this.project.class_name=this.oldData.class_name;
             }
-        if(this.oldData.class_cp_name !=null) {
+            if(this.oldData.class_cp_name !=null) {
                 this.project.class_cp_name=this.oldData.class_cp_name;
             }
             if(this.oldData.class_cp_phone !=null) {
@@ -389,7 +389,7 @@ $(document).ready(function(){
             }
             if(this.oldData.description !=null) {
                 this.project.description=this.oldData.description;
-            // console.log(this.oldData);
+            console.log(this.oldData);
         }
     },
 
