@@ -861,6 +861,7 @@ class ProjectController extends Controller
     {
         $today = date("Y-m-d");
         $project = Project::find($id);
+        $wbss = $project->wbss;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         $data = Collection::make();
@@ -871,7 +872,7 @@ class ProjectController extends Controller
         
         $links->jsonSerialize();
         $data->jsonSerialize();
-        return view('project.ganttChart', compact('project','data','links','today','menu'));
+        return view('project.ganttChart', compact('project','data','links','today','menu','wbss'));
     }
 
     /**
