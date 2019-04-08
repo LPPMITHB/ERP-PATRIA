@@ -157,7 +157,7 @@
                 </table>
             </div> <!-- /.box-body -->
 
-            <div class="box-body p-t-0 p-b-5">
+            {{-- <div class="box-body p-t-0 p-b-5">
                 <h4>Resource</h4>
                 <table class="table table-bordered showTable tableFixed" id="resource-table">
                     <thead>
@@ -179,7 +179,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div> <!-- /.box-body -->
+            </div> <!-- /.box-body --> --}}
             
             @if($route == '/production_order_repair')
             <div class="box-body p-t-0 p-b-5">
@@ -219,24 +219,24 @@
             @verbatim
             <div id="production_order">
                 <div class="box-body">
-                    <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material / Resource</h4>
+                    <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material</h4>
                     <h4 class="box-title m-t-0" v-else-if="route == '/production_order_repair'">Add Additional Material / Resource / Service</h4>
                     <table id="activity-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
                                 <th style="width: 10%">Type</th>
-                                <th style="width: 30%">Name</th>
-                                <th style="width: 35%">Description</th>
-                                <th style="width: 10%">Quantity</th>
-                                <th style="width: 10%"></th>
+                                <th style="width: 30%">Material Number</th>
+                                <th style="width: 30%">Material Description</th>
+                                <th style="width: 13%">Quantity</th>
+                                <th style="width: 12%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in datas">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.type }}</td>
-                                <td class="tdEllipsis">{{ data.code }} - {{ data.name }}</td>
+                                <td class="tdEllipsis">{{ data.code }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>
                                 <td class="p-l-0 textCenter">
@@ -252,47 +252,23 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft" v-if="route == '/production_order'">
+                                <td class="p-l-0 textLeft">
                                     <selectize v-model="dataInput.type" :settings="typeSettings">
                                         <option value="Material">Material</option>
-                                        <option value="Resource">Resource</option>
                                     </selectize>
                                 </td>
-                                <td class="p-l-0 textLeft" v-else-if="route == '/production_order_repair'">
-                                    <selectize v-model="dataInput.type" :settings="typeSettings">
-                                        <option value="Material">Material</option>
-                                        <option value="Resource">Resource</option>
-                                        <option value="Service">Service</option>
-                                    </selectize>
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'">
+                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'" colspan="2">
                                     <selectize v-model="dataInput.id" :settings="materialSettings" >
-                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                     </selectize>  
                                 </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Resource'">
-                                    <selectize v-model="dataInput.id" :settings="resourceSettings" >
-                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Service'">
-                                    <selectize v-model="dataInput.id" :settings="serviceSettings" >
-                                        <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == ''">
+                                <td class="p-l-0 textLeft" v-show="dataInput.type == ''" colspan="2">
                                     <selectize v-model="dataInput.id" :settings="nullSettings" disabled>
-                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                        <option v-for="(resource, index) in resources" :value="resource.id"></option>
                                     </selectize>  
                                 </td>
                                 <td class="p-l-0">
-                                    <input class="form-control" v-model="dataInput.description" placeholder="-" disabled>
-                                </td>
-                                <td class="p-l-0" v-if="dataInput.id != ''">
                                     <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
-                                </td>
-                                <td class="p-l-0" v-else>
-                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" disabled> 
                                 </td>
                                 <td class="p-l-0 textCenter">
                                     <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
@@ -401,7 +377,7 @@
     var data = {
         dataInput : {
             id : "",
-            type :"",
+            type :"Material",
             code : "",
             name : "",
             description : "",
@@ -426,10 +402,10 @@
         project_id :@json($project->id),
         wbs_id :@json($wbs->id),
         materials : @json($materials),
-        resources : @json($resources),
-        services : @json($services),
+        resources : [],
+        services : [],
         bom : @json($modelBOM->bomDetails),
-        assignedResource : @json($modelRD),
+        assignedResource : [],
         newIndex : "",
         submittedForm : {},
         route : @json($route),
@@ -474,7 +450,7 @@
         },
         methods: {
             clearEditInput(){
-                this.editInput.type = "";
+                this.editInput.type = "Material";
                 this.editInput.id = "";
                 this.editInput.code = "";
                 this.editInput.name = "";
@@ -500,7 +476,7 @@
                 this.newIndex = this.datas.length + 1;
 
                 this.dataInput.id = "";
-                this.dataInput.type = "";
+                this.dataInput.type = "Material";
                 this.dataInput.code = "";
                 this.dataInput.name = "";
                 this.dataInput.description = "";
