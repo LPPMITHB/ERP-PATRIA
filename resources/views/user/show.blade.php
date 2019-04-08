@@ -60,6 +60,8 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+
+
     function deleteUser(){
         iziToast.show({
             overlay : true,

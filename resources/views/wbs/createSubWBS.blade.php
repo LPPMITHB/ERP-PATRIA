@@ -2,7 +2,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => $project->name,
+        'title' => 'Manage Work Breakdown Structures',
         'items' => $array
     ]
 )

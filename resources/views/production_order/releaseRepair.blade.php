@@ -328,7 +328,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button :disabled="createOk" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">CLOSE</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">CLOSE</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->

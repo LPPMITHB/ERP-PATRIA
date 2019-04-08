@@ -3,7 +3,7 @@
     @if($wbs->wbs != null)
         @breadcrumb(
             [
-                'title' => "Manage Activities",
+                'title' => "Manage Activities Configuration",
                 'items' => [
                     'Dashboard' => route('index'),
                     $wbs->number => route('wbs_repair.createSubWbsConfiguration', $wbs->wbs->id),
@@ -15,7 +15,7 @@
     @else
         @breadcrumb(
             [
-                'title' => "Manage Activities",
+                'title' => "Manage Activities Configuration",
                 'items' => [
                     'Dashboard' => route('index'),
                     $wbs->number => route('wbs_repair.createWbsConfiguration'),

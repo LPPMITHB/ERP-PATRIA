@@ -2,13 +2,13 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => "Add Activities",
+            'title' => "Manage Activities",
             'items' => [
                 'Dashboard' => route('index'),
                 'View all Projects' => route('project_repair.index'),
                 'Project|'.$project->number => route('project_repair.show', ['id' => $project->id]),
                 'Select WBS' => route('project_repair.listWBS',['id'=>$project->id,'menu'=>'addAct']),
-                'Add Activities' => ""
+                'Manage Activities' => ""
             ]
         ]
     )

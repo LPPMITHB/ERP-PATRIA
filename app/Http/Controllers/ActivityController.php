@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\ProjectActivity;
 use App\Http\Controllers\Controller;
+use App\Models\Uom;
 use App\Models\WBS;
 use App\Models\Project;
 use App\Models\Activity;
@@ -15,7 +16,6 @@ use App\Models\ActivityDetail;
 use App\Models\Material;
 use App\Models\Service;
 use App\Models\Vendor;
-use App\Models\UOM;
 use App\Models\WbsProfile;
 use App\Models\WbsConfiguration;
 use App\Models\Configuration;
@@ -50,7 +50,7 @@ class ActivityController extends Controller
             }
             $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
             $vendors = Vendor::all();
-            $uoms = UOM::all();
+            $uoms = Uom::all();
             $project = $wbs->project;
             $menu = "repair";
     

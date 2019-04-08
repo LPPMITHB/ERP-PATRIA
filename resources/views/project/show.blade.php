@@ -38,7 +38,7 @@
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
             <a href="{{ route('activity.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
-            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
+            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait" style="display: none">PROJECT COST EVALUATION</a>
         </div>
     @else
         <div class="box-tools pull-left m-l-15">
@@ -72,10 +72,10 @@
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Description</div>
-                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->description}}"><b>: {{$project->description}}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->description}}"><b>: {{isset($project->description) ? $project->description : '-'}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Status</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status = 1 ? "Open" : "Closed" }}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status = 1 ? "OPEN" : "CLOSED" }}</b></div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-3 col-md-12">    
@@ -200,12 +200,13 @@
                         <thead>
                             <tr>
                                 <th style="vertical-align: middle" class="textCenter" rowspan="2">Comp. %</th>
-                                <th class="textCenter" colspan="4">In-Wk & Cum Performance</th>
+                                <th class="textCenter" colspan="3">In-Week Performance</th>
+                                <th class="textCenter">Cum. Performance</th>
                             </tr>
                             <tr>
                                 <th class="textCenter">Last Week</th>
                                 <th class="textCenter">This Week</th>
-                                <th class="textCenter">In-Wk Gain</th>
+                                <th class="textCenter">In-Week Gain</th>
                                 <th style="width: 10%" class="textCenter">Status</th>
                             </tr>
                         </thead>
@@ -214,14 +215,14 @@
                                 <th>Expected Comp. %</th>
                                 <td class="textCenter">{{progressStatus.last_week_planned}} %</td>
                                 <td class="textCenter">{{progressStatus.this_week_planned}} %</td>
-                                <td class="textCenter">{{progressStatus.this_week_planned - progressStatus.last_week_planned}} %</td>
+                                <td class="textCenter">{{progressStatus.expected_in_week_gain}} %</td>
                                 <td v-if="progressStatus.this_week_actual - progressStatus.this_week_planned < 0" rowspan="2" class="textCenter" style="background-color: red; color: white; font-size:1.2em">
                                     <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
                                 </td>
-                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned > 0" rowspan="2" class="textCenter" style="background-color: green; color: white; font-size:1.2em">
+                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned > 0" rowspan="2" class="textCenter" style="background-color: #3db9d3; color: white; font-size:1.2em">
                                     <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
                                 </td>
-                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned == 0" rowspan="2" class="textCenter" style="background-color: green; color: white; font-size:1.2em">
+                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned == 0" rowspan="2" class="textCenter" style="background-color: #3db9d3; color: white; font-size:1.2em">
                                     <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i>
                                 </td>
                             </tr>
@@ -230,6 +231,12 @@
                                 <td class="textCenter">{{progressStatus.last_week_actual}} %</td>
                                 <td class="textCenter">{{progressStatus.this_week_actual}} %</td>
                                 <td class="textCenter">{{progressStatus.this_week_actual - progressStatus.last_week_actual}} %</td>
+                            </tr>
+                            <tr>
+                                <th v-if="expectedStatus != null">Expected End Date</th>
+                                <td colspan="4" v-if="expectedStatus == 0" style="background-color: #3db9d3; color: white;">{{str_expected_date}}</td>
+                                <td colspan="4" v-else-if="expectedStatus == 1" style="background-color: #3db9d3; color: white;">{{str_expected_date}}</td>
+                                <td colspan="4" v-else-if="expectedStatus == 2" style="background-color: red; color: white;">{{str_expected_date}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -396,7 +403,7 @@
                                                 <td v-else-if="data.status == 5" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REJECTED')">REJECTED</td>
                                                 <td v-else-if="data.status == 6" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('CONSOLIDATED')">CONSOLIDATED</td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openPr(data.id)">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openPr(data.id)" target="_blank">
                                                         DETAILS
                                                     </a>
                                                 </td>
@@ -445,7 +452,7 @@
                                                 <td v-else-if="data.status == 5" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REJECTED')">REJECTED</td>
                                                 <td v-else-if="data.status == 6" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('CONSOLIDATED')">CONSOLIDATED</td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openPo(data.id)">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openPo(data.id)" target="_blank">
                                                         DETAILS
                                                     </a>
                                                 </td>
@@ -483,12 +490,12 @@
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.purchase_order.number)">
-                                                    <a :href="openPo(data.purchase_order.id)">
+                                                    <a :href="openPo(data.purchase_order.id)" target="_blank">
                                                         {{data.purchase_order.number}}
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openGr(data.id)">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openGr(data.id)" target="_blank">
                                                         DETAILS
                                                     </a>
                                                 </td>
@@ -533,7 +540,7 @@
                                                 <td v-else-if="data.status == 5" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('REJECTED')">REJECTED</td>
                                                 <td v-else-if="data.status == 6" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('CONSOLIDATED')">CONSOLIDATED</td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openMr(data.id)">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openMr(data.id)" target="_blank">
                                                         DETAILS
                                                     </a>
                                                 </td>
@@ -571,12 +578,12 @@
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.number }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material_requisition.number)">
-                                                    <a :href="openMr(data.material_requisition_id)">
+                                                    <a :href="openMr(data.material_requisition_id)" target="_blank">
                                                         {{data.material_requisition.number}}
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openGi(data.id)">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openGi(data.id)" target="_blank">
                                                         DETAILS
                                                     </a>
                                                 </td>
@@ -615,7 +622,7 @@
                                                 <td v-else-if="data.status == 1" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('UNRELEASED')">UNRELEASED</td>
                                                 <td v-else-if="data.status == 2" class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText('RELEASED')">RELEASED</td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openProd(data.id)">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" :href="openProd(data.id)" target="_blank">
                                                         DETAILS
                                                     </a>
                                                 </td>
@@ -689,7 +696,7 @@
     </div>
 </div>
 
-<div class="row">
+{{-- <div class="row">
     <div class="col-sm-6" style="margin-top: -5px;">
         <div class="box box-solid">
             <div class="box-header with-border"><h4><b>Outstanding Item Report</b></h4></div>
@@ -731,7 +738,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 <form id="form" class="form-horizontal" method="POST">
     <input type="hidden" name="_method" value="PATCH">
@@ -1092,8 +1099,9 @@
             active_mr : [],
             active_gi : [],
             active_prod : [],
+            str_expected_date : @json($str_expected_date),
+            expectedStatus : @json($expectedStatus),
         };
-
         var vm = new Vue({
             el: '#confirm_activity',
             data: data,
@@ -1454,6 +1462,11 @@
                 },    
             },
             created: function(){
+                this.progressStatus.last_week_actual = parseFloat(this.progressStatus.last_week_actual).toFixed(2);
+                this.progressStatus.last_week_planned = parseFloat(this.progressStatus.last_week_planned).toFixed(2);
+                this.progressStatus.this_week_actual = parseFloat(this.progressStatus.this_week_actual).toFixed(2);
+                this.progressStatus.this_week_planned = parseFloat(this.progressStatus.this_week_planned).toFixed(2);
+                this.progressStatus.expected_in_week_gain = parseFloat(this.progressStatus.this_week_planned - this.progressStatus.last_week_planned).toFixed(2);
                 $('div.overlay').hide();
             }
         });
@@ -1470,134 +1483,129 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            if(vm.menu == "building"){
-                if(id.indexOf("WBS") !== -1){
-                    var temp_pr = [];
-                    var temp_po = [];
-                    var temp_gr = [];
-                    var temp_mr = [];
-                    var temp_gi = [];
-                    var temp_prod = [];
-    
-                    vm.wbss.forEach(wbs => {
-                        if(wbs.code == id){
-                            if(wbs.bom != null){
-                                if(wbs.bom.purchase_requisition != null){
-                                    temp_pr.push(wbs.bom.purchase_requisition);  
-                                    wbs.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
-                                        temp_po.push(purchase_order);
-                                        purchase_order.goods_receipts.forEach(gr => {
-                                            temp_gr.push(gr);
-                                        });
-                                    });     
-                                }
-                            }else{
-                                iziToast.error({
-                                    displayMode: 'replace',
-                                    title: 'This WBS doesn\'t have BOM!',
-                                    position: 'topRight',
-                                });
-                            }
-
-                            if(wbs.production_order != null){
-                                temp_prod.push(wbs.production_order);
-                            }
-
-                            var temp_mr_id = []
-                            if(wbs.material_requisition_details.length > 0){
-                                wbs.material_requisition_details.forEach(mrd => {
-                                    if(temp_mr_id.includes(mrd.material_requisition_id) == false){
-                                        temp_mr_id.push(mrd.material_requisition_id);
-                                        temp_mr.push(mrd.material_requisition);
-                                    }
-                                });
-                            }
+            if(e.target.classList[0] != "gantt_tree_icon"){
+                if(vm.menu == "building"){
+                    if(id.indexOf("WBS") !== -1){
+                        var temp_pr = [];
+                        var temp_po = [];
+                        var temp_gr = [];
+                        var temp_mr = [];
+                        var temp_gi = [];
+                        var temp_prod = [];
         
-                            temp_mr.forEach(mr => {
-                                mr.goods_issues.forEach(gi => {
-                                    temp_gi.push(gi); 
-                                });
-                            });
-                        }
-
-                    });
-
-                    vm.active_pr = [];
-                    vm.active_po = [];
-                    vm.active_gr = [];
-                    vm.active_mr = [];
-                    vm.active_gi = [];
-                    vm.active_prod = [];
-    
-                    vm.active_pr = temp_pr;
-                    vm.active_po = temp_po;
-                    vm.active_gr = temp_gr;
-                    vm.active_mr = temp_mr;
-                    vm.active_gi = temp_gi;
-                    vm.active_prod = temp_prod;
-                    $('#mm_prod_info').modal();
-                }
-            }else{
-                if(id.indexOf("ACT") !== -1){
-                    var temp_pr = [];
-                    var temp_po = [];
-                    var temp_gr = [];
-                    var temp_mr = [];
-                    var temp_gi = [];
-                    var temp_prod = [];
-
-                    vm.activities.forEach(activity => {
-                       if(activity.code == id){
-                            activity.activity_details.forEach(act_detail => {
-                                if(act_detail.material_id != null){
-                                        act_detail.bom_prep.bom_details.forEach(bom_detail => {
-                                            temp_pr.push(bom_detail.bom.purchase_requisition);  
-                                            bom_detail.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
-                                                temp_po.push(purchase_order);
-                                                purchase_order.goods_receipts.forEach(gr => {
-                                                    temp_gr.push(gr);
-                                                });
-                                            });                                     
-                                    });
-                                    
-                                    
+                        vm.wbss.forEach(wbs => {
+                            if(wbs.code == id){
+                                if(wbs.bom != null){
+                                    if(wbs.bom.purchase_requisition != null){
+                                        temp_pr.push(wbs.bom.purchase_requisition);  
+                                        wbs.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
+                                            temp_po.push(purchase_order);
+                                            purchase_order.goods_receipts.forEach(gr => {
+                                                temp_gr.push(gr);
+                                            });
+                                        });     
+                                    }
                                 }
-                            });
-                            if(activity.wbs.production_order != null){
-                                temp_prod.push(activity.wbs.production_order);
+                                if(wbs.production_order != null){
+                                    temp_prod.push(wbs.production_order);
+                                }
+
+                                var temp_mr_id = []
+                                if(wbs.material_requisition_details.length > 0){
+                                    wbs.material_requisition_details.forEach(mrd => {
+                                        if(temp_mr_id.includes(mrd.material_requisition_id) == false){
+                                            temp_mr_id.push(mrd.material_requisition_id);
+                                            temp_mr.push(mrd.material_requisition);
+                                        }
+                                    });
+                                }
+            
+                                temp_mr.forEach(mr => {
+                                    mr.goods_issues.forEach(gi => {
+                                        temp_gi.push(gi); 
+                                    });
+                                });
                             }
 
-                            var temp_mr_id = []
-                            if(activity.wbs.material_requisition_details.length > 0){
-                                activity.wbs.material_requisition_details.forEach(mrd => {
-                                    if(temp_mr_id.includes(mrd.material_requisition_id) == false){
-                                        temp_mr_id.push(mrd.material_requisition_id);
-                                        temp_mr.push(mrd.material_requisition);
+                        });
+
+                        vm.active_pr = [];
+                        vm.active_po = [];
+                        vm.active_gr = [];
+                        vm.active_mr = [];
+                        vm.active_gi = [];
+                        vm.active_prod = [];
+        
+                        vm.active_pr = temp_pr;
+                        vm.active_po = temp_po;
+                        vm.active_gr = temp_gr;
+                        vm.active_mr = temp_mr;
+                        vm.active_gi = temp_gi;
+                        vm.active_prod = temp_prod;
+                        $('#mm_prod_info').modal();
+                    }
+                }else{
+                    if(id.indexOf("ACT") !== -1){
+                        var temp_pr = [];
+                        var temp_po = [];
+                        var temp_gr = [];
+                        var temp_mr = [];
+                        var temp_gi = [];
+                        var temp_prod = [];
+
+                        vm.activities.forEach(activity => {
+                        if(activity.code == id){
+                                activity.activity_details.forEach(act_detail => {
+                                    if(act_detail.material_id != null){
+                                            act_detail.bom_prep.bom_details.forEach(bom_detail => {
+                                                temp_pr.push(bom_detail.bom.purchase_requisition);  
+                                                bom_detail.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
+                                                    temp_po.push(purchase_order);
+                                                    purchase_order.goods_receipts.forEach(gr => {
+                                                        temp_gr.push(gr);
+                                                    });
+                                                });                                     
+                                        });
+                                        
+                                        
                                     }
                                 });
-                            }
+                                if(activity.wbs.production_order != null){
+                                    temp_prod.push(activity.wbs.production_order);
+                                }
 
-                            temp_mr.forEach(mr => {
-                                mr.goods_issues.forEach(gi => {
-                                   temp_gi.push(gi); 
+                                var temp_mr_id = []
+                                if(activity.wbs.material_requisition_details.length > 0){
+                                    activity.wbs.material_requisition_details.forEach(mrd => {
+                                        if(temp_mr_id.includes(mrd.material_requisition_id) == false){
+                                            temp_mr_id.push(mrd.material_requisition_id);
+                                            temp_mr.push(mrd.material_requisition);
+                                        }
+                                    });
+                                }
+
+                                temp_mr.forEach(mr => {
+                                    mr.goods_issues.forEach(gi => {
+                                    temp_gi.push(gi); 
+                                    });
                                 });
-                            });
-                       } 
-                    });
-                    vm.active_pr = [];
-                    vm.active_po = [];
-                    vm.active_gr = [];
-                    vm.active_mr = [];
-                    vm.active_gi = [];
-                    vm.active_prod = [];
+                        } 
+                        });
+                        vm.active_pr = [];
+                        vm.active_po = [];
+                        vm.active_gr = [];
+                        vm.active_mr = [];
+                        vm.active_gi = [];
+                        vm.active_prod = [];
 
-                    vm.active_pr = temp_pr;
-                    vm.active_po = temp_po;
-                    vm.active_gr = temp_gr;
-                    vm.active_mr = temp_mr;
-                    vm.active_gi = temp_gi;
-                    vm.active_prod = temp_prod;
-                    $('#mm_prod_info').modal();
+                        vm.active_pr = temp_pr;
+                        vm.active_po = temp_po;
+                        vm.active_gr = temp_gr;
+                        vm.active_mr = temp_mr;
+                        vm.active_gi = temp_gi;
+                        vm.active_prod = temp_prod;
+                        $('#mm_prod_info').modal();
+                    }
                 }
             }
             return true;

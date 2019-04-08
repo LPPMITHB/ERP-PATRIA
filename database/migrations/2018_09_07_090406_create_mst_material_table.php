@@ -25,6 +25,7 @@ class CreateMstMaterialTable extends Migration
             $table->integer('min')->nullable();
             $table->integer('max')->nullable();
             $table->float('weight', 15, 2)->nullable();
+            $table->unsignedInteger('weight_uom_id')->nullable();
             $table->float('length', 15, 2)->nullable();
             $table->float('width', 15, 2)->nullable();
             $table->float('height', 15, 2)->nullable();

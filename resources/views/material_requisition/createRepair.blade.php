@@ -546,6 +546,17 @@
                         this.selectedProject = [];
                         this.selectedProject.push(data);
                         this.wbss = data.wbss;
+
+                        this.materials = [];
+                        this.materialsEdit = [];
+
+                        if(data.boms[0].bom_details.length > 0){
+                            data.boms[0].bom_details.forEach(bomd => {
+                                 this.materials.push(bomd.material);                               
+                                 this.materialsEdit.push(bomd.material);                               
+                            });
+
+                        }
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -669,80 +680,11 @@
                     this.editInput.availableStr = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                 }
             },
-            'dataInput.wbs_id': function(newValue){
-                this.dataInput.material_id = "";
-                this.dataInput.planned_quantity = "";
-                this.dataInput.available = "";
-                this.dataInput.availableStr = "";
-                this.dataInput.quantity = "";
-                this.dataInput.quantityFloat = "";
-                this.dataInput.unit = "";
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
-                        this.dataInput.wbs_description = data.wbs.description;
-                        this.dataInput.wbs_number = data.wbs.number;
-                        this.materials = data.materials;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.dataInput.wbs_id = "";
-                }
-            },
-            'editInput.wbs_id': function(newValue){
-                if(this.editInput.old_wbs_id != newValue){
-                    this.editInput.material_id = "";
-                    this.editInput.planned_quantity = "";
-                    this.editInput.quantity = "";
-                    this.editInput.quantityFloat = "";
-                    this.editInput.available = "";
-                    this.editInput.availableStr = "";
-                    this.editInput.unit = "";
-                    this.editInput.old_wbs_id = null;
-                }
-
-                if(this.editInput.old_wbs_id == null){
-                    this.editInput.material_id = "";
-                    this.editInput.planned_quantity = "";
-                    this.editInput.quantity = "";
-                    this.editInput.quantityFloat = "";
-                    this.editInput.available = "";
-                    this.editInput.availableStr = "";
-                    this.editInput.quantityFloat = "";
-                    this.editInput.unit = "";
-                }
-
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getWbsMR/'+newValue).then(({ data }) => {
-                        this.materialsEdit = data.materials;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
-                }else{
-                    this.dataInput.wbs_id = "";
-                }
-            },
             'dataInput.material_id' : function(newValue){
                 if(newValue != ""){
                     this.dataInput.quantity = "";
                     $('div.overlay').show();
-                    window.axios.get('/api/getMaterialInfoAPI/'+newValue+"/"+this.dataInput.wbs_id).then(({ data }) => {
+                    window.axios.get('/api/getMaterialInfoRepairAPI/'+newValue+"/"+this.project_id).then(({ data }) => {
                         // this.dataInput.available = data['available'];
                         this.dataInput.is_decimal = data['is_decimal'];
                         this.dataInput.unit = data['unit'];

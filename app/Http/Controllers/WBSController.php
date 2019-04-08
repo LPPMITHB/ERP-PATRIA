@@ -564,14 +564,14 @@ class WBSController extends Controller
                 'Dashboard' => route('index'),
                 'View all Projects' => route('project.index'),
                 'Project|'.$project->number => route('project.show',$project->id),
-                'Add WBS' => route('wbs.createWBS',$project->id),
+                'Manage WBS' => route('wbs.createWBS',$project->id),
             ];
         }else{
             $array = [
                 'Dashboard' => route('index'),
                 'View all Projects' => route('project_repair.index'),
                 'Project|'.$project->number => route('project_repair.show',$project->id),
-                'Add WBS' => route('wbs_repair.createWBS',$project->id),
+                'Manage WBS' => route('wbs_repair.createWBS',$project->id),
             ];
         }
         $iteration = 0;

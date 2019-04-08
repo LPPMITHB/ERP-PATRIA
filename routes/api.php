@@ -65,6 +65,7 @@ Route::get('/getProjectMR/{id}', 'MaterialRequisitionController@getProjectApi')-
 Route::get('/getMaterialMR/{id}', 'MaterialRequisitionController@getMaterialAPI')->name('api.material_requisition.getMaterialAPI');
 Route::get('/getStockMR/{id}', 'MaterialRequisitionController@getStockAPI')->name('api.material_requisition.getStockAPI');
 Route::get('/getMaterialInfoAPI/{id}/{wbs_id}', 'MaterialRequisitionController@getMaterialInfoAPI')->name('api.material_requisition.getMaterialInfoAPI');
+Route::get('/getMaterialInfoRepairAPI/{id}/{wbs_id}', 'MaterialRequisitionController@getMaterialInfoRepairAPI')->name('api.material_requisition.getMaterialInfoRepairAPI');
 
 
 // goods_receipt
