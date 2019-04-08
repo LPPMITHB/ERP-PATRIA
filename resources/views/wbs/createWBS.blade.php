@@ -69,11 +69,6 @@
             @verbatim
             <div id="add_wbs">
                 <div class="box-body">
-                    <div class="pull-right m-t-10">
-                        <a class="btn btn-primary btn-xs" @click="openAdoptModal">
-                            ADOPT FROM WBS PROFILE
-                        </a>
-                    </div>
                     <h4 class="box-title">Work Breakdown Structures (Weight : <b>{{totalWeight}}%</b> / <b>100%</b>)</h4>
                     <table id="wbs-table" class="table table-bordered tableFixed" style="border-collapse:collapse">
                         <thead>
