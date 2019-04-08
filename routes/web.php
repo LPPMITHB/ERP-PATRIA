@@ -1279,7 +1279,7 @@ Route::name('material_requisition_repair.')->prefix('material_requisition_repair
 
     Route::get('/', 'MaterialRequisitionController@index')->name('index')->middleware('can:list-material-requisition-repair');
 
-    Route::get('/create', 'MaterialRequisitionController@create')->name('create')->middleware('can:create-material-requisition-repair');
+    Route::get('/create', 'MaterialRequisitionController@createRepair')->name('create')->middleware('can:create-material-requisition-repair');
 
     Route::get('/{id}', 'MaterialRequisitionController@show')->name('show')->middleware('can:show-material-requisition-repair');
 

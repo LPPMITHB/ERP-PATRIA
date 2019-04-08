@@ -12,109 +12,157 @@ class ProProjectTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
         \DB::table('pro_project')->delete();
-        
+
+        $date = date("Y-m-d");
+        $date = strtotime($date);
+
         \DB::table('pro_project')->insert(array (
             0 => 
             array (
                 'id' => 1,
-                'number' => 'PRO-DUMMY01',
-                'drawing' => NULL,
-                'business_unit_id' => 1,
-                'project_sequence' => 1,
-                'ship_id' => 5,
-                'customer_id' => 1,
-                'name' => 'Kapal Dummy Boat',
-                'person_in_charge' => NULL,
-                'description' => 'Project Dummy - Ship Building',
-                'sales_order_id' => NULL,
-                'planned_start_date' => '2019-03-01',
-                'planned_end_date' => '2019-09-27',
-                'planned_duration' => '211',
-                'actual_start_date' => NULL,
-                'actual_end_date' => NULL,
-                'actual_duration' => NULL,
-                'progress' => 0.0,
-                'flag' => 'DUMMY - Indonesia',
-                'class_name' => 'DUMMY - BKI',
-                'class_contact_person_name' => 'DUMMY - Berdaus',
-                'class_contact_person_phone' => '08923157231',
-                'class_contact_person_email' => 'dummy.berdaus@dummy.com',
-                'project_type' => 4,
-                'status' => 1,
-                'user_id' => 5,
-                'branch_id' => 1,
-                'created_at' => '2018-12-19 09:25:42',
-                'updated_at' => '2019-03-05 14:04:15',
-            ),
-            1 => 
-            array (
-                'id' => 2,
-                'number' => 'RP000101',
+                'number' => 'P-001',
                 'drawing' => NULL,
                 'business_unit_id' => 2,
                 'project_sequence' => 1,
-                'ship_id' => 3,
-                'customer_id' => 4,
-                'name' => 'BARAN',
-                'person_in_charge' => NULL,
-                'description' => 'Project Dummy - Ship Repair',
+                'ship_id' => 4,
+                'customer_id' => 1,
+                'name' => 'Patria 01',
+                'person_in_charge' => 'Alan',
+                'description' => 'Project belum mulai',
                 'sales_order_id' => NULL,
-                'planned_start_date' => '2019-04-01',
-                'planned_end_date' => '2019-04-25',
-                'planned_duration' => '25',
+                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
+                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_duration' => '113',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
                 'actual_duration' => NULL,
                 'progress' => 0.0,
-                'flag' => NULL,
-                'class_name' => NULL,
-                'class_contact_person_name' => NULL,
-                'class_contact_person_phone' => NULL,
-                'class_contact_person_email' => NULL,
+                'flag' => 'Indonesia',
+                'class_name' => 'BKI',
+                'class_contact_person_name' => 'Ahsan',
+                'class_contact_person_phone' => '081536662222',
+                'class_contact_person_email' => 'Ahsan@bki.com',
                 'project_type' => 1,
                 'status' => 1,
-                'user_id' => 3,
-                'branch_id' => 2,
-                'created_at' => '2019-02-25 17:02:53',
-                'updated_at' => '2019-02-25 17:02:53',
+                'user_id' => 2,
+                'branch_id' => 1,
+                'created_at' => date("Y-m-d",$date),
+                'updated_at' => date("Y-m-d",$date),
             ),
-            2 => 
+        ));
+
+        $date = date("Y-m-d");
+        $date = strtotime("-35 day",strtotime($date));
+
+        \DB::table('pro_project')->insert(array (
+            0 => 
             array (
-                'id' => 3,
-                'number' => '1',
+                'id' => 2,
+                'number' => 'P-002',
                 'drawing' => NULL,
                 'business_unit_id' => 2,
                 'project_sequence' => 2,
-                'ship_id' => 3,
-                'customer_id' => 4,
-                'name' => '1',
-                'person_in_charge' => 'Bene',
-                'description' => 'Project Dummy - Ship Repair',
+                'ship_id' => 4,
+                'customer_id' => 1,
+                'name' => 'Patria 02',
+                'person_in_charge' => 'Barry',
+                'description' => 'Activity telat tapi aman',
                 'sales_order_id' => NULL,
-                'planned_start_date' => '2019-04-01',
-                'planned_end_date' => '2019-04-25',
-                'planned_duration' => '25',
+                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
+                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_duration' => '113',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
                 'actual_duration' => NULL,
                 'progress' => 0.0,
-                'flag' => NULL,
-                'class_name' => NULL,
-                'class_contact_person_name' => NULL,
-                'class_contact_person_phone' => NULL,
-                'class_contact_person_email' => NULL,
+                'flag' => 'Indonesia',
+                'class_name' => 'BKI',
+                'class_contact_person_name' => 'Ahmed',
+                'class_contact_person_phone' => '081536662223',
+                'class_contact_person_email' => 'Ahmed@bki.com',
                 'project_type' => 1,
                 'status' => 1,
-                'user_id' => 3,
-                'branch_id' => 2,
-                'created_at' => '2019-03-14 13:05:28',
-                'updated_at' => '2019-03-14 13:05:28',
+                'user_id' => 2,
+                'branch_id' => 1,
+                'created_at' => date("Y-m-d",$date),
+                'updated_at' => date("Y-m-d",$date),
             ),
         ));
-        
-        
+
+        $date = date("Y-m-d");
+        $date = strtotime("-40 day",strtotime($date));
+        \DB::table('pro_project')->insert(array (
+            0 => 
+            array (
+                'id' => 3,
+                'number' => 'P-003',
+                'drawing' => NULL,
+                'business_unit_id' => 2,
+                'project_sequence' => 3,
+                'ship_id' => 4,
+                'customer_id' => 1,
+                'name' => 'Patria 03',
+                'person_in_charge' => 'Clay',
+                'description' => 'Activity telat lebih dari planned end date',
+                'sales_order_id' => NULL,
+                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
+                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_duration' => '113',
+                'actual_start_date' => NULL,
+                'actual_end_date' => NULL,
+                'actual_duration' => NULL,
+                'progress' => 0.0,
+                'flag' => 'Indonesia',
+                'class_name' => 'BKI',
+                'class_contact_person_name' => 'Farul',
+                'class_contact_person_phone' => '081536662224',
+                'class_contact_person_email' => 'Farul@bki.com',
+                'project_type' => 1,
+                'status' => 1,
+                'user_id' => 2,
+                'branch_id' => 1,
+                'created_at' => date("Y-m-d",$date),
+                'updated_at' => date("Y-m-d",$date),
+            ),
+        ));
+
+        $date = date("Y-m-d");
+        $date = strtotime("-115 day",strtotime($date));
+
+        \DB::table('pro_project')->insert(array (
+            0 => 
+            array (
+                'id' => 4,
+                'number' => 'P-004',
+                'drawing' => NULL,
+                'business_unit_id' => 2,
+                'project_sequence' => 4,
+                'ship_id' => 4,
+                'customer_id' => 1,
+                'name' => 'Patria 04',
+                'person_in_charge' => 'Dimas',
+                'description' => 'Project lewat dari planned end date',
+                'sales_order_id' => NULL,
+                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
+                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_duration' => '113',
+                'actual_start_date' => NULL,
+                'actual_end_date' => NULL,
+                'actual_duration' => NULL,
+                'progress' => 0.0,
+                'flag' => 'Indonesia',
+                'class_name' => 'BKI',
+                'class_contact_person_name' => 'Bambang',
+                'class_contact_person_phone' => '081536662225',
+                'class_contact_person_email' => 'Bambang@bki.com',
+                'project_type' => 1,
+                'status' => 1,
+                'user_id' => 2,
+                'branch_id' => 1,
+                'created_at' => date("Y-m-d",$date),
+                'updated_at' => date("Y-m-d",$date),
+            ),
+        ));
     }
 }

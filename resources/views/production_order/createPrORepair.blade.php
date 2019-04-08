@@ -201,7 +201,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 15%">Name</th>
+                                <th style="width: 15%">Code</th>
                                 <th style="width: 35%">Description</th>
                                 <th style="width: 10%">Quantity</th>
                                 <th style="width: 10%"></th>

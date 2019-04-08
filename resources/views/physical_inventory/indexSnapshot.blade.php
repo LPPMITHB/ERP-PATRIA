@@ -96,6 +96,7 @@
                                             </td>
                                             <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>
                                             <td class="p-l-0 textCenter">
+                                            @if($snapshot->status == 1)
                                                 @if($menu == "building")
                                                     <a id="btn_submit" onclick="showOverlay()" class="btn btn-primary btn-xs" href="{{route('physical_inventory.showSnapshot', ['id' => $snapshot->id])}}">
                                                         VIEW
@@ -105,6 +106,17 @@
                                                         VIEW
                                                     </a>
                                                 @endif
+                                            @else
+                                                @if($menu == "building")
+                                                    <a id="btn_submit" onclick="showOverlay()" class="btn btn-primary btn-xs" href="{{route('physical_inventory.showCountStock', ['id' => $snapshot->id])}}">
+                                                        VIEW
+                                                    </a>
+                                                @else
+                                                    <a id="btn_submit" onclick="showOverlay()" class="btn btn-primary btn-xs" href="{{route('physical_inventory_repair.showCountStock', ['id' => $snapshot->id])}}">
+                                                        VIEW
+                                                    </a>
+                                                @endif
+                                            @endif
                                             </td>
                                         </tr>
                                     @endforeach
