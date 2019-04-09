@@ -105,7 +105,7 @@
                         <tr>
                             <td>12</td>
                             <td>Weight</td>
-                            <td>{{ number_format($material->weight) }} {{$uoms->where('id',$material->dimension_uom_id)->first() != null ? $uoms->where('id',$material->dimension_uom_id)->first()->unit : ""}}</td>
+                            <td>{{ number_format($material->weight) }} {{$uoms->where('id',$material->weight_uom_id)->first() != null ? $uoms->where('id',$material->weight_uom_id)->first()->unit : ""}}</td>
                         </tr>
                         <tr>
                             <td>13</td>
