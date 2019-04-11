@@ -336,12 +336,22 @@ class ActivityController extends Controller
                                 array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);                
                                 return response(["error"=> $error],Response::HTTP_OK);
                             }else{
-                                $bomPrep->weight -= $act_detail->weight;
-                                if($bomPrep->weight == 0){
-                                    $delete_bom_prep = true;
+                                if($bomPrep->weight != null){
+                                    $bomPrep->weight -= $activityDetailMaterial->weight;
+                                    if($bomPrep->weight == 0){
+                                        $delete_bom_prep = true;
+                                    }else{
+                                        $bomPrep->update();
+                                    }
                                 }else{
-                                    $bomPrep->update();
+                                    $bomPrep->quantity -= $activityDetailMaterial->quantity_material;
+                                    if($bomPrep->quantity == 0){
+                                        $delete_bom_prep = true;
+                                    }else{
+                                        $bomPrep->update();
+                                    }
                                 }
+
                             }
                         }
                         $activityDetailMaterial->delete();
