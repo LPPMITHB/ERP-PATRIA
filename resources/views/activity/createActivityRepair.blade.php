@@ -434,7 +434,7 @@
                     
                                                     <div class="col-sm-4 p-l-2">
                                                         <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="length_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            <option disabled v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>
@@ -448,7 +448,7 @@
                     
                                                     <div class="col-sm-4 p-l-2">
                                                         <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="width_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            <option disabled v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>
@@ -462,7 +462,7 @@
                     
                                                     <div class="col-sm-4 p-l-2">
                                                         <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="height_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            <option disabled v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>   
@@ -640,7 +640,7 @@
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
-                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="length_uom_settings">
+                                                    <selectize disabled id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="length_uom_settings">
                                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                     </selectize>    
                                                 </div>
@@ -654,7 +654,7 @@
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
-                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="width_uom_settings">
+                                                    <selectize disabled id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="width_uom_settings">
                                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                     </selectize>    
                                                 </div>
@@ -668,7 +668,7 @@
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
-                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="height_uom_settings">
+                                                    <selectize disabled id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="height_uom_settings">
                                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                     </selectize>    
                                                 </div>
@@ -1042,18 +1042,19 @@ var vm = new Vue({
     computed:{
         addMaterialOk: function(){
             let isOk = false;
-
-            if(this.newMaterial.material_id == "" || 
-            this.newMaterial.quantity == "" ||
-            this.newMaterial.dimension_uom_id == "" ||
-            this.newMaterial.height == "" || 
-            this.newMaterial.height == 0 || 
-            this.newMaterial.lengths == "" ||
-            this.newMaterial.lengths == 0 ||
-            this.newMaterial.width == "" ||
-            this.newMaterial.width == 0 ||
-            this.newMaterial.source == ""){
-                isOk = true;
+            if(this.newMaterial.dimension_uom_id != "" && this.newMaterial.dimension_uom_id != null){
+                if(this.newMaterial.material_id == "" || 
+                this.newMaterial.quantity == "" ||
+                this.newMaterial.dimension_uom_id == "" ||
+                this.newMaterial.height == "" || 
+                this.newMaterial.height == 0 || 
+                this.newMaterial.lengths == "" ||
+                this.newMaterial.lengths == 0 ||
+                this.newMaterial.width == "" ||
+                this.newMaterial.width == 0 ||
+                this.newMaterial.source == ""){
+                    isOk = true;
+                }
             }
             
             return isOk;
@@ -1061,17 +1062,19 @@ var vm = new Vue({
         addMaterialEditOk: function(){
             let isOk = false;
             
-            if(this.editMaterial.material_id == "" || 
-            this.editMaterial.quantity == "" ||
-            this.editMaterial.dimension_uom_id == "" ||
-            this.editMaterial.height == "" || 
-            this.editMaterial.height == 0 || 
-            this.editMaterial.lengths == "" ||
-            this.editMaterial.lengths == 0 ||
-            this.editMaterial.width == "" ||
-            this.editMaterial.width == 0 ||
-            this.editMaterial.source == ""){
-                isOk = true;
+            if(this.editMaterial.dimension_uom_id != "" && this.editMaterial.dimension_uom_id != null){
+                if(this.editMaterial.material_id == "" || 
+                this.editMaterial.quantity == "" ||
+                this.editMaterial.dimension_uom_id == "" ||
+                this.editMaterial.height == "" || 
+                this.editMaterial.height == 0 || 
+                this.editMaterial.lengths == "" ||
+                this.editMaterial.lengths == 0 ||
+                this.editMaterial.width == "" ||
+                this.editMaterial.width == 0 ||
+                this.editMaterial.source == ""){
+                    isOk = true;
+                }
             }
             
             return isOk;
@@ -2205,8 +2208,19 @@ var vm = new Vue({
         },
         'newMaterial.material_id': function(newValue) {
             if(newValue != ""){
+                this.newMaterial.dimension_uom_id = "";
                 this.newMaterials.forEach(material => {
                     if(material.id == newValue){
+                        this.newMaterial.dimension_uom_id = material.dimension_uom_id;
+                        if(material.dimension_uom_id != null){
+                            this.newMaterial.lengths = material.length+"";
+                            this.newMaterial.width = material.width+"";
+                            this.newMaterial.height = material.height+"";
+                        }else{
+                            this.newMaterial.lengths = "";
+                            this.newMaterial.width =  "";
+                            this.newMaterial.height =  "";
+                        }
                         this.newMaterial.material_name = material.code+" - "+material.description;
                     }
                 });
@@ -2223,8 +2237,19 @@ var vm = new Vue({
         },
         'editMaterial.material_id': function(newValue) {
             if(newValue != ""){
+                this.editMaterial.dimension_uom_id = "";
                 this.editMaterials.forEach(material => {
                     if(material.id == newValue){
+                        this.editMaterial.dimension_uom_id = material.dimension_uom_id;
+                        if(material.dimension_uom_id != null){
+                            this.editMaterial.lengths = material.length+"";
+                            this.editMaterial.width = material.width+"";
+                            this.editMaterial.height = material.height+"";
+                        }else{
+                            this.editMaterial.lengths = "";
+                            this.editMaterial.width =  "";
+                            this.editMaterial.height =  "";
+                        }
                         this.editMaterial.material_name = material.code+" - "+material.description;
                     }
                 });

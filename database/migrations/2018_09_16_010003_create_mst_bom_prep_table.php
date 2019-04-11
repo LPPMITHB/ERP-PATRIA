@@ -17,7 +17,8 @@ class CreateMstBomPrepTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('project_id')->nullable();
-            $table->float('weight',15,2);
+            $table->float('weight',15,2)->nullable();
+            $table->float('quantity',15,2)->nullable();
             $table->integer('status')->default(1);
             $table->string('source')->default('Stock');
             $table->timestamps();

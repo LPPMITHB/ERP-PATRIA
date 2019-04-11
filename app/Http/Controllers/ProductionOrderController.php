@@ -590,18 +590,19 @@ class ProductionOrderController extends Controller
             }
 
             $status = 0;
-
-            if(count($datas->materials) > 0){
-                foreach($datas->materials as $material){
-                    $bom_prep = BomPrep::find($material->bom_prep_id);
-                    if($material->material_id != ""){
-                        $PrOD = new ProductionOrderDetail;
-                        $PrOD->production_order_id = $PrO->id;
-                        $PrOD->material_id = $material->material_id;
-                        $PrOD->quantity = $material->quantity;
-                        $PrOD->source = $material->source;
-                        $PrOD->dimension_uom_id = $bom_prep->activityDetails[0]->dimension_uom_id;
-                        $PrOD->save();
+            if($route == "/production_order_repair"){
+                if(count($datas->materials) > 0){
+                    foreach($datas->materials as $material){
+                        $bom_prep = BomPrep::find($material->bom_prep_id);
+                        if($material->material_id != ""){
+                            $PrOD = new ProductionOrderDetail;
+                            $PrOD->production_order_id = $PrO->id;
+                            $PrOD->material_id = $material->material_id;
+                            $PrOD->quantity = $material->quantity;
+                            $PrOD->source = $material->source;
+                            $PrOD->dimension_uom_id = $bom_prep->activityDetails[0]->dimension_uom_id;
+                            $PrOD->save();
+                        }
                     }
                 }
             }

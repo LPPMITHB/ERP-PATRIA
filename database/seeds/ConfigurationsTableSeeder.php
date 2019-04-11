@@ -218,7 +218,7 @@ class ConfigurationsTableSeeder extends Seeder
             0 => array(
                 'id' => 1,
                 'name' => 'Iron',
-                'value' => 0.75,
+                'value' => 7.85,
             ),
         );
 

@@ -12,11 +12,10 @@ class ProProjectTableSeeder extends Seeder
      */
     public function run()
     {
+        
+
         \DB::table('pro_project')->delete();
-
-        $date = date("Y-m-d");
-        $date = strtotime($date);
-
+        
         \DB::table('pro_project')->insert(array (
             0 => 
             array (
@@ -31,8 +30,8 @@ class ProProjectTableSeeder extends Seeder
                 'person_in_charge' => 'Alan',
                 'description' => 'Project belum mulai',
                 'sales_order_id' => NULL,
-                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
-                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_start_date' => '2019-04-12',
+                'planned_end_date' => '2019-08-03',
                 'planned_duration' => '113',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
@@ -47,16 +46,10 @@ class ProProjectTableSeeder extends Seeder
                 'status' => 1,
                 'user_id' => 2,
                 'branch_id' => 1,
-                'created_at' => date("Y-m-d",$date),
-                'updated_at' => date("Y-m-d",$date),
+                'created_at' => '2019-04-11 00:00:00',
+                'updated_at' => '2019-04-11 00:00:00',
             ),
-        ));
-
-        $date = date("Y-m-d");
-        $date = strtotime("-35 day",strtotime($date));
-
-        \DB::table('pro_project')->insert(array (
-            0 => 
+            1 => 
             array (
                 'id' => 2,
                 'number' => 'P-002',
@@ -69,8 +62,8 @@ class ProProjectTableSeeder extends Seeder
                 'person_in_charge' => 'Barry',
                 'description' => 'Activity telat tapi aman',
                 'sales_order_id' => NULL,
-                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
-                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_start_date' => '2019-03-08',
+                'planned_end_date' => '2019-06-29',
                 'planned_duration' => '113',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
@@ -85,15 +78,10 @@ class ProProjectTableSeeder extends Seeder
                 'status' => 1,
                 'user_id' => 2,
                 'branch_id' => 1,
-                'created_at' => date("Y-m-d",$date),
-                'updated_at' => date("Y-m-d",$date),
+                'created_at' => '2019-03-07 00:00:00',
+                'updated_at' => '2019-03-07 00:00:00',
             ),
-        ));
-
-        $date = date("Y-m-d");
-        $date = strtotime("-40 day",strtotime($date));
-        \DB::table('pro_project')->insert(array (
-            0 => 
+            2 => 
             array (
                 'id' => 3,
                 'number' => 'P-003',
@@ -106,8 +94,8 @@ class ProProjectTableSeeder extends Seeder
                 'person_in_charge' => 'Clay',
                 'description' => 'Activity telat lebih dari planned end date',
                 'sales_order_id' => NULL,
-                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
-                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_start_date' => '2019-03-03',
+                'planned_end_date' => '2019-06-24',
                 'planned_duration' => '113',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
@@ -122,16 +110,10 @@ class ProProjectTableSeeder extends Seeder
                 'status' => 1,
                 'user_id' => 2,
                 'branch_id' => 1,
-                'created_at' => date("Y-m-d",$date),
-                'updated_at' => date("Y-m-d",$date),
+                'created_at' => '2019-03-02 00:00:00',
+                'updated_at' => '2019-03-02 00:00:00',
             ),
-        ));
-
-        $date = date("Y-m-d");
-        $date = strtotime("-115 day",strtotime($date));
-
-        \DB::table('pro_project')->insert(array (
-            0 => 
+            3 => 
             array (
                 'id' => 4,
                 'number' => 'P-004',
@@ -144,8 +126,8 @@ class ProProjectTableSeeder extends Seeder
                 'person_in_charge' => 'Dimas',
                 'description' => 'Project lewat dari planned end date',
                 'sales_order_id' => NULL,
-                'planned_start_date' => date("Y-m-d",strtotime("+1 day", $date)),
-                'planned_end_date' => date("Y-m-d",strtotime("+114 day", $date)),
+                'planned_start_date' => '2018-12-18',
+                'planned_end_date' => '2019-04-10',
                 'planned_duration' => '113',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
@@ -160,9 +142,43 @@ class ProProjectTableSeeder extends Seeder
                 'status' => 1,
                 'user_id' => 2,
                 'branch_id' => 1,
-                'created_at' => date("Y-m-d",$date),
-                'updated_at' => date("Y-m-d",$date),
+                'created_at' => '2018-12-17 00:00:00',
+                'updated_at' => '2018-12-17 00:00:00',
+            ),
+            4 => 
+            array (
+                'id' => 5,
+                'number' => 'BG. BENGKU',
+                'drawing' => NULL,
+                'business_unit_id' => 2,
+                'project_sequence' => 4,
+                'ship_id' => 5,
+                'customer_id' => 4,
+                'name' => 'BG. BENGKU',
+                'person_in_charge' => 'Gunadhi',
+                'description' => 'Dummy Reparasi BG. BENGKU',
+                'sales_order_id' => NULL,
+                'planned_start_date' => '2019-04-25',
+                'planned_end_date' => '2019-05-24',
+                'planned_duration' => '30',
+                'actual_start_date' => NULL,
+                'actual_end_date' => NULL,
+                'actual_duration' => NULL,
+                'progress' => 0.0,
+                'flag' => NULL,
+                'class_name' => NULL,
+                'class_contact_person_name' => NULL,
+                'class_contact_person_phone' => NULL,
+                'class_contact_person_email' => NULL,
+                'project_type' => 4,
+                'status' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 12:51:58',
+                'updated_at' => '2019-04-11 12:51:58',
             ),
         ));
+        
+        
     }
 }
