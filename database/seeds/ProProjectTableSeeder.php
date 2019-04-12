@@ -159,8 +159,8 @@ class ProProjectTableSeeder extends Seeder
                 'description' => 'Dummy Reparasi BG. BENGKU',
                 'sales_order_id' => NULL,
                 'planned_start_date' => '2019-04-25',
-                'planned_end_date' => '2019-05-24',
-                'planned_duration' => '30',
+                'planned_end_date' => '2019-06-03',
+                'planned_duration' => '40',
                 'actual_start_date' => NULL,
                 'actual_end_date' => NULL,
                 'actual_duration' => NULL,
@@ -175,7 +175,7 @@ class ProProjectTableSeeder extends Seeder
                 'user_id' => 3,
                 'branch_id' => 2,
                 'created_at' => '2019-04-11 12:51:58',
-                'updated_at' => '2019-04-11 12:51:58',
+                'updated_at' => '2019-04-12 09:40:07',
             ),
         ));
         

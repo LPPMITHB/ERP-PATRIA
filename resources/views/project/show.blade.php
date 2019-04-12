@@ -810,7 +810,7 @@
                     type: 'time',
                     time: {
                         tooltipFormat: 'll',
-                        unit: 'month',
+                        unit: 'week',
                     }
                 }],
                 yAxes: [{
@@ -876,7 +876,7 @@
                     type: 'time',
                     time: {
                         tooltipFormat: 'll',
-                        unit: 'month',
+                        unit: 'week',
                     }
                 }],
                 yAxes: [{
