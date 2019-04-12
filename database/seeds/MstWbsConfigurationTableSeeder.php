@@ -1096,6 +1096,58 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-04-11 14:32:48',
                 'updated_at' => '2019-04-11 14:32:48',
             ),
+            83 => 
+            array (
+                'id' => 87,
+                'number' => 'Winch House',
+                'description' => 'Winch House',
+                'deliverables' => 'Winch House',
+                'duration' => 1,
+                'wbs_id' => 68,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:30:17',
+                'updated_at' => '2019-04-12 10:30:17',
+            ),
+            84 => 
+            array (
+                'id' => 88,
+                'number' => 'Pembuatan 2 Pintu Besar',
+                'description' => 'Pembuatan 2 Pintu Besar',
+                'deliverables' => 'Pembuatan 2 Pintu Besar',
+                'duration' => 1,
+                'wbs_id' => 87,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:30:51',
+                'updated_at' => '2019-04-12 10:30:51',
+            ),
+            85 => 
+            array (
+                'id' => 90,
+                'number' => 'Pintu Forward',
+                'description' => 'Pintu Forward',
+                'deliverables' => 'Pintu Forward',
+                'duration' => 1,
+                'wbs_id' => 88,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:32:12',
+                'updated_at' => '2019-04-12 10:32:12',
+            ),
+            86 => 
+            array (
+                'id' => 91,
+                'number' => 'Pintu Sekat',
+                'description' => 'Pintu Sekat',
+                'deliverables' => 'Pintu Sekat',
+                'duration' => 1,
+                'wbs_id' => 88,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:32:19',
+                'updated_at' => '2019-04-12 10:32:19',
+            ),
         ));
         
         

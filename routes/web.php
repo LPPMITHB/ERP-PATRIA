@@ -806,7 +806,7 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost-repair');
 
-    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost-repair');
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCostRepair')->name('viewPlannedCost')->middleware('can:view-planned-cost-repair');
     
     Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost-repair');
 

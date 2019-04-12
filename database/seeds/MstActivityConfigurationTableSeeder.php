@@ -1930,16 +1930,14 @@ class MstActivityConfigurationTableSeeder extends Seeder
             159 => 
             array (
                 'id' => 172,
-                'name' => 'Naik turun dok
-',
-                'description' => 'Naik turun dok
-',
+                'name' => 'Docking',
+                'description' => 'Docking',
                 'wbs_id' => 1,
                 'duration' => 1,
                 'user_id' => 3,
                 'branch_id' => 2,
                 'created_at' => '2019-04-11 11:27:48',
-                'updated_at' => '2019-04-11 11:27:48',
+                'updated_at' => '2019-04-12 10:29:17',
             ),
             160 => 
             array (
@@ -2181,6 +2179,102 @@ Penggunaan aktual akan dikonfirmasi dengan owner representative
                 'branch_id' => 2,
                 'created_at' => '2019-04-11 14:35:15',
                 'updated_at' => '2019-04-11 14:35:15',
+            ),
+            178 => 
+            array (
+                'id' => 192,
+                'name' => 'Undocking',
+                'description' => 'Undocking',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:29:23',
+                'updated_at' => '2019-04-12 10:29:23',
+            ),
+            179 => 
+            array (
+                'id' => 193,
+                'name' => 'Gambar Bukaan Kulit',
+                'description' => 'Gambar Bukaan Kulit',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:29:44',
+                'updated_at' => '2019-04-12 10:29:44',
+            ),
+            180 => 
+            array (
+                'id' => 194,
+                'name' => 'Plate',
+                'description' => 'Plate',
+                'wbs_id' => 90,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:35:46',
+                'updated_at' => '2019-04-12 10:35:46',
+            ),
+            181 => 
+            array (
+                'id' => 195,
+                'name' => 'Strip',
+                'description' => 'Strip',
+                'wbs_id' => 90,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:35:51',
+                'updated_at' => '2019-04-12 10:35:51',
+            ),
+            182 => 
+            array (
+                'id' => 196,
+                'name' => 'Engsel',
+                'description' => 'Engsel',
+                'wbs_id' => 90,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:35:56',
+                'updated_at' => '2019-04-12 10:35:56',
+            ),
+            183 => 
+            array (
+                'id' => 197,
+                'name' => 'Plate',
+                'description' => 'Plate',
+                'wbs_id' => 91,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:36:11',
+                'updated_at' => '2019-04-12 10:36:11',
+            ),
+            184 => 
+            array (
+                'id' => 198,
+                'name' => 'Strip',
+                'description' => 'Strip',
+                'wbs_id' => 91,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:36:17',
+                'updated_at' => '2019-04-12 10:36:17',
+            ),
+            185 => 
+            array (
+                'id' => 199,
+                'name' => 'Engsel',
+                'description' => 'Engsel',
+                'wbs_id' => 91,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:36:27',
+                'updated_at' => '2019-04-12 10:36:27',
             ),
         ));
         
