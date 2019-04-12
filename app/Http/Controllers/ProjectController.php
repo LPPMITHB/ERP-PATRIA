@@ -861,6 +861,7 @@ class ProjectController extends Controller
     {
         $today = date("Y-m-d");
         $project = Project::find($id);
+        $wbss = $project->wbss;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         $data = Collection::make();
@@ -871,7 +872,7 @@ class ProjectController extends Controller
         
         $links->jsonSerialize();
         $data->jsonSerialize();
-        return view('project.ganttChart', compact('project','data','links','today','menu'));
+        return view('project.ganttChart', compact('project','data','links','today','menu','wbss'));
     }
 
     /**
@@ -933,22 +934,23 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             if($project->name == $request->name){
                 if($menu == "building"){
-                    return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                    return redirect()->route('project.edit',$id)->with('error','The project name has been taken')->withInput();
                 }else{
                     if($request->name != null){
-                        return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
+                        return redirect()->route('project_repair.edit',$id)->with('error','The project name has been taken')->withInput();
                     }
                 }
             }
             if($project->number == $request->number){
                 if($menu == "building"){
-                    return redirect()->route('project.create')->with('error','The project number has been taken')->withInput();
+                    return redirect()->route('project.edit',$id)->with('error','The project number has been taken')->withInput();
                 }elseif ($menu=="repair"){
-                    return redirect()->route('project_repair.create')->with('error','The project number has been taken')->withInput();
+                    return redirect()->route('project_repair.edit',$id)->with('error','The project number has been taken')->withInput();
                 }
             }
         }
         try {
+
             $project = Project::findOrFail($id);
             $project->number = $request->number;
             $project->name = $request->name;
