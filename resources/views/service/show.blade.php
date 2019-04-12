@@ -96,7 +96,7 @@
                                     </div>
                                 </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal" :disabled="inputOk" @click.prevent="update()">SAVE</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update" :disabled="editOk">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -168,11 +168,12 @@ var data = {
     el : '#detail',
     data : data,
     computed :{
-        inputOk: function(){
+        editOk: function(){
             let isOk = false;
-            if(this.editInput.name == ""){
+            if(this.editInput.name == "" || this.editInput.uom_id == "" || this.editInput.cost_standard_price == ""){
                 isOk = true;
             }
+            return isOk;
         }
     },
     methods : {

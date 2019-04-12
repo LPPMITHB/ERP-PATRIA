@@ -68,17 +68,36 @@ class MaterialController extends Controller
             // $material->name = $data->name;
             $material->description = $data->description;
             $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
+
+            if($data->dimension_uom_id != ""){
+                $uom = Uom::where('id',$data->dimension_uom_id)->first();
+                if($uom->unit == "M"){
+                    $dataDensity = Configuration::get('density');
+                    foreach($dataDensity as $density){
+                        if($density->id == $data->density_id){
+                            $value = $density->value;
+                        }
+                    }
+
+                    $result = $data->lengths * $data->width * $data->height * $value;
+                    $material->cost_standard_price_kg = 1/$result * $data->cost_standard_price;
+                }else{
+                    $material->cost_standard_price_kg = 0;
+                }
+            }
+
             $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
             $material->uom_id = $data->uom_id;
             $material->min = $data->min == "" ? 0 : $data->min;
             $material->max = $data->max == "" ? 0 : $data->max;
             $material->weight = $data->weight;
+            $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
             $material->length = $data->lengths;
             $material->width = $data->width;
             $material->height = $data->height;
             $material->type = $data->type;
             $material->family_id = $data->family_id == "" ? null : json_encode($data->family_id);
-            $material->density = $data->density_id == "" ? null : $data->density_id;
+            $material->density_id = $data->density_id == "" ? null : $data->density_id;
             $material->dimension_uom_id = $data->dimension_uom_id == "" ? null : $data->dimension_uom_id;
             $material->status = $data->status;
             if($request->hasFile('image')){
@@ -218,11 +237,28 @@ class MaterialController extends Controller
         // $material->name = $data->name;
         $material->description = $data->description;
         $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
+        if($data->dimension_uom_id != ""){
+            $uom = Uom::where('id',$data->dimension_uom_id)->first();
+            if($uom->unit == "M"){
+                $dataDensity = Configuration::get('density');
+                foreach($dataDensity as $density){
+                    if($density->id == $data->density_id){
+                        $value = $density->value;
+                    }
+                }
+                
+                $result = $data->lengths * $data->width * $data->height * $value;
+                $material->cost_standard_price_kg = 1/$result * $data->cost_standard_price;
+            }else{
+                $material->cost_standard_price_kg = 0;
+            }
+        }
         $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
         $material->uom_id = $data->uom_id;
         $material->min = $data->min == "" ? 0 : $data->min;
         $material->max = $data->max == "" ? 0 : $data->max;
         $material->weight = $data->weight;
+        $material->weight_uom_id = $data->weight_uom_id == "" ? null : $data->weight_uom_id;
         $material->height = $data->height;
         $material->length = $data->lengths;
         $material->width = $data->width;

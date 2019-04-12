@@ -92,7 +92,7 @@
             dataOk: function(){
                 let isOk = false;
                 
-                if(this.dataInput.name == ""){
+                if(this.dataInput.name == "" || this.dataInput.type ==""){
                     isOk = true;
                 }
                 return isOk;

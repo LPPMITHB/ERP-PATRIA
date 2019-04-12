@@ -93,7 +93,7 @@
             dataOk: function(){
                 let isOk = false;
                 
-                if(this.dataInput.name == ""){
+                if(this.dataInput.name == "" || this.dataInput.uom_id =="" || this.dataInput.cost_standard_price ==""){
                     isOk = true;
                 }
                 return isOk;

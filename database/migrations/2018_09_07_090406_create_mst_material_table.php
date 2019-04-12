@@ -18,7 +18,11 @@ class CreateMstMaterialTable extends Migration
             $table->string('code')->unique();
             $table->text('description');
             $table->integer('cost_standard_price')->default(0);
+<<<<<<< HEAD
             $table->float('cost_standard_price_per_kg', 15,2)->default(0);
+=======
+            $table->integer('cost_standard_price_kg')->default(0);
+>>>>>>> origin/CS-ChristianSantosa
             $table->integer('cost_standard_price_service')->default(0);
             $table->integer('latest_price')->default(0);
             $table->integer('average_price')->default(0);
@@ -26,6 +30,7 @@ class CreateMstMaterialTable extends Migration
             $table->integer('min')->nullable();
             $table->integer('max')->nullable();
             $table->float('weight', 15, 2)->nullable();
+            $table->unsignedInteger('weight_uom_id')->nullable();
             $table->float('length', 15, 2)->nullable();
             $table->float('width', 15, 2)->nullable();
             $table->float('height', 15, 2)->nullable();

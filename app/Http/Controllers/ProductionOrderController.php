@@ -605,6 +605,19 @@ class ProductionOrderController extends Controller
                         }
                     }
                 }
+            }elseif($route == "/production_order"){
+                if(count($datas->materials) > 0){
+                    foreach($datas->materials as $material){
+                        if($material->material_id != ""){
+                            $PrOD = new ProductionOrderDetail;
+                            $PrOD->production_order_id = $PrO->id;
+                            $PrOD->material_id = $material->material_id;
+                            $PrOD->quantity = $material->quantity;
+                            $PrOD->source = $material->source;
+                            $PrOD->save();
+                        }
+                    }
+                }
             }
             
             if(count($datas->resources) > 0){
@@ -622,7 +635,7 @@ class ProductionOrderController extends Controller
                     }
                 }
             }
-            
+
             foreach($arrData as $data){
                 $data->type = "Material";
                 if($data->type == "Material"){
