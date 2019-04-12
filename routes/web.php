@@ -802,7 +802,7 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     
     Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material-repair');
 
-    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material-repair');
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluationRepair')->name('showMaterialEvaluation')->middleware('can:view-remaining-material-repair');
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost-repair');
 

@@ -207,6 +207,49 @@ class RAPController extends Controller
             }
         }
     } 
+
+    public function showMaterialEvaluationRepair(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $project = Project::findOrFail($id);
+        $materialEvaluation = Collection::make();
+        $modelBom = Bom::where('project_id',$id)->first();
+        if($modelBom != null){
+            foreach($modelBom->bomDetails as $bomDetail){
+                if($bomDetail->material){
+                    if(count($bomDetail->material->materialRequisitionDetails)>0){
+                        foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
+                            if ($mrd->wbs_id == $id) {
+                                $materialEvaluation->push([
+                                    "material_code" => $bomDetail->material->code,
+                                    "material_description" => $bomDetail->material->description,
+                                    "unit" => $bomDetail->material->uom->unit,
+                                    "quantity" => $bomDetail->quantity,
+                                    "used" => $mrd->issued,
+                                ]);
+                            }
+                        }
+                    }else{
+                        $materialEvaluation->push([
+                            "material_code" => $bomDetail->material->code,
+                            "material_description" => $bomDetail->material->description,
+                            "unit" => $bomDetail->material->uom->unit,
+                            "quantity" => $bomDetail->quantity,
+                            "used" => 0,
+                        ]);
+                    }
+                }
+            }
+            return view('rap.showMaterialEvaluationRepair', compact('project','materialEvaluation','route'));
+        }else{
+            $route = $request->route()->getPrefix();
+            if($route == '/rap'){
+                return redirect()->route('rap.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }elseif($route == '/rap_repair'){
+                return redirect()->route('rap_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }
+        }
+    } 
     
      public function index(Request $request, $id)
     {
@@ -347,24 +390,14 @@ class RAPController extends Controller
         $wbss = $project->wbss;
         $costs = Cost::where('project_id', $id)->get();  
         $raps = Rap::where('project_id', $id)->get();  
-        $totalCost = 0;
+        $totalCostProject = 0;
 
-        foreach($raps as $rap){
-            $totalCost += $rap->total_price;
-        }
         foreach($costs as $cost){
-            $totalCost += $cost->plan_cost;
+            $totalCostProject += $cost->plan_cost;
         }
 
         $data = Collection::make();
-
-        $data->push([
-            "id" => $project->number , 
-            "parent" => "#",
-            "text" => $project->name.' <b>| Total Cost : Rp.'.number_format($totalCost).'</b>',
-            "icon" => "fa fa-ship"
-        ]);
-
+        
         foreach($wbss as $wbs){
             $costPerWbs = 0;
             foreach ($wbs->activities as $activity) {
@@ -394,14 +427,15 @@ class RAPController extends Controller
                 $data->push([
                     "id" => $wbs->code , 
                     "parent" => $wbs->wbs->code,
-                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost,2).'</b>',
                     "icon" => "fa fa-suitcase"
                 ]);
             }else{
+                $totalCostProject += $totalCost;
                 $data->push([
                     "id" => $wbs->code , 
                     "parent" => $project->number,
-                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost).'</b>',
+                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost,2).'</b>',
                     "icon" => "fa fa-suitcase"
                 ]);
             }  
@@ -412,18 +446,25 @@ class RAPController extends Controller
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $project->number,
-                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost).'</b>',
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost,2).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }else{
                 $data->push([
                     "id" => 'COST'.$cost->id , 
                     "parent" => $cost->wbs->code,
-                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost).'</b>',
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost,2).'</b>',
                     "icon" => "fa fa-money"
                 ]);
             }
         }
+
+        $data->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name.' <b>| Total Cost : Rp.'.number_format($totalCostProject,2).'</b>',
+            "icon" => "fa fa-ship"
+        ]);
         return view('rap.viewPlannedCost', compact('project','costs','data','route'));
     }
 

@@ -791,13 +791,15 @@ class BOMController extends Controller
             if($pr_id != null){
                 $bom_details = $bom_prep_model->bomDetails;
                 foreach ($bom_details as $bom_detail) {
-                    $PRD = new PurchaseRequisitionDetail;
-                    $PRD->purchase_requisition_id = $pr_id;
-                    $PRD->material_id = $bom_detail->material_id;
-                    $PRD->quantity = $bom_detail->pr_quantity;
-                    $PRD->project_id = $modelProject->id;
-                    $PRD->alocation = "Stock";
-                    $PRD->save();
+                    if($bom_detail->pr_quantity != null){
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $pr_id;
+                        $PRD->material_id = $bom_detail->material_id;
+                        $PRD->quantity = $bom_detail->pr_quantity;
+                        $PRD->project_id = $modelProject->id;
+                        $PRD->alocation = "Stock";
+                        $PRD->save();
+                    }
                 }
             }
         }
