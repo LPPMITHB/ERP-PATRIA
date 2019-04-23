@@ -18,6 +18,7 @@ use App\Models\StorageLocationDetail;
 use App\Models\Branch;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
+use DateTime;
 use DB;
 use Auth;
 
@@ -36,10 +37,11 @@ class GoodsIssueController extends Controller
         $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->pluck('id')->toArray();
         // $modelGIs = GoodsIssue::whereIn('material_requisition_id',$modelMRs)->where('type',1)->get();
         $modelGIs = GoodsIssue::where('business_unit_id',$modelProject)->get();
+        $modelGIs = GoodsIssue::where('business_unit_id',2)->orderBy('created_at', 'desc')->get();
 
         return view ('goods_issue.index', compact('modelGIs','menu'));
     }
-    
+
     public function createGiWithRef($id,Request $request)
     {
         $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
@@ -87,6 +89,10 @@ class GoodsIssueController extends Controller
             $GI->business_unit_id = $business_unit;
             $GI->material_requisition_id = $datas->mr_id;
             $GI->description = $datas->description;
+            if($datas->issue_date != ""){
+                $issue_date = DateTime::createFromFormat('d-m-Y', $datas->issue_date);
+                $GI->issue_date = $issue_date->format('Y-m-d');
+            }
             $GI->type = 1;
             $GI->branch_id = Auth::user()->branch->id;
             $GI->user_id = Auth::user()->id;

@@ -65,6 +65,10 @@
                             @endif
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4">Issue Date</div>
+                        <div class="col-md-6">: <b> {{ isset($modelGI->issue_date) ? date('d-m-Y', strtotime($modelGI->issue_date)) : '-'}} </b></div>
+                    </div>
                     
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10">

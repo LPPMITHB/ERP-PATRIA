@@ -349,7 +349,6 @@ class BOMController extends Controller
 
     public function storeBomRepair(Request $request)
     {
-        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
 
         $bom_code = self::generateBomCode($datas->project_id);
@@ -480,6 +479,9 @@ class BOMController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelBOM = Bom::where('project_id',$id)->with('project','bomDetails','user','branch','wbs','project.customer','project.ship','rap','purchaseRequisition')->first();
+        if($modelBOM == null){
+            return redirect()->route('bom_repair.selectProject')->with('error', 'BOM doesn\'t exist, Please define BOM first!');
+        }
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service','material.uom')->get();
 
         return view('bom.show', compact('modelBOM','modelBOMDetail','route'));

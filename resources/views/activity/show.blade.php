@@ -158,6 +158,43 @@
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->
+
+
+            <div class="box-body p-t-0 p-b-0">
+                <h4 class="box-title">List of Materials Assigned</h4>
+                <table class="table table-bordered showTable tableFixed" id="material-table">
+                    <thead>
+                        <tr>
+                            <th width="10px">No</th>
+                            <th width="25%">Material</th>
+                            <th width="6%">Length</th>
+                            <th width="6%">Width</th>
+                            <th width="6%">Height</th>
+                            <th width="6%">UOM</th>
+                            <th width="6%">Qty</th>
+                            <th width="6%">Weight</th>
+                            <th width="6%">Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($activity->activityDetails as $act_detail)
+                            @if($act_detail->material != null)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$act_detail->material->code}} - {{$act_detail->material->description}}">{{$act_detail->material->code}} - {{$act_detail->material->description}}</td>
+                                    <td>{{$act_detail->length != null ? number_format($act_detail->length,2) : "-"}}</td>
+                                    <td>{{$act_detail->width != null ? number_format($act_detail->width,2) : "-"}}</td>
+                                    <td>{{$act_detail->height != null ? number_format($act_detail->height,2) : "-"}}</td>
+                                    <td>{{$act_detail->dimensionUom != null ? $act_detail->dimensionUom->unit : "-"}}</td>
+                                    <td>{{$act_detail->quantity_material}}</td>
+                                    <td>{{$act_detail->dimensionUom != null ? number_format($act_detail->weight,2)." kg" : "-"}} </td>
+                                    <td>{{$act_detail->source}}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div> <!-- /.box-body -->
         </div>
     </div>    
 </div> <!-- /.row -->
@@ -167,6 +204,19 @@
 <script>
     $(document).ready(function(){
         $('#activity-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').remove();
+            }
+        });
+        jQuery('#activity-table').wrap('<div class="dataTables_scroll" />');
+        
+        $('#material-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : false,

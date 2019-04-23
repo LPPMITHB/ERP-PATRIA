@@ -10,7 +10,6 @@
           <div class="nav-tabs-custom">
               <ul class="nav nav-tabs">
                   <li class="active"><a href="#individual" data-toggle="tab">Individual Project</a></li>
-                  <li><a href="#overall" data-toggle="tab">Overall Project</a></li>
                   <li><div class="col-sm-12"></div></li>
               </ul>
               <div class="tab-content">
@@ -32,9 +31,9 @@
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <a href="#" data-container="body" data-toggle="tooltip" title="Project dengan background berwarna kuning menandakan bahwa terdapat activity / wbs yang terlambat namun ekspetasi tanggal selesai seluruh WBS belum melebihi tanggal rencana berakhirnya project.">
                                 <div class="info-box" style="min-height:30px">
-                                  <span class="info-box-icon m-t-0" style="height:20px; background-color: yellow"> </span>
+                                  <span class="info-box-icon m-t-0" style="height:20px; background-color: #E9E92F"> </span>
                                   <div class="info-box-content p-t-0 m-t-0">
-                                    <span class="info-box-text"><b>Activity Late</b></span>
+                                    <span class="info-box-text"><b>WBS Late</b></span>
                                     <span class="info-box-number"></span>
                                   </div>
                                 </div>
@@ -77,10 +76,10 @@
                                           </div>
                                           <div class="small-box bg-aqua">
                                         @elseif($data['status'] == 1)
-                                          <div style="display: inline-block; margin-bottom: -2px; color: white; background-color: yellow" class="small-box p-r-5 p-l-5">
+                                          <div style="display: inline-block; margin-bottom: -2px; color: white; background-color: #E9E92F" class="small-box p-r-5 p-l-5">
                                               <label>Project Code : {{$project->number}} - {{$project->person_in_charge}}</label>
                                           </div>
-                                          <div class="small-box bg-darken-4" style="color: white; background-color: yellow">
+                                          <div class="small-box bg-darken-4" style="color: white; background-color: #E9E92F">
                                         @elseif($data['status'] == 2)
                                           <div style="display: inline-block; margin-bottom: -2px" class="small-box bg-orange p-r-5 p-l-5">
                                               <label>Project Code : {{$project->number}} - {{$project->person_in_charge}}</label>
@@ -161,7 +160,7 @@
                                                         }
                                                         $totalCost = count($project->raps)>0 ? $project->raps->sum('total_price') : 0;
                                                         if($totalCost > 0){
-                                                          $percentageCost = $costAbsorbed / $totalCost;
+                                                          $percentageCost = number_format(($costAbsorbed / $totalCost)*100,2);
                                                         }else{
                                                           $percentageCost = 0;
                                                         }

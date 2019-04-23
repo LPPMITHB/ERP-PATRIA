@@ -141,8 +141,8 @@
                                     <td >15</td>
                                     <td>Status</td>
                                     <td class="iconTd">
-                                        <i v-if="wbsDisplay.status == 0" class="fa fa-check"></i>
-                                        <i v-else class="fa fa-times"></i>
+                                        <i v-if="wbsDisplay.status == 0" class="fa fa-check text-success"></i>
+                                        <i v-else class="fa fa-times text-danger"></i>
                                     </td>
                                 </tr>
                             </tbody>

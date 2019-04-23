@@ -27,12 +27,7 @@ class PurchaseRequisitionController extends Controller
      */
     public function index(Request $request)
     {
-        $route = $request->route()->getPrefix();    
-        if($route == "/purchase_requisition"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }
+        $route = $request->route()->getPrefix(); 
         if($route == "/purchase_requisition"){
             $modelPRs = PurchaseRequisition::where('business_unit_id',1)->get();
         }elseif($route == "/purchase_requisition_repair"){

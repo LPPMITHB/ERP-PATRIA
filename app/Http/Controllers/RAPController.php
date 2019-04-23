@@ -11,6 +11,7 @@ use App\Models\Bom;
 use App\Models\Rap;
 use App\Models\Stock;
 use App\Models\RapDetail;
+use App\Models\MaterialRequisition;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\Project;
@@ -214,19 +215,40 @@ class RAPController extends Controller
         $project = Project::findOrFail($id);
         $materialEvaluation = Collection::make();
         $modelBom = Bom::where('project_id',$id)->first();
+        $mr_ids = MaterialRequisition::where('project_id',$id)->get()->pluck('id')->toArray();
+
         if($modelBom != null){
             foreach($modelBom->bomDetails as $bomDetail){
-                if($bomDetail->material){
+                if($bomDetail->material != null){
                     if(count($bomDetail->material->materialRequisitionDetails)>0){
-                        foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
-                            if ($mrd->wbs_id == $id) {
+                        foreach ($bomDetail->material->materialRequisitionDetails->whereIn('material_requisition_id', $mr_ids) as $mrd) {
+                            if(count($materialEvaluation)>0){
+                                $material_not_found = true;
+                                foreach ($materialEvaluation as $existing) {
+                                    if($mrd->material->code == $existing['material_code']){
+                                        $existing['used'] += $mrd->issued;
+                                        $material_not_found = false;
+                                    }
+
+                                }
+                                
+                                if($material_not_found){
+                                    $materialEvaluation->push([
+                                        "material_code" => $bomDetail->material->code,
+                                        "material_description" => $bomDetail->material->description,
+                                        "unit" => $bomDetail->material->uom->unit,
+                                        "quantity" => $bomDetail->quantity,
+                                        "used" => $mrd->issued,
+                                    ]); 
+                                }
+                            }else{
                                 $materialEvaluation->push([
                                     "material_code" => $bomDetail->material->code,
                                     "material_description" => $bomDetail->material->description,
                                     "unit" => $bomDetail->material->uom->unit,
                                     "quantity" => $bomDetail->quantity,
                                     "used" => $mrd->issued,
-                                ]);
+                                ]);                                
                             }
                         }
                     }else{
@@ -240,6 +262,7 @@ class RAPController extends Controller
                     }
                 }
             }
+
             return view('rap.showMaterialEvaluationRepair', compact('project','materialEvaluation','route'));
         }else{
             $route = $request->route()->getPrefix();
@@ -249,7 +272,7 @@ class RAPController extends Controller
                 return redirect()->route('rap_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
             }
         }
-    } 
+    }  
     
      public function index(Request $request, $id)
     {

@@ -94,8 +94,8 @@
                         <thead>
                             <tr>
                                 <th style="width: 2px">No</th>
-                                <th style="width: 15%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
+                                <th style="width: 15%">Description</th>
                                 <th style="width: 10%">Number</th>
                                 <th style="width: 7%">Start Date</th>
                                 <th style="width: 7%">End Date</th>
@@ -107,8 +107,8 @@
                         <tbody>
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
@@ -140,10 +140,14 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0" colspan="2">
-                                    <selectize v-model="newSubWBS.wbs_configuration_id" :settings="wbsConfigSettings">
+                                <td class="p-l-0" colspan="1">
+                                    <selectize class="selectizeFull" v-model="newSubWBS.wbs_configuration_id" :settings="wbsConfigSettings">
                                         <option v-for="(wbs_config, index) in wbs_configs" :value="wbs_config.id">{{ wbs_config.number }} - {{ wbs_config.description }}</option>
                                     </selectize>
+                                </td>
+                                <td class="p-l-0">
+                                    <textarea rows="2" v-model="newSubWBS.description" type="text" class="form-control width100" id="description" name="description" placeholder="Description">
+                                    </textarea>
                                 </td>
                                 <td class="p-l-0">
                                     <input v-model="newSubWBS.number" type="text" class="form-control width100" id="number" name="number" placeholder="Number">
@@ -180,6 +184,11 @@
                                         <div class="form-group col-sm-12">
                                             <label for="number" class="control-label">Number</label>
                                             <input id="number" type="text" class="form-control" v-model="editWbs.number" placeholder="Insert Number here..." >
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="description" class="control-label">Description</label>
+                                            <textarea rows="3" id="description" type="text" class="form-control" v-model="editWbs.description" placeholder="Insert Description here..." >
+                                            </textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">WBS Configuration</label>
@@ -284,6 +293,7 @@ var data = {
     wbsConfigSettings: {
         placeholder: 'WBS Configuration',
     },
+    openModalFirstTime : false,
 };
 
 Vue.directive('tooltip', function(el, binding){
@@ -393,10 +403,12 @@ var vm = new Vue({
             this.editWbs.description = "";
             this.editWbs.deliverables = "";
             this.editWbs.weight = ""; 
+            this.openModalFirstTime = true;
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
             this.active_id = data.id;
             this.editWbs.number = data.number;
+            this.editWbs.description = data.description;
             this.editWbs.wbs_configuration_id = data.wbs_configuration_id;
             this.editWbs.weight = data.weight;
             if(data.planned_start_date != null){
@@ -478,14 +490,14 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                     $('div.overlay').hide();            
+                    this.getSubWBS();
+                    this.newSubWBS.number = "";
+                    this.newSubWBS.wbs_configuration_id = "";
+                    this.newSubWBS.planned_start_date = "";                
+                    this.newSubWBS.planned_end_date = "";                
+                    this.newSubWBS.planned_duration = "";         
+                    this.newSubWBS.weight = "";
                 }
-                this.getSubWBS();
-                this.newSubWBS.number = "";
-                this.newSubWBS.wbs_configuration_id = "";
-                this.newSubWBS.planned_start_date = "";                
-                this.newSubWBS.planned_end_date = "";                
-                this.newSubWBS.planned_duration = "";         
-                this.newSubWBS.weight = "";
             })
             .catch((error) => {
                 console.log(error);
@@ -519,15 +531,15 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                     $('div.overlay').hide();            
+                    this.getSubWBS(); 
+                    this.editWbs.number = "";
+                    this.editWbs.wbs_configuration_id = "";
+                    this.editWbs.planned_start_date = "";                
+                    this.editWbs.planned_end_date = "";                
+                    this.editWbs.planned_duration = "";                
+                    this.editWbs.weight = "";   
                 }
                 
-                this.getSubWBS(); 
-                this.editWbs.number = "";
-                this.editWbs.wbs_configuration_id = "";
-                this.editWbs.planned_start_date = "";                
-                this.editWbs.planned_end_date = "";                
-                this.editWbs.planned_duration = "";                
-                this.editWbs.weight = "";   
             })
             .catch((error) => {
                 console.log(error);
@@ -858,6 +870,7 @@ var vm = new Vue({
                 this.wbs_configs.forEach(wbs_config => {
                     if(newValue == wbs_config.id){
                         this.newSubWBS.number = wbs_config.number;
+                        this.newSubWBS.description = wbs_config.description;
                     }
                 });
             }else{
@@ -867,11 +880,16 @@ var vm = new Vue({
         },
         'editWbs.wbs_configuration_id' : function(newValue){
             if(newValue != ""){
-                this.wbs_configs.forEach(wbs_config => {
-                    if(newValue == wbs_config.id){
-                        this.editWbs.number = wbs_config.number;
-                    }
-                });
+                if(this.openModalFirstTime){
+                    this.openModalFirstTime = false;
+                }else{
+                    this.wbs_configs.forEach(wbs_config => {
+                        if(newValue == wbs_config.id){
+                            this.editWbs.number = wbs_config.number;
+                            this.editWbs.description = wbs_config.description;
+                        }
+                    });
+                }
             }else{
                 this.editWbs.number = "";
             }

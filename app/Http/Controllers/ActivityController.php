@@ -41,7 +41,7 @@ class ActivityController extends Controller
     public function createActivityRepair($id, Request $request)
     {
         $wbs = WBS::find($id);
-        if(isset($wbs->wbsConfig)){
+        if(count($wbs->wbsConfig->activities)>0){
             $activity_config = $wbs->wbsConfig->activities;
     
             $materials = Material::with('dimensionUom')->get();
@@ -266,7 +266,10 @@ class ActivityController extends Controller
     public function storeActivityConfiguration(Request $request)
     {
         $data = $request->json()->all();
-
+        $modelActConfig = ActivityConfiguration::where('wbs_id',$data['wbs_id'])->where('name',$data['name'])->first();
+        if($modelActConfig != null){
+            return response(["error"=> "Activity name on This WBS must be UNIQUE"],Response::HTTP_OK);
+        }
         DB::beginTransaction();
         try {
             $activity = new ActivityConfiguration;
@@ -293,7 +296,7 @@ class ActivityController extends Controller
     {
         $data = $request->json()->all();
         $error = [];
-        
+
         DB::beginTransaction();
         try {
             $activity = Activity::find($id);
@@ -523,10 +526,13 @@ class ActivityController extends Controller
     public function updateActivityConfiguration(Request $request, $id)
     {
         $data = $request->json()->all();
-        
+        $activity = ActivityConfiguration::find($id);
+        $modelActConfig = ActivityConfiguration::where('wbs_id',$activity->wbs_id)->where('name',$data['name'])->where('id','!=',$id)->first();
+        if($modelActConfig != null){
+            return response(["error"=> "Activity name on This WBS must be UNIQUE"],Response::HTTP_OK);
+        }
         DB::beginTransaction();
         try {
-            $activity = ActivityConfiguration::find($id);
             $activity->name = $data['name'];
             $activity->description = $data['description'];         
             $activity->duration = $data['duration'];
@@ -678,8 +684,24 @@ class ActivityController extends Controller
                 $progress += $wbs->progress* ($wbs->weight /100); 
             }            
             $project->progress = $progress;
-            $project->save();
-            
+            $project->update();
+            if($project->progress == 100){
+                $wbss = $project->wbss->pluck('id')->toArray();
+                $latest_date = Activity::whereIn('wbs_id',$wbss)->get()->groupBy('actual_end_date')->all();
+                krsort($latest_date);
+                $latest_date = collect($latest_date)->first()[0]->actual_end_date;
+                $project->actual_end_date = $latest_date;
+
+                $start_date=date_create($project->actual_start_date);
+                $end_date=date_create($project->actual_end_date);
+
+                $diff=date_diff($start_date,$end_date);
+                $project->actual_duration = $diff->days;
+                $project->status = 0;
+                $project->update();
+            }
+
+
             DB::commit();
             return response(["response"=>"Success to confirm activity ".$activity->code],Response::HTTP_OK);
             
@@ -714,7 +736,10 @@ class ActivityController extends Controller
         DB::beginTransaction();
         try {
             $activityConfiguration = ActivityConfiguration::find($id);
-
+            if(count($activityConfiguration->activitiesProject)>0){
+                return response(["error"=> "Failed to delete, this Activity already been used by a project"],Response::HTTP_OK);
+            }
+            
             if(!$activityConfiguration->delete()){
                 return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
             }else{

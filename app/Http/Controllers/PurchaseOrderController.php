@@ -48,7 +48,6 @@ class PurchaseOrderController extends Controller
         $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.index', compact('modelPOs','route'));
-    
     }
 
     public function indexApprove(Request $request)
@@ -802,6 +801,7 @@ class PurchaseOrderController extends Controller
             return redirect()->route('purchase_order.show',$datas->po_id)->with('error', $e->getMessage());
         }
     }
+
 
     public function generatePIR($modelPO){
         foreach($modelPO->purchaseOrderDetails as $POD){

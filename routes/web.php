@@ -1285,7 +1285,7 @@ Route::name('material_requisition_repair.')->prefix('material_requisition_repair
 
     Route::get('/showApprove/{id}', 'MaterialRequisitionController@showApprove')->name('showApprove')->middleware('can:show-material-requisition-repair');
 
-    Route::get('/{id}/edit', 'MaterialRequisitionController@edit')->name('edit')->middleware('can:edit-material-requisition-repair');
+    Route::get('/{id}/edit', 'MaterialRequisitionController@editRepair')->name('edit')->middleware('can:edit-material-requisition-repair');
 
     Route::patch('/{id}', 'MaterialRequisitionController@update')->name('update')->middleware('can:edit-material-requisition-repair');
 

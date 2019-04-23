@@ -141,7 +141,7 @@ class GoodsReceiptController extends Controller
             // return view('goods_receipt.showResource', compact('modelGR','modelGRD','route'));
         }
     }
-    
+
     public function createGrWithoutRef(Request $request)
     {
         $route = $request->route()->getPrefix();
@@ -154,9 +154,9 @@ class GoodsReceiptController extends Controller
     public function index(Request $request){
         $route = $request->route()->getPrefix();
         if($route == "/goods_receipt"){
-            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',1)->get(); 
+            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',1)->orderBy('created_at', 'desc')->get(); 
         }elseif($route == "/goods_receipt_repair"){
-            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',2)->get();
+            $modelGRs = GoodsReceipt::whereIn('type',[1,2,3,5])->where('status',1)->where('business_unit_id',2)->orderBy('created_at', 'desc')->get();
         }
         
         return view ('goods_receipt.index', compact('route','modelGRs'));
@@ -167,7 +167,6 @@ class GoodsReceiptController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $gr_number = $this->generateGRNumber();
-
         DB::beginTransaction();
         try {
             $GR = new GoodsReceipt;
@@ -405,7 +404,7 @@ class GoodsReceiptController extends Controller
     }
 
     public function generateGRNumber(){
-        $modelGR = GoodsReceipt::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
+        $modelGR = GoodsReceipt::orderBy('id','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
         $branch_code = substr($modelBranch->code,4,2);
