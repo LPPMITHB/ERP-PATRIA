@@ -1178,14 +1178,14 @@ class ProjectController extends Controller
                         if(count($bomDetail->material->materialRequisitionDetails)>0){
                             $status = 0;
                                 foreach($materialEvaluation as $key => $data){
-                                    $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                                    $material = $bomDetail->material->code.' - '.$bomDetail->material->description;
                                     if($material == $data['material']){
                                         $status = 1;
                                         $quantity = $bomDetail->quantity + $data['quantity'];
                                         $issued = $data['used'];
             
                                         unset($materialEvaluation[$key]);
-                                        $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                                        $material = $bomDetail->material->code.' - '.$bomDetail->material->description;
             
                                         foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                                             if ($mrd->wbs_id == $id) {
@@ -1202,7 +1202,7 @@ class ProjectController extends Controller
                             foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                                 if ($mrd->wbs_id == $id) {
                                     $materialEvaluation->push([
-                                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                        "material" => $bomDetail->material->code.' - '.$bomDetail->material->description,
                                         "quantity" => $bomDetail->quantity,
                                         "used" => $mrd->issued,
                                     ]);
@@ -1212,7 +1212,7 @@ class ProjectController extends Controller
                     }else{
                         $status = 0;
                         foreach($materialEvaluation as $key => $data){
-                            $material = $bomDetail->material->code.' - '.$bomDetail->material->name;
+                            $material = $bomDetail->material->code.' - '.$bomDetail->material->description;
                             if($material == $data['material']){
                                 $status = 1;
                                 $quantity = $bomDetail->quantity + $data['quantity'];
@@ -1221,7 +1221,7 @@ class ProjectController extends Controller
                                 unset($materialEvaluation[$key]);
     
                                 $materialEvaluation->push([
-                                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                    "material" => $bomDetail->material->code.' - '.$bomDetail->material->description,
                                     "quantity" => $quantity,
                                     "used" => $issued,
                                 ]);
@@ -1229,7 +1229,7 @@ class ProjectController extends Controller
                         }
                         if($status == 0){
                             $materialEvaluation->push([
-                                "material" => $bomDetail->material->code.' - '.$bomDetail->material->name,
+                                "material" => $bomDetail->material->code.' - '.$bomDetail->material->description,
                                 "quantity" => $bomDetail->quantity,
                                 "used" => 0,
                                 ]);

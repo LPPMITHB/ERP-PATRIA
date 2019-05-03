@@ -71,8 +71,8 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Estimator 001</td>
-                                                <td>Rp.{{number_format(120000000)}}</td>
+                                                {{-- <td>Estimator 001</td>
+                                                <td>Rp.{{number_format(120000000)}}</td> --}}
                                             </tr>
                                         </tbody>
                                     </table>
@@ -140,9 +140,9 @@
                                             <tr>
                                                 <td class="tdEllipsis">{{ $loop->iteration }}</td>
                                                 <td class="tdEllipsis">{{ $data['material'] }}</td>
-                                                <td class="tdEllipsis">{{ number_format($data['quantity']) }}</td>
-                                                <td class="tdEllipsis">{{ number_format($data['used']) }}</td>
-                                                <td class="tdEllipsis">{{ number_format($data['quantity'] - $data['used']) }}</td>
+                                                <td class="tdEllipsis">{{ number_format($data['quantity'],2) }}</td>
+                                                <td class="tdEllipsis">{{ number_format($data['used'],2) }}</td>
+                                                <td class="tdEllipsis">{{ number_format($data['quantity'] - $data['used'], 2) }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
