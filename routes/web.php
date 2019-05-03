@@ -802,11 +802,11 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     
     Route::get('/selectWBS/{id}', 'RAPController@selectWBS')->name('selectWBS')->middleware('can:view-remaining-material-repair');
 
-    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluation')->name('showMaterialEvaluation')->middleware('can:view-remaining-material-repair');
+    Route::get('/showMaterialEvaluation/{id}', 'RAPController@showMaterialEvaluationRepair')->name('showMaterialEvaluation')->middleware('can:view-remaining-material-repair');
 
     Route::get('/createCost/{id}', 'RAPController@createCost')->name('createCost')->middleware('can:create-other-cost-repair');
 
-    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost-repair');
+    Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCostRepair')->name('viewPlannedCost')->middleware('can:view-planned-cost-repair');
     
     Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost-repair');
 
@@ -1285,7 +1285,7 @@ Route::name('material_requisition_repair.')->prefix('material_requisition_repair
 
     Route::get('/showApprove/{id}', 'MaterialRequisitionController@showApprove')->name('showApprove')->middleware('can:show-material-requisition-repair');
 
-    Route::get('/{id}/edit', 'MaterialRequisitionController@edit')->name('edit')->middleware('can:edit-material-requisition-repair');
+    Route::get('/{id}/edit', 'MaterialRequisitionController@editRepair')->name('edit')->middleware('can:edit-material-requisition-repair');
 
     Route::patch('/{id}', 'MaterialRequisitionController@update')->name('update')->middleware('can:edit-material-requisition-repair');
 

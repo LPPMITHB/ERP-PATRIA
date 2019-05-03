@@ -116,6 +116,12 @@
         project_id.setAttribute('name', 'project_id');
         project_id.setAttribute('value', newProject.id);
         form.appendChild(project_id);
+
+        let old_project_id = document.createElement('input');
+        old_project_id.setAttribute('type', 'hidden');
+        old_project_id.setAttribute('name', 'old_project_id');
+        old_project_id.setAttribute('value', project.id);
+        form.appendChild(old_project_id);
         form.submit();
     }
     function deleteWbs(evt){

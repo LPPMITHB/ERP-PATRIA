@@ -17,7 +17,7 @@ class CreateMstActivityConfigurationTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('description');
-            $table->unsignedInteger('wbs_id')->nullable();
+            $table->unsignedInteger('wbs_id');
             $table->integer('duration');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  

@@ -349,7 +349,6 @@ class BOMController extends Controller
 
     public function storeBomRepair(Request $request)
     {
-        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
 
         $bom_code = self::generateBomCode($datas->project_id);
@@ -480,6 +479,9 @@ class BOMController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelBOM = Bom::where('project_id',$id)->with('project','bomDetails','user','branch','wbs','project.customer','project.ship','rap','purchaseRequisition')->first();
+        if($modelBOM == null){
+            return redirect()->route('bom_repair.selectProject')->with('error', 'BOM doesn\'t exist, Please define BOM first!');
+        }
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service','material.uom')->get();
 
         return view('bom.show', compact('modelBOM','modelBOMDetail','route'));
@@ -791,13 +793,15 @@ class BOMController extends Controller
             if($pr_id != null){
                 $bom_details = $bom_prep_model->bomDetails;
                 foreach ($bom_details as $bom_detail) {
-                    $PRD = new PurchaseRequisitionDetail;
-                    $PRD->purchase_requisition_id = $pr_id;
-                    $PRD->material_id = $bom_detail->material_id;
-                    $PRD->quantity = $bom_detail->pr_quantity;
-                    $PRD->project_id = $modelProject->id;
-                    $PRD->alocation = "Stock";
-                    $PRD->save();
+                    if($bom_detail->pr_quantity != null){
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $pr_id;
+                        $PRD->material_id = $bom_detail->material_id;
+                        $PRD->quantity = $bom_detail->pr_quantity;
+                        $PRD->project_id = $modelProject->id;
+                        $PRD->alocation = "Stock";
+                        $PRD->save();
+                    }
                 }
             }
         }
@@ -1039,15 +1043,28 @@ class BOMController extends Controller
         $stocks = Stock::with('material')->get();
         $existing_bom = $project->boms->first();
         foreach ($bomPreps as $bomPrep) {
-            $bomPrep['quantity'] = ceil($bomPrep->weight/$bomPrep->material->weight);
-            if(count($bomPrep->bomDetails) > 0){
-                $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
-                foreach ($bomPrep->bomDetails as $bomDetail) {
-                    $bomDetail['prepared'] = $bomDetail->quantity;
+            if($bomPrep->weight != null){
+                $bomPrep['quantity'] = ceil($bomPrep->weight/$bomPrep->material->weight);
+                if(count($bomPrep->bomDetails) > 0){
+                    $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
+                    foreach ($bomPrep->bomDetails as $bomDetail) {
+                        $bomDetail['prepared'] = $bomDetail->quantity;
+                    }
+                }else{
+                    $bomPrep['bom_details'] = [];
+                    $bomPrep['already_prepared'] = 0;
                 }
-            }else{
-                $bomPrep['bom_details'] = [];
-                $bomPrep['already_prepared'] = 0;
+            }elseif($bomPrep->quantity != null){
+                $bomPrep['quantity'] = $bomPrep->quantity;
+                if(count($bomPrep->bomDetails) > 0){
+                    $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
+                    foreach ($bomPrep->bomDetails as $bomDetail) {
+                        $bomDetail['prepared'] = $bomDetail->quantity;
+                    }
+                }else{
+                    $bomPrep['bom_details'] = [];
+                    $bomPrep['already_prepared'] = 0;
+                }
             }
         }
 

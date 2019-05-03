@@ -19,18 +19,70 @@ class MstWbsConfigurationTableSeeder extends Seeder
         \DB::table('mst_wbs_configuration')->insert(array (
             0 => 
             array (
+                'id' => 1,
+                'number' => 'Docking',
+            'description' => 'Docking (Pengedokan)',
+                'deliverables' => 'Docking',
+                'duration' => 40,
+                'wbs_id' => NULL,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 10:41:34',
+                'updated_at' => '2019-04-11 10:41:34',
+            ),
+            1 => 
+            array (
+                'id' => 2,
+                'number' => 'General Services',
+            'description' => 'General Services (Pelayanan Umum)',
+                'deliverables' => 'General Services',
+                'duration' => 40,
+                'wbs_id' => NULL,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 10:45:37',
+                'updated_at' => '2019-04-11 10:45:37',
+            ),
+            2 => 
+            array (
+                'id' => 3,
+                'number' => 'Working',
+                'description' => 'Working ',
+                'deliverables' => 'Working ',
+                'duration' => 40,
+                'wbs_id' => NULL,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 10:55:39',
+                'updated_at' => '2019-04-11 10:55:39',
+            ),
+            3 => 
+            array (
+                'id' => 4,
+                'number' => 'Blasting & Coating',
+                'description' => 'Blasting & Coating',
+                'deliverables' => 'Blasting & Coating',
+                'duration' => 10,
+                'wbs_id' => 3,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 10:55:58',
+                'updated_at' => '2019-04-11 10:55:58',
+            ),
+            4 => 
+            array (
                 'id' => 5,
                 'number' => 'Replating',
             'description' => 'Penggantian Plat (Replating)',
                 'deliverables' => 'Replating',
                 'duration' => 60,
-                'wbs_id' => NULL,
+                'wbs_id' => 3,
                 'user_id' => 3,
                 'branch_id' => 2,
                 'created_at' => '2019-03-06 15:31:16',
                 'updated_at' => '2019-03-06 15:32:02',
             ),
-            1 => 
+            5 => 
             array (
                 'id' => 6,
                 'number' => 'Sideboard Forward',
@@ -43,7 +95,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:32:44',
                 'updated_at' => '2019-03-06 15:32:44',
             ),
-            2 => 
+            6 => 
             array (
                 'id' => 7,
                 'number' => 'Panel Block F1 - F2',
@@ -56,7 +108,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:32:58',
                 'updated_at' => '2019-03-06 15:32:58',
             ),
-            3 => 
+            7 => 
             array (
                 'id' => 8,
                 'number' => 'Panel Block F3',
@@ -69,7 +121,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:33:07',
                 'updated_at' => '2019-03-06 15:33:07',
             ),
-            4 => 
+            8 => 
             array (
                 'id' => 9,
                 'number' => 'Sideboard After',
@@ -82,7 +134,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:34:31',
                 'updated_at' => '2019-03-06 15:34:31',
             ),
-            5 => 
+            9 => 
             array (
                 'id' => 10,
                 'number' => 'Panel Block A1 - A2',
@@ -95,7 +147,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:37:26',
                 'updated_at' => '2019-03-06 15:37:26',
             ),
-            6 => 
+            10 => 
             array (
                 'id' => 11,
                 'number' => 'Panel Block A3 - A4',
@@ -108,7 +160,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:37:35',
                 'updated_at' => '2019-03-06 15:37:35',
             ),
-            7 => 
+            11 => 
             array (
                 'id' => 12,
                 'number' => 'Sideboard Star Board',
@@ -121,7 +173,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:38:56',
                 'updated_at' => '2019-03-06 15:38:56',
             ),
-            8 => 
+            12 => 
             array (
                 'id' => 13,
                 'number' => 'Panel Block P1 - P2',
@@ -134,7 +186,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:39:06',
                 'updated_at' => '2019-03-06 15:39:06',
             ),
-            9 => 
+            13 => 
             array (
                 'id' => 14,
                 'number' => 'Panel Block P3 - P4',
@@ -147,7 +199,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:39:13',
                 'updated_at' => '2019-03-06 15:39:13',
             ),
-            10 => 
+            14 => 
             array (
                 'id' => 15,
                 'number' => 'Panel Block P5 - P6',
@@ -160,7 +212,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:39:21',
                 'updated_at' => '2019-03-06 15:39:21',
             ),
-            11 => 
+            15 => 
             array (
                 'id' => 16,
                 'number' => 'Panel Block P7 - P8',
@@ -173,7 +225,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:39:30',
                 'updated_at' => '2019-03-06 15:39:30',
             ),
-            12 => 
+            16 => 
             array (
                 'id' => 17,
                 'number' => 'Panel Block P9 - P10',
@@ -186,7 +238,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:39:39',
                 'updated_at' => '2019-03-06 15:39:39',
             ),
-            13 => 
+            17 => 
             array (
                 'id' => 18,
                 'number' => 'Panel Block P11 - P12',
@@ -199,7 +251,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:39:51',
                 'updated_at' => '2019-03-06 15:39:51',
             ),
-            14 => 
+            18 => 
             array (
                 'id' => 19,
                 'number' => 'Panel Block P13 - P14',
@@ -212,7 +264,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:40:01',
                 'updated_at' => '2019-03-06 15:40:01',
             ),
-            15 => 
+            19 => 
             array (
                 'id' => 20,
                 'number' => 'Panel Block P15 - P16',
@@ -225,7 +277,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:40:10',
                 'updated_at' => '2019-03-06 15:40:10',
             ),
-            16 => 
+            20 => 
             array (
                 'id' => 21,
                 'number' => 'Sideboard Portside',
@@ -238,7 +290,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:46:58',
                 'updated_at' => '2019-03-06 15:46:58',
             ),
-            17 => 
+            21 => 
             array (
                 'id' => 22,
                 'number' => 'Panel Block P1 - P2',
@@ -251,7 +303,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:48:59',
                 'updated_at' => '2019-03-06 15:48:59',
             ),
-            18 => 
+            22 => 
             array (
                 'id' => 23,
                 'number' => 'Panel Block P3 - P4',
@@ -264,7 +316,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:49:06',
                 'updated_at' => '2019-03-06 15:49:06',
             ),
-            19 => 
+            23 => 
             array (
                 'id' => 24,
                 'number' => 'Panel Block P5 - P6',
@@ -277,7 +329,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:49:12',
                 'updated_at' => '2019-03-06 15:49:12',
             ),
-            20 => 
+            24 => 
             array (
                 'id' => 25,
                 'number' => 'Panel Block P7 - P8',
@@ -290,7 +342,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:49:19',
                 'updated_at' => '2019-03-06 15:49:19',
             ),
-            21 => 
+            25 => 
             array (
                 'id' => 26,
                 'number' => 'Panel Block P9 - P10',
@@ -303,7 +355,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:49:25',
                 'updated_at' => '2019-03-06 15:49:25',
             ),
-            22 => 
+            26 => 
             array (
                 'id' => 27,
                 'number' => 'Panel Block P11 - P12',
@@ -316,7 +368,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:49:37',
                 'updated_at' => '2019-03-06 15:49:37',
             ),
-            23 => 
+            27 => 
             array (
                 'id' => 28,
                 'number' => 'Panel Block P13 - P14',
@@ -329,7 +381,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:49:43',
                 'updated_at' => '2019-03-06 15:49:43',
             ),
-            24 => 
+            28 => 
             array (
                 'id' => 29,
                 'number' => 'Panel Block P15 - P16',
@@ -342,7 +394,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:49:51',
                 'updated_at' => '2019-03-06 15:49:51',
             ),
-            25 => 
+            29 => 
             array (
                 'id' => 30,
                 'number' => 'Replating Star Board',
@@ -355,7 +407,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:55:43',
                 'updated_at' => '2019-03-06 15:55:43',
             ),
-            26 => 
+            30 => 
             array (
                 'id' => 31,
                 'number' => 'Replating Skeg',
@@ -368,7 +420,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:55:52',
                 'updated_at' => '2019-03-06 15:55:52',
             ),
-            27 => 
+            31 => 
             array (
                 'id' => 32,
                 'number' => 'Replating Side Shell Frame 9/10 - 12',
@@ -381,7 +433,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:55:57',
                 'updated_at' => '2019-03-06 15:55:57',
             ),
-            28 => 
+            32 => 
             array (
                 'id' => 33,
                 'number' => 'Replating Internal Tank Side Shell Frame 9/10 - 12',
@@ -394,7 +446,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:01',
                 'updated_at' => '2019-03-06 15:56:01',
             ),
-            29 => 
+            33 => 
             array (
                 'id' => 34,
                 'number' => 'Replating Side Shell Frame 19 - 23/24',
@@ -407,7 +459,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:06',
                 'updated_at' => '2019-03-06 15:56:06',
             ),
-            30 => 
+            34 => 
             array (
                 'id' => 35,
                 'number' => 'Replating Internal Tank Side Shell Frame 19 - 23/24',
@@ -420,7 +472,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:11',
                 'updated_at' => '2019-03-06 15:56:11',
             ),
-            31 => 
+            35 => 
             array (
                 'id' => 36,
                 'number' => 'Replating Side Shell Frame 24 - 27/28',
@@ -433,7 +485,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:17',
                 'updated_at' => '2019-03-06 15:56:17',
             ),
-            32 => 
+            36 => 
             array (
                 'id' => 37,
                 'number' => 'Replating Internal Tank Side Shell Frame 24 - 27/28',
@@ -446,7 +498,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:22',
                 'updated_at' => '2019-03-06 15:56:22',
             ),
-            33 => 
+            37 => 
             array (
                 'id' => 38,
                 'number' => 'Replating Bilga Frame 26 - 28',
@@ -459,7 +511,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:27',
                 'updated_at' => '2019-03-06 15:56:27',
             ),
-            34 => 
+            38 => 
             array (
                 'id' => 39,
                 'number' => 'Replating Side Shell Frame 28 - 29',
@@ -472,7 +524,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:31',
                 'updated_at' => '2019-03-06 15:56:31',
             ),
-            35 => 
+            39 => 
             array (
                 'id' => 40,
                 'number' => 'Replating Side Shell Frame 45/46 - 48',
@@ -485,7 +537,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:40',
                 'updated_at' => '2019-03-06 15:56:40',
             ),
-            36 => 
+            40 => 
             array (
                 'id' => 41,
                 'number' => 'Replating Side Shell Frame 50 - 53',
@@ -498,7 +550,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:45',
                 'updated_at' => '2019-03-06 15:56:45',
             ),
-            37 => 
+            41 => 
             array (
                 'id' => 42,
                 'number' => 'Replating Internal Tank Side Shell Frame 50 - 53',
@@ -511,7 +563,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 15:56:52',
                 'updated_at' => '2019-03-06 15:56:52',
             ),
-            38 => 
+            42 => 
             array (
                 'id' => 43,
                 'number' => 'Replating Port Side',
@@ -524,7 +576,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:08',
                 'updated_at' => '2019-03-06 16:02:08',
             ),
-            39 => 
+            43 => 
             array (
                 'id' => 44,
                 'number' => 'Replating Side Shell Frame 7/8 - 11/12',
@@ -537,7 +589,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:18',
                 'updated_at' => '2019-03-06 16:02:18',
             ),
-            40 => 
+            44 => 
             array (
                 'id' => 45,
                 'number' => 'Replating Internal Tank Side Shell Frame 7/8 - 11/12',
@@ -550,7 +602,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:24',
                 'updated_at' => '2019-03-06 16:02:24',
             ),
-            41 => 
+            45 => 
             array (
                 'id' => 46,
                 'number' => 'Replating Side Shell Frame 24 - 25/26',
@@ -563,7 +615,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:30',
                 'updated_at' => '2019-03-06 16:02:30',
             ),
-            42 => 
+            46 => 
             array (
                 'id' => 47,
                 'number' => 'Replating internal Tank Side Shell Frame 24 - 25/26',
@@ -576,7 +628,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:38',
                 'updated_at' => '2019-03-06 16:02:38',
             ),
-            43 => 
+            47 => 
             array (
                 'id' => 48,
                 'number' => 'Replating Side Shell Frame 27/28 - 31',
@@ -589,7 +641,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:42',
                 'updated_at' => '2019-03-06 16:02:42',
             ),
-            44 => 
+            48 => 
             array (
                 'id' => 49,
                 'number' => 'Replating Internal Tank Side Shell Frame 27/28 - 31',
@@ -602,7 +654,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:49',
                 'updated_at' => '2019-03-06 16:02:49',
             ),
-            45 => 
+            49 => 
             array (
                 'id' => 50,
                 'number' => 'Replating Bilga Frame 33 - 34',
@@ -615,7 +667,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:02:58',
                 'updated_at' => '2019-03-06 16:02:58',
             ),
-            46 => 
+            50 => 
             array (
                 'id' => 51,
                 'number' => 'Replating Side Shell Frame 35 - 37',
@@ -628,7 +680,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:03:05',
                 'updated_at' => '2019-03-06 16:03:05',
             ),
-            47 => 
+            51 => 
             array (
                 'id' => 52,
                 'number' => 'Replating Internal Tank Side Shell Frame 35 - 37',
@@ -641,7 +693,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:03:11',
                 'updated_at' => '2019-03-06 16:03:11',
             ),
-            48 => 
+            52 => 
             array (
                 'id' => 53,
                 'number' => 'Replating Transome Forward PS',
@@ -654,7 +706,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:03:28',
                 'updated_at' => '2019-03-06 16:03:28',
             ),
-            49 => 
+            53 => 
             array (
                 'id' => 54,
                 'number' => 'Replating Transome  Forward ',
@@ -667,7 +719,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:03:34',
                 'updated_at' => '2019-03-06 16:03:34',
             ),
-            50 => 
+            54 => 
             array (
                 'id' => 55,
                 'number' => 'Replating  Internal Tank Transome  Forward ',
@@ -680,7 +732,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:03:40',
                 'updated_at' => '2019-03-06 16:03:40',
             ),
-            51 => 
+            55 => 
             array (
                 'id' => 56,
                 'number' => 'Replating Bottom SB & PS',
@@ -693,7 +745,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:08:40',
                 'updated_at' => '2019-03-06 16:08:40',
             ),
-            52 => 
+            56 => 
             array (
                 'id' => 57,
                 'number' => 'Replating Bottom SB',
@@ -706,7 +758,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:08:53',
                 'updated_at' => '2019-03-06 16:08:53',
             ),
-            53 => 
+            57 => 
             array (
                 'id' => 61,
                 'number' => 'Replating Deck',
@@ -719,7 +771,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:10:50',
                 'updated_at' => '2019-03-06 16:10:50',
             ),
-            54 => 
+            58 => 
             array (
                 'id' => 62,
                 'number' => 'Replating Deck',
@@ -732,7 +784,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:11:03',
                 'updated_at' => '2019-03-06 16:11:03',
             ),
-            55 => 
+            59 => 
             array (
                 'id' => 63,
                 'number' => 'Gate Door',
@@ -745,7 +797,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:11:39',
                 'updated_at' => '2019-03-06 16:11:39',
             ),
-            56 => 
+            60 => 
             array (
                 'id' => 64,
                 'number' => 'Push Pad ',
@@ -758,7 +810,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:12:06',
                 'updated_at' => '2019-03-06 16:12:06',
             ),
-            57 => 
+            61 => 
             array (
                 'id' => 65,
                 'number' => 'Push Pad ',
@@ -771,7 +823,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:12:22',
                 'updated_at' => '2019-03-06 16:12:22',
             ),
-            58 => 
+            62 => 
             array (
                 'id' => 66,
                 'number' => 'Winch House',
@@ -784,7 +836,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:13:01',
                 'updated_at' => '2019-03-06 16:13:01',
             ),
-            59 => 
+            63 => 
             array (
                 'id' => 67,
                 'number' => 'Freeing port ',
@@ -797,20 +849,20 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:13:28',
                 'updated_at' => '2019-03-06 16:13:28',
             ),
-            60 => 
+            64 => 
             array (
                 'id' => 68,
                 'number' => 'Out Fitting',
                 'description' => 'Out Fitting',
                 'deliverables' => 'Out Fitting',
                 'duration' => 60,
-                'wbs_id' => NULL,
+                'wbs_id' => 3,
                 'user_id' => 3,
                 'branch_id' => 2,
                 'created_at' => '2019-03-06 16:13:59',
                 'updated_at' => '2019-03-06 16:13:59',
             ),
-            61 => 
+            65 => 
             array (
                 'id' => 69,
                 'number' => 'Man Hole',
@@ -823,7 +875,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:16',
                 'updated_at' => '2019-03-06 16:14:16',
             ),
-            62 => 
+            66 => 
             array (
                 'id' => 70,
                 'number' => 'Zink Anode',
@@ -836,7 +888,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:21',
                 'updated_at' => '2019-03-06 16:14:21',
             ),
-            63 => 
+            67 => 
             array (
                 'id' => 71,
                 'number' => 'Pemasangan Bolder ',
@@ -849,7 +901,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:27',
                 'updated_at' => '2019-03-06 16:14:27',
             ),
-            64 => 
+            68 => 
             array (
                 'id' => 72,
                 'number' => 'Pemasangan lampu Navigasi',
@@ -862,7 +914,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:32',
                 'updated_at' => '2019-03-06 16:14:32',
             ),
-            65 => 
+            69 => 
             array (
                 'id' => 73,
                 'number' => 'Pembuatan Towing Bracket Smit',
@@ -875,7 +927,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:36',
                 'updated_at' => '2019-03-06 16:14:36',
             ),
-            66 => 
+            70 => 
             array (
                 'id' => 74,
                 'number' => 'Pembuatan Draft',
@@ -888,7 +940,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:42',
                 'updated_at' => '2019-03-06 16:14:42',
             ),
-            67 => 
+            71 => 
             array (
                 'id' => 75,
                 'number' => 'Pembuatan Step Ladder',
@@ -901,7 +953,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:49',
                 'updated_at' => '2019-03-06 16:14:49',
             ),
-            68 => 
+            72 => 
             array (
                 'id' => 76,
             'number' => 'Pembuatan Cover Orlop ( Hole Anchor)',
@@ -914,20 +966,20 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:14:55',
                 'updated_at' => '2019-03-06 16:14:55',
             ),
-            69 => 
+            73 => 
             array (
                 'id' => 77,
-                'number' => 'OTHER',
-                'description' => 'OTHER',
-                'deliverables' => 'OTHER',
+                'number' => 'Rewelding',
+                'description' => 'Rewelding',
+                'deliverables' => 'Rewelding',
                 'duration' => 45,
-                'wbs_id' => NULL,
+                'wbs_id' => 68,
                 'user_id' => 3,
                 'branch_id' => 2,
                 'created_at' => '2019-03-06 16:18:22',
                 'updated_at' => '2019-03-06 16:18:22',
             ),
-            70 => 
+            74 => 
             array (
                 'id' => 78,
             'number' => 'Rewelding Orlop ( Hole Anchor)',
@@ -940,7 +992,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:18:30',
                 'updated_at' => '2019-03-06 16:18:30',
             ),
-            71 => 
+            75 => 
             array (
                 'id' => 79,
                 'number' => 'Rewelding Bottom',
@@ -953,7 +1005,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:18:35',
                 'updated_at' => '2019-03-06 16:18:35',
             ),
-            72 => 
+            76 => 
             array (
                 'id' => 80,
                 'number' => 'Rewelding SB longitudinal',
@@ -966,7 +1018,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:19:13',
                 'updated_at' => '2019-03-06 16:19:13',
             ),
-            73 => 
+            77 => 
             array (
                 'id' => 81,
                 'number' => 'Rewelding SB Transversal',
@@ -979,7 +1031,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:19:20',
                 'updated_at' => '2019-03-06 16:19:20',
             ),
-            74 => 
+            78 => 
             array (
                 'id' => 82,
                 'number' => 'Rewelding PS longitudinal',
@@ -992,7 +1044,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:19:23',
                 'updated_at' => '2019-03-06 16:19:23',
             ),
-            75 => 
+            79 => 
             array (
                 'id' => 83,
                 'number' => 'Rewelding PS Transversal',
@@ -1004,6 +1056,97 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'branch_id' => 2,
                 'created_at' => '2019-03-06 16:19:27',
                 'updated_at' => '2019-03-06 16:19:27',
+            ),
+            80 => 
+            array (
+                'id' => 84,
+                'number' => 'Other',
+                'description' => 'Other',
+                'deliverables' => 'Other',
+                'duration' => 2,
+                'wbs_id' => 3,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:38:32',
+                'updated_at' => '2019-04-11 11:38:32',
+            ),
+            81 => 
+            array (
+                'id' => 85,
+                'number' => 'Panel Block F1',
+                'description' => 'Panel Block F1',
+                'deliverables' => 'Panel Block F1',
+                'duration' => 50,
+                'wbs_id' => 6,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:32:35',
+                'updated_at' => '2019-04-11 14:32:35',
+            ),
+            82 => 
+            array (
+                'id' => 86,
+                'number' => 'Panel Block F2-F3',
+                'description' => 'Panel Block F2-F3',
+                'deliverables' => 'Panel Block F2-F3',
+                'duration' => 50,
+                'wbs_id' => 6,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:32:48',
+                'updated_at' => '2019-04-11 14:32:48',
+            ),
+            83 => 
+            array (
+                'id' => 87,
+                'number' => 'Winch House',
+                'description' => 'Winch House',
+                'deliverables' => 'Winch House',
+                'duration' => 1,
+                'wbs_id' => 68,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:30:17',
+                'updated_at' => '2019-04-12 10:30:17',
+            ),
+            84 => 
+            array (
+                'id' => 88,
+                'number' => 'Pembuatan 2 Pintu Besar',
+                'description' => 'Pembuatan 2 Pintu Besar',
+                'deliverables' => 'Pembuatan 2 Pintu Besar',
+                'duration' => 1,
+                'wbs_id' => 87,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:30:51',
+                'updated_at' => '2019-04-12 10:30:51',
+            ),
+            85 => 
+            array (
+                'id' => 90,
+                'number' => 'Pintu Forward',
+                'description' => 'Pintu Forward',
+                'deliverables' => 'Pintu Forward',
+                'duration' => 1,
+                'wbs_id' => 88,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:32:12',
+                'updated_at' => '2019-04-12 10:32:12',
+            ),
+            86 => 
+            array (
+                'id' => 91,
+                'number' => 'Pintu Sekat',
+                'description' => 'Pintu Sekat',
+                'deliverables' => 'Pintu Sekat',
+                'duration' => 1,
+                'wbs_id' => 88,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:32:19',
+                'updated_at' => '2019-04-12 10:32:19',
             ),
         ));
         

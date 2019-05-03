@@ -49,6 +49,14 @@
                                 <div class="col-xs-5 no-padding">End Date</div>
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
                             </div>
+                            <div class="col-sm-4 col-md-4 no-padding">
+                                <div class="col-md-3 no-padding">
+                                    <label for="" >Issue Date :</label>
+                                </div>
+                                <div class="col-md-5 no-padding">
+                                    <input v-model="issue_date" autocomplete="off" type="text" class="form-control datepicker" name="issue_date" id="issue_date" placeholder="Issue Date" >
+                                </div>
+                            </div>
                             <div class="col-sm-4 col-md-4">
                                 <div class="col-sm-12">
                                     <label for="">GI Description</label>
@@ -135,7 +143,7 @@
                                                                 </table>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-primary" data-dismiss="modal">SAVE</button>
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="triggerToast">SAVE</button>
                                                             </div>
                                                         </div>
                                                         <!-- /.modal-content -->
@@ -222,6 +230,7 @@
         description:"",
         submittedForm :{},
         total : [],
+        issue_date : "",
     }
 
     var vm = new Vue({
@@ -273,6 +282,7 @@
                 this.submittedForm.MRD = data;
                 this.submittedForm.mr_id = this.modelMR.id;
                 this.submittedForm.description = this.description;
+                this.submittedForm.issue_date = this.issue_date;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -280,6 +290,13 @@
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
                 form.submit();
+            },
+            triggerToast(){
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Picking information saved!',
+                    position: 'topRight',
+                });
             }
         },
         watch : {
@@ -343,6 +360,15 @@
             },
         },
         mounted: function(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format : "dd-mm-yyyy"
+            });
+            $("#issue_date").datepicker().on(
+                "changeDate", () => {
+                    this.issue_date = $('#issue_date').val();
+                }
+            );
             this.modelMRD.forEach(MRD => {
                 window.axios.get('/api/getSlocDetail/'+MRD.material_id).then(({ data }) => {
                     MRD.modelGI = data;

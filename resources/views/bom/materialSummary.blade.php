@@ -256,9 +256,9 @@
                 this.stocks.forEach(stock => {
                     this.activeBomPrep.details.forEach(bom_detail => {
                         if(stock.material_id == bom_detail.material_id){
-                            if(bom_detail.prepared != ""){
-                                stock.reserved += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
-                            }
+                                var temp_available = stock.quantity - stock.reserved;
+                                var add = temp_available - parseFloat((bom_detail.available_quantity+"").replace(/,/g, ''));
+                                stock.reserved += parseFloat((add+"").replace(/,/g, ''));
                         }
                     });
                 });
@@ -302,11 +302,27 @@
                             this.activeBomPrep.details.forEach(detail =>{
                                 if(bom_detail.material_id == detail.material_id){
                                     detail.id = bom_detail.id;
-                                    if(bom_detail.id != null){
-                                        detail.available_quantity += bom_detail.quantity;
-                                        detail.const_available_quantity += bom_detail.quantity;
+                                    if(detail.id != null){
+                                        if(bom_detail.quantity != undefined){
+                                            detail.available_quantity += parseFloat((bom_detail.quantity+"").replace(/,/g, ''));
+                                            detail.const_available_quantity += parseFloat((bom_detail.quantity+"").replace(/,/g, ''));
+                                            detail.prepared = bom_detail.quantity;
+                                        }else{
+                                            if(bom_detail.prepared != ""){
+                                                detail.const_available_quantity = parseFloat((bom_detail.const_available_quantity+"").replace(/,/g, ''));
+                                                detail.available_quantity = parseFloat((bom_detail.const_available_quantity+"").replace(/,/g, ''));
+                                                detail.prepared = bom_detail.prepared;
+                                            }else{
+                                                detail.const_available_quantity = parseFloat((bom_detail.const_available_quantity+"").replace(/,/g, ''));
+                                                detail.available_quantity = parseFloat((detail.const_available_quantity+"").replace(/,/g, ''));
+                                            }
+                                        }
                                     }else{
-                                        detail.prepared = bom_detail.prepared;
+                                        if(bom_detail.prepared != ""){
+                                            detail.available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
+                                            detail.const_available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
+                                            detail.prepared = bom_detail.prepared;
+                                        }
                                     }
                                 }
                             });
@@ -356,14 +372,27 @@
                             this.activeBomPrep.details.forEach(detail =>{
                                 if(bom_detail.material_id == detail.material_id){
                                     detail.id = bom_detail.id;
-                                    if(bom_detail.id != null){
-                                        detail.available_quantity += bom_detail.quantity;
-                                        detail.const_available_quantity += bom_detail.quantity;
-                                        detail.prepared = bom_detail.quantity;
+                                    if(detail.id != null){
+                                        if(bom_detail.quantity != undefined){
+                                            detail.available_quantity += parseFloat((bom_detail.quantity+"").replace(/,/g, ''));
+                                            detail.const_available_quantity += parseFloat((bom_detail.quantity+"").replace(/,/g, ''));
+                                            detail.prepared = bom_detail.quantity;
+                                        }else{
+                                            if(bom_detail.prepared != ""){
+                                                detail.const_available_quantity = parseFloat((bom_detail.const_available_quantity+"").replace(/,/g, ''));
+                                                detail.available_quantity = parseFloat((bom_detail.const_available_quantity+"").replace(/,/g, ''));
+                                                detail.prepared = bom_detail.prepared;
+                                            }else{
+                                                detail.const_available_quantity = parseFloat((bom_detail.const_available_quantity+"").replace(/,/g, ''));
+                                                detail.available_quantity = parseFloat((detail.const_available_quantity+"").replace(/,/g, ''));
+                                            }
+                                        }
                                     }else{
-                                        detail.available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
-                                        detail.const_available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
-                                        detail.prepared = bom_detail.prepared;
+                                        if(bom_detail.prepared != ""){
+                                            detail.available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
+                                            detail.const_available_quantity += parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
+                                            detail.prepared = bom_detail.prepared;
+                                        }
                                     }
                                 }
                             });

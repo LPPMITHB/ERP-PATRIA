@@ -41,10 +41,10 @@ class ActivityController extends Controller
     public function createActivityRepair($id, Request $request)
     {
         $wbs = WBS::find($id);
-        if(isset($wbs->wbsConfig)){
+        if(count($wbs->wbsConfig->activities)>0){
             $activity_config = $wbs->wbsConfig->activities;
     
-            $materials = Material::all();
+            $materials = Material::with('dimensionUom')->get();
             foreach ($materials as $material) {
                 $material['selected'] = false;
             }
@@ -126,28 +126,34 @@ class ActivityController extends Controller
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
                     if(count($data['dataMaterial']) > 0){
                         foreach ($data['dataMaterial'] as $material) {
-                            $densities = Configuration::get('density');
-                            $model_material = Material::find($material['material_id']);
-                            $material_density = 0;
-                            foreach($densities as $density){
-                                if($density->id == $model_material->density_id){
-                                    $material_density = $density->value;
+                            $weight = 0;
+                            $uom = UOM::find($material['dimension_uom_id']);
+                            if($uom != null){
+                                $uom_name = $uom->name;
+                                if($uom_name == "Milimeter" || $uom_name == "milimeter"){
+                                    $densities = Configuration::get('density');
+                                    $model_material = Material::find($material['material_id']);
+                                    $material_density = 0;
+                                    foreach($densities as $density){
+                                        if($density->id == $model_material->density_id){
+                                            $material_density = $density->value;
+                                        }
+                                    }
+                                    if($material_density == 0){
+                                        DB::rollback();
+                                        return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
+                                    }
+                                    $volume = ($material['lengths'] * $material['width'] * $material['height'] )/ 1000000;
+                                    $weight = round(($volume * $material_density) * $material['quantity'],2);
                                 }
                             }
-                            if($material_density == 0){
-                                DB::rollback();
-                                return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
-                            }
-
-                            $volume = $material['lengths'] * $material['width'] * $material['height'];
-                            $weight = ($volume * $material_density) * $material['quantity'];
 
                             $activityDetailMaterial = new ActivityDetail;
                             $activityDetailMaterial->activity_id = $activity->id;
                             $activityDetailMaterial->material_id = $material['material_id'];
                             $activityDetailMaterial->quantity_material = $material['quantity'];
                             $activityDetailMaterial->source = $material['source'];
-                            if($material['dimension_uom_id'] != ""){
+                            if($material['dimension_uom_id'] != "" && $material['dimension_uom_id'] != null){
                                 $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
                                 $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
                                 $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
@@ -162,7 +168,11 @@ class ActivityController extends Controller
                                 $not_added = true;
                                 foreach ($modelBomPrep as $bomPrep) {
                                     if($bomPrep->status == 1){
-                                        $bomPrep->weight += $weight;
+                                        if($weight == 0){
+                                            $bomPrep->quantity += $material['quantity'];
+                                        }else{
+                                            $bomPrep->weight += $weight;
+                                        }
                                         $bomPrep->update();
 
                                         $activityDetailMaterial->bom_prep_id = $bomPrep->id;
@@ -177,6 +187,11 @@ class ActivityController extends Controller
                                     $bomPrep = new BomPrep;
                                     $bomPrep->project_id = $project_id;
                                     $bomPrep->material_id = $material['material_id'];
+                                    if($weight == 0){
+                                        $bomPrep->quantity = $material['quantity'];
+                                    }else{
+                                        $bomPrep->weight = $weight;
+                                    }                                    
                                     $bomPrep->weight = $weight;
                                     $bomPrep->status = 1;
                                     $bomPrep->source = $material['source'];
@@ -189,7 +204,11 @@ class ActivityController extends Controller
                                 $bomPrep = new BomPrep;
                                 $bomPrep->project_id = $project_id;
                                 $bomPrep->material_id = $material['material_id'];
-                                $bomPrep->weight = $weight;
+                                if($weight == 0){
+                                    $bomPrep->quantity = $material['quantity'];
+                                }else{
+                                    $bomPrep->weight = $weight;
+                                }
                                 $bomPrep->status = 1;
                                 $bomPrep->source = $material['source'];
                                 $bomPrep->save();
@@ -247,7 +266,10 @@ class ActivityController extends Controller
     public function storeActivityConfiguration(Request $request)
     {
         $data = $request->json()->all();
-
+        $modelActConfig = ActivityConfiguration::where('wbs_id',$data['wbs_id'])->where('name',$data['name'])->first();
+        if($modelActConfig != null){
+            return response(["error"=> "Activity name on This WBS must be UNIQUE"],Response::HTTP_OK);
+        }
         DB::beginTransaction();
         try {
             $activity = new ActivityConfiguration;
@@ -274,7 +296,7 @@ class ActivityController extends Controller
     {
         $data = $request->json()->all();
         $error = [];
-        
+
         DB::beginTransaction();
         try {
             $activity = Activity::find($id);
@@ -317,12 +339,22 @@ class ActivityController extends Controller
                                 array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);                
                                 return response(["error"=> $error],Response::HTTP_OK);
                             }else{
-                                $bomPrep->weight -= $act_detail->weight;
-                                if($bomPrep->weight == 0){
-                                    $delete_bom_prep = true;
+                                if($bomPrep->weight != null){
+                                    $bomPrep->weight -= $activityDetailMaterial->weight;
+                                    if($bomPrep->weight == 0){
+                                        $delete_bom_prep = true;
+                                    }else{
+                                        $bomPrep->update();
+                                    }
                                 }else{
-                                    $bomPrep->update();
+                                    $bomPrep->quantity -= $activityDetailMaterial->quantity_material;
+                                    if($bomPrep->quantity == 0){
+                                        $delete_bom_prep = true;
+                                    }else{
+                                        $bomPrep->update();
+                                    }
                                 }
+
                             }
                         }
                         $activityDetailMaterial->delete();
@@ -340,29 +372,34 @@ class ActivityController extends Controller
                         // print_r(count($data['dataMaterial'])); exit();
                         foreach ($data['dataMaterial'] as $material) {
                             if($material['id'] == null){
-                                $densities = Configuration::get('density');
-                                $model_material = Material::find($material['material_id']);
-                                $material_density = 0;
-                                foreach($densities as $density){
-                                    if($density->id == $model_material->density_id){
-                                        $material_density = $density->value;
+                                $weight = 0;
+                                $uom = UOM::find($material['dimension_uom_id']);
+                                if($uom != null){
+                                    $uom_name = $uom->name;
+                                    if($uom_name == "Milimeter" || $uom_name == "milimeter"){
+                                        $densities = Configuration::get('density');
+                                        $model_material = Material::find($material['material_id']);
+                                        $material_density = 0;
+                                        foreach($densities as $density){
+                                            if($density->id == $model_material->density_id){
+                                                $material_density = $density->value;
+                                            }
+                                        }
+                                        if($material_density == 0){
+                                            DB::rollback();
+                                            return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
+                                        }
+                                        $volume = ($material['lengths'] * $material['width'] * $material['height'] )/ 1000000;
+                                        $weight = round(($volume * $material_density) * $material['quantity'],2);
                                     }
                                 }
-
-                                if($material_density == 0){
-                                    DB::rollback();
-                                    return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
-                                }
-
-                                $volume = $material['lengths'] * $material['width'] * $material['height'];
-                                $weight = ($volume * $material_density) * $material['quantity'];
 
                                 $activityDetailMaterial = new ActivityDetail;
                                 $activityDetailMaterial->activity_id = $activity->id;
                                 $activityDetailMaterial->material_id = $material['material_id'];
                                 $activityDetailMaterial->quantity_material = $material['quantity'];
                                 $activityDetailMaterial->source = $material['source'];
-                                if($material['dimension_uom_id'] != ""){
+                                if($material['dimension_uom_id'] != "" && $material['dimension_uom_id'] != null){
                                     $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
                                     $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
                                     $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
@@ -377,7 +414,11 @@ class ActivityController extends Controller
                                     foreach ($modelBomPrep as $bomPrep) {
                                         if($bomPrep->status == 1){
                                             //Masih belum pakai hitungan rumus
-                                            $bomPrep->quantity += $material['quantity'];
+                                            if($weight == 0){
+                                                $bomPrep->quantity += $material['quantity'];
+                                            }else{
+                                                $bomPrep->weight += $weight;
+                                            }
                                             $bomPrep->update();
 
                                             $activityDetailMaterial->bom_prep_id = $bomPrep->id;
@@ -392,7 +433,11 @@ class ActivityController extends Controller
                                         $bomPrep = new BomPrep;
                                         $bomPrep->project_id = $project_id;
                                         $bomPrep->material_id = $material['material_id'];
-                                        $bomPrep->weight = $weight;
+                                        if($weight == 0){
+                                            $bomPrep->quantity = $material['quantity'];
+                                        }else{
+                                            $bomPrep->weight = $weight;
+                                        }
                                         $bomPrep->status = 1;
                                         $bomPrep->source = $material['source'];
                                         $bomPrep->save();
@@ -404,7 +449,11 @@ class ActivityController extends Controller
                                     $bomPrep = new BomPrep;
                                     $bomPrep->project_id = $project_id;
                                     $bomPrep->material_id = $material['material_id'];
-                                    $bomPrep->weight = $weight;
+                                    if($weight == 0){
+                                        $bomPrep->quantity = $material['quantity'];
+                                    }else{
+                                        $bomPrep->weight = $weight;
+                                    }
                                     $bomPrep->status = 1;
                                     $bomPrep->source = $material['source'];
                                     $bomPrep->save();
@@ -477,10 +526,13 @@ class ActivityController extends Controller
     public function updateActivityConfiguration(Request $request, $id)
     {
         $data = $request->json()->all();
-        
+        $activity = ActivityConfiguration::find($id);
+        $modelActConfig = ActivityConfiguration::where('wbs_id',$activity->wbs_id)->where('name',$data['name'])->where('id','!=',$id)->first();
+        if($modelActConfig != null){
+            return response(["error"=> "Activity name on This WBS must be UNIQUE"],Response::HTTP_OK);
+        }
         DB::beginTransaction();
         try {
-            $activity = ActivityConfiguration::find($id);
             $activity->name = $data['name'];
             $activity->description = $data['description'];         
             $activity->duration = $data['duration'];
@@ -632,8 +684,24 @@ class ActivityController extends Controller
                 $progress += $wbs->progress* ($wbs->weight /100); 
             }            
             $project->progress = $progress;
-            $project->save();
-            
+            $project->update();
+            if($project->progress == 100){
+                $wbss = $project->wbss->pluck('id')->toArray();
+                $latest_date = Activity::whereIn('wbs_id',$wbss)->get()->groupBy('actual_end_date')->all();
+                krsort($latest_date);
+                $latest_date = collect($latest_date)->first()[0]->actual_end_date;
+                $project->actual_end_date = $latest_date;
+
+                $start_date=date_create($project->actual_start_date);
+                $end_date=date_create($project->actual_end_date);
+
+                $diff=date_diff($start_date,$end_date);
+                $project->actual_duration = $diff->days;
+                $project->status = 0;
+                $project->update();
+            }
+
+
             DB::commit();
             return response(["response"=>"Success to confirm activity ".$activity->code],Response::HTTP_OK);
             
@@ -668,7 +736,10 @@ class ActivityController extends Controller
         DB::beginTransaction();
         try {
             $activityConfiguration = ActivityConfiguration::find($id);
-
+            if(count($activityConfiguration->activitiesProject)>0){
+                return response(["error"=> "Failed to delete, this Activity already been used by a project"],Response::HTTP_OK);
+            }
+            
             if(!$activityConfiguration->delete()){
                 return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
             }else{

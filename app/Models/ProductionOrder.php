@@ -28,6 +28,11 @@ class ProductionOrder extends Model
         return $this->hasMany('App\Models\ProductionOrderDetail');
     }
 
+    public function goodsReceipts()
+    {
+        return $this->hasMany('App\Models\GoodsReceipt');
+    }
+
     public function wbs()
     {
         return $this->belongsTo('App\Models\WBS');

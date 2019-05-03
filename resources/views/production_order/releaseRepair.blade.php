@@ -276,15 +276,24 @@
                                                 <tr v-for="(data,index) in activityDetailMaterials">
                                                     <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                     <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material.code +' - '+  data.material.description)">{{ data.material.code }} - {{ data.material.description }}</td>
-                                                    <td v-if="data.length != ''" class="p-b-15 p-t-15">{{ data.length }}</td>
-                                                    <td v-else class="p-b-15 p-t-15">-</td>
-                                                    <td v-if="data.width != ''" class="p-b-15 p-t-15">{{ data.width }}</td>
-                                                    <td v-else class="p-b-15 p-t-15">-</td>
-                                                    <td v-if="data.height != ''" class="p-b-15 p-t-15">{{ data.height }}</td>
-                                                    <td v-else class="p-b-15 p-t-15">-</td>
-                                                    <td v-if="data.unit != ''" class="p-b-15 p-t-15">{{ data.dimension_uom.unit }}</td>
-                                                    <td v-else class="p-b-15 p-t-15">-</td>
-                                                    <td class="p-b-15 p-t-15">{{ data.quantity_material }}</td>
+                                                    <template v-if="data.weight > 0">
+                                                        <td v-if="data.length != ''" class="p-b-15 p-t-15">{{ (data.length+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                        <td v-else class="p-b-15 p-t-15">-</td>
+                                                        <td v-if="data.width != ''" class="p-b-15 p-t-15">{{ (data.width+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                        <td v-else class="p-b-15 p-t-15">-</td>
+                                                        <td v-if="data.height != ''" class="p-b-15 p-t-15">{{ (data.height+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                        <td v-else class="p-b-15 p-t-15">-</td>
+                                                        <td v-if="data.unit != ''" class="p-b-15 p-t-15">{{ data.dimension_uom.unit }}</td>
+                                                        <td v-else class="p-b-15 p-t-15">-</td>
+                                                        <td class="p-b-15 p-t-15">{{ (Math.ceil(data.weight / data.material.weight)+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                    </template>
+                                                    <template v-else>
+                                                        <td class="p-b-15 p-t-15">-</td>
+                                                        <td class="p-b-15 p-t-15">-</td>
+                                                        <td class="p-b-15 p-t-15">-</td>
+                                                        <td class="p-b-15 p-t-15">-</td>
+                                                        <td class="p-b-15 p-t-15">{{ data.quantity_material }}</td>
+                                                    </template>
                                                     <td class="p-b-15 p-t-15">{{ data.source }}</td>
                                                 </tr>
                                             </tbody>
@@ -406,16 +415,6 @@
                     }
                 });
 
-                var materialOk = true;
-                this.materials.forEach(material => {
-                    if(material.allocated != ""){
-                        materialOk = false;
-                    }
-                });
-
-                if(materialOk){
-                    isOk = true;
-                }
                 return isOk;
             },
             selectOk: function(){

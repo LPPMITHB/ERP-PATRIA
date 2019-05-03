@@ -168,8 +168,8 @@
                                 </template>
                                 <template v-else>
                                     <template v-if="data.planned_end_date > today">
-                                        <td style="background-color: red; color: white;">
-                                            Behind {{data.date_diff}} Day(s)
+                                        <td style="background-color: green; color: white;">
+                                            Ahead {{data.date_diff}} Day(s)
                                         </td>
                                     </template>                                       
                                     <template v-if="data.planned_end_date == today">
@@ -178,8 +178,8 @@
                                         </td>
                                     </template>                                       
                                     <template v-if="data.planned_end_date < today">
-                                        <td style="background-color: green; color: white;">
-                                            Ahead {{data.date_diff}} Day(s)
+                                        <td style="background-color: red; color: white;">
+                                            Behind {{data.date_diff}} Day(s)
                                         </td>
                                     </template>
                                 </template>
@@ -314,7 +314,7 @@
                                     <tr>
                                         <th width="4%">No</th>
                                         <th width="10%">Material Code</th>
-                                        <th width="15%">Description</th>
+                                        <th width="12%">Description</th>
                                         <th width="5%">Quantity</th>
                                         <th width="5%">Actual</th>
                                         <th width="6%">Remaining</th>
@@ -323,7 +323,7 @@
                                         <th width="5%">Height</th>
                                         <th width="4%">UOM</th>
                                         <th width="5%">Weight</th>
-                                        <th width="4%">Used</th>
+                                        <th width="6%">Used</th>
                                         <th width="7%">Confirmed</th>
                                         <th width="11%"></th>
                                     </tr>
@@ -331,42 +331,67 @@
                                 <tbody>
                                     <tr v-for="(data,index) in materials">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.material.code }}</td>
+                                        <td class="tdEllipsis" v-tooltip:top="tooltipText(data.material.code)">{{ data.material.code }}</td>
                                         <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.material.description)">{{ data.material.description }}</td>
                                         <td class="tdEllipsis">{{ data.used }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
-                                        <td v-if="data.editable" class="tdEllipsis no-padding">
-                                            <input class="form-control width100" v-model="data.lengths" placeholder="Length">
-                                        </td>
-                                        <td v-else>
-                                            {{data.lengths}}
-                                        </td>
-                                        <td v-if="data.editable" class="tdEllipsis no-padding">
-                                            <input class="form-control width100" v-model="data.width" placeholder="Width">
-                                        </td>
-                                        <td v-else>
-                                            {{data.width}}
-                                        </td>
-                                        <td v-if="data.editable" class="tdEllipsis no-padding">
-                                            <input class="form-control width100" v-model="data.height" placeholder="Width">
-                                        </td>
-                                        <td v-else>
-                                            {{data.height}}
-                                        </td>
-                                        <td>{{data.dimension_uom.unit}}</td>
-                                        <td v-if="data.weight == '' || data.weight == 0 " class="tdEllipsis">
-                                            -
-                                        </td>
-                                        <td v-else class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.weight+' kg')">
-                                            {{ data.weight }} kg                                     
-                                        </td>
-                                        <td v-if="data.quantity == '' || data.quantity == 0" class="tdEllipsis">
-                                            -
-                                        </td>
-                                        <td v-else class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.quantity)">
-                                            {{ data.quantity }}                                        
-                                        </td>
+                                        <template v-if="data.dimension_uom != null">
+                                            <td v-if="data.editable" class="tdEllipsis no-padding">
+                                                <input class="form-control width100" v-model="data.lengths" placeholder="Length">
+                                            </td>
+                                            <td v-else>
+                                                {{data.lengths}}
+                                            </td>
+                                            <td v-if="data.editable" class="tdEllipsis no-padding">
+                                                <input class="form-control width100" v-model="data.width" placeholder="Width">
+                                            </td>
+                                            <td v-else>
+                                                {{data.width}}
+                                            </td>
+                                            <td v-if="data.editable" class="tdEllipsis no-padding">
+                                                <input class="form-control width100" v-model="data.height" placeholder="Width">
+                                            </td>
+                                            <td v-else>
+                                                {{data.height}}
+                                            </td>
+                                            <td>{{data.dimension_uom.unit}}</td>
+                                            <td v-if="data.weight == '' || data.weight == 0 " class="tdEllipsis">
+                                                -
+                                            </td>
+                                            <td v-else class="tdEllipsis" id="weight" data-container="body" v-tooltip:top="tooltipTextResponsive('getActiveWeight', data.id)">
+                                                {{ data.weight }} kg                                     
+                                            </td>
+                                            <td v-if="data.quantity == '' || data.quantity == 0" class="tdEllipsis">
+                                                -
+                                            </td>
+                                            <td v-else class="tdEllipsis" id="qty" data-container="body" v-tooltip:top="tooltipTextResponsive('getActiveQty', data.id)">
+                                                {{ data.quantity }}                                        
+                                            </td>
+                                        </template>
+                                        <template v-else>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td>
+                                                -
+                                            </td>
+                                            <td v-if="data.editable" class="tdEllipsis no-padding">
+                                                <input class="form-control width100" v-model="data.quantity" placeholder="Qty">                                     
+                                            </td>
+                                            <td v-else class="tdEllipsis" id="qty" data-container="body" v-tooltip:top="tooltipTextResponsive('getActiveQty', data.id)">
+                                                {{ data.quantity }}                                        
+                                            </td>
+                                        </template>
                                         <td v-if="data.production_order_details.length > 0" class="p-l-0 p-r-0 p-b-0 text-center">
                                             <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                                 <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
@@ -377,11 +402,20 @@
                                         <td v-else>-</td>
                                         <td class="p-l-0 p-r-0 p-b-0 text-center">
                                             <template v-if="data.editable">
-                                                <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
-                                                    <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
-                                                        <button :disabled="data.weight == 0 || data.weight == ''" type="button" class="btn btn-primary btn-xs" @click.prevent="saveProd(data)">SAVE</button>                                                
+                                                <template v-if="data.dimension_uom != null">
+                                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                        <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                                            <button :disabled="data.weight == 0 || data.weight == ''" type="button" class="btn btn-primary btn-xs" @click.prevent="saveProd(data)">SAVE</button>                                                
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                        <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                                            <button :disabled="data.quantity == 0 || data.quantity == ''" type="button" class="btn btn-primary btn-xs" @click.prevent="saveProd(data)">SAVE</button>                                                
+                                                        </div>
+                                                    </div>
+                                                </template>
                                             </template>
                                             <template v-else>
                                                 <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
@@ -563,7 +597,7 @@
                     </div>
 
                     <div class="modal fade" id="material_return">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modalPredecessor">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -600,7 +634,15 @@
                                                 <div class="col-sm-12">
                                                     <input autocomplete="off" class="form-control width100" v-model="return_material.quantity" placeholder="Quantity">
                                                 </div>
-                                            </div>   
+                                            </div>  
+                                            
+                                            <div class="form-group">
+                                                <label for="quantity" class="col-sm-12">Quantity</label>
+                                
+                                                <div class="col-sm-12">
+                                                    <input v-model="return_material.received_date" autocomplete="off" type="text" class="form-control datepicker" name="received_date" id="received_date" placeholder="Received Date">
+                                                </div>
+                                            </div>
 
                                             <div class="form-group">
                                                 <div class="m-t-10 col-sm-2">
@@ -614,9 +656,10 @@
                                                         <thead>
                                                             <tr>
                                                                 <th class="p-l-5" style="width: 3%">No</th>
-                                                                <th style="width: 25%">Material</th>
-                                                                <th style="width: 25%">Storage Location</th>
+                                                                <th style="width: 20%">Material</th>
+                                                                <th style="width: 20%">Storage Location</th>
                                                                 <th style="width: 10%">Quantity</th>
+                                                                <th style="width: 10%">Received Date</th>
                                                                 <th style="width: 10%"></th>
                                                             </tr>
                                                         </thead>
@@ -626,6 +669,7 @@
                                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material_name)">{{ data.material_name }}</td>
                                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.sloc_name)">{{ data.sloc_name }}</td>
                                                                 <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
+                                                                <td class="p-b-15 p-t-15">{{ data.received_date }}</td>
                                                                 <td>
                                                                     <div class="col-sm-12 col-xs-12 no-padding p-r-2">
                                                                         <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(data)" data-toggle="modal">
@@ -730,12 +774,22 @@
                                                         <tbody>
                                                             <tr v-for="(data,index) in data_confirmed_material_show">
                                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.lengths+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','))">{{ (data.lengths+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.width+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','))">{{ (data.width+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.height+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','))">{{ (data.height+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.dimension_uom.unit)">{{ data.dimension_uom.unit }}</td>
-                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.weight+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')+' kg')">{{ (data.weight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }} kg</td>
-                                                                <td class="p-b-15 p-t-15">{{ (data.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                                <template v-if="data.dimension_uom != null">
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.lengths+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','))">{{ (data.lengths+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.width+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','))">{{ (data.width+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.height+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','))">{{ (data.height+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.dimension_uom.unit)">{{ data.dimension_uom.unit }}</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText((data.weight+'').replace(/[^0-9.]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')+' kg')">{{ (data.weight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }} kg</td>
+                                                                    <td class="p-b-15 p-t-15">{{ (data.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                                </template>
+                                                                <template v-else>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body">-</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body">-</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body">-</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body">-</td>
+                                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body">-</td>
+                                                                    <td class="p-b-15 p-t-15">{{ (data.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
+                                                                </template>
                                                             </tr>
                                                         </tbody>
                                                     </table> 
@@ -793,6 +847,7 @@
         route : @json($route),
         menu : @json($route),
         uoms : @json($uoms),
+        modelPrO : @json($modelPrO),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
         materials : [],
@@ -800,7 +855,6 @@
         services : [],
         wbs_id: @json($modelPrO->wbs->id),
         predecessorActivities : [],
-        activities : [],
         confirmActivity : {
             activity_id : "",
             actual_start_date : "",
@@ -842,6 +896,7 @@
             sloc_id : "",
             sloc_name : "",
             quantity : "",
+            received_date : "",
         },
         data_return_material : [],
         data_return_material_show : [],
@@ -849,6 +904,7 @@
         data_confirmed_material_show : [],
         active_prod_id : "",
         active_material : "",
+        data_changed : false,
     };
 
     var vm = new Vue({
@@ -881,6 +937,11 @@
                     }
                 }
             );
+            $("#received_date").datepicker().on(
+                "changeDate", () => {
+                    this.return_material.received_date = $('#received_date').val();
+                }
+            );
         },
         computed : {
             addMoraleOk: function(){
@@ -905,7 +966,8 @@
 
             if(this.return_material.material_id == "" || 
             this.return_material.quantity == "" ||
-            this.return_material.quantity == 0 
+            this.return_material.quantity == 0 ||
+            this.return_material.received_date == "" 
             ){
                 isOk = true;
             }
@@ -934,6 +996,8 @@
                         material.selected = false;
                     }
                 });
+
+                this.data_changed = true;
             },
             addMaterial(){
                 var temp = this.return_material;
@@ -949,6 +1013,9 @@
                 this.return_material.material_id = "";
                 this.return_material.sloc_id = "";
                 this.return_material.quantity = "";
+                this.return_material.received_date = "";
+
+                this.data_changed = true;
             },
             save(){
                 var temp_returned = this.data_return_material;
@@ -981,6 +1048,8 @@
                     title: 'Material information saved!',
                     position: 'topRight',
                 });
+
+                this.data_changed = true;
             },
             saveProd(data){
                 this.all_materials.forEach(material => {
@@ -1086,6 +1155,31 @@
             tooltipText: function(text) {
                 return text
             },
+            tooltipTextResponsive: function(text, id) {
+                var temp_text = "";
+                this.materials.forEach(prod => {
+                    if(prod.id == id){
+                        Vue.directive('tooltip', function(el, binding){
+                            if(el.id == "qty"){
+                                $(el).tooltip('destroy');
+                                $(el).tooltip({
+                                    title: prod.quantity,
+                                    placement: binding.arg,
+                                    trigger: 'hover'             
+                                })
+                            }else if(el.id == "weight"){
+                                $(el).tooltip('destroy');
+                                $(el).tooltip({
+                                    title: prod.weight+" kg",
+                                    placement: binding.arg,
+                                    trigger: 'hover'             
+                                })
+                            }
+                        })
+                    }
+                });
+                
+            },
             submitForm() {
                 let status = 0;
                 this.activities.forEach(activity => {
@@ -1100,6 +1194,9 @@
                         material.width = parseFloat((material.width+"").replace(/,/g , ''));
                         material.height = parseFloat((material.height+"").replace(/,/g , ''));
                         material.weight = parseFloat((material.weight+"").replace(/,/g , ''));
+                        material.returned_materials.forEach(returned_material => {
+                            returned_material.quantity = parseFloat((returned_material.quantity+"").replace(/,/g , ''));                            
+                        });
                     }
                 });
                 if(status == 0){
@@ -1118,10 +1215,12 @@
                                 PROD.usage = parseInt((PROD.usage+"").replace(/,/g , ''));
                             }
                         });
+                        this.submittedForm.modelPrO = this.modelPrO;
                         this.submittedForm.modelPrOD = this.modelPrOD;
                         this.submittedForm.materials = this.materials;
                         this.submittedForm.services = this.services;
                         this.submittedForm.resources = this.resources;
+                        this.submittedForm.data_changed = this.data_changed;
 
                         let struturesElem = document.createElement('input');
                         struturesElem.setAttribute('type', 'hidden');
@@ -1145,10 +1244,12 @@
                             PROD.usage = parseInt((PROD.usage+"").replace(/,/g , ''));
                         }
                     });
+                    this.submittedForm.modelPrO = this.modelPrO;
                     this.submittedForm.modelPrOD = this.modelPrOD;
                     this.submittedForm.materials = this.materials;
                     this.submittedForm.services = this.services;
                     this.submittedForm.resources = this.resources;
+                    this.submittedForm.data_changed = this.data_changed;
 
                     let struturesElem = document.createElement('input');
                     struturesElem.setAttribute('type', 'hidden');
@@ -1308,59 +1409,64 @@
             materials:{
                 handler: function(newValue) {
                     this.materials.forEach(material => {
-                        var temp_length = (material.lengths+"").replace(/,/g , '');  
-                        var temp_width = (material.width+"").replace(/,/g , '');  
-                        var temp_height = (material.height+"").replace(/,/g , '');  
-                        var temp_weight = (temp_length * temp_width * temp_height) * material.material.density.value;
-                        var temp_qty = Math.ceil(temp_weight / material.material.weight);
-
-                        var decimal_length = temp_length.replace(/,/g, '').split('.');
-                        if(decimal_length[1] != undefined){
-                            var maxDecimal = 2;
-                            if((decimal_length[1]+"").length > maxDecimal){
-                                material.lengths = (decimal_length[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_length[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        if(material.dimension_uom_id != null){
+                            var temp_length = (material.lengths+"").replace(/,/g , '');  
+                            var temp_width = (material.width+"").replace(/,/g , '');  
+                            var temp_height = (material.height+"").replace(/,/g , '');  
+                            var temp_weight = ((temp_length * temp_width * temp_height)/ 1000000) * material.material.density.value;
+                            var temp_qty = Math.ceil(temp_weight / material.material.weight);
+    
+                            var decimal_length = temp_length.replace(/,/g, '').split('.');
+                            if(decimal_length[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal_length[1]+"").length > maxDecimal){
+                                    material.lengths = (decimal_length[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_length[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    material.lengths = (decimal_length[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_length[1]+"").replace(/\D/g, "");
+                                }
                             }else{
-                                material.lengths = (decimal_length[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_length[1]+"").replace(/\D/g, "");
-                            }
-                        }else{
-                            material.lengths = (temp_length+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        } 
-
-                        var decimal_width = temp_width.replace(/,/g, '').split('.');
-                        if(decimal_width[1] != undefined){
-                            var maxDecimal = 2;
-                            if((decimal_width[1]+"").length > maxDecimal){
-                                material.width = (decimal_width[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_width[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                material.lengths = (temp_length+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            } 
+    
+                            var decimal_width = temp_width.replace(/,/g, '').split('.');
+                            if(decimal_width[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal_width[1]+"").length > maxDecimal){
+                                    material.width = (decimal_width[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_width[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    material.width = (decimal_width[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_width[1]+"").replace(/\D/g, "");
+                                }
                             }else{
-                                material.width = (decimal_width[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_width[1]+"").replace(/\D/g, "");
-                            }
-                        }else{
-                            material.width = (temp_width+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        } 
-
-                        var decimal_height = temp_height.replace(/,/g, '').split('.');
-                        if(decimal_height[1] != undefined){
-                            var maxDecimal = 2;
-                            if((decimal_height[1]+"").length > maxDecimal){
-                                material.height = (decimal_height[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_height[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                material.width = (temp_width+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            } 
+    
+                            var decimal_height = temp_height.replace(/,/g, '').split('.');
+                            if(decimal_height[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal_height[1]+"").length > maxDecimal){
+                                    material.height = (decimal_height[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_height[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    material.height = (decimal_height[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_height[1]+"").replace(/\D/g, "");
+                                }
                             }else{
-                                material.height = (decimal_height[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_height[1]+"").replace(/\D/g, "");
-                            }
-                        }else{
-                            material.height = (temp_height+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        } 
-
-                        var decimal_weight = (temp_weight+"").replace(/,/g, '').split('.');
-                        if(decimal_weight[1] != undefined){
-                            var maxDecimal = 2;
-                            if((decimal_weight[1]+"").length > maxDecimal){
-                                material.weight = (decimal_weight[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_weight[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                material.height = (temp_height+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            } 
+    
+                            var decimal_weight = (temp_weight+"").replace(/,/g, '').split('.');
+                            if(decimal_weight[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal_weight[1]+"").length > maxDecimal){
+                                    material.weight = (decimal_weight[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_weight[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    material.weight = (decimal_weight[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_weight[1]+"").replace(/\D/g, "");
+                                }
                             }else{
-                                material.weight = (decimal_weight[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_weight[1]+"").replace(/\D/g, "");
-                            }
+                                material.weight = (temp_weight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            } 
+
                         }else{
-                            material.weight = (temp_weight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        } 
+                            var temp_qty = material.quantity;
+                        }
 
                         material.quantity = (temp_qty+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         
@@ -1437,9 +1543,9 @@
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
             var yyyy = today.getFullYear();
-
             today = yyyy + '-' + mm + '-' + dd;
             this.today = today;
+
             this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null && POD.production_order_detail_id == null){
                     if(POD.actual == null){

@@ -20,6 +20,7 @@ class CreateTrxGoodsIssueTable extends Migration
             $table->unsignedInteger('material_requisition_id')->nullable();
             $table->unsignedInteger('goods_return_id')->nullable();
             $table->unsignedInteger('material_write_off_id')->nullable();
+            $table->date('issue_date')->nullable();
             $table->text('description');
             $table->integer('type')->default(1);
             $table->unsignedInteger('branch_id');

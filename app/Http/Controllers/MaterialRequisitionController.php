@@ -24,9 +24,9 @@ class MaterialRequisitionController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
         if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $modelProject = Project::where('business_unit_id',2)->pluck('id')->toArray();
         }elseif($menu == "building"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+            $modelProject = Project::where('business_unit_id',1)->pluck('id')->toArray();
         }
 
         $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->get();
@@ -252,6 +252,58 @@ class MaterialRequisitionController extends Controller
         return view('material_requisition.edit', compact('menu','modelMR','modelMRD','modelMaterial','modelProject','modelWBS','stocks'));
     }
 
+    public function editRepair($id, Request $request)
+    {
+        $modelMR = MaterialRequisition::findOrFail($id);
+        $modelMaterial = Material::all()->jsonSerialize();
+        $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
+        $modelProject = $modelMR->project->with('ship','customer','wbss')->where('id',$modelMR->project_id)->first()->jsonSerialize();
+        $modelWBS = $modelMR->project->wbss; 
+        $modelMRD = Collection::make();
+        foreach($modelMR->MaterialRequisitionDetails as $mrd){
+            if($mrd->material->uom->is_decimal == 1){
+                $modelMRD->push([
+                    "mrd_id" => $mrd->id,
+                    "material_id" => $mrd->material_id,
+                    "material_code" => $mrd->material->code,
+                    "material_description" => $mrd->material->description,
+                    "planned_quantity" => number_format($mrd->wbs->project->boms[0]->bomDetails->where('material_id', $mrd->material_id)->first()->quantity,2),
+                    "quantity" => number_format($mrd->quantity,2),
+                    "quantityFloat" => $mrd->quantity,
+                    "wbs_id" => $mrd->wbs_id,
+                    "wbs_number" => $mrd->wbs->number,
+                    "wbs_description" => $mrd->wbs->description,
+                    "availableStr" => "-",
+                    "is_decimal" => true,
+                    "unit" => $mrd->material->uom->unit,
+                ]);
+            }else{
+                $modelMRD->push([
+                    "mrd_id" => $mrd->id,
+                    "material_id" => $mrd->material_id,
+                    "material_code" => $mrd->material->code,
+                    "material_description" => $mrd->material->description,
+                    "planned_quantity" => number_format($mrd->wbs->project->boms[0]->bomDetails->where('material_id', $mrd->material_id)->first()->quantity),
+                    "quantity" => number_format($mrd->quantity),
+                    "quantityFloat" => $mrd->quantity,
+                    "wbs_id" => $mrd->wbs_id,
+                    "wbs_number" => $mrd->wbs->number,
+                    "wbs_description" => $mrd->wbs->description,
+                    "availableStr" => "-",
+                    "is_decimal" => false,
+                    "unit" => $mrd->material->uom->unit,
+                ]);
+            }
+        }
+
+        $stocks = Stock::all();
+        foreach($stocks as $stock){
+            $stock['available'] = $stock->quantity - $stock->reserved;
+        }
+        return view('material_requisition.editRepair', compact('menu','modelMR','modelMRD','modelMaterial','modelProject','modelWBS','stocks'));
+    }
+
+
     public function update(Request $request, $id)
     {
         $menu = $request->route()->getPrefix() == "/material_requisition" ? "building" : "repair";    
@@ -332,7 +384,6 @@ class MaterialRequisitionController extends Controller
         }
     }
 
-
     public function approval(Request $request){
         $datas = json_decode($request->datas);
         $route = $request->route()->getPrefix();
@@ -346,9 +397,9 @@ class MaterialRequisitionController extends Controller
                 $modelMR->update();
                 DB::commit();
                 if($route == "/material_requisition"){
-                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Purchase Requisition Approved');
+                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Material Requisition Approved');
                 }elseif($route == "/material_requisition_repair"){
-                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Purchase Requisition Approved');
+                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Material Requisition Approved');
                 }
             }elseif($datas->status == "need-revision"){
                 $modelMR->status = 3;
@@ -357,20 +408,26 @@ class MaterialRequisitionController extends Controller
                 $modelMR->update();
                 DB::commit();
                 if($route == "/material_requisition"){
-                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Purchase Requisition Need Revision');
+                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Material Requisition Need Revision');
                 }elseif($route == "/material_requisition_repair"){
-                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Purchase Requisition Need Revision');
+                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Material Requisition Need Revision');
                 }
             }elseif($datas->status == "reject"){
                 $modelMR->status = 5;
                 $modelMR->revision_description = $datas->desc;
                 $modelMR->approved_by = Auth::user()->id;
+                $mrds = $modelMR->materialRequisitionDetails;
+                foreach ($mrds as $mrd) {
+                    $stock = Stock::where('material_id',$mrd->material_id)->first();
+                    $stock->reserved -= $mrd->quantity;
+                    $stock->update();
+                }
                 $modelMR->update();
                 DB::commit();
                 if($route == "/material_requisition"){
-                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Purchase Requisition Rejected');
+                    return redirect()->route('material_requisition.show',$datas->mr_id)->with('success', 'Material Requisition Rejected');
                 }elseif($route == "/material_requisition_repair"){
-                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Purchase Requisition Rejected');
+                    return redirect()->route('material_requisition_repair.show',$datas->mr_id)->with('success', 'Material Requisition Rejected');
                 }
             }
         } catch (\Exception $e){
@@ -378,6 +435,7 @@ class MaterialRequisitionController extends Controller
             return redirect()->route('material_requisition.show',$datas->mr_id)->with('error', $e->getMessage());
         }
     }
+
     // function
     public function reserveStock($material_id,$quantity){
         $modelStock = Stock::where('material_id',$material_id)->first();

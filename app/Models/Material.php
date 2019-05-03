@@ -30,7 +30,12 @@ class Material extends Model
 
     public function uom()
     {
-        return $this->belongsTo('App\Models\Uom');
+        return $this->belongsTo('App\Models\Uom','uom_id');
+    }
+
+    public function dimensionUom()
+    {
+        return $this->belongsTo('App\Models\Uom','dimension_uom_id');
     }
     
     public function RapDetails()
