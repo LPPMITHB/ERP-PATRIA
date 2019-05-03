@@ -132,8 +132,8 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="15%">Material Code</th>
-                            <th width="30%">Description</th>
+                            <th width="15%">Material Number</th>
+                            <th width="30%">Material Description</th>
                             <th width="10%">Quantity</th>
                             <th width="10%">Unit</th>
                             <th width="10%">Source</th>
@@ -147,7 +147,7 @@
                                     <td>{{ $counter++ }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">{{ $BOMD->material->code }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
-                                    <td>{{ number_format($BOMD->quantity) }}</td>
+                                    <td>{{ number_format($BOMD->quantity,2) }}</td>
                                     <td>{{ $BOMD->material->uom->unit }}</td>
                                     <td>{{ $BOMD->source }}</td>
                                 </tr>
@@ -226,9 +226,10 @@
                             <tr>
                                 <th style="width: 5%">No</th>
                                 <th style="width: 10%">Type</th>
-                                <th style="width: 30%">Material Number</th>
+                                <th style="width: 25%">Material Number</th>
                                 <th style="width: 30%">Material Description</th>
                                 <th style="width: 13%">Quantity</th>
+                                <th style="width: 10%">Unit</th>
                                 <th style="width: 12%"></th>
                             </tr>
                         </thead>
@@ -239,6 +240,7 @@
                                 <td class="tdEllipsis">{{ data.code }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>
+                                <td class="tdEllipsis">{{ data.unit }}</td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                         EDIT
@@ -270,6 +272,9 @@
                                 <td class="p-l-0">
                                     <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
                                 </td>
+                                <td class="p-l-0">
+                                    <input class="form-control" v-model="dataInput.unit" disabled> 
+                                </td>
                                 <td class="p-l-0 textCenter">
                                     <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
                                 </td>
@@ -288,25 +293,29 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Edit Additional Material / Service / Resource</h4>
+                                <h4 class="modal-title">Edit Additional Material</h4>
                             </div>
                             <div class="modal-body p-t-0">
                                 <div class="row" v-if="editInput.type == 'Material'">
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Material Name</label>
+                                        <label for="type" class="control-label p-b-10">Material Number</label>
                                         <selectize v-model="editInput.id" disabled>
-                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }} - {{ material.name }}</option>
+                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }}</option>
                                         </selectize>
                                     </div>
 
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Description</label>
+                                        <label for="type" class="control-label p-b-10">Material Name</label>
                                         <input class="form-control" v-model="editInput.description" disabled>
                                     </div>
 
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <label for="type" class="control-label p-b-10">Quantity</label>
                                         <input class="form-control" v-model="editInput.quantity">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="type" class="control-label p-b-10">Unit</label>
+                                        <input class="form-control" v-model="editInput.unit" disabled>
                                     </div>
                                 </div>
 
@@ -382,6 +391,8 @@
             name : "",
             description : "",
             quantity : "",
+            unit : "",
+            is_decimal : "",
         },
         typeSettings: {
             placeholder: 'Please Select Type'
@@ -415,7 +426,9 @@
             code : "",
             name : "",
             description : "",
-            quantity : ""
+            quantity : "",
+            unit : "",
+            is_decimal : ""
         }
     };
 
@@ -456,6 +469,8 @@
                 this.editInput.name = "";
                 this.editInput.description = "";
                 this.editInput.quantity = "";
+                this.editInput.unit = "";
+                this.editInput.is_decimal = "";
             },
             openEditModal(data,index){
                 this.clearEditInput();
@@ -464,6 +479,8 @@
                 this.editInput.description = data.description;
                 this.editInput.type = data.type;
                 this.editInput.quantity = data.quantity;
+                this.editInput.unit = data.unit;
+                this.editInput.is_decimal = data.is_decimal;
             },
             submitToTable(){
                 let data = this.datas[this.editInput.index];
@@ -481,6 +498,8 @@
                 this.dataInput.name = "";
                 this.dataInput.description = "";
                 this.dataInput.quantity = "";
+                this.dataInput.unit = "";
+                this.dataInput.is_decimal = "";
             },
             removeRow: function(index) {
                 this.datas.splice(index, 1);
@@ -531,6 +550,8 @@
                             }
                             this.dataInput.name = data.name;
                             this.dataInput.code = data.code;
+                            this.dataInput.unit = data.uom.unit;
+                            this.dataInput.is_decimal = data.uom.is_decimal;
                         });
                     }else if(this.dataInput.type == "Service"){
                         window.axios.get('/api/getServicePrO/'+newValue).then(({ data }) => {
@@ -551,10 +572,40 @@
                 this.dataInput.quantity = "";
             },
             'dataInput.quantity' : function(newvalue){
-                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                var is_decimal = this.dataInput.is_decimal;
+                if(is_decimal == 0){
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = this.dataInput.quantity.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }  
             },
             'editInput.quantity' : function(newValue){
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = this.editInput.quantity.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (this.editInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }    
             }
         },
         created: function() {

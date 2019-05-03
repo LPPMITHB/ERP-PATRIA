@@ -27,8 +27,8 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('resource_detail_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
-            $table->integer('quantity')->nullable();
-            $table->integer('actual')->nullable();
+            $table->float('quantity',15,2)->nullable();
+            $table->float('actual',15,2)->nullable();
             $table->integer('performance')->nullable();
             $table->unsignedInteger('performance_uom_id')->nullable();
             $table->longText('morale')->nullable();
