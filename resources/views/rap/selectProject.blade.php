@@ -102,7 +102,7 @@
                                         </td>
                                     @elseif($menu == "view_rm")
                                         <td class="p-l-5 p-r-5" align="center">
-                                            <a class="btn btn-primary btn-xs" href="{{ route('rap.showMaterialEvaluation', ['id'=>$project->id]) }}">SELECT</a>
+                                            <a class="btn btn-primary btn-xs" href="{{ route('rap.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
                                         </td>
                                     @endif
                                 @elseif($route == '/rap_repair')

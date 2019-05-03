@@ -1271,28 +1271,28 @@ var vm = new Vue({
                     title: "This activity end date is after parent WBS end date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', wbs_end_date);
+                $('#edit_planned_end_date').datepicker('setDate', wbs_end_date);
             }else if(activity_end_date < wbs_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
                     title: "This activity end date is before parent WBS start date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', wbs_start_date);
+                $('#edit_planned_end_date').datepicker('setDate', wbs_start_date);
             }else if(activity_end_date < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
                     title: "this activity end date is behind project start date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', pro_planned_start_date);
+                $('#edit_planned_end_date').datepicker('setDate', pro_planned_start_date);
             }else if(activity_end_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
                     title: "this activity end date is after project end date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', pro_planned_end_date);
+                $('#edit_planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
         },
     },

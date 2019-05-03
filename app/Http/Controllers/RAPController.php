@@ -269,7 +269,7 @@ class RAPController extends Controller
             if($route == '/rap'){
                 return redirect()->route('rap.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
             }elseif($route == '/rap_repair'){
-                return redirect()->route('rap_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+                return redirect()->route('rap_repair.selectProjectViewRM')->with('error', "This WBS doesn't have BOM");
             }
         }
     }  

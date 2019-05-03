@@ -41,11 +41,11 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_requisition"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+            $businessUnit = 1;
         }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $businessUnit = 2;
         }
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->whereIn('business_unit_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->where('business_unit_id',$businessUnit)->get();
 
         return view('purchase_requisition.indexApprove', compact('modelPRs','route'));
     }
@@ -552,7 +552,7 @@ class PurchaseRequisitionController extends Controller
                         // print_r($PR->purchaseRequisitionDetails);exit();
                         if($status == 0){
                             $PRD = PurchaseRequisitionDetail::find($data->id);
-
+                            $PRD->material_id = $data->material_id;
                             $PRD->quantity = $data->quantity;
                             $PRD->alocation = $data->alocation;
                             if($data->project_id != null){
@@ -624,7 +624,6 @@ class PurchaseRequisitionController extends Controller
                         }
                         if($status == 0){
                             $PRD = PurchaseRequisitionDetail::find($data->id);
-
                             $PRD->quantity = $data->quantity;
                             $PRD->alocation = $data->alocation;
                             $PRD->required_date = $required_date;

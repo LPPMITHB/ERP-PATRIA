@@ -590,7 +590,7 @@
                 data.project_number = this.editInput.project_number 
                 data.required_date = this.editInput.required_date 
                 data.alocation = this.editInput.alocation 
-                
+                console.log(data);
                 if(this.modelPR.type == 1){
                     var type = "Material";
                 }else if(this.modelPR.type == 2){

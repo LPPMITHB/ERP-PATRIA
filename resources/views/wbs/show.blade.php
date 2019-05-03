@@ -196,8 +196,8 @@
                                                     <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editWbs.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
                                                 </div>
                                             <div class="form-group col-sm-12">
-                                                <label v-if="editWbs.parent_wbs != null" for="weight" class="control-label">Weight (Parent Weight = {{totalWeight}}%/{{editWbs.parent_wbs.weight}}%)</label>
-                                                <label v-else for="weight" class="control-label">Weight (Parent Weight = {{totalWeight}}%/100%)</label>
+                                                <label v-if="editWbs.parent_wbs != null" for="weight" class="control-label">Weight (Parent Weight : {{totalWeight}}%/{{editWbs.parent_wbs.weight}}%)</label>
+                                                <label v-else for="weight" class="control-label">Weight (Parent Weight : {{totalWeight}}%/100%)</label>
                                                 <input id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
                                             </div>
                                         </div>  
@@ -493,6 +493,7 @@ var vm = new Vue({
                             title: 'Total weight cannot exceed '+this.editWbs.parent_wbs.weight+'%',
                             position: 'topRight',
                         });
+                        this.editWbs.weight = maxWeightEdit;
                     }
                 });
             }else{
@@ -506,6 +507,7 @@ var vm = new Vue({
                             title: 'Total weight cannot exceed 100%',
                             position: 'topRight',
                         });
+                        this.editWbs.weight = maxWeightEdit;
                     }
                 });
             }          
