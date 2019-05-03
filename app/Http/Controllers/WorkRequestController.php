@@ -86,7 +86,6 @@ class WorkRequestController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $datas = json_decode($request->datas);
-
         $wr_number = $this->generateWRNumber();
         // $current_date = today();
         // $valid_to = $current_date->addDays(7);
@@ -185,7 +184,9 @@ class WorkRequestController extends Controller
                         $WRD->required_date = $required_date;
                         $WRD->type = 1;
                         $WRD->wbs_id = $data->wbs_id;
-                        $WRD->activity_id = $data->activity_id;
+                        if($menu != "building"){
+                            $WRD->activity_id = $data->activity_id;
+                        }
                         $WRD->save();
 
                         // $this->reserveStock($data->material_id, $data->quantityInt);
@@ -199,7 +200,9 @@ class WorkRequestController extends Controller
                     $WRD->required_date = $required_date;
                     $WRD->type = 1;
                     $WRD->wbs_id = $data->wbs_id;
-                    $WRD->activity_id = $data->activity_id;
+                    if($menu != "building"){
+                        $WRD->activity_id = $data->activity_id;
+                    }
                     $WRD->save();
 
                     // $this->reserveStock($data->material_id, $data->quantityInt);
