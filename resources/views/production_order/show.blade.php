@@ -169,8 +169,8 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="15%">Material Code</th>
-                            <th width="31%">Description</th>
+                            <th width="15%">Material Number</th>
+                            <th width="31%">Material Description</th>
                             <th width="7%">Quantity</th>
                             <th width="7%">Used</th>
                             <th width="10%">Unit</th>
@@ -185,8 +185,8 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->code }}">{{ $PrOD->material->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->description }}">{{ $PrOD->material->description }}</td>
-                                <td>{{ number_format($PrOD->quantity) }}</td>
-                                <td>{{ number_format($PrOD->actual) }}</td>
+                                <td>{{ number_format($PrOD->quantity,2) }}</td>
+                                <td>{{ number_format($PrOD->actual,2) }}</td>
                                 <td>{{ $PrOD->material->uom->unit }}</td>
                                 <td>{{ $PrOD->source }}</td>
                             </tr>

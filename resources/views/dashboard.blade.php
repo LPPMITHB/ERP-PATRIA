@@ -45,7 +45,7 @@
                                 <div class="info-box" style="min-height:30px">
                                   <span class="info-box-icon bg-orange m-t-0" style="height:20px"></span>
                                   <div class="info-box-content p-t-0 m-t-0">
-                                    <span class="info-box-text"><b>Project Warning</b></span>
+                                    <span class="info-box-text"><b>Project Risk</b></span>
                                     <span class="info-box-number"></span>
                                   </div>
                                 </div>

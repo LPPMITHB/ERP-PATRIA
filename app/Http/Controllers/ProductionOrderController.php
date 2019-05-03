@@ -517,7 +517,7 @@ class ProductionOrderController extends Controller
         $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::findOrFail($wbs->project_id);
-        $materials = Material::all()->jsonSerialize();
+        $materials = Material::orderBy('description')->get()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
         $services = Service::all()->jsonSerialize();
         $modelActivities = $wbs->activities;
@@ -1171,8 +1171,9 @@ class ProductionOrderController extends Controller
                                 "description" => $prod->material->description,
                                 "id" => $prod->material->id,
                                 "name" => $prod->material->name,
-                                "quantity" => number_format($prod->quantity - $bomD->quantity),
+                                "quantity" => number_format($prod->quantity - $bomD->quantity,2),
                                 "type" => "Material",
+                                "unit" => $prod->material->uom->unit,
                             ]);
                         }
                         $prod_materials->forget($keyProd);
@@ -1184,8 +1185,9 @@ class ProductionOrderController extends Controller
                     "description" => $prod->material->description,
                     "id" => $prod->material->id,
                     "name" => $prod->material->name,
-                    "quantity" => number_format($prod->quantity),
+                    "quantity" => number_format($prod->quantity,2),
                     "type" => "Material",
+                    "unit" => $prod->material->uom->unit,
                 ]);
                 $prod_materials->forget($keyProd);
             }
@@ -1197,8 +1199,9 @@ class ProductionOrderController extends Controller
                 "description" => $prod->material->description,
                 "id" => $prod->material->id,
                 "name" => $prod->material->name,
-                "quantity" => number_format($prod->quantity),
+                "quantity" => number_format($prod->quantity,2),
                 "type" => "Material",
+                "unit" => $prod->material->uom->unit,
             ]);
         }
 
@@ -1495,7 +1498,7 @@ class ProductionOrderController extends Controller
 
     public function getMaterialAPI($id){
 
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getResourceAPI($id){
