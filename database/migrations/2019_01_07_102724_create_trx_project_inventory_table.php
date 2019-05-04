@@ -17,7 +17,7 @@ class CreateTrxProjectInventoryTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('material_id')->unique();
-            $table->integer('quantity');
+            $table->float('quantity',15,2);
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('pro_project');
