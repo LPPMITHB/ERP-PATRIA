@@ -80,7 +80,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GRTD->material->code}}">{{ $GRTD->material->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GRTD->material->description}}">{{ $GRTD->material->description }}</td>
-                                <td>{{ number_format($GRTD->quantity) }}</td>
+                                <td>{{ number_format($GRTD->quantity,2) }}</td>
                                 <td>{{ $GRTD->storageLocation != null ? $GRTD->storageLocation->name : "-" }}</td>
                             </tr>
                         @endforeach
