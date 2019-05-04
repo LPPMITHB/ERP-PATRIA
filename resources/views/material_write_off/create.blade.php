@@ -41,10 +41,10 @@
                                         <th style="width: 15%">Storage Location</th>
                                         <th style="width: 20%">Material Number</th>
                                         <th style="width: 20%">Material Description</th>
-                                        <th style="width: 5%">Unit</th>
+                                        <th style="width: 10%">Unit</th>
                                         <th style="width: 10%">Available</th>
                                         <th style="width: 10%">Quantity</th>
-                                        <th style="width: 15%"></th>
+                                        <th style="width: 10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -92,7 +92,7 @@
                                     </td>
                                 </tfoot>
                             </table><br>
-                            <div class="col-md-12">
+                            <div class="col-md-12 no-padding">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
                             </div>
                         </div>
@@ -172,11 +172,10 @@ var data = {
         material_code : "",
         material_name : "",
         quantity : "",
-        quantityInt : 0,
         available : "",
         unit : "",
+        is_decimal : "",
     },
-
     editInput :{
         old_sloc_id : "",
         sloc_id : "",
@@ -185,29 +184,24 @@ var data = {
         material_code : "",
         material_name : "",
         quantity : "",
-        quantityInt : 0,
         available : "",
         unit : "",
         old_material_id : "",
+        is_decimal : "",
     },
-
     slocSettings: {
         placeholder: 'Please Select Storage Location'
     },
-
     materialSettings: {
         placeholder: 'Please Select Material'
     },
-
     dataMaterial : [],
     submittedForm : {}
-
 };
 
 var vm = new Vue({
     el: '#mwo',
     data: data,
-
     computed : {
         allOk: function(){
             let isOk = false;
@@ -218,34 +212,25 @@ var vm = new Vue({
 
             return isOk;
         },
-
         createOk: function(){
             let isOk = false;
 
-            var string_newValue = this.dataInput.quantityInt+"";
-            this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-            if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.quantity == ""){
+            if(this.dataInput.material_id == "" || this.dataInput.quantity == ""){
                 isOk = true;
             }
 
             return isOk;
         },
-        
         updateOk: function(){
-                let isOk = false;
+            let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt) || this.editInput.quantity == ""){
-                    isOk = true;
-                }
-
-                return isOk;
+            if(this.editInput.material_id == "" || this.editInput.quantity == ""){
+                isOk = true;
             }
-    },
 
+            return isOk;
+        }
+    },
     methods : {
         add(){
             var material_id = this.dataInput.material_id;
@@ -272,6 +257,8 @@ var vm = new Vue({
                         this.dataInput.sloc_id = "";
                         this.dataInput.sloc_name = "";
                         this.dataInput.available = "";
+                        this.dataInput.unit = "";
+                        this.dataInput.is_decimal = "";
                         this.newIndex = Object.keys(this.dataMaterial).length+1;
 
                         $('div.overlay').hide();
@@ -298,7 +285,6 @@ var vm = new Vue({
         update(){
             var material = this.dataMaterial[this.editInput.index];
             material.sloc_id = this.editInput.sloc_id;
-            material.quantityInt = this.editInput.quantityInt;
             material.quantity = this.editInput.quantity;
             material.material_id = this.editInput.material_id;
             material.available = this.editInput.available;
@@ -334,6 +320,10 @@ var vm = new Vue({
         
         },
         submitForm(){
+            $('div.overlay').show();
+            this.dataMaterial.forEach(data => {
+                data.quantity = parseFloat(data.quantity.replace(/,/g , ''));
+            });
             this.submittedForm.description = this.description;
             this.submittedForm.materials = this.dataMaterial;    
 
@@ -343,7 +333,6 @@ var vm = new Vue({
             struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
             form.appendChild(struturesElem);
             form.submit();
-
         },
 
         openEditModal(data,index){
@@ -352,23 +341,18 @@ var vm = new Vue({
             this.editInput.material_code = data.material_code;
             this.editInput.material_name = data.material_name;
             this.editInput.quantity = data.quantity;
-            this.editInput.quantityInt = data.quantityInt;
             this.editInput.available = data.available;
             this.editInput.sloc_id = data.sloc_id;
             this.editInput.old_sloc_id = data.sloc_id;
             this.editInput.sloc_name = data.sloc_name;
+            this.editInput.is_decimal = data.is_decimal;
+            this.editInput.unit = data.unit;
             this.editInput.index = index;
         },
-
         removeRow(index){
             this.dataMaterial.splice(index, 1);
-            // this.material_id.splice(index, 1);
-
-            // var jsonMaterialId = JSON.stringify(this.material_id);
-            // this.getNewMaterials(jsonMaterialId);
             
             this.newIndex = this.dataMaterial.length + 1;
-
         },
 
     },
@@ -377,7 +361,10 @@ var vm = new Vue({
         'dataInput.sloc_id' : function(newValue){
             if(newValue != ""){
                 $('div.overlay').show();
-                window.axios.get('/api/getMaterialMwo/'+newValue).then(({ data }) => {
+                this.dataInput.quantity = "";
+                this.dataInput.available = "";
+                this.dataInput.unit = "";
+                window.axios.get('/api/getMaterialMWO/'+newValue).then(({ data }) => {
                     this.slocDetails = data;
 
                     this.dataMaterial.forEach(existing => {
@@ -402,21 +389,12 @@ var vm = new Vue({
                     });
                     $('div.overlay').hide();
                 })
-            }else{
-
             }
-
-            this.dataInput.quantity = "";
-            this.dataInput.available = "";
-            this.dataInput.unit = "";
-
-
         },
-
         'editInput.sloc_id' : function(newValue){
             if(newValue != ""){
                 $('div.overlay').show();
-                window.axios.get('/api/getMaterialMwo/'+newValue).then(({ data }) => {
+                window.axios.get('/api/getMaterialMWO/'+newValue).then(({ data }) => {
                     this.slocDetails = data;
 
                     var $material = $(document.getElementById('materialedit')).selectize();
@@ -435,17 +413,21 @@ var vm = new Vue({
                     });
                     $('div.overlay').hide();
                 })
-            }else{
-                
             }
         },
-
         'dataInput.material_id' : function(newValue){
             if(newValue != ""){
-
                 window.axios.get('/api/getMaterialsMWO/'+newValue).then(({ data }) => {
                     this.dataInput.unit = data.uom.unit;
+                    this.dataInput.is_decimal = data.uom.is_decimal;
 
+                    this.slocDetails.forEach(element => {
+                        if(element.storage_location_id == this.dataInput.sloc_id && this.dataInput.material_id == element.material_id){
+                            this.dataInput.available = element.quantity;
+                            this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    });
+                    this.dataInput.quantity = "";
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -456,26 +438,14 @@ var vm = new Vue({
                     });
                     $('div.overlay').hide();
                 })
-                
-                this.slocDetails.forEach(element => {
-                    if(element.storage_location_id == this.dataInput.sloc_id && this.dataInput.material_id == element.material_id){
-                        this.dataInput.available = element.quantity;
-                        this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    }
-                });
-
-                this.dataInput.quantity = "";
-                
-            }else{
-
             }
         },
-
         'editInput.material_id' : function(newValue){
             if(newValue != ""){
 
                 window.axios.get('/api/getMaterialsMWO/'+newValue).then(({ data }) => {
                     this.editInput.unit = data.uom.unit;
+                    this.editInput.is_decimal = data.uom.is_decimal;
 
                     $('div.overlay').hide();
                 })
@@ -498,18 +468,29 @@ var vm = new Vue({
                 if(this.editInput.old_material_id != newValue){
                     this.editInput.quantity = "";
                 }
-            }else{
-
             }
         },
 
         'dataInput.quantity' : function(newValue){
             if(newValue != ""){
-                
-                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.dataInput.quantityInt = newValue;
-                this.dataInput.quantityInt = parseInt(this.dataInput.quantityInt.replace(/,/g , ''));
-                if(this.dataInput.quantityInt >  parseInt(this.dataInput.available.replace(/,/g , ''))){
+                var is_decimal = this.dataInput.is_decimal;
+                if(is_decimal == 0){
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }   
+
+                if(parseFloat(this.dataInput.quantity.replace(/,/g , '')) >  parseFloat(this.dataInput.available.replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
                         position: 'topRight',
@@ -517,20 +498,29 @@ var vm = new Vue({
                     });
 
                     this.dataInput.quantity = this.dataInput.available;
-                }             
-                
-            }else{
-
+                }    
             }
         },
-
         'editInput.quantity' : function(newValue){
-            if(newValue != ""){
-                
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.editInput.quantityInt = newValue;
-                this.editInput.quantityInt = parseInt(this.editInput.quantityInt.replace(/,/g , ''));
-                if(this.editInput.quantityInt >  parseInt(this.editInput.available.replace(/,/g , ''))){
+            if(newValue != ""){      
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }   
+
+                if(parseFloat(this.editInput.quantity.replace(/,/g , '')) >  parseFloat(this.editInput.available.replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
                         position: 'topRight',
@@ -538,21 +528,13 @@ var vm = new Vue({
                     });
 
                     this.editInput.quantity = this.editInput.available;
-                }             
-                
-            }else{
-
+                }  
             }
         },
-
     },
     created: function() {
         this.newIndex = Object.keys(this.dataMaterial).length+1;
     },
-   
-    
 });
-
-
 </script>
 @endpush

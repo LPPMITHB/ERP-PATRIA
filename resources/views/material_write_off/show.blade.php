@@ -46,22 +46,6 @@
                 </div>
                 <div class="box-header p-t-0 p-b-0">
                     <div class="col-sm-4 col-md-4 m-t-10">
-                        {{-- <div class="row">
-                            <div class="col-md-4 col-xs-4">
-                                Ship Name
-                            </div>
-                            <div class="col-md-8">
-                                : <b> {{ isset($modelMWO->materialRequisition) ? $modelMWO->materialRequisition->project->name : '-'}} </b>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 col-xs-4">
-                                MR Code
-                            </div>
-                            <div class="col-md-8">
-                                : <b> {{ isset($modelMWO->materialRequisition) ? $modelMWO->materialRequisition->number : '-' }} </b>
-                            </div>
-                        </div> --}}
                         <div class="row">
                             <div class="col-md-4 col-xs-4">
                                 Type
@@ -86,17 +70,17 @@
                             </div>
                             <div class="col-md-8">
                                 @if($modelMWO->status == 0)
-                                : <b> Issued </b>
+                                : <b> ISSUED </b>
                                 @elseif($modelMWO->status == 1)
-                                : <b>  Open </b>
+                                : <b>  OPEN </b>
                                 @elseif($modelMWO->status == 2)
-                                : <b>  Approved </b>
+                                : <b>  APPROVED </b>
                                 @elseif($modelMWO->status == 3)
-                                : <b>  Need Revision </b>
+                                : <b>  NEED REVISION </b>
                                 @elseif($modelMWO->status == 4)
-                                : <b> Revised </b>
+                                : <b> REVISED </b>
                                 @elseif($modelMWO->status == 5)
-                                : <b> Rejected </b>
+                                : <b> REJECTED </b>
                                 @endif
                             </div>
                         </div>
@@ -119,9 +103,10 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="20%">Material Number</th>
-                            <th width="20%">Material Description</th>
-                            <th width="25%">Quantity</th>
-                            <th width="30%">Storage Location</th>
+                            <th width="30%">Material Description</th>
+                            <th width="10%">Quantity</th>
+                            <th width="10%">Unit</th>
+                            <th width="20%">Storage Location</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,7 +115,8 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $MWO->material->code }}</td>
                             <td>{{ $MWO->material->description }}</td>
-                            <td>{{ number_format($MWO->quantity) }}</td>
+                            <td>{{ number_format($MWO->quantity,2) }}</td>
+                            <td>{{ $MWO->material->uom->unit }}</td>
                             <td>{{ $MWO->storageLocation != null ? $MWO->storageLocation->name : "-" }} </td>
                         </tr>
                         @endforeach

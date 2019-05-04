@@ -95,28 +95,6 @@ class MaterialWriteOffController extends Controller
                 $MWOD->save();
             }
 
-            // $MWO = new GoodsIssue;
-            // $MWO->number = $number;
-            // $MWO->description = $datas->description;
-            // if($menu == "building"){
-            //     $MWO->business_unit_id = 1;
-            // }else if($menu == "repair"){
-            //     $MWO->business_unit_id = 2;
-            // }
-            // $MWO->type = 5;
-            // $MWO->status = 1;
-            // $MWO->user_id = Auth::user()->id;
-            // $MWO->branch_id = Auth::user()->branch->id;
-            // $MWO->save();
-
-            // foreach($datas->materials as $data){
-            //     $MWOD = new GoodsIssueDetail;
-            //     $MWOD->goods_issue_id = $MWO->id;
-            //     $MWOD->quantity = $data->quantity;
-            //     $MWOD->material_id = $data->material_id;
-            //     $MWOD->storage_location_id = $data->sloc_id;
-            //     $MWOD->save();
-            // }
             DB::commit();
             if($menu == "building"){
                 return redirect()->route('material_write_off.show',$MWO->id)->with('success', 'Material Write Off Created');
@@ -170,8 +148,8 @@ class MaterialWriteOffController extends Controller
         $modelGI = MaterialWriteOff::findOrFail($id);
         $modelGID = $modelGI->MaterialWriteOffDetails;   
 
-        $materials = Material::all();
-        $storageLocations = StorageLocation::where('status',1)->get();
+        $materials = Material::with('uom')->get();
+        $storageLocations = StorageLocation::where('status',1)->with('storageLocationDetails.material.uom')->get();
 
         $materials = Collection::make();
         foreach($modelGID as $gid){
@@ -182,8 +160,9 @@ class MaterialWriteOffController extends Controller
                 "material_id" => $gid->material_id,
                 "material_code" => $gid->material->code,
                 "material_name" => $gid->material->description,
+                "unit" => $gid->material->uom->unit,
+                "is_decimal" => $gid->material->uom->is_decimal,
                 "quantity" => $gid->quantity."",
-                "quantityInt" => $gid->quantity,
                 "available" => $gid->storageLocation->storageLocationDetails->where('material_id',$gid->material_id)->first()->quantity,
             ]);
         }
@@ -228,7 +207,7 @@ class MaterialWriteOffController extends Controller
                     $MWOD->update();
                 }else{
                     $MWOD = new MaterialWriteOffDetail;
-                    $MWOD->goods_issue_id = $MWO->id;
+                    // $MWOD->goods_issue_id = $MWO->id;
                     $MWOD->quantity = $data->quantity;
                     $MWOD->material_id = $data->material_id;
                     $MWOD->storage_location_id = $data->sloc_id;
@@ -382,7 +361,7 @@ class MaterialWriteOffController extends Controller
     }
 
     public function getMaterialApi($id){
-        $materials = StorageLocationDetail::where('storage_location_id',$id)->where('quantity','>','0')->with('material')->get();
+        $materials = StorageLocationDetail::where('storage_location_id',$id)->where('quantity','>','0')->with('material','material.uom')->get();
         foreach($materials as $material){
             $material['selected'] = false;
         }
