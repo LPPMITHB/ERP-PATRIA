@@ -437,6 +437,7 @@
             description : "",
             required_date : "",
             unit : "",
+            is_decimal :"",
         },
         editInput : {
             old_material_id : "",
@@ -452,6 +453,7 @@
             description : "",
             required_date : "",
             unit : "",
+            is_decimal :"",
         },
         dataInputFG : {
             material_id :"",
@@ -465,6 +467,8 @@
             description : "",
             required_date : "",
             unit : "",
+            is_decimal :"",
+
         },
         editInputFG : {
             old_material_id : "",
@@ -479,6 +483,8 @@
             description : "",
             required_date : "",
             unit : "",
+            is_decimal :"",
+
         },
         material_id:[],
         material_id_modal:[],
@@ -723,6 +729,7 @@
                 this.editInput.description = data.description;
                 this.editInput.required_date = data.required_date;
                 this.editInput.unit = data.unit;
+                this.editInput.is_decimal = data.is_decimal;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -747,6 +754,7 @@
                 this.editInputFG.description = data.description;
                 this.editInputFG.required_date = data.required_date;
                 this.editInputFG.unit = data.unit;
+                this.editInputFG.is_decimal = data.is_decimal;
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -843,6 +851,7 @@
                     $('div.overlay').show();
                     window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
                         this.dataInput.unit = data.uom.unit;
+                        this.dataInput.is_decimal = data.uom.is_decimal;
 
                         $('div.overlay').hide();
                     })
@@ -859,6 +868,7 @@
 
                         this.dataInput.available = data.quantity - data.reserved;
                         this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        this.dataInput.quantity = "";
 
 
                         $('div.overlay').hide();
@@ -882,6 +892,8 @@
                 if(newValue != ""){
                     window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
                         this.dataInputFG.unit = data.uom.unit;
+                        this.dataInputFG.is_decimal = data.uom.is_decimal;
+                        this.dataInputFG.quantity = "";
 
                         $('div.overlay').hide();
                     })
@@ -897,10 +909,14 @@
             },
 
             'editInput.material_id' : function(newValue){
+                if(newValue != this.editInput.old_material_id){
+                    this.editInput.quantity = "";
+                }
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
                         this.editInput.unit = data.uom.unit;
+                        this.editInput.is_decimal = data.uom.is_decimal;
 
                         $('div.overlay').hide();
                     })
@@ -934,9 +950,14 @@
             },
 
             'editInputFG.material_id' : function(newValue){
+                if(newValue != this.editInputFG.old_material_id){
+                    this.editInputFG.quantity = "";
+                }
                 if(newValue != ""){
                     window.axios.get('/api/getMaterialWr/'+newValue).then(({ data }) => {
                         this.editInputFG.unit = data.uom.unit;
+                        this.editInputFG.is_decimal = data.uom.is_decimal;
+                        this.editInputFG.quantity = "";
 
                         $('div.overlay').hide();
                     })
@@ -983,28 +1004,76 @@
                 }
             },
             'dataInput.quantity': function(newValue){
-                this.dataInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.dataInput.quantity = quantity_string;
+                var is_decimal = this.dataInput.is_decimal;
+                if(is_decimal == 0){
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
             },
             'editInput.quantity': function(newValue){
-                this.editInput.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                Vue.nextTick(() => this.editInput.quantity = quantity_string);
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
             },
             'dataInputFG.quantity': function(newValue){
-                this.dataInputFG.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.dataInputFG.quantity = quantity_string;
+                var is_decimal = this.dataInputFG.is_decimal;
+                if(is_decimal == 0){
+                    this.dataInputFG.quantity = (this.dataInputFG.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInputFG.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInputFG.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInputFG.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
             },
             'editInputFG.quantity': function(newValue){
-                this.editInputFG.quantityInt = newValue;
-                var string_newValue = newValue+"";
-                quantity_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                Vue.nextTick(() => this.editInputFG.quantity = quantity_string);
+                var is_decimal = this.editInputFG.is_decimal;
+                if(is_decimal == 0){
+                    this.editInputFG.quantity = (this.editInputFG.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInputFG.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInputFG.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInputFG.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
             },
             'dataInput.wbs_id': function(newValue){
                 this.dataInput.material_id = "";

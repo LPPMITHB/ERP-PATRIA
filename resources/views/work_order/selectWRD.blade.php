@@ -208,8 +208,39 @@
             data.forEach(WRD => {
                 WRD.remaining = WRD.quantity - WRD.reserved;
                 WRD.remaining = (WRD.remaining+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                WRD.reserved = (WRD.reserved+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                var is_decimal = WRD.material.uom.is_decimal;
+                if(is_decimal == 0){
+                    WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (WRD.quantity+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            WRD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            WRD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        WRD.quantity = (WRD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                } 
+                
+                var is_decimal = WRD.material.uom.is_decimal;
+                if(is_decimal == 0){
+                    WRD.reserved = (WRD.reserved+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (WRD.reserved+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            WRD.reserved = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            WRD.reserved = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        WRD.reserved = (WRD.reserved+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                } 
             });
         }
     });
