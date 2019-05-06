@@ -649,6 +649,7 @@ class ProductionOrderController extends Controller
                         if($resource->resource_detail_id != null){
                             $PrOD->resource_detail_id = $resource->resource_detail_id;
                         }
+                        $PrOD->category_id = $resource->category_id;
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->resource_id = $resource->resource_id;
                         $PrOD->quantity = $resource->quantity;
