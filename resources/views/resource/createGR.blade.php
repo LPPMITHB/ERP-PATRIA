@@ -744,11 +744,10 @@
 
                     window.axios.get('/api/generateCodeGrResource/'+datas).then(({ data }) => {
                         this.editInput.code = data;
-
                         this.submitData.forEach(dataSubmit => {
                             if(dataSubmit.code == data){
-                                let number = parseInt(data.substr(19)) + 1;
-                                data = data.substr(0,19)+number;
+                                let number = parseInt(data.substr(18)) + 1;
+                                data = data.substr(0,18)+number;
                                 this.editInput.code = data;
                             }
                         });
