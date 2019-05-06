@@ -157,7 +157,7 @@
                 </table>
             </div> <!-- /.box-body -->
 
-            {{-- <div class="box-body p-t-0 p-b-5">
+            <div class="box-body p-t-0 p-b-5">
                 <h4>Resource</h4>
                 <table class="table table-bordered showTable tableFixed" id="resource-table">
                     <thead>
@@ -179,7 +179,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div> <!-- /.box-body --> --}}
+            </div> <!-- /.box-body -->
             
             @if($route == '/production_order_repair')
             <div class="box-body p-t-0 p-b-5">
@@ -416,7 +416,7 @@
         resources : [],
         services : [],
         bom : @json($modelBOM->bomDetails),
-        assignedResource : [],
+        assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
         route : @json($route),
