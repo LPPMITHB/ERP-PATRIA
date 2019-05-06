@@ -313,8 +313,8 @@
                                 <thead>
                                     <tr>
                                         <th width="4%">No</th>
-                                        <th width="30%">Material Name</th>
-                                        <th width="28%">Description</th>
+                                        <th width="30%">Material Number</th>
+                                        <th width="28%">Material Description</th>
                                         <th width="8%">Quantity</th>
                                         <th width="8%">Actual</th>
                                         <th width="8%">Remaining</th>
@@ -324,7 +324,7 @@
                                 <tbody>
                                     <tr v-for="(data,index) in materials">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.material.code }} - {{ data.material.name }}</td>
+                                        <td class="tdEllipsis">{{ data.material.code }}</td>
                                         <td class="tdEllipsis">{{ data.material.description }}</td>
                                         <td class="tdEllipsis">{{ data.used }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
