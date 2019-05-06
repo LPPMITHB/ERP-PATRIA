@@ -612,8 +612,16 @@
             submitForm(){
                 this.submit = "";
                 this.submittedForm.description = this.description;
-                this.submittedForm.project_id = this.project_id;     
+                this.submittedForm.project_id = this.project_id;   
+
+                this.dataMaterial.forEach(data=>{
+                    data.quantity = (data.quantity+"").replace(/,/g , '');
+                })
                 this.submittedForm.materials = this.dataMaterial;
+
+                this.dataMaterialFG.forEach(data=>{
+                    data.quantity = (data.quantity+"").replace(/,/g , '');
+                })
                 this.submittedForm.materialsFG = this.dataMaterialFG;
 
                 let struturesElem = document.createElement('input');
