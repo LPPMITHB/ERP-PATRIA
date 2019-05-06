@@ -426,7 +426,7 @@
         resources : [],
         services : [],
         bom : @json($modelBOM->bomDetails),
-        assignedResource : [],
+        assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
         route : @json($route),
