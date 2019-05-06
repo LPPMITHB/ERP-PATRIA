@@ -163,8 +163,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Resource Name</th>
-                            <th width="30%">Description</th>
+                            <th width="35%">Resource</th>
+                            <th width="30%">Resource Detail</th>
+                            <th width="30%">Category</th>
                             <th width="30%">Quantity</th>
                         </tr>
                     </thead>
@@ -172,8 +173,17 @@
                         @foreach($modelRD as $RD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->description }}">{{ $RD->resource->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : "" }}">{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : '-'  }}</td>
+                                @if($RD->category_id == 1)
+                                <td>Subcon</td>
+                                @elseif($RD->category_id == 2)
+                                <td>Others</td>
+                                @elseif($RD->category_id == 3)
+                                <td>External</td>
+                                @elseif($RD->category_id == 4)
+                                <td>Internal</td>
+                                @endif
                                 <td>{{ $RD->quantity }}</td>
                             </tr>
                         @endforeach
