@@ -71,10 +71,10 @@
                                         <tbody>
                                             <tr v-for="(data,index) in modelAssignResource">
                                                 <td>{{ index + 1 }}</td>
-                                                <td v-if="data.category_id == 0">SubCon</td>
-                                                <td v-else-if="data.category_id == 1">Others</td>
-                                                <td v-else-if="data.category_id == 2">External Equipment</td>
-                                                <td v-else-if="data.category_id == 3">Internal Equipment</td>
+                                                <td v-if="data.category_id == 1">SubCon</td>
+                                                <td v-else-if="data.category_id == 2">Others</td>
+                                                <td v-else-if="data.category_id == 3">External Equipment</td>
+                                                <td v-else-if="data.category_id == 4">Internal Equipment</td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
                                                 <td v-if="data.resource_detail != null && data.resource_detail.serial_number == null || data.resource_detail != null && data.resource_detail.serial_number == ''">{{ data.resource_detail.code }}</td>
                                                 <td v-else-if="data.resource_detail != null && data.resource_detail.serial_number != null && data.resource_detail.serial_number != ''">{{ data.resource_detail.code }} - {{ data.resource_detail.serial_number }}</td>
@@ -107,22 +107,22 @@
                                                 </selectize>
                                             </td>
             
-                                            <td class="no-padding" v-show="dataInput.category_id == 3 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
+                                            <td class="no-padding" v-show="dataInput.category_id == 4 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
                                                 <selectize id="material" v-model="dataInput.null" :settings="nullResourceSettings" disabled>
                                                     <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="no-padding" v-show="dataInput.category_id != 3 && dataInput.category_id != ''">
+                                            <td class="no-padding" v-show="dataInput.category_id != 4 && dataInput.category_id != ''">
                                                 <selectize id="material" v-model="dataInput.null" :settings="otherSettings" disabled>
                                                     <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length < 1">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 4 && dataInput.resource_id != '' && selectedRD.length < 1">
                                                 <selectize v-model="dataInput.null" :settings="nullRdSettings" disabled>
                                                     <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 4 && dataInput.resource_id != '' && selectedRD.length > 0">
                                                 <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
                                                     <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                 </selectize>
@@ -162,7 +162,7 @@
                                                     <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </div>
-                                            <template v-if="editInput.category_id == 3">
+                                            <template v-if="editInput.category_id == 4">
                                                 <div class="col-sm-12">
                                                     <label class="control-label">Resource Detail</label>
                                                     <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
@@ -180,7 +180,7 @@
                                                 <label class="control-label">Quantity</label>
                                                 <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editResource">
                                             </div>
-                                            <div class="col-sm-12" v-show="editInput.category_id == 3 && editInput.resource_detail_id != '' && editInput.resource_detail_id != null">
+                                            <div class="col-sm-12" v-show="editInput.category_id == 4 && editInput.resource_detail_id != '' && editInput.resource_detail_id != null">
                                                 <label class="control-label">Schedule</label>
                                                 <input type="text" name="daterangeModal" id="daterangeModal" class="form-control" placeholder="Please Input Schedule (Optional)" autocomplete="off"/>
                                             </div>
@@ -448,7 +448,7 @@
             editResource: function(){
                 let isOk = false;
 
-                if(this.editInput.category_id == 3){
+                if(this.editInput.category_id == 4){
                     if(this.editInput.resource_detail_id != "" && this.editInput.resource_detail_id != null){
                         isOk = true;
                     }
@@ -574,7 +574,7 @@
                 });
             },
             inputSchedule(){
-                if(this.dataInput.category_id == 3 && this.dataInput.resource_detail_id != ""){
+                if(this.dataInput.category_id == 4 && this.dataInput.resource_detail_id != ""){
                     $('#input_schedule').modal();
                 }else{
                     this.add();
@@ -658,7 +658,7 @@
                 $('div.overlay').show();            
 
                 let status = false;
-                if(this.dataInput.category_id == 3){
+                if(this.dataInput.category_id == 4){
                     let start_date = this.dataInput.start_date;
                     this.modelAssignResource.forEach(TrxResource =>{
                         if(TrxResource.resource_detail_id == this.dataInput.resource_detail_id){
@@ -858,7 +858,7 @@
                 if(newValue != ''){
                     this.schedule.selectedRD = [];
                     this.resourceDetails.forEach(RD => {
-                        if(RD.resource_id == newValue && RD.category_id == 3){
+                        if(RD.resource_id == newValue && RD.category_id == 4){
                             this.schedule.selectedRD.push(RD);
                         }  
                     });
@@ -903,10 +903,10 @@
                 }
             },
             'editInput.resource_id' : function(newValue){
-                if(this.editInput.category_id == 3){
+                if(this.editInput.category_id == 4){
                     this.selectedRDModal = [];
                     this.resourceDetails.forEach(data => {
-                        if(data.resource_id == newValue && data.category_id == 3){
+                        if(data.resource_id == newValue && data.category_id == 4){
                             this.selectedRDModal.push(data);
                         }
                     })
@@ -918,7 +918,7 @@
             },
             'editInput.resource_detail_id' : function(newValue){
                 if(newValue != "" && newValue != null){
-                    if(this.editInput.category_id == 3){
+                    if(this.editInput.category_id == 4){
                         this.editInput.quantity = 1;
                     }
                 }             

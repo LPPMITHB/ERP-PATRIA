@@ -79,10 +79,10 @@
                                     <td><a @click.prevent="showDetail(rd.id)" href="">{{ rd.code }}</a></td>
                                     <td v-if="rd.category_id != 1">{{ rd.brand }}</td>
                                     <td v-else>{{ rd.others_name }}</td>
-                                    <td v-if="rd.category_id == 0">Sub Con</td>
-                                    <td v-else-if="rd.category_id == 1">Others</td>
-                                    <td v-else-if="rd.category_id == 2">External Equipment</td>
-                                    <td v-else-if="rd.category_id == 3">Internal Equipment</td>
+                                    <td v-if="rd.category_id == 1">Sub Con</td>
+                                    <td v-else-if="rd.category_id == 2">Others</td>
+                                    <td v-else-if="rd.category_id == 3">External Equipment</td>
+                                    <td v-else-if="rd.category_id == 4">Internal Equipment</td>
                                     <td v-if="rd.status == 1">IDLE</td>
                                     <td v-else-if="rd.status == 2">USED</td>
                                     <td v-else-if="rd.status == 0">NOT ACTIVE</td>
