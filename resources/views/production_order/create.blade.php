@@ -163,18 +163,16 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Resource</th>
+                            <th width="15%">Category</th>
+                            <th width="30%">Resource</th>
                             <th width="30%">Resource Detail</th>
-                            <th width="30%">Category</th>
-                            <th width="30%">Quantity</th>
+                            <th width="20%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($modelRD as $RD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->description }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : "" }}">{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : '-'  }}</td>
                                 @if($RD->category_id == 1)
                                 <td>Subcon</td>
                                 @elseif($RD->category_id == 2)
@@ -184,6 +182,8 @@
                                 @elseif($RD->category_id == 4)
                                 <td>Internal</td>
                                 @endif
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : "" }}">{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : '-'  }}</td>
                                 <td>{{ $RD->quantity }}</td>
                             </tr>
                         @endforeach
