@@ -61,7 +61,7 @@
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelPO.description)"><b>: {{ modelPO.description }}</b></div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">    
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-lg-7 col-xs-12 no-padding">Goods Return Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
                                         </div>
@@ -74,11 +74,11 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%">No</th>
-                                                <th width="30%">Material Name</th>
+                                                <th width="20%">Material Number</th>
                                                 <th width="30%">Material Description</th>
-                                                <th width="5%">Unit</th>
                                                 <th width="15%">Quantity</th>
                                                 <th width="15%">Return Qty</th>
+                                                <th width="10%">Unit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -86,11 +86,11 @@
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ POD.material.code }}</td>
                                                 <td>{{ POD.material.description }}</td>
-                                                <td>{{ POD.material.uom.unit }}</td>
                                                 <td>{{ POD.quantity - POD.received - POD.returned }} </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.returned_temp" placeholder="Please Input Returned Quantity">
                                                 </td>
+                                                <td>{{ POD.material.uom.unit }}</td> 
                                             </tr>
                                         </tbody>
                                     </table>
@@ -189,7 +189,7 @@
 
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , ''); 
-                    POD.returned_temp = parseInt(POD.returned_temp);     
+                    POD.returned_temp = parseFloat(POD.returned_temp);     
                 });
 
                 this.submittedForm.POD = data;
@@ -209,7 +209,7 @@
                 handler: function(newValue) {
                     var data = newValue;
                     data.forEach(POD => {
-                        if((parseInt((POD.quantity+"").replace(/,/g , '')) - parseInt((POD.received+"").replace(/,/g , ''))  - parseInt((POD.returned+"").replace(/,/g , ''))) < parseInt((POD.returned_temp+"").replace(/,/g , ''))){
+                        if((parseFloat((POD.quantity+"").replace(/,/g , '')) - parseFloat((POD.received+"").replace(/,/g , ''))  - parseFloat((POD.returned+"").replace(/,/g , ''))) < parseFloat((POD.returned_temp+"").replace(/,/g , ''))){
                             POD.returned_temp = POD.quantity - POD.received - POD.returned;
                             iziToast.warning({
                                 title: 'Cannot input more than received quantity..',
@@ -223,7 +223,7 @@
                         }else if(POD.material.uom.is_decimal == 1){
                             var decimal = (POD.returned_temp+"").replace(/,/g, '').split('.');
                             if(decimal[1] != undefined){
-                                var maxDecimal = 4;
+                                var maxDecimal = 2;
                                 if((decimal[1]+"").length > maxDecimal){
                                     POD.returned_temp = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                                 }else{
@@ -240,7 +240,22 @@
         },
         created: function(){
             this.modelPOD.forEach(POD => {
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                var is_decimal = POD.material.uom.is_decimal;
+                if(is_decimal == 0){
+                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (POD.quantity+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            POD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            POD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        POD.quantity = (POD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }   
             });
         },
     });

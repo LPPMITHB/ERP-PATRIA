@@ -101,7 +101,7 @@ Route::get('/getBomPrepWR/{id}', 'WorkRequestController@getBomPrepWRAPI')->name(
 Route::get('/getDataActivityWR/{id}', 'WorkRequestController@getDataActivityWRAPI')->name('api.work_request.getDataActivityWRAPI');
 
 // material write off
-Route::get('/getMaterialMwo/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');
+Route::get('/getMaterialMWO/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');
 Route::get('/getMaterialsMWO/{id}', 'MaterialWriteOffController@getMaterialsMWOApi')->name('api.material_write_off.getMaterialsMWOApi');
 Route::get('/getSloc/{id}', 'MaterialWriteOffController@getSlocApi')->name('api.material_write_off.getSlocApi');
 

@@ -39,22 +39,26 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 5%">No</th>
-                                        <th style="width: 30%">Storage Location</th>
-                                        <th style="width: 30%">Material</th>
+                                        <th style="width: 15%">Storage Location</th>
+                                        <th style="width: 20%">Material Number</th>
+                                        <th style="width: 20%">Material Description</th>
+                                        <th style="width: 10%">Unit</th>
                                         <th style="width: 10%">Available</th>
                                         <th style="width: 10%">Quantity</th>
-                                        <th style="width: 15%"></th>
+                                        <th style="width: 10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(material,index) in dataMaterial">
                                         <td>{{ index + 1 }}</td>
                                         <td class="tdEllipsis">{{ material.sloc_name }}</td>
-                                        <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_name }}</td>
+                                        <td class="tdEllipsis">{{ material.material_code }}</td>
+                                        <td class="tdEllipsis">{{ material.material_name }}</td>
+                                        <td class="tdEllipsis">{{ material.unit }}</td>
                                         <td class="tdEllipsis">{{ material.available }}</td>
                                         <td class="tdEllipsis">{{ material.quantity }}</td>
                                         <td class="p-l-3 textCenter">
-                                            <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
+                                            <a class="btn btn-primary btn-xs" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
                                             <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
@@ -70,10 +74,13 @@
                                             <option v-for="(sloc,index) in slocs" :value="sloc.id">{{ sloc.name }}</option>
                                         </selectize>
                                     </td>
-                                    <td class="p-l-0 textLeft no-padding">
+                                    <td colspan="2" class="p-l-0 textLeft no-padding">
                                         <selectize id="material" v-model="dataInput.material_id" :settings="materialSettings">
                                             <option v-for="(slocDetail,index) in slocDetails" v-if="slocDetail.selected != true" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                         </selectize>
+                                    </td>
+                                    <td class="no-padding">
+                                        <input type="text" class="form-control" v-model="dataInput.unit" disabled>
                                     </td>
                                     <td>
                                         {{ dataInput.available }}
@@ -86,7 +93,7 @@
                                     </td>
                                 </tfoot>
                             </table><br>
-                            <div class="col-md-12">
+                            <div class="col-md-12 no-padding">
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">SAVE</button>
                             </div>
                         </div>
@@ -113,13 +120,21 @@
                                                     <option v-for="(slocDetail,index) in slocDetails" :value="slocDetail.material.id">{{ slocDetail.material.code }} - {{ slocDetail.material.description }}</option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
                                                 <label for="available" class="control-label">Available</label>
                                                 <input type="text" v-model="editInput.available" class="form-control" disabled  >
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" v-model="editInput.unit" class="form-control" disabled>
+                                            </div>
+                                            <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="unit" class="control-label">Unit</label>
+                                                <input type="text" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -162,8 +177,9 @@ var data = {
         material_code : "",
         material_name : "",
         quantity : "",
-        quantityInt : 0,
         available : "",
+        unit : "",
+        is_decimal : "",
     },
 
     editInput :{
@@ -174,9 +190,10 @@ var data = {
         material_code : "",
         material_name : "",
         quantity : "",
-        quantityInt : 0,
         available : "",
         old_material_id : "",
+        unit : "",
+        is_decimal : "",
     },
 
     slocSettings: {
@@ -196,7 +213,6 @@ var data = {
 var vm = new Vue({
     el: '#mwo',
     data: data,
-
     computed : {
         allOk: function(){
             let isOk = false;
@@ -207,40 +223,31 @@ var vm = new Vue({
 
             return isOk;
         },
-
         createOk: function(){
             let isOk = false;
 
-            var string_newValue = this.dataInput.quantityInt+"";
-            this.dataInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-            if(this.dataInput.material_id == "" || this.dataInput.quantityInt < 1 || this.dataInput.quantityInt == "" || isNaN(this.dataInput.quantityInt) || this.dataInput.quantity == ""){
+            if(this.dataInput.material_id == "" || this.dataInput.quantity == ""){
                 isOk = true;
             }
 
             return isOk;
         },
-        
         updateOk: function(){
-                let isOk = false;
+            let isOk = false;
 
-                var string_newValue = this.editInput.quantityInt+"";
-                this.editInput.quantityInt = parseInt(string_newValue.replace(/,/g , ''));
-
-                if(this.editInput.material_id == "" || this.editInput.quantityInt < 1 || this.editInput.quantityInt == "" || isNaN(this.editInput.quantityInt) || this.editInput.quantity == ""){
-                    isOk = true;
-                }
-
-                return isOk;
+            if(this.editInput.material_id == "" || this.editInput.quantity == ""){
+                isOk = true;
             }
-    },
 
+            return isOk;
+        }
+    },
     methods : {
         add(){
             var material_id = this.dataInput.material_id;
             var sloc_id = this.dataInput.sloc_id;
             $('div.overlay').show();
-                window.axios.get('/api/getMaterials/'+material_id).then(({ data }) => {
+                window.axios.get('/api/getMaterialsMWO/'+material_id).then(({ data }) => {
                     
                     this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
@@ -261,6 +268,8 @@ var vm = new Vue({
                         this.dataInput.sloc_id = "";
                         this.dataInput.sloc_name = "";
                         this.dataInput.available = "";
+                        this.dataInput.unit = "";
+                        this.dataInput.is_decimal = "";
                         this.newIndex = Object.keys(this.dataMaterial).length+1;
 
                         $('div.overlay').hide();
@@ -292,24 +301,26 @@ var vm = new Vue({
             material.material_id = this.editInput.material_id;
             material.available = this.editInput.available;
 
-            window.axios.get('/api/getMaterials/'+this.editInput.material_id).then(({ data }) => {
+            window.axios.get('/api/getMaterialsMWO/'+this.editInput.material_id).then(({ data }) => {
                 material.material_name = data.description;
                 material.material_code = data.code;
+                material.unit = data.uom.unit;
+                material.is_decimal = data.uom.is_decimal;
 
-                    window.axios.get('/api/getSloc/'+this.editInput.sloc_id).then(({ data }) => {
-                    material.sloc_name = data.name;
+                window.axios.get('/api/getSloc/'+this.editInput.sloc_id).then(({ data }) => {
+                material.sloc_name = data.name;
+                $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
                     $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
+                })
 
-                    $('div.overlay').hide();
+                $('div.overlay').hide();
             })
             .catch((error) => {
                 iziToast.warning({
@@ -341,24 +352,21 @@ var vm = new Vue({
             this.editInput.material_code = data.material_code;
             this.editInput.material_name = data.material_name;
             this.editInput.quantity = data.quantity;
-            this.editInput.quantityInt = data.quantityInt;
+            this.editInput.unit = data.unit;
+            this.editInput.is_decimal = data.is_decimal;
             this.editInput.available = data.available;
             this.editInput.sloc_id = data.sloc_id;
             this.editInput.old_sloc_id = data.sloc_id;
             this.editInput.sloc_name = data.sloc_name;
             this.editInput.index = index;
+
         },
 
         removeRow(index){
             this.gid_deleted.push(this.dataMaterial[index].gid_id);
             this.dataMaterial.splice(index, 1);
-            // this.material_id.splice(index, 1);
-
-            // var jsonMaterialId = JSON.stringify(this.material_id);
-            // this.getNewMaterials(jsonMaterialId);
             
             this.newIndex = this.dataMaterial.length + 1;
-
         },
 
     },
@@ -366,8 +374,10 @@ var vm = new Vue({
     watch :{
         'dataInput.sloc_id' : function(newValue){
             if(newValue != ""){
+                this.dataInput.quantity = "";
+                this.dataInput.available = "";
                 $('div.overlay').show();
-                window.axios.get('/api/getMaterialMwo/'+newValue).then(({ data }) => {
+                window.axios.get('/api/getMaterialMWO/'+newValue).then(({ data }) => {
                     this.slocDetails = data;
 
                     this.dataMaterial.forEach(existing => {
@@ -392,20 +402,12 @@ var vm = new Vue({
                     });
                     $('div.overlay').hide();
                 })
-            }else{
-
             }
-
-            this.dataInput.quantity = "";
-            this.dataInput.available = "";
-
-
         },
-
         'editInput.sloc_id' : function(newValue){
             if(newValue != ""){
                 $('div.overlay').show();
-                window.axios.get('/api/getMaterialMwo/'+newValue).then(({ data }) => {
+                window.axios.get('/api/getMaterialMWO/'+newValue).then(({ data }) => {
                     this.slocDetails = data;
 
                     var $material = $(document.getElementById('materialedit')).selectize();
@@ -414,6 +416,8 @@ var vm = new Vue({
                         this.editInput.available = "";
                         this.editInput.material_id = "";
                     }
+
+                    $('#edit_item').modal();
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -428,49 +432,54 @@ var vm = new Vue({
                 
             }
         },
-
         'dataInput.material_id' : function(newValue){
             if(newValue != ""){
-                
                 this.slocDetails.forEach(element => {
                     if(element.storage_location_id == this.dataInput.sloc_id && this.dataInput.material_id == element.material_id){
                         this.dataInput.available = element.quantity;
+                        this.dataInput.unit = element.material.uom.unit;
+                        this.dataInput.is_decimal = element.material.uom.is_decimal;
                         this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
                 });
-
                 this.dataInput.quantity = "";
-                
-            }else{
-
             }
         },
-
         'editInput.material_id' : function(newValue){
             if(newValue != ""){
-                
                 this.slocDetails.forEach(element => {
                     if(element.storage_location_id == this.editInput.sloc_id && this.editInput.material_id == element.material_id){
                         this.editInput.available = element.quantity;
+                        this.editInput.unit = element.material.uom.unit;
+                        this.editInput.is_decimal = element.material.uom.is_decimal;
                         this.editInput.available = (this.editInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
                 });
-                
                 if(this.editInput.old_material_id != newValue){
                     this.editInput.quantity = "";
                 }
-            }else{
-
             }
         },
-
         'dataInput.quantity' : function(newValue){
             if(newValue != ""){
-                
-                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.dataInput.quantityInt = newValue;
-                this.dataInput.quantityInt = parseInt(this.dataInput.quantityInt.replace(/,/g , ''));
-                if(this.dataInput.quantityInt >  parseInt(this.dataInput.available.replace(/,/g , ''))){
+                var is_decimal = this.dataInput.is_decimal;
+                if(is_decimal == 0){
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }   
+
+                if(parseFloat(this.dataInput.quantity.replace(/,/g , '')) >  parseFloat(this.dataInput.available.replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
                         position: 'topRight',
@@ -478,20 +487,29 @@ var vm = new Vue({
                     });
 
                     this.dataInput.quantity = this.dataInput.available;
-                }             
-                
-            }else{
-
+                }    
             }
         },
-
         'editInput.quantity' : function(newValue){
-            if(newValue != ""){
-                
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                this.editInput.quantityInt = newValue;
-                this.editInput.quantityInt = parseInt(this.editInput.quantityInt+"".replace(/,/g , ''));
-                if(this.editInput.quantityInt >  parseInt(this.editInput.available+"".replace(/,/g , ''))){
+            if(newValue != ""){      
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = newValue.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }   
+
+                if(parseFloat(this.editInput.quantity.replace(/,/g , '')) >  parseFloat(this.editInput.available.replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
                         position: 'topRight',
@@ -499,19 +517,13 @@ var vm = new Vue({
                     });
 
                     this.editInput.quantity = this.editInput.available;
-                }             
-                
-            }else{
-
+                }  
             }
         },
-
     },
     created: function() {
         this.newIndex = Object.keys(this.dataMaterial).length+1;
     },
-   
-    
 });
 
 
