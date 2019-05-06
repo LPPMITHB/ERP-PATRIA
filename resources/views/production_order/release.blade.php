@@ -131,8 +131,8 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Material Name</th>
-                                <th width="28%">Description</th>
+                                <th width="30%">Material Number</th>
+                                <th width="28%">Material Description</th>
                                 <th width="8%">Quantity</th>
                                 <th width="8%">Available</th>
                                 <th width="7%">Unit</th>
@@ -143,7 +143,7 @@
                         <tbody>
                             <tr v-for="(data,index) in materials">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.material.code }} - {{ data.material.name }}</td>
+                                <td class="tdEllipsis">{{ data.material.code }}</td>
                                 <td class="tdEllipsis">{{ data.material.description }}</td>
                                 <td class="tdEllipsis">{{ data.sugQuantity }}</td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>
@@ -166,27 +166,32 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Resource Name</th>
-                                <th width="28%">Description</th>
-                                <th width="18%">Operational Resource</th>
+                                <th width="30%">Category</th>
+                                <th width="30%">Resource</th>
+                                <th width="28%">Resource Detail</th>
                                 <th width="12%">Status</th>
                                 <th width="7%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in resources">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                <td class="tdEllipsis">{{ (data.resource.description) ? data.resource.description : '-' }}</td>
-                                <td class="tdEllipsis">{{ (data.trx_resource_code) ? data.trx_resource_code : '-' }}</td>
-                                <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
-                                <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
-                                <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
-                                <td class="tdEllipsis" v-show="data.status == 2"> {{ 'USED' }}</td>
-                                <td class="p-l-0" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">
+                                <template v-if="data.resourceDetail != null">
+
+                                </template>
+                                <template v-else>
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                    <td class="tdEllipsis">-</td>
+                                    <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == 2"> {{ 'USED' }}</td>
+                                    <td class="p-l-0" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">
                                     <div class="btn-group">
                                         SELECT
                                     </div></a>
+                                </template>
+                                    
                                 </td>
                             </tr>
                         </tbody>

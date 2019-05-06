@@ -303,6 +303,10 @@ class ProductionOrderController extends Controller
                                 "code" => $prOD->resource->code,
                                 "name" => $prOD->resource->name,
                                 "description" => $prOD->resource->description,
+                                "category_id" => $prOD->category_id,
+                            ],
+                            "resource_detail" =>[
+                                "code" => $prOD->resourceDetail->code
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
