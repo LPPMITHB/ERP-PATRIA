@@ -617,12 +617,12 @@
 
                 var data = this.dataMaterial;
                 data.forEach(wrd => {
-                    wrd.quantity = parseInt((wrd.quantity+"").replace(/,/g , ''));
+                    wrd.quantity = (wrd.quantity+"").replace(/,/g , '');
                 });
 
                 var data = this.dataMaterialFG;
                 data.forEach(wrd => {
-                    wrd.quantity = parseInt((wrd.quantity+"").replace(/,/g , ''));
+                    wrd.quantity = (wrd.quantity+"").replace(/,/g , '');
                 });
 
                 this.submittedForm.materials = this.dataMaterial;
@@ -1052,7 +1052,22 @@
             this.newIndex = Object.keys(this.dataMaterial).length+1;
             this.newIndexFG = Object.keys(this.dataMaterialFG).length+1;
             this.dataMaterial.forEach( function (wrd, i) {
-                wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                var is_decimal = wrd.material.uom.is_decimal;
+                if(is_decimal == 0){
+                    wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (wrd.quantity+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            wrd.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            wrd.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        wrd.quantity = (wrd.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                } 
                 wrd.available = (wrd.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
                 if(wrd.required_date != null && wrd.required_date != ''){
@@ -1072,7 +1087,22 @@
             });
 
             this.dataMaterialFG.forEach( function (wrd, i) {
-                wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                var is_decimal = wrd.material.uom.is_decimal;
+                if(is_decimal == 0){
+                    wrd.quantity = (wrd.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (wrd.quantity+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            wrd.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            wrd.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        wrd.quantity = (wrd.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                } 
 
                 if(wrd.required_date != null && wrd.required_date != ''){
                     var date = wrd.required_date;

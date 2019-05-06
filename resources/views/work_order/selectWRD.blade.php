@@ -207,7 +207,23 @@
             var data = this.modelWRD;
             data.forEach(WRD => {
                 WRD.remaining = WRD.quantity - WRD.reserved;
-                WRD.remaining = (WRD.remaining+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                var is_decimal = WRD.material.uom.is_decimal;
+                if(is_decimal == 0){
+                    WRD.remaining = (WRD.remaining+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (WRD.remaining+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            WRD.remaining = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            WRD.remaining = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        WRD.remaining = (WRD.remaining+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                } 
+
                 var is_decimal = WRD.material.uom.is_decimal;
                 if(is_decimal == 0){
                     WRD.quantity = (WRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  

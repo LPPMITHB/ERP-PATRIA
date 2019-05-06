@@ -87,9 +87,6 @@ class WorkRequestController extends Controller
         $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         $wr_number = $this->generateWRNumber();
-        // $current_date = today();
-        // $valid_to = $current_date->addDays(7);
-        // $valid_to = $valid_to->toDateString();
 
         DB::beginTransaction();
         try {
