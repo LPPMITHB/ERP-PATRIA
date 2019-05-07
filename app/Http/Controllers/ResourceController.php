@@ -134,6 +134,11 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $resource_categories = Configuration::get('resource_category');
+        foreach ($resource_categories as $key => $resource_category) {
+            if($resource_category->name == "Subcon"){
+                array_splice($resource_categories,$key,1);          
+            }
+        }
         $depreciation_methods = Configuration::get('depreciation_methods');
         $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
         $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
