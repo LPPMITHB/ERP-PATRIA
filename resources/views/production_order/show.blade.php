@@ -216,18 +216,14 @@
                             @if($PrOD->resource_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    @if($PrOD->resourceDetail)
-                                        @if($PrOD->resourceDetail->resource->category_id == 1)
-                                            <td>Subcon</td>
-                                        @elseif($PrOD->resourceDetail->resource->category_id == 2)
-                                            <td>Others</td>
-                                        @elseif($PrOD->resourceDetail->resource->category_id == 3)
-                                            <td>External</td>
-                                        @elseif($PrOD->resourceDetail->resource->category_id == 4)
-                                            <td>Internal</td>
-                                        @endif
-                                    @else
-                                        <td>-</td>
+                                    @if($PrOD->category_id == 1)
+                                        <td>Subcon</td>
+                                    @elseif($PrOD->category_id == 2)
+                                        <td>Others</td>
+                                    @elseif($PrOD->category_id == 3)
+                                        <td>External</td>
+                                    @elseif($PrOD->category_id == 4)
+                                        <td>Internal</td>
                                     @endif
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->description }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->description }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '' }}">{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '-'}}</td>
