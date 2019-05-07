@@ -414,11 +414,12 @@ class ProjectController extends Controller
                     $date = date($act_ref->planned_start_date);
                     $date = strtotime($diff." day",strtotime($date));
                     $act->planned_start_date = date("Y-m-d",$date);
-
+                    
                     $date = date($act_ref->planned_end_date);
                     $date = strtotime($diff." day",strtotime($date));
                     $act->planned_end_date = date("Y-m-d",$date);
                     $act->planned_duration = $act_ref->planned_duration;
+                    $act->weight = $act_ref->weight;
 
                     if(isset($wbsIdConverter[$dataTree->parent])){
                         $act->code = self::generateActivityCode($wbsIdConverter[$dataTree->parent]);
