@@ -633,7 +633,6 @@ class BOMController extends Controller
         $year = $project->created_at->year % 100;
 
         $modelBom = Bom::orderBy('code', 'desc')->where('project_id', $project_id)->first();
-        
         $number = 1;
 		if(isset($modelBom)){
             $number += intval(substr($modelBom->code, -4));
@@ -911,11 +910,18 @@ class BOMController extends Controller
                     
                     if(isset($modelStock)){
                         $remaining = $modelStock->quantity - $modelStock->reserved;
-                        if($remaining < $bomDetail->quantity){
+                        if($remaining > 0 && $remaining < $bomDetail->quantity){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->material_id = $bomDetail->material_id;
                             $PRD->quantity = $bomDetail->quantity - $remaining;
+                            $PRD->project_id = $project_id;
+                            $PRD->save();
+                        }else{
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->material_id = $bomDetail->material_id;
+                            $PRD->quantity = $bomDetail->quantity;
                             $PRD->project_id = $project_id;
                             $PRD->save();
                         }
