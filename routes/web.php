@@ -234,6 +234,8 @@ Route::name('resource.')->prefix('resource')->group(function() {
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource');
 
     Route::put('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource');
+
+    Route::delete('/deleteAssignedResource/{id}', 'ResourceController@destroyAssignedResource')->name('deleteAssignedResource')->middleware('can:edit-resource');
 });
 
 //Resource Management Routes
@@ -281,6 +283,8 @@ Route::name('resource_repair.')->prefix('resource_repair')->group(function() {
     Route::post('/storeAssignResource', 'ResourceController@storeAssignResource')->name('storeAssignResource')->middleware('can:create-resource-repair');
 
     Route::put('updateAssignResource/{id}', 'ResourceController@updateAssignResource')->name('updateAssignResource')->middleware('can:edit-resource-repair');
+
+    Route::delete('/deleteAssignedResource/{id}', 'ResourceController@destroyAssignedResource')->name('deleteAssignedResource')->middleware('can:edit-resource');
 });
 
 //Unit Of Measurement Routes
