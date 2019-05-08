@@ -65,7 +65,7 @@
                                                 <th style="width: 25%">Resource Detail</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 25%">WBS</th>
-                                                <th style="width: 12%"></th>
+                                                <th style="width: 14%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>

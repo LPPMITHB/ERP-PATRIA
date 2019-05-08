@@ -59,9 +59,20 @@
                             <td>Status</td>
                             <td class="iconTd">
                                 @if ($uom->status == 1)
-                                        <i class="fa fa-check"></i>
+                                        <i class="fa fa-check text-success"></i>
                                 @elseif ($uom->status == 0)
-                                    <i class="fa fa-times"></i>
+                                    <i class="fa fa-times text-danger"></i>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Decimal</td>
+                            <td class="iconTd">
+                                @if ($uom->is_decimal == 1)
+                                    <i class="fa fa-check text-success"></i>
+                                @elseif ($uom->is_decimal == 0)
+                                    <i class="fa fa-times text-danger"></i>
                                 @endif
                             </td>
                         </tr>
