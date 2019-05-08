@@ -1557,9 +1557,9 @@ class ProductionOrderController extends Controller
         return response($stock, Response::HTTP_OK);
     }
 
-    public function getTrxResourceAPI($id,$jsonResource){
+    public function getTrxResourceAPI($id,$jsonResource,$category_id){
         $jsonResource = json_decode($jsonResource);
-        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
+        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->where('category_id',$category_id)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
 
         return response($resource, Response::HTTP_OK);
     }

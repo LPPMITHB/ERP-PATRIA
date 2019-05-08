@@ -182,7 +182,7 @@
                                     <td v-else-if="data.resource.category_id == 3">External</td>
                                     <td v-else-if="data.resource.category_id == 4">Internal</td>
                                     <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                    <td>{{ data.resource_detail.code }} - {{ data.resource.name }}</td>
+                                    <td>{{ data.resource_detail.code }}</td>
                                     <td class="tdEllipsis"> {{ 'IDLE' }}</td>
                                     <td class="p-l-0 p-t-15 p-b-15" align="center"></td>
                                 </template>
@@ -368,7 +368,7 @@
                 });
 
                 let selectedResource = JSON.stringify(this.selectedResource);
-                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource).then(({ data }) => {
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource+'/'+data.resource.category_id).then(({ data }) => {
                     this.resourceDetails = data;
                     this.resourceDetails.forEach(resourceDetail => {
                         if(resourceDetail.id == this.editInput.resource_id){
