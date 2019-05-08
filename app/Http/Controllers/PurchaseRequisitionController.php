@@ -817,7 +817,7 @@ class PurchaseRequisitionController extends Controller
         $pdf->loadView('purchase_requisition.pdf',['modelPR' => $modelPR, 'branch' => $branch, 'route'=> $route]);
         $now = date("Y_m_d_H_i_s");
         
-        return $pdf->download('Purchase_Requisition_'.$now.'.pdf');
+        return $pdf->stream('Purchase_Requisition_'.$now.'.pdf');
     }
 
     public function getProjectApi($id){

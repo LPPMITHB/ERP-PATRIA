@@ -193,7 +193,7 @@
                                     <td v-else-if="data.resource.category_id == 3">External</td>
                                     <td v-else-if="data.resource.category_id == 4">Internal</td>
                                     <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                    <td class="tdEllipsis">-</td>
+                                    <td>{{ data.resource_detail.code }}</td>
                                     <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
                                     <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
                                     <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
@@ -359,37 +359,35 @@
             addResource(data,index) {
                 this.clearEditInput();
                 this.editInput.index = index;
-                this.editInput.resource_id = data.trx_resource_id;
-                this.selectedResource.forEach(resource_id => {
-                    if(resource_id == this.editInput.resource_id){
-                        let indexArr = this.selectedResource.indexOf(resource_id);
-                        this.selectedResource.splice(indexArr,1)
-                    }
-                });
+                // this.editInput.resource_id = data.resource_detail.id;
+                // this.selectedResource.forEach(resource_id => {
+                //     if(resource_id == this.editInput.resource_id){
+                //         let indexArr = this.selectedResource.indexOf(resource_id);
+                //         this.selectedResource.splice(indexArr,1)
+                //     }
+                // });
 
                 let selectedResource = JSON.stringify(this.selectedResource);
-                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource+'/'+data.resource.category_id).then(({ data }) => {
+                var category_id = data.resource.category_id;
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource+'/'+category_id).then(({ data }) => {
                     this.resourceDetails = data;
                     this.resourceDetails.forEach(resourceDetail => {
-                        if(resourceDetail.id == this.editInput.resource_id){
-                            this.editInput.status = resourceDetail.status;
-                            this.editInput.trx_resource_code = resourceDetail.code;
+                        this.editInput.status = resourceDetail.status;
+                        this.editInput.trx_resource_code = resourceDetail.code;
+                        if(category_id == 1){
+                            this.editInput.type = "Subcon"
+                        }else if(category_id == 2){
+                            this.editInput.type = "Others"
+                        }else if(category_id == 3){
+                            this.editInput.type = "External Equipment"
+                        }else if(category_id == 4){
+                            this.editInput.type = "Internal Equipment"
+                        }
 
-                            if(resourceDetail.category_id == 0){
-                                this.editInput.type = "Subcon"
-                            }else if(resourceDetail.category_id == 1){
-                                this.editInput.type = "Others"
-                            }else if(resourceDetail.category_id == 2){
-                                this.editInput.type = "External Equipment"
-                            }else if(resourceDetail.category_id == 3){
-                                this.editInput.type = "Internal Equipment"
-                            }
-
-                            if(resourceDetail.status == 1){
-                                this.editInput.notes = "-"
-                            }else if(resourceDetail.status == 2){
-                                this.editInput.notes = ""
-                            }
+                        if(resourceDetail.status == 1){
+                            this.editInput.notes = "-"
+                        }else if(resourceDetail.status == 2){
+                            this.editInput.notes = ""
                         }
                     });
                     $('div.overlay').hide();
@@ -400,6 +398,7 @@
                         position: 'topRight',
                         displayMode: 'replace'
                     });
+                    console.log(error);
                     $('div.overlay').hide();
                 })
             },
@@ -461,15 +460,9 @@
             },
             submitToTable(){
                 let resource = this.resources[this.editInput.index];
-                if(this.editInput.resource_id == ''){
-                    resource.trx_resource_code = '';
-                    resource.trx_resource_id = '';
-                    resource.status = '';
-                }else{
-                    resource.trx_resource_code = this.editInput.trx_resource_code;
-                    resource.trx_resource_id = this.editInput.resource_id ;
-                    resource.status = this.editInput.status;
-                }
+                resource.resource_detail.code = this.editInput.trx_resource_code;
+                resource.trx_resource_id = this.editInput.resource_id ;
+                resource.status = this.editInput.status;
 
                 this.selectedResource.push(this.editInput.resource_id);
                 this.clearEditInput();
@@ -506,6 +499,11 @@
         },
         created: function() {
             this.checkStock();
+            this.resources.forEach(data=>{
+                if(data.resource_detail.id != null && data.resource_detail.id != ''){
+                    this.selectedResource.push(data.resource_detail.id);
+                }
+            })
         }
     });
 </script>

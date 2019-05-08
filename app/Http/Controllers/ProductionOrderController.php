@@ -306,12 +306,12 @@ class ProductionOrderController extends Controller
                                 "category_id" => $prOD->category_id,
                             ],
                             "resource_detail" =>[
-                                "code" => ($prOD->resourceDetail) ? $prOD->resourceDetail->code : null
+                                "code" => ($prOD->resourceDetail) ? $prOD->resourceDetail->code : null,
+                                "id" => ($prOD->resourceDetail) ? $prOD->resourceDetail->id : null,
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => '',
-                            "trx_resource_code" => null,
+                            "trx_resource_id" => $prOD->trx_resource_id,
                             "status" => null,
                         ]);
                     } 

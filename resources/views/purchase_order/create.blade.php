@@ -446,7 +446,7 @@
                         ref = (decimal[0]+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
                     if(parseFloat((PRD.old_price+"").replace(/,/g , '')) != ref.replace(/,/g, '')){
-                        isOk = true;
+                        isOk = false;
                     }   
                 });
                 return isOk;
