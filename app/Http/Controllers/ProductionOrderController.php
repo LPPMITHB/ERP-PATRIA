@@ -303,6 +303,10 @@ class ProductionOrderController extends Controller
                                 "code" => $prOD->resource->code,
                                 "name" => $prOD->resource->name,
                                 "description" => $prOD->resource->description,
+                                "category_id" => $prOD->category_id,
+                            ],
+                            "resource_detail" =>[
+                                "code" => $prOD->resourceDetail->code
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
@@ -646,6 +650,10 @@ class ProductionOrderController extends Controller
                         $existing->update();
                     }else{
                         $PrOD = new ProductionOrderDetail;
+                        if($resource->resource_detail_id != null){
+                            $PrOD->resource_detail_id = $resource->resource_detail_id;
+                        }
+                        $PrOD->category_id = $resource->category_id;
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->resource_id = $resource->resource_id;
                         $PrOD->quantity = $resource->quantity;
