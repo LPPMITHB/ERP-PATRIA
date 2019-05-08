@@ -81,7 +81,7 @@
                         @verbatim
                         <div id="project">
                             <div class="form-group">
-                                <label for="number" class="col-sm-2 control-label">Project Number</label>
+                                <label for="number" class="col-sm-2 control-label">Project Number*</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="number" name="number"  required v-model="project.number">
                                 </div>
@@ -95,14 +95,21 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="name" class="col-sm-2 control-label">Ship Name</label>
+                                <label for="name" class="col-sm-2 control-label">Ship Name*</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="name" name="name" v-model="project.name">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="project_type" class="col-sm-2 control-label">Project Type</label>
+                                <label for="hull_number" class="col-sm-2 control-label">Hull Number</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="hull_number" name="hull_number" v-model="project.hull_number">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="project_type" class="col-sm-2 control-label">Project Type*</label>
                 
                                 <div class="col-sm-10">
                                     <selectize name="project_type" id="project_type" required>
@@ -112,7 +119,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="customer" class="col-sm-2 control-label">Customer Name</label>
+                                <label for="customer" class="col-sm-2 control-label">Customer Name*</label>
                 
                                 <div class="col-sm-10">
                                     <selectize name="customer" id="customer" v-model="customer" required autofocus >
@@ -129,7 +136,7 @@
                             </div>
 
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Flag</label>
+                                <label for="ship" class="col-sm-2 control-label">Flag*</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="flag" name="flag" required v-model="project.flag">
@@ -137,10 +144,17 @@
                             </div>
 
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Name</label>
+                                <label for="ship" class="col-sm-2 control-label">Classification Name*</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_name" name="class_name" required v-model="project.class_name">
+                                </div>
+                            </div>
+                            <div v-if="(menu=='building')" class="form-group">
+                                <label for="ship" class="col-sm-2 control-label">Classification Name 2</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="class_name_2" name="class_name_2" required v-model="project.class_name_2">
                                 </div>
                             </div>
 
@@ -153,10 +167,26 @@
                             </div>
 
                             <div v-if="(menu=='building')" class="form-group">
+                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person Name 2</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="class_contact_person_name_2" name="class_contact_person_name_2" v-model="project.class_cp_name_2">
+                                </div>
+                            </div>
+
+                            <div v-if="(menu=='building')" class="form-group">
                                 <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_contact_person_phone" minlength="10" maxlength="13" name="class_contact_person_phone" v-model="project.class_cp_phone" >
+                                </div>
+                            </div>
+
+                            <div v-if="(menu=='building')" class="form-group">
+                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone 2</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="class_contact_person_phone_2" minlength="10" maxlength="13" name="class_contact_person_phone_2" v-model="project.class_cp_phone_2" >
                                 </div>
                             </div>
 
@@ -168,8 +198,16 @@
                                 </div>
                             </div>
 
+                            <div v-if="(menu=='building')" class="form-group">
+                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person E-Mail 2</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="class_contact_person_email_2" name="class_contact_person_email_2" v-model="project.class_cp_email_2">
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Ship Type</label>
+                                <label for="ship" class="col-sm-2 control-label">Ship Type*</label>
                 
                                 <div class="col-sm-10">
                                     <selectize name="ship" id="ship" required>
@@ -192,7 +230,7 @@
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input required autocomplete="off" type="text" class="form-control datepicker" name="planned_start_date" id="planned_start_date" placeholder="Start Date">                                             
+                                        <input autocomplete="off" type="text" class="form-control datepicker" name="planned_start_date" id="planned_start_date" placeholder="Start Date">                                             
                                     </div>
                                 </div>
                             </div>
@@ -204,7 +242,7 @@
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input required autocomplete="off" type="text" class="form-control datepicker" name="planned_end_date" id="planned_end_date" placeholder="End Date">                                                                                            
+                                        <input autocomplete="off" type="text" class="form-control datepicker" name="planned_end_date" id="planned_end_date" placeholder="End Date">                                                                                            
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +250,7 @@
                             <div class="form-group">
                                 <label for="planned_duration" class="col-sm-2 control-label">Duration (Days)</label>
                                 <div class="col-sm-5">
-                                    <input required type="number" class="form-control" id="planned_duration" name="planned_duration" placeholder="Duration" >                                        
+                                    <input type="number" class="form-control" id="planned_duration" name="planned_duration" placeholder="Duration" >                                        
                                 </div>
                             </div>
 
@@ -275,10 +313,15 @@ $(document).ready(function(){
             number : @json(Request::old('number')),
             name : @json(Request::old('name')),
             flag : @json(Request::old('flag')),
+            hull_number : @json(Request::old('hull_number')),
             class_name : @json(Request::old('class_name')),
+            class_name_2 : @json(Request::old('class_name_2')),
             class_cp_name : @json(Request::old('class_contact_person_name')),
+            class_cp_name_2 : @json(Request::old('class_contact_person_name_2')),
             class_cp_phone : @json(Request::old('class_contact_person_phone')),
+            class_cp_phone_2 : @json(Request::old('class_contact_person_phone_2')),
             class_cp_email :@json(Request::old('class_contact_person_email')),
+            class_cp_email_2 :@json(Request::old('class_contact_person_email_2')),
             description : @json(Request::old('description')),
             person_in_charge : @json(Request::old('person_in_charge')),
         },
@@ -291,10 +334,15 @@ $(document).ready(function(){
             number : @json($project->number == null ? "": $project->number),
             name : @json($project->name == null ? "": $project->name),
             flag : @json($project->flag == null ? "": $project->flag),
+            hull_number : @json($project->hull_number == null ? "": $project->hull_number),
             class_name : @json($project->class_name == null ? "": $project->class_name),
+            class_name_2 : @json($project->class_name_2 == null ? "": $project->class_name_2),
             class_cp_name : @json($project->class_contact_person_name == null ? "": $project->class_contact_person_name),
+            class_cp_name_2 : @json($project->class_contact_person_name_2 == null ? "": $project->class_contact_person_name_2),
             class_cp_phone : @json($project->class_contact_person_phone == null ? "": $project->class_contact_person_phone),
+            class_cp_phone_2 : @json($project->class_contact_person_phone_2 == null ? "": $project->class_contact_person_phone_2),
             class_cp_email : @json($project->class_contact_person_email == null ? "": $project->class_contact_person_email),
+            class_cp_email_2 : @json($project->class_contact_person_email_2 == null ? "": $project->class_contact_person_email_2),
             description : @json($project->description == null ? "": $project->description),
             person_in_charge : @json($project->person_in_charge == null ? "": $project->person_in_charge),
         },
@@ -364,6 +412,13 @@ $(document).ready(function(){
                 }
 
             },
+            'project.class_cp_phone_2': function(newValue){
+                if(newValue != ""){
+                    this.project.class_cp_phone_2 = (this.project.class_cp_phone_2+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
+                    
+                }
+
+            },
         },
         created: function() {
             if(this.oldData.number !=null) {
@@ -378,14 +433,26 @@ $(document).ready(function(){
             if(this.oldData.class_name !=null) {
                 this.project.class_name=this.oldData.class_name;
             }
+            if(this.oldData.class_name_2 !=null) {
+                this.project.class_name_2=this.oldData.class_name_2;
+            }
             if(this.oldData.class_cp_name !=null) {
                 this.project.class_cp_name=this.oldData.class_cp_name;
+            }
+            if(this.oldData.class_cp_name_2 !=null) {
+                this.project.class_cp_name_2=this.oldData.class_cp_name_2;
             }
             if(this.oldData.class_cp_phone !=null) {
                 this.project.class_cp_phone=this.oldData.class_cp_phone;
             }
+            if(this.oldData.class_cp_phone_2 !=null) {
+                this.project.class_cp_phone_2=this.oldData.class_cp_phone_2;
+            }
             if(this.oldData.class_cp_email !=null) {
                 this.project.class_cp_email=this.oldData.class_cp_email;
+            }
+            if(this.oldData.class_cp_email_2 !=null) {
+                this.project.class_cp_email_2=this.oldData.class_cp_email_2;
             }
             if(this.oldData.description !=null) {
                 this.project.description=this.oldData.description;

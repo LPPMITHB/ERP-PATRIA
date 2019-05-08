@@ -81,20 +81,30 @@
                 <div class="col-xs-12 col-lg-3 col-md-12">    
                     <div class="box-body">
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned Start Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
-                                    $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                    $date = $date->format('d-m-Y');
-                                    echo $date;
-                                @endphp
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: 
+                                @if($project->planned_start_date != null)
+                                    @php
+                                        $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    @endphp
+                                @else 
+                                    -
+                                @endif
                             </b>
                         </div>
 
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned End Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
-                                    $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                    $date = $date->format('d-m-Y');
-                                    echo $date;
-                                @endphp
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: 
+                                @if($project->planned_end_date != null)
+                                    @php
+                                        $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    @endphp
+                                @else 
+                                    -
+                                @endif
                             </b>
                         </div>
 

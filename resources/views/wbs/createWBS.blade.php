@@ -47,20 +47,30 @@
                         <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
 
                         <div class="col-md-3 col-xs-4 no-padding">Start Date</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                $date = $date->format('d-m-Y');
-                                echo $date;
-                            @endphp
+                        <div class="col-md-7 col-xs-8 no-padding"><b>:
+                                @if($project->planned_start_date != null)
+                                    @php
+                                        $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    @endphp
+                                @else 
+                                    -
+                                @endif
                             </b>
                         </div>
 
                         <div class="col-md-3 col-xs-4 no-padding">End Date</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: @php
-                                $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                $date = $date->format('d-m-Y');
-                                echo $date;
-                            @endphp
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: 
+                                @if($project->planned_end_date != null)
+                                    @php
+                                        $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    @endphp
+                                @else 
+                                    -
+                                @endif
                             </b>
                         </div>
                     </div>
@@ -75,8 +85,8 @@
                             <tr>
                                 <th style="width: 2px">No</th>
                                 <th style="width: 10%">Number</th>
-                                <th style="width: 15%">Description</th>
                                 <th style="width: 15%">Deliverables</th>
+                                <th style="width: 15%">Description</th>
                                 <th style="width: 7%">Start Date</th>
                                 <th style="width: 7%">End Date</th>
                                 <th style="width: 7%">Duration</th>
@@ -88,8 +98,8 @@
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
@@ -97,7 +107,7 @@
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)" onclick="loading()">
                                                 MANAGE WBS
                                             </a>
                                         </div>
@@ -124,16 +134,16 @@
                                     <input v-model="newWbs.number" type="text" class="form-control width100" id="number" name="number" placeholder="Number">
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWbs.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
-                                </td>
-                                <td class="p-l-0">
                                     <textarea v-model="newWbs.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newWbs.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                    <textarea v-model="newWbs.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newWbs.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
+                                    <input autocomplete="off" v-model="newWbs.planned_start_date" :disabled="dateOk" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                </td>
+                                <td class="p-l-0">
+                                    <input autocomplete="off" v-model="newWbs.planned_end_date" :disabled="dateOk" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
                                 </td>
                                 <td class="p-l-0">
                                     <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newWbs.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
@@ -163,12 +173,12 @@
                                             <input id="number" type="text" class="form-control" v-model="editWbs.number" placeholder="Insert Number here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="description" class="control-label">Description</label>
-                                            <textarea id="description" v-model="editWbs.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
-                                        </div>
-                                        <div class="form-group col-sm-12">
                                             <label for="deliverables" class="control-label">Deliverables</label>
                                             <textarea id="deliverables" v-model="editWbs.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="description" class="control-label">Description</label>
+                                            <textarea id="description" v-model="editWbs.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <label for="edit_planned_start_date" class=" control-label">Start Date</label>
@@ -260,6 +270,10 @@
 $(document).ready(function(){
     $('div.overlay').hide();
 });
+
+function loading(){
+    $('div.overlay').show();
+}
 
 var data = {
     menu : @json($menu),
@@ -384,7 +398,14 @@ var vm = new Vue({
                     isOk = true;
                 }
             return isOk;
-        }
+        },
+        dateOk: function(){
+            let isOk = false;
+            if(this.project_start_date == null || this.project_end_date == null){
+                isOk = true;
+            }
+            return isOk;
+        },
     }, 
     methods:{
         tooltipText: function(text) {
