@@ -204,9 +204,10 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Resource Name</th>
-                                <th width="31%">Description</th>
-                                <th width="34%">Quantity</th>
+                                <th width="15%">Category</th>
+                                <th width="30%">Resource</th>
+                                <th width="30%">Resource Detail</th>
+                                <th width="20%">Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -215,8 +216,17 @@
                             @if($PrOD->resource_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->description }}">{{ ($PrOD->resource->description) ? $PrOD->resource->description : '-'}}</td>
+                                    @if($PrOD->category_id == 1)
+                                        <td>Subcon</td>
+                                    @elseif($PrOD->category_id == 2)
+                                        <td>Others</td>
+                                    @elseif($PrOD->category_id == 3)
+                                        <td>External</td>
+                                    @elseif($PrOD->category_id == 4)
+                                        <td>Internal</td>
+                                    @endif
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->description }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->description }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '' }}">{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '-'}}</td>
                                     <td>{{ number_format($PrOD->quantity) }}</td>
                                 </tr>
                             @endif

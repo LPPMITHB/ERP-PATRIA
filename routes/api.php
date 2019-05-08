@@ -119,7 +119,7 @@ Route::get('/getResourcePrO/{id}', 'ProductionOrderController@getResourceAPI')->
 Route::get('/getServicePrO/{id}', 'ProductionOrderController@getServiceAPI')->name('api.production_order.getServiceAPI');
 Route::get('/getStockPrO/{id}', 'ProductionOrderController@getStockAPI')->name('api.production_order.getStockAPI');
 Route::get('/getProjectInvPrO/{id}', 'ProductionOrderController@getProjectInvAPI')->name('api.production_order.getProjectInvAPI');
-Route::get('/getTrxResourcePro/{id}/{jsonResource}', 'ProductionOrderController@getTrxResourceAPI')->name('api.production_order.getTrxResourceAPI');
+Route::get('/getTrxResourcePro/{id}/{jsonResource}/{category_id}', 'ProductionOrderController@getTrxResourceAPI')->name('api.production_order.getTrxResourceAPI');
 Route::get('/getProjectPO/{id}', 'ProductionOrderController@getProjectPOApi')->name('api.production_order.getProjectPOApi');
 Route::get('/getPO/{id}', 'ProductionOrderController@getPOApi')->name('api.production_order.getPOApi');
 

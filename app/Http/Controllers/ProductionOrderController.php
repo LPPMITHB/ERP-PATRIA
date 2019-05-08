@@ -303,6 +303,10 @@ class ProductionOrderController extends Controller
                                 "code" => $prOD->resource->code,
                                 "name" => $prOD->resource->name,
                                 "description" => $prOD->resource->description,
+                                "category_id" => $prOD->category_id,
+                            ],
+                            "resource_detail" =>[
+                                "code" => ($prOD->resourceDetail) ? $prOD->resourceDetail->code : null
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
@@ -591,6 +595,7 @@ class ProductionOrderController extends Controller
         $datas = json_decode($request->datas);
         $arrData = $datas->datas;
         $po_number = $this->generatePrONumber();
+
         DB::beginTransaction();
         try {
             $PrO = new ProductionOrder;
@@ -603,6 +608,7 @@ class ProductionOrderController extends Controller
             $PrO->save();
 
             $is_repair = false;
+            
             if($PrO->project->business_unit_id == 2){
                 $is_repair = true;
             }
@@ -626,6 +632,7 @@ class ProductionOrderController extends Controller
             }elseif($route == "/production_order"){
                 if(count($datas->materials) > 0){
                     foreach($datas->materials as $material){
+
                         if($material->material_id != ""){
                             $PrOD = new ProductionOrderDetail;
                             $PrOD->production_order_id = $PrO->id;
@@ -636,6 +643,7 @@ class ProductionOrderController extends Controller
                         }
                     }
                 }
+
             }
             
             if(count($datas->resources) > 0){
@@ -697,9 +705,9 @@ class ProductionOrderController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($route == "/production_order"){
-                return redirect()->route('production_order.create',$datas->project_id)->with('error', $e->getMessage());
+                return redirect()->route('production_order.create',$datas->wbs_id)->with('error', $e->getMessage());
             }elseif($route == "/production_order_repair"){
-                return redirect()->route('production_order_repair.create',$datas->wbs_id)->with('error', $e->getMessage());
+                return redirect()->route('production_order_repair.create',$datas->project_id)->with('error', $e->getMessage());
             }
         }
     }
@@ -1550,9 +1558,9 @@ class ProductionOrderController extends Controller
         return response($stock, Response::HTTP_OK);
     }
 
-    public function getTrxResourceAPI($id,$jsonResource){
+    public function getTrxResourceAPI($id,$jsonResource,$category_id){
         $jsonResource = json_decode($jsonResource);
-        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
+        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->where('category_id',$category_id)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
 
         return response($resource, Response::HTTP_OK);
     }
