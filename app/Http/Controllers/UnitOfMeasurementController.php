@@ -55,6 +55,7 @@ class UnitOfMeasurementController extends Controller
         $uom->name = ucwords($request->input('name'));
         $uom->unit = $request->input('unit');
         $uom->status = $request->input('status');
+        $uom->is_decimal = $request->input('is_decimal');
         $uom->user_id = Auth::user()->id;
         $uom->branch_id = Auth::user()->branch->id;
         $uom->save();

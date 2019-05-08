@@ -90,6 +90,16 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="is_decimal" class="col-sm-2 control-label">Decimal?</label>
+            
+                            <div class="col-sm-10">
+                                <select class="form-control" name="is_decimal" id="is_decimal" required>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
