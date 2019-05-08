@@ -158,7 +158,7 @@
                             <th width="20%">Material Description</th>
                             <th width="4%">Unit</th>
                             <th width="20%">Description</th>
-                            <th width="5%">Qty</th>
+                            <th width="8%">Qty</th>
                             <th width="13%">Price / pcs</th>
                             <th width="6%">Disc (%)</th>
                             <th width="11%">Amount</th>
