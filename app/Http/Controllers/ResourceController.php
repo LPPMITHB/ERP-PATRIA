@@ -714,6 +714,34 @@ class ResourceController extends Controller
         }
     }
 
+    public function destroyAssignedResource(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $trxResource = ResourceTrx::find($id);
+
+            if($trxResource->wbs->productionOrder != null){
+                $prod_order = $trxResource->wbs->productionOrder;
+                if($prod_order->status == 0 || $prod_order->status == 2){
+                    return response(["error"=> "Failed to delete, this Resource already been used in production order"],Response::HTTP_OK);
+                }else if($prod_order->status == 1){
+                    $trxResource->productionOrderDetail->delete();
+                    $trxResource->delete();
+                    DB::commit();
+                    return response(["response"=>"Success to delete Assigned Resource"],Response::HTTP_OK);
+                }
+            }else{
+                $trxResource->delete();
+                DB::commit();
+                return response(["response"=>"Success to delete Assigned Resource"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     //Function
     public function generateResourceCode(){
         $code = 'RSC';

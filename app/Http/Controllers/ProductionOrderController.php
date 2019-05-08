@@ -660,6 +660,7 @@ class ProductionOrderController extends Controller
                         $PrOD->category_id = $resource->category_id;
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->resource_id = $resource->resource_id;
+                        $PrOD->trx_resource_id = $resource->id;
                         $PrOD->quantity = $resource->quantity;
                         $PrOD->save();
                     }

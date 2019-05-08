@@ -28,6 +28,11 @@ class ResourceTrx extends Model
         return $this->belongsTo('App\Models\ResourceDetail');
     }
 
+    public function productionOrderDetail()
+    {
+        return $this->belongsTo('App\Models\ProductionOrderDetail');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');
