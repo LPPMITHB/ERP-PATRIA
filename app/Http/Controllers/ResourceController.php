@@ -134,6 +134,11 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $resource_categories = Configuration::get('resource_category');
+        foreach ($resource_categories as $key => $resource_category) {
+            if($resource_category->name == "Subcon"){
+                array_splice($resource_categories,$key,1);          
+            }
+        }
         $depreciation_methods = Configuration::get('depreciation_methods');
         $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
         $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->get();
@@ -706,6 +711,34 @@ class ResourceController extends Controller
             }elseif($route == "/resource_repair"){
                 return redirect()->route('resource_repair.show',$data->resource_id)->with('error', $e->getMessage());
             }
+        }
+    }
+
+    public function destroyAssignedResource(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $trxResource = ResourceTrx::find($id);
+
+            if($trxResource->wbs->productionOrder != null){
+                $prod_order = $trxResource->wbs->productionOrder;
+                if($prod_order->status == 0 || $prod_order->status == 2){
+                    return response(["error"=> "Failed to delete, this Resource already been used in production order"],Response::HTTP_OK);
+                }else if($prod_order->status == 1){
+                    $trxResource->productionOrderDetail->delete();
+                    $trxResource->delete();
+                    DB::commit();
+                    return response(["response"=>"Success to delete Assigned Resource"],Response::HTTP_OK);
+                }
+            }else{
+                $trxResource->delete();
+                DB::commit();
+                return response(["response"=>"Success to delete Assigned Resource"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 

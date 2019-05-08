@@ -65,7 +65,7 @@
                                                 <th style="width: 25%">Resource Detail</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 25%">WBS</th>
-                                                <th style="width: 12%"></th>
+                                                <th style="width: 14%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -81,10 +81,17 @@
                                                 <td v-else>-</td>
                                                 <td>{{ data.quantity }}</td>
                                                 <td>{{ data.wbs.number }} - {{ data.wbs.description }}</td>
-                                                <td class="p-l-3 textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                                        EDIT
-                                                    </a>
+                                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                            <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">EDIT</button>
+                                                        </div>
+                                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteResource(data)" data-toggle="modal">
+                                                                DELETE
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -458,6 +465,70 @@
             }
         },
         methods : {
+            deleteResource(data){
+                console.log(data);
+                var routeTmp = this.route;
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this Assigned Resource?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            var url = "";
+                            if(routeTmp == "/resource"){
+                                url = "/resource/deleteAssignedResource/"+data.id;
+                            }else{
+                                url = "/resource_repair/deleteAssignedResource/"+data.id;
+                            }
+                            $('div.overlay').show();            
+                            window.axios.delete(url)
+                            .then((response) => {
+                                if(response.data.error != undefined){
+                                    response.data.error.forEach(error => {
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: error,
+                                            position: 'topRight',
+                                        });
+                                    });
+                                    $('div.overlay').hide();
+                                }else{
+                                    iziToast.success({
+                                        displayMode: 'replace',
+                                        title: response.data.response,
+                                        position: 'topRight',
+                                    });
+                                    $('div.overlay').hide();
+                                    vm.getResource();
+                                }
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: "Please try again.. ",
+                                    position: 'topRight',
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();            
+                            })
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }],
+                    ],
+                });
+            },
             clearEditData(){
                 this.editInput.old_resource_id ="";
                 this.editInput.resource_id ="";

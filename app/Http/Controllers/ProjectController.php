@@ -335,6 +335,14 @@ class ProjectController extends Controller
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         $datas = json_decode($request->structures);
         $project_id = $request->project_id;
+        $old_project_id = $request->old_project_id;
+        $new_project_ref = Project::find($project_id);
+        $old_project_ref = Project::find($old_project_id);
+        
+        $new_project_planned_start_date = date_create($new_project_ref->planned_end_date);
+        $old_project_planned_start_date = date_create($old_project_ref->planned_end_date);
+        $diff=date_diff($new_project_planned_start_date,$old_project_planned_start_date)->days;
+        // dd($new_project_planned_start_date,$old_project_planned_start_date);
         $actIdConverter = [];
         $wbsIdConverter = [];
 
@@ -344,7 +352,20 @@ class ProjectController extends Controller
                 if(strpos($dataTree->id, 'WBS') !== false) {
                     $wbs_ref = WBS::where('code', $dataTree->id)->first();
                     $wbs = new WBS;
-                    $wbs = $wbs_ref->replicate();
+                    $wbs->number = $wbs_ref->number;
+                    $wbs->description = $wbs_ref->description;
+                    $wbs->deliverables = $wbs_ref->deliverables;
+                    $wbs->weight = $wbs_ref->weight;
+
+                    $date = date($wbs_ref->planned_start_date);
+                    $date = strtotime($diff." day",strtotime($date));
+                    $wbs->planned_start_date = date("Y-m-d",$date);
+
+                    $date = date($wbs_ref->planned_end_date);
+                    $date = strtotime($diff." day",strtotime($date));
+                    $wbs->planned_end_date = date("Y-m-d",$date);
+                    $wbs->planned_duration = $wbs_ref->planned_duration;
+
                     $wbs->code = self::generateWbsCode($project_id);
                     if(isset($wbsIdConverter[$dataTree->parent])){
                         $wbs->wbs_id = $wbsIdConverter[$dataTree->parent];
@@ -353,7 +374,6 @@ class ProjectController extends Controller
                     $wbs->user_id = Auth::user()->id;
                     $wbs->branch_id = Auth::user()->branch->id;
                     $wbs->save();
-    
                     $wbsIdConverter[$dataTree->id] = $wbs->id;
                     $bom_ref = Bom::where('wbs_id', $wbs_ref->id)->first();
                     if($bom_ref != null){
@@ -389,7 +409,18 @@ class ProjectController extends Controller
                 }elseif(strpos($dataTree->id, 'ACT') !== false){
                     $act_ref = Activity::where('code', $dataTree->id)->first();
                     $act = new Activity;
-                    $act = $act_ref->replicate();
+                    $act->name = $act_ref->name;
+                    $act->description = $act_ref->description;
+                    $date = date($act_ref->planned_start_date);
+                    $date = strtotime($diff." day",strtotime($date));
+                    $act->planned_start_date = date("Y-m-d",$date);
+                    
+                    $date = date($act_ref->planned_end_date);
+                    $date = strtotime($diff." day",strtotime($date));
+                    $act->planned_end_date = date("Y-m-d",$date);
+                    $act->planned_duration = $act_ref->planned_duration;
+                    $act->weight = $act_ref->weight;
+
                     if(isset($wbsIdConverter[$dataTree->parent])){
                         $act->code = self::generateActivityCode($wbsIdConverter[$dataTree->parent]);
                         $act->wbs_id = $wbsIdConverter[$dataTree->parent];

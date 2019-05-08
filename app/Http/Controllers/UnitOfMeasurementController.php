@@ -50,17 +50,18 @@ class UnitOfMeasurementController extends Controller
 
         DB::beginTransaction();
         try {
-        $uom = new Uom;
-        $uom->code = strtoupper($request->input('code'));
-        $uom->name = ucwords($request->input('name'));
-        $uom->unit = $request->input('unit');
-        $uom->status = $request->input('status');
-        $uom->user_id = Auth::user()->id;
-        $uom->branch_id = Auth::user()->branch->id;
-        $uom->save();
+            $uom = new Uom;
+            $uom->code = strtoupper($request->input('code'));
+            $uom->name = ucwords($request->input('name'));
+            $uom->unit = $request->input('unit');
+            $uom->status = $request->input('status');
+            $uom->is_decimal = $request->input('is_decimal');
+            $uom->user_id = Auth::user()->id;
+            $uom->branch_id = Auth::user()->branch->id;
+            $uom->save();
 
-        DB::commit();
-        return redirect()->route('unit_of_measurement.show',$uom->id)->with('success', 'Success Created New Unit Of Measurement!');
+            DB::commit();
+            return redirect()->route('unit_of_measurement.show',$uom->id)->with('success', 'Success Created New Unit Of Measurement!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('unit_of_measurement.create')->with('error', $e->getMessage());
