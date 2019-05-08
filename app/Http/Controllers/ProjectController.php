@@ -794,6 +794,15 @@ class ProjectController extends Controller
                 "y" => "0",
             ]);
         }
+
+        //evm
+        $dataEvm = Collection::make();
+        if($project->actual_start_date != null){
+            $dataEvm->push([
+                "t" => $project->actual_start_date, 
+                "y" => "0",
+            ]);
+        }
         
         //Progress
         $dataPlannedProgress = Collection::make();
@@ -808,7 +817,7 @@ class ProjectController extends Controller
                 "y" => "0",
             ]);
         }
-        self::getDataChart($dataPlannedCost,$objectDate,$modelMR,$dataActualCost, $project, $dataActualProgress, $dataPlannedProgress, $menu);
+        self::getDataChart($dataPlannedCost,$objectDate,$modelMR,$dataActualCost, $project, $dataActualProgress, $dataPlannedProgress, $menu, $dataEvm);
         $ganttData = Collection::make();
         $links = Collection::make();
         $outstanding_item = Collection::make();
@@ -1009,7 +1018,7 @@ class ProjectController extends Controller
         $project_done = $project->progress == 100 ? true:false;
         return view('project.show', compact('activities','wbss','project','today','ganttData','links',
         'outstanding_item','modelPrO','menu','dataPlannedCost','dataActualCost','project_done',
-        'dataActualProgress','dataPlannedProgress', 'progressStatus','str_expected_date','expectedStatus'));
+        'dataActualProgress','dataPlannedProgress', 'progressStatus','str_expected_date','expectedStatus','dataEvm'));
     }
 
 
@@ -1886,7 +1895,7 @@ class ProjectController extends Controller
     }
     
 
-    public function getDataChart($dataPlannedCost,$objectDate,$modelMR,$dataActualCost, $project, $dataActualProgress,$dataPlannedProgress, $menu)
+    public function getDataChart($dataPlannedCost,$objectDate,$modelMR,$dataActualCost, $project, $dataActualProgress,$dataPlannedProgress, $menu,$dataEvm)
     {
         $otherCosts = Cost::where('project_id', $project->id)->orderBy('created_at', 'ASC')->get();
         $sorted = $objectDate->all();
@@ -2048,6 +2057,10 @@ class ProjectController extends Controller
                     "t" => $date, 
                     "y" => $actualProgress."",
                 ]);
+                $dataEvm->push([
+                    "t" => $date, 
+                    "y" => number_format(($actualProgress/100) * $plannedCost,2),
+                ]);
             }else{
                 $project =$activity->wbs->project->actual_start_date;
                 if($project != null){
@@ -2055,6 +2068,10 @@ class ProjectController extends Controller
                         $dataActualProgress->push([
                             "t" => date('Y-m-d'), 
                             "y" => $actualProgress."",
+                        ]);
+                        $dataEvm->push([
+                            "t" => date('Y-m-d'), 
+                            "y" => number_format(($actualProgress/100) * $plannedCost,2),
                         ]);
                     }
                 }

@@ -767,11 +767,12 @@
         type: 'line',
         data: {
             datasets: [
-                // {
-                //     label: "Estimated Cost", 
-                //     backgroundColor: "rgba(247, 247, 32, 0.7)", // <-- supposed to be light blue
-                //     data: [],
-                // },
+                {
+                    label: "EVM Cost",
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    borderColor : "rgba(122, 122, 211, 122)",
+                    data: @json($dataEvm),
+                },
                 {
                     label: "Planned Cost",
                     borderColor: "rgba(0, 0, 255, 0.7)",
