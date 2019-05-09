@@ -44,7 +44,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box-header no-padding" style="margin-bottom : 47px">
-                        <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">\
+                        <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">
                             @if($route == '/purchase_requisition')
                             <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">    
                             @else 

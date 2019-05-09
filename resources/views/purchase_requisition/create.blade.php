@@ -306,7 +306,7 @@
     });
 
     var data = {
-        types : ['Material','Resource'],
+        types : ['Material','Resource','Subcon'],
         pr_type : "Material",
         isResource : "",
         description : "",
