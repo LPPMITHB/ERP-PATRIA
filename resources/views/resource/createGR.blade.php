@@ -118,7 +118,7 @@
                                                 </selectize>
                                             </div>
                                             
-                                            <div v-show="editInput.category_id == '0'">
+                                            <div v-show="editInput.category_id == '1'">
                                                 <div class="col-sm-12">
                                                     <label for="code" class="control-label">Sub Con Code*</label>
                                                     <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
@@ -173,7 +173,7 @@
                                                 </div>
                                             </div>
 
-                                            <div v-show="editInput.category_id == '1'">
+                                            <div v-show="editInput.category_id == '2'">
                                                 <div class="col-sm-12">
                                                     <label for="code" class="control-label">Code*</label>
                                                     <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
@@ -220,7 +220,7 @@
                                                 </div>
                                             </div>
 
-                                            <div v-show="editInput.category_id == '2'">
+                                            <div v-show="editInput.category_id == '3'">
                                                 <div class="col-sm-12">
                                                     <label for="code" class="control-label">Code*</label>
                                                     <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
@@ -267,7 +267,7 @@
                                                 </div>
                                             </div>
 
-                                            <div v-show="editInput.category_id == '3'">
+                                            <div v-show="editInput.category_id == '4'">
                                                 <div class="col-sm-12">
                                                     <label for="code" class="control-label">Code*</label>
                                                     <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
