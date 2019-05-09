@@ -149,7 +149,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis">{{ data.project_number }}</td>
                                             <td class="tdEllipsis">{{ data.wbs_number }} - {{ data.wbs_description }}</td>
-                                            <td class="tdEllipsis">{{ data.service }} - {{ data.service_detail }}</td>
+                                            <td class="tdEllipsis">{{ data.job_order }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
                                                     DELETE
@@ -171,9 +171,7 @@
                                                 </selectize>  
                                             </td>
                                             <td class="p-l-0 textLeft">
-                                                <selectize v-model="subConInput.activity_id" :settings="jobOrderSettings" >
-                                                    <input v-model="subConInput.job_order" type="text" class="form-control"/>
-                                                </selectize>  
+                                                <input class="form-control" v-model="subConInput.job_order" placeholder="Please Input Job Order">
                                             </td>
                                             <td class="p-l-0  textCenter"> 
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
