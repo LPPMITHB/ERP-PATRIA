@@ -207,6 +207,7 @@ class MaterialWriteOffController extends Controller
                     $MWOD->update();
                 }else{
                     $MWOD = new MaterialWriteOffDetail;
+                    $MWOD->material_write_off_id = $MWO->id;
                     // $MWOD->goods_issue_id = $MWO->id;
                     $MWOD->quantity = $data->quantity;
                     $MWOD->material_id = $data->material_id;
