@@ -474,22 +474,22 @@
                 if(this.editInput.category_id == ""){
                     isOk = true;
                 }
-                if(this.editInput.category_id == 0){
+                if(this.editInput.category_id == 1){
                     if(this.editInput.lifetime == "" || this.editInput.sub_con_address == "" || this.editInput.sub_con_phone == "" || this.editInput.sub_con_competency == ""){
                         isOk = true;
                     }
                 }
-                if(this.editInput.category_id == 1){
+                if(this.editInput.category_id == 2){
                     if(this.editInput.lifetime == "" ||this.editInput.name == ""){
                         isOk = true;
                     }
                 }
-                if(this.editInput.category_id == 2){
+                if(this.editInput.category_id == 3){
                     if(this.editInput.lifetime == "" || this.editInput.brand == ""){
                         isOk = true;
                     }
                 }
-                if(this.editInput.category_id == 3){
+                if(this.editInput.category_id == 4){
                     if(this.editInput.brand == ""){
                         isOk = true;
                     }
@@ -560,15 +560,15 @@
                 this.detailData.lifetime = this.editInput.lifetime;
                 this.detailData.lifetime_uom_id = this.editInput.lifetime_uom_id;
                 
-                if(category_id == 0){
+                if(category_id == 1){
                     this.detailData.sub_con_address = this.editInput.sub_con_address;
                     this.detailData.sub_con_phone = this.editInput.sub_con_phone;
                     this.detailData.sub_con_competency = this.editInput.sub_con_competency;
-                }else if(category_id == 1){
-                    this.detailData.name = this.editInput.name;
                 }else if(category_id == 2){
-                    this.detailData.brand = this.editInput.brand;
+                    this.detailData.name = this.editInput.name;
                 }else if(category_id == 3){
+                    this.detailData.brand = this.editInput.brand;
+                }else if(category_id == 4){
                     this.detailData.brand = this.editInput.brand;
                     this.detailData.manufactured_date = this.editInput.manufactured_date;
                     this.detailData.purchasing_date = this.editInput.purchasing_date;
@@ -600,15 +600,15 @@
                     editData.lifetime = this.detailData.lifetime;
                     editData.lifetime_uom_id = this.detailData.lifetime_uom_id;
                 
-                    if(category_id == 0){
+                    if(category_id == 1){
                         editData.sub_con_address = this.detailData.sub_con_address;
                         editData.sub_con_phone = this.detailData.sub_con_phone;
                         editData.sub_con_competency = this.detailData.sub_con_competency;
-                    }else if(category_id == 1){
-                        editData.name = this.detailData.name;
                     }else if(category_id == 2){
-                        editData.brand = this.detailData.brand;
+                        editData.name = this.detailData.name;
                     }else if(category_id == 3){
+                        editData.brand = this.detailData.brand;
+                    }else if(category_id == 4){
                         editData.brand = this.detailData.brand;
                         editData.manufactured_date = this.detailData.manufactured_date;
                         editData.purchasing_date = this.detailData.purchasing_date;
@@ -637,15 +637,15 @@
                 this.editInput.lifetime_uom_id = '';
                 this.editInput.status = '';
                 
-                if(category_id == 0){
+                if(category_id == 1){
                     this.editInput.sub_con_address = '';
                     this.editInput.sub_con_phone = '';
                     this.editInput.sub_con_competency = '';
-                }else if(category_id == 1){
-                    this.editInput.name = '';
                 }else if(category_id == 2){
-                    this.editInput.brand = '';
+                    this.editInput.name = '';
                 }else if(category_id == 3){
+                    this.editInput.brand = '';
+                }else if(category_id == 4){
                     this.editInput.brand = '';
                     this.editInput.manufactured_date = '';
                     this.editInput.purchasing_date = '';
@@ -708,17 +708,17 @@
                         this.editInput.lifetime = dataSubmit.lifetime;
                         this.editInput.lifetime_uom_id = dataSubmit.lifetime_uom_id;
 
-                        if(dataSubmit.category_id == 0){
+                        if(dataSubmit.category_id == 1){
                             this.editInput.sub_con_address = dataSubmit.sub_con_address;
                             this.editInput.sub_con_phone = dataSubmit.sub_con_phone;
                             this.editInput.sub_con_competency = dataSubmit.sub_con_competency;
-                        }else if(dataSubmit.category_id == 1){
-                            this.editInput.name = dataSubmit.name;
                         }else if(dataSubmit.category_id == 2){
+                            this.editInput.name = dataSubmit.name;
+                        }else if(dataSubmit.category_id == 3){
                             this.editInput.brand = dataSubmit.brand;
                             this.editInput.performance = dataSubmit.performance;
                             this.editInput.performance_uom_id = dataSubmit.performance_uom_id;
-                        }else if(dataSubmit.category_id == 3){
+                        }else if(dataSubmit.category_id == 4){
                             this.editInput.brand = dataSubmit.brand;
                             this.editInput.manufactured_date = dataSubmit.manufactured_date;
                             this.editInput.purchasing_date = dataSubmit.purchasing_date;
