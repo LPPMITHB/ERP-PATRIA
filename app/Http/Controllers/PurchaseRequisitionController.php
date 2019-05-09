@@ -231,7 +231,7 @@ class PurchaseRequisitionController extends Controller
                     $PRD = new PurchaseRequisitionDetail;
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->quantity = 1;
-                    $PRD->activity_detail_id = $data->activity_detail_id;
+                    $PRD->job_order = $data->job_order;
                     $PRD->project_id = $data->project_id;
                     $PRD->wbs_id = $data->wbs_id;
                     $PRD->vendor_id = $data->vendor_id;

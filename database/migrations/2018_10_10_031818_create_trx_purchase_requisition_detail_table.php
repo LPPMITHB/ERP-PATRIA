@@ -22,8 +22,7 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
-            $table->unsignedInteger('vendor_id')->nullable();
-            $table->unsignedInteger('activity_detail_id')->nullable();
+            $table->unsignedInteger('job_order')->nullable();
             $table->string('alocation')->nullable();
             $table->integer('status')->nullable();
             $table->unsignedInteger('user_id')->nullable();
@@ -35,7 +34,6 @@ class CreateTrxPurchaseRequisitionDetailTable extends Migration
             $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
             $table->foreign('project_id')->references('id')->on('pro_project');
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');
-            $table->foreign('vendor_id')->references('id')->on('mst_vendor');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }
