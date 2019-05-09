@@ -475,10 +475,7 @@ class PurchaseRequisitionController extends Controller
                     "project_number" => $data->project->number, 
                     "wbs_number" => $data->wbs->number,
                     "wbs_description" => $data->wbs->description,
-                    "service" => $data->activityDetail->serviceDetail->service->name,
-                    "service_detail" => $data->activityDetail->serviceDetail->name,
-                    "vendor_name" => $data->vendor->name,
-                    "activity_id" => $data->activity_detail_id,
+                    "job_order" => $data->job_order,
                 ]);
             }
         }
@@ -668,10 +665,9 @@ class PurchaseRequisitionController extends Controller
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = 1;
-                        $PRD->activity_detail_id = $data->activity_detail_id;
                         $PRD->project_id = $data->project_id;
                         $PRD->wbs_id = $data->wbs_id;
-                        $PRD->vendor_id = $data->vendor_id;
+                        $PRD->job_order = $data->job_order;
                         $PRD->user_id = Auth::user()->id;
                         $PRD->status = 1;
                         $PRD->save();

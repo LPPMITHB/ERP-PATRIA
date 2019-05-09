@@ -188,8 +188,8 @@
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <th style="width: 35%">Job Order</th>
-                                                <th style="width: 10%">Area</th>
-                                                <th style="width: 10%">Area Unit</th>
+                                                <th style="width: 10%">Project</th>
+                                                <th style="width: 10%">WBS</th>
                                                 <th style="width: 20%">Price / Service ({{selectedCurrency}})</th>
                                                 <th style="width: 10%">Disc. (%)</th>
                                                 <th style="width: 10%"></th>
@@ -198,9 +198,9 @@
                                         <tbody>
                                             <tr v-for="(POD,index) in PODetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{POD.activity_detail.service_detail.service.name}} - {{POD.activity_detail.service_detail.name}}</td>
-                                                <td class="tdEllipsis">{{POD.activity_detail.area}}</td>
-                                                <td class="tdEllipsis">{{POD.activity_detail.area_uom.name}}</td>
+                                                <td class="tdEllipsis">{{POD.job_order}}</td>
+                                                <td class="tdEllipsis">{{POD.purchase_requisition_detail.project.number}} - {{POD.purchase_requisition_detail.project.name}}</td>
+                                                <td class="tdEllipsis">{{POD.purchase_requisition_detail.wbs.number}} - {{POD.purchase_requisition_detail.wbs.description}}</td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.total_price" placeholder="Please Input Total Price">
                                                 </td>
@@ -208,7 +208,7 @@
                                                     <input class="form-control width100" v-model="POD.discount" placeholder="Discount">
                                                 </td>
                                                 <td class="textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(POD,index)">
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(PRD,index)">
                                                         REMARK
                                                     </a>
                                                 </td>

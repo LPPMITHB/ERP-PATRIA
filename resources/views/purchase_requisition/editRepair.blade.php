@@ -208,7 +208,7 @@
                                             </td>
                                             <td class="p-l-0 textLeft">
                                                 <input class="form-control" v-model="subConInput.job_order" placeholder="Please Input Job Order">
-                                            </td>                                            </td>
+                                            </td>
                                             <td class="p-l-0  textCenter"> 
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
@@ -539,7 +539,13 @@
                 this.subConInput.wbs_id = "";
                 this.subConInput.wbs_number = "";
                 this.subConInput.wbs_description = "";
-                this.subConInput.job_order = "";
+                this.subConInput.vendor_id = "";
+                this.subConInput.vendor_name = "";
+                this.subConInput.activity_id = "";
+                this.subConInput.service = "";
+                this.subConInput.service_detail = "";
+                this.subConInput.service_detail_id = "";
+                this.subConInput.activity_detail_id = "";
 
                 this.newIndex = Object.keys(this.dataMaterial).length+1;
             },
@@ -577,7 +583,6 @@
                 data.project_number = this.editInput.project_number 
                 data.required_date = this.editInput.required_date 
                 data.alocation = this.editInput.alocation 
-                console.log(data);
                 if(this.modelPR.type == 1){
                     var type = "Material";
                 }else if(this.modelPR.type == 2){
