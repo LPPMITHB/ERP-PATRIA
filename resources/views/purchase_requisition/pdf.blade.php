@@ -110,6 +110,14 @@
                                 @endif
                                 : {{$status}}                    
                             </div>
+                            {{-- @if($modelPR->status == 2)
+                                <div style="margin-left: 450px; ">
+                                    <div style="font-size: 11px;">Approved By  </div>
+                                    <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                        : {{($modelPR->approvedBy->name) ? $modelPR->approvedBy->name : '-'}}                    
+                                    </div>
+                                </div>
+                            @endif --}}
                         </div>
                     </div>
                 </div>

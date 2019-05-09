@@ -229,68 +229,7 @@
             @verbatim
             <div id="production_order">
                 <div class="box-body">
-                    <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material</h4>
-                    <h4 class="box-title m-t-0" v-else-if="route == '/production_order_repair'">Add Additional Material / Resource / Service</h4>
-                    <table id="activity-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 10%">Type</th>
-                                <th style="width: 25%">Material Number</th>
-                                <th style="width: 30%">Material Description</th>
-                                <th style="width: 13%">Quantity</th>
-                                <th style="width: 10%">Unit</th>
-                                <th style="width: 12%"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data,index) in datas">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.type }}</td>
-                                <td class="tdEllipsis">{{ data.code }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
-                                <td class="tdEllipsis">{{ data.quantity }}</td>
-                                <td class="tdEllipsis">{{ data.unit }}</td>
-                                <td class="p-l-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                        EDIT
-                                    </a>
-                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                        DELETE
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft">
-                                    <selectize v-model="dataInput.type" :settings="typeSettings">
-                                        <option value="Material">Material</option>
-                                    </selectize>
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'" colspan="2">
-                                    <selectize v-model="dataInput.id" :settings="materialSettings" >
-                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == ''" colspan="2">
-                                    <selectize v-model="dataInput.id" :settings="nullSettings" disabled>
-                                        <option v-for="(resource, index) in resources" :value="resource.id"></option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0">
-                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
-                                </td>
-                                <td class="p-l-0">
-                                    <input class="form-control" v-model="dataInput.unit" disabled> 
-                                </td>
-                                <td class="p-l-0 textCenter">
-                                    <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+
                     <div class="col-md-12 p-t-10 p-r-0">
                         <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                     </div>

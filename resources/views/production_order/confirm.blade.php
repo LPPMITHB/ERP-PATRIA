@@ -136,10 +136,10 @@
                                 <th style="width: 4%">No</th>
                                 <th style="width: 25%">Activity Name</th>
                                 <th style="width: 30%">Description</th>
-                                <th style="width: 10%">Progress</th>
-                                <th style="width: 10%">Weight</th>
-                                <th style="width: 10%">Status</th>
-                                <th style="width: 10%"></th>
+                                <th style="width: 8%">Progress</th>
+                                <th style="width: 8%">Weight</th>
+                                <th style="width: 16%">Status</th>
+                                <th style="width: 8%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -385,21 +385,31 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in resources">
-                                        <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                        <td class="tdEllipsis" v-if="data.resource_detail.category_id != 1">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
-                                        <td class="tdEllipsis" v-else>{{ data.resource_detail.code }} - {{ data.resource_detail.others_name }}</td>
-                                        <td>{{ data.status }}</td>
-                                        <td v-if="data.status == 'UNACTUALIZED'" class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
-                                            <div class="btn-group">
-                                                INPUT ACTUAL
-                                            </div></a>
-                                        </td>
-                                        <td v-else class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
-                                            <div class="btn-group">
-                                                EDIT ACTUAL
-                                            </div></a>
-                                        </td>
+                                        <template v-if="data.resource_detail_id != null">
+                                            <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                            <td class="tdEllipsis" v-if="data.resource_detail.category_id != 1">{{ data.resource_detail.code }} - {{ data.resource_detail.brand }}</td>
+                                            <td class="tdEllipsis" v-else>{{ data.resource_detail.code }} - {{ data.resource_detail.others_name }}</td>
+                                            <td>{{ data.status }}</td>
+                                            <td v-if="data.status == 'UNACTUALIZED'" class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
+                                                <div class="btn-group">
+                                                    INPUT ACTUAL
+                                                </div></a>
+                                            </td>
+                                            <td v-else class="p-l-5" align="center"><a @click.prevent="openEditModal(data,index)" class="btn btn-primary btn-xs" href="#actual_resource" data-toggle="modal">
+                                                <div class="btn-group">
+                                                    EDIT ACTUAL
+                                                </div></a>
+                                            </td>
+                                        </template>
+                                        <template v-else>
+                                            <td>{{ index + 1 }}</td>
+                                            <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                            <td class="tdEllipsis">-</td>
+                                            <td>NOT SELECTED</td>
+                                            <td v-if="data.status == 'UNACTUALIZED'" class="p-l-5" align="center"><a @click.prevent="" class="btn btn-primary btn-xs" disabled>INPUT ACTUAL</a>
+                                            </td>
+                                        </template>
                                     </tr>
                                 </tbody>
                             </table>
@@ -466,17 +476,19 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="(data,index) in resources[editInput.index].morale">
-                                                            <td>{{ index + 1 }}</td>
-                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.subject)">{{ data.subject }}</td>
-                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.notes)">{{ data.notes }}</td>
-                                                            <td class="p-l-5" align="center"><a @click.prevent="editMoraleNotes(data,index)" class="btn btn-primary btn-xs" href="#morale_notes" data-toggle="modal">
-                                                                <button type="button" data-dismiss="modal" class="btn btn-primary btn-xs" @click.prevent="">
-                                                                    EDIT
-                                                                </button></a>
-                                                                <a href="#" @click="removeMoraleNotes(index)" class="btn btn-danger btn-xs">
-                                                                    <div class="btn-group">DELETE</div>
-                                                                </a>
-                                                            </td>
+                                                            <template v-if="data.resource_detail_id != null">
+                                                                <td>{{ index + 1 }}</td>
+                                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.subject)">{{ data.subject }}</td>
+                                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.notes)">{{ data.notes }}</td>
+                                                                <td class="p-l-5" align="center"><a @click.prevent="editMoraleNotes(data,index)" class="btn btn-primary btn-xs" href="#morale_notes" data-toggle="modal">
+                                                                    <button type="button" data-dismiss="modal" class="btn btn-primary btn-xs" @click.prevent="">
+                                                                        EDIT
+                                                                    </button></a>
+                                                                    <a href="#" @click="removeMoraleNotes(index)" class="btn btn-danger btn-xs">
+                                                                        <div class="btn-group">DELETE</div>
+                                                                    </a>
+                                                                </td>
+                                                            </template>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -1039,7 +1051,7 @@
                     POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.services.push(POD);
-                }else if(POD.resource_id != null && POD.resource_detail_id != null){
+                }else if(POD.resource_id != null){
                     if(POD.morale != null){
                         POD.morale = JSON.parse(POD.morale);
                     }else{

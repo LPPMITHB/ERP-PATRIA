@@ -601,6 +601,7 @@ class ResourceController extends Controller
                     $PrOD = new ProductionOrderDetail;
                     $PrOD->production_order_id = $ProdOrder->id;
                     $PrOD->resource_id = $data['resource_id'];
+                    $PrOD->category_id = $data['category_id'];
                     $PrOD->quantity = $data['quantity'];
                     $PrOD->save();
                 }
@@ -828,6 +829,12 @@ class ResourceController extends Controller
 
     public function getResourceTrxApi($id){
         $resourceTrx = ResourceTrx::with('project','resource','wbs','resourceDetail')->where('project_id',$id)->get()->jsonSerialize();
+
+        return response($resourceTrx, Response::HTTP_OK);
+    }
+
+    public function getAllResourceTrxApi(){
+        $resourceTrx = ResourceTrx::with('project','resource','wbs','resourceDetail')->get()->jsonSerialize();
 
         return response($resourceTrx, Response::HTTP_OK);
     }

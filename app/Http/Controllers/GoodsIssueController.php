@@ -28,17 +28,10 @@ class GoodsIssueController extends Controller
     public function index(Request $request){
         $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
         if($menu == "repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $modelGIs = GoodsIssue::where('business_unit_id',2)->orderBy('created_at', 'desc')->get();
         }else{
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+            $modelGIs = GoodsIssue::where('business_unit_id',1)->orderBy('created_at', 'desc')->get();
         }
-
-
-        $modelMRs = MaterialRequisition::whereIn('project_id',$modelProject)->pluck('id')->toArray();
-        // $modelGIs = GoodsIssue::whereIn('material_requisition_id',$modelMRs)->where('type',1)->get();
-        $modelGIs = GoodsIssue::where('business_unit_id',$modelProject)->get();
-        $modelGIs = GoodsIssue::where('business_unit_id',2)->orderBy('created_at', 'desc')->get();
-
         return view ('goods_issue.index', compact('modelGIs','menu'));
     }
 
