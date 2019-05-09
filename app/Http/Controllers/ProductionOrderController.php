@@ -1406,6 +1406,34 @@ class ProductionOrderController extends Controller
                     }
                 }
             }
+            // resource
+            foreach($PrO->productionOrderDetails as $prod){
+                if($prod->resource_id != null && $prod->resource_id != ""){
+                    if($prod->resource_detail_id != null && $prod->resource_detail_id != ""){
+                        $RD = ResourceDetail::findOrFail($prod->resource_detail_id);
+                        $RD->status = 1;
+                        $RD->update();
+                    }
+                    $prod->delete();
+                }
+            }
+            
+            foreach($datas->resources as $resource){
+                $PrOD = new ProductionOrderDetail;
+                $PrOD->production_order_id = $PrO->id;
+                $PrOD->resource_id = $resource->resource_id;
+                $PrOD->resource_detail_id = $resource->resource_detail->id;
+                $PrOD->trx_resource_id = $resource->trx_resource_id;
+                $PrOD->category_id = $resource->resource->category_id;
+                $PrOD->quantity = 1;
+                $PrOD->status = "UNACTUALIZED";
+                $PrOD->save();
+                if($resource->resource_detail->id != ""){
+                    $RD = ResourceDetail::findOrFail($resource->resource_detail->id);
+                    $RD->status = 2;
+                    $RD->update();
+                }
+            }
             DB::commit();
             if($route == "/production_order"){
                 return redirect()->route('production_order.show',$PrO->id)->with('success', 'Production Order Updated');
@@ -1415,9 +1443,9 @@ class ProductionOrderController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($route == "/production_order"){
-                return redirect()->route('production_order.edit',$PrO->id)->with('error', $e->getMessage());
+                return redirect()->route('production_order.editPrO',$PrO->id)->with('error', $e->getMessage());
             }elseif($route == "/production_order_repair"){
-                return redirect()->route('production_order_repair.edit',$PrO->id)->with('error', $e->getMessage());
+                return redirect()->route('production_order_repair.editPrO',$PrO->id)->with('error', $e->getMessage());
             }
         }
     }

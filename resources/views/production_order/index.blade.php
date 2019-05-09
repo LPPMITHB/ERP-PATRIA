@@ -37,9 +37,10 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Number</th>
+                            <th width="15%">Number</th>
                             <th width="25%">Project Name</th>
                             <th width="25%">Work Name</th>
+                            <th width="20%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -50,6 +51,13 @@
                                 <td>{{ $modelPrO->number }}</td>
                                 <td>{{ $modelPrO->project->name }}</td>
                                 <td class="tdEllipsis">{{ $modelPrO->wbs->number }}</td>
+                                @if($modelPrO->status == 1)
+                                    <td class="tdEllipsis">{{ 'UNRELEASED' }}</td>
+                                @elseif($modelPrO->status == 2)
+                                    <td class="tdEllipsis">{{ 'RELEASED' }}</td>
+                                @elseif($modelPrO->status == 0)
+                                    <td class="tdEllipsis">{{ 'COMPLETED' }}</td>
+                                @endif
                                 <td class="textCenter">
                                     @if($route == "/production_order" && $modelPrO->status == 1 || $route == "/production_order" && $modelPrO->status == 2)
                                         <a href="{{route('production_order.show',$modelPrO->id)}}" class="btn btn-primary btn-xs">VIEW</a>

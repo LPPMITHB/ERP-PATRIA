@@ -4,7 +4,7 @@
 @if($route == "/production_order")
     @breadcrumb(
         [
-            'title' => 'Create Production Order',
+            'title' => 'Edit Production Order',
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Project' => route('production_order.selectProject'),
@@ -17,7 +17,7 @@
 @elseif($route == "/production_order_repair")
     @breadcrumb(
         [
-            'title' => 'Create Production Order',
+            'title' => 'Edit Production Order',
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Project' => route('production_order_repair.selectProject'),
@@ -373,6 +373,51 @@
                     </div>
                 </div>
 
+                <div class="modal fade" id="select_resource">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Select Operational Resource</h4>
+                            </div>
+                            <div class="modal-body p-t-0">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Operational Resource</label>
+                                        <selectize id="edit_modal" v-model="editInputResource.resource_id" :settings="resourceSettings">
+                                            <option v-for="(resource, index) in resourceDetails" :value="resource.id">{{ resource.code }}</option>
+                                        </selectize>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered tableFixed showTable" v-show="editInputResource.resource_id != ''">
+                                    <thead>
+                                        <tr>
+                                            <th width="7%">No</th>
+                                            <th width="28%">Type</th>
+                                            <th width="15%">Status</th>
+                                            <th width="50%">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td class="tdEllipsis">{{ editInputResource.type }}</td>
+                                            <td class="tdEllipsis" v-if="editInputResource.status == 1">{{ 'IDLE' }}</td>
+                                            <td class="tdEllipsis" v-else-if="editInputResource.status == 2">{{ 'USED' }}</td>
+                                            <td class="tdEllipsis">{{ editInputResource.notes }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTableResource">SELECT</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @endverbatim
         </form>
@@ -424,7 +469,6 @@
         resources : @json($resources),
         services : @json($services),
         bom : @json($modelBOM->bomDetails),
-        assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
         route : @json($route),
@@ -437,7 +481,18 @@
             quantity : "",
             unit : "",
             is_decimal : ""
-        }
+        },
+        editInputResource : {
+            resource_id: "",
+            type: "",
+            status: "",
+            notes : "",
+            index : "",
+            trx_resource_code : ""
+        },
+        selectedResource :[], 
+        deletedResource : [],
+        resourceDetails : [],
     };
 
     var vm = new Vue({
@@ -467,6 +522,11 @@
                     isOk = true;
                 }
                 return isOk;
+            },
+            selectOk: function(){
+                let isOk = false;
+
+                return isOk;
             }
         },
         methods: {
@@ -479,6 +539,110 @@
                 this.editInput.quantity = "";
                 this.editInput.unit = "";
                 this.editInput.is_decimal = "";
+            },
+            clearEditInputResource(){
+                this.editInputResource.resource_id = "";
+                this.editInputResource.type = "";
+                this.editInputResource.status = "";
+                this.editInputResource.notes = "";
+                this.editInputResource.index = "";
+                this.editInputResource.trx_resource_code = "";
+            },
+            deleteResource(data,index){
+                this.deletedResource.push(data.id);
+                this.resources.splice(index,1);
+            },
+            addResource(data,index) {
+                this.clearEditInputResource();
+                this.editInputResource.index = index;
+                this.resources.forEach(data=>{
+                    if(data.resource_detail.id != null && data.resource_detail.id != ''){
+                        this.selectedResource.push(data.resource_detail.id);
+                    }
+                })
+
+                let selectedResource = JSON.stringify(this.selectedResource);
+                var category_id = data.resource.category_id;
+
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource+'/'+category_id).then(({ data }) => {
+                    this.resourceDetails = data;
+                    this.resourceDetails.forEach(resourceDetail => {
+                        this.editInputResource.status = resourceDetail.status;
+                        this.editInputResource.trx_resource_code = resourceDetail.code;
+                        if(category_id == 1){
+                            this.editInputResource.type = "Subcon"
+                        }else if(category_id == 2){
+                            this.editInputResource.type = "Others"
+                        }else if(category_id == 3){
+                            this.editInputResource.type = "External Equipment"
+                        }else if(category_id == 4){
+                            this.editInputResource.type = "Internal Equipment"
+                        }
+
+                        if(resourceDetail.status == 1){
+                            this.editInputResource.notes = "-"
+                        }else if(resourceDetail.status == 2){
+                            this.editInputResource.notes = ""
+                        }
+                    });
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
+            },
+            editResource(data,index) {
+                $('div.overlay').hide();
+                this.clearEditInputResource();
+                this.editInputResource.index = index;
+                this.selectedResource.forEach(resource_id => {
+                    if(resource_id == data.resource_detail.id){
+                        let indexArr = this.selectedResource.indexOf(resource_id);
+                        this.selectedResource.splice(indexArr,1)
+                    }
+                });
+
+                let selectedResource = JSON.stringify(this.selectedResource);
+                var category_id = data.resource.category_id;
+
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource+'/'+category_id).then(({ data }) => {
+                    this.resourceDetails = data;
+                    this.resourceDetails.forEach(resourceDetail => {
+                        this.editInputResource.status = resourceDetail.status;
+                        this.editInputResource.trx_resource_code = resourceDetail.code;
+                        if(category_id == 1){
+                            this.editInputResource.type = "Subcon"
+                        }else if(category_id == 2){
+                            this.editInputResource.type = "Others"
+                        }else if(category_id == 3){
+                            this.editInputResource.type = "External Equipment"
+                        }else if(category_id == 4){
+                            this.editInputResource.type = "Internal Equipment"
+                        }
+
+                        if(resourceDetail.status == 1){
+                            this.editInputResource.notes = "-"
+                        }else if(resourceDetail.status == 2){
+                            this.editInputResource.notes = ""
+                        }
+                    });
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
             },
             openEditModal(data,index){
                 this.clearEditInput();
@@ -493,6 +657,16 @@
             submitToTable(){
                 let data = this.datas[this.editInput.index];
                 data.quantity = this.editInput.quantity;
+            },
+            submitToTableResource(){
+                let resource = this.resources[this.editInputResource.index];
+                resource.resource_detail.code = this.editInputResource.trx_resource_code;
+                // resource.trx_resource_id = this.editInputResource.resource_id ;
+                resource.resource_detail.id = this.editInputResource.resource_id ;
+                resource.status = this.editInputResource.status;
+
+                this.selectedResource.push(this.editInputResource.resource_id);
+                this.clearEditInputResource();
             },
             add(){
                 var data = JSON.stringify(this.dataInput);
@@ -524,7 +698,7 @@
 
                 this.submittedForm.datas = datas;
                 this.submittedForm.materials = this.bom;
-                this.submittedForm.resources = this.assignedResource;
+                this.submittedForm.resources = this.resources;
                 this.submittedForm.project_id = this.project_id;
                 this.submittedForm.wbs_id = this.wbs_id;
 
@@ -537,6 +711,33 @@
             }
         },
         watch: {
+            'editInputResource.resource_id': function(newValue){
+                if(newValue != ""){
+                    this.resourceDetails.forEach(data => {
+                        if(data.id == newValue){
+                            this.editInputResource.trx_resource_code = data.code;
+                            this.editInputResource.status = data.status;
+                            if(data.category_id == 1){
+                                this.editInputResource.type = "Subcon"
+                            }else if(data.category_id == 2){
+                                this.editInputResource.type = "Others"
+                            }else if(data.category_id == 3){
+                                this.editInputResource.type = "External Equipment"
+                            }else if(data.category_id == 4){
+                                this.editInputResource.type = "Internal Equipment"
+                            }
+
+                            if(data.status == 1){
+                                this.editInputResource.notes = "-"
+                            }else if(data.status == 2){
+                                this.editInputResource.notes = ""
+                            }
+                        }
+                    });
+                }else{
+
+                }
+            },
             'dataInput.id': function(newValue){
                 if(newValue != ""){
                     if(this.dataInput.type == "Resource"){
@@ -620,6 +821,11 @@
         },
         created: function() {
             this.newIndex = Object.keys(this.datas).length+1;
+            this.resources.forEach(data=>{
+                if(data.resource_detail.id != null && data.resource_detail.id != ''){
+                    this.selectedResource.push(data.resource_detail.id);
+                }
+            })
         },
     });
 </script>
