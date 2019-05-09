@@ -104,7 +104,7 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="active tab-pane" id="activity">
-                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 0">
+                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 1">
                                         <div class="col-sm-3 p-l-0">
                                             <div class="col-md-6 col-xs-6 no-padding">PO Number</div>
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.po_number}}</b></div>
@@ -130,7 +130,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 1">
+                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 2">
                                         <div class="col-sm-3 p-l-0">
                                             <div class="col-md-6 col-xs-6 no-padding">PO Number</div>
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.po_number}}</b></div>
@@ -156,7 +156,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 2">
+                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 3">
                                         <div class="col-sm-3 p-l-0">
                                             <div class="col-md-6 col-xs-6 no-padding">PO Number</div>
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.po_number}}</b></div>
@@ -182,7 +182,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 3">
+                                    <div class="box-body p-t-0 p-l-0 p-r-0" v-if="data.category_id == 4">
                                         <div class="col-sm-3 p-l-0">
                                             <div class="col-md-6 col-xs-6 no-padding">Serial Number</div>
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.serial_number}}</b></div>
@@ -264,8 +264,8 @@
                                                 </div>
                                                 <div class="col-md-12 col-xs-12 no-padding">
                                                     <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding" v-if="data.category_id != 3"><b>: {{data.rental_duration}}</b></div>
-                                                    <div class="col-md-8 col-xs-8 no-padding" v-else-if="data.category_id == 3"><b>: {{data.lifetime}}</b></div>
+                                                    <div class="col-md-8 col-xs-8 no-padding" v-if="data.category_id != 4"><b>: {{data.rental_duration}}</b></div>
+                                                    <div class="col-md-8 col-xs-8 no-padding" v-else-if="data.category_id == 4"><b>: {{data.lifetime}}</b></div>
                                                 </div>
                                             </div>
 
@@ -329,7 +329,7 @@
                                                             <div class="col-md-4 col-xs-4 no-padding">Usage</div>
                                                             <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.usage != null) ? prod_order_detail.usage+' Hour(s)' : '-'}}</b></div>
                                                         </div>
-                                                        <div class="col-md-12 col-xs-12 no-padding" v-if="prod_order_detail.resource_detail.category_id == 0">
+                                                        <div class="col-md-12 col-xs-12 no-padding" v-if="prod_order_detail.resource_detail.category_id == 1">
                                                             <div class="col-md-4 col-xs-4 no-padding">Accident</div>
                                                             <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.actual != null) ? prod_order_detail.actual+' Time(s)' : '-'}}</b></div>
                                                         </div>
@@ -366,7 +366,7 @@
                                             <input type="text" id="category" v-model="category" class="form-control" disabled>
                                         </div>
                                         
-                                        <div v-show="editInput.category_id == '0'">
+                                        <div v-show="editInput.category_id == '1'">
                                             <div class="col-sm-12">
                                                 <label for="code" class="control-label">Sub Con Code*</label>
                                                 <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
@@ -421,7 +421,7 @@
                                             </div>
                                         </div>
 
-                                        <div v-show="editInput.category_id == '1'">
+                                        <div v-show="editInput.category_id == '2'">
                                             <div class="col-sm-12">
                                                 <label for="code" class="control-label">Code*</label>
                                                 <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
@@ -468,7 +468,7 @@
                                             </div>
                                         </div>
 
-                                        <div v-show="editInput.category_id == '2'">
+                                        <div v-show="editInput.category_id == '3'">
                                             <div class="col-sm-12">
                                                 <label for="code" class="control-label">Code*</label>
                                                 <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
@@ -515,7 +515,7 @@
                                             </div>
                                         </div>
 
-                                        <div v-show="editInput.category_id == '3'">
+                                        <div v-show="editInput.category_id == '4'">
                                             <div class="col-sm-12">
                                                 <label for="code" class="control-label">Code*</label>
                                                 <input type="text" id="code" v-model="editInput.code" class="form-control" disabled>
@@ -798,22 +798,22 @@
             if(this.editInput.category_id == ""){
                 isOk = true;
             }
-            if(this.editInput.category_id == 0){
+            if(this.editInput.category_id == 1){
                 if(this.editInput.lifetime == "" || this.editInput.sub_con_address == "" || this.editInput.sub_con_phone == "" || this.editInput.sub_con_competency == ""){
                     isOk = true;
                 }
             }
-            if(this.editInput.category_id == 1){
+            if(this.editInput.category_id == 2){
                 if(this.editInput.lifetime == "" ||this.editInput.name == ""){
                     isOk = true;
                 }
             }
-            if(this.editInput.category_id == 2){
+            if(this.editInput.category_id == 3){
                 if(this.editInput.lifetime == "" || this.editInput.brand == ""){
                     isOk = true;
                 }
             }
-            if(this.editInput.category_id == 3){
+            if(this.editInput.category_id == 4){
                 if(this.editInput.brand == ""){
                     isOk = true;
                 }
@@ -945,15 +945,15 @@
                     this.editInput.performance = this.data.perf;
                     this.editInput.performance_uom_id = this.data.perf_uom;
 
-                    if(category_id == 0){
+                    if(category_id == 1){
                         this.editInput.sub_con_address = this.data.address;
                         this.editInput.sub_con_phone = this.data.phone;
                         this.editInput.sub_con_competency = this.data.competency;
-                    }else if(category_id == 1){
-                        this.editInput.name = this.data.other_name;
                     }else if(category_id == 2){
-                        this.editInput.brand = this.data.brand;
+                        this.editInput.name = this.data.other_name;
                     }else if(category_id == 3){
+                        this.editInput.brand = this.data.brand;
+                    }else if(category_id == 4){
                         this.editInput.brand = this.data.brand;
                         this.editInput.manufactured_date = this.data.manufactured_date;
                         this.editInput.purchasing_date = this.data.purchasing_date;
@@ -1053,13 +1053,13 @@
                     this.data.perf_uom = RD.performance_uom_id;
                     planned_performance = RD.performance;
 
-                    if(RD.category_id == 0){
+                    if(RD.category_id == 1){
                         this.data.type = "Sub Con";
-                    }else if(RD.category_id == 1){
-                        this.data.type = "Others";
                     }else if(RD.category_id == 2){
-                        this.data.type = "External Equipment";
+                        this.data.type = "Others";
                     }else if(RD.category_id == 3){
+                        this.data.type = "External Equipment";
+                    }else if(RD.category_id == 4){
                         this.data.type = "Internal Equipment";
                     }
 
@@ -1094,7 +1094,7 @@
                         actual_performance = performance / usage;
                     }
 
-                    if(this.data.category_id == 3){
+                    if(this.data.category_id == 4){
                         this.data.running_hour = (RD.running_hours+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         $('#manufactured_date').datepicker('setDate', new Date(RD.manufactured_date));
                         $('#purchasing_date').datepicker('setDate', new Date(RD.purchasing_date));
@@ -1136,7 +1136,7 @@
                         lifetime = RD.lifetime;
 
                         this.data.utilization = (usage / lifetime * 100).toFixed(2);
-                    }else if(this.data.category_id == 1 || this.data.category_id == 2 || this.data.category_id == 0){
+                    }else if(this.data.category_id == 2 || this.data.category_id == 3 || this.data.category_id == 1){
                         let lifetime = 0;
                         this.data.rental_duration = (RD.lifetime+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+' Hour(s)';
                         this.data.lt_uom = RD.lifetime_uom_id;
@@ -1154,10 +1154,10 @@
                         this.data.receive_date = RD.created_at.substr(0,10);
                         this.data.po_number = RD.goods_receipt_detail.goods_receipt.purchase_order.number;
                         this.data.utilization = (usage / lifetime * 100).toFixed(2);
-                        if(this.data.category_id == 1){
+                        if(this.data.category_id == 2){
                             this.data.other_name = RD.others_name;
                         }
-                        if(this.data.category_id == 0){
+                        if(this.data.category_id == 1){
                             this.data.address = RD.sub_con_address;
                             this.data.phone = RD.sub_con_phone;
                             this.data.competency = RD.sub_con_competency;
