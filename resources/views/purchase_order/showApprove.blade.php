@@ -113,7 +113,6 @@
                                 <th colspan="2" width="14%">Job Order</th>
                             @endif
                             <th width="6%">Qty</th>
-                            <th width="5%">Unit</th>
                             <th width="5%">Disc.</th>
                             @if($modelPO->purchaseRequisition->type != 3)
                                 <th width="13%">Price / pcs ({{$unit}})</th>
@@ -137,10 +136,9 @@
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_code'] }}">{{ $POD['resource_code'] }}</td>
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_name'] }}">{{ $POD['resource_name'] }}</td>
                                     @else 
-                                        <td colspan="2" class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['service_code'] }} - {{ $POD['service_name'] }}">{{ $POD['service_code'] }} - {{ $POD['service_name'] }}</td>
+                                        <td colspan="2" class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['job_order'] }}">{{ $POD['job_order'] }}</td>
                                     @endif
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['quantity'],2) }}">{{ number_format($POD['quantity'],2) }}</td>
-                                    <td>{{ $POD['unit'] }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['discount'],2) }}%">{{ number_format($POD['discount'],2) }}%</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['price'] / $modelPO['value'],2) }}">{{ number_format($POD['price'] / $modelPO['value'],2) }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['sub_total'] / $modelPO['value'],2) }}">{{ number_format($POD['sub_total'] / $modelPO['value'],2) }}</td>
@@ -156,27 +154,27 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td class="p-b-13 p-t-13" colspan="7" style="visibility:hidden"></td>
+                            <td class="p-b-13 p-t-13" colspan="6" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Subtotal :</b></td>
                             <td colspan="2" class="text-right p-r-5"><b> {{number_format($datas->sum('sub_total') / $modelPO['value'],2)}} {{$unit}}</b></td>
                         </tr>
                         <tr>
-                            <td class="p-b-13 p-t-13" colspan="7" style="visibility:hidden"></td>
+                            <td class="p-b-13 p-t-13" colspan="6" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Discount :</b></td>
                             <td colspan="2" class="text-right p-r-5"><b> {{number_format($total_discount  / $modelPO['value'],2)}} {{$unit}}</b></td>
                         </tr>
                         <tr>
-                            <td class="p-b-13 p-t-13" colspan="7" style="visibility:hidden"></td>
+                            <td class="p-b-13 p-t-13" colspan="6" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Tax ({{$modelPO->tax}}%) :</b></td>
                             <td colspan="2" class="text-right p-r-5"><b> {{number_format($tax / $modelPO['value'],2)}} {{$unit}}</b></td>
                         </tr>
                         <tr>
-                            <td class="p-b-13 p-t-13" colspan="7" style="visibility:hidden"></td>
+                            <td class="p-b-13 p-t-13" colspan="6" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Estimated Freight :</b></td>
                             <td colspan="2" class="text-right p-r-5"><b> {{number_format($modelPO->estimated_freight / $modelPO->value),2}} {{$unit}}</b></td>
                         </tr>
                         <tr>
-                            <td class="p-b-13 p-t-13" colspan="7" style="visibility:hidden"></td>
+                            <td class="p-b-13 p-t-13" colspan="6" style="visibility:hidden"></td>
                             <td class="text-right p-r-5"><b>Total Order :</b></td>
                             <td colspan="2" class="text-right p-r-5"><b> {{number_format( (($datas->sum('sub_total') - $total_discount) + $tax + $modelPO->estimated_freight)/ $modelPO['value'],2)}} {{$unit}}</b></td>
                         </tr>
