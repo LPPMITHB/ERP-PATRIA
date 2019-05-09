@@ -833,6 +833,12 @@ class ResourceController extends Controller
         return response($resourceTrx, Response::HTTP_OK);
     }
 
+    public function getAllResourceTrxApi(){
+        $resourceTrx = ResourceTrx::with('project','resource','wbs','resourceDetail')->get()->jsonSerialize();
+
+        return response($resourceTrx, Response::HTTP_OK);
+    }
+
     public function getResourceDetailApi($data){
         $data = json_decode($data);
         $resourceDetail = ResourceDetail::where('resource_id',$data[0])->whereNotIn('id',$data[1])->whereIn('status',[1,2])->get()->jsonSerialize();
