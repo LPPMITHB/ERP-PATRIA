@@ -200,15 +200,15 @@ class ResourceController extends Controller
                     }
                 }
 
-                if($data->category_id == 0){
+                if($data->category_id == 1){
                     $RD->sub_con_address = $data->sub_con_address;
                     $RD->sub_con_phone = $data->sub_con_phone;
                     $RD->sub_con_competency = $data->sub_con_competency;
-                }elseif($data->category_id == 1){
-                    $RD->others_name = $data->name;
                 }elseif($data->category_id == 2){
-                    $RD->brand = $data->brand;
+                    $RD->others_name = $data->name;
                 }elseif($data->category_id == 3){
+                    $RD->brand = $data->brand;
+                }elseif($data->category_id == 4){
                     $RD->brand = $data->brand;
                     $RD->depreciation_method = $data->depreciation_method;
                     if($data->manufactured_date != ""){
@@ -436,15 +436,15 @@ class ResourceController extends Controller
                 $modelRD->lifetime = null;
                 $modelRD->lifetime_uom_id = null;
             }
-            if($data['category_id'] == 0){
+            if($data['category_id'] == 1){
                 $modelRD->sub_con_address = $data['sub_con_address'];
                 $modelRD->sub_con_phone = $data['sub_con_phone'];
                 $modelRD->sub_con_competency = $data['sub_con_competency'];
-            }else if($data['category_id'] == 1){
-                $modelRD->others_name = $data['name'];
             }else if($data['category_id'] == 2){
-                $modelRD->brand = $data['brand'];
+                $modelRD->others_name = $data['name'];
             }else if($data['category_id'] == 3){
+                $modelRD->brand = $data['brand'];
+            }else if($data['category_id'] == 4){
                 $modelRD->brand = $data['brand'];
                 $modelRD->depreciation_method = $data['depreciation_method'];
                 if($data['manufactured_date'] != ""){
@@ -537,7 +537,7 @@ class ResourceController extends Controller
             $resource_ref->resource_id = $data['resource_id'];
             $resource_ref->wbs_id = $data['wbs_id'];
             $resource_ref->quantity = $data['quantity'];
-            if($data['category_id'] == 3){
+            if($data['category_id'] == 4){
                 if($data['resource_detail_id'] != "" && $data['resource_detail_id'] != null){
                     $resource_ref->resource_detail_id = $data['resource_detail_id'];
                     if($data['start_date'] != "" && $data['start_date'] != null && $data['end_date'] != "" && $data['end_date'] != null){
@@ -622,7 +622,7 @@ class ResourceController extends Controller
     public function resourceSchedule(Request $request){
         $route = $request->route()->getPrefix();
         $resources = Resource::all();
-        $resourceDetail = ResourceDetail::where('category_id',3)->get();
+        $resourceDetail = ResourceDetail::where('category_id',4)->get();
 
         return view('resource.resourceSchedule', compact('route','resources','resourceDetail'));        
     }
