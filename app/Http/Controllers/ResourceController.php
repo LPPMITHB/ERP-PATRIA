@@ -649,7 +649,7 @@ class ResourceController extends Controller
                 $RD->code = $data->code;
                 $RD->resource_id = $data->resource_id;
                 $RD->serial_number = $data->serial_number;
-                $RD->category_id = 3;
+                $RD->category_id = 4;
                 $RD->quantity = ($data->quantity != '') ? $data->quantity : 1;
                 $RD->description = $data->description;
                 $RD->kva = ($data->kva != '') ? $data->kva : null;
