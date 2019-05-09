@@ -51,7 +51,7 @@
                                 <td>{{ $modelPrO->project->name }}</td>
                                 <td class="tdEllipsis">{{ $modelPrO->wbs->number }}</td>
                                 <td class="textCenter">
-                                    @if($route == "/production_order" && $modelPrO->status == 1)
+                                    @if($route == "/production_order" && $modelPrO->status == 1 || $route == "/production_order" && $modelPrO->status == 2)
                                         <a href="{{route('production_order.show',$modelPrO->id)}}" class="btn btn-primary btn-xs">VIEW</a>
                                         <a href="{{route('production_order.editPrO',$modelPrO->id)}}" class="btn btn-primary btn-xs">EDIT</a>
                                     @elseif($route == "/production_order" && $modelPrO->status != 1)

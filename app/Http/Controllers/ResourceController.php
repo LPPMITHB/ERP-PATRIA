@@ -606,6 +606,7 @@ class ResourceController extends Controller
                     $PrOD = new ProductionOrderDetail;
                     $PrOD->production_order_id = $ProdOrder->id;
                     $PrOD->resource_id = $data['resource_id'];
+                    $PrOD->category_id = $data['category_id'];
                     $PrOD->quantity = $data['quantity'];
                     $PrOD->save();
                 }

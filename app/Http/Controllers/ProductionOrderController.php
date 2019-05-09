@@ -724,23 +724,28 @@ class ProductionOrderController extends Controller
                 if($prod->quantity == 0){
                     $prod->delete();
                 }
+                if($prod->resource_id != null){
+                    $prod->delete();
+                }
             }
             $modelPrO->status = 2;
             $modelPrO->update();
-
+            // print_r($datas->resources);exit();
             foreach($datas->resources as $resource){
                 $PrOD = new ProductionOrderDetail;
                 $PrOD->production_order_id = $pro_id;
-                $PrOD->production_order_detail_id = $resource->id;
                 $PrOD->resource_id = $resource->resource_id;
-                $PrOD->resource_detail_id = $resource->trx_resource_id;
+                $PrOD->resource_detail_id = $resource->resource_detail->id;
+                $PrOD->trx_resource_id = $resource->trx_resource_id;
+                $PrOD->category_id = $resource->resource->category_id;
                 $PrOD->quantity = 1;
                 $PrOD->status = "UNACTUALIZED";
                 $PrOD->save();
-
-                $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
-                $RD->status = 2;
-                $RD->update();
+                if($resource->resource_detail->id != ""){
+                    $RD = ResourceDetail::findOrFail($resource->resource_detail->id);
+                    $RD->status = 2;
+                    $RD->update();
+                }
             }
             $this->createMR($datas->modelPrOD);
 
@@ -1145,10 +1150,10 @@ class ProductionOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $pro = ProductionOrder::find($id);
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$pro->id)->get();
         $wbs = $pro->wbs;
         $project = $pro->wbs->project;
         $materials = Material::all()->jsonSerialize();
-        $resources = Resource::all()->jsonSerialize();
         $services = Service::all()->jsonSerialize();
         $modelActivities = $wbs->activities;
         $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
@@ -1261,43 +1266,31 @@ class ProductionOrderController extends Controller
         }
 
         //Resources
-        $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
-        foreach($prod_resources as $prod){
-            $prod_found = true;
-            if(count($modelRD)> 0){
-                foreach ($modelRD as $resTrx) {
-                    if($resTrx->resource->id == $prod->resource->id){
-                        if($prod->quantity - $resTrx->quantity != 0){
-                            $additionalItems->push([
-                                "code" => $prod->resource->code , 
-                                "description" => $prod->resource->description,
-                                "id" => $prod->resource->id,
-                                "name" => $prod->resource->name,
-                                "quantity" => number_format($prod->quantity - $resTrx->quantity),
-                                "type" => "Resource",
-                            ]);
-                            $prod_found =  false;
-                        }
-                    }elseif($resTrx->resource->id != $prod->resource->id && $prod_found){
-                        $additionalItems->push([
-                            "code" => $prod->resource->code , 
-                            "description" => $prod->resource->description,
-                            "id" => $prod->resource->id,
-                            "name" => $prod->resource->name,
-                            "quantity" => number_format($prod->quantity),
-                            "type" => "Resource",
+        $resources = Collection::make();
+        foreach($modelPrOD as $prOD){
+            if($prOD->quantity > 0){
+                if($prOD->resource_id != ""){
+                    $qty =  $prOD->quantity;
+                    for ($x = 0; $x < $qty; $x++) {
+                        $resources->push([
+                            "id" => $prOD->id , 
+                            "resource" => [
+                                "code" => $prOD->resource->code,
+                                "name" => $prOD->resource->name,
+                                "description" => $prOD->resource->description,
+                                "category_id" => $prOD->category_id,
+                            ],
+                            "resource_detail" =>[
+                                "code" => ($prOD->resourceDetail) ? $prOD->resourceDetail->code : null,
+                                "id" => ($prOD->resourceDetail) ? $prOD->resourceDetail->id : null,
+                            ],
+                            "quantity" => $prOD->quantity,
+                            "resource_id" => $prOD->resource_id,
+                            "trx_resource_id" => $prOD->trx_resource_id,
+                            "status" => null,
                         ]);
-                    }
+                    } 
                 }
-            }else{
-                $additionalItems->push([
-                    "code" => $prod->resource->code , 
-                    "description" => $prod->resource->description,
-                    "id" => $prod->resource->id,
-                    "name" => $prod->resource->name,
-                    "quantity" => number_format($prod->quantity),
-                    "type" => "Resource",
-                ]);
             }
         }
 

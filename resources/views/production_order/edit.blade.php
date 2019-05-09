@@ -157,68 +157,67 @@
                 </table>
             </div> <!-- /.box-body -->
 
-            <div class="box-body p-t-0 p-b-5">
-                <h4>Resource</h4>
-                <table class="table table-bordered showTable tableFixed" id="resource-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="35%">Resource Name</th>
-                            <th width="30%">Description</th>
-                            <th width="30%">Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($modelRD as $RD)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->description }}">{{ $RD->resource->description }}</td>
-                                <td>{{ $RD->quantity }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> <!-- /.box-body -->
-            
-            @if($route == '/production_order_repair')
-            <div class="box-body p-t-0 p-b-5">
-                    <h4>Service</h4>
-                <table class="table table-bordered showTable" id="service-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="35%">Service Name</th>
-                            <th width="30%">Description</th>
-                            <th width="30%">Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php($counter = 1)
-                        @foreach($modelBOM->bomDetails as $BOMD)
-                            @if($BOMD->service_id != "")
-                                <tr>
-                                    <td>{{ $counter++ }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->code }} - {{ $BOMD->service->name }}">{{ $BOMD->service->code }} - {{ $BOMD->service->name }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->description }}">{{ $BOMD->service->description }}</td>
-                                    <td>{{ number_format($BOMD->quantity) }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> <!-- /.box-body -->
-            @endif
-
             @if($route == "/production_order")
                 <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.updatePrO',['id' => $pro->id]) }}">
             @elseif($route == "/production_order_repair")
                 <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.updatePrO',['id' => $pro->id]) }}">
             @endif
-                @csrf
-                <input type="hidden" name="_method" value="PATCH">
+            @csrf
+            <input type="hidden" name="_method" value="PATCH">
+
             @verbatim
             <div id="production_order">
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Resource</h4>
+                    <table id="resource-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="10%">Category</th>
+                                <th width="30%">Resource</th>
+                                <th width="28%">Resource Detail</th>
+                                <th width="12%">Status</th>
+                                <th width="12%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(data,index) in resources">
+                                <template v-if="data.resource_detail.code != null">
+                                    <td>{{ index + 1 }}</td>
+                                    <td v-if="data.resource.category_id == 1">Subcon</td>
+                                    <td v-else-if="data.resource.category_id == 2">Others</td>
+                                    <td v-else-if="data.resource.category_id == 3">External</td>
+                                    <td v-else-if="data.resource.category_id == 4">Internal</td>
+                                    <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                    <td>{{ data.resource_detail.code }}</td>
+                                    <td class="tdEllipsis"> {{ 'IDLE' }}</td>
+                                    <td class="p-l-0 " align="center">
+                                        <a @click.prevent="editResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">EDIT</a>
+                                        <a @click.prevent="deleteResource(data,index)" class="btn btn-danger btn-xs">DELETE</a>
+                                    </td>
+                                </template>
+                                <template v-else>
+                                    <td>{{ index + 1 }}</td>
+                                    <td v-if="data.resource.category_id == 1">Subcon</td>
+                                    <td v-else-if="data.resource.category_id == 2">Others</td>
+                                    <td v-else-if="data.resource.category_id == 3">External</td>
+                                    <td v-else-if="data.resource.category_id == 4">Internal</td>
+                                    <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                    <td>{{ data.resource_detail.code }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == 2"> {{ 'USED' }}</td>
+                                    <td class="p-l-0" align="center">
+                                        <a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">SELECT</a>
+                                        <a @click.prevent="deleteResource(data,index)" class="btn btn-danger btn-xs">DELETE</a>
+                                    </td>
+                                </template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            
                 <div class="box-body">
                     <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material / Resource</h4>
                     <h4 class="box-title m-t-0" v-else-if="route == '/production_order_repair'">Add Additional Material / Resource / Service</h4>
