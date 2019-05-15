@@ -43,23 +43,12 @@
                     @csrf
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Type</label>
+                            <label for="name" class="col-sm-2 control-label">Type *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="type" name="type" required autofocus
                                 @if($ship->type != null) value="{{ $ship->type }}"
                                 @else value="{{ old('type') }}"
-                                @endif>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="hull_number" class="col-sm-2 control-label">Hull Number</label>
-            
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="hull_number" name="hull_number"
-                                @if($ship->hull_number != null) value="{{ $ship->hull_number }}"
-                                @else value="{{ old('hull_number') }}"
                                 @endif>
                             </div>
                         </div>
@@ -76,7 +65,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="status" class="col-sm-2 control-label">Status</label>
+                            <label for="status" class="col-sm-2 control-label">Status *</label>
             
                             <div class="col-sm-10">
                                 <select class="form-control" name="status" id="status" required>

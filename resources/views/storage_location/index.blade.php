@@ -23,7 +23,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered tablePaging tableFixed" id="sloc-table">
+                <table class="table table-bordered tablePaging">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>

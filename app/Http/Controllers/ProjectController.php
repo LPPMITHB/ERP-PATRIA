@@ -404,12 +404,16 @@ class ProjectController extends Controller
                 'customer' => 'required',
                 'ship' => 'required',
                 'project_type' => 'required',
-                'planned_start_date' => 'required',
-                'planned_end_date' => 'required',
-                'planned_duration' => 'required',
+                'planned_start_date' => 'nullable',
+                'planned_end_date' => 'nullable',
+                'planned_duration' => 'nullable',
                 'flag' => 'required',
                 'class_name' => 'required',
+                'class_name_2' => 'nullable',
+                'class_contact_person_phone' => 'nullable|numeric',
+                'class_contact_person_phone_2' => 'nullable|numeric',
                 'class_contact_person_email' => 'nullable|email|max:255',
+                'class_contact_person_email_2' => 'nullable|email|max:255',
                 'drawing' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3000'
             ]);
         }elseif($menu == "repair"){
@@ -456,19 +460,33 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
+            $project->hull_number = $request->hull_number;
             $project->project_type = $request->project_type;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->person_in_charge = $request->person_in_charge;
             $project->class_contact_person_name = $request->class_contact_person_name;
+            $project->class_contact_person_name_2 = $request->class_contact_person_name_2;
             $project->class_contact_person_phone = $request->class_contact_person_phone;
+            $project->class_contact_person_phone_2 = $request->class_contact_person_phone_2;
             $project->class_contact_person_email = $request->class_contact_person_email;
+            $project->class_contact_person_email_2 = $request->class_contact_person_email_2;
 
-            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
-            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
+            $planStartDate = DateTime::createFromFormat('d-m-Y', $request->planned_start_date);
+            $planEndDate = DateTime::createFromFormat('d-m-Y', $request->planned_end_date);
 
-            $project->planned_start_date = $planStartDate->format('Y-m-d');
-            $project->planned_end_date = $planEndDate->format('Y-m-d');
+            if($project->planned_start_date !=""){
+                $project->planned_start_date = $planStartDate->format('Y-m-d');
+            }
+            else{
+                $project->planned_start_date = NULL;
+            }
+            if($project->planned_end_date !=""){
+                $project->planned_end_date = $planEndDate->format('Y-m-d');
+            }
+            else{
+                $project->planned_end_date = NULL;
+            }
             $project->planned_duration =  $request->planned_duration;
             $project->progress = 0;
             $project->business_unit_id = $request->business_unit_id;
@@ -557,12 +575,16 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
+            $project->hull_number = $request->hull_number;
             $project->project_type = $request->project_type;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->class_contact_person_name = $request->class_contact_person_name;
             $project->class_contact_person_phone = $request->class_contact_person_phone;
             $project->class_contact_person_email = $request->class_contact_person_email;
+            $project->class_contact_person_name_2 = $request->class_contact_person_name_2;
+            $project->class_contact_person_phone_2 = $request->class_contact_person_phone_2;
+            $project->class_contact_person_email_2 = $request->class_contact_person_emai_2l;
 
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
             $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
@@ -909,8 +931,8 @@ class ProjectController extends Controller
                 'number' => 'required',
                 'customer' => 'required',
                 'ship' => 'required',
-                'planned_start_date' => 'required',
-                'planned_end_date' => 'required',
+                'planned_start_date' => 'nullable',
+                'planned_end_date' => 'nullable',
                 'planned_duration' => 'required',
                 'flag' => 'required',
                 'class_name' => 'required',
@@ -956,12 +978,16 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
+            $project->hull_number = $request->hull_number;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->person_in_charge = $request->person_in_charge;
             $project->class_contact_person_name = $request->class_contact_person_name;
             $project->class_contact_person_phone = $request->class_contact_person_phone;
             $project->class_contact_person_email = $request->class_contact_person_email;
+            $project->class_contact_person_name_2 = $request->class_contact_person_name_2;
+            $project->class_contact_person_phone_2 = $request->class_contact_person_phone_2;
+            $project->class_contact_person_email_2 = $request->class_contact_person_emai_2l;
             
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
             $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);

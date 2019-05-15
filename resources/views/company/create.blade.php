@@ -56,7 +56,7 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label for="code" class="col-sm-2 control-label">Code</label>
+                            <label for="code" class="col-sm-2 control-label">Code *</label>
 
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="code" name="code" required autofocus value="{{ $company->code == null ? $company_code: $company->code }}">
@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <label for="name" class="col-sm-2 control-label">Name *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus 
@@ -75,7 +75,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="address" class="col-sm-2 control-label">Address</label>
+                            <label for="address" class="col-sm-2 control-label">Address *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="adress" name="address" required 
@@ -86,7 +86,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="phone_number" class="col-sm-2 control-label">Phone Number</label>
+                            <label for="phone_number" class="col-sm-2 control-label">Phone Number *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="phone_number" name="phone_number"  required 
@@ -108,7 +108,7 @@
                             </div>
 
                         <div class="form-group">
-                                <label for="email" class="col-sm-2 control-label">Email</label>
+                                <label for="email" class="col-sm-2 control-label">Email *</label>
                     
                                 <div class="col-sm-10">
                                     <input type="email" class="form-control" id="email" name="email" required 
@@ -119,7 +119,7 @@
                             </div>
 
                         <div class="form-group">
-                            <label for="status" class="col-sm-2 control-label">Status</label>
+                            <label for="status" class="col-sm-2 control-label">Status *</label>
             
                             <div class="col-sm-10">
                                 <select class="form-control" name="status" id="status" required>

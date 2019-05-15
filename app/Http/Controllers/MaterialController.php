@@ -18,7 +18,7 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        $materials = Material::where('status',1)->select('code','description','type','id')->get()->jsonSerialize();
+        $materials = Material::where('status',1)->select('code','description','type','status','id')->get()->jsonSerialize();
 
         return view('material.index', compact('materials'));
     }

@@ -45,7 +45,7 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label for="code" class="col-sm-2 control-label">Code</label>
+                            <label for="code" class="col-sm-2 control-label">Code *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="code" name="code" required autofocus value="{{ $vendor->code == null ? $vendor_code: $vendor->code }}">
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <label for="name" class="col-sm-2 control-label">Name *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="type" class="col-sm-2 control-label">Type</label>
+                            <label for="type" class="col-sm-2 control-label">Type *</label>
             
                             <div class="col-sm-10">
                                 <select class="form-control" name="type" id="type" required>
@@ -142,7 +142,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="status" class="col-sm-2 control-label">Status</label>
+                            <label for="status" class="col-sm-2 control-label">Status *</label>
             
                             <div class="col-sm-10">
                                 <select class="form-control" name="status" id="status" required>

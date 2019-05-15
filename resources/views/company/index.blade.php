@@ -23,7 +23,7 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body p-b-0 p-t-15">
-                <table class="table table-bordered tablePaging tableFixed" id="company-table">
+                <table class="table table-bordered tablePaging">
                     <thead>
                         <tr>
                             <th style ="width: 5%">No</th>
@@ -31,6 +31,7 @@
                             <th style ="width: 35%">Name</th>
                             <th style ="width: 20%">Phone Number</th>
                             <th style ="width: 20%">Email</th>
+                            <th style ="width: 10%">Status</th>
                             <th style ="width: 10%"></th>
                         </tr>
                     </thead>
@@ -39,10 +40,11 @@
                         @foreach($companies as $company)
                             <tr>
                                 <td>{{ $counter++ }}</td>
-                                <td>{{ $company->code }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$company->code}}">{{ $company->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$company->name}}">{{ $company->name }}</td>
                                 <td>{{ $company->phone_number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$company->email}}">{{ $company->email }}</td>
+                                <td> {{ $company->status == "1" ? "Active": "Non Active" }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('company.show', ['id'=>$company->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('company.edit',['id'=>$company->id]) }}" class="btn btn-primary btn-xs">EDIT</a>

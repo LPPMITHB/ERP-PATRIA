@@ -16,7 +16,6 @@ class CreateMstShipTable extends Migration
         Schema::create('mst_ship', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type')->unique();
-            $table->string('hull_number')->nullable();
             $table->text('description')->nullable();
             $table->string('status')->default(1);
             $table->unsignedInteger('branch_id');

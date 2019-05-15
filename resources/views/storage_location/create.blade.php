@@ -56,7 +56,7 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label for="code" class="col-sm-2 control-label">Code</label>
+                            <label for="code" class="col-sm-2 control-label">Code *</label>
 
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="code" name="code" required autofocus value="{{ $storage_location->code == null ? $storage_location_code: $storage_location->code }}">
@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <label for="name" class="col-sm-2 control-label">Name *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
@@ -75,7 +75,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="type" class="col-sm-2 control-label">Area (m<sup>2</sup>)</label>
+                            <label for="type" class="col-sm-2 control-label">Area (m<sup>2</sup>) *</label>
             
                             <div class="col-sm-10">
                                 <input type='text' onkeypress='validate(event)' class="form-control" id="area" name="area" required
@@ -97,7 +97,7 @@
                         </div>
                         
                         <div class="form-group">
-                                <label for="company" class="col-sm-2 control-label">Warehouse</label>
+                                <label for="company" class="col-sm-2 control-label">Warehouse *</label>
                 
                                 <div class="col-sm-10">
                                     <select class="form-control" name="warehouse" id="warehouse" required >
@@ -113,7 +113,7 @@
                             </div>
 
                         <div class="form-group">
-                            <label for="status" class="col-sm-2 control-label">Status</label>
+                            <label for="status" class="col-sm-2 control-label">Status *</label>
             
                             <div class="col-sm-10">
                                 <select class="form-control" name="status" id="status" required>

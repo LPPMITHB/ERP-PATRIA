@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Ship',
+        'title' => 'View Ship » '.$ship->type,
         'items' => [
             'Dashboard' => route('index'),
             'View All Ships' => route('ship.index'),
@@ -46,15 +46,6 @@
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>Hull Number</td>
-                            @if($ship->hull_number != '')
-                                <td>{{ $ship->hull_number }}</td>
-                            @else
-                                <td>-</td>
-                            @endif
-                        </tr>
-                        <tr>
-                            <td>3</td>
                             <td>Description</td>
                             @if($ship->description != '')
                                 <td>{{ $ship->description }}</td>
@@ -63,7 +54,7 @@
                             @endif
                         </tr>
                         <tr>
-                            <td>4</td>
+                            <td>3</td>
                             <td>Status</td>
                             <td class="iconTd">
                                 @if ($ship->status == 1)
