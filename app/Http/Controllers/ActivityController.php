@@ -552,10 +552,24 @@ class ActivityController extends Controller
     public function index($id, Request $request)
     {
         $wbs = WBS::find($id);
-        $project = $wbs->project;
-        $menu = $project->business_unit_id == "1" ? "building" : "repair";
-
-        return view('activity.index', compact('project','wbs','menu'));
+        if(count($wbs->wbsConfig->activities)>0){
+            $activity_config = $wbs->wbsConfig->activities;
+    
+            $materials = Material::with('dimensionUom')->get();
+            foreach ($materials as $material) {
+                $material['selected'] = false;
+            }
+            $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
+            $vendors = Vendor::all();
+            $uoms = Uom::all();
+            $project = $wbs->project;
+            $menu = "repair";
+    
+            $index = true;
+            return view('activity.createActivityRepair', compact('index','vendors','uoms','materials','services','project', 'wbs','menu','activity_config'));
+        }else{
+            return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please Make Activity Configuration for WBS '.$wbs->number.' - '.$wbs->description);
+        }
     }
 
     public function show($id,Request $request)
