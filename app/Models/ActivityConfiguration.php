@@ -13,4 +13,8 @@ class ActivityConfiguration extends Model
         return $this->belongsTo('App\Models\WbsConfiguration', 'wbs_id');
     }
 
+    public function activitiesProject() 
+    {
+        return $this->hasMany('App\Models\Activity','activity_configuration_id');
+    }
 }

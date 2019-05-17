@@ -138,8 +138,8 @@
                         <tbody>
                             <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
@@ -173,10 +173,14 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0" colspan="2">
-                                    <selectize v-model="newActivity.activity_configuration_id" :settings="activityConfigSettings">
+                                <td class="p-l-0">
+                                    <selectize class="selectizeFull" v-model="newActivity.activity_configuration_id" :settings="activityConfigSettings">
                                         <option v-for="(activity_config, index) in activity_configs" :value="activity_config.id">{{ activity_config.name }} - {{ activity_config.description }}</option>
                                     </selectize> 
+                                </td>
+                                <td class="p-l-0">
+                                    <textarea rows="2" autocomplete="off" v-model="newActivity.description"  type="text" class="form-control width100" id="description" name="description" placeholder="Description" >          
+                                    </textarea>                              
                                 </td>
                                 <td class="p-l-0">
                                     <input autocomplete="off" v-model="newActivity.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
@@ -230,7 +234,6 @@
                                         <thead>
                                             <tr>
                                                 <th class="p-l-5" style="width: 5%">No</th>
-                                                <th style="width: 16%">Code</th>
                                                 <th style="width: 26%">Name</th>
                                                 <th style="width: 30%">Description</th>
                                                 <th style="width: 23%">WBS Number</th>
@@ -241,7 +244,6 @@
                                         <tbody>
                                             <tr v-for="(data,index) in predecessorTable">
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
@@ -276,14 +278,13 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Predecessor Activities for <b id="activity_code"></b></h4>
+                                    <h4 class="modal-title">Predecessor Activities <b id="activity_code" style="display: none"></b></h4>
                                 </div>
                                 <div class="modal-body">
                                     <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
                                         <thead>
                                             <tr>
                                                 <th class="p-l-5" style="width: 5%">No</th>
-                                                <th style="width: 16%">Code</th>
                                                 <th style="width: 26%">Name</th>
                                                 <th style="width: 30%">Description</th>
                                                 <th style="width: 23%">WBS Number</th>
@@ -293,7 +294,6 @@
                                         <tbody>
                                             <tr v-for="(data,index) in predecessorTableView">
                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
@@ -321,7 +321,7 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Edit Activity <b id="edit_activity_code"></b></h4>
+                                    <h4 class="modal-title">Edit Activity <b id="edit_activity_code" style="display: none"></b></h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -331,6 +331,12 @@
                                                 <selectize v-model="editActivity.activity_configuration_id" :settings="activityConfigSettings">
                                                     <option v-for="(activity_config, index) in activity_configs" :value="activity_config.id">{{ activity_config.name }} - {{ activity_config.description }}</option>
                                                 </selectize>
+                                            </div>
+
+                                            <div class="p-l-0 form-group col-sm-12">
+                                                <label for="weight" class=" control-label">Description</label>
+                                                <textarea rows="3" autocomplete="off" v-model="editActivity.description"  type="text" class="form-control" id="edit_description" placeholder="Description" >                                        
+                                                </textarea>                              
                                             </div>
         
                                             <div class="p-l-0 form-group col-sm-3">
@@ -384,7 +390,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="p-l-5" style="width: 5%">No</th>
-                                                        <th style="width: 16%">Code</th>
                                                         <th style="width: 26%">Name</th>
                                                         <th style="width: 30%">Description</th>
                                                         <th style="width: 23%">WBS Number</th>
@@ -395,7 +400,6 @@
                                                 <tbody>
                                                     <tr v-for="(data,index) in predecessorTableEdit">
                                                         <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
                                                         <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                                         <td class="tdEllipsis p-b-15 p-t-15" data-container="#add_dependent_activity" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                                         <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number}}</td>
@@ -434,7 +438,7 @@
                     
                                                     <div class="col-sm-4 p-l-2">
                                                         <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="length_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            <option disabled v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>
@@ -448,7 +452,7 @@
                     
                                                     <div class="col-sm-4 p-l-2">
                                                         <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="width_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            <option disabled v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>
@@ -462,7 +466,7 @@
                     
                                                     <div class="col-sm-4 p-l-2">
                                                         <selectize id="uom" name="dimension_uom_id" v-model="editMaterial.dimension_uom_id" :settings="height_uom_settings">
-                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            <option disabled v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                         </selectize>    
                                                     </div>
                                                 </div>   
@@ -640,7 +644,7 @@
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
-                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="length_uom_settings">
+                                                    <selectize disabled id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="length_uom_settings">
                                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                     </selectize>    
                                                 </div>
@@ -654,7 +658,7 @@
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
-                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="width_uom_settings">
+                                                    <selectize disabled id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="width_uom_settings">
                                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                     </selectize>    
                                                 </div>
@@ -668,7 +672,7 @@
                                                 </div>
                 
                                                 <div class="col-sm-4 p-l-2">
-                                                    <selectize id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="height_uom_settings">
+                                                    <selectize disabled id="uom" name="dimension_uom_id" v-model="newMaterial.dimension_uom_id" :settings="height_uom_settings">
                                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                                     </selectize>    
                                                 </div>
@@ -950,16 +954,16 @@ var data = {
         placeholder: 'Activity Configuration',
     },
     weight_uom_settings: {
-        placeholder: 'Select weight UOM!'
+        placeholder: 'weight UOM!'
     },
     height_uom_settings: {
-        placeholder: 'Select height UOM!'
+        placeholder: 'height UOM!'
     },
     length_uom_settings: {
-        placeholder: 'Select length UOM!'
+        placeholder: 'length UOM!'
     },
     width_uom_settings: {
-        placeholder: 'Select width UOM!'
+        placeholder: 'width UOM!'
     },
     area_uom_settings: {
         placeholder: 'Select area UOM!'
@@ -1042,18 +1046,19 @@ var vm = new Vue({
     computed:{
         addMaterialOk: function(){
             let isOk = false;
-
-            if(this.newMaterial.material_id == "" || 
-            this.newMaterial.quantity == "" ||
-            this.newMaterial.dimension_uom_id == "" ||
-            this.newMaterial.height == "" || 
-            this.newMaterial.height == 0 || 
-            this.newMaterial.lengths == "" ||
-            this.newMaterial.lengths == 0 ||
-            this.newMaterial.width == "" ||
-            this.newMaterial.width == 0 ||
-            this.newMaterial.source == ""){
-                isOk = true;
+            if(this.newMaterial.dimension_uom_id != "" && this.newMaterial.dimension_uom_id != null){
+                if(this.newMaterial.material_id == "" || 
+                this.newMaterial.quantity == "" ||
+                this.newMaterial.dimension_uom_id == "" ||
+                this.newMaterial.height == "" || 
+                this.newMaterial.height == 0 || 
+                this.newMaterial.lengths == "" ||
+                this.newMaterial.lengths == 0 ||
+                this.newMaterial.width == "" ||
+                this.newMaterial.width == 0 ||
+                this.newMaterial.source == ""){
+                    isOk = true;
+                }
             }
             
             return isOk;
@@ -1061,17 +1066,19 @@ var vm = new Vue({
         addMaterialEditOk: function(){
             let isOk = false;
             
-            if(this.editMaterial.material_id == "" || 
-            this.editMaterial.quantity == "" ||
-            this.editMaterial.dimension_uom_id == "" ||
-            this.editMaterial.height == "" || 
-            this.editMaterial.height == 0 || 
-            this.editMaterial.lengths == "" ||
-            this.editMaterial.lengths == 0 ||
-            this.editMaterial.width == "" ||
-            this.editMaterial.width == 0 ||
-            this.editMaterial.source == ""){
-                isOk = true;
+            if(this.editMaterial.dimension_uom_id != "" && this.editMaterial.dimension_uom_id != null){
+                if(this.editMaterial.material_id == "" || 
+                this.editMaterial.quantity == "" ||
+                this.editMaterial.dimension_uom_id == "" ||
+                this.editMaterial.height == "" || 
+                this.editMaterial.height == 0 || 
+                this.editMaterial.lengths == "" ||
+                this.editMaterial.lengths == 0 ||
+                this.editMaterial.width == "" ||
+                this.editMaterial.width == 0 ||
+                this.editMaterial.source == ""){
+                    isOk = true;
+                }
             }
             
             return isOk;
@@ -2011,28 +2018,28 @@ var vm = new Vue({
                     title: "This activity end date is after parent WBS end date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', wbs_end_date);
+                $('#edit_planned_end_date').datepicker('setDate', wbs_end_date);
             }else if(activity_end_date < wbs_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
                     title: "This activity end date is before parent WBS start date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', wbs_start_date);
+                $('#edit_planned_end_date').datepicker('setDate', wbs_start_date);
             }else if(activity_end_date < pro_planned_start_date){
                 iziToast.warning({
                     displayMode: 'replace',
                     title: "this activity end date is behind project start date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', pro_planned_start_date);
+                $('#edit_planned_end_date').datepicker('setDate', pro_planned_start_date);
             }else if(activity_end_date > pro_planned_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
                     title: "this activity end date is after project end date",
                     position: 'topRight',
                 });
-                $('#planned_end_date').datepicker('setDate', pro_planned_end_date);
+                $('#edit_planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
         },
         'newActivity.activity_configuration_id' : function(newValue){
@@ -2053,13 +2060,17 @@ var vm = new Vue({
         },
         'editActivity.activity_configuration_id' : function(newValue){
             if(newValue != ""){
-                this.activity_configs.forEach(activity_config => {
-                    if(newValue == activity_config.id){
-                        this.editActivity.number = activity_config.number;
-                        this.editActivity.name = activity_config.name;
-                        this.editActivity.description = activity_config.description;
-                    }
-                });
+                if(this.openModalFirstTime){
+                    this.openModalFirstTime = false;
+                }else{
+                    this.activity_configs.forEach(activity_config => {
+                        if(newValue == activity_config.id){
+                            this.editActivity.number = activity_config.number;
+                            this.editActivity.name = activity_config.name;
+                            this.editActivity.description = activity_config.description;
+                        }
+                    });
+                }
             }else{
                 this.editActivity.number = "";
                 this.editActivity.name = "";
@@ -2205,8 +2216,19 @@ var vm = new Vue({
         },
         'newMaterial.material_id': function(newValue) {
             if(newValue != ""){
+                this.newMaterial.dimension_uom_id = "";
                 this.newMaterials.forEach(material => {
                     if(material.id == newValue){
+                        this.newMaterial.dimension_uom_id = material.dimension_uom_id;
+                        if(material.dimension_uom_id != null){
+                            this.newMaterial.lengths = material.length+"";
+                            this.newMaterial.width = material.width+"";
+                            this.newMaterial.height = material.height+"";
+                        }else{
+                            this.newMaterial.lengths = "";
+                            this.newMaterial.width =  "";
+                            this.newMaterial.height =  "";
+                        }
                         this.newMaterial.material_name = material.code+" - "+material.description;
                     }
                 });
@@ -2223,8 +2245,19 @@ var vm = new Vue({
         },
         'editMaterial.material_id': function(newValue) {
             if(newValue != ""){
+                this.editMaterial.dimension_uom_id = "";
                 this.editMaterials.forEach(material => {
                     if(material.id == newValue){
+                        this.editMaterial.dimension_uom_id = material.dimension_uom_id;
+                        if(material.dimension_uom_id != null){
+                            this.editMaterial.lengths = material.length+"";
+                            this.editMaterial.width = material.width+"";
+                            this.editMaterial.height = material.height+"";
+                        }else{
+                            this.editMaterial.lengths = "";
+                            this.editMaterial.width =  "";
+                            this.editMaterial.height =  "";
+                        }
                         this.editMaterial.material_name = material.code+" - "+material.description;
                     }
                 });

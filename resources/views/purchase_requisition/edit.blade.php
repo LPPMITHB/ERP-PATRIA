@@ -174,7 +174,6 @@
                                             <th style="width: 15%">Project Number</th>
                                             <th style="width: 20%">WBS</th>
                                             <th style="width: 35%">Job Order</th>
-                                            <th style="width: 15%">Vendor</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
@@ -183,8 +182,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis">{{ data.project_number }}</td>
                                             <td class="tdEllipsis">{{ data.wbs_number }} - {{ data.wbs_description }}</td>
-                                            <td class="tdEllipsis">{{ data.service }} - {{ data.service_detail }}</td>
-                                            <td class="tdEllipsis">{{ data.vendor_name }}</td>
+                                            <td class="tdEllipsis">{{ data.job_order }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a v-show="data.prd_id == null" href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
                                                     DELETE
@@ -209,13 +207,8 @@
                                                 </selectize>  
                                             </td>
                                             <td class="p-l-0 textLeft">
-                                                <selectize v-model="subConInput.activity_id" :settings="jobOrderSettings" >
-                                                    <option v-for="(activity, index) in modelActivity" :value="activity.id">{{ activity.service_detail.service.name }} - {{ activity.service_detail.name }}</option>
-                                                </selectize>  
-                                            </td>
-                                            <td class="no-padding">
-                                                <input v-model="subConInput.vendor_name" type="text" class="form-control" disabled/>
-                                            </td>
+                                                <input class="form-control" v-model="subConInput.job_order" placeholder="Please Input Job Order">
+                                            </td>                                            </td>
                                             <td class="p-l-0  textCenter"> 
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
@@ -546,13 +539,7 @@
                 this.subConInput.wbs_id = "";
                 this.subConInput.wbs_number = "";
                 this.subConInput.wbs_description = "";
-                this.subConInput.vendor_id = "";
-                this.subConInput.vendor_name = "";
-                this.subConInput.activity_id = "";
-                this.subConInput.service = "";
-                this.subConInput.service_detail = "";
-                this.subConInput.service_detail_id = "";
-                this.subConInput.activity_detail_id = "";
+                this.subConInput.job_order = "";
 
                 this.newIndex = Object.keys(this.dataMaterial).length+1;
             },
@@ -590,7 +577,7 @@
                 data.project_number = this.editInput.project_number 
                 data.required_date = this.editInput.required_date 
                 data.alocation = this.editInput.alocation 
-                
+                console.log(data);
                 if(this.modelPR.type == 1){
                     var type = "Material";
                 }else if(this.modelPR.type == 2){
@@ -628,7 +615,6 @@
                     var data = JSON.stringify(this.dataInput);
                 }else if(this.modelPR.type == 3){
                     var data = JSON.stringify(this.subConInput);
-                    this.activity_ids.push(this.subConInput.activity_id);
                 }
                 data = JSON.parse(data);
 
@@ -820,13 +806,7 @@
                     this.subConInput.wbs_id = "";
                     this.subConInput.wbs_number = "";
                     this.subConInput.wbs_description = "";
-                    this.subConInput.activity_id = "";
-                    this.subConInput.vendor_id = "";
-                    this.subConInput.vendor_code = "";
-                    this.subConInput.vendor_name = "";
-                    this.subConInput.service = "";
-                    this.subConInput.service_detail = "";
-                    this.subConInput.activity_detail_id = "";
+                    this.subConInput.job_order = "";
                 }
             },
             'subConInput.wbs_id' : function(newValue){
@@ -851,52 +831,11 @@
                     this.subConInput.wbs_id = "";
                     this.subConInput.wbs_number = "";
                     this.subConInput.wbs_description = "";
-                    this.subConInput.activity_id = "";
-                    this.subConInput.vendor_id = "";
-                    this.subConInput.vendor_code = "";
-                    this.subConInput.vendor_name = "";
-                    this.subConInput.service = "";
-                    this.subConInput.service_detail = "";
-                    this.subConInput.activity_detail_id = "";
-                }
-            },
-            'subConInput.activity_id' : function(newValue){
-                if(newValue != ""){
-                    $('div.overlay').show();
-                    this.modelActivity.forEach(activity => {
-                        if(activity.id == newValue){
-                            this.subConInput.vendor_id = activity.vendor_id;
-                            if(activity.vendor){
-                                this.subConInput.vendor_code = activity.vendor.code;
-                                this.subConInput.vendor_name = activity.vendor.name;
-                            }else{
-                                this.subConInput.vendor_name = '-';
-                            }
-                            this.subConInput.service = activity.service_detail.service.name;
-                            this.subConInput.service_detail = activity.service_detail.name;
-                            this.subConInput.service_detail_id = activity.service_detail.id;
-                            this.subConInput.activity_detail_id = activity.id;
-                        }
-                    })
-                        $('div.overlay').hide();
-                }else{
-                    this.subConInput.activity_id = "";
-                    this.subConInput.vendor_id = "";
-                    this.subConInput.vendor_code = "";
-                    this.subConInput.vendor_name = "";
-                    this.subConInput.service = "";
-                    this.subConInput.service_detail = "";
-                    this.subConInput.service_detail_id = "";
-                    this.subConInput.activity_detail_id = "";
+                    this.subConInput.job_order = "";
                 }
             },
         },
         created: function() {
-            window.axios.get('/api/getActivityId').then(({ data }) => {
-                data.forEach(id=>{
-                    this.activity_ids.push(id);
-                })
-            });
             var data = this.modelPRD;
             data.forEach(prd => {
                 if(prd.required_date != null && prd.required_date != ''){

@@ -169,8 +169,8 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="15%">Material Code</th>
-                            <th width="31%">Description</th>
+                            <th width="15%">Material Number</th>
+                            <th width="31%">Material Description</th>
                             <th width="7%">Quantity</th>
                             <th width="7%">Used</th>
                             <th width="10%">Unit</th>
@@ -185,8 +185,8 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->code }}">{{ $PrOD->material->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->material->description }}">{{ $PrOD->material->description }}</td>
-                                <td>{{ number_format($PrOD->quantity) }}</td>
-                                <td>{{ number_format($PrOD->actual) }}</td>
+                                <td>{{ number_format($PrOD->quantity,2) }}</td>
+                                <td>{{ number_format($PrOD->actual,2) }}</td>
                                 <td>{{ $PrOD->material->uom->unit }}</td>
                                 <td>{{ $PrOD->source }}</td>
                             </tr>
@@ -204,9 +204,10 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Resource Name</th>
-                                <th width="31%">Description</th>
-                                <th width="34%">Quantity</th>
+                                <th width="15%">Category</th>
+                                <th width="30%">Resource</th>
+                                <th width="30%">Resource Detail</th>
+                                <th width="20%">Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -215,8 +216,17 @@
                             @if($PrOD->resource_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->description }}">{{ ($PrOD->resource->description) ? $PrOD->resource->description : '-'}}</td>
+                                    @if($PrOD->category_id == 1)
+                                        <td>Subcon</td>
+                                    @elseif($PrOD->category_id == 2)
+                                        <td>Others</td>
+                                    @elseif($PrOD->category_id == 3)
+                                        <td>External</td>
+                                    @elseif($PrOD->category_id == 4)
+                                        <td>Internal</td>
+                                    @endif
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->description }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->description }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '' }}">{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '-'}}</td>
                                     <td>{{ number_format($PrOD->quantity) }}</td>
                                 </tr>
                             @endif
@@ -231,8 +241,9 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Resource Name</th>
-                                <th width="31%">Operational Resource</th>
+                                <th width="15%">Category</th>
+                                <th width="30%">Resource</th>
+                                <th width="31%">Resource Detail</th>
                                 <th width="17%">Performance</th>
                                 <th width="17%">Usage</th>
                             </tr>
@@ -241,21 +252,28 @@
                             @php($counter=1)
                             @foreach($modelPrO->ProductionOrderDetails as $PrOD)
                                 @if($PrOD->resource_id != "")
-                                    @if($PrOD->production_order_detail_id != null)
-                                        <tr>
-                                            <td>{{ $counter++ }}</td>
-                                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
-                                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resourceDetail->code }} - {{ $PrOD->resourceDetail->brand }}">{{ $PrOD->resourceDetail->code }} - {{ $PrOD->resourceDetail->brand }}</td>
-                                            @php($performance = isset($PrOD->performance) ? number_format($PrOD->performance) : '-')
-                                            @if($performance == '-')
-                                                @php($unit = '')
-                                            @else
-                                                @php($unit = isset($PrOD->performanceUom) ? $PrOD->performanceUom->unit : '')
-                                            @endif
-                                            <td class="tdEllipsis">{{ $performance.' '.$unit}}</td>
-                                            <td class="tdEllipsis">{{ ($PrOD->usage) ? number_format($PrOD->usage).' Hour(s)' : '0 Hour'}}</td>
-                                        </tr>
-                                    @endif
+                                    <tr>
+                                        <td>{{ $counter++ }}</td>
+                                        @if($PrOD->category_id == 1)
+                                            <td>Subcon</td>
+                                        @elseif($PrOD->category_id == 2)
+                                            <td>Others</td>
+                                        @elseif($PrOD->category_id == 3)
+                                            <td>External</td>
+                                        @elseif($PrOD->category_id == 4)
+                                            <td>Internal</td>
+                                        @endif
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}">{{ $PrOD->resource->code }} - {{ $PrOD->resource->name }}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '' }}">{{ ($PrOD->resourceDetail) ? $PrOD->resourceDetail->code : '-'}}</td>
+                                        @php($performance = isset($PrOD->performance) ? number_format($PrOD->performance) : '-')
+                                        @if($performance == '-')
+                                            @php($unit = '')
+                                        @else
+                                            @php($unit = isset($PrOD->performanceUom) ? $PrOD->performanceUom->unit : '')
+                                        @endif
+                                        <td class="tdEllipsis">{{ $performance.' '.$unit}}</td>
+                                        <td class="tdEllipsis">{{ ($PrOD->usage) ? number_format($PrOD->usage).' Hour(s)' : '0 Hour'}}</td>
+                                    </tr>
                                 @endif
                             @endforeach
                         </tbody>

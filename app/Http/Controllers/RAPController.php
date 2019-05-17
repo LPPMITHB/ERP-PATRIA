@@ -11,6 +11,7 @@ use App\Models\Bom;
 use App\Models\Rap;
 use App\Models\Stock;
 use App\Models\RapDetail;
+use App\Models\MaterialRequisition;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\Project;
@@ -207,6 +208,71 @@ class RAPController extends Controller
             }
         }
     } 
+
+    public function showMaterialEvaluationRepair(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $project = Project::findOrFail($id);
+        $materialEvaluation = Collection::make();
+        $modelBom = Bom::where('project_id',$id)->first();
+        $mr_ids = MaterialRequisition::where('project_id',$id)->get()->pluck('id')->toArray();
+
+        if($modelBom != null){
+            foreach($modelBom->bomDetails as $bomDetail){
+                if($bomDetail->material != null){
+                    if(count($bomDetail->material->materialRequisitionDetails)>0){
+                        foreach ($bomDetail->material->materialRequisitionDetails->whereIn('material_requisition_id', $mr_ids) as $mrd) {
+                            if(count($materialEvaluation)>0){
+                                $material_not_found = true;
+                                foreach ($materialEvaluation as $existing) {
+                                    if($mrd->material->code == $existing['material_code']){
+                                        $existing['used'] += $mrd->issued;
+                                        $material_not_found = false;
+                                    }
+
+                                }
+                                
+                                if($material_not_found){
+                                    $materialEvaluation->push([
+                                        "material_code" => $bomDetail->material->code,
+                                        "material_description" => $bomDetail->material->description,
+                                        "unit" => $bomDetail->material->uom->unit,
+                                        "quantity" => $bomDetail->quantity,
+                                        "used" => $mrd->issued,
+                                    ]); 
+                                }
+                            }else{
+                                $materialEvaluation->push([
+                                    "material_code" => $bomDetail->material->code,
+                                    "material_description" => $bomDetail->material->description,
+                                    "unit" => $bomDetail->material->uom->unit,
+                                    "quantity" => $bomDetail->quantity,
+                                    "used" => $mrd->issued,
+                                ]);                                
+                            }
+                        }
+                    }else{
+                        $materialEvaluation->push([
+                            "material_code" => $bomDetail->material->code,
+                            "material_description" => $bomDetail->material->description,
+                            "unit" => $bomDetail->material->uom->unit,
+                            "quantity" => $bomDetail->quantity,
+                            "used" => 0,
+                        ]);
+                    }
+                }
+            }
+
+            return view('rap.showMaterialEvaluationRepair', compact('project','materialEvaluation','route'));
+        }else{
+            $route = $request->route()->getPrefix();
+            if($route == '/rap'){
+                return redirect()->route('rap.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+            }elseif($route == '/rap_repair'){
+                return redirect()->route('rap_repair.selectProjectViewRM')->with('error', "This WBS doesn't have BOM");
+            }
+        }
+    }  
     
      public function index(Request $request, $id)
     {
@@ -339,6 +405,92 @@ class RAPController extends Controller
         return view('rap.viewPlannedCost', compact('project','costs','data','route'));
     }
 
+
+    public function viewPlannedCostRepair(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $project = Project::findOrFail($id);   
+        $wbss = $project->wbss;
+        $costs = Cost::where('project_id', $id)->get();  
+        $raps = Rap::where('project_id', $id)->get();  
+        $totalCostProject = 0;
+
+        foreach($costs as $cost){
+            $totalCostProject += $cost->plan_cost;
+        }
+
+        $data = Collection::make();
+        
+        foreach($wbss as $wbs){
+            $costPerWbs = 0;
+            foreach ($wbs->activities as $activity) {
+                if(count($activity->activityDetails)>0){
+                    foreach ($activity->activityDetails as $act_detail) {
+                        $price_per_kg = $act_detail->material->cost_standard_price_per_kg;
+                        $price = $act_detail->material->cost_standard_price;
+                        if($act_detail->weight != null){
+                            $costPerWbs += $price_per_kg * $act_detail->weight;
+                        }else{                            
+                            $costPerWbs += $price * $act_detail->quantity_material;
+                        }
+                        
+                    }
+                }
+            }
+
+            $TempwbsCost = 0;
+            $wbsCost = Collection::make();
+            self::getWbsCostRepair($wbs,$TempwbsCost,$costs, $wbsCost);
+            $totalCost = 0;
+            foreach($wbsCost as $cost){
+                $totalCost += $cost;
+            }
+
+            if($wbs->wbs){
+                $data->push([
+                    "id" => $wbs->code , 
+                    "parent" => $wbs->wbs->code,
+                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost,2).'</b>',
+                    "icon" => "fa fa-suitcase"
+                ]);
+            }else{
+                $totalCostProject += $totalCost;
+                $data->push([
+                    "id" => $wbs->code , 
+                    "parent" => $project->number,
+                    "text" => $wbs->number.' - '.$wbs->description.' <b>| Sub Total Cost : Rp.'.number_format($totalCost,2).'</b>',
+                    "icon" => "fa fa-suitcase"
+                ]);
+            }  
+        }
+
+        foreach($costs as $cost){
+            if($cost->wbs_id == null){
+                $data->push([
+                    "id" => 'COST'.$cost->id , 
+                    "parent" => $project->number,
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost,2).'</b>',
+                    "icon" => "fa fa-money"
+                ]);
+            }else{
+                $data->push([
+                    "id" => 'COST'.$cost->id , 
+                    "parent" => $cost->wbs->code,
+                    "text" => 'Other Cost - <b>Rp.'.number_format($cost->plan_cost,2).'</b>',
+                    "icon" => "fa fa-money"
+                ]);
+            }
+        }
+
+        $data->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name.' <b>| Total Cost : Rp.'.number_format($totalCostProject,2).'</b>',
+            "icon" => "fa fa-ship"
+        ]);
+        return view('rap.viewPlannedCost', compact('project','costs','data','route'));
+    }
+
     public function getWbsCost($wbs,$wbsCost,$raps,$costs, $finalCost){
         if(count($wbs->wbss)>0){
             $RapCost = 0;
@@ -373,6 +525,62 @@ class RAPController extends Controller
                 }
             } 
             $wbsCost = $RapCost + $otherCost;
+            $finalCost->push($wbsCost);
+        }
+    }
+
+    public function getWbsCostRepair($wbs,$wbsCost,$costs, $finalCost){
+        if(count($wbs->wbss)>0){
+            $costPerWbs = 0;
+            foreach ($wbs->activities as $activity) {
+                if(count($activity->activityDetails)>0){
+                    foreach ($activity->activityDetails as $act_detail) {
+                        $price_per_kg = $act_detail->material->cost_standard_price_per_kg;
+                        $price = $act_detail->material->cost_standard_price;
+                        if($act_detail->weight != null){
+                            $costPerWbs += $price_per_kg * $act_detail->weight;
+                        }else{                            
+                            $costPerWbs += $price * $act_detail->quantity_material;
+                        }
+                        
+                    }
+                }
+            }
+            $otherCost = 0;
+            foreach($costs as $cost){
+                if($cost->wbs_id == $wbs->id){
+                    $otherCost += $cost->plan_cost;
+                }
+            } 
+            $wbsCost = $costPerWbs + $otherCost;
+            $finalCost->push($wbsCost);
+            foreach($wbs->wbss as $wbs){
+                self::getWbsCostRepair($wbs,$wbsCost,$costs,$finalCost);
+            }
+        }else{
+            $costPerWbs = 0;
+            foreach ($wbs->activities as $activity) {
+                if(count($activity->activityDetails)>0){
+                    foreach ($activity->activityDetails as $act_detail) {
+                        $price_per_kg = $act_detail->material->cost_standard_price_per_kg;
+                        $price = $act_detail->material->cost_standard_price;
+                        if($act_detail->weight != null){
+                            $costPerWbs += $price_per_kg * $act_detail->weight;
+                        }else{                            
+                            $costPerWbs += $price * $act_detail->quantity_material;
+                        }
+                        
+                    }
+                }
+            }
+
+            $otherCost = 0;
+            foreach($costs as $cost){
+                if($cost->wbs_id == $wbs->id){
+                    $otherCost += $cost->plan_cost;
+                }
+            } 
+            $wbsCost = $costPerWbs + $otherCost;
             $finalCost->push($wbsCost);
         }
     }

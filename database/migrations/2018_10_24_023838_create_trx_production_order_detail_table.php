@@ -26,9 +26,11 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->string('source')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('resource_detail_id')->nullable();
+            $table->unsignedInteger('trx_resource_id')->nullable();
+            $table->unsignedInteger('category_id')->nullable();
             $table->unsignedInteger('service_id')->nullable();
-            $table->integer('quantity')->nullable();
-            $table->integer('actual')->nullable();
+            $table->float('quantity',15,2)->nullable();
+            $table->float('actual',15,2)->nullable();
             $table->integer('performance')->nullable();
             $table->unsignedInteger('performance_uom_id')->nullable();
             $table->longText('morale')->nullable();
@@ -41,6 +43,7 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->foreign('material_id')->references('id')->on('mst_material');
             $table->foreign('resource_id')->references('id')->on('mst_resource');
             $table->foreign('resource_detail_id')->references('id')->on('mst_resource_detail');
+            $table->foreign('trx_resource_id')->references('id')->on('trx_resource');
             $table->foreign('service_id')->references('id')->on('mst_service');
             $table->foreign('performance_uom_id')->references('id')->on('mst_uom');
             $table->foreign('dimension_uom_id')->references('id')->on('mst_uom');

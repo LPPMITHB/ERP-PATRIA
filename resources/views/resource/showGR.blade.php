@@ -86,13 +86,13 @@
                                     <td>{{ $GRD->resourceDetail->resource->code }} - {{ $GRD->resourceDetail->resource->name }}</td>
                                     <td>{{ $GRD->resourceDetail->code }}</td>
                                     <td>
-                                        @if($GRD->resourceDetail->category_id == 0)
+                                        @if($GRD->resourceDetail->category_id == 1)
                                             Sub Con
-                                        @elseif($GRD->resourceDetail->category_id == 1)
-                                            Others
                                         @elseif($GRD->resourceDetail->category_id == 2)
-                                            External Equipment
+                                            Others
                                         @elseif($GRD->resourceDetail->category_id == 3)
+                                            External Equipment
+                                        @elseif($GRD->resourceDetail->category_id == 4)
                                             Internal Equipment
                                         @endif
                                     </td>

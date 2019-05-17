@@ -187,8 +187,8 @@
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <th style="width: 35%">Job Order</th>
-                                                <th style="width: 10%">Project</th>
-                                                <th style="width: 10%">WBS</th>
+                                                <th style="width: 10%">Area</th>
+                                                <th style="width: 10%">Area Unit</th>
                                                 <th style="width: 20%">Price / Service ({{selectedCurrency}})</th>
                                                 <th style="width: 10%">Disc. (%)</th>
                                                 <th style="width: 10%"></th>
@@ -197,11 +197,11 @@
                                         <tbody>
                                             <tr v-for="(PRD,index) in PRDetail">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{PRD.job_order}}</td>
-                                                <td class="tdEllipsis">{{PRD.project.number}} - {{PRD.project.name}}</td>
-                                                <td class="tdEllipsis">{{PRD.wbs.number}} - {{PRD.wbs.description}}</td>
+                                                <td class="tdEllipsis">{{PRD.activity_detail.job_order}}</td>
+                                                <td class="tdEllipsis">{{PRD.activity_detail.area}}</td>
+                                                <td class="tdEllipsis">{{PRD.activity_detail.area_uom.name}}</td>
                                                 <td class="tdEllipsis no-padding">
-                                                    <input class="form-control width100" v-model="PRD.price" placeholder="Please Input Total Price">
+                                                    <input class="form-control width100" v-model="PRD.activity_detail.service_detail.cost_standard_price" placeholder="Please Input Total Price">
                                                 </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="PRD.discount" placeholder="Discount">
@@ -446,7 +446,7 @@
                         ref = (decimal[0]+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
                     if(parseFloat((PRD.old_price+"").replace(/,/g , '')) != ref.replace(/,/g, '')){
-                        isOk = false;
+                        isOk = true;
                     }   
                 });
                 return isOk;
@@ -501,10 +501,6 @@
                         PRD.quantity = PRD.quantity.replace(/,/g , '');      
                         PRD.resource.cost_standard_price = PRD.resource.cost_standard_price.replace(/,/g , '');      
                     });
-                }else{
-                    data.forEach(PRD => {
-                        PRD.price = PRD.price.replace(/,/g , '');      
-                    });  
                 }
                 this.estimated_freight = this.estimated_freight.replace(/,/g , '');      
 
@@ -643,16 +639,16 @@
                         data.forEach(PRD => {
                         
                         // cost standard price
-                        var decimal = (PRD.price+"").replace(/,/g, '').split('.');
+                        var decimal = (PRD.activity_detail.service_detail.cost_standard_price+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
                             var maxDecimal = 2;
                             if((decimal[1]+"").length > maxDecimal){
-                                PRD.price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                PRD.activity_detail.service_detail.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                             }else{
-                                PRD.price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                PRD.activity_detail.service_detail.cost_standard_price = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                             }
                         }else{
-                            PRD.price = (PRD.price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            PRD.activity_detail.service_detail.cost_standard_price = (PRD.activity_detail.service_detail.cost_standard_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }  
 
                         // discount
@@ -733,7 +729,7 @@
                             });
                         }else{
                             this.PRDetail.forEach(prd => {
-                                prd.price = parseInt((prd.price+"").replace(/,/g , '')) / data.value;
+                                prd.activity_detail.service_detail.cost_standard_price = parseInt((prd.activity_detail.service_detail.price+"").replace(/,/g , '')) / data.value;
                             });
                         }
                     }
@@ -826,7 +822,7 @@
                 });
             }else{
                 data.forEach(PRD => {
-                    PRD.price = (PRD.price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    PRD.activity_detail.service_detail.cost_standard_price = (PRD.activity_detail.service_detail.cost_standard_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 });
             }
             Vue.directive('tooltip', function(el, binding){

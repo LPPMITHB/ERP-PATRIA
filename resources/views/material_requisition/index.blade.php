@@ -47,7 +47,7 @@
                                         NEED REVISION
                                     @elseif($modelMR->status == 4)
                                         REVISED
-                                    @elseif($modelMR->status == 4)
+                                    @elseif($modelMR->status == 5)
                                         REJECTED
                                     @else
 

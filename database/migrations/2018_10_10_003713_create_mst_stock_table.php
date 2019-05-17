@@ -18,6 +18,7 @@ class CreateMstStockTable extends Migration
             $table->unsignedInteger('material_id')->unique();
             $table->float('quantity',15,2);
             $table->float('reserved',15,2)->default(0);
+            $table->float('reserved_gi',15,2)->default(0);
             $table->unsignedInteger('branch_id');
             $table->timestamps();
 

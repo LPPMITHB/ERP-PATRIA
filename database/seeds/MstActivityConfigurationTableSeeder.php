@@ -1913,6 +1913,369 @@ class MstActivityConfigurationTableSeeder extends Seeder
                 'created_at' => '2019-03-06 16:20:23',
                 'updated_at' => '2019-03-06 16:20:23',
             ),
+            158 => 
+            array (
+                'id' => 171,
+                'name' => 'Persiapan pengedokan
+',
+                'description' => 'Persiapan pengedokan
+',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:27:40',
+                'updated_at' => '2019-04-11 11:27:40',
+            ),
+            159 => 
+            array (
+                'id' => 172,
+                'name' => 'Docking',
+                'description' => 'Docking',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:27:48',
+                'updated_at' => '2019-04-12 10:29:17',
+            ),
+            160 => 
+            array (
+                'id' => 173,
+                'name' => 'Penggunan dok untuk survey dan perbaikan
+',
+                'description' => 'Penggunan dok untuk survey dan perbaikan
+',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:27:55',
+                'updated_at' => '2019-04-11 11:27:55',
+            ),
+            161 => 
+            array (
+                'id' => 174,
+                'name' => 'Penggunaan area jetty sesudah naik dok
+',
+                'description' => 'Penggunaan area jetty sesudah naik dok
+',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:28:03',
+                'updated_at' => '2019-04-11 11:28:03',
+            ),
+            162 => 
+            array (
+                'id' => 176,
+                'name' => 'Pelayanan tali - temali pada saat kapal datang dan pergi
+',
+                'description' => 'Pelayanan tali - temali pada saat kapal datang dan pergi
+',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:28:14',
+                'updated_at' => '2019-04-11 11:28:14',
+            ),
+            163 => 
+            array (
+                'id' => 177,
+                'name' => 'Pelayanan pemanduan kapal dan master dock untuk pergerakan
+',
+                'description' => 'Pelayanan pemanduan kapal dan master dock untuk pergerakan
+',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:28:21',
+                'updated_at' => '2019-04-11 11:28:21',
+            ),
+            164 => 
+            array (
+                'id' => 178,
+                'name' => 'Asistensi TugBoat untuk pergerakan kapal pada saat kapal akan naik dock
+',
+                'description' => 'Asistensi TugBoat untuk pergerakan kapal pada saat kapal akan naik dock
+',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:28:30',
+                'updated_at' => '2019-04-11 11:28:30',
+            ),
+            165 => 
+            array (
+                'id' => 179,
+                'name' => 'Disediakan safety officer inspector selama kapal dalam masa perbaikan
+',
+                'description' => 'Disediakan safety officer inspector selama kapal dalam masa perbaikan
+',
+                'wbs_id' => 2,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:28:42',
+                'updated_at' => '2019-04-11 11:28:42',
+            ),
+            166 => 
+            array (
+                'id' => 180,
+                'name' => 'Gas Free
+',
+                'description' => 'Gas Free
+',
+                'wbs_id' => 2,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:28:49',
+                'updated_at' => '2019-04-11 11:28:49',
+            ),
+            167 => 
+            array (
+                'id' => 181,
+                'name' => 'Fasilitas penjagaan keamanan
+',
+                'description' => 'Diberikan jasa keamanan selama kapal berada di area galangan PAMI
+',
+                'wbs_id' => 2,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:28:58',
+                'updated_at' => '2019-04-11 11:28:58',
+            ),
+            168 => 
+            array (
+                'id' => 182,
+                'name' => 'Pembuatan laporan hasil pekerjaan dan dokumen lainnya
+',
+                'description' => 'Pembuatan laporan hasil pekerjaan dan dokumen lainnya
+',
+                'wbs_id' => 2,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:29:02',
+                'updated_at' => '2019-04-11 11:29:02',
+            ),
+            169 => 
+            array (
+                'id' => 183,
+            'name' => 'Dibuatkan gambar bukaan kulit (Shell Expansion)
+',
+                'description' => 'Menunjukkan area kapal yang direplating
+',
+                'wbs_id' => 2,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:29:11',
+                'updated_at' => '2019-04-11 11:29:11',
+            ),
+            170 => 
+            array (
+                'id' => 184,
+                'name' => 'Air Pressure Test pada tangki void area perbaikan
+',
+                'description' => 'Air Pressure Test pada tangki void area perbaikan
+',
+                'wbs_id' => 2,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:29:15',
+                'updated_at' => '2019-04-11 11:29:15',
+            ),
+            171 => 
+            array (
+                'id' => 185,
+                'name' => 'Penggunaan alat berat
+',
+                'description' => 'Equipment support untuk assist, lift up/ down,
+Penggunaan aktual akan dikonfirmasi dengan owner representative
+',
+                'wbs_id' => 2,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 11:30:55',
+                'updated_at' => '2019-04-11 11:30:55',
+            ),
+            172 => 
+            array (
+                'id' => 186,
+                'name' => 'Plate',
+                'description' => 'Plate',
+                'wbs_id' => 85,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:34:29',
+                'updated_at' => '2019-04-11 14:34:29',
+            ),
+            173 => 
+            array (
+                'id' => 187,
+                'name' => 'Stiffener Line 1-5',
+                'description' => 'Stiffener Line 1-5',
+                'wbs_id' => 85,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:34:38',
+                'updated_at' => '2019-04-11 14:34:38',
+            ),
+            174 => 
+            array (
+                'id' => 188,
+                'name' => 'Roundbar',
+                'description' => 'Roundbar',
+                'wbs_id' => 85,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:34:45',
+                'updated_at' => '2019-04-11 14:34:45',
+            ),
+            175 => 
+            array (
+                'id' => 189,
+                'name' => 'Plate',
+                'description' => 'Plate',
+                'wbs_id' => 86,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:35:01',
+                'updated_at' => '2019-04-11 14:35:01',
+            ),
+            176 => 
+            array (
+                'id' => 190,
+                'name' => 'Stiffener Line 1-5',
+                'description' => 'Stiffener Line 1-5',
+                'wbs_id' => 86,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:35:08',
+                'updated_at' => '2019-04-11 14:35:08',
+            ),
+            177 => 
+            array (
+                'id' => 191,
+                'name' => 'Roundbar',
+                'description' => 'Roundbar',
+                'wbs_id' => 86,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-11 14:35:15',
+                'updated_at' => '2019-04-11 14:35:15',
+            ),
+            178 => 
+            array (
+                'id' => 192,
+                'name' => 'Undocking',
+                'description' => 'Undocking',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:29:23',
+                'updated_at' => '2019-04-12 10:29:23',
+            ),
+            179 => 
+            array (
+                'id' => 193,
+                'name' => 'Gambar Bukaan Kulit',
+                'description' => 'Gambar Bukaan Kulit',
+                'wbs_id' => 1,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:29:44',
+                'updated_at' => '2019-04-12 10:29:44',
+            ),
+            180 => 
+            array (
+                'id' => 194,
+                'name' => 'Plate',
+                'description' => 'Plate',
+                'wbs_id' => 90,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:35:46',
+                'updated_at' => '2019-04-12 10:35:46',
+            ),
+            181 => 
+            array (
+                'id' => 195,
+                'name' => 'Strip',
+                'description' => 'Strip',
+                'wbs_id' => 90,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:35:51',
+                'updated_at' => '2019-04-12 10:35:51',
+            ),
+            182 => 
+            array (
+                'id' => 196,
+                'name' => 'Engsel',
+                'description' => 'Engsel',
+                'wbs_id' => 90,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:35:56',
+                'updated_at' => '2019-04-12 10:35:56',
+            ),
+            183 => 
+            array (
+                'id' => 197,
+                'name' => 'Plate',
+                'description' => 'Plate',
+                'wbs_id' => 91,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:36:11',
+                'updated_at' => '2019-04-12 10:36:11',
+            ),
+            184 => 
+            array (
+                'id' => 198,
+                'name' => 'Strip',
+                'description' => 'Strip',
+                'wbs_id' => 91,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:36:17',
+                'updated_at' => '2019-04-12 10:36:17',
+            ),
+            185 => 
+            array (
+                'id' => 199,
+                'name' => 'Engsel',
+                'description' => 'Engsel',
+                'wbs_id' => 91,
+                'duration' => 1,
+                'user_id' => 3,
+                'branch_id' => 2,
+                'created_at' => '2019-04-12 10:36:27',
+                'updated_at' => '2019-04-12 10:36:27',
+            ),
         ));
         
         

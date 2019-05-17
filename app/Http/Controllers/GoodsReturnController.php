@@ -219,6 +219,7 @@ class GoodsReturnController extends Controller
         foreach($modelGRD as $GRD){
             $GRD['returned_temp'] = 0;
             $GRD['available'] = $GRD->quantity - $GRD->returned;
+            $GRD['is_decimal'] = $GRD->material->uom->is_decimal;
         }
         return view('goods_return.createGoodsReturnGR', compact('modelGR','modelGRD','route','vendor'));
     }

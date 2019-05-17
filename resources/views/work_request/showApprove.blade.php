@@ -145,7 +145,7 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->code}}">{{ $WRD->material->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$WRD->material->description}}">{{ $WRD->material->description }}</td>
                                 <td>{{ $WRD->material->uom->unit }}</td>
-                                <td>{{ number_format($WRD->quantity) }}</td>
+                                <td>{{ number_format($WRD->quantity,2) }}</td>
                                 @if(isset($WRD->wbs))
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}">{{ $WRD->wbs->number }} - {{ $WRD->wbs->description }}</td>
                                 @else

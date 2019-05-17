@@ -132,8 +132,8 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="15%">Material Code</th>
-                            <th width="30%">Description</th>
+                            <th width="15%">Material Number</th>
+                            <th width="30%">Material Description</th>
                             <th width="10%">Quantity</th>
                             <th width="10%">Unit</th>
                             <th width="10%">Source</th>
@@ -147,7 +147,7 @@
                                     <td>{{ $counter++ }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">{{ $BOMD->material->code }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
-                                    <td>{{ number_format($BOMD->quantity) }}</td>
+                                    <td>{{ number_format($BOMD->quantity,2) }}</td>
                                     <td>{{ $BOMD->material->uom->unit }}</td>
                                     <td>{{ $BOMD->source }}</td>
                                 </tr>
@@ -157,29 +157,39 @@
                 </table>
             </div> <!-- /.box-body -->
 
-            {{-- <div class="box-body p-t-0 p-b-5">
+            <div class="box-body p-t-0 p-b-5">
                 <h4>Resource</h4>
                 <table class="table table-bordered showTable tableFixed" id="resource-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Resource Name</th>
-                            <th width="30%">Description</th>
-                            <th width="30%">Quantity</th>
+                            <th width="15%">Category</th>
+                            <th width="30%">Resource</th>
+                            <th width="30%">Resource Detail</th>
+                            <th width="20%">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($modelRD as $RD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->description }}">{{ $RD->resource->description }}</td>
+                                @if($RD->category_id == 1)
+                                <td>Subcon</td>
+                                @elseif($RD->category_id == 2)
+                                <td>Others</td>
+                                @elseif($RD->category_id == 3)
+                                <td>External</td>
+                                @elseif($RD->category_id == 4)
+                                <td>Internal</td>
+                                @endif
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->description }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : "" }}">{{ ($RD->resourceDetail) ? $RD->resourceDetail->code : '-'  }}</td>
                                 <td>{{ $RD->quantity }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div> <!-- /.box-body --> --}}
+            </div> <!-- /.box-body -->
             
             @if($route == '/production_order_repair')
             <div class="box-body p-t-0 p-b-5">
@@ -219,63 +229,7 @@
             @verbatim
             <div id="production_order">
                 <div class="box-body">
-                    <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material</h4>
-                    <h4 class="box-title m-t-0" v-else-if="route == '/production_order_repair'">Add Additional Material / Resource / Service</h4>
-                    <table id="activity-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 10%">Type</th>
-                                <th style="width: 30%">Material Number</th>
-                                <th style="width: 30%">Material Description</th>
-                                <th style="width: 13%">Quantity</th>
-                                <th style="width: 12%"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data,index) in datas">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.type }}</td>
-                                <td class="tdEllipsis">{{ data.code }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
-                                <td class="tdEllipsis">{{ data.quantity }}</td>
-                                <td class="p-l-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                        EDIT
-                                    </a>
-                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                        DELETE
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft">
-                                    <selectize v-model="dataInput.type" :settings="typeSettings">
-                                        <option value="Material">Material</option>
-                                    </selectize>
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'" colspan="2">
-                                    <selectize v-model="dataInput.id" :settings="materialSettings" >
-                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == ''" colspan="2">
-                                    <selectize v-model="dataInput.id" :settings="nullSettings" disabled>
-                                        <option v-for="(resource, index) in resources" :value="resource.id"></option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0">
-                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
-                                </td>
-                                <td class="p-l-0 textCenter">
-                                    <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+
                     <div class="col-md-12 p-t-10 p-r-0">
                         <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                     </div>
@@ -288,25 +242,29 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Edit Additional Material / Service / Resource</h4>
+                                <h4 class="modal-title">Edit Additional Material</h4>
                             </div>
                             <div class="modal-body p-t-0">
                                 <div class="row" v-if="editInput.type == 'Material'">
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Material Name</label>
+                                        <label for="type" class="control-label p-b-10">Material Number</label>
                                         <selectize v-model="editInput.id" disabled>
-                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }} - {{ material.name }}</option>
+                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }}</option>
                                         </selectize>
                                     </div>
 
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Description</label>
+                                        <label for="type" class="control-label p-b-10">Material Name</label>
                                         <input class="form-control" v-model="editInput.description" disabled>
                                     </div>
 
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <label for="type" class="control-label p-b-10">Quantity</label>
                                         <input class="form-control" v-model="editInput.quantity">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="type" class="control-label p-b-10">Unit</label>
+                                        <input class="form-control" v-model="editInput.unit" disabled>
                                     </div>
                                 </div>
 
@@ -382,6 +340,8 @@
             name : "",
             description : "",
             quantity : "",
+            unit : "",
+            is_decimal : "",
         },
         typeSettings: {
             placeholder: 'Please Select Type'
@@ -405,7 +365,7 @@
         resources : [],
         services : [],
         bom : @json($modelBOM->bomDetails),
-        assignedResource : [],
+        assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
         route : @json($route),
@@ -415,7 +375,9 @@
             code : "",
             name : "",
             description : "",
-            quantity : ""
+            quantity : "",
+            unit : "",
+            is_decimal : ""
         }
     };
 
@@ -456,6 +418,8 @@
                 this.editInput.name = "";
                 this.editInput.description = "";
                 this.editInput.quantity = "";
+                this.editInput.unit = "";
+                this.editInput.is_decimal = "";
             },
             openEditModal(data,index){
                 this.clearEditInput();
@@ -464,6 +428,8 @@
                 this.editInput.description = data.description;
                 this.editInput.type = data.type;
                 this.editInput.quantity = data.quantity;
+                this.editInput.unit = data.unit;
+                this.editInput.is_decimal = data.is_decimal;
             },
             submitToTable(){
                 let data = this.datas[this.editInput.index];
@@ -481,6 +447,8 @@
                 this.dataInput.name = "";
                 this.dataInput.description = "";
                 this.dataInput.quantity = "";
+                this.dataInput.unit = "";
+                this.dataInput.is_decimal = "";
             },
             removeRow: function(index) {
                 this.datas.splice(index, 1);
@@ -531,6 +499,8 @@
                             }
                             this.dataInput.name = data.name;
                             this.dataInput.code = data.code;
+                            this.dataInput.unit = data.uom.unit;
+                            this.dataInput.is_decimal = data.uom.is_decimal;
                         });
                     }else if(this.dataInput.type == "Service"){
                         window.axios.get('/api/getServicePrO/'+newValue).then(({ data }) => {
@@ -551,10 +521,40 @@
                 this.dataInput.quantity = "";
             },
             'dataInput.quantity' : function(newvalue){
-                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                var is_decimal = this.dataInput.is_decimal;
+                if(is_decimal == 0){
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = this.dataInput.quantity.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }  
             },
             'editInput.quantity' : function(newValue){
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = this.editInput.quantity.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (this.editInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }    
             }
         },
         created: function() {

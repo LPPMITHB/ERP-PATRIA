@@ -109,7 +109,7 @@
                                 <th width="30%">Material Description</th>
                                 <th width="10%">Quantity</th>
                                 <th width="5%">Unit</th>
-                                <th width="15%">Cost per pcs</th>
+                                <th width="15%">Cost per unit</th>
                                 <th width="20%">Sub Total Cost</th>
                             </tr>
                         </thead>

@@ -295,19 +295,19 @@
                 }
 
                 if(this.submittedForm.height_uom_id != ""){
-                    if(this.submittedForm.height == ""){
+                    if(this.submittedForm.height == "" || this.submittedForm.density_id == ""){
                         isOk = true;
                     }
                 }
 
                 if(this.submittedForm.length_uom_id != ""){
-                    if(this.submittedForm.lengths == ""){
+                    if(this.submittedForm.lengths == "" || this.submittedForm.density_id == ""){
                         isOk = true;
                     }
                 }
 
                 if(this.submittedForm.width_uom_id != ""){
-                    if(this.submittedForm.width == ""){
+                    if(this.submittedForm.width == "" || this.submittedForm.density_id == ""){
                         isOk = true;
                     }
                 }

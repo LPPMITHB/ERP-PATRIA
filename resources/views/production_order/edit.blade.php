@@ -4,7 +4,7 @@
 @if($route == "/production_order")
     @breadcrumb(
         [
-            'title' => 'Create Production Order',
+            'title' => 'Edit Production Order',
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Project' => route('production_order.selectProject'),
@@ -17,7 +17,7 @@
 @elseif($route == "/production_order_repair")
     @breadcrumb(
         [
-            'title' => 'Create Production Order',
+            'title' => 'Edit Production Order',
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Project' => route('production_order_repair.selectProject'),
@@ -132,8 +132,8 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Material Name</th>
-                            <th width="30%">Description</th>
+                            <th width="35%">Material Number</th>
+                            <th width="30%">Material Description</th>
                             <th width="10%">Quantity</th>
                             <th width="10%">Unit</th>
                             <th width="10%">Source</th>
@@ -145,9 +145,9 @@
                             @if($BOMD->material_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }} - {{ $BOMD->material->name }}">{{ $BOMD->material->code }} - {{ $BOMD->material->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">{{ $BOMD->material->code }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
-                                    <td>{{ number_format($BOMD->quantity) }}</td>
+                                    <td>{{ number_format($BOMD->quantity,2) }}</td>
                                     <td>{{ $BOMD->material->uom->unit }}</td>
                                     <td>{{ $BOMD->source }}</td>
                                 </tr>
@@ -157,68 +157,67 @@
                 </table>
             </div> <!-- /.box-body -->
 
-            <div class="box-body p-t-0 p-b-5">
-                <h4>Resource</h4>
-                <table class="table table-bordered showTable tableFixed" id="resource-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="35%">Resource Name</th>
-                            <th width="30%">Description</th>
-                            <th width="30%">Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($modelRD as $RD)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->description }}">{{ $RD->resource->description }}</td>
-                                <td>{{ $RD->quantity }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> <!-- /.box-body -->
-            
-            @if($route == '/production_order_repair')
-            <div class="box-body p-t-0 p-b-5">
-                    <h4>Service</h4>
-                <table class="table table-bordered showTable" id="service-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="35%">Service Name</th>
-                            <th width="30%">Description</th>
-                            <th width="30%">Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php($counter = 1)
-                        @foreach($modelBOM->bomDetails as $BOMD)
-                            @if($BOMD->service_id != "")
-                                <tr>
-                                    <td>{{ $counter++ }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->code }} - {{ $BOMD->service->name }}">{{ $BOMD->service->code }} - {{ $BOMD->service->name }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->service->description }}">{{ $BOMD->service->description }}</td>
-                                    <td>{{ number_format($BOMD->quantity) }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> <!-- /.box-body -->
-            @endif
-
             @if($route == "/production_order")
                 <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order.updatePrO',['id' => $pro->id]) }}">
             @elseif($route == "/production_order_repair")
                 <form id="create-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.updatePrO',['id' => $pro->id]) }}">
             @endif
-                @csrf
-                <input type="hidden" name="_method" value="PATCH">
+            @csrf
+            <input type="hidden" name="_method" value="PATCH">
+
             @verbatim
             <div id="production_order">
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Resource</h4>
+                    <table id="resource-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="10%">Category</th>
+                                <th width="30%">Resource</th>
+                                <th width="28%">Resource Detail</th>
+                                <th width="12%">Status</th>
+                                <th width="12%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(data,index) in resources">
+                                <template v-if="data.resource_detail.code != null">
+                                    <td>{{ index + 1 }}</td>
+                                    <td v-if="data.resource.category_id == 1">Subcon</td>
+                                    <td v-else-if="data.resource.category_id == 2">Others</td>
+                                    <td v-else-if="data.resource.category_id == 3">External</td>
+                                    <td v-else-if="data.resource.category_id == 4">Internal</td>
+                                    <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                    <td>{{ data.resource_detail.code }}</td>
+                                    <td class="tdEllipsis"> {{ 'IDLE' }}</td>
+                                    <td class="p-l-0 " align="center">
+                                        <a @click.prevent="editResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">EDIT</a>
+                                        <a @click.prevent="deleteResource(data,index)" class="btn btn-danger btn-xs">DELETE</a>
+                                    </td>
+                                </template>
+                                <template v-else>
+                                    <td>{{ index + 1 }}</td>
+                                    <td v-if="data.resource.category_id == 1">Subcon</td>
+                                    <td v-else-if="data.resource.category_id == 2">Others</td>
+                                    <td v-else-if="data.resource.category_id == 3">External</td>
+                                    <td v-else-if="data.resource.category_id == 4">Internal</td>
+                                    <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                    <td>{{ data.resource_detail.code }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
+                                    <td class="tdEllipsis" v-show="data.status == 2"> {{ 'USED' }}</td>
+                                    <td class="p-l-0" align="center">
+                                        <a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">SELECT</a>
+                                        <a @click.prevent="deleteResource(data,index)" class="btn btn-danger btn-xs">DELETE</a>
+                                    </td>
+                                </template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            
                 <div class="box-body">
                     <h4 class="box-title m-t-0" v-if="route == '/production_order'">Add Additional Material / Resource</h4>
                     <h4 class="box-title m-t-0" v-else-if="route == '/production_order_repair'">Add Additional Material / Resource / Service</h4>
@@ -227,9 +226,10 @@
                             <tr>
                                 <th style="width: 5%">No</th>
                                 <th style="width: 10%">Type</th>
-                                <th style="width: 30%">Name</th>
-                                <th style="width: 35%">Description</th>
+                                <th style="width: 25%">Material Number</th>
+                                <th style="width: 30%">Material Description</th>
                                 <th style="width: 10%">Quantity</th>
+                                <th style="width: 10%">Unit</th>
                                 <th style="width: 10%"></th>
                             </tr>
                         </thead>
@@ -237,9 +237,10 @@
                             <tr v-for="(data,index) in datas">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.type }}</td>
-                                <td class="tdEllipsis">{{ data.code }} - {{ data.name }}</td>
+                                <td class="tdEllipsis">{{ data.code }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>
+                                <td class="tdEllipsis">{{ data.unit }}</td>
                                 <td class="p-l-0 textCenter">
                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                         EDIT
@@ -256,44 +257,31 @@
                                 <td class="p-l-0 textLeft" v-if="route == '/production_order'">
                                     <selectize v-model="dataInput.type" :settings="typeSettings">
                                         <option value="Material">Material</option>
-                                        <option value="Resource">Resource</option>
                                     </selectize>
                                 </td>
                                 <td class="p-l-0 textLeft" v-else-if="route == '/production_order_repair'">
                                     <selectize v-model="dataInput.type" :settings="typeSettings">
                                         <option value="Material">Material</option>
-                                        <option value="Resource">Resource</option>
-                                        <option value="Service">Service</option>
                                     </selectize>
                                 </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'">
+                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Material'" colspan="2">
                                     <selectize v-model="dataInput.id" :settings="materialSettings" >
-                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.name }}</option>
+                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                     </selectize>  
                                 </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Resource'">
-                                    <selectize v-model="dataInput.id" :settings="resourceSettings" >
-                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == 'Service'">
-                                    <selectize v-model="dataInput.id" :settings="serviceSettings" >
-                                        <option v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0 textLeft" v-show="dataInput.type == ''">
+                                <td class="p-l-0 textLeft" v-show="dataInput.type == ''" colspan="2">
                                     <selectize v-model="dataInput.id" :settings="nullSettings" disabled>
-                                        <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
+                                        <option v-for="(resource, index) in resources" :value="resource.id"></option>
                                     </selectize>  
-                                </td>
-                                <td class="p-l-0">
-                                    <input class="form-control" v-model="dataInput.description" placeholder="-" disabled>
                                 </td>
                                 <td class="p-l-0" v-if="dataInput.id != ''">
                                     <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
                                 </td>
                                 <td class="p-l-0" v-else>
                                     <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity" disabled> 
+                                </td>
+                                <td class="p-l-0">
+                                    <input class="form-control" v-model="dataInput.unit" disabled> 
                                 </td>
                                 <td class="p-l-0 textCenter">
                                     <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
@@ -313,25 +301,29 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Edit Additional Material / Service / Resource</h4>
+                                <h4 class="modal-title">Edit Additional Material</h4>
                             </div>
                             <div class="modal-body p-t-0">
                                 <div class="row" v-if="editInput.type == 'Material'">
                                     <div class="col-sm-12">
                                         <label for="type" class="control-label p-b-10">Material Name</label>
                                         <selectize v-model="editInput.id" disabled>
-                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }} - {{ material.name }}</option>
+                                            <option v-for="(material, index) in materials" :value="material.id" disabled>{{ material.code }}</option>
                                         </selectize>
                                     </div>
 
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label p-b-10">Description</label>
+                                        <label for="type" class="control-label p-b-10">Material Description</label>
                                         <input class="form-control" v-model="editInput.description" disabled>
                                     </div>
 
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <label for="type" class="control-label p-b-10">Quantity</label>
                                         <input class="form-control" v-model="editInput.quantity">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="type" class="control-label p-b-10">Unit</label>
+                                        <input class="form-control" v-model="editInput.unit" disabled>
                                     </div>
                                 </div>
 
@@ -381,6 +373,51 @@
                     </div>
                 </div>
 
+                <div class="modal fade" id="select_resource">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Select Operational Resource</h4>
+                            </div>
+                            <div class="modal-body p-t-0">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="type" class="control-label p-b-10">Operational Resource</label>
+                                        <selectize id="edit_modal" v-model="editInputResource.resource_id" :settings="resourceSettings">
+                                            <option v-for="(resource, index) in resourceDetails" :value="resource.id">{{ resource.code }}</option>
+                                        </selectize>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered tableFixed showTable" v-show="editInputResource.resource_id != ''">
+                                    <thead>
+                                        <tr>
+                                            <th width="7%">No</th>
+                                            <th width="28%">Type</th>
+                                            <th width="15%">Status</th>
+                                            <th width="50%">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td class="tdEllipsis">{{ editInputResource.type }}</td>
+                                            <td class="tdEllipsis" v-if="editInputResource.status == 1">{{ 'IDLE' }}</td>
+                                            <td class="tdEllipsis" v-else-if="editInputResource.status == 2">{{ 'USED' }}</td>
+                                            <td class="tdEllipsis">{{ editInputResource.notes }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTableResource">SELECT</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @endverbatim
         </form>
@@ -407,6 +444,8 @@
             name : "",
             description : "",
             quantity : "",
+            unit : "",
+            is_decimal : ""
         },
         typeSettings: {
             placeholder: 'Please Select Type'
@@ -430,7 +469,6 @@
         resources : @json($resources),
         services : @json($services),
         bom : @json($modelBOM->bomDetails),
-        assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
         route : @json($route),
@@ -440,8 +478,21 @@
             code : "",
             name : "",
             description : "",
-            quantity : ""
-        }
+            quantity : "",
+            unit : "",
+            is_decimal : ""
+        },
+        editInputResource : {
+            resource_id: "",
+            type: "",
+            status: "",
+            notes : "",
+            index : "",
+            trx_resource_code : ""
+        },
+        selectedResource :[], 
+        deletedResource : [],
+        resourceDetails : [],
     };
 
     var vm = new Vue({
@@ -471,6 +522,11 @@
                     isOk = true;
                 }
                 return isOk;
+            },
+            selectOk: function(){
+                let isOk = false;
+
+                return isOk;
             }
         },
         methods: {
@@ -481,6 +537,112 @@
                 this.editInput.name = "";
                 this.editInput.description = "";
                 this.editInput.quantity = "";
+                this.editInput.unit = "";
+                this.editInput.is_decimal = "";
+            },
+            clearEditInputResource(){
+                this.editInputResource.resource_id = "";
+                this.editInputResource.type = "";
+                this.editInputResource.status = "";
+                this.editInputResource.notes = "";
+                this.editInputResource.index = "";
+                this.editInputResource.trx_resource_code = "";
+            },
+            deleteResource(data,index){
+                this.deletedResource.push(data.id);
+                this.resources.splice(index,1);
+            },
+            addResource(data,index) {
+                this.clearEditInputResource();
+                this.editInputResource.index = index;
+                this.resources.forEach(data=>{
+                    if(data.resource_detail.id != null && data.resource_detail.id != ''){
+                        this.selectedResource.push(data.resource_detail.id);
+                    }
+                })
+
+                let selectedResource = JSON.stringify(this.selectedResource);
+                var category_id = data.resource.category_id;
+
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource+'/'+category_id).then(({ data }) => {
+                    this.resourceDetails = data;
+                    this.resourceDetails.forEach(resourceDetail => {
+                        this.editInputResource.status = resourceDetail.status;
+                        this.editInputResource.trx_resource_code = resourceDetail.code;
+                        if(category_id == 1){
+                            this.editInputResource.type = "Subcon"
+                        }else if(category_id == 2){
+                            this.editInputResource.type = "Others"
+                        }else if(category_id == 3){
+                            this.editInputResource.type = "External Equipment"
+                        }else if(category_id == 4){
+                            this.editInputResource.type = "Internal Equipment"
+                        }
+
+                        if(resourceDetail.status == 1){
+                            this.editInputResource.notes = "-"
+                        }else if(resourceDetail.status == 2){
+                            this.editInputResource.notes = ""
+                        }
+                    });
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
+            },
+            editResource(data,index) {
+                $('div.overlay').hide();
+                this.clearEditInputResource();
+                this.editInputResource.index = index;
+                this.selectedResource.forEach(resource_id => {
+                    if(resource_id == data.resource_detail.id){
+                        let indexArr = this.selectedResource.indexOf(resource_id);
+                        this.selectedResource.splice(indexArr,1)
+                    }
+                });
+
+                let selectedResource = JSON.stringify(this.selectedResource);
+                var category_id = data.resource.category_id;
+
+                window.axios.get('/api/getTrxResourcePro/'+data.resource_id+'/'+selectedResource+'/'+category_id).then(({ data }) => {
+                    this.resourceDetails = data;
+                    this.resourceDetails.forEach(resourceDetail => {
+                        this.editInputResource.status = resourceDetail.status;
+                        this.editInputResource.trx_resource_code = resourceDetail.code;
+                        if(category_id == 1){
+                            this.editInputResource.type = "Subcon"
+                        }else if(category_id == 2){
+                            this.editInputResource.type = "Others"
+                        }else if(category_id == 3){
+                            this.editInputResource.type = "External Equipment"
+                        }else if(category_id == 4){
+                            this.editInputResource.type = "Internal Equipment"
+                        }
+
+                        if(resourceDetail.status == 1){
+                            this.editInputResource.notes = "-"
+                        }else if(resourceDetail.status == 2){
+                            this.editInputResource.notes = ""
+                        }
+                    });
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
             },
             openEditModal(data,index){
                 this.clearEditInput();
@@ -489,10 +651,22 @@
                 this.editInput.description = data.description;
                 this.editInput.type = data.type;
                 this.editInput.quantity = data.quantity;
+                this.editInput.unit = data.unit;
+                this.editInput.is_decimal = data.is_decimal;
             },
             submitToTable(){
                 let data = this.datas[this.editInput.index];
                 data.quantity = this.editInput.quantity;
+            },
+            submitToTableResource(){
+                let resource = this.resources[this.editInputResource.index];
+                resource.resource_detail.code = this.editInputResource.trx_resource_code;
+                // resource.trx_resource_id = this.editInputResource.resource_id ;
+                resource.resource_detail.id = this.editInputResource.resource_id ;
+                resource.status = this.editInputResource.status;
+
+                this.selectedResource.push(this.editInputResource.resource_id);
+                this.clearEditInputResource();
             },
             add(){
                 var data = JSON.stringify(this.dataInput);
@@ -506,6 +680,8 @@
                 this.dataInput.name = "";
                 this.dataInput.description = "";
                 this.dataInput.quantity = "";
+                this.dataInput.unit = "";
+                this.dataInput.is_decimal = "";
             },
             removeRow: function(index) {
                 this.datas.splice(index, 1);
@@ -522,7 +698,7 @@
 
                 this.submittedForm.datas = datas;
                 this.submittedForm.materials = this.bom;
-                this.submittedForm.resources = this.assignedResource;
+                this.submittedForm.resources = this.resources;
                 this.submittedForm.project_id = this.project_id;
                 this.submittedForm.wbs_id = this.wbs_id;
 
@@ -535,6 +711,33 @@
             }
         },
         watch: {
+            'editInputResource.resource_id': function(newValue){
+                if(newValue != ""){
+                    this.resourceDetails.forEach(data => {
+                        if(data.id == newValue){
+                            this.editInputResource.trx_resource_code = data.code;
+                            this.editInputResource.status = data.status;
+                            if(data.category_id == 1){
+                                this.editInputResource.type = "Subcon"
+                            }else if(data.category_id == 2){
+                                this.editInputResource.type = "Others"
+                            }else if(data.category_id == 3){
+                                this.editInputResource.type = "External Equipment"
+                            }else if(data.category_id == 4){
+                                this.editInputResource.type = "Internal Equipment"
+                            }
+
+                            if(data.status == 1){
+                                this.editInputResource.notes = "-"
+                            }else if(data.status == 2){
+                                this.editInputResource.notes = ""
+                            }
+                        }
+                    });
+                }else{
+
+                }
+            },
             'dataInput.id': function(newValue){
                 if(newValue != ""){
                     if(this.dataInput.type == "Resource"){
@@ -556,6 +759,8 @@
                             }
                             this.dataInput.name = data.name;
                             this.dataInput.code = data.code;
+                            this.dataInput.unit = data.uom.unit;
+                            this.dataInput.is_decimal = data.uom.is_decimal;
                         });
                     }else if(this.dataInput.type == "Service"){
                         window.axios.get('/api/getServicePrO/'+newValue).then(({ data }) => {
@@ -574,16 +779,53 @@
                 this.dataInput.id = "";
                 this.dataInput.description = "";
                 this.dataInput.quantity = "";
+                this.dataInput.unit = "";
+                this.dataInput.is_decimal = "";
             },
             'dataInput.quantity' : function(newvalue){
-                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                var is_decimal = this.dataInput.is_decimal;
+                if(is_decimal == 0){
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = this.dataInput.quantity.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.dataInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }  
             },
             'editInput.quantity' : function(newValue){
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                var is_decimal = this.editInput.is_decimal;
+                if(is_decimal == 0){
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = this.editInput.quantity.replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.editInput.quantity = (this.editInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }      
             }
         },
         created: function() {
             this.newIndex = Object.keys(this.datas).length+1;
+            this.resources.forEach(data=>{
+                if(data.resource_detail.id != null && data.resource_detail.id != ''){
+                    this.selectedResource.push(data.resource_detail.id);
+                }
+            })
         },
     });
 </script>

@@ -99,7 +99,6 @@
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 10%">Reserved</th>
                                             <th style="width: 15%">Total Value</th>
-                                            <th style="width: 10%">Aging</th>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(stock,index) in stocks">
@@ -110,7 +109,6 @@
                                                 <td class="tdEllipsis">{{ stock.quantity }}</td>
                                                 <td class="tdEllipsis">{{ stock.reserved }}</td>
                                                 <td class="tdEllipsis">Rp {{ (stock.material.cost_standard_price * stock.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                <td class="tdEllipsis">{{ stock.quantity + stock.reserved }} Days</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -126,7 +124,6 @@
                                             <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Quantity</th>
                                             <th style="width: 15%">Total Value</th>
-                                            <th style="width: 10%">Aging</th>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(selectedDetail,index) in selectedSlocDetail">
@@ -136,7 +133,6 @@
                                                 <td class="tdEllipsis">{{ selectedDetail.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity }}</td>
                                                 <td class="tdEllipsis">Rp {{ selectedDetail.totalValue }}</td>
-                                                <td class="tdEllipsis">{{ selectedDetail.quantity + 0 }} Days</td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -44,7 +44,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box-header no-padding" style="margin-bottom : 47px">
-                        <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">\
+                        <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">
                             @if($route == '/purchase_requisition')
                             <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">    
                             @else 
@@ -110,6 +110,14 @@
                                 @endif
                                 : {{$status}}                    
                             </div>
+                            {{-- @if($modelPR->status == 2)
+                                <div style="margin-left: 450px; ">
+                                    <div style="font-size: 11px;">Approved By  </div>
+                                    <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                                        : {{($modelPR->approvedBy->name) ? $modelPR->approvedBy->name : '-'}}                    
+                                    </div>
+                                </div>
+                            @endif --}}
                         </div>
                     </div>
                 </div>

@@ -266,6 +266,14 @@ class WBSController extends Controller
         return view('wbs.createWbsRepair', compact('project','menu','wbs_config'));
     }
 
+// public function createWbsRepair($id, Request $request)
+// {
+//     $project = Project::find($id);
+//     $wbs_config = WbsConfiguration::where('wbs_id', null)->get();
+
+//     return view('wbs.createWbsRepair', compact('project','wbs_config'));
+// }
+
 
     public function store(Request $request)
     {
@@ -311,12 +319,16 @@ class WBSController extends Controller
     {
         $data = $request->json()->all();
         DB::beginTransaction();
+        $modelWbs = WBS::where('project_id',$data['project_id'])->where('number',$data['number'])->first();
+        if($modelWbs != null){
+            return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
+        }
         try {
             $wbsConfig = WbsConfiguration::find($data['wbs_configuration_id']);
             $wbs = new WBS;
             $wbs->code = self::generateWbsCode($data['project_id']);
             $wbs->number = $data['number'];
-            $wbs->description = $wbsConfig->description;
+            $wbs->description = $data['description'];
             $wbs->deliverables = $wbsConfig->deliverables;
             $wbs->wbs_configuration_id = $wbsConfig->id;
             $wbs->project_id = $data['project_id'];
@@ -393,6 +405,10 @@ class WBSController extends Controller
     public function storeWbsConfiguration(Request $request)
     {
         $data = $request->json()->all();
+        $modelWbsConfig = WbsConfiguration::where('number',$data['number'])->first();
+        if($modelWbsConfig != null){
+            return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
+        }
         DB::beginTransaction();
         try {
             $wbsConfiguration = new WbsConfiguration;
@@ -524,28 +540,32 @@ class WBSController extends Controller
         }
     }
 
-    public function updateWbsConfiguration(Request $request, $id)
-    {
-        $data = $request->json()->all();
-        $wbs_ref = WbsConfiguration::find($id);
-        DB::beginTransaction();
-        try {
-            $wbs_ref->number = $data['number'];
-            $wbs_ref->description = $data['description'];
-            $wbs_ref->deliverables = $data['deliverables'];
-            $wbs_ref->duration = $data['duration'];
-
-            if(!$wbs_ref->save()){
-                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
-            }else{
-                DB::commit();
-                return response(["response"=>"Success to Update WBS ".$wbs_ref->number],Response::HTTP_OK);
-            }
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
-        }
+public function updateWbsConfiguration(Request $request, $id)
+{
+    $data = $request->json()->all();
+    $wbs_ref = WbsConfiguration::find($id);
+    $modelWbsConfig = WbsConfiguration::where('number',$data['number'])->where('id','!=',$id)->first();
+    if($modelWbsConfig != null){
+        return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
     }
+    DB::beginTransaction();
+    try {
+        $wbs_ref->number = $data['number'];
+        $wbs_ref->description = $data['description'];
+        $wbs_ref->deliverables = $data['deliverables'];
+        $wbs_ref->duration = $data['duration'];
+
+        if(!$wbs_ref->save()){
+            return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+        }else{
+            DB::commit();
+            return response(["response"=>"Success to Update WBS ".$wbs_ref->number],Response::HTTP_OK);
+        }
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+    }
+}
 
     public function createSubWBS($project_id, $wbs_id, Request $request)
     {
@@ -652,10 +672,14 @@ class WBSController extends Controller
         $data = $request->json()->all();
         $wbs_ref = WBS::find($id);
         $wbs_config = WbsConfiguration::find($data['wbs_configuration_id']);
+        $modelWbs = WBS::where('id','!=',$id)->where('project_id',$wbs_ref->project_id)->where('number',$data['number'])->first();
+        if($modelWbs != null){
+            return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
+        }
         DB::beginTransaction();
         try {
             $wbs_ref->number = $data['number'];
-            $wbs_ref->description = $wbs_config->description;
+            $wbs_ref->description = $data['description'];
             $wbs_ref->deliverables = $wbs_config->deliverables;
             $wbs_ref->wbs_configuration_id = $wbs_config->id;
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
@@ -791,6 +815,10 @@ class WBSController extends Controller
                 array_push($error, ["Failed to delete, this WBS have activities"]);
             }
 
+            if(count($wbsConfiguration->wbssProject)>0){
+                array_push($error, ["Failed to delete, this WBS already been used by a project"]);
+            }
+            
             if(count($error)>0){
                 return response(["error"=> $error],Response::HTTP_OK);
             }

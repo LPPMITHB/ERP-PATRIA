@@ -197,7 +197,7 @@ class WorkOrderController extends Controller
     {
         $route = $request->route()->getPrefix();    
         $modelWO = WorkOrder::where('id',$id)->with('workRequest')->first();
-        $modelWOD = WorkOrderDetail::where('work_order_id',$id)->with('material','workRequestDetail','wbs')->get();
+        $modelWOD = WorkOrderDetail::where('work_order_id',$id)->with('material','workRequestDetail','wbs','material.uom')->get();
         $modelProject = Project::where('id',$modelWO->workRequest->project_id)->with('ship','customer')->first();
         $currencies = Configuration::get('currencies');
 
@@ -208,6 +208,7 @@ class WorkOrderController extends Controller
     {
         $route = $request->route()->getPrefix();    
         $datas = json_decode($request->datas);
+        // print_r($datas);exit();
 
         DB::beginTransaction();
         try {
@@ -228,6 +229,23 @@ class WorkOrderController extends Controller
                     $status = 1;
                 }
                 $total_price += $WOD->total_price -($WOD->total_price * ($WOD->discount/100));
+            }
+            $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->modelWO->delivery_date);
+            if($delivery_date){
+                $WO->delivery_date = $delivery_date->format('Y-m-d');
+            }else{
+                $delivery_date = null;
+            }
+            $WO->payment_terms = $datas->modelWO->payment_terms;
+            if($datas->modelWO->estimated_freight == ""){
+                $WO->estimated_freight = 0;
+            }elseif($datas->modelWO->estimated_freight != ""){
+                $WO->estimated_freight = $datas->modelWO->estimated_freight;
+            }
+            if($datas->modelWO->tax == ""){
+                $WO->tax = 0;
+            }elseif($datas->modelWO->tax != ""){
+                $WO->tax = $datas->modelWO->tax;
             }
             $WO->vendor_id = $datas->modelWO->vendor_id;
             $WO->description = $datas->modelWO->description;

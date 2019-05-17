@@ -109,7 +109,6 @@
                                     <th width="15%">Project Number</th>
                                     <th width="20%">WBS</th>
                                     <th width="35%">Job Order</th>
-                                    <th width="15%">Vendor</th>
                                     <th width="5%"></th>
                                 </tr>
                             </thead>
@@ -118,9 +117,7 @@
                                     <td class="tdEllipsis">{{ index+1 }}</td>
                                     <td class="tdEllipsis">{{ PRD.project.number }}</td>
                                     <td class="tdEllipsis">{{ PRD.wbs.number }} - {{ PRD.wbs.description }}</td>
-                                    <td class="tdEllipsis">{{ PRD.activity_detail.service_detail.service.name }} - {{ PRD.activity_detail.service_detail.name }}</td>
-                                    <td class="tdEllipsis" v-if="PRD.vendor != null">{{ PRD.vendor.name }}</td>
-                                    <td class="tdEllipsis" v-else>-</td>
+                                    <td class="tdEllipsis">{{ PRD.job_order }}</td>
                                     <td class="tdEllipsis" class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedPRD" :value="PRD.id">
                                     </td>

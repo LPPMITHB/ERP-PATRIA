@@ -86,11 +86,7 @@ class WorkRequestController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
         $datas = json_decode($request->datas);
-
         $wr_number = $this->generateWRNumber();
-        // $current_date = today();
-        // $valid_to = $current_date->addDays(7);
-        // $valid_to = $valid_to->toDateString();
 
         DB::beginTransaction();
         try {
@@ -120,7 +116,7 @@ class WorkRequestController extends Controller
                     $status = 0;
                     foreach($modelWRDs as $WRD){
                         if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id){
-                            $updatedQty = $WRD->quantity + $data->quantityInt;
+                            $updatedQty = $WRD->quantity + $data->quantity;
                             // $this->updateReserveStock($data->material_id, $WRD->quantity ,$updatedQty);
                             $WRD->quantity = $updatedQty;
                             $WRD->update();
@@ -131,7 +127,7 @@ class WorkRequestController extends Controller
                     if($status == 0){
                         $WRD = new WorkRequestDetail;
                         $WRD->work_request_id = $WR->id;
-                        $WRD->quantity = $data->quantityInt;
+                        $WRD->quantity = $data->quantity;
                         $WRD->description = $data->description;
                         $WRD->material_id = $data->material_id;
                         $WRD->required_date = $required_date;
@@ -144,7 +140,7 @@ class WorkRequestController extends Controller
                 }else{
                     $WRD = new WorkRequestDetail;
                     $WRD->work_request_id = $WR->id;
-                    $WRD->quantity = $data->quantityInt;
+                    $WRD->quantity = $data->quantity;
                     $WRD->description = $data->description;
                     $WRD->material_id = $data->material_id;
                     $WRD->required_date = $required_date;
@@ -167,8 +163,8 @@ class WorkRequestController extends Controller
                 if(count($modelWRDs)>0){
                     $status = 0;
                     foreach($modelWRDs as $WRD){
-                        if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id){
-                            $updatedQty = $WRD->quantity + $data->quantityInt;
+                        if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id && $WRD->type == 1){
+                            $updatedQty = $WRD->quantity + $data->quantity;
                             // $this->updateReserveStock($data->material_id, $WRD->quantity ,$updatedQty);
                             $WRD->quantity = $updatedQty;
                             $WRD->update();
@@ -179,13 +175,15 @@ class WorkRequestController extends Controller
                     if($status == 0){
                         $WRD = new WorkRequestDetail;
                         $WRD->work_request_id = $WR->id;
-                        $WRD->quantity = $data->quantityInt;
+                        $WRD->quantity = $data->quantity;
                         $WRD->description = $data->description;
                         $WRD->material_id = $data->material_id;
                         $WRD->required_date = $required_date;
                         $WRD->type = 1;
                         $WRD->wbs_id = $data->wbs_id;
-                        $WRD->activity_id = $data->activity_id;
+                        // if($menu != "building"){
+                        //     $WRD->activity_id = $data->activity_id;
+                        // }
                         $WRD->save();
 
                         // $this->reserveStock($data->material_id, $data->quantityInt);
@@ -193,13 +191,15 @@ class WorkRequestController extends Controller
                 }else{
                     $WRD = new WorkRequestDetail;
                     $WRD->work_request_id = $WR->id;
-                    $WRD->quantity = $data->quantityInt;
+                    $WRD->quantity = $data->quantity;
                     $WRD->description = $data->description;
                     $WRD->material_id = $data->material_id;
                     $WRD->required_date = $required_date;
                     $WRD->type = 1;
                     $WRD->wbs_id = $data->wbs_id;
-                    $WRD->activity_id = $data->activity_id;
+                    // if($menu != "building"){
+                    //     $WRD->activity_id = $data->activity_id;
+                    // }
                     $WRD->save();
 
                     // $this->reserveStock($data->material_id, $data->quantityInt);
@@ -329,7 +329,7 @@ class WorkRequestController extends Controller
                         $WRD = WorkRequestDetail::find($data->wrd_id);
                         // $this->updateReserveStock($data->material_id, $WRD->quantity ,$data->quantityInt);
                         
-                        $WRD->quantity = $data->quantityInt;
+                        $WRD->quantity = $data->quantity;
                         $WRD->description = $data->description;
                         $WRD->required_date = $required_date;
                         $WRD->material_id = $data->material_id;
@@ -342,7 +342,7 @@ class WorkRequestController extends Controller
                             $status = 0;
                             foreach($modelWRDs as $WRD){
                                 if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id){
-                                    $updatedQty = $WRD->quantity + $data->quantityInt;
+                                    $updatedQty = $WRD->quantity + $data->quantity;
                                     // $this->updateReserveStock($data->material_id, $WRD->quantity ,$updatedQty);
                                     $WRD->quantity = $updatedQty;
                                     $WRD->update();
@@ -353,7 +353,7 @@ class WorkRequestController extends Controller
                             if($status == 0){
                                 $WRD = new WorkRequestDetail;
                                 $WRD->work_request_id = $WR->id;
-                                $WRD->quantity = $data->quantityInt;
+                                $WRD->quantity = $data->quantity;
                                 $WRD->description = $data->description;
                                 $WRD->required_date = $required_date;
                                 $WRD->material_id = $data->material_id;
@@ -366,7 +366,7 @@ class WorkRequestController extends Controller
                         }else{
                             $WRD = new WorkRequestDetail;
                             $WRD->work_request_id = $WR->id;
-                            $WRD->quantity = $data->quantityInt;
+                            $WRD->quantity = $data->quantity;
                             $WRD->description = $data->description;
                             $WRD->required_date = $required_date;
                             $WRD->material_id = $data->material_id;
@@ -394,7 +394,7 @@ class WorkRequestController extends Controller
                         $WRD = WorkRequestDetail::find($data->wrd_id);
                         // $this->updateReserveStock($data->material_id, $WRD->quantity ,$data->quantityInt);
                         
-                        $WRD->quantity = $data->quantityInt;
+                        $WRD->quantity = $data->quantity;
                         $WRD->description = $data->description;
                         $WRD->required_date = $required_date;
                         $WRD->material_id = $data->material_id;
@@ -407,7 +407,7 @@ class WorkRequestController extends Controller
                             $status = 0;
                             foreach($modelWRDs as $WRD){
                                 if($WRD->material_id == $data->material_id){
-                                    $updatedQty = $WRD->quantity + $data->quantityInt;
+                                    $updatedQty = $WRD->quantity + $data->quantity;
                                     // $this->updateReserveStock($data->material_id, $WRD->quantity ,$updatedQty);
                                     $WRD->quantity = $updatedQty;
                                     $WRD->update();
@@ -418,7 +418,7 @@ class WorkRequestController extends Controller
                             if($status == 0){
                                 $WRD = new WorkRequestDetail;
                                 $WRD->work_request_id = $WR->id;
-                                $WRD->quantity = $data->quantityInt;
+                                $WRD->quantity = $data->quantity;
                                 $WRD->description = $data->description;
                                 $WRD->required_date = $required_date;
                                 $WRD->material_id = $data->material_id;
@@ -431,7 +431,7 @@ class WorkRequestController extends Controller
                         }else{
                             $WRD = new WorkRequestDetail;
                             $WRD->work_request_id = $WR->id;
-                            $WRD->quantity = $data->quantityInt;
+                            $WRD->quantity = $data->quantity;
                             $WRD->description = $data->description;
                             $WRD->required_date = $required_date;
                             $WRD->material_id = $data->material_id;
@@ -459,7 +459,7 @@ class WorkRequestController extends Controller
                     $WRD = WorkRequestDetail::find($data->wrd_id);
                     // $this->updateReserveStock($data->material_id, $WRD->quantity ,$data->quantityInt);
                     
-                    $WRD->quantity = $data->quantityInt;
+                    $WRD->quantity = $data->quantity;
                     $WRD->description = $data->description;
                     $WRD->required_date = $required_date;
                     $WRD->material_id = $data->material_id;
@@ -471,8 +471,8 @@ class WorkRequestController extends Controller
                     if(count($modelWRDs)>0){
                         $status = 0;
                         foreach($modelWRDs as $WRD){
-                            if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id){
-                                $updatedQty = $WRD->quantity + $data->quantityInt;
+                            if($WRD->material_id == $data->material_id && $WRD->wbs_id == $data->wbs_id && $WRD->type == 1){
+                                $updatedQty = $WRD->quantity + $data->quantity;
                                 // $this->updateReserveStock($data->material_id, $WRD->quantity ,$updatedQty);
                                 $WRD->quantity = $updatedQty;
                                 $WRD->update();
@@ -483,7 +483,7 @@ class WorkRequestController extends Controller
                         if($status == 0){
                             $WRD = new WorkRequestDetail;
                             $WRD->work_request_id = $WR->id;
-                            $WRD->quantity = $data->quantityInt;
+                            $WRD->quantity = $data->quantity;
                             $WRD->description = $data->description;
                             $WRD->required_date = $required_date;
                             $WRD->material_id = $data->material_id;
@@ -496,7 +496,7 @@ class WorkRequestController extends Controller
                     }else{
                         $WRD = new WorkRequestDetail;
                         $WRD->work_request_id = $WR->id;
-                        $WRD->quantity = $data->quantityInt;
+                        $WRD->quantity = $data->quantity;
                         $WRD->description = $data->description;
                         $WRD->required_date = $required_date;
                         $WRD->material_id = $data->material_id;

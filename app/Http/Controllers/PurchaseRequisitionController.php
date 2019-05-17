@@ -27,12 +27,7 @@ class PurchaseRequisitionController extends Controller
      */
     public function index(Request $request)
     {
-        $route = $request->route()->getPrefix();    
-        if($route == "/purchase_requisition"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
-        }
+        $route = $request->route()->getPrefix(); 
         if($route == "/purchase_requisition"){
             $modelPRs = PurchaseRequisition::where('business_unit_id',1)->get();
         }elseif($route == "/purchase_requisition_repair"){
@@ -46,11 +41,11 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_requisition"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->pluck('id')->toArray();
+            $businessUnit = 1;
         }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->pluck('id')->toArray();
+            $businessUnit = 2;
         }
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->whereIn('business_unit_id',$modelProject)->get();
+        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->where('business_unit_id',$businessUnit)->get();
 
         return view('purchase_requisition.indexApprove', compact('modelPRs','route'));
     }
@@ -236,10 +231,9 @@ class PurchaseRequisitionController extends Controller
                     $PRD = new PurchaseRequisitionDetail;
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->quantity = 1;
-                    $PRD->activity_detail_id = $data->activity_detail_id;
                     $PRD->project_id = $data->project_id;
                     $PRD->wbs_id = $data->wbs_id;
-                    $PRD->vendor_id = $data->vendor_id;
+                    $PRD->job_order = $data->job_order;
                     $PRD->user_id = Auth::user()->id;
                     $PRD->status = 1;
                     $PRD->save();
@@ -481,10 +475,7 @@ class PurchaseRequisitionController extends Controller
                     "project_number" => $data->project->number, 
                     "wbs_number" => $data->wbs->number,
                     "wbs_description" => $data->wbs->description,
-                    "service" => $data->activityDetail->serviceDetail->service->name,
-                    "service_detail" => $data->activityDetail->serviceDetail->name,
-                    "vendor_name" => $data->vendor->name,
-                    "activity_id" => $data->activity_detail_id,
+                    "job_order" => $data->job_order,
                 ]);
             }
         }
@@ -557,7 +548,7 @@ class PurchaseRequisitionController extends Controller
                         // print_r($PR->purchaseRequisitionDetails);exit();
                         if($status == 0){
                             $PRD = PurchaseRequisitionDetail::find($data->id);
-
+                            $PRD->material_id = $data->material_id;
                             $PRD->quantity = $data->quantity;
                             $PRD->alocation = $data->alocation;
                             if($data->project_id != null){
@@ -629,7 +620,6 @@ class PurchaseRequisitionController extends Controller
                         }
                         if($status == 0){
                             $PRD = PurchaseRequisitionDetail::find($data->id);
-
                             $PRD->quantity = $data->quantity;
                             $PRD->alocation = $data->alocation;
                             $PRD->required_date = $required_date;
@@ -675,10 +665,9 @@ class PurchaseRequisitionController extends Controller
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = 1;
-                        $PRD->activity_detail_id = $data->activity_detail_id;
                         $PRD->project_id = $data->project_id;
                         $PRD->wbs_id = $data->wbs_id;
-                        $PRD->vendor_id = $data->vendor_id;
+                        $PRD->job_order = $data->job_order;
                         $PRD->user_id = Auth::user()->id;
                         $PRD->status = 1;
                         $PRD->save();
@@ -823,7 +812,7 @@ class PurchaseRequisitionController extends Controller
         $pdf->loadView('purchase_requisition.pdf',['modelPR' => $modelPR, 'branch' => $branch, 'route'=> $route]);
         $now = date("Y_m_d_H_i_s");
         
-        return $pdf->download('Purchase_Requisition_'.$now.'.pdf');
+        return $pdf->stream('Purchase_Requisition_'.$now.'.pdf');
     }
 
     public function getProjectApi($id){

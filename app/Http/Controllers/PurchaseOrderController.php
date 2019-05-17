@@ -48,7 +48,6 @@ class PurchaseOrderController extends Controller
         $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.index', compact('modelPOs','route'));
-    
     }
 
     public function indexApprove(Request $request)
@@ -71,7 +70,7 @@ class PurchaseOrderController extends Controller
         $datas = json_decode($request->datas);
         $currencies = Configuration::get('currencies');
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
-        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','project','resource','material.uom','activityDetail','activityDetail.areaUom','activityDetail.serviceDetail','activityDetail.serviceDetail.service')->get();
+        $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','project','resource','material.uom','wbs')->get();
         $materials = Material::all();
         foreach($modelPRD as $key=>$PRD){
             if($PRD->reserved >= $PRD->quantity){
@@ -87,7 +86,8 @@ class PurchaseOrderController extends Controller
                     $PRD['remark'] = $PRD->remark;
                 }elseif($PRD->purchaseRequisition->type == 3){
                     $PRD['discount'] = 0;
-                    $PRD['old_price'] = $PRD->activityDetail->serviceDetail->cost_standard_price;
+                    $PRD['old_price'] = 0;
+                    $PRD['price'] = 0;
                     $PRD['remark'] = $PRD->remark;
                 }
             }
@@ -106,6 +106,7 @@ class PurchaseOrderController extends Controller
         }else{
             $modelProject = [];
         }
+
         return view('purchase_order.create', compact('modelPR','modelPRD','modelProject','currencies','route','materials'));
     }
 
@@ -196,8 +197,8 @@ class PurchaseOrderController extends Controller
                     $POD->resource_id = $data->resource_id;
                     $POD->total_price = $data->resource->cost_standard_price * $value * $data->quantity;
                 }else{
-                    $POD->activity_detail_id = $data->activity_detail_id;
-                    $POD->total_price = $data->activity_detail->service_detail->cost_standard_price * $value;
+                    $POD->job_order = $data->job_order;
+                    $POD->total_price = $data->price * $value;
                 }
                 $POD->discount = $data->discount;
                 $POD->project_id = $data->project_id;
@@ -397,15 +398,12 @@ class PurchaseOrderController extends Controller
 
                             $datas->push([
                                 "id" => $POD->id, 
-                                "service_code" => $POD->activityDetail->serviceDetail->service->name, 
-                                "service_name" => $POD->activityDetail->serviceDetail->name,
+                                "job_order" => $POD->job_order,
                                 "quantity" => $quantity,
                                 "discount" => $POD->discount,
                                 "price" => $POD->total_price / $POD->quantity,
                                 "sub_total" => $sub_total,
                                 "remark" => $POD->remark,
-                                "unit" => $POD->activityDetail->serviceDetail->uom->unit,
-
                             ]);
                             $status = 1;
                             $datas->forget($key);
@@ -415,30 +413,24 @@ class PurchaseOrderController extends Controller
                         $total_discount += $POD->total_price * ($POD->discount/100);
                         $datas->push([
                             "id" => $POD->id, 
-                            "service_code" => $POD->activityDetail->serviceDetail->service->name, 
-                            "service_name" => $POD->activityDetail->serviceDetail->name,
+                            "job_order" => $POD->job_order,                            
                             "quantity" => $POD->quantity,
                             "discount" => $POD->discount,
                             "price" => $POD->total_price / $POD->quantity,
                             "sub_total" => $POD->total_price,
                             "remark" => $POD->remark,
-                            "unit" => $POD->activityDetail->serviceDetail->uom->unit,
-
                         ]);
                     }
                 }else{
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
                         "id" => $POD->id, 
-                        "service_code" => $POD->activityDetail->serviceDetail->service->name, 
-                        "service_name" => $POD->activityDetail->serviceDetail->name,
+                        "job_order" => $POD->job_order,                        
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
                         "price" => $POD->total_price / $POD->quantity,
                         "sub_total" => $POD->total_price,
                         "remark" => $POD->remark,
-                        "unit" => $POD->activityDetail->serviceDetail->uom->unit,
-
                     ]);
                 }
             }
@@ -626,17 +618,16 @@ class PurchaseOrderController extends Controller
                         ]);
                     }
                 }else{
+
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
                         "id" => $POD->id, 
-                        "service_code" => $POD->activityDetail->serviceDetail->service->name , 
-                        "service_name" => $POD->activityDetail->serviceDetail->name,
+                        "job_order" => $POD->job_order , 
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
                         "price" => $POD->total_price / $POD->quantity,
                         "sub_total" => $POD->total_price,
                         "remark" => $POD->remark,
-                        "unit" => $POD->activityDetail->serviceDetail->uom->unit,
                     ]);
                 }
             }
@@ -649,7 +640,7 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail','wbs','resource','material.uom','purchaseRequisitionDetail.purchaseRequisition','activityDetail','activityDetail.areaUom','activityDetail.serviceDetail','activityDetail.serviceDetail.service')->get();
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail.wbs','purchaseRequisitionDetail.project','wbs','resource','material.uom','purchaseRequisitionDetail.purchaseRequisition','activityDetail','activityDetail.areaUom','activityDetail.serviceDetail','activityDetail.serviceDetail.service')->get();
         $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
         foreach($modelPOD as $POD){
             $POD['old_price'] = $POD->total_price / $POD->quantity;
@@ -802,6 +793,7 @@ class PurchaseOrderController extends Controller
             return redirect()->route('purchase_order.show',$datas->po_id)->with('error', $e->getMessage());
         }
     }
+
 
     public function generatePIR($modelPO){
         foreach($modelPO->purchaseOrderDetails as $POD){

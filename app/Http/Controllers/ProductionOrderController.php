@@ -29,6 +29,7 @@ use App\Models\StorageLocation;
 use App\Models\StorageLocationDetail;
 use App\Models\BomPrep;
 use Auth;
+use DateTime;
 use DB;
 
 class ProductionOrderController extends Controller
@@ -89,9 +90,9 @@ class ProductionOrderController extends Controller
     public function selectProjectIndex (Request $request){
         $route = $request->route()->getPrefix();
         if($route == "/production_order"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+            $modelProject = Project::where('business_unit_id',1)->get();
         }elseif($route == "/production_order_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+            $modelProject = Project::where('business_unit_id',2)->get();
         }
         $menu = "index_pro";
 
@@ -127,6 +128,7 @@ class ProductionOrderController extends Controller
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
                             "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
                         ]);
@@ -140,6 +142,7 @@ class ProductionOrderController extends Controller
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
                             "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
                         ]);
@@ -150,6 +153,7 @@ class ProductionOrderController extends Controller
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
                             "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                        "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
                         ]);
@@ -163,6 +167,7 @@ class ProductionOrderController extends Controller
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
                             "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                        "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
                         ]);  
@@ -176,6 +181,7 @@ class ProductionOrderController extends Controller
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
                         "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "start_date" => $wbs->planned_start_date,                        
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $routes.$wbs->id],
                     ]);
@@ -189,12 +195,21 @@ class ProductionOrderController extends Controller
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
                         "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "start_date" => $wbs->planned_start_date,                        
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
                     ]);
                 }
             } 
         }
+
+        $dataWbs = $dataWbs->toArray();
+        // Asc sort
+        usort($dataWbs,function($first,$second){
+            if ((strpos($first['id'], 'WBS') !== false && strpos($second['id'], 'WBS') !== false)) {
+                return $first['start_date'] > $second['start_date'];
+            }
+        });
 
         return view('production_order.selectWBS', compact('dataWbs','modelProject','route'));
     }
@@ -276,6 +291,7 @@ class ProductionOrderController extends Controller
                             "source" => $prOD->source,
                         ],
                         "quantity" => $prOD->quantity,
+                        "quantityFloat" => $prOD->quantity,
                         "material_id" => $prOD->material_id,
                     ]);
                 }elseif($prOD->resource_id != ""){
@@ -287,11 +303,15 @@ class ProductionOrderController extends Controller
                                 "code" => $prOD->resource->code,
                                 "name" => $prOD->resource->name,
                                 "description" => $prOD->resource->description,
+                                "category_id" => $prOD->category_id,
+                            ],
+                            "resource_detail" =>[
+                                "code" => ($prOD->resourceDetail) ? $prOD->resourceDetail->code : null,
+                                "id" => ($prOD->resourceDetail) ? $prOD->resourceDetail->id : null,
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => '',
-                            "trx_resource_code" => null,
+                            "trx_resource_id" => $prOD->trx_resource_id,
                             "status" => null,
                         ]);
                     } 
@@ -365,7 +385,7 @@ class ProductionOrderController extends Controller
     public function confirmRepair(Request $request,$id){
         $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail','dimensionUom','productionOrderDetails.dimensionUom')->get();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','material.dimensionUom','resource','service','productionOrder','resourceDetail','dimensionUom','productionOrderDetails.dimensionUom')->get();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $uoms = Uom::all()->jsonSerialize();
         $densities = Configuration::get('density'); 
@@ -501,7 +521,7 @@ class ProductionOrderController extends Controller
         $route = $request->route()->getPrefix();
         $wbs = WBS::findOrFail($id);
         $project = Project::findOrFail($wbs->project_id);
-        $materials = Material::all()->jsonSerialize();
+        $materials = Material::orderBy('description')->get()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
         $services = Service::all()->jsonSerialize();
         $modelActivities = $wbs->activities;
@@ -532,33 +552,35 @@ class ProductionOrderController extends Controller
         if(count($modelActivities) > 0){
             $modelBOM = Bom::where('project_id',$project->id)->first();
             $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
-            $modelBOMD = $modelBOM->bomDetails;
-            foreach ($modelBOMD as $bomd) {
-                $prod_order = ProductionOrder::where('project_id',$project->id)->where('status',2)->get();
-                if(count($prod_order)>0){
-                    $prod_order_id = $prod_order->pluck('id')->toArray();
-                    $prod_order_details = ProductionOrderDetail::whereIn('production_order_id', $prod_order_id)->get();
-                    $temp_used = 0;
-                    foreach ($prod_order_details as $prod_order_detail) {
-                        if($bomd->material_id == $prod_order_detail->material_id){
-                            $temp_used += $prod_order_detail->quantity;
-                        }
-                    } 
-                    $bomd['used'] = $temp_used;
-                }else{
-                    $bomd['used'] = 0;
+            if($modelBOM != null){
+                $modelBOMD = $modelBOM->bomDetails;
+                foreach ($modelBOMD as $bomd) {
+                    $prod_order = ProductionOrder::where('project_id',$project->id)->whereIn('status',[2,0])->get();
+                    if(count($prod_order)>0){
+                        $prod_order_id = $prod_order->pluck('id')->toArray();
+                        $prod_order_details = ProductionOrderDetail::whereIn('production_order_id', $prod_order_id)->where('actual','>',0)->get();
+                        $temp_used = 0;
+                        foreach ($prod_order_details as $prod_order_detail) {
+                            if($bomd->material_id == $prod_order_detail->material_id){
+                                $temp_used += $prod_order_detail->quantity;
+                            }
+                        } 
+                        $bomd['used'] = $temp_used;
+                    }else{
+                        $bomd['used'] = 0;
+                    }
                 }
+            }else{
+                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This Project doesn't have BOM");
             }
             if($modelBOM != null){
                 return view('production_order.createPrORepair', compact('modelBOMD','wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
             }else{                
-                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have BOM");
+                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This Project doesn't have BOM");
             }
         }else{
             return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have Activities");
-        }
-        
-        
+        }  
     }
 
     /**
@@ -573,6 +595,7 @@ class ProductionOrderController extends Controller
         $datas = json_decode($request->datas);
         $arrData = $datas->datas;
         $po_number = $this->generatePrONumber();
+
         DB::beginTransaction();
         try {
             $PrO = new ProductionOrder;
@@ -585,6 +608,7 @@ class ProductionOrderController extends Controller
             $PrO->save();
 
             $is_repair = false;
+            
             if($PrO->project->business_unit_id == 2){
                 $is_repair = true;
             }
@@ -608,6 +632,7 @@ class ProductionOrderController extends Controller
             }elseif($route == "/production_order"){
                 if(count($datas->materials) > 0){
                     foreach($datas->materials as $material){
+
                         if($material->material_id != ""){
                             $PrOD = new ProductionOrderDetail;
                             $PrOD->production_order_id = $PrO->id;
@@ -618,6 +643,7 @@ class ProductionOrderController extends Controller
                         }
                     }
                 }
+
             }
             
             if(count($datas->resources) > 0){
@@ -628,8 +654,13 @@ class ProductionOrderController extends Controller
                         $existing->update();
                     }else{
                         $PrOD = new ProductionOrderDetail;
+                        if($resource->resource_detail_id != null){
+                            $PrOD->resource_detail_id = $resource->resource_detail_id;
+                        }
+                        $PrOD->category_id = $resource->category_id;
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->resource_id = $resource->resource_id;
+                        $PrOD->trx_resource_id = $resource->id;
                         $PrOD->quantity = $resource->quantity;
                         $PrOD->save();
                     }
@@ -674,9 +705,9 @@ class ProductionOrderController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($route == "/production_order"){
-                return redirect()->route('production_order.create',$datas->project_id)->with('error', $e->getMessage());
+                return redirect()->route('production_order.create',$datas->wbs_id)->with('error', $e->getMessage());
             }elseif($route == "/production_order_repair"){
-                return redirect()->route('production_order_repair.create',$datas->wbs_id)->with('error', $e->getMessage());
+                return redirect()->route('production_order_repair.create',$datas->project_id)->with('error', $e->getMessage());
             }
         }
     }
@@ -693,23 +724,28 @@ class ProductionOrderController extends Controller
                 if($prod->quantity == 0){
                     $prod->delete();
                 }
+                if($prod->resource_id != null){
+                    $prod->delete();
+                }
             }
             $modelPrO->status = 2;
             $modelPrO->update();
-
+            // print_r($datas->resources);exit();
             foreach($datas->resources as $resource){
                 $PrOD = new ProductionOrderDetail;
                 $PrOD->production_order_id = $pro_id;
-                $PrOD->production_order_detail_id = $resource->id;
                 $PrOD->resource_id = $resource->resource_id;
-                $PrOD->resource_detail_id = $resource->trx_resource_id;
+                $PrOD->resource_detail_id = $resource->resource_detail->id;
+                $PrOD->trx_resource_id = $resource->trx_resource_id;
+                $PrOD->category_id = $resource->resource->category_id;
                 $PrOD->quantity = 1;
                 $PrOD->status = "UNACTUALIZED";
                 $PrOD->save();
-
-                $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
-                $RD->status = 2;
-                $RD->update();
+                if($resource->resource_detail->id != ""){
+                    $RD = ResourceDetail::findOrFail($resource->resource_detail->id);
+                    $RD->status = 2;
+                    $RD->update();
+                }
             }
             $this->createMR($datas->modelPrOD);
 
@@ -735,17 +771,19 @@ class ProductionOrderController extends Controller
         $modelPrO = ProductionOrder::findOrFail($pro_id);
         DB::beginTransaction();
         try {
+            $mr_object = [];
             foreach($modelPrO->productionOrderDetails as $prod){
                 if($prod->quantity == 0){
                     $prod->delete();
                 }else{
                     foreach ($datas->materials as $material) {
                         if($prod->material_id == $material->material_id){
-                            if($material->allocated == ""){
+                            if($material->allocated == "" || $material->allocated <= 0){
                                 $prod->delete();
                             }else{
                                 $prod->quantity = $material->allocated;
                                 $prod->update();
+                                array_push($mr_object,$prod);
                             }
                         }
                     }
@@ -769,7 +807,10 @@ class ProductionOrderController extends Controller
                 $RD->status = 2;
                 $RD->update();
             }
-            $this->createMR($datas->modelPrOD);
+
+            if(count($mr_object)>0){
+                $this->createMR($mr_object);
+            }
 
             DB::commit();
             return redirect()->route('production_order_repair.showRelease',$modelPrO->id)->with('success', 'Production Order Released');
@@ -868,6 +909,32 @@ class ProductionOrderController extends Controller
     public function storeConfirmRepair(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        if(count($datas->modelPrOD)==0){
+            $wbs = $datas->modelPrO->wbs;
+            $wbs = WBS::find($wbs->id);
+
+            $statusAll = $wbs->activities->groupBy('status');
+            $notDone = true;
+            foreach($statusAll as $key => $status){
+                if($key == 1){
+                    $notDone = false;
+                }
+            }
+            $modelPrO = ProductionOrder::find($datas->modelPrO->id);
+            if($notDone){
+                $modelPrO->status = 0;
+                $modelPrO->save();
+            }else{
+                $modelPrO->status = 2;
+                $modelPrO->save();
+            }
+
+            if($route == "/production_order"){
+                return redirect()->route('production_order.showConfirm',$datas->modelPrO->id)->with('success', 'Production Order Confirmed');
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.showConfirm',$datas->modelPrO->id)->with('success', 'Production Order Confirmed');
+            }
+        }
         $pro_id = $datas->modelPrOD[0]->production_order_id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
 
@@ -887,72 +954,95 @@ class ProductionOrderController extends Controller
                 $modelPrO->status = 2;
                 $modelPrO->save();
             }
-
-            foreach ($datas->materials as  $material) {
-                $prod = ProductionOrderDetail::find($material->id);
-                $prod->actual += $material->quantity;
-                $prod->update();
-
-                $PrOD = new ProductionOrderDetail;
-                $PrOD->production_order_id = $modelPrO->id;
-                $PrOD->production_order_detail_id = $prod->id;
-                $PrOD->material_id = $material->id;
-                $PrOD->length = $material->lengths;
-                $PrOD->width = $material->width;
-                $PrOD->height = $material->height;
-                $PrOD->weight = $material->weight;
-                $PrOD->dimension_uom_id = $prod->dimension_uom_id;
-                $PrOD->quantity = $material->quantity;
-                $PrOD->source = 'Stock';
-                $PrOD->save();
-
-                if(count($material->deleted_returned_material)>0){
-                    foreach ($material->deleted_returned_material as $GRD_id) {
-                        $GRD = GoodsReceiptDetail::find($GRD_id);
-                        $GR = $GRD->goodsReceipt;
-                        $this->reduceStock($GRD->material_id, $GRD->quantity);
-                        $this->reduceSlocDetail($GRD->material_id, $GRD->storage_location_id,$GRD->quantity);
-                        $GRD->delete();
-                        if(count($GR->goodsReceiptDetails)==0){
-                            $GR->delete();
+            if($datas->data_changed){
+                foreach ($datas->materials as $material) {
+                    $prod = ProductionOrderDetail::find($material->id);
+                    if($material->dimension_uom_id != null){
+                        if($prod->length == null){
+                            if($prod->actual != null){
+                                $prod->actual += $material->quantity > 0 ? $material->quantity : 0;
+                            }else{
+                                $prod->actual = $material->quantity > 0 ? $material->quantity : null;
+                            }
+                            $prod->update();
                         }
-                    }
-                }
-
-                if(count($material->returned_materials)>0){
-                    $GR = GoodsReceipt::where('production_order_id', $modelPrO->id)->first();
-                    if($GR == null){
-                        $gr_number = $this->generateGRNumber();
-                        $GR = new GoodsReceipt;
-                        $GR->number = $gr_number;
-                        $GR->business_unit_id = 2;
-                        $GR->production_order_id = $modelPrO->id;
-                        $GR->type = 1;
-                        $GR->description = "AUTO CREATE GR FROM PRODUCTION ORDER";
-                        $GR->branch_id = Auth::user()->branch->id;
-                        $GR->user_id = Auth::user()->id;
-                        $GR->save();   
+                        if($material->weight > 0){
+                            $PrOD = new ProductionOrderDetail;
+                            $PrOD->production_order_id = $modelPrO->id;
+                            $PrOD->production_order_detail_id = $prod->id;
+                            $PrOD->material_id = $material->id;
+                            $PrOD->length = $material->lengths;
+                            $PrOD->width = $material->width;
+                            $PrOD->height = $material->height;
+                            $PrOD->weight = $material->weight;
+                            $PrOD->dimension_uom_id = $prod->dimension_uom_id;
+                            $PrOD->quantity = $material->quantity;
+                            $PrOD->source = 'Stock';
+                            $PrOD->save();
+                        }
+                    }else{
+                        if($prod->actual != null){
+                            $prod->actual += $material->quantity > 0 ? $material->quantity : 0;
+                        }else{
+                            $prod->actual = $material->quantity > 0 ? $material->quantity : null;
+                        }
+                        $prod->update();
                     }
                     
-                    foreach($material->returned_materials as $data){
-                        if($data->id == null){
-                            if($data->quantity >0 && $data->sloc_id != ""){
-                                $GRD = new GoodsReceiptDetail;
-                                $GRD->goods_receipt_id = $GR->id;
-                                $GRD->production_order_detail_id = $prod->id; 
-                                $GRD->quantity = $data->quantity; 
-                                $GRD->material_id = $data->material_id;
-                                $GRD->storage_location_id = $data->sloc_id;
-                                $GRD->item_OK = 1;
-                                $GRD->save();
-                                
-                                $this->updateStock($data->material_id, $data->quantity);
-                                $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
+                    
+    
+                    if(count($material->deleted_returned_material)>0){
+                        foreach ($material->deleted_returned_material as $GRD_id) {
+                            $GRD = GoodsReceiptDetail::find($GRD_id);
+                            $GR = $GRD->goodsReceipt;
+                            $this->reduceStock($GRD->material_id, $GRD->quantity);
+                            $this->reduceSlocDetail($GRD->material_id, $GRD->storage_location_id,$GRD->quantity);
+                            $GRD->delete();
+                            if(count($GR->goodsReceiptDetails)==0){
+                                $GR->delete();
                             }
                         }
                     }
+                    
+                    if(count($material->returned_materials)>0){
+                        $GR = GoodsReceipt::where('production_order_id', $modelPrO->id)->first();
+                        if($GR == null){
+                            $gr_number = $this->generateGRNumber();
+                            $GR = new GoodsReceipt;
+                            $GR->number = $gr_number;
+                            $GR->business_unit_id = 2;
+                            $GR->production_order_id = $modelPrO->id;
+                            $GR->type = 1;
+                            $GR->description = "AUTO CREATE GR FROM PRODUCTION ORDER";
+                            $GR->branch_id = Auth::user()->branch->id;
+                            $GR->user_id = Auth::user()->id;
+                            $GR->save();   
+                        }
+                        
+                        foreach($material->returned_materials as $data){
+                            if($data->id == null){
+                                if($data->quantity >0 && $data->sloc_id != ""){
+                                    $GRD = new GoodsReceiptDetail;
+                                    $GRD->goods_receipt_id = $GR->id;
+                                    $GRD->production_order_detail_id = $prod->id; 
+                                    if($data->received_date != ""){
+                                        $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
+                                        $GRD->received_date = $received_date->format('Y-m-d');
+                                    }
+                                    $GRD->quantity = $data->quantity; 
+                                    $GRD->material_id = $data->material_id;
+                                    $GRD->storage_location_id = $data->sloc_id;
+                                    $GRD->item_OK = 1;
+                                    $GRD->save();
+                                    
+                                    $this->updateStock($data->material_id, $data->quantity);
+                                    $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
+                                }
+                            }
+                        }
+                    }
+    
                 }
-
             }
 
             foreach($datas->resources as $resource){
@@ -1060,10 +1150,10 @@ class ProductionOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $pro = ProductionOrder::find($id);
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$pro->id)->get();
         $wbs = $pro->wbs;
         $project = $pro->wbs->project;
         $materials = Material::all()->jsonSerialize();
-        $resources = Resource::all()->jsonSerialize();
         $services = Service::all()->jsonSerialize();
         $modelActivities = $wbs->activities;
         $modelBOM = Bom::where('wbs_id',$wbs->id)->first();
@@ -1099,8 +1189,9 @@ class ProductionOrderController extends Controller
                                 "description" => $prod->material->description,
                                 "id" => $prod->material->id,
                                 "name" => $prod->material->name,
-                                "quantity" => number_format($prod->quantity - $bomD->quantity),
+                                "quantity" => number_format($prod->quantity - $bomD->quantity,2),
                                 "type" => "Material",
+                                "unit" => $prod->material->uom->unit,
                             ]);
                         }
                         $prod_materials->forget($keyProd);
@@ -1112,8 +1203,9 @@ class ProductionOrderController extends Controller
                     "description" => $prod->material->description,
                     "id" => $prod->material->id,
                     "name" => $prod->material->name,
-                    "quantity" => number_format($prod->quantity),
+                    "quantity" => number_format($prod->quantity,2),
                     "type" => "Material",
+                    "unit" => $prod->material->uom->unit,
                 ]);
                 $prod_materials->forget($keyProd);
             }
@@ -1125,8 +1217,9 @@ class ProductionOrderController extends Controller
                 "description" => $prod->material->description,
                 "id" => $prod->material->id,
                 "name" => $prod->material->name,
-                "quantity" => number_format($prod->quantity),
+                "quantity" => number_format($prod->quantity,2),
                 "type" => "Material",
+                "unit" => $prod->material->uom->unit,
             ]);
         }
 
@@ -1173,43 +1266,31 @@ class ProductionOrderController extends Controller
         }
 
         //Resources
-        $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
-        foreach($prod_resources as $prod){
-            $prod_found = true;
-            if(count($modelRD)> 0){
-                foreach ($modelRD as $resTrx) {
-                    if($resTrx->resource->id == $prod->resource->id){
-                        if($prod->quantity - $resTrx->quantity != 0){
-                            $additionalItems->push([
-                                "code" => $prod->resource->code , 
-                                "description" => $prod->resource->description,
-                                "id" => $prod->resource->id,
-                                "name" => $prod->resource->name,
-                                "quantity" => number_format($prod->quantity - $resTrx->quantity),
-                                "type" => "Resource",
-                            ]);
-                            $prod_found =  false;
-                        }
-                    }elseif($resTrx->resource->id != $prod->resource->id && $prod_found){
-                        $additionalItems->push([
-                            "code" => $prod->resource->code , 
-                            "description" => $prod->resource->description,
-                            "id" => $prod->resource->id,
-                            "name" => $prod->resource->name,
-                            "quantity" => number_format($prod->quantity),
-                            "type" => "Resource",
+        $resources = Collection::make();
+        foreach($modelPrOD as $prOD){
+            if($prOD->quantity > 0){
+                if($prOD->resource_id != ""){
+                    $qty =  $prOD->quantity;
+                    for ($x = 0; $x < $qty; $x++) {
+                        $resources->push([
+                            "id" => $prOD->id , 
+                            "resource" => [
+                                "code" => $prOD->resource->code,
+                                "name" => $prOD->resource->name,
+                                "description" => $prOD->resource->description,
+                                "category_id" => $prOD->category_id,
+                            ],
+                            "resource_detail" =>[
+                                "code" => ($prOD->resourceDetail) ? $prOD->resourceDetail->code : null,
+                                "id" => ($prOD->resourceDetail) ? $prOD->resourceDetail->id : null,
+                            ],
+                            "quantity" => $prOD->quantity,
+                            "resource_id" => $prOD->resource_id,
+                            "trx_resource_id" => $prOD->trx_resource_id,
+                            "status" => null,
                         ]);
-                    }
+                    } 
                 }
-            }else{
-                $additionalItems->push([
-                    "code" => $prod->resource->code , 
-                    "description" => $prod->resource->description,
-                    "id" => $prod->resource->id,
-                    "name" => $prod->resource->name,
-                    "quantity" => number_format($prod->quantity),
-                    "type" => "Resource",
-                ]);
             }
         }
 
@@ -1325,6 +1406,34 @@ class ProductionOrderController extends Controller
                     }
                 }
             }
+            // resource
+            foreach($PrO->productionOrderDetails as $prod){
+                if($prod->resource_id != null && $prod->resource_id != ""){
+                    if($prod->resource_detail_id != null && $prod->resource_detail_id != ""){
+                        $RD = ResourceDetail::findOrFail($prod->resource_detail_id);
+                        $RD->status = 1;
+                        $RD->update();
+                    }
+                    $prod->delete();
+                }
+            }
+            
+            foreach($datas->resources as $resource){
+                $PrOD = new ProductionOrderDetail;
+                $PrOD->production_order_id = $PrO->id;
+                $PrOD->resource_id = $resource->resource_id;
+                $PrOD->resource_detail_id = $resource->resource_detail->id;
+                $PrOD->trx_resource_id = $resource->trx_resource_id;
+                $PrOD->category_id = $resource->resource->category_id;
+                $PrOD->quantity = 1;
+                $PrOD->status = "UNACTUALIZED";
+                $PrOD->save();
+                if($resource->resource_detail->id != ""){
+                    $RD = ResourceDetail::findOrFail($resource->resource_detail->id);
+                    $RD->status = 2;
+                    $RD->update();
+                }
+            }
             DB::commit();
             if($route == "/production_order"){
                 return redirect()->route('production_order.show',$PrO->id)->with('success', 'Production Order Updated');
@@ -1334,9 +1443,9 @@ class ProductionOrderController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($route == "/production_order"){
-                return redirect()->route('production_order.edit',$PrO->id)->with('error', $e->getMessage());
+                return redirect()->route('production_order.editPrO',$PrO->id)->with('error', $e->getMessage());
             }elseif($route == "/production_order_repair"){
-                return redirect()->route('production_order_repair.edit',$PrO->id)->with('error', $e->getMessage());
+                return redirect()->route('production_order_repair.editPrO',$PrO->id)->with('error', $e->getMessage());
             }
         }
     }
@@ -1359,7 +1468,7 @@ class ProductionOrderController extends Controller
     }
 
     public function generateGRNumber(){
-        $modelGR = GoodsReceipt::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
+        $modelGR = GoodsReceipt::orderBy('id','desc')->where('branch_id',Auth::user()->branch_id)->first();
         $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
 
         $branch_code = substr($modelBranch->code,4,2);
@@ -1377,7 +1486,6 @@ class ProductionOrderController extends Controller
 
     public function updateStock($material_id,$received){
         $modelStock = Stock::where('material_id',$material_id)->first();
-
         if($modelStock){
             $modelStock->quantity += $received;
             $modelStock->update();
@@ -1387,7 +1495,6 @@ class ProductionOrderController extends Controller
             $modelStock->branch_id = Auth::user()->branch->id;;
             $modelStock->material_id = $material_id;
             $modelStock->save();
-                
         }
     }
 
@@ -1402,6 +1509,7 @@ class ProductionOrderController extends Controller
 
     public function updateSlocDetail($material_id,$sloc_id,$received){
         $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->first();
+        
         if($modelSlocDetail){
             $modelSlocDetail->quantity += $received;
             $modelSlocDetail->update();
@@ -1424,7 +1532,7 @@ class ProductionOrderController extends Controller
 
     public function getMaterialAPI($id){
 
-        return response(Material::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getResourceAPI($id){
@@ -1471,9 +1579,9 @@ class ProductionOrderController extends Controller
         return response($stock, Response::HTTP_OK);
     }
 
-    public function getTrxResourceAPI($id,$jsonResource){
+    public function getTrxResourceAPI($id,$jsonResource,$category_id){
         $jsonResource = json_decode($jsonResource);
-        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
+        $resource = ResourceDetail::where('resource_id',$id)->where('status','!=',0)->where('category_id',$category_id)->whereNotIn('id',$jsonResource)->with('resource')->get()->jsonSerialize();
 
         return response($resource, Response::HTTP_OK);
     }

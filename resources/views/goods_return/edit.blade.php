@@ -214,7 +214,7 @@
 
                 data.forEach(GRD => {
                     GRD.quantity = GRD.quantity.replace(/,/g , ''); 
-                    GRD.quantity = parseInt(GRD.quantity);     
+                    GRD.quantity = parseFloat(GRD.quantity);     
                 });
 
                 this.submittedForm.GRD = data;
@@ -234,7 +234,7 @@
                 handler: function(newValue) {
                     var data = newValue;
                     data.forEach(GRD => {
-                        if((parseInt((GRD.available+"").replace(/,/g , ''))) < parseInt((GRD.quantity+"").replace(/,/g , ''))){
+                        if((parseFloat((GRD.available+"").replace(/,/g , ''))) < parseFloat((GRD.quantity+"").replace(/,/g , ''))){
                             GRD.quantity = GRD.available;
                             iziToast.warning({
                                 title: 'Cannot input more than received quantity..',
@@ -248,7 +248,7 @@
                         }else if(GRD.is_decimal == 1){
                             var decimal = (GRD.quantity+"").replace(/,/g, '').split('.');
                             if(decimal[1] != undefined){
-                                var maxDecimal = 4;
+                                var maxDecimal = 2;
                                 if((decimal[1]+"").length > maxDecimal){
                                     GRD.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                                 }else{
@@ -264,9 +264,23 @@
             },
         },
         created: function(){
-            console.log(this.modelGR);
             this.modelGRD.forEach(GRD => {
-                GRD.quantity = (GRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                var is_decimal = GRD.is_decimal;
+                if(is_decimal == 0){
+                    GRD.available = (GRD.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (GRD.available+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            GRD.available = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            GRD.available = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        GRD.available = (GRD.available+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }   
             });
         },
     });

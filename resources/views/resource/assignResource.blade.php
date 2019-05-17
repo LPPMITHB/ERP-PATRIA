@@ -65,26 +65,33 @@
                                                 <th style="width: 25%">Resource Detail</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 25%">WBS</th>
-                                                <th style="width: 12%"></th>
+                                                <th style="width: 14%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(data,index) in modelAssignResource">
                                                 <td>{{ index + 1 }}</td>
-                                                <td v-if="data.category_id == 0">SubCon</td>
-                                                <td v-else-if="data.category_id == 1">Others</td>
-                                                <td v-else-if="data.category_id == 2">External Equipment</td>
-                                                <td v-else-if="data.category_id == 3">Internal Equipment</td>
+                                                <td v-if="data.category_id == 1">SubCon</td>
+                                                <td v-else-if="data.category_id == 2">Others</td>
+                                                <td v-else-if="data.category_id == 3">External Equipment</td>
+                                                <td v-else-if="data.category_id == 4">Internal Equipment</td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
                                                 <td v-if="data.resource_detail != null && data.resource_detail.serial_number == null || data.resource_detail != null && data.resource_detail.serial_number == ''">{{ data.resource_detail.code }}</td>
                                                 <td v-else-if="data.resource_detail != null && data.resource_detail.serial_number != null && data.resource_detail.serial_number != ''">{{ data.resource_detail.code }} - {{ data.resource_detail.serial_number }}</td>
                                                 <td v-else>-</td>
                                                 <td>{{ data.quantity }}</td>
                                                 <td>{{ data.wbs.number }} - {{ data.wbs.description }}</td>
-                                                <td class="p-l-3 textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                                        EDIT
-                                                    </a>
+                                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                            <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">EDIT</button>
+                                                        </div>
+                                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteResource(data)" data-toggle="modal">
+                                                                DELETE
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -107,22 +114,22 @@
                                                 </selectize>
                                             </td>
             
-                                            <td class="no-padding" v-show="dataInput.category_id == 3 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
+                                            <td class="no-padding" v-show="dataInput.category_id == 4 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
                                                 <selectize id="material" v-model="dataInput.null" :settings="nullResourceSettings" disabled>
                                                     <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="no-padding" v-show="dataInput.category_id != 3 && dataInput.category_id != ''">
+                                            <td class="no-padding" v-show="dataInput.category_id != 4 && dataInput.category_id != ''">
                                                 <selectize id="material" v-model="dataInput.null" :settings="otherSettings" disabled>
                                                     <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length < 1">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 4 && dataInput.resource_id != '' && selectedRD.length < 1">
                                                 <selectize v-model="dataInput.null" :settings="nullRdSettings" disabled>
                                                     <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 3 && dataInput.resource_id != '' && selectedRD.length > 0">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 4 && dataInput.resource_id != '' && selectedRD.length > 0">
                                                 <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
                                                     <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                 </selectize>
@@ -162,7 +169,7 @@
                                                     <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </div>
-                                            <template v-if="editInput.category_id == 3">
+                                            <template v-if="editInput.category_id == 4">
                                                 <div class="col-sm-12">
                                                     <label class="control-label">Resource Detail</label>
                                                     <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
@@ -180,7 +187,7 @@
                                                 <label class="control-label">Quantity</label>
                                                 <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editResource">
                                             </div>
-                                            <div class="col-sm-12" v-show="editInput.category_id == 3 && editInput.resource_detail_id != '' && editInput.resource_detail_id != null">
+                                            <div class="col-sm-12" v-show="editInput.category_id == 4 && editInput.resource_detail_id != '' && editInput.resource_detail_id != null">
                                                 <label class="control-label">Schedule</label>
                                                 <input type="text" name="daterangeModal" id="daterangeModal" class="form-control" placeholder="Please Input Schedule (Optional)" autocomplete="off"/>
                                             </div>
@@ -374,6 +381,7 @@
         days : ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"],
         months : ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "August", "Sept", "Oct", "Nov", "Dec"],
         selectedRDModal : [],
+        resourceTrx : [],
     }
 
     var vm = new Vue({
@@ -448,7 +456,7 @@
             editResource: function(){
                 let isOk = false;
 
-                if(this.editInput.category_id == 3){
+                if(this.editInput.category_id == 4){
                     if(this.editInput.resource_detail_id != "" && this.editInput.resource_detail_id != null){
                         isOk = true;
                     }
@@ -458,6 +466,70 @@
             }
         },
         methods : {
+            deleteResource(data){
+                console.log(data);
+                var routeTmp = this.route;
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this Assigned Resource?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            var url = "";
+                            if(routeTmp == "/resource"){
+                                url = "/resource/deleteAssignedResource/"+data.id;
+                            }else{
+                                url = "/resource_repair/deleteAssignedResource/"+data.id;
+                            }
+                            $('div.overlay').show();            
+                            window.axios.delete(url)
+                            .then((response) => {
+                                if(response.data.error != undefined){
+                                    response.data.error.forEach(error => {
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: error,
+                                            position: 'topRight',
+                                        });
+                                    });
+                                    $('div.overlay').hide();
+                                }else{
+                                    iziToast.success({
+                                        displayMode: 'replace',
+                                        title: response.data.response,
+                                        position: 'topRight',
+                                    });
+                                    $('div.overlay').hide();
+                                    vm.getResource();
+                                }
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: "Please try again.. ",
+                                    position: 'topRight',
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();            
+                            })
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }],
+                    ],
+                });
+            },
             clearEditData(){
                 this.editInput.old_resource_id ="";
                 this.editInput.resource_id ="";
@@ -574,7 +646,7 @@
                 });
             },
             inputSchedule(){
-                if(this.dataInput.category_id == 3 && this.dataInput.resource_detail_id != ""){
+                if(this.dataInput.category_id == 4 && this.dataInput.resource_detail_id != ""){
                     $('#input_schedule').modal();
                 }else{
                     this.add();
@@ -657,79 +729,82 @@
             add(){
                 $('div.overlay').show();            
 
-                let status = false;
-                if(this.dataInput.category_id == 3){
-                    let start_date = this.dataInput.start_date;
-                    this.modelAssignResource.forEach(TrxResource =>{
-                        if(TrxResource.resource_detail_id == this.dataInput.resource_detail_id){
-                            if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
-                                status = true;
-                            }
-                        }
-                    })
-                    if(!status){
-                        let end_date = this.dataInput.end_date;
-                        this.modelAssignResource.forEach(TrxResource =>{
+                window.axios.get('/api/getAllResourceTrx').then(({ data }) => {
+                    this.resourceTrx = data;
+                    let status = false;
+                    if(this.dataInput.category_id == 4){
+                        let start_date = this.dataInput.start_date;
+                        this.resourceTrx.forEach(TrxResource =>{
                             if(TrxResource.resource_detail_id == this.dataInput.resource_detail_id){
-                                if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
+                                if(start_date >= TrxResource.start_date && start_date < TrxResource.end_date){
                                     status = true;
                                 }
                             }
                         })
-                    }
-                }
-                if(status){
-                    iziToast.warning({
-                        title: 'The Selected Time Already Booked By Another WBS !.',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();            
-                }else{
-                    this.dataInput.project_id = this.project_id;
-                    var dataInput = this.dataInput;
-                    dataInput = JSON.stringify(dataInput);
-                    if(this.route == "/resource"){
-                        var url = "{{ route('resource.storeAssignResource') }}";
-                    }else if(this.route == "/resource_repair"){
-                        var url = "{{ route('resource_repair.storeAssignResource') }}";
-                    }
-                    window.axios.post(url,dataInput).then((response) => {
-                        if(response.data.error != undefined){
-                            iziToast.warning({
-                                displayMode: 'replace',
-                                title: response.data.error,
-                                position: 'topRight',
-                            });
-                            $('div.overlay').hide();            
-                        }else{
-                            iziToast.success({
-                                displayMode: 'replace',
-                                title: response.data.response,
-                                position: 'topRight',
-                            });
-                            $('div.overlay').hide();            
+                        if(!status){
+                            let end_date = this.dataInput.end_date;
+                            this.resourceTrx.forEach(TrxResource =>{
+                                if(TrxResource.resource_detail_id == this.dataInput.resource_detail_id){
+                                    if(end_date >= TrxResource.start_date && end_date < TrxResource.end_date){
+                                        status = true;
+                                    }
+                                }
+                            })
                         }
-                        
-                        this.getResource();
-                        this.dataInput.resource_id = "";
-                        this.dataInput.resource_detail_id = "";
-                        this.dataInput.wbs_id = "";             
-                        this.dataInput.quantity = ""; 
-                        this.dataInput.category_id = ""; 
-                        this.dataInput.start = '';
-                        this.dataInput.end = '';
-                        this.dataInput.start_date = '';
-                        this.dataInput.end_date = '';
-                        this.dataInput.datetime_start = '';
-                        this.dataInput.datetime_end = '';
-                        $('#input_schedule').modal('hide');
-                    })
-                    .catch((error) => {
-                        console.log(error);
+                    }
+                    if(status){
+                        iziToast.warning({
+                            title: 'The Selected Time Already Booked By Another WBS !',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
                         $('div.overlay').hide();            
-                    })
-                }
+                    }else{
+                        this.dataInput.project_id = this.project_id;
+                        var dataInput = this.dataInput;
+                        dataInput = JSON.stringify(dataInput);
+                        if(this.route == "/resource"){
+                            var url = "{{ route('resource.storeAssignResource') }}";
+                        }else if(this.route == "/resource_repair"){
+                            var url = "{{ route('resource_repair.storeAssignResource') }}";
+                        }
+                        window.axios.post(url,dataInput).then((response) => {
+                            if(response.data.error != undefined){
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: response.data.error,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();            
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();            
+                            }
+                            
+                            this.getResource();
+                            this.dataInput.resource_id = "";
+                            this.dataInput.resource_detail_id = "";
+                            this.dataInput.wbs_id = "";             
+                            this.dataInput.quantity = ""; 
+                            this.dataInput.category_id = ""; 
+                            this.dataInput.start = '';
+                            this.dataInput.end = '';
+                            this.dataInput.start_date = '';
+                            this.dataInput.end_date = '';
+                            this.dataInput.datetime_start = '';
+                            this.dataInput.datetime_end = '';
+                            $('#input_schedule').modal('hide');
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
+                    }
+                });
             },
             update(){
                 $('div.overlay').show();   
@@ -858,7 +933,7 @@
                 if(newValue != ''){
                     this.schedule.selectedRD = [];
                     this.resourceDetails.forEach(RD => {
-                        if(RD.resource_id == newValue && RD.category_id == 3){
+                        if(RD.resource_id == newValue && RD.category_id == 4){
                             this.schedule.selectedRD.push(RD);
                         }  
                     });
@@ -903,10 +978,10 @@
                 }
             },
             'editInput.resource_id' : function(newValue){
-                if(this.editInput.category_id == 3){
+                if(this.editInput.category_id == 4){
                     this.selectedRDModal = [];
                     this.resourceDetails.forEach(data => {
-                        if(data.resource_id == newValue && data.category_id == 3){
+                        if(data.resource_id == newValue && data.category_id == 4){
                             this.selectedRDModal.push(data);
                         }
                     })
@@ -918,7 +993,7 @@
             },
             'editInput.resource_detail_id' : function(newValue){
                 if(newValue != "" && newValue != null){
-                    if(this.editInput.category_id == 3){
+                    if(this.editInput.category_id == 4){
                         this.editInput.quantity = 1;
                     }
                 }             

@@ -163,7 +163,7 @@
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WOD->material->code }}">{{ $WOD->material->code }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $WOD->material->description }}">{{ $WOD->material->description }}</td>
                                     <td>{{ $WOD->material->uom->unit }}</td>
-                                    <td>{{ number_format($WOD->quantity) }}</td>
+                                    <td>{{ number_format($WOD->quantity,2) }}</td>
                                     <td>{{ number_format($WOD->total_price / $WOD->quantity) }}</td>
                                     <td>{{ number_format($WOD->discount,2) }}</td>
                                     <td>{{ number_format($WOD->total_price - ($WOD->total_price * ($WOD->discount/100)),2) }}</td>

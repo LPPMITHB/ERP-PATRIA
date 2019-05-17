@@ -33,19 +33,19 @@
     @if ($menu == "building")
         <div class="box-tools pull-left m-l-15">
             <a href="{{ route('project.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
-            <a href="{{ route('wbs.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
+            <a href="{{ route('wbs.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE WBS</a>
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewWbs']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
-            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
+            <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE ACTIVITIES</a>
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
             <a href="{{ route('activity.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
-            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait" style="display: none">PROJECT COST EVALUATION</a>
+            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
         </div>
     @else
         <div class="box-tools pull-left m-l-15">
             <a href="{{ route('project_repair.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
-            <a href="{{ route('wbs_repair.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD WBS</a>
+            <a href="{{ route('wbs_repair.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE WBS</a>
             <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewWbs']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
-            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">ADD ACTIVITIES</a>
+            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE ACTIVITIES</a>
             <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
             <a href="{{ route('activity_repair.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
             <a href="{{ route('project_repair.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
@@ -78,26 +78,36 @@
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->description}}"><b>: {{isset($project->description) ? $project->description : '-'}}</b></div>
 
                         <div class="col-md-4 col-xs-6 no-padding">Status</div>
-                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status = 1 ? "OPEN" : "CLOSED" }}</b></div>
+                        <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status == 1 ? "OPEN" : "CLOSED" }}</b></div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-3 col-md-12">    
                     <div class="box-body">
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned Start Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
-                                    $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
-                                    $date = $date->format('d-m-Y');
-                                    echo $date;
-                                @endphp
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: 
+                                @if($project->planned_start_date != null)
+                                    @php
+                                        $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    @endphp
+                                @else 
+                                    -
+                                @endif
                             </b>
                         </div>
 
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned End Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
-                                    $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
-                                    $date = $date->format('d-m-Y');
-                                    echo $date;
-                                @endphp
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: 
+                                @if($project->planned_end_date != null)
+                                    @php
+                                        $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    @endphp
+                                @else 
+                                    -
+                                @endif
                             </b>
                         </div>
 
@@ -771,18 +781,19 @@
         data: {
             datasets: [
                 {
-                    label: "Estimated Cost", 
-                    backgroundColor: "rgba(247, 247, 32, 0.7)", // <-- supposed to be light blue
-                    data: [],
+                    label: "EVM Cost",
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    borderColor : "rgba(122, 122, 211, 122)",
+                    data: @json($dataEvm),
                 },
                 {
                     label: "Planned Cost",
-                    backgroundColor: "rgba(242, 38, 2, 0.7)",
+                    borderColor: "rgba(0, 0, 255, 0.7)",
                     data: @json($dataPlannedCost),
                 },
                 {
                     label: "Actual Cost",
-                    backgroundColor: "rgba(0, 0, 255, 0.7)",
+                    borderColor: "green",
                     data: @json($dataActualCost),
                 }
             ]
@@ -813,7 +824,7 @@
                     type: 'time',
                     time: {
                         tooltipFormat: 'll',
-                        unit: 'month',
+                        unit: 'week',
                     }
                 }],
                 yAxes: [{
@@ -847,12 +858,12 @@
             datasets: [
                 {
                     label: "Planned Progress",
-                    backgroundColor: "rgba(242, 38, 2, 0.7)",
+                    borderColor: "rgba(0, 0, 255, 0.7)",
                     data: @json($dataPlannedProgress),
                 },
                 {
                     label: "Actual Progress", 
-                    backgroundColor: "rgba(0, 0, 255, 0.7)",
+                    borderColor: "green",
                     data: @json($dataActualProgress),
                 }
             ]
@@ -879,7 +890,7 @@
                     type: 'time',
                     time: {
                         tooltipFormat: 'll',
-                        unit: 'month',
+                        unit: 'week',
                     }
                 }],
                 yAxes: [{
@@ -1557,10 +1568,11 @@
                         var temp_prod = [];
 
                         vm.activities.forEach(activity => {
-                        if(activity.code == id){
+                            if(activity.code == id){
                                 activity.activity_details.forEach(act_detail => {
                                     if(act_detail.material_id != null){
-                                            act_detail.bom_prep.bom_details.forEach(bom_detail => {
+                                        act_detail.bom_prep.bom_details.forEach(bom_detail => {
+                                            if(bom_detail.bom.purchase_requisition != null){
                                                 temp_pr.push(bom_detail.bom.purchase_requisition);  
                                                 bom_detail.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
                                                     temp_po.push(purchase_order);
@@ -1568,9 +1580,8 @@
                                                         temp_gr.push(gr);
                                                     });
                                                 });                                     
-                                        });
-                                        
-                                        
+                                            }
+                                        }); 
                                     }
                                 });
                                 if(activity.wbs.production_order != null){
@@ -1592,7 +1603,7 @@
                                     temp_gi.push(gi); 
                                     });
                                 });
-                        } 
+                            } 
                         });
                         vm.active_pr = [];
                         vm.active_po = [];

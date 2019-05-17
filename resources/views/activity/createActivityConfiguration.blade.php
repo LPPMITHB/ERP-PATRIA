@@ -248,7 +248,7 @@ var vm = new Vue({
                             if(response.data.error != undefined){
                                 iziToast.warning({
                                     displayMode: 'replace',
-                                    title: error,
+                                    title: response.data.error,
                                     position: 'topRight',
                                 });
                                 $('div.overlay').hide();
