@@ -155,7 +155,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Create Other Cost',
+            'name' => 'Manage Other Cost',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.selectProjectCost',
             'is_active' => true,
@@ -167,7 +167,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Input Actual Other Cost',
+            'name' => 'Manage Actual Other Cost',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'rap.selectProjectActualOtherCost',
             'is_active' => true,

@@ -23,13 +23,14 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body p-b-0 p-t-15">
-                <table class="table table-bordered tableFixed tablePaging">
+                <table class="table table-bordered tablePaging">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
                             <th style="width: 15%">Code</th>
                             <th style="width: 25%">Name</th>
-                            <th style="width: 45%">Address</th>
+                            <th style="width: 30%">Address</th>
+                            <th style="width: 15%">Status</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
@@ -41,6 +42,7 @@
                                 <td class="tdEllipsis">{{ $branch->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$branch->name}}">{{ $branch->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$branch->address}}">{{ $branch->address }}</td>
+                                <td> {{ $branch->status == "1" ? "Active": "Non Active" }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('branch.show', ['id'=>$branch->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('branch.edit',['id'=>$branch->id]) }}" class="btn btn-primary btn-xs">EDIT</a>

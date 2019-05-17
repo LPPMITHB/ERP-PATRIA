@@ -545,6 +545,13 @@
                     window.axios.get('/api/getProjectMR/'+newValue).then(({ data }) => {
                         this.selectedProject = [];
                         this.selectedProject.push(data);
+                        this.selectedProject.forEach(data => {
+                            var date_planned = data.planned_start_date;
+                            var date_ended = data.planned_end_date;
+
+                            data.planned_start_date = date_planned.split("-").reverse().join("-");
+                            data.planned_end_date = date_ended.split("-").reverse().join("-");
+                        });
                         this.wbss = data.wbss;
                         $('div.overlay').hide();
                     })

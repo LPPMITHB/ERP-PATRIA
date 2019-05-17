@@ -33,6 +33,7 @@
                                 <th style="width: 10%">Item Number</th>
                                 <th style="width: 35%">Description</th>
                                 <th style="width: 10%">Type</th>
+                                <th style="width: 10%">Status</th>
                                 <th style="width: 10%"></th>
     
                             </tr>
@@ -46,6 +47,8 @@
                                 <td v-else-if="data.type == 2">Component</td>
                                 <td v-else-if="data.type == 1">Consumable</td>
                                 <td v-else-if="data.type == 0">Raw</td>
+                                <td v-if="data.status == 1">Active</td>
+                                <td v-else-if="data.status == 0">Non Active</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     <a :href="createRouteShow(data.id)" class="btn btn-primary btn-xs">VIEW</a>
                                     <a :href="createRouteEdit(data.id)" class="btn btn-primary btn-xs">EDIT</a>

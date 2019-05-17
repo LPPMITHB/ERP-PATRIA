@@ -41,13 +41,8 @@
                                 <td>{{ $counter++ }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$business_unit->name}}">{{ $business_unit->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$business_unit->description}}">{{ $business_unit->description }}</td>
-                                <td>
-                                    @if ($business_unit->status == 1)
-                                        <i class="fa fa-check"></i>
-                                    @elseif ($business_unit->status == 0)
-                                        <i class="fa fa-times"></i>
-                                    @endif
-                                </td>
+                                <td> {{ $business_unit->status == "1" ? "Active": "Non Active" }}</td>
+
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('business_unit.edit',['id'=>$business_unit->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                 </td>

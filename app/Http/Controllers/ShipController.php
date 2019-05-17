@@ -60,7 +60,6 @@ class ShipController extends Controller
         try {
             $ship = new Ship;
             $ship->type = ucwords(strtolower($request->input('type')));
-            $ship->hull_number = $request->input('hull_number');
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');
             $ship->user_id = Auth::user()->id;
@@ -118,7 +117,6 @@ class ShipController extends Controller
         try {
             $ship = Ship::find($id);
             $ship->type = ucwords(strtolower($request->input('type')));
-            $ship->hull_number = $request->input('hull_number');
             $ship->description = $request->input('description');
             $ship->status = $request->input('status');        
             $ship->update();

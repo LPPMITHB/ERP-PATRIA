@@ -101,7 +101,7 @@
                             Created At
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelMR->created_at }} </b>
+                            : <b> {{ $modelMR->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
                     </div>
                 </div>

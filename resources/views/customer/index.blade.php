@@ -23,13 +23,14 @@
                 </div>
             </div> <!-- /.box-header -->
             <div class="box-body p-b-0 p-t-15">
-                <table class="table table-bordered tableFixed" id="customer-table">
+                <table class="table table-bordered tablePaging">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th width="10%">Code</th>
                             <th width="35%">Name</th>
                             <th width="40%">Address</th>
+                            <th width="10%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -41,7 +42,8 @@
                                 <td class="tdEllipsis">{{ $customer->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$customer->name}}">{{ $customer->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$customer->address_1}}">{{ $customer->address_1 }}</td>
-                                <td class="tdEllipsis" align="center">
+                                <td>{{ $customer->status =="1" ? "Active":"Non Active" }}</td>
+                                <td align="center">
                                     <a href="{{ route('customer.show', ['id'=>$customer->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('customer.edit', ['id'=>$customer->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                 </td>
@@ -61,17 +63,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#customer-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush

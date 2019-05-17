@@ -53,7 +53,7 @@
                         @verbatim
                         <div id="material">
                             <div class="form-group">
-                                <label for="code" class="col-sm-2 control-label">Item Number</label>
+                                <label for="code" class="col-sm-2 control-label">Item Number *</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="code" name="code" required autofocus v-model="submittedForm.code">
@@ -61,7 +61,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="description" class="col-sm-2 control-label">Description</label>
+                                <label for="description" class="col-sm-2 control-label">Description *</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="description" name="description" required v-model="submittedForm.description">
@@ -69,7 +69,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
+                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp) *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="cost_standard_price" name="cost_standard_price" required v-model="submittedForm.cost_standard_price">
@@ -77,7 +77,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
+                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp) *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text"  class="form-control" id="cost_standard_service" name="cost_standard_service" required v-model="submittedForm.cost_standard_service">
@@ -113,7 +113,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="min" class="col-sm-2 control-label">Min</label>
+                                <label for="min" class="col-sm-2 control-label">Min *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text" name="min"  class="form-control" id="min" required v-model="submittedForm.min">
@@ -121,7 +121,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="max" class="col-sm-2 control-label">Max</label>
+                                <label for="max" class="col-sm-2 control-label">Max *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text" name="max" class="form-control" id="max" required v-model="submittedForm.max">
@@ -186,7 +186,7 @@
                             
 
                             <div class="form-group">
-                                <label for="type" class="col-sm-2 control-label">Type</label>
+                                <label for="type" class="col-sm-2 control-label">Type *</label>
                                 <div class="col-sm-10">
                                     <select v-model="submittedForm.type" class="form-control" name="type" id="type" required>
                                         <option value="3">Bulk part</option>

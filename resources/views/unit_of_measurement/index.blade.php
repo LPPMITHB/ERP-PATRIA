@@ -24,13 +24,14 @@
             </div> <!-- /.box-header -->
             <div class="box-body">
             {{-- <div style ="overflow:scroll"> --}}
-                <table class="table table-bordered table-hover" id="uom-table">
+                <table class="table table-bordered tablePaging">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
                             <th style="width: 15%">Code</th>
-                            <th style="width: 25%">Name</th>
-                            <th style="width: 45%">Unit</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 30%">Unit</th>
+                            <th style="width: 20%">Status</th>
                             <th style="width: 10%"></th>
                         </tr>
                     </thead>
@@ -42,6 +43,7 @@
                                 <td class="tdEllipsis">{{ $uom->code }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$uom->name}}">{{ $uom->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$uom->unit}}">{{ $uom->unit }}</td>
+                                <td> {{ $uom->status == "1" ? "Active": "Non Active" }}</td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('unit_of_measurement.show', ['id'=>$uom->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     <a href="{{ route('unit_of_measurement.edit',['id'=>$uom->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
@@ -63,17 +65,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#uom-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'searching'   : false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'initComplete': function(){
-                $('div.overlay').remove();
-            }
-        });
+        $('div.overlay').hide();
     });
 </script>
 @endpush
