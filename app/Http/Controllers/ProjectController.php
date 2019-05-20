@@ -735,13 +735,7 @@ class ProjectController extends Controller
             $project->class_contact_person_phone = $request->class_contact_person_phone;
             $project->class_contact_person_phone_2 = $request->class_contact_person_phone_2;
             $project->class_contact_person_email = $request->class_contact_person_email;
-<<<<<<< HEAD
             $project->class_contact_person_email_2 = $request->class_contact_person_email_2;
-=======
-            $project->class_contact_person_name_2 = $request->class_contact_person_name_2;
-            $project->class_contact_person_phone_2 = $request->class_contact_person_phone_2;
-            $project->class_contact_person_email_2 = $request->class_contact_person_emai_2l;
->>>>>>> origin/LO-LievaldyOcta
 
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
             $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);

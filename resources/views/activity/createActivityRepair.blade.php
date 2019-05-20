@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content-header')
-@if($index)
+@if(isset($index))
     @breadcrumb(
         [
             'title' => "View Activities",
@@ -856,7 +856,7 @@ $(document).ready(function(){
 });
 
 var data = {
-    index : @json(isset($index) ? $index : null),
+    index : @json(isset($index) ? $index : false),
     menu : @json($menu),
     newMaterials : @json($materials),
     editMaterials : @json($materials),
