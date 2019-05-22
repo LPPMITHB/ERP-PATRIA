@@ -1,5 +1,20 @@
 @extends('layouts.main')
 @section('content-header')
+@if(isset($index))
+    @breadcrumb(
+        [
+            'title' => "View Activities",
+            'items' => [
+                'Dashboard' => route('index'),
+                'View all Projects' => route('project_repair.index'),
+                'Project|'.$project->number => route('project_repair.show', ['id' => $project->id]),
+                'Select WBS' => route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewAct']),
+                'Manage Activities' => ""
+            ]
+        ]
+    )
+    @endbreadcrumb
+@else
     @breadcrumb(
         [
             'title' => "Manage Activities",
@@ -13,6 +28,7 @@
         ]
     )
     @endbreadcrumb
+@endif
 @endsection
 @section('content')
 <div class="row">
@@ -170,7 +186,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot v-if="index == false">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
@@ -840,6 +856,7 @@ $(document).ready(function(){
 });
 
 var data = {
+    index : @json(isset($index) ? $index : false),
     menu : @json($menu),
     newMaterials : @json($materials),
     editMaterials : @json($materials),

@@ -1985,20 +1985,33 @@ class ProjectController extends Controller
                 foreach($group as $act){
                     if(count($act->activityDetails)>0){
                         foreach ($act->activityDetails as $act_detail) {
-                            $price_per_kg = $act_detail->material->cost_standard_price_per_kg;
-                            $price = $act_detail->material->cost_standard_price;
-                            if($act_detail->weight != null){
-                                $tempPlanned->push([
-                                    "t" => $date, 
-                                    "y" => number_format($price_per_kg * $act_detail->weight/1000000,2)."",
-                                ]);
-                            }else{                            
-                                $tempPlanned->push([
-                                    "t" => $date, 
-                                    "y" => number_format($price * $act_detail->quantity_material/1000000,2)."",
-                                ]);
+                            if($act_detail->material != null){
+                                $price_per_kg = $act_detail->material->cost_standard_price_per_kg;
+                                $price = $act_detail->material->cost_standard_price;
+                                if($act_detail->weight != null){
+                                    $tempPlanned->push([
+                                        "t" => $date, 
+                                        "y" => number_format($price_per_kg * $act_detail->weight/1000000,2)."",
+                                    ]);
+                                }else{                            
+                                    $tempPlanned->push([
+                                        "t" => $date, 
+                                        "y" => number_format($price * $act_detail->quantity_material/1000000,2)."",
+                                    ]);
+                                }
+                            }else{
+                                if($act_detail->weight != null){
+                                    $tempPlanned->push([
+                                        "t" => $date, 
+                                        "y" => number_format(0,2)."",
+                                    ]);
+                                }else{                            
+                                    $tempPlanned->push([
+                                        "t" => $date, 
+                                        "y" => number_format(0,2)."",
+                                    ]);
+                                }
                             }
-                            
                         }
                     }
                 }

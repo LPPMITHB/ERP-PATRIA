@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Name 2</label>
+                                <label for="class_name_2" class="col-sm-2 control-label">Classification Name 2</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_name_2" name="class_name_2" required v-model="project.class_name_2">
@@ -167,7 +167,7 @@
                             </div>
 
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person Name 2</label>
+                                <label for="class_contact_person_name_2" class="col-sm-2 control-label">Classification Contact Person Name 2</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_contact_person_name_2" name="class_contact_person_name_2" v-model="project.class_cp_name_2">
@@ -183,7 +183,7 @@
                             </div>
 
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone 2</label>
+                                <label for="class_contact_person_phone_2" class="col-sm-2 control-label">Classification Contact Person Phone 2</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_contact_person_phone_2" minlength="10" maxlength="13" name="class_contact_person_phone_2" v-model="project.class_cp_phone_2" >
@@ -198,8 +198,12 @@
                                 </div>
                             </div>
 
+                            
+
+                            
+
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person E-Mail 2</label>
+                                <label for="class_contact_person_email_2" class="col-sm-2 control-label">Classification Contact Person E-Mail 2</label>
                 
                                 <div class="col-sm-10">
                                     <input type="email" class="form-control" id="class_contact_person_email_2" name="class_contact_person_email_2" v-model="project.class_cp_email_2">
