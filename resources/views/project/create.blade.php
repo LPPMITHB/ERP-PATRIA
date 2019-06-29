@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Name 2</label>
+                                <label for="class_name_2" class="col-sm-2 control-label">Classification Name 2</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_name_2" name="class_name_2" required v-model="project.class_name_2">
@@ -167,7 +167,7 @@
                             </div>
 
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person Name 2</label>
+                                <label for="class_contact_person_name_2" class="col-sm-2 control-label">Classification Contact Person Name 2</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_contact_person_name_2" name="class_contact_person_name_2" v-model="project.class_cp_name_2">
@@ -183,7 +183,7 @@
                             </div>
 
                             <div v-if="(menu=='building')" class="form-group">
-                                <label for="ship" class="col-sm-2 control-label">Classification Contact Person Phone 2</label>
+                                <label for="class_contact_person_phone_2" class="col-sm-2 control-label">Classification Contact Person Phone 2</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="class_contact_person_phone_2" minlength="10" maxlength="13" name="class_contact_person_phone_2" v-model="project.class_cp_phone_2" >
@@ -198,29 +198,9 @@
                                 </div>
                             </div>
 
-                            <div v-if="(menu=='building')" class="form-group">
-                                <label for="class_name_2" class="col-sm-2 control-label">Classification Name 2</label>
-                
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_name_2" name="class_name_2" required v-model="project.class_name_2">
-                                </div>
-                            </div>
+                            
 
-                            <div v-if="(menu=='building')" class="form-group">
-                                <label for="class_contact_person_name_2" class="col-sm-2 control-label">Classification Contact Person Name 2</label>
-                
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_name_2" name="class_contact_person_name_2" v-model="project.class_cp_name_2">
-                                </div>
-                            </div>
-
-                            <div v-if="(menu=='building')" class="form-group">
-                                <label for="class_contact_person_phone_2" class="col-sm-2 control-label">Classification Contact Person Phone 2</label>
-                
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_contact_person_phone_2" minlength="10" maxlength="13" name="class_contact_person_phone_2" v-model="project.class_cp_phone" >
-                                </div>
-                            </div>
+                            
 
                             <div v-if="(menu=='building')" class="form-group">
                                 <label for="class_contact_person_email_2" class="col-sm-2 control-label">Classification Contact Person E-Mail 2</label>
@@ -345,8 +325,6 @@ $(document).ready(function(){
             class_cp_phone : @json(Request::old('class_contact_person_phone')),
             class_cp_phone_2 : @json(Request::old('class_contact_person_phone_2')),
             class_cp_email :@json(Request::old('class_contact_person_email')),
-            class_cp_name_2 : @json(Request::old('class_contact_person_name_2')),
-            class_cp_phone_2 : @json(Request::old('class_contact_person_phone_2')),
             class_cp_email_2 :@json(Request::old('class_contact_person_email_2')),
             description : @json(Request::old('description')),
             person_in_charge : @json(Request::old('person_in_charge')),
@@ -368,9 +346,6 @@ $(document).ready(function(){
             class_cp_phone : @json($project->class_contact_person_phone == null ? "": $project->class_contact_person_phone),
             class_cp_phone_2 : @json($project->class_contact_person_phone_2 == null ? "": $project->class_contact_person_phone_2),
             class_cp_email : @json($project->class_contact_person_email == null ? "": $project->class_contact_person_email),
-            class_name_2 : @json($project->class_name_2 == null ? "": $project->class_name_2),
-            class_cp_name_2 : @json($project->class_contact_person_name_2 == null ? "": $project->class_contact_person_name_2),
-            class_cp_phone_2 : @json($project->class_contact_person_phone_2 == null ? "": $project->class_contact_person_phone_2),
             class_cp_email_2 : @json($project->class_contact_person_email_2 == null ? "": $project->class_contact_person_email_2),
             description : @json($project->description == null ? "": $project->description),
             person_in_charge : @json($project->person_in_charge == null ? "": $project->person_in_charge),
@@ -385,7 +360,7 @@ $(document).ready(function(){
         data: data,
         methods : {
             submitForm(){
-                if(this.project.class_cp_phone.length > 13 || this.project.class_cp_phone.length < 10 && this.menu == "building" && this.project.class_cp_phone != "" || this.project.class_cp_phone_2.length > 13 || this.project.class_cp_phone_2.length < 10 && this.project.class_cp_phone_2 != ""){
+                if(this.project.class_cp_phone.length > 13 || this.project.class_cp_phone.length < 10 && this.menu == "building" && this.project.class_cp_phone != ""){
                     iziToast.warning({
                         title: 'Classification Contact Person Phone format is not appropriate !',
                         position: 'topRight',
@@ -437,7 +412,7 @@ $(document).ready(function(){
             'project.class_cp_phone': function(newValue){
                 if(newValue != ""){
                     this.project.class_cp_phone = (this.project.class_cp_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
-                    this.project.class_cp_phone_2 = (this.project.class_cp_phone_2+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
+                    
                 }
 
             },
@@ -480,21 +455,12 @@ $(document).ready(function(){
             if(this.oldData.class_cp_email !=null) {
                 this.project.class_cp_email=this.oldData.class_cp_email;
             }
-            if(this.oldData.class_name_2 !=null) {
-                this.project.class_name_2=this.oldData.class_name_2;
-            }
-            if(this.oldData.class_cp_name_2 !=null) {
-                this.project.class_cp_name_2=this.oldData.class_cp_name_2;
-            }
-            if(this.oldData.class_cp_phone_2 !=null) {
-                this.project.class_cp_phone_2=this.oldData.class_cp_phone_2;
-            }
             if(this.oldData.class_cp_email_2 !=null) {
                 this.project.class_cp_email_2=this.oldData.class_cp_email_2;
             }
             if(this.oldData.description !=null) {
                 this.project.description=this.oldData.description;
-            // console.log(this.oldData);
+            console.log(this.oldData);
         }
     },
 
@@ -503,12 +469,11 @@ $(document).ready(function(){
     $('#customer,#ship,#project_type').selectize();
     $('.datepicker').datepicker({
         autoclose : true,
-        format : "dd-mm-yyyy"
     });
 
     function parseDate(str) {
-        var mdy = str.split('-');
-        return new Date(mdy[2], mdy[1]-1, mdy[0]);
+        var mdy = str.split('/');
+        return new Date(mdy[2], mdy[0]-1, mdy[1]);
     }
 
     function datediff(first, second) {
