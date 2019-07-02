@@ -71,12 +71,12 @@
                                         <tr>
                                             <th style="width: 5%">No</th>
                                             <th style="width: 23%">WBS Name</th>
-                                            <th style="width: 38%">Material Name</th>
+                                            <th style="width: 35%">Material Name</th>
                                             <th style="width: 15%">Planned Qty (BOM)</th>
                                             <th style="width: 12%">Available Qty</th>
                                             <th style="width: 12%">Requested Qty</th>
                                             <th style="width: 6%">Unit</th>
-                                            <th style="width: 10%"></th>
+                                            <th style="width: 13%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>

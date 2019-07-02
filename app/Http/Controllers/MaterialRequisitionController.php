@@ -15,6 +15,7 @@ use App\Models\Stock;
 use Illuminate\Support\Collection;
 use Auth;
 use DB;
+use Illuminate\Support\Carbon;
 use App\Providers\numberConverter;
 
 class MaterialRequisitionController extends Controller
@@ -394,6 +395,7 @@ class MaterialRequisitionController extends Controller
                 $modelMR->status = 2;
                 $modelMR->revision_description = $datas->desc;
                 $modelMR->approved_by = Auth::user()->id;
+                $modelMR->approval_date = Carbon::now();
                 $modelMR->update();
                 DB::commit();
                 if($route == "/material_requisition"){
@@ -416,6 +418,7 @@ class MaterialRequisitionController extends Controller
                 $modelMR->status = 5;
                 $modelMR->revision_description = $datas->desc;
                 $modelMR->approved_by = Auth::user()->id;
+                $modelMR->approval_date = Carbon::now();
                 $mrds = $modelMR->materialRequisitionDetails;
                 foreach ($mrds as $mrd) {
                     $stock = Stock::where('material_id',$mrd->material_id)->first();
@@ -471,7 +474,7 @@ class MaterialRequisitionController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadView('material_requisition.pdf',['modelMR' => $modelMR, 'branch' => $branch,'route'=> $route]);
         $now = date("Y_m_d_H_i_s");
-        return $pdf->download('Material_Requisition_'.$now.'.pdf');
+        return $pdf->stream('Material_Requisition_'.$now.'.pdf');
     }
 
     public function generateMRNumber(){
