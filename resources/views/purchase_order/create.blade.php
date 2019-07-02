@@ -126,24 +126,24 @@
                         <div class="box-body p-t-0">
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-15 p-t-0">
-                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;" v-if="modelPR.type != 3">
+                                    <table class="table table-bordered tableFixed" id="po-table" style="border-collapse:collapse;" v-if="modelPR.type != 3">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <template v-if="modelPR.type == 1">
                                                     <th width="15%">Material Number</th>
-                                                    <th width="21%">Material Description</th>
+                                                    <th width="20%">Material Description</th>
                                                 </template>
                                                 <template v-else>
                                                     <th width="15%">Resource Number</th>
-                                                    <th width="21%">Resource Description</th>
+                                                    <th width="20%">Resource Description</th>
                                                 </template>
-                                                <th style="width: 9%">Qty</th>
-                                                <th style="width: 9%">Order</th>
+                                                <th style="width: 6%">Qty</th>
+                                                <th style="width: 6%">Order</th>
                                                 <th style="width: 6%">Unit</th>
-                                                <th style="width: 12%">Price / pcs ({{selectedCurrency}})</th>
-                                                <th style="width: 7%">Disc. (%)</th>
-                                                <th style="width: 10%">Delivery Date</th>
+                                                <th style="width: 14%">Price / pcs ({{selectedCurrency}})</th>
+                                                <th style="width: 10%">Disc. (%)</th>
+                                                <th style="width: 12%">Delivery Date</th>
                                                 <th style="width: 8%"></th>
                                             </tr>
                                         </thead>
@@ -182,7 +182,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;" v-if="modelPR.type == 3">
+                                    <table class="table table-bordered tableFixed" id="po-table" style="border-collapse:collapse;" v-if="modelPR.type == 3">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
@@ -312,37 +312,48 @@
     const form = document.querySelector('form#create-po');
 
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Qty" || title == "Order" || title == "Price / pcs (Rp)" || title == "Disc. (%)"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        $('#po-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'searching'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tableNonPagingVue.column(i).search() !== this.value ) {
-                    tableNonPagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
         });
+        // $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        // $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Qty" || title == "Order" || title == "Price / pcs (Rp)" || title == "Disc. (%)"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-            ordering        : false,
-        });
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( tableNonPagingVue.column(i).search() !== this.value ) {
+        //             tableNonPagingVue
+        //                 .column(i)
+        //                 .search( this.value )
+        //                 .draw();
+        //         }
+        //     });
+        // });
+
+        // var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+        //     orderCellsTop   : true,
+        //     paging          : false,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : false,
+        //     ordering        : false,
+        // });
 
         
         
-        $('div.overlay').hide();
+        // $('div.overlay').hide();
     });
 
     var data = {

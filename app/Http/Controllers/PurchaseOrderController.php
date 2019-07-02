@@ -20,6 +20,7 @@ use DateTime;
 use Auth;
 use DB;
 use App\Providers\numberConverter;
+use Illuminate\Support\Carbon;
 
 class PurchaseOrderController extends Controller
 {
@@ -757,6 +758,7 @@ class PurchaseOrderController extends Controller
                 $modelPO->status = 2;
                 $modelPO->revision_description = $datas->desc;
                 $modelPO->approved_by = Auth::user()->id;
+                $modelPO->approval_date = Carbon::now();
                 $modelPO->update();
                 $this->generatePIR($modelPO);
                 DB::commit();
@@ -780,6 +782,7 @@ class PurchaseOrderController extends Controller
                 $modelPO->status = 5;
                 $modelPO->revision_description = $datas->desc;
                 $modelPO->approved_by = Auth::user()->id;
+                $modelPO->approval_date = Carbon::now();
                 $modelPO->update();
                 DB::commit();
                 if($route == "/purchase_order"){
@@ -838,7 +841,7 @@ class PurchaseOrderController extends Controller
             $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
             
             $now = date("Y_m_d_H_i_s");
-            return $pdf->download('Purchase_Order_'.$now.'.pdf');
+            return $pdf->stream('Purchase_Order_'.$now.'.pdf');
         }
         else{
             $pdf->loadView('purchase_order.pdf_PO_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);

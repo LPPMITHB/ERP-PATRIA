@@ -17,6 +17,7 @@ use DateTime;
 use Auth;
 use DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 
 class PurchaseRequisitionController extends Controller
 {
@@ -738,6 +739,7 @@ class PurchaseRequisitionController extends Controller
                 $modelPR->status = 2;
                 $modelPR->revision_description = $datas->desc;
                 $modelPR->approved_by = Auth::user()->id;
+                $modelPR->approval_date = Carbon::now();
                 $modelPR->update();
                 DB::commit();
                 if($route == "/purchase_requisition"){
@@ -749,6 +751,7 @@ class PurchaseRequisitionController extends Controller
                 $modelPR->status = 3;
                 $modelPR->revision_description = $datas->desc;
                 $modelPR->approved_by = Auth::user()->id;
+                $modelPR->approval_date = Carbon::now();
                 $modelPR->update();
                 DB::commit();
                 if($route == "/purchase_requisition"){
@@ -760,6 +763,7 @@ class PurchaseRequisitionController extends Controller
                 $modelPR->status = 5;
                 $modelPR->revision_description = $datas->desc;
                 $modelPR->approved_by = Auth::user()->id;
+                $modelPR->approval_date = Carbon::now();
                 $modelPR->update();
                 if($modelPR->type == 3){
                     foreach($modelPR->purchaseRequisitionDetails as $PRD){

@@ -118,6 +118,21 @@
                                 : <b> {{ $modelPO->approvedBy->name }} </b>
                             </div>
                         @endif
+                        @if($modelPO->status == 2)
+                            <div class="col-xs-4 col-md-4">
+                                Approved Date
+                            </div>
+                            <div class="col-xs-8 col-md-8">
+                                : <b>{{ $modelPO->approval_date }}</b>
+                            </div>
+                        @elseif($modelPO->status == 5)
+                            <div class="col-xs-4 col-md-4">
+                                Rejected Date
+                            </div>
+                            <div class="col-xs-8 col-md-8">
+                                : <b>{{ $modelPO->approval_date }}</b>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -206,12 +221,12 @@
                 
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($route == "/purchase_order_repair" && $modelPO->purchaseRequisition->type == 3)
-                    <a class="col-xs-12 col-md-2 btn btn-primary p-l-5 pull-right m-l-20" href="{{ route('purchase_order_repair.printJobOrder', ['id'=>$modelPO->id]) }}">DOWNLOAD JOB ORDER</a>
+                    <a class="col-xs-12 col-md-2 btn btn-primary p-l-5 pull-right m-l-20" target="_blank" href="{{ route('purchase_order_repair.printJobOrder', ['id'=>$modelPO->id]) }}">DOWNLOAD JOB ORDER</a>
                     @endif
                     @if($route == "/purchase_order")
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_order.print', ['id'=>$modelPO->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_order.print', ['id'=>$modelPO->id]) }}">DOWNLOAD</a>
                     @elseif($route == "/purchase_order_repair")
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_order_repair.print', ['id'=>$modelPO->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_order_repair.print', ['id'=>$modelPO->id]) }}">DOWNLOAD</a>
                     @endif
                 </div>
 
