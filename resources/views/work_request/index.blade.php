@@ -18,13 +18,21 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tableFixed tablePaging">
+                <div class="col-sm-6 p-l-0">
+                    <div class="box-tools pull-left">
+                        <span id="date-label-from" class="date-label">From: </span><input class="date_range_filter datepicker" type="text" id="datepicker_from" />
+                        <span id="date-label-to" class="date-label">To: </span><input class="date_range_filter datepicker" type="text" id="datepicker_to" />
+                        <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
+                    </div>
+                </div> 
+                <table id="wr-table" class="table table-bordered tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th width="17%">Number</th>
                             <th width="33%">Description</th>
                             <th width="20%">Project Name</th>
+                            <th width="15%">Document Date</th>
                             <th width="15%">Status</th>
                             <th width="10%"></th>
                         </tr>
@@ -36,6 +44,7 @@
                                 <td>{{ $modelWR->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelWR->description}}">{{ isset($modelWR->description) ? $modelWR->description : '-' }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip">{{ isset($modelWR->project) ? $modelWR->project->name : '-'}}</td>
+                                <td class="tdEllipsis">{{ $modelWR->created_at->format('d-m-Y') }}</td>
                                 @if($modelWR->status == 1)
                                     <td>OPEN</td>
                                     <td class="textCenter">
@@ -113,7 +122,80 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        var wr_table = $('#wr-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'bFilter'     : true,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
+
+        $("#datepicker_from").datepicker({
+            autoclose : true,
+            format : "dd-mm-yyyy"
+        }).keyup(function() {
+            var temp = this.value.split("-");
+            minDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
+            wr_table.draw();
+        }).change(function() {
+            var temp = this.value.split("-");
+            minDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
+            wr_table.draw();
+        });
+
+        $("#datepicker_to").datepicker({
+            autoclose : true,
+            format : "dd-mm-yyyy"
+        }).keyup(function() {
+            var temp = this.value.split("-");
+            maxDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
+            wr_table.draw();
+        }).change(function() {
+            var temp = this.value.split("-");
+            maxDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
+            wr_table.draw();
+        });
+
+        document.getElementById("btn-reset").addEventListener("click", reset);
+
+        function reset() {
+            $("#datepicker_from").val('');
+            $("#datepicker_to").val('');
+            maxDateFilter = "";
+            minDateFilter = "";
+            wr_table.draw();
+        }
+        
+        // Date range filter
+        minDateFilter = "";
+        maxDateFilter = "";
+
+        $.fn.dataTableExt.afnFiltering.push(
+            function(oSettings, aData, iDataIndex) {
+                if (typeof aData._date == 'undefined') {
+                    var temp = aData[4].split("-");                    
+                    aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
+                }
+
+                if (minDateFilter && !isNaN(minDateFilter)) {
+                    if (aData._date < minDateFilter) {
+                        return false;
+                    }
+                }
+
+                if (maxDateFilter && !isNaN(maxDateFilter)) {
+                    if (aData._date > maxDateFilter) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
     });
 </script>
 @endpush
