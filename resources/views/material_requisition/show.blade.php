@@ -138,7 +138,7 @@
                 </div>
             </div> 
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable" id="details-table">
+                <table class="table table-bordered showTable tableFixed" id="details-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>

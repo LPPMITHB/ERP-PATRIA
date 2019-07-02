@@ -621,7 +621,7 @@ class WorkRequestController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadView('work_request.pdf',['modelWR' => $modelWR,'branch'=>$branch]);
         $now = date("Y_m_d_H_i_s");
-        return $pdf->download('Work_Request_'.$now.'.pdf');
+        return $pdf->stream('Work_Request_'.$now.'.pdf');
     }
 
     public function generateWRNumber(){

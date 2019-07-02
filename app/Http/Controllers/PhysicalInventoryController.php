@@ -145,7 +145,7 @@ class PhysicalInventoryController extends Controller
         $pdf->loadView('physical_inventory.pdf',['modelSnapshot' => $modelSnapshot, 'branch' => $branch, 'route' => $route]);
         $now = date("Y_m_d_H_i_s");
         
-        return $pdf->download('Snapshot_'.$now.'.pdf');
+        return $pdf->stream('Snapshot_'.$now.'.pdf');
     }
 
     public function countStock($id, Request $request)
