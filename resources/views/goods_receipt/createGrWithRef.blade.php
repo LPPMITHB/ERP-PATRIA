@@ -77,7 +77,7 @@
                             </div>
                             <div class="col-sm-12">
                                 <div class="row">
-                                    <table class="table table-bordered tablePagingVue tableFixed">
+                                    <table class="table table-bordered tableFixed" id="gr-table">
                                         <thead>
                                             <tr>
                                                 <th width="4%">No</th>
@@ -139,34 +139,45 @@
     const form = document.querySelector('form#create-gr');
 
     $(document).ready(function(){
-        $('div.overlay').hide();
-
-        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
-        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'Material Name' || title == 'Storage Location'){
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-            }else{
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        $('#gr-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'searching'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tablePagingVue.column(i).search() !== this.value ) {
-                    tablePagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
         });
+        // $('div.overlay').hide();
 
-        var tablePagingVue = $('.tablePagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-        });
+        // $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
+        // $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'Material Name' || title == 'Storage Location'){
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }else{
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }
+
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( tablePagingVue.column(i).search() !== this.value ) {
+        //             tablePagingVue
+        //                 .column(i)
+        //                 .search( this.value )
+        //                 .draw();
+        //         }
+        //     });
+        // });
+
+        // var tablePagingVue = $('.tablePagingVue').DataTable( {
+        //     orderCellsTop   : true,
+        //     paging          : false,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : false,
+        // });
     });
 
     var data = {

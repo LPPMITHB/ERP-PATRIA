@@ -347,7 +347,7 @@ class GoodsReceiptController extends Controller
         $route = $request->route()->getPrefix();
         $pdf->loadView('goods_receipt.pdf',['modelGR' => $modelGR,'branch'=>$branch, 'route'=> $route]);
         $now = date("Y_m_d_H_i_s");
-        return $pdf->download('Goods_Receipt_'.$now.'.pdf');
+        return $pdf->stream('Goods_Receipt_'.$now.'.pdf');
     }
 
     public function updatePOD($purchase_order_id,$received){

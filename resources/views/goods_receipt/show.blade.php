@@ -67,7 +67,7 @@
                             </div>
                     </div>
                 </div>
-            <div class="box-body">
+            <div class="box-body p-t-0">
                 <div class="col-sm-12">
                     <div class="row">
                         <table class="table table-bordered showTable tablePaging tableFixed">
@@ -77,9 +77,9 @@
                                     <th width="20%">Material Number</th>
                                     <th width="20%">Material Description</th>
                                     <th width="5%">Unit</th>
-                                    <th width="15%">Quantity</th>
+                                    <th width="10%">Quantity</th>
                                     <th width="25%">Storage Location</th>
-                                    <th width="10%">Received Date</th>
+                                    <th width="15%">Received Date</th>
                                 </tr>
                             </thead>
                             <tbody>
