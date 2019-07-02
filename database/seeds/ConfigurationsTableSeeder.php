@@ -147,25 +147,41 @@ class ConfigurationsTableSeeder extends Seeder
         ]);
 
         $project_type = array(
+            // UNTUK PAMI
+
+            // 0 => array(
+            //     'id' => 1,
+            //     'name' => 'Special Service',
+            // ),
+            // 1 => array(
+            //     'id' => 2,
+            //     'name' => 'Intermediate',
+            // ),
+            // 2 => array(
+            //     'id' => 3,
+            //     'name' => 'Occasional',
+            // ),
+            // 3 => array(
+            //     'id' => 4,
+            //     'name' => 'Onboard',
+            // ),
+            // 4 => array(
+            //     'id' => 5,
+            //     'name' => 'Spot',
+            // ),
+
+            // UNTUK PMP
             0 => array(
                 'id' => 1,
-                'name' => 'Special Service',
+                'name' => 'New Building',
             ),
             1 => array(
                 'id' => 2,
-                'name' => 'Intermediate',
+                'name' => 'Marine Services',
             ),
             2 => array(
                 'id' => 3,
-                'name' => 'Occasional',
-            ),
-            3 => array(
-                'id' => 4,
-                'name' => 'Onboard',
-            ),
-            4 => array(
-                'id' => 5,
-                'name' => 'Spot',
+                'name' => 'Fabrication',
             ),
         );
 
