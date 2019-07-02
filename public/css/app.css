@@ -23815,7 +23815,7 @@ textarea {
 }
 
 .dataTables_filter {
-  display: none;
+  display: block;
 }
 
 .indexTable {
