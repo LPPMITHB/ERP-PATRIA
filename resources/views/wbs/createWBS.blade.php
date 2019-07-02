@@ -85,8 +85,8 @@
                             <tr>
                                 <th style="width: 2px">No</th>
                                 <th style="width: 10%">Number</th>
-                                <th style="width: 15%">Deliverables</th>
                                 <th style="width: 15%">Description</th>
+                                <th style="width: 15%">Deliverables</th>
                                 <th style="width: 7%">Start Date</th>
                                 <th style="width: 7%">End Date</th>
                                 <th style="width: 7%">Duration</th>
@@ -98,8 +98,8 @@
                             <tr v-for="(data,index) in wbs">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
@@ -134,16 +134,16 @@
                                     <input v-model="newWbs.number" type="text" class="form-control width100" id="number" name="number" placeholder="Number">
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWbs.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
-                                </td>
-                                <td class="p-l-0">
                                     <textarea v-model="newWbs.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newWbs.planned_start_date" :disabled="dateOk" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                    <textarea v-model="newWbs.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newWbs.planned_end_date" :disabled="dateOk" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
+                                    <input autocomplete="off" v-model="newWbs.planned_start_date" type="text" class="form-control datepicker width100 create_date" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                </td>
+                                <td class="p-l-0">
+                                    <input autocomplete="off" v-model="newWbs.planned_end_date" type="text" class="form-control datepicker width100 create_date" id="planned_end_date" name="planned_end_date" placeholder="End Date">
                                 </td>
                                 <td class="p-l-0">
                                     <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newWbs.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
@@ -173,12 +173,12 @@
                                             <input id="number" type="text" class="form-control" v-model="editWbs.number" placeholder="Insert Number here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="deliverables" class="control-label">Deliverables</label>
-                                            <textarea id="deliverables" v-model="editWbs.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
-                                        </div>
-                                        <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
                                             <textarea id="description" v-model="editWbs.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="deliverables" class="control-label">Deliverables</label>
+                                            <textarea  id="deliverables" v-model="editWbs.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <label for="edit_planned_start_date" class=" control-label">Start Date</label>
@@ -401,9 +401,7 @@ var vm = new Vue({
         },
         dateOk: function(){
             let isOk = false;
-            if(this.project_start_date == null || this.project_end_date == null){
-                isOk = true;
-            }
+            
             return isOk;
         },
     }, 
@@ -456,6 +454,7 @@ var vm = new Vue({
         },
         getWBS(){
             window.axios.get('/api/getWbs/'+this.newWbs.project_id).then(({ data }) => {
+                $('div.overlay').show();
                 this.wbs = data;
                 this.newIndex = Object.keys(this.wbs).length+1;
                 this.totalWeight = 0;
@@ -482,6 +481,7 @@ var vm = new Vue({
                         'autoWidth'   : false,
                     });
                 })
+                $('div.overlay').hide();
             });
         },
         adoptWbs(){
@@ -547,7 +547,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
                 }
                 
                 this.getWBS();
@@ -590,7 +589,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
                 }
                 
                 this.getWBS();   
@@ -651,7 +649,6 @@ var vm = new Vue({
                                     title: response.data.response,
                                     position: 'topRight',
                                 });
-                                $('div.overlay').hide();   
                                 vm.getWBS();
                             }
                         })
@@ -898,6 +895,11 @@ var vm = new Vue({
         }
     },
     created: function() {
+        if(this.project_start_date == null || this.project_end_date == null){
+            for (let i = 0; i < $(".create_date").length; i++) {
+                $(".create_date")[i].disabled = true;
+            }
+        }
         this.getWBS();
     },
     

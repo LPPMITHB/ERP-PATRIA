@@ -534,14 +534,18 @@ $(document).ready(function(){
             }
         }
     );
+
     function setEndDate(){
         document.getElementById('planned_duration').value = document.getElementById('planned_duration').value+"".replace(/\D/g, "");
         var planned_start_date = $('#planned_start_date').val();
         var planned_duration = document.getElementById('planned_duration').value;
         if(planned_duration != "" && planned_start_date != ""){
             var planned_duration = parseInt(planned_duration);
+            var planned_start_date_temp = (planned_start_date+"").split("-");
+            planned_start_date_temp = planned_start_date_temp[1]+"-"+planned_start_date_temp[0]+"-"+planned_start_date_temp[2];
+            console.log(planned_start_date_temp);
             var planned_end_date = new Date(planned_start_date);
-            
+            console.log(planned_end_date);
             planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
             $('#planned_end_date').datepicker('setDate', planned_end_date);
         }else{
