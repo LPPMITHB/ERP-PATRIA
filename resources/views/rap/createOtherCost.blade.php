@@ -69,6 +69,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
+                                <th style="width: 25%">Cost Type</th>
                                 <th style="width: 25%">Description</th>
                                 <th style="width: 15%">Cost (Rp.)</th>
                                 <th style="width: 25%">Work Breakdown Structure</th>
@@ -78,6 +79,7 @@
                         <tbody>
                             <tr v-for="(data,index) in costs">
                                 <td>{{ index + 1 }}</td>
+                                <td class="tdEllipsis">{{ data.cost_type_name }}</td>
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
                                 <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.number }} - {{ data.wbs.description }}</td>
@@ -92,6 +94,11 @@
                         <tfoot>
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
+                                <td class="no-padding">
+                                    <selectize v-model="newCost.cost_type" :settings="costTypeSettings">
+                                        <option v-for="(ct, index) in cost_types" :value="ct.id">{{ ct.name }}</option>
+                                    </selectize>
+                                </td>
                                 <td class="no-padding">
                                     <input v-model="newCost.description" class="form-control width100" rows="2" name="description">
                                 </td>
@@ -120,6 +127,12 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
+                                        <div class="form-group col-sm-12">
+                                            <label for="cost_type" class="control-label">Cost Type</label>
+                                            <selectize v-model="editCost.cost_type" :settings="costTypeSettings">
+                                                <option v-for="(ct, index) in cost_types" :value="ct.id">{{ ct.name }}</option>
+                                            </selectize>
+                                        </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
                                             <textarea id="description" v-model="editCost.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
@@ -167,13 +180,16 @@ var data = {
     costs : "",
     wbss : [],
     newIndex : "", 
+    cost_types : @json($cost_types),
     newCost : {
+        cost_type : "",
         description : "",
         cost : "",
         wbs_id : null,
         project_id : @json($project->id),
     },
     editCost : {
+        cost_type : "",
         cost_id : "",
         description : "",
         cost : "",
@@ -182,6 +198,11 @@ var data = {
     },
     workSettings: {
         placeholder: 'Please Select WBS (Optional)',
+        plugins: ['dropdown_direction'],
+        dropdownDirection : 'down',
+    },
+    costTypeSettings: {
+        placeholder: 'Please Select Cost Type',
         plugins: ['dropdown_direction'],
         dropdownDirection : 'down',
     },
@@ -219,6 +240,7 @@ var vm = new Vue({
             this.editCost.description = data.description;
             this.editCost.wbs_id = data.wbs_id;
             this.editCost.cost = data.plan_cost;
+            this.editCost.cost_type = data.cost_type;
         },
         getWbss(){
             window.axios.get('/api/getAllWbss/'+this.newCost.project_id).then(({ data }) => {
@@ -230,6 +252,11 @@ var vm = new Vue({
                 this.costs = data;
                 this.costs.forEach(cost => {   
                     cost.plan_cost = (cost.plan_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");      
+                    this.cost_types.forEach(ct =>{
+                        if(ct.id == cost.cost_type){
+                            cost.cost_type_name = ct.name;
+                        }
+                    })
                 });
                 this.newIndex = Object.keys(this.costs).length+1;
                 var dT = $('#cost-table').DataTable();
@@ -243,7 +270,7 @@ var vm = new Vue({
                         'info'        : true,
                         'autoWidth'   : false,
                         'initComplete': function(){
-                            $('div.overlay').remove();
+                            $('div.overlay').hide();
                         },
                         columnDefs : [
                             { targets: 0, sortable: false},
@@ -277,6 +304,7 @@ var vm = new Vue({
                 this.newCost.description = "";
                 this.newCost.cost = "";
                 this.newCost.wbs_id = "";                
+                this.newCost.cost_type = "";                
             })
             .catch((error) => {
                 console.log(error);

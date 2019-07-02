@@ -246,5 +246,109 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $cost_type = array(
+            0 => array(
+                'id' => 1,
+                'name' => 'Direct Labour',
+            ),
+            1 => array(
+                'id' => 2,
+                'name' => 'Direct Labour Welfare',
+            ),
+            2 => array(
+                'id' => 3,
+                'name' => 'DL Overtime',
+            ),
+            3 => array(
+                'id' => 4,
+                'name' => 'Subcontractors',
+            ),
+            4 => array(
+                'id' => 5,
+                'name' => 'Indirect Labour',
+            ),
+            5 => array(
+                'id' => 6,
+                'name' => 'Indirect Labour Welfare',
+            ),
+            6 => array(
+                'id' => 7,
+                'name' => 'Indirect Labour Overtime',
+            ),
+            7 => array(
+                'id' => 8,
+                'name' => 'Consumables',
+            ),
+            8 => array(
+                'id' => 9,
+                'name' => 'Shipping Cost',
+            ),
+            9 => array(
+                'id' => 10,
+                'name' => 'Security',
+            ),
+            10 => array(
+                'id' => 11,
+                'name' => 'Depreciation',
+            ),
+            11 => array(
+                'id' => 12,
+                'name' => 'Uniform & Safety',
+            ),
+            12 => array(
+                'id' => 13,
+                'name' => 'Utilities',
+            ),
+            13 => array(
+                'id' => 14,
+                'name' => 'Repairs and Maintanance',
+            ),
+            14 => array(
+                'id' => 15,
+                'name' => 'Profressional Fee',
+            ),
+            15 => array(
+                'id' => 16,
+                'name' => 'Rent',
+            ),
+            16 => array(
+                'id' => 17,
+                'name' => 'Travelling',
+            ),
+            17 => array(
+                'id' => 18,
+                'name' => 'Insurance',
+            ),
+            18 => array(
+                'id' => 19,
+                'name' => 'Stationary',
+            ),
+            19 => array(
+                'id' => 20,
+                'name' => 'After Sales Service',
+            ),
+            20 => array(
+                'id' => 21,
+                'name' => 'Communication',
+            ),
+            21 => array(
+                'id' => 22,
+                'name' => 'Classification',
+            ),
+            22 => array(
+                'id' => 23,
+                'name' => 'Others',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'cost_type',
+            'title' => 'Cost Type',
+            'value' => json_encode($cost_type),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

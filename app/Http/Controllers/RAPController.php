@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use App\Models\Configuration;
 use App\Models\Branch;
 use App\Models\Bom;
 use App\Models\Rap;
@@ -286,8 +287,9 @@ class RAPController extends Controller
     {
         $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);  
-        
-        return view('rap.createOtherCost', compact('project','route'));
+        $cost_types = Configuration::get('cost_type');
+
+        return view('rap.createOtherCost', compact('project','route','cost_types'));
     }
 
     public function inputActualOtherCost(Request $request, $id)
@@ -600,6 +602,7 @@ class RAPController extends Controller
 
             $cost->user_id = Auth::user()->id;
             $cost->branch_id = Auth::user()->branch->id;
+            $cost->cost_type = $data['cost_type'];
 
             if(!$cost->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -670,6 +673,7 @@ class RAPController extends Controller
                 $cost->wbs_id = $data['wbs_id'];
             }
             $cost->project_id = $data['project_id'];
+            $cost->cost_type = $data['cost_type'];
 
             if(!$cost->update()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);

@@ -14,6 +14,13 @@
 Route::get('/', 'PagesController@index')->name('index')->middleware('can:show-dashboard');
 Auth::routes();
 
+// Cost Type Routes
+Route::name('cost_type.')->prefix('cost_type')->group(function() {
+    Route::get('/', 'ConfigurationController@costTypeIndex')->name('index');
+
+    Route::post('/', 'ConfigurationController@acostTypeSave')->name('save');
+});
+
 // Configuration Routes
 Route::name('appearance.')->prefix('appearance')->group(function() {
     Route::get('/', 'ConfigurationController@appearanceIndex')->name('index');
