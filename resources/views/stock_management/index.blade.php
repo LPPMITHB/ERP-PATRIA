@@ -157,31 +157,17 @@
     const form = document.querySelector('form#view-stock');
 
     $(document).ready(function(){        
-        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
-        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title != 'Material Number' && title != 'Material Description'){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
-            }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tablePagingVue.column(i).search() !== this.value ) {
-                    tablePagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
-        });
 
         var tablePagingVue = $('.tablePagingVue').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : true,
-            lengthChange    : false,
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'bFilter'     : true,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
         });
 
     });
@@ -253,39 +239,20 @@
                         });
 
                         $('#tablePagingVue2').DataTable().destroy();
-                        var elements = document.getElementsByClassName("indexTable2");
-
-                        elements[0].parentNode.parentNode.removeChild(elements[0].parentNode);
                         this.$nextTick(function() {
-                            $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
-                            $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
-                                var title = $(this).text();
-                                if(title != 'Material Number' && title != 'Material Description'){
-                                    $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-                                }else{
-                                    $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
-                                }
-
-                                $( 'input', this ).on( 'keyup change', function () {
-                                    if ( tablePagingVue2.column(i).search() !== this.value ) {
-                                        tablePagingVue2
-                                            .column(i)
-                                            .search( this.value )
-                                            .draw();
-                                    }
-                                });
-                            });
-
                             var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
-                                orderCellsTop   : true,
-                                fixedHeader     : true,
-                                paging          : true,
-                                autoWidth       : true,
-                                lengthChange    : false,
+                                'paging'      : true,
+                                'lengthChange': false,
+                                'ordering'    : true,
+                                'info'        : true,
+                                'autoWidth'   : false,
+                                'bFilter'     : true,
+                                'initComplete': function(){
+                                    $('div.overlay').hide();
+                                }
                             });
                         })
 
-                        $('div.overlay').hide();
                     })
                     .catch((error) => {
                         iziToast.warning({
@@ -331,38 +298,19 @@
                             });
 
                             $('#tablePagingVue2').DataTable().destroy();
-                            var elements = document.getElementsByClassName("indexTable2");
-
-                            elements[0].parentNode.parentNode.removeChild(elements[0].parentNode);
                             this.$nextTick(function() {
-                                $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
-                                $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
-                                    var title = $(this).text();
-                                    if(title != 'Material Number' && title != 'Material Description'){
-                                        $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-                                    }else{
-                                        $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
-                                    }
-
-                                    $( 'input', this ).on( 'keyup change', function () {
-                                        if ( tablePagingVue2.column(i).search() !== this.value ) {
-                                            tablePagingVue2
-                                                .column(i)
-                                                .search( this.value )
-                                                .draw();
-                                        }
-                                    });
-                                });
-
                                 var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
-                                    orderCellsTop   : true,
-                                    fixedHeader     : true,
-                                    paging          : true,
-                                    autoWidth       : true,
-                                    lengthChange    : false,
+                                    'paging'      : true,
+                                    'lengthChange': false,
+                                    'ordering'    : true,
+                                    'info'        : true,
+                                    'autoWidth'   : false,
+                                    'bFilter'     : true,
+                                    'initComplete': function(){
+                                        $('div.overlay').hide();
+                                    }
                                 });
                             })
-                            $('div.overlay').hide();
                         })
                         .catch((error) => {
                             iziToast.warning({
@@ -419,70 +367,19 @@
                         });
 
                         $('#tablePagingVue2').DataTable().destroy();
-                        var elements = document.getElementsByClassName("indexTable2");
-                        if(elements.length == 0){
-                            this.$nextTick(function() {
-                                $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
-                                $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
-                                    var title = $(this).text();
-                                    if(title != 'Material Number' && title != 'Material Description'){
-                                        $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-                                    }else{
-                                        $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
-                                    }
-    
-                                    $( 'input', this ).on( 'keyup change', function () {
-                                        if ( tablePagingVue2.column(i).search() !== this.value ) {
-                                            tablePagingVue2
-                                                .column(i)
-                                                .search( this.value )
-                                                .draw();
-                                        }
-                                    });
-                                });
-    
-                                var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
-                                    orderCellsTop   : true,
-                                    fixedHeader     : true,
-                                    paging          : true,
-                                    autoWidth       : true,
-                                    lengthChange    : false,
-                                });
-                            })
-                            $('div.overlay').hide();
-                        }else{
-                            elements[0].parentNode.parentNode.removeChild(elements[0].parentNode);
-                            this.$nextTick(function() {
-                                $('#tablePagingVue2 thead tr').clone(true).appendTo( '#tablePagingVue2 thead' );
-                                $('#tablePagingVue2 thead tr:eq(1) th').addClass('indexTable2').each( function (i) {
-                                    var title = $(this).text();
-                                    if(title != 'Material Number' && title != 'Material Description'){
-                                        $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-                                    }else{
-                                        $(this).html( '<input class="form-control width100 search" type="text" placeholder="Search '+title+'"/>' );
-                                    }
-    
-                                    $( 'input', this ).on( 'keyup change', function () {
-                                        if ( tablePagingVue2.column(i).search() !== this.value ) {
-                                            tablePagingVue2
-                                                .column(i)
-                                                .search( this.value )
-                                                .draw();
-                                        }
-                                    });
-                                });
-
-                                var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
-                                    orderCellsTop   : true,
-                                    fixedHeader     : true,
-                                    paging          : true,
-                                    autoWidth       : true,
-                                    lengthChange    : false,
-                                });
-                            })
-                            $('div.overlay').hide();
-                        }
-
+                        this.$nextTick(function() {
+                            var tablePagingVue2 = $('#tablePagingVue2').DataTable( {
+                                'paging'      : true,
+                                'lengthChange': false,
+                                'ordering'    : true,
+                                'info'        : true,
+                                'autoWidth'   : false,
+                                'bFilter'     : true,
+                                'initComplete': function(){
+                                    $('div.overlay').hide();
+                                }
+                            });
+                        })
                     })
                     .catch((error) => {
                         iziToast.warning({
