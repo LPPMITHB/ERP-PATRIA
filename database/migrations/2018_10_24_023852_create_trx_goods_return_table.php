@@ -24,6 +24,7 @@ class CreateTrxGoodsReturnTable extends Migration
             $table->unsignedInteger('user_id');
             $table->integer('status')->default(1);
             $table->unsignedInteger('approved_by')->nullable();
+            $table->date('approval_date')->nullable();
             $table->timestamps();
 
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
