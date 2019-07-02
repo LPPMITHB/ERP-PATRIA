@@ -13,6 +13,7 @@ use App\Models\GoodsIssueDetail;
 use App\Models\MaterialWriteOff;
 use App\Models\MaterialWriteOffDetail;
 use App\Models\Branch;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Auth;
 use DB;
@@ -246,6 +247,7 @@ class MaterialWriteOffController extends Controller
             if($datas->status == "approve"){
                 $modelMWO->status = 2;
                 $modelMWO->approved_by = Auth::user()->id;
+                $modelMWO->approval_date = Carbon::now();
                 $modelMWO->update();
 
                 $GI = new GoodsIssue;
@@ -280,6 +282,8 @@ class MaterialWriteOffController extends Controller
                 $modelMWO->update();
             }elseif($datas->status == "reject"){
                 $modelMWO->status = 4;
+                $modelMWO->approved_by = Auth::user()->id;
+                $modelMWO->approval_date = Carbon::now();
                 $modelMWO->update();
             }
             
