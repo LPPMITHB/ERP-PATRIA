@@ -12,8 +12,6 @@ class MstBomTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
         \DB::table('mst_bom')->delete();
         
         \DB::table('mst_bom')->insert(array (
@@ -91,7 +89,7 @@ class MstBomTableSeeder extends Seeder
                 'id' => 6,
                 'code' => 'BOM19050001',
                 'description' => '',
-                'project_id' => 2,
+                'project_id' => 5,
                 'wbs_id' => 34,
                 'branch_id' => 1,
                 'user_id' => 2,
@@ -104,7 +102,7 @@ class MstBomTableSeeder extends Seeder
                 'id' => 7,
                 'code' => 'BOM19050002',
                 'description' => '',
-                'project_id' => 2,
+                'project_id' => 5,
                 'wbs_id' => 37,
                 'branch_id' => 1,
                 'user_id' => 2,
@@ -117,7 +115,7 @@ class MstBomTableSeeder extends Seeder
                 'id' => 8,
                 'code' => 'BOM19050003',
                 'description' => '',
-                'project_id' => 2,
+                'project_id' => 5,
                 'wbs_id' => 38,
                 'branch_id' => 1,
                 'user_id' => 2,
@@ -130,7 +128,7 @@ class MstBomTableSeeder extends Seeder
                 'id' => 9,
                 'code' => 'BOM19050004',
                 'description' => '',
-                'project_id' => 2,
+                'project_id' => 5,
                 'wbs_id' => 39,
                 'branch_id' => 1,
                 'user_id' => 2,
@@ -143,7 +141,7 @@ class MstBomTableSeeder extends Seeder
                 'id' => 10,
                 'code' => 'BOM19050005',
                 'description' => '',
-                'project_id' => 2,
+                'project_id' => 5,
                 'wbs_id' => 40,
                 'branch_id' => 1,
                 'user_id' => 2,
