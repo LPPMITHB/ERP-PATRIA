@@ -1227,12 +1227,13 @@ class ProjectController extends Controller
                 $actualCostPerWbs = $mrd->material->cost_standard_price * $mrd->issued;
             }
             
-            $planned->push([
+            $planned->put($wbs->id,[
                 "wbs_number" => $wbs->number." - ".$wbs->description,
                 "cost" => $plannedCostPerWbs,                   
             ]);
                 
             $actual->push([
+                "wbs_id" => $wbs->id,
                 "wbs_number" => $wbs->number." - ".$wbs->description,
                 "cost" => $actualCostPerWbs,                   
             ]);

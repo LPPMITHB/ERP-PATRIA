@@ -107,10 +107,32 @@
                                         </thead>
                                         <tbody>   
                                             @foreach ($actual as $data)
-                                                <tr>
-                                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_number']}}">{{$data['wbs_number']}}</td>
-                                                    <td>Rp {{number_format($data['cost'])}}</td>
-                                                </tr>    
+                                                @if ($planned[$data['wbs_id']]['cost'] > 0 &&  $data['cost'] > 0)
+                                                    @php
+                                                        $temp_percentage =($data['cost']/$planned[$data['wbs_id']]['cost'])*100;
+                                                    @endphp
+                                                    @if ( $temp_percentage > 100)
+                                                        <tr style="background-color: red;">
+                                                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_number']}}">{{$data['wbs_number']}}</td>
+                                                            <td >Rp {{number_format($data['cost'])}}</td>
+                                                        </tr> 
+                                                    @elseif($temp_percentage > 95)
+                                                        <tr style="background-color: yellow;">
+                                                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_number']}}">{{$data['wbs_number']}}</td>
+                                                            <td >Rp {{number_format($data['cost'])}}</td>
+                                                        </tr> 
+                                                    @else
+                                                        <tr>
+                                                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_number']}}">{{$data['wbs_number']}}</td>
+                                                            <td >Rp {{number_format($data['cost'])}}</td>
+                                                        </tr> 
+                                                    @endif
+                                                @else
+                                                    <tr>
+                                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['wbs_number']}}">{{$data['wbs_number']}}</td>
+                                                        <td >Rp {{number_format($data['cost'])}}</td>
+                                                    </tr> 
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>

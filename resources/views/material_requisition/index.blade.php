@@ -43,7 +43,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelMR->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelMR->description}}">{{ $modelMR->description }}</td>
-                                <td>{{ $modelMR->project->name }}</td>
+                                <td>{{ $modelMR->project ? $modelMR->project->name : "-" }}</td>
                                 <td class="tdEllipsis">{{ $modelMR->created_at->format('d-m-Y') }}</td>
                                 <td>
                                     @if($modelMR->status == 0)

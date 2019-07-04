@@ -34,7 +34,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelMR->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelMR->description}}">{{ $modelMR->description }}</td>
-                                <td>{{ $modelMR->project->name }}</td>
+                                <td>{{ $modelMR->project != null ? $modelMR->project->name : "-" }}</td>
                                 <td class="textCenter">
                                     @if($menu == "building")
                                         <a href="{{ route('material_requisition.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>

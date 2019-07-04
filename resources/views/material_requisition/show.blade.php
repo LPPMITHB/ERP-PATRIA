@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Material Requisition » '.$modelMR->project->name,
+        'title' => 'View Material Requisition',
         'items' => [
             'Dashboard' => route('index'),
             'View Material Requisition' => route('material_requisition.show',$modelMR->id),
@@ -35,7 +35,7 @@
                             Project Number
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelMR->project->number }} </b>
+                            : <b> {{ $modelMR->project != null ? $modelMR->project->number : "-" }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -51,7 +51,7 @@
                             Ship Type
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelMR->project->ship->type }} </b>
+                            : <b> {{ $modelMR->project != null ? $modelMR->project->ship->type : "-" }} </b>
                         </div>
                     </div>
                     <div class="row">

@@ -30,21 +30,21 @@
                         <div class="box-header no-padding">
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-        
+                                
                                 <div class="col-xs-5 no-padding">Project Number</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.number}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject != null ? selectedProject.number : "-"}}</b></div>
                                 
                                 <div class="col-xs-5 no-padding">Ship Type</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.ship.type}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject != null ? selectedProject.ship.type : "-"}}</b></div>
         
                                 <div class="col-xs-5 no-padding">Customer</div>
-                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject.customer.name)"><b>: {{selectedProject.customer.name}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject != null ? selectedProject.customer.name : '-')"><b>: {{selectedProject != null ? selectedProject.customer.name : "-" }}</b></div>
 
                                 <div class="col-xs-5 no-padding">Start Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_start_date}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject != null ? selectedProject.planned_start_date : "-"}}</b></div>
 
                                 <div class="col-xs-5 no-padding">End Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject.planned_end_date}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject != null ? selectedProject.planned_end_date : "-"}}</b></div>
                             </div>
                             <div class="col-xs-12 col-md-4 p-r-0">
                                     <div class="col-sm-12 p-l-0">
@@ -69,9 +69,9 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
-                                            <th style="width: 23%">WBS Name</th>
+                                            <th style="width: 23%" v-show="selectedProject != null" >WBS Name</th>
                                             <th style="width: 38%">Material Name</th>
-                                            <th style="width: 15%">Planned Qty (BOM)</th>
+                                            <th style="width: 15%" v-show="selectedProject != null">Planned Qty (BOM)</th>
                                             <th style="width: 12%">Available Qty</th>
                                             <th style="width: 12%">Requested Qty</th>
                                             <th style="width: 6%">Unit</th>
@@ -81,9 +81,9 @@
                                     <tbody>
                                         <tr v-for="(material,index) in dataMaterial">
                                             <td>{{ index + 1 }}</td>
-                                            <td class="tdEllipsis">{{ material.wbs_number }} - {{ material.wbs_description }}</td>
+                                            <td class="tdEllipsis" v-show="selectedProject != null">{{ material.wbs_number }} - {{ material.wbs_description }}</td>
                                             <td class="tdEllipsis">{{ material.material_code }} - {{ material.material_description }}</td>
-                                            <td class="tdEllipsis">{{ material.planned_quantity }}</td>
+                                            <td class="tdEllipsis" v-show="selectedProject != null">{{ material.planned_quantity }}</td>
                                             <td class="tdEllipsis">{{ material.availableStr }}</td>
                                             <td class="tdEllipsis">{{ material.quantity }}</td>
                                             <td class="tdEllipsis">{{ material.unit }}</td>
@@ -100,26 +100,31 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
-                                            <td class="p-l-0 textLeft">
+                                            <td class="p-l-0 textLeft" v-show="selectedProject != null">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == '' && selectedProject != null">
                                                 <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
                                                 </selectize>  
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0 && selectedProject != null">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length > 0">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length > 0 && selectedProject != null">
                                                 <selectize v-model="dataInput.material_id" :settings="materialSettings">
                                                     <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="p-l-0">
-                                                <input disabled class="form-control" v-model="dataInput.planned_quantity" placeholder="">
+                                            <td class="p-l-0 textLeft" v-show="selectedProject == null">
+                                                <selectize v-model="dataInput.material_id" :settings="materialSettings">
+                                                    <option v-for="(material, index) in all_materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0"  v-show="selectedProject != null">
+                                                <input disabled class="form-control" v-model="dataInput.planned_quantity" placeholder="" >
                                             </td>
                                             <td class="p-l-0">
                                                 <input disabled class="form-control" v-model="dataInput.availableStr" placeholder="">
@@ -152,7 +157,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12" v-show="selectedProject != null">
                                                 <label for="wbs" class="control-label">WBS Name</label>
                                                 <input type="text" id="wbs" class="form-control" disabled>  
                                             </div>
@@ -160,11 +165,11 @@
                                                 <label for="material" class="control-label">Material</label>
                                                 <input type="text" id="material" class="form-control" disabled>                                                
                                             </div>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-9" v-show="selectedProject != null">
                                                 <label for="planned_quantity" class="control-label">Planned Quantity</label>
                                                 <input disabled type="text" id="planned_quantity" v-model="editInput.planned_quantity" class="form-control" placeholder="">
                                             </div>
-                                            <div class="col-sm-3 m-t-25">
+                                            <div class="col-sm-3 m-t-25" v-show="selectedProject != null">
                                                 <input disabled type="text" id="unit" v-model="editInput.unit" class="form-control" placeholder="">
                                             </div>
                                             <div class="col-sm-9">
@@ -221,6 +226,7 @@
         materials : [],
         materialsEdit : [],
         wbss : @json($modelWBS),
+        all_materials : @json($all_materials),
         projectSettings: {
             placeholder: 'Please Select Project'
         },
@@ -616,77 +622,120 @@
             },
             'dataInput.material_id' : function(newValue){
                 if(newValue != ""){
-                    this.dataInput.quantity = "";
-                    $('div.overlay').show();
-                    window.axios.get('/api/getMaterialInfoAPI/'+newValue+"/"+this.dataInput.wbs_id).then(({ data }) => {
-                        // this.dataInput.available = data['available'];
-                        this.dataInput.is_decimal = data['is_decimal'];
-                        this.dataInput.unit = data['unit'];
-                        if(this.dataInput.is_decimal){
-                            var decimal = (data['planned_quantity']+"").replace(/,/g, '').split('.');
-                            if(decimal[1] != undefined){
-                                var maxDecimal = 2;
-                                if((decimal[1]+"").length > maxDecimal){
-                                    this.dataInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    if(this.selectedProject != null){
+                        this.dataInput.quantity = "";
+                        $('div.overlay').show();
+                        window.axios.get('/api/getMaterialInfoAPI/'+newValue+"/"+this.dataInput.wbs_id).then(({ data }) => {
+                            // this.dataInput.available = data['available'];
+                            this.dataInput.is_decimal = data['is_decimal'];
+                            this.dataInput.unit = data['unit'];
+                            if(this.dataInput.is_decimal){
+                                var decimal = (data['planned_quantity']+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        this.dataInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        this.dataInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
                                 }else{
-                                    this.dataInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    this.dataInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 }
                             }else{
-                                this.dataInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                this.dataInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                             }
-                        }else{
-                            this.dataInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        }
-                        this.stocks.forEach(stock => {
-                            if(stock.material_id == newValue){
-                                this.dataInput.available = stock.available;
-                            }
-                        });
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
+
+                            this.stocks.forEach(stock => {
+                                if(stock.material_id == newValue){
+                                    this.dataInput.available = stock.available;
+                                }
+                            });
+                            $('div.overlay').hide();
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
+                    }else{
+                        this.dataInput.quantity = "";
+                        $('div.overlay').show();
+                        window.axios.get('/api/getMaterialInfoWithoutProjectAPI/'+newValue).then(({ data }) => {
+                            this.dataInput.is_decimal = data['is_decimal'];
+                            this.dataInput.unit = data['unit'];
+
+                            this.stocks.forEach(stock => {
+                                if(stock.material_id == newValue){
+                                    this.dataInput.available = stock.available;
+                                }
+                            });
+                            $('div.overlay').hide();
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
+                    }
                 }
             },
             'editInput.material_id' : function(newValue){
                 if(newValue != ""){
-                    $('div.overlay').show();
-                    window.axios.get('/api/getMaterialInfoAPI/'+newValue+'/'+this.editInput.wbs_id).then(({ data }) => {
-                        // this.editInput.available = data['available'];
-                        this.editInput.is_decimal = data['is_decimal'];
-                        this.editInput.unit = data['unit'];
-                        if(this.editInput.is_decimal){
-                            var decimal = (data['planned_quantity']+"").replace(/,/g, '').split('.');
-                            if(decimal[1] != undefined){
-                                var maxDecimal = 2;
-                                if((decimal[1]+"").length > maxDecimal){
-                                    this.editInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    if(this.selectedProject != null){
+                        $('div.overlay').show();
+                        window.axios.get('/api/getMaterialInfoAPI/'+newValue+'/'+this.editInput.wbs_id).then(({ data }) => {
+                            // this.editInput.available = data['available'];
+                            this.editInput.is_decimal = data['is_decimal'];
+                            this.editInput.unit = data['unit'];
+                            if(this.editInput.is_decimal){
+                                var decimal = (data['planned_quantity']+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        this.editInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        this.editInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
                                 }else{
-                                    this.editInput.planned_quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    this.editInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 }
                             }else{
-                                this.editInput.planned_quantity = (data['planned_quantity']+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                this.editInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                             }
-                        }else{
-                            this.editInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        }
 
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
+                            $('div.overlay').hide();
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
+                    }else{
+                        $('div.overlay').show();
+                        window.axios.get('/api/getMaterialInfoWithoutProjectAPI/'+newValue).then(({ data }) => {
+                            this.editInput.is_decimal = data['is_decimal'];
+                            this.editInput.unit = data['unit'];
+
+                            $('div.overlay').hide();
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            $('div.overlay').hide();
+                        })
+                    }
                 }
             },
         },
