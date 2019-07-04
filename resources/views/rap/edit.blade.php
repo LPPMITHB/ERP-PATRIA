@@ -21,8 +21,8 @@
             <form id="edit-rap" class="form-horizontal" method="POST" action="{{ route('rap.update',['id'=>$modelRap->id]) }}">
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
-                <div class="box-header">
-                    <div class="row p-t-10 p-l-10 p-r-10">
+                <div class="box-header p-b-0">
+                    <div class="row  p-l-10 p-r-10">
                         <div class="col-xs-12 col-md-4">
                             <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
@@ -55,7 +55,7 @@
                             <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->progress}}%"><b>: {{$modelBOM->wbs->progress}}%</b></div>
                         </div>
         
-                        <div class="col-xs-12 col-md-3 p-b-10">
+                        <div class="col-xs-12 col-md-3 ">
                             <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
                     
                             <div class="col-md-5 col-xs-4 no-padding">Code</div>
@@ -68,7 +68,7 @@
                 </div>
                 @verbatim
                 <div id="edit-rap">
-                    <div class="box-body p-b-0">
+                    <div class="box-body p-b-0 p-t-0">
                         <table class="table table-bordered tableNonPagingVue tableFixed">
                             <thead>
                                 <tr>
