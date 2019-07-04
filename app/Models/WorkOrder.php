@@ -37,4 +37,9 @@ class WorkOrder extends Model
     {
         return $this->belongsTo('App\Models\Vendor');
     }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo('App\Models\User','approved_by');
+    }
 }

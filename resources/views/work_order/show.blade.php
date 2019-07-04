@@ -42,71 +42,51 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-lg-4 col-md-12 m-t-10 m-l-10">
+                <div class="col-sm-4 col-md-4 col-xs-12 m-t-10 m-l-25">
                     <div class="row">
-                        <div class="col-md-4 col-xs-4 no-padding">
-                            Project Number
+                        <div class="col-md-4 col-xs-4">
+                            Project
                         </div>
-                        <div class="col-md-6 col-xs-8">
+                        <div class="col-md-8 col-xs-6">
                             : <b> {{ isset($modelWO->project) ? $modelWO->project->number : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-4 no-padding">
-                            Ship Name
+                        <div class="col-md-4 col-xs-4">
+                            Customer
                         </div>
-                        <div class="col-md-8 col-xs-8">
-                            : <b> {{ isset($modelWO->project) ? $modelWO->project->name : '-' }} </b>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 col-xs-4 no-padding">
-                            Ship Type
-                        </div>
-                        <div class="col-md-8 col-xs-8">
-                            : <b> {{ isset($modelWO->project) ? $modelWO->project->ship->type : '-' }} </b>
+                        <div class="col-md-8 col-xs-6 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelWO->project) ? $modelWO->project->customer->name : '-'}}">
+                            : <b> {{ isset($modelWO->project) ? $modelWO->project->customer->name : '-' }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-4 no-padding">
+                        <div class="col-md-4 col-xs-4">
+                            Vendor Name
+                        </div>
+                        <div class="col-md-8 col-xs-6 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }}">
+                            : <b> {{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }} </b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4 ">
                             Ref Number
                         </div>
-                        <div class="col-md-8 col-xs-8">
+                        <div class="col-md-8 col-xs-6">
                             : <b> {{ $modelWO->workRequest->number }} </b>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-xs-4 no-padding">
+                        <div class="col-md-4 col-xs-4 ">
                             Total Price
                         </div>
-                        <div class="col-md-8 col-xs-8">
-                            : <b> {{ number_format($modelWO->total_price,2) }} </b>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 col-xs-4 no-padding">
-                            Delivery Date
-                        </div>
-                        <div class="col-md-8 col-xs-8">
-                            : <b> {{date("d-m-Y", strtotime($modelWO->delivery_date))}}</b>
+                        <div class="col-md-8 col-xs-6">
+                            : <b> {{ number_format($modelWO->total_price) }} </b>
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-lg-4 col-md-12 m-t-10 m-l-10">
+                <div class="col-sm-4 col-md-4 col-xs-12 m-t-10 m-l-25">
                     <div class="row">
-                        <div class="col-md-5 col-xs-4 no-padding">
-                            Customer Name
-                        </div>
-                        <div class="col-md-7 col-xs-6 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelWO->project) ? $modelWO->project->customer->name : '-'}}">
-                            : <b> {{ isset($modelWO->project) ? $modelWO->project->customer->name : '-' }} </b>
-                        </div>
-                        <div class="col-md-5 col-xs-4 no-padding">
-                            Vendor Name
-                        </div>
-                        <div class="col-md-7 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }}">
-                            : <b> {{ $modelWO->vendor->code }} - {{ $modelWO->vendor->name }} </b>
-                        </div>
-                        <div class="col-md-5 col-xs-4 no-padding">
+                        <div class="col-md-5 col-xs-4 ">
                             Status
                         </div>
                         @if($modelWO->status == 1)
@@ -134,18 +114,51 @@
                                 : <b>RECEIVED</b>
                             </div>
                         @endif
-                        <div class="col-md-5 col-xs-4 no-padding">
+                        <div class="col-md-5 col-xs-4 ">
                             Created By
                         </div>
                         <div class="col-md-7 col-xs-6">
                             : <b> {{ $modelWO->user->name }} </b>
                         </div>
-                        <div class="col-md-5 col-xs-4 no-padding">
+                        <div class="col-md-5 col-xs-4 ">
                             Created At
                         </div>
-                        <div class="col-md-7 col-xs-8">
+                        <div class="col-md-7 col-xs-6">
                             : <b> {{ $modelWO->created_at }} </b>
                         </div>
+                        @if($modelWO->status != 6 && $modelWO->status != 1)
+                            @if($modelWO->status == 2 || $modelWO->status == 0 || $modelWO->status == 7)
+                                <div class="col-xs-5 col-md-5">
+                                    Approved By
+                                </div>
+                            @elseif($modelWO->status == 3 || $modelWO->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Checked By
+                                </div>
+                            @elseif($modelWO->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Rejected By
+                                </div>
+                            @endif
+                            <div class="col-xs-7 col-md-7 tdEllipsis">
+                                : <b> {{ $modelWO->approvedBy->name }} </b>
+                            </div>
+                        @endif
+                        @if($modelWO->status == 2)
+                            <div class="col-xs-5 col-md-5">
+                                Approved Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $modelWO->approval_date }}</b>
+                            </div>
+                        @elseif($modelWO->status == 5)
+                            <div class="col-xs-5 col-md-5">
+                                Rejected Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $modelWO->approval_date }}</b>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
