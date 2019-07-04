@@ -42,8 +42,8 @@
                         <div class="col-xs-5 col-md-5">
                             Customer Name
                         </div>
-                        <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelMR->project->customer->name}}">
-                            : <b> {{ $modelMR->project->customer->name }} </b>
+                        <div class="col-xs-7 col-md-7">
+                            : <b> {{ $modelMR->project != null ? $modelMR->project->name : "-" }} </b>
                         </div>
                     </div>
                     <div class="row">
@@ -55,6 +55,18 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-xs-5 col-md-5">
+                            Customer Name
+                        </div>
+                        @if ($modelMR->project != null)
+                            <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelMR->project->customer->name}}">
+                                : <b> {{ $modelMR->project->customer->name }} </b>
+                            </div>
+                        @else
+                            <div class="col-xs-7 col-md-7 tdEllipsis">
+                                : <b>-</b>
+                            </div>
+                        @endif
                         <div class="col-xs-5 col-md-5">
                             Status
                         </div>
