@@ -54,22 +54,12 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
-                            Ship Name
-                        </div>
-                        <div class="col-xs-7 col-md-7">
-                            : <b> {{ isset($modelWR->project) ? $modelWR->project->name : '-' }} </b>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-5 col-md-5">
                             Ship Type
                         </div>
                         <div class="col-xs-7 col-md-7">
                             : <b> {{ isset($modelWR->project) ? $modelWR->project->ship->type : '-' }} </b>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
                         <div class="col-xs-5 col-md-5">
                             Customer Name
@@ -77,6 +67,8 @@
                         <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelWR->project) ?$modelWR->project->customer->name : ''}}">
                             : <b> {{ isset($modelWR->project) ? $modelWR->project->customer->name : '-'}} </b>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-5 col-md-5">
                             Status
                         </div>
@@ -105,6 +97,10 @@
                                 : <b>ORDERED</b>
                             </div>
                         @endif
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
+                    <div class="row">
                         <div class="col-xs-5 col-md-5">
                             Created By
                         </div>
@@ -117,11 +113,44 @@
                         <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelWR->created_at }} </b>
                         </div>
+                        @if($modelWR->status != 6 && $modelWR->status != 1)
+                            @if($modelWR->status == 2 || $modelWR->status == 0 || $modelWR->status == 7)
+                                <div class="col-xs-5 col-md-5">
+                                    Approved By
+                                </div>
+                            @elseif($modelWR->status == 3 || $modelWR->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Checked By
+                                </div>
+                            @elseif($modelWR->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Rejected By
+                                </div>
+                            @endif
+                            <div class="col-xs-7 col-md-7 tdEllipsis">
+                                : <b> {{ $modelWR->approvedBy->name }} </b>
+                            </div>
+                        @endif
+                        @if($modelWR->status == 2)
+                            <div class="col-xs-5 col-md-5">
+                                Approved Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $modelWR->approval_date }}</b>
+                            </div>
+                        @elseif($modelWR->status == 5)
+                            <div class="col-xs-5 col-md-5">
+                                Rejected Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $modelWR->approval_date }}</b>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable tableFixed tableNonPagingVue">
+                <table class="table table-bordered tableFixed showTable" id="wr-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -175,34 +204,44 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-            }
+        // $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        // $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( table.column(i).search() !== this.value ) {
-                    table
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
-        });
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( table.column(i).search() !== this.value ) {
+        //             table
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
 
-        var table = $('.tableNonPagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-        });
+        // var table = $('.tableNonPagingVue').DataTable( {
+        //     orderCellsTop   : true,
+        //     paging          : false,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : false,
+        // });
         
-        $('div.overlay').hide();
+        // $('div.overlay').hide();
+        $('#wr-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
     });
 </script>
 @endpush

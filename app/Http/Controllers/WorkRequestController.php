@@ -19,6 +19,7 @@ use App\Models\Project;
 use DateTime;
 use Auth;
 use DB;
+use Illuminate\Support\Carbon;
 
 class WorkRequestController extends Controller
 {
@@ -566,6 +567,7 @@ class WorkRequestController extends Controller
             return redirect()->route('purchase_requisition.create')->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
         }  
     }
+    
     public function approval($wr_id,$status, Request $request)
     {
         $menu = $request->route()->getPrefix() == "/work_request" ? "building" : "repair";    
@@ -574,6 +576,8 @@ class WorkRequestController extends Controller
             $modelWR = WorkRequest::findOrFail($wr_id);
             if($status == "approve"){
                 $modelWR->status = 2;
+                $modelWR->approved_by = Auth::user()->id;
+                $modelWR->approval_date = Carbon::now();
                 $modelWR->update();
                 DB::commit();
                 if($menu == "building"){
@@ -592,6 +596,8 @@ class WorkRequestController extends Controller
                 }
             }elseif($status == "reject"){
                 $modelWR->status = 5;
+                $modelWR->approved_by = Auth::user()->id;
+                $modelWR->approval_date = Carbon::now();
                 $modelWR->update();
                 DB::commit();
                 if($menu == "building"){
@@ -608,8 +614,6 @@ class WorkRequestController extends Controller
                 return redirect()->route('work_request_repair.show',$wr_id);
             }
         }
-
-        
     }
 
     // function// function

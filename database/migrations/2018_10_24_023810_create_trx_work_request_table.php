@@ -29,6 +29,7 @@ class CreateTrxWorkRequestTable extends Migration
             $table->foreign('project_id')->references('id')->on('pro_project');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('approved_by')->references('id')->on('users');
         });
     }
 
