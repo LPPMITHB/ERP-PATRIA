@@ -60,5 +60,8 @@
     $('input[type="radio"].minimal').iCheck({
       radioClass   : 'iradio_minimal-blue'
     })
+    $(document).ready(function(){
+        $('div.overlay').hide();
+    });
 </script>
 @endpush

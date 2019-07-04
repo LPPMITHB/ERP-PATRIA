@@ -34,7 +34,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelMR->number }}</td>
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelMR->description }}">{{ $modelMR->description }}</td>
-                                <td>{{ $modelMR->project->name }} - {{$modelMR->project->number}}</td>
+                                <td>{{ $modelMR->project != null ? $modelMR->project->name." - ".$modelMR->project->number : "-" }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($menu == 'building')
                                         <a href="{{ route('goods_issue.createGiWithRef', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>

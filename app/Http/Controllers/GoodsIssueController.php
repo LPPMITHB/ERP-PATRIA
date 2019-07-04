@@ -39,7 +39,11 @@ class GoodsIssueController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
         $modelMR = MaterialRequisition::findOrFail($id);
-        $modelProject = $modelMR->project->with('ship', 'customer')->first();
+        if($modelMR->project != null){
+            $modelProject = $modelMR->project->with('ship', 'customer')->first();
+        }else{
+            $modelProject = null;
+        }
         $modelSloc = StorageLocation::all();
         $modelMRDs = MaterialRequisitionDetail::where('material_requisition_id',$modelMR->id)->whereColumn('issued','!=','quantity')->with('material.uom')->get();
         foreach($modelMRDs as $MRD){

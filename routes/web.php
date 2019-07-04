@@ -49,6 +49,13 @@ Route::name('density.')->prefix('density')->group(function() {
     Route::put('/add', 'ConfigurationController@densityAdd')->name('add');
 });
 
+// Payment Terms Routes
+Route::name('payment_terms.')->prefix('payment_terms')->group(function() {
+    Route::get('/', 'ConfigurationController@paymentTermsIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@paymentTermsAdd')->name('add');
+});
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');

@@ -36,15 +36,23 @@
                             Ship Name
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ isset($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}} </b>
+                            : <b> {{ isset($modelGI->materialRequisition->project) ? $modelGI->materialRequisition->project->name : '-'}} </b>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-xs-4">
-                            MR Code
+                            MR Number
                         </div>
                         <div class="col-md-8">
-                            : <b> {{ isset($modelGI->materialRequisition) ? $modelGI->materialRequisition->number : '-' }} </b>
+                            @if(isset($modelGI->materialRequisition))
+                                @if($route == "/goods_issue")
+                                    : <a href="{{ route('material_requisition.show', ['id'=>$modelGI->materialRequisition->id]) }}" class="text-primary"><b>{{$modelGI->materialRequisition->number}}</b></a>
+                                @else
+                                    : <a href="{{ route('material_requisition_repair.show', ['id'=>$modelGI->materialRequisition->id]) }}" class="text-primary"><b>{{$modelGI->materialRequisition->number}}</b></a>
+                                @endif
+                            @else
+                                -
+                            @endif
                         </div>
                     </div>
                     <div class="row">
