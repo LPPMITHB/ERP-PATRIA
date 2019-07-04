@@ -17,4 +17,9 @@ class MaterialWriteOff extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo('App\Models\User','approved_by');
+    }
 }

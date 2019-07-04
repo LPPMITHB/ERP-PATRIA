@@ -26,6 +26,8 @@ class CreateTrxWorkOrderTable extends Migration
             $table->float('tax')->default(0);
             $table->float('estimated_freight')->default(0);
             $table->string('payment_terms')->nullable();
+            $table->unsignedInteger('approved_by')->nullable();
+            $table->date('approval_date')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();

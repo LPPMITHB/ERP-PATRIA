@@ -17,6 +17,7 @@ class CreateTrxRapOtherCostTable extends Migration
             $table->increments('id');
             $table->text('description');
             $table->double('plan_cost');
+            $table->unsignedInteger('cost_type');
             $table->double('actual_cost')->nullable();
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('wbs_id')->nullable();

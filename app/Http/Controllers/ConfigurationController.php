@@ -11,6 +11,14 @@ use Auth;
 
 class ConfigurationController extends Controller
 {
+    public function costTypeIndex(){
+
+    }
+
+    public function costTypeSave(){
+
+    }
+
     public function appearanceIndex()
     {
         $defaultSkin = Configuration::get('default-skin');

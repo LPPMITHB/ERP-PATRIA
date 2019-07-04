@@ -84,16 +84,49 @@
                                 @endif
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-4 col-md-4 m-t-10">
                         <div class="row">
                             <div class="col-md-4 col-xs-4">
-                                    Description
-                                </div>
+                                Description
+                            </div>
                             <div class="col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelMWO->description}}">
-                                    : <b> {{ $modelMWO->description }} </b>
-                                </div>
+                                : <b> {{ $modelMWO->description }} </b>
+                            </div>
                         </div>
+                    </div>
+                    <div class="col-sm-4 col-md-4 m-t-10">
+                        @if($modelMWO->status != 6 && $modelMWO->status != 1)
+                            @if($modelMWO->status == 2 || $modelMWO->status == 0 || $modelMWO->status == 7)
+                                <div class="col-xs-5 col-md-5">
+                                    Approved By
+                                </div>
+                            @elseif($modelMWO->status == 3 || $modelMWO->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Checked By
+                                </div>
+                            @elseif($modelMWO->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Rejected By
+                                </div>
+                            @endif
+                            <div class="col-xs-7 col-md-7 tdEllipsis">
+                                : <b> {{ $modelMWO->approvedBy->name }} </b>
+                            </div>
+                        @endif
+                        @if($modelMWO->status == 2)
+                            <div class="col-xs-5 col-md-5">
+                                Approved Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $modelMWO->approval_date }}</b>
+                            </div>
+                        @elseif($modelMWO->status == 5)
+                            <div class="col-xs-5 col-md-5">
+                                Rejected Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $modelMWO->approval_date }}</b>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -144,12 +177,11 @@
         $('#gi-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
-            'searching'   : false,
             'ordering'    : true,
             'info'        : true,
             'autoWidth'   : false,
             'initComplete': function(){
-                $('div.overlay').remove();
+                $('div.overlay').hide();
             }
         });
     });

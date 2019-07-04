@@ -72,7 +72,7 @@
                                             <th style="width: 12%">Available Qty</th>
                                             <th style="width: 12%">Requested Qty</th>
                                             <th style="width: 6%">Unit</th>
-                                            <th style="width: 10%"></th>
+                                            <th style="width: 13%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>

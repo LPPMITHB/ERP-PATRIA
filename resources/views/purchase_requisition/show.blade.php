@@ -57,6 +57,7 @@
                         <div class="col-xs-8 col-md-8">
                             : <b>{{ $status }}</b>
                         </div>
+                        
                         <div class="col-xs-4 col-md-4">
                             Created By
                         </div>
@@ -72,35 +73,50 @@
                     </div>
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
-                    <div class="col-xs-4 col-md-4">
+                    <div class="col-xs-5 col-md-5">
                         Description
                     </div>
-                    <div class="col-xs-8 col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPR->description}}">
+                    <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPR->description}}">
                         : <b> {{ ($modelPR->description != "") ? $modelPR->description : '-' }} </b>
                     </div>
                     @if($modelPR->status != 6 && $modelPR->status != 1)
                         @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7)
-                            <div class="col-xs-4 col-md-4">
+                            <div class="col-xs-5 col-md-5">
                                 Approved By
                             </div>
-                        @elseif($modelPR->status == 3 || $modelPR->status == 4)
-                            <div class="col-xs-4 col-md-4">
+                        @elseif($modelPR->status == 3 || $modelPR->status == 5)
+                            <div class="col-xs-5 col-md-5">
                                 Checked By
                             </div>
                         @elseif($modelPR->status == 5)
-                            <div class="col-xs-4 col-md-4">
+                            <div class="col-xs-5 col-md-5">
                                 Rejected By
                             </div>
                         @endif
-                        <div class="col-xs-8 col-md-8 tdEllipsis">
+                        <div class="col-xs-7 col-md-7 tdEllipsis">
                             : <b> {{ $modelPR->approvedBy->name }} </b>
+                        </div>
+                    @endif
+                    @if($modelPR->status == 2)
+                        <div class="col-xs-5 col-md-5">
+                            Approved Date
+                        </div>
+                        <div class="col-xs-7 col-md-7">
+                            : <b>{{ $modelPR->approval_date }}</b>
+                        </div>
+                    @elseif($modelPR->status == 5)
+                        <div class="col-xs-5 col-md-5">
+                            Rejected Date
+                        </div>
+                        <div class="col-xs-7 col-md-7">
+                            : <b>{{ $modelPR->approval_date }}</b>
                         </div>
                     @endif
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
                 @if($modelPR->type != 3)
-                    <table class="table table-bordered showTable tableFixed tableNonPagingVue">
+                    <table class="table table-bordered tableFixed showTable" id="pr-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -143,7 +159,7 @@
                         </tbody>
                     </table>
                 @elseif($modelPR->type == 3)
-                    <table class="table table-bordered showTable tableFixed tableNonPagingVue">
+                    <table class="table table-bordered tableFixed showTable" id="pr-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -166,9 +182,9 @@
                 @endif
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($route == "/purchase_requisition")
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_requisition.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
                     @elseif($route == "/purchase_requisition_repair")
-                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('purchase_requisition_repair.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
+                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_requisition_repair.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
                     @endif
                 </div>
             </div> <!-- /.box-body -->
@@ -183,34 +199,46 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Qty" || title == "Unit"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        $('#pr-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( table.column(i).search() !== this.value ) {
-                    table
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
 
-        var table = $('.tableNonPagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-        });
+        // $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        // $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Qty" || title == "Unit"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
+
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( table.column(i).search() !== this.value ) {
+        //             table
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var table = $('.tableNonPagingVue').DataTable( {
+        //     orderCellsTop   : true,
+        //     paging          : false,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : false,
+        //     searching          : false,
+        // });
         
-        $('div.overlay').hide();
+        // $('div.overlay').hide();
     });
 </script>
 @endpush

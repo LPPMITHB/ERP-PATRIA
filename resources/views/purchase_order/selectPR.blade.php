@@ -19,7 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table tableFixed table-bordered table-hover tablePaging">
+                <table class="table table-bordered tableFixed" id="po-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -80,7 +80,17 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#po-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
+        // $('div.overlay').hide();
     });
 
     function loading(){

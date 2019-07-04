@@ -20,6 +20,8 @@ class CreateTrxWorkRequestTable extends Migration
             $table->unsignedInteger('project_id')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->default(1);
+            $table->unsignedInteger('approved_by')->nullable();
+            $table->date('approval_date')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->timestamps();

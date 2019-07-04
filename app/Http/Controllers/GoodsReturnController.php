@@ -540,7 +540,7 @@ class GoodsReturnController extends Controller
         $pdf->loadView('goods_return.pdf',['modelGRT' => $modelGRT, 'branch' => $branch, 'route' => $route]);
         $now = date("Y_m_d_H_i_s");
         
-        return $pdf->download('Goods_Return_'.$now.'.pdf');
+        return $pdf->stream('Goods_Return_'.$now.'.pdf');
     }
 
     public function generateGINumber(){

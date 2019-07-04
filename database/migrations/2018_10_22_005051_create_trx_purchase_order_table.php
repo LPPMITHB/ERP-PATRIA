@@ -32,6 +32,7 @@ class CreateTrxPurchaseOrderTable extends Migration
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('approved_by')->nullable();
+            $table->date('approval_date')->nullable();
             $table->timestamps();
 
             $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
