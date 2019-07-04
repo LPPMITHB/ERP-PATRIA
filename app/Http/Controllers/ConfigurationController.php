@@ -135,4 +135,30 @@ class ConfigurationController extends Controller
     public function getDensityAPI(){
         return response(Configuration::get('density')->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function paymentTermsIndex()
+    {
+        $payment_terms = Configuration::get('payment_terms');
+
+        return view('payment_terms.index', compact('payment_terms'));
+    }
+
+    public function paymentTermsAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $payment_terms = Configuration::where('slug','payment_terms')->first();
+            $payment_terms->value = $data;
+            $payment_terms->update();
+
+            DB::commit();
+            return response(json_encode($payment_terms),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('payment_terms.index')->with('error', $e->getMessage());
+        }
+    }
 }

@@ -28,12 +28,12 @@
                                     <div class="panel box box-primary">
                                         <div class="box-header with-border">
                                             <h4 class="box-title pull-right">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#new_currency">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#new_density">
                                                     ADD NEW DENSITY
                                                 </a>
                                             </h4>
                                         </div>
-                                        <div id="new_currency" class="panel-collapse collapse">
+                                        <div id="new_density" class="panel-collapse collapse">
                                             <div class="box-body">
                                                 <div class="col-sm-6">
                                                     <input v-model="input.id" type="hidden" class="form-control">
@@ -53,12 +53,12 @@
                                     <div class="panel box box-primary">
                                         <div class="box-header with-border">
                                             <h4 class="box-title pull-right">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#current_currency">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#current_density">
                                                     MANAGE CURRENT DENSITY
                                                 </a>
                                             </h4>
                                         </div>
-                                        <div id="current_currency" class="panel-collapse collapse in">
+                                        <div id="current_density" class="panel-collapse collapse in">
                                             <div class="box-body">
                                                 <table class="table table-bordered tableFixed">
                                                     <thead>
@@ -146,8 +146,8 @@
                         displayMode: 'replace'
                     });
                     this.clearData();
-                    $('#current_currency').collapse();
-                    $('#new_currency').collapse("hide");
+                    $('#current_density').collapse();
+                    $('#new_density').collapse("hide");
                 })
                 .catch((error) => {
                     iziToast.warning({

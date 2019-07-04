@@ -35,19 +35,19 @@
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelMR.number}}</b></div>
         
                                 <div class="col-xs-5 no-padding">Project Number</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.number}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject != null ? modelProject.number : "-"}}</b></div>
                                 
                                 <div class="col-xs-5 no-padding">Ship Type</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.ship.type}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject != null ? modelProject.ship.type : "-"}}</b></div>
         
                                 <div class="col-xs-5 no-padding">Customer</div>
-                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="modelProject.customer.name"><b>: {{modelProject.customer.name}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="modelProject != null ? modelProject.customer.name : '-'"><b>: {{modelProject != null ? modelProject.customer.name : "-"}}</b></div>
 
                                 <div class="col-xs-5 no-padding">Start Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_start_date}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject != null ? modelProject.planned_start_date : "-"}}</b></div>
 
                                 <div class="col-xs-5 no-padding">End Date</div>
-                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
+                                <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject != null ? modelProject.planned_end_date : "-"}}</b></div>
                             </div>
                             <div class="col-sm-4 col-md-4 no-padding">
                                 <div class="col-md-3 no-padding">

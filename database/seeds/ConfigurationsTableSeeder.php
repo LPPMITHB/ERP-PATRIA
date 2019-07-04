@@ -122,7 +122,6 @@ class ConfigurationsTableSeeder extends Seeder
         ]);
 
         $vendor_category = array(
-            
             0 => array(
                 'id' => 0,
                 'name' => 'Subcon',
@@ -350,5 +349,39 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $payment_terms = array(
+            0 => array(
+            'name' => "Term 1",
+            'description' => 'Term 1',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'payment_terms',
+            'title' => 'Payment Terms',
+            'value' => json_encode($delivery_terms),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $delivery_terms = array(
+            0 => array(
+            'name' => "Term 1",
+            'description' => 'Term 1',
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'delivery_terms',
+            'title' => 'Delivery Terms',
+            'value' => json_encode($delivery_terms),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        
     }
 }
