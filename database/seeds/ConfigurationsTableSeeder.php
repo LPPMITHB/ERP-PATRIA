@@ -352,6 +352,7 @@ class ConfigurationsTableSeeder extends Seeder
 
         $payment_terms = array(
             0 => array(
+            'id' => "1",
             'name' => "Term 1",
             'description' => 'Term 1',
             ),
@@ -360,7 +361,7 @@ class ConfigurationsTableSeeder extends Seeder
         DB::table('mst_configuration')->insert([
             'slug' => 'payment_terms',
             'title' => 'Payment Terms',
-            'value' => json_encode($delivery_terms),
+            'value' => json_encode($payment_terms),
             'is_active' => true,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -368,6 +369,7 @@ class ConfigurationsTableSeeder extends Seeder
 
         $delivery_terms = array(
             0 => array(
+            'id' => "1",
             'name' => "Term 1",
             'description' => 'Term 1',
             ),

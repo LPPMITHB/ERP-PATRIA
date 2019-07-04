@@ -25,7 +25,7 @@
                 @endcan
             </div>
             <div class="row p-t-15 m-l-15">
-                <div class="col-xs-12 col-lg-4 col-md-12">    
+                <div class="col-xs-12 col-lg-5 col-md-12">    
                     <div class="col-md-4 col-xs-6 no-padding">Code</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->code}}</b></div>
                     
@@ -40,10 +40,11 @@
 
                     <div class="col-md-4 col-xs-6 no-padding">Phone Number 1</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_1}}</b></div>
-                </div>
-                <div class="col-xs-12 col-lg-4 col-md-12">    
+
                     <div class="col-md-4 col-xs-6 no-padding">Phone Number 2</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_2}}</b></div>
+                </div>
+                <div class="col-xs-12 col-lg-6 col-md-12">    
                     
                     <div class="col-md-4 col-xs-6 no-padding">Contact Name</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->contact_name}}</b></div>
@@ -61,6 +62,12 @@
                             <i class="fa fa-times"></i>
                         @endif</b>
                     </div>
+
+                    <div class="col-md-4 col-xs-6 no-padding">Delivery Term</div>
+                    <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$dt_name}}"><b>: {{$dt_name}}</b></div>
+
+                    <div class="col-md-4 col-xs-6 no-padding">Payment Term</div>
+                    <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$pt_name}}"><b>: {{$pt_name}}</b></div>
                 </div>
             </div>
             <div class="row m-t-10">
@@ -148,14 +155,14 @@
                             @else
                             @endif
 
-                            @if(count($modelWOs)>0)
-                                <h4>Work Order</h4>
-                                <table class="table table-bordered showTable woCostTable">
+                            {{-- @if(count($modelWOs)>0)  --}}
+                            {{-- <h4>Work Order</h4> --}}
+                            <table class="table table-bordered showTable woCostTable">
                                     <thead>
                                         <tr>
                                             <th width="5%">No</th>
-                                            <th width="10%">WO Number</th>
-                                            <th width="40%">Description</th>
+                                            <th width="15%">WO Number</th>
+                                            <th width="35%">Description</th>
                                             <th width="10%">Status</th>
                                             <th width="35%">Total Price</th>
                                         </tr>
@@ -186,9 +193,9 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            @else
+                            {{-- @else
 
-                            @endif
+                            @endif --}}
                         </div>
                     </div>
                     <div class="tab-pane" id="delivery">
@@ -371,203 +378,279 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('.qualityTable thead tr').clone(true).appendTo( '.qualityTable thead' );
-        $('.qualityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Returned Quantity"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        $('.qualityTable').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( qualityTable.column(i).search() !== this.value ) {
-                    qualityTable
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
+        // $('.qualityTable thead tr').clone(true).appendTo( '.qualityTable thead' );
+        // $('.qualityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Returned Quantity"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        var qualityTable = $('.qualityTable').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : true,
-        });
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( qualityTable.column(i).search() !== this.value ) {
+        //             qualityTable
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
 
-        $('.poCostTable thead tr').clone(true).appendTo( '.poCostTable thead' );
-        $('.poCostTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Total Price"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        // var qualityTable = $('.qualityTable').DataTable( {
+        //     orderCellsTop   : true,
+        //     fixedHeader     : true,
+        //     paging          : true,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : true,
+        // });
+        
+        $('.poCostTable').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( poCostTable.column(i).search() !== this.value ) {
-                    poCostTable
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
 
-        var poCostTable = $('.poCostTable').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : true,
-        });
+        // $('.poCostTable thead tr').clone(true).appendTo( '.poCostTable thead' );
+        // $('.poCostTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Total Price"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        $('.woCostTable thead tr').clone(true).appendTo( '.woCostTable thead' );
-        $('.woCostTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Total Price"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( poCostTable.column(i).search() !== this.value ) {
+        //             poCostTable
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var poCostTable = $('.poCostTable').DataTable( {
+        //     orderCellsTop   : true,
+        //     fixedHeader     : true,
+        //     paging          : true,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : true,
+        // });
+        
+        $('.woCostTable').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( woCostTable.column(i).search() !== this.value ) {
-                    woCostTable
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
 
-        var woCostTable = $('.woCostTable').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : true,
-        });
+        // $('.woCostTable thead tr').clone(true).appendTo( '.woCostTable thead' );
+        // $('.woCostTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Total Price"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        $('.deliveryTable thead tr').clone(true).appendTo( '.deliveryTable thead' );
-        $('.deliveryTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Day(s)"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( woCostTable.column(i).search() !== this.value ) {
+        //             woCostTable
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var woCostTable = $('.woCostTable').DataTable( {
+        //     orderCellsTop   : true,
+        //     fixedHeader     : true,
+        //     paging          : true,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : true,
+        // });
+        
+        $('.deliveryTable').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( deliveryTable.column(i).search() !== this.value ) {
-                    deliveryTable
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
 
-        var deliveryTable = $('.deliveryTable').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : true,
-        });
+        // $('.deliveryTable thead tr').clone(true).appendTo( '.deliveryTable thead' );
+        // $('.deliveryTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Day(s)"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        $('.productivityTable thead tr').clone(true).appendTo( '.productivityTable thead' );
-        $('.productivityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Performance" || title == "Usage" || title == "Productivity"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( deliveryTable.column(i).search() !== this.value ) {
+        //             deliveryTable
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var deliveryTable = $('.deliveryTable').DataTable( {
+        //     orderCellsTop   : true,
+        //     fixedHeader     : true,
+        //     paging          : true,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : true,
+        // });
+        
+        $('.productivityTable').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( productivityTable.column(i).search() !== this.value ) {
-                    productivityTable
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
 
-        var productivityTable = $('.productivityTable').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : true,
-        });
+        // $('.productivityTable thead tr').clone(true).appendTo( '.productivityTable thead' );
+        // $('.productivityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Performance" || title == "Usage" || title == "Productivity"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        $('.safetyTable thead tr').clone(true).appendTo( '.safetyTable thead' );
-        $('.safetyTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Total Accident"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( productivityTable.column(i).search() !== this.value ) {
+        //             productivityTable
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var productivityTable = $('.productivityTable').DataTable( {
+        //     orderCellsTop   : true,
+        //     fixedHeader     : true,
+        //     paging          : true,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : true,
+        // });
+        
+        $('.safetyTable').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( safetyTable.column(i).search() !== this.value ) {
-                    safetyTable
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
 
-        var safetyTable = $('.safetyTable').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : true,
-        });
+        // $('.safetyTable thead tr').clone(true).appendTo( '.safetyTable thead' );
+        // $('.safetyTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Total Accident"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        $('.moraleTable thead tr').clone(true).appendTo( '.moraleTable thead' );
-        $('.moraleTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No'){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( safetyTable.column(i).search() !== this.value ) {
+        //             safetyTable
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var safetyTable = $('.safetyTable').DataTable( {
+        //     orderCellsTop   : true,
+        //     fixedHeader     : true,
+        //     paging          : true,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : true,
+        // });
+        
+        $('.moraleTable').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( moraleTable.column(i).search() !== this.value ) {
-                    moraleTable
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
 
-        var moraleTable = $('.moraleTable').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : true,
-        });
+        // $('.moraleTable thead tr').clone(true).appendTo( '.moraleTable thead' );
+        // $('.moraleTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No'){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
 
-        $('div.overlay').hide();
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( moraleTable.column(i).search() !== this.value ) {
+        //             moraleTable
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var moraleTable = $('.moraleTable').DataTable( {
+        //     orderCellsTop   : true,
+        //     fixedHeader     : true,
+        //     paging          : true,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : true,
+        // });
+
+        // $('div.overlay').hide();
     });
 
 </script>
