@@ -85,7 +85,9 @@
                                             <label for="delivery_terms">Delivery Terms</label>
                                         </div>
                                         <div class="col-sm-7 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="modelPO.delivery_terms" placeholder="Delivery Terms">
+                                            <selectize v-model="modelPO.delivery_term" :settings="dtSettings">
+                                                <option v-for="(delivery_term, index) in delivery_terms" :value="delivery_term.id">{{ delivery_term.name }}</option>
+                                            </selectize>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -93,7 +95,9 @@
                                             <label for="payment_terms">Payment Terms</label>
                                         </div>
                                         <div class="col-sm-7 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="modelPO.payment_terms" placeholder="Payment Terms">
+                                            <selectize v-model="modelPO.payment_term" :settings="ptSettings">
+                                                <option v-for="(payment_term, index) in payment_terms" :value="payment_term.id">{{ payment_term.name }}</option>
+                                            </selectize>
                                         </div>
                                     </div>
                                     <div class="row" v-if="modelPO.purchase_requisition.type == 3">
@@ -106,6 +110,16 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-5">
+                                            <label for="projects">Project Number</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-0 p-l-0">
+                                            <selectize v-model="modelPO.project_id" :settings="projectSettings">
+                                                <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                            </selectize>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <label for="">PO Description</label>
@@ -265,9 +279,11 @@
     });
 
     var data = {
+        payment_terms : @json($payment_terms),
+        delivery_terms : @json($delivery_terms),
         modelPO : @json($modelPO),
         PODetail : @json($modelPOD),
-        modelProject : @json($modelProject),
+        projects : @json($projects),
         currencies : @json($currencies),
         modelVendor : [],
         vendorSettings: {
@@ -276,6 +292,15 @@
         currencySettings: {
             placeholder: 'Please Select Currency'
         },
+        dtSettings: {
+            placeholder: 'Please Select Delvery Term'
+        },
+        ptSettings: {
+            placeholder: 'Please Select Payment Term'
+        },
+        projectSettings: {
+            placeholder: 'Please Select Project'
+        },
         selectedCurrency: "",
         submittedForm : {},
         editRemark : {
@@ -283,7 +308,6 @@
         },
         delivery_date : "",
         delivery_date_subcon : @json($modelPO->delivery_date),
-
     }
 
     var vm = new Vue({
@@ -556,10 +580,18 @@
                     }
                 });
             },
+            'modelPO.vendor_id':function(newValue){
+                this.modelVendor.forEach(vendor=>{
+                    if(vendor.id == newValue){
+                        this.modelPO.delivery_term = vendor.delivery_term;
+                        this.modelPO.payment_term = vendor.payment_term;
+                    }
+                })
+            }
         },
         created: function() {
             this.getVendor();
-            this.modelPO.estimated_freight = this.modelPO.estimated_freight / this.modelPO.value
+            this.modelPO.estimated_freight = this.modelPO.estimated_freight / this.modelPO.value;
             var decimal = (this.modelPO.estimated_freight+"").replace(/,/g, '').split('.');
             if(decimal[1] != undefined){
                 var maxDecimal = 2;
@@ -629,6 +661,8 @@
                     this.selectedCurrency = data.unit;
                 }
             });
+
+
         },
     });
 </script>

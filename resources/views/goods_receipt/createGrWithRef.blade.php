@@ -50,6 +50,11 @@
                                         
                                         <div class="col-md-5 col-xs-4 no-padding">Vendor</div>
                                         <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.name)"><b>: {{ modelPO.vendor.name }}</b></div>
+
+                                        <div class="col-md-5 col-xs-4 no-padding">Project Number</div>
+                                        <div v-if="modelPO.project != null" class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.project.number)"><b>: {{ modelPO.project.number }}</b></div>
+
+                                        <div v-else class="col-md-6 col-xs-8 no-padding tdEllipsis"><b>: -</b></div>
                 
                                         <div class="col-md-5 col-xs-4 no-padding">Address</div>
                                         <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" v-tooltip:top="tooltipText(modelPO.vendor.address)"><b>: {{ modelPO.vendor.address }}</b></div>

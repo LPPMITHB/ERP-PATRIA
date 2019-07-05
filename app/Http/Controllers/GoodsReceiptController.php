@@ -32,7 +32,7 @@ class GoodsReceiptController extends Controller
     public function createGrWithRef(Request $request,$id)
     {
         $route = $request->route()->getPrefix();
-        $modelPO = PurchaseOrder::where('id',$id)->with('vendor')->first();
+        $modelPO = PurchaseOrder::where('id',$id)->with('vendor','project')->first();
         $modelPODs = PurchaseOrderDetail::where('purchase_order_id',$modelPO->id)->whereColumn('received','!=','quantity')->with('material')->get();
         if($modelPO->purchaseRequisition->type == 1){
         // foreach($modelPODs as $POD){

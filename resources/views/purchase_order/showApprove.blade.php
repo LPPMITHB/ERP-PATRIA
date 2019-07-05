@@ -81,6 +81,12 @@
                         <div class="col-md-8 col-xs-8">
                             : <b> {{ $modelPO->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
+                        <div class="col-md-4 col-xs-4" >
+                            Project Number
+                        </div>
+                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPO->project->number }}">
+                            : <b> {{ ($modelPO->project->number != "") ? $modelPO->project->number : '-' }} </b>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-4 col-md-4 m-t-10 m-l-10">
