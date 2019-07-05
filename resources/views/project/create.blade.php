@@ -139,7 +139,7 @@
                                 <label for="budget_value" class="col-sm-2 control-label">Budget value</label>
                 
                                 <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="budget_value" name="budget_value" v-model="project.budget_value">
+                                    <input type="text" class="form-control" id="budget_value" name="budget_value" v-model="project.budget_value">
                                 </div>
                             </div>
 
@@ -354,7 +354,7 @@ $(document).ready(function(){
             class_cp_email_2 : @json($project->class_contact_person_email_2 == null ? "": $project->class_contact_person_email_2),
             description : @json($project->description == null ? "": $project->description),
             person_in_charge : @json($project->person_in_charge == null ? "": $project->person_in_charge),
-            budget_value : @json($project->person_in_charge == null ? "": $project->person_in_charge),
+            budget_value : @json($project->budget_value == null ? "": $project->budget_value),
         },
         customer: "",
         menu : @json($menu),
@@ -377,7 +377,13 @@ $(document).ready(function(){
                     struturesElem.setAttribute('type', 'hidden');
                     struturesElem.setAttribute('name', 'business_unit_id');
                     struturesElem.setAttribute('value', JSON.stringify(this.business_unit_id));
+                    let struturesElem_BV = document.createElement('input');
+                    struturesElem_BV.setAttribute('type', 'hidden');
+                    struturesElem_BV.setAttribute('name', 'budget_value_int');
+                    var temp_value = this.project.budget_value.replace(/,/g , ''); 
+                    struturesElem_BV.setAttribute('value', temp_value);
                     form.appendChild(struturesElem);
+                    form.appendChild(struturesElem_BV);
                     form.submit();
                 }
             },
@@ -408,7 +414,7 @@ $(document).ready(function(){
                             this.ownerRep = data.contact_name+" - "+data.phone_number_1;
                         }
                         else
-                        this.ownerRep = data.contact_name+ " - " +data.phone_number_1+ " - " +data.email;
+                            this.ownerRep = data.contact_name+ " - " +data.phone_number_1+ " - " +data.email;
                         });
                     }
                 else
