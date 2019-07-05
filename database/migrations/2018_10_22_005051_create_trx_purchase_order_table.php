@@ -25,10 +25,11 @@ class CreateTrxPurchaseOrderTable extends Migration
             $table->integer('status')->default(1);
             $table->float('tax')->default(0);
             $table->float('estimated_freight',15,2)->default(0);
-            $table->string('delivery_terms')->nullable();
-            $table->string('payment_terms')->nullable();
+            $table->unsignedInteger('delivery_term')->nullable();
+            $table->unsignedInteger('payment_term')->nullable();
             $table->double('total_price')->nullable();
             $table->date('delivery_date')->nullable();
+            $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('approved_by')->nullable();
@@ -38,9 +39,9 @@ class CreateTrxPurchaseOrderTable extends Migration
             $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
             $table->foreign('vendor_id')->references('id')->on('mst_vendor');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
+            $table->foreign('project_id')->references('id')->on('pro_project');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('approved_by')->references('id')->on('users');
-
         });
     }
 
