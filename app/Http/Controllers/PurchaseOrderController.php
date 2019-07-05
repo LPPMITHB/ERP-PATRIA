@@ -102,13 +102,17 @@ class PurchaseOrderController extends Controller
         //         $SRD['remark'] = $SRD->remark;
         //     }
         // }
-        if($modelPR->project_id){
-            $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
-        }else{
-            $modelProject = [];
-        }
 
-        return view('purchase_order.create', compact('modelPR','modelPRD','modelProject','currencies','route','materials'));
+        // if($modelPR->project_id){
+        //     $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
+        // }else{
+            // $modelProject = [];
+        // }
+        $payment_terms = Configuration::get('payment_terms');
+        $delivery_terms = Configuration::get('delivery_terms');
+        $projects = Project::where('status',1)->get();
+
+        return view('purchase_order.create', compact('modelPR','modelPRD','currencies','route','materials','payment_terms','delivery_terms','projects'));
     }
 
     public function selectPRD(Request $request, $id)
@@ -134,7 +138,6 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        // print_r($datas);exit();
         $po_number = $this->generatePONumber();
         $value = "";
         $valueCurrency = Configuration::get('currencies');
@@ -161,8 +164,9 @@ class PurchaseOrderController extends Controller
             }else{
                 $PO->estimated_freight = $datas->estimated_freight * $value;
             }
-            $PO->delivery_terms = $datas->delivery_terms;
-            $PO->payment_terms = $datas->payment_terms;
+            $PO->delivery_term = ($datas->delivery_term != "") ? $datas->delivery_term : null;
+            $PO->payment_term =($datas->payment_term != "") ? $datas->payment_term : null;
+            $PO->project_id = ($datas->project_id != "") ? $datas->project_id : null;
             $PO->value = $value;
             $PO->description = $datas->description;
             if($datas->type == 3){
@@ -642,12 +646,16 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id',$id)->with('purchaseRequisition')->first();
         $modelPOD = PurchaseOrderDetail::where('purchase_order_id',$id)->with('material','purchaseRequisitionDetail.wbs','purchaseRequisitionDetail.project','wbs','resource','material.uom','purchaseRequisitionDetail.purchaseRequisition','activityDetail','activityDetail.areaUom','activityDetail.serviceDetail','activityDetail.serviceDetail.service')->get();
-        $modelProject = Project::where('id',$modelPO->purchaseRequisition->project_id)->with('ship','customer')->first();
         foreach($modelPOD as $POD){
             $POD['old_price'] = $POD->total_price / $POD->quantity;
         }
         $currencies = Configuration::get('currencies');
-        return view('purchase_order.edit', compact('modelPO','modelPOD','modelProject','route','currencies'));
+
+        $payment_terms = Configuration::get('payment_terms');
+        $delivery_terms = Configuration::get('delivery_terms');
+        $projects = Project::where('status',1)->get();
+
+        return view('purchase_order.edit', compact('modelPO','modelPOD','projects','route','currencies','payment_terms','delivery_terms'));
     }
 
     public function update(Request $request)
@@ -702,8 +710,9 @@ class PurchaseOrderController extends Controller
             }else{
                 $PO->estimated_freight = $datas->modelPO->estimated_freight * $value;
             }
-            $PO->delivery_terms = $datas->modelPO->delivery_terms;
-            $PO->payment_terms = $datas->modelPO->payment_terms;
+            $PO->delivery_term = ($datas->modelPO->delivery_term != "") ? $datas->modelPO->delivery_term : null;
+            $PO->payment_term = ($datas->modelPO->payment_term != "") ? $datas->modelPO->payment_term : null;
+            $PO->project_id = ($datas->modelPO->project_id != "") ? $datas->modelPO->project_id : null;
             if($datas->type == 3){
                 $delivery_date_subcon = DateTime::createFromFormat('d-m-Y', $datas->delivery_date_subcon);
                 if($delivery_date_subcon){
@@ -925,7 +934,7 @@ class PurchaseOrderController extends Controller
     }
 
     public function getVendorAPI(){
-        $vendor = Vendor::where('status',1)->select('id','name','code')->get()->jsonSerialize();
+        $vendor = Vendor::where('status',1)->select('id','name','code','delivery_term','payment_term')->get()->jsonSerialize();
 
         return response($vendor, Response::HTTP_OK);
     }

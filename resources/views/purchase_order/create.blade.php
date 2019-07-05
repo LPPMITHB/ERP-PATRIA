@@ -62,7 +62,7 @@
                                     </div>
 
                                     <div class="col-sm-5 no-padding p-t-15">
-                                        <label for="">Currency</label>
+                                        <label for="">Currency *</label>
                                     </div>
                                     <div class="col-sm-7 p-t-13 p-l-0">
                                         <selectize :disabled="currencyOk" v-model="currency" :settings="currencySettings">
@@ -73,7 +73,7 @@
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
                                         <div class="col-sm-5 p-t-7">
-                                            <label for="">Vendor Name</label>
+                                            <label for="">Vendor Name *</label>
                                         </div>
                                         <div class="col-sm-7 p-l-0">
                                             <selectize v-model="vendor_id" :settings="vendorSettings">
@@ -86,7 +86,9 @@
                                             <label for="delivery_terms">Delivery Terms</label>
                                         </div>
                                         <div class="col-sm-7 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="delivery_terms" placeholder="Delivery Terms">
+                                            <selectize v-model="delivery_term" :settings="dtSettings">
+                                                <option v-for="(delivery_term, index) in delivery_terms" :value="delivery_term.id">{{ delivery_term.name }}</option>
+                                            </selectize>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -94,7 +96,9 @@
                                             <label for="payment_terms">Payment Terms</label>
                                         </div>
                                         <div class="col-sm-7 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="payment_terms" placeholder="Payment Terms">
+                                            <selectize v-model="payment_term" :settings="ptSettings">
+                                                <option v-for="(payment_term, index) in payment_terms" :value="payment_term.id">{{ payment_term.name }}</option>
+                                            </selectize>
                                         </div>
                                     </div>
                                     <div class="row" v-if="modelPR.type == 3">
@@ -107,6 +111,16 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-5">
+                                            <label for="projects">Project Number</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-0 p-l-0">
+                                            <selectize v-model="project_id" :settings="projectSettings">
+                                                <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
+                                            </selectize>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <label for="">PO Description</label>
@@ -350,17 +364,20 @@
         //     info            : false,
         //     ordering        : false,
         // });
-
-        
         
         // $('div.overlay').hide();
     });
 
     var data = {
+        payment_terms : @json($payment_terms),
+        delivery_terms : @json($delivery_terms),
+        payment_term : null,
+        delivery_term : null,
         materials : @json($materials),
         modelPR : @json($modelPR),
         PRDetail : @json($modelPRD),
-        modelProject : @json($modelProject),
+        projects : @json($projects),
+        project_id : null,
         currencies : @json($currencies),
         modelVendor : [],
         vendorSettings: {
@@ -372,12 +389,19 @@
         materialSettings: {
             placeholder: 'Please Select Material'
         },
+        dtSettings: {
+            placeholder: 'Please Select Delvery Term'
+        },
+        ptSettings: {
+            placeholder: 'Please Select Payment Term'
+        },
+        projectSettings: {
+            placeholder: 'Please Select Project'
+        },
         selectedCurrency : "",
         currency : "",
         tax : "",
         estimated_freight : "",
-        delivery_terms : "",
-        payment_terms : "",
         vendor_id : "",
         delivery_date : "",
         delivery_date_subcon : "",
@@ -528,8 +552,9 @@
                 this.submittedForm.currency = this.currency;
                 this.submittedForm.tax = this.tax;
                 this.submittedForm.estimated_freight = this.estimated_freight;
-                this.submittedForm.delivery_terms = this.delivery_terms;
-                this.submittedForm.payment_terms = this.payment_terms;
+                this.submittedForm.delivery_term = this.delivery_term;
+                this.submittedForm.payment_term = this.payment_term;
+                this.submittedForm.project_id = this.project_id;
                 this.submittedForm.delivery_date_subcon = this.delivery_date_subcon;
 
                 let struturesElem = document.createElement('input');
@@ -778,6 +803,14 @@
                         }
                     }else{
                         data.price = (data.price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                })
+            },
+            'vendor_id':function(newValue){
+                this.modelVendor.forEach(vendor=>{
+                    if(vendor.id == newValue){
+                        this.delivery_term = vendor.delivery_term;
+                        this.payment_term = vendor.payment_term;
                     }
                 })
             }
