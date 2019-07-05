@@ -101,7 +101,7 @@
             </div>
             <div class="box-body p-t-0 p-b-10">
                 @if($route == '/rap')
-                    <table class="table table-bordered showTable tableNonPagingVue">
+                    <table class="table table-bordered tableFixed showTable" id="rap-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -135,7 +135,7 @@
                         </tfoot>
                     </table>     
                 @elseif($route == '/rap_repair')
-                    <table class="table table-bordered showTable tableNonPagingVue tableFixed">
+                    <table class="table table-bordered tableFixed showTable" id="rap-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -191,34 +191,44 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        // $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        // $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
+
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( table.column(i).search() !== this.value ) {
+        //             table
+        //             .column(i)
+        //             .search( this.value )
+        //             .draw();
+        //         }
+        //     });
+        // });
+
+        // var table = $('.tableNonPagingVue').DataTable( {
+        //     orderCellsTop   : true,
+        //     paging          : false,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : false,
+        // });
+
+        // $('div.overlay').hide();
+        $('#rap-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( table.column(i).search() !== this.value ) {
-                    table
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-                }
-            });
         });
-
-        var table = $('.tableNonPagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-        });
-
-        $('div.overlay').hide();
     });
 </script>
 @endpush

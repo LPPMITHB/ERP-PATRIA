@@ -131,6 +131,32 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="delivery_term" class="col-sm-2 control-label">Delivery Term</label>
+            
+                            <div class="col-sm-10">
+                                <select class="form-control" name="delivery_term" id="delivery_term">
+                                    <option value="" selected >Select Delivery Term</option>
+                                    @foreach($delivery_terms as $delivery_term)
+                                        <option value="{{$delivery_term->id}}">{{ $delivery_term->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payment_term" class="col-sm-2 control-label">Payment Term</label>
+            
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_term" id="payment_term">
+                                    <option value="" selected >Select Payment Term</option>
+                                    @foreach($payment_terms as $payment_term)
+                                        <option value="{{$payment_term->id}}">{{ $payment_term->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="description" class="col-sm-2 control-label">Description</label>
             
                             <div class="col-sm-10">
@@ -185,6 +211,17 @@
         $('#status').select({
             minimumResultsForSearch: -1
         });
+
+        $('#delivery_term').val("{{$vendor->delivery_term}}");
+        if($('#delivery_term').val()==null){
+            $('#delivery_term').val("");
+        }
+
+        $('#payment_term').val("{{$vendor->payment_term}}");
+        if($('#payment_term').val()==null){
+            $('#payment_term').val("");
+        }
+        
         $('div.overlay').remove();
         $('.alert').addClass('animated bounce');
 

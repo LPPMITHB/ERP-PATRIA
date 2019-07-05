@@ -297,8 +297,9 @@ class RAPController extends Controller
         $route = $request->route()->getPrefix();
         $project = Project::findOrFail($id);       
         $modelOtherCost = Cost::with('project','wbs')->get();   
+        $cost_types = Configuration::get('cost_type');
 
-        return view('rap.inputActualOtherCost', compact('project','modelOtherCost','route'));
+        return view('rap.inputActualOtherCost', compact('project','modelOtherCost','route','cost_types'));
     }
 
     public function viewPlannedCost(Request $request, $id)

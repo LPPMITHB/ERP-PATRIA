@@ -23,6 +23,7 @@ use App\Models\PurchaseOrderDetail;
 use DB;
 use Auth;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 // use App\Http\Controllers\Controller;
 
 class GoodsReturnController extends Controller
@@ -97,6 +98,7 @@ class GoodsReturnController extends Controller
             if($datas->status == "approve"){
                 $modelGRT->status = 2;
                 $modelGRT->approved_by = Auth::user()->id;
+                $modelGRT->approval_date = Carbon::now();
                 $modelGRT->update();
 
                 if($modelGRT->purchase_order_id != null){
@@ -192,6 +194,7 @@ class GoodsReturnController extends Controller
             }elseif($datas->status == "reject"){
                 $modelGRT->status = 5;
                 $modelGRT->approved_by = Auth::user()->id;
+                $modelGRT->approval_date = Carbon::now();
                 $modelGRT->update();
                 DB::commit();
                 if($route == "/goods_return"){

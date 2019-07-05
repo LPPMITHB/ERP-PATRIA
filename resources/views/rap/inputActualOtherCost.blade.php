@@ -72,9 +72,9 @@
                             <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
-                                    <th style="width: 15%">Description</th>
+                                    <th style="width: 15%">Cost Type</th>
+                                    <th style="width: 25%">Work Breakdown Structure</th>
                                     <th style="width: 15%">Planned Cost</th>
-                                    <th style="width: 15%">Work Breakdown Structure</th>
                                     <th style="width: 15%">Actual Cost</th>
                                     <th style="width: 15%"></th>
                                 </tr>
@@ -82,10 +82,10 @@
                             <tbody>
                                 <tr v-for="(data,index) in costs">
                                     <td>{{ index + 1 }}</td>
-                                    <td class="tdEllipsis">{{ data.description }}</td>
-                                    <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
+                                    <td class="tdEllipsis">{{ data.cost_type }}</td>
                                     <td v-if="data.wbs_id != null" class="tdEllipsis">{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                     <td v-else class="tdEllipsis">-</td>
+                                    <td class="tdEllipsis">Rp.{{ data.plan_cost }}</td>
                                     <td v-if="data.actual_cost != ''" class="tdEllipsis">Rp.{{ data.actual_cost }}</td>
                                     <td v-else class="tdEllipsis">-</td>
                                     <td class="p-l-0 textCenter">
@@ -108,16 +108,20 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
+                                                <label for="cost_type" class="control-label">Cost Type</label>
+                                                <input type="text" id="cost_type" v-model="editCost.cost_type" class="form-control" disabled>
+                                            </div>
+                                            <div class="col-sm-12">
                                                 <label for="description" class="control-label">Description</label>
                                                 <textarea id="description" v-model="editCost.description" class="form-control" rows="2" disabled></textarea>
                                             </div>
                                             <div class="col-sm-12">
-                                                <label for="cost" class="control-label">Plan Cost</label>
-                                                <input type="text" id="cost" v-model="editCost.cost" class="form-control" disabled>
-                                            </div>
-                                            <div class="col-sm-12">
                                                 <label for="wbs" class="control-label">Work Breakdown Structure</label>
                                                 <input type="text" id="wbs" v-model="editCost.wbs" class="form-control" disabled>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label for="cost" class="control-label">Plan Cost</label>
+                                                <input type="text" id="cost" v-model="editCost.cost" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="actual_cost" class="control-label">Actual Cost</label>
@@ -160,6 +164,7 @@
         costs : "",
         works : [],
         newIndex : "", 
+        cost_types : @json($cost_types),
         newCost : {
             description : "",
             cost : "",
@@ -175,6 +180,7 @@
             wbs_id : "",
             wbs : "",
             project_id : @json($project->id),
+            cost_type : "",
         },
         workSettings: {
             placeholder: 'Work (Optional)',
@@ -208,13 +214,20 @@
                 }
                 this.editCost.cost = data.plan_cost;
                 this.editCost.actual_cost = data.actual_cost;
+                this.editCost.cost_type = data.cost_type;
             },
             getCosts(){
             window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
+
                 this.costs = data;
                 this.costs.forEach(cost => {
                     cost.actual_cost = (cost.actual_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");      
-                    cost.plan_cost = (cost.plan_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");      
+                    cost.plan_cost = (cost.plan_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");   
+                    this.cost_types.forEach(ct =>{
+                        if(ct.id == cost.cost_type){
+                            cost.cost_type = ct.name;
+                        }
+                    })   
                 });
 
                     this.newIndex = Object.keys(this.costs).length+1;

@@ -99,8 +99,6 @@
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10 m-l-10">
                     <div class="row">
-                        
-                        
                         <div class="col-xs-5 col-md-5">
                             Created By
                         </div>

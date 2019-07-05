@@ -20,7 +20,7 @@ use Auth;
 use DB;
 use PDF;
 use App\Providers\numberConverter;
-
+use Illuminate\Support\Carbon;
 
 class WorkOrderController extends Controller
 {
@@ -286,6 +286,8 @@ class WorkOrderController extends Controller
             $modelWO = WorkOrder::findOrFail($wo_id);
             if($status == "approve"){
                 $modelWO->status = 2;
+                $modelWO->approved_by = Auth::user()->id;
+                $modelWO->approval_date = Carbon::now();
                 $modelWO->update();
                 
                 $mr_number = $this->generateMRNumber();
@@ -324,6 +326,8 @@ class WorkOrderController extends Controller
                 }
             }elseif($status == "reject"){
                 $modelWO->status = 5;
+                $modelWO->approved_by = Auth::user()->id;
+                $modelWO->approval_date = Carbon::now();
                 $modelWO->update();
                 DB::commit();
                 if($route == "/work_order"){

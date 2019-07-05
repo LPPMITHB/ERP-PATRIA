@@ -352,6 +352,7 @@ class ConfigurationsTableSeeder extends Seeder
 
         $payment_terms = array(
             0 => array(
+            'id' => "1",
             'name' => "Term 1",
             'description' => 'Term 1',
             ),
@@ -368,6 +369,7 @@ class ConfigurationsTableSeeder extends Seeder
 
         $delivery_terms = array(
             0 => array(
+            'id' => "1",
             'name' => "Term 1",
             'description' => 'Term 1',
             ),

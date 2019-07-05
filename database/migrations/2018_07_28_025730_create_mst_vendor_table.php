@@ -24,6 +24,8 @@ class CreateMstVendorTable extends Migration
             $table->string('type')->nullable();
             $table->text('description')->nullable();
             $table->string('email')->nullable();
+            $table->unsignedInteger('payment_term')->nullable();
+            $table->unsignedInteger('delivery_term')->nullable();
             $table->string('status');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');

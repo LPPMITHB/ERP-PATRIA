@@ -397,7 +397,6 @@ class BOMController extends Controller
     {
         $route = $request->route()->getPrefix();
         $data = $request->json()->all();
-        
         DB::beginTransaction();
         try {
             if($route == "/bom"){
@@ -436,7 +435,6 @@ class BOMController extends Controller
                     $rap_detail->save();
     
                     // create PR & Reserve stock
-                    // print_r($data['source']);exit();
                     self::checkStockEdit($data,$modelRap->project_id,$route);
                 }elseif($route == "/bom_repair"){
                     $rap_detail->material_id = $bom_detail->material_id;
@@ -450,7 +448,6 @@ class BOMController extends Controller
                     }
                     $rap_detail->save();
                     // create PR & Reserve stock
-                    
                     self::checkStockEdit($data,$modelRap->project_id,$route);
                 }
             }
@@ -627,6 +624,7 @@ class BOMController extends Controller
 
     // General Function
     private function generateBomCode($project_id){
+
         $code = 'BOM';
         $project = Project::find($project_id);
         $projectSequence = $project->project_sequence;
@@ -863,6 +861,7 @@ class BOMController extends Controller
     }
 
     public function checkStock($bom,$route){
+
         if($route=="/bom"){
             $business_unit = 1;
         }elseif($route == "/bom_repair"){
@@ -889,7 +888,6 @@ class BOMController extends Controller
         if($status == 1){
             $pr_number = $this->pr->generatePRNumber();
             $modelProject = Project::findOrFail($project_id);
-
             $PR = new PurchaseRequisition;
             $PR->number = $pr_number;
             $PR->business_unit_id = $business_unit;
@@ -907,7 +905,6 @@ class BOMController extends Controller
             if($bomDetail->source != 'WIP'){
                 if($bomDetail->material_id != null){
                     $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
-                    
                     if(isset($modelStock)){
                         $remaining = $modelStock->quantity - $modelStock->reserved;
                         if($remaining > 0 && $remaining < $bomDetail->quantity){
@@ -918,6 +915,20 @@ class BOMController extends Controller
                             $PRD->project_id = $project_id;
                             $PRD->save();
                         }else{
+                            if($status == 1){
+                                $PRD = new PurchaseRequisitionDetail;
+                                $PRD->purchase_requisition_id = $PR->id;
+                                $PRD->material_id = $bomDetail->material_id;
+                                $PRD->quantity = $bomDetail->quantity;
+                                $PRD->project_id = $project_id;
+                                $PRD->save();
+                            }
+                        }
+                        $modelStock->reserved += $bomDetail->quantity;
+                        $modelStock->updated_at = Carbon::now();
+                        $modelStock->save();
+                    }else{
+                        if($status == 1){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->material_id = $bomDetail->material_id;
@@ -925,16 +936,6 @@ class BOMController extends Controller
                             $PRD->project_id = $project_id;
                             $PRD->save();
                         }
-                        $modelStock->reserved += $bomDetail->quantity;
-                        $modelStock->updated_at = Carbon::now();
-                        $modelStock->save();
-                    }else{
-                        $PRD = new PurchaseRequisitionDetail;
-                        $PRD->purchase_requisition_id = $PR->id;
-                        $PRD->material_id = $bomDetail->material_id;
-                        $PRD->quantity = $bomDetail->quantity;
-                        $PRD->project_id = $project_id;
-                        $PRD->save();
 
                         $modelStock = new Stock;
                         $modelStock->material_id = $bomDetail->material_id;

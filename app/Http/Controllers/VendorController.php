@@ -36,8 +36,10 @@ class VendorController extends Controller
         $vendor = new Vendor;
         $vendor_code = self::generateVendorCode();
         $vendor_categories = Configuration::get('vendor_category');
+        $payment_terms = Configuration::get('payment_terms');
+        $delivery_terms = Configuration::get('delivery_terms');
 
-        return view('vendor.create',compact('vendor','vendor_code','vendor_categories'));
+        return view('vendor.create',compact('vendor','vendor_code','vendor_categories','payment_terms','delivery_terms'));
     }
 
     /**
@@ -67,6 +69,16 @@ class VendorController extends Controller
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
         $vendor->description = $request->input('description');
+        if($request->input('payment_term') != ""){
+            $vendor->payment_term = $request->input('payment_term');
+        }else{
+            $vendor->payment_term = null;
+        }
+        if($request->input('delivery_term') != ""){
+            $vendor->delivery_term = $request->input('delivery_term');
+        }else{
+            $vendor->delivery_term = null;
+        }
         $vendor->user_id = Auth::user()->id;
         $vendor->branch_id = Auth::user()->branch->id;
         $vendor->save();
@@ -75,7 +87,7 @@ class VendorController extends Controller
         return redirect()->route('vendor.show',$vendor->id)->with('success','Success Created New Vendor!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('vendor.update',$vendor->id)->with('error', $e->getMessage());
+            return redirect()->route('vendor.create')->with('error', $e->getMessage());
         }
     }
 
@@ -90,15 +102,33 @@ class VendorController extends Controller
         $return = GoodsIssue::whereIn('purchase_order_id', $po_ids)->orWhereIn('goods_receipt_id',$gr_ids)->where('type',4)->get();
         $resourceDetails = $vendor->resourceDetails;
 
-        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails'));
+        $payment_terms = Configuration::get('payment_terms');
+        $pt_name = "-";
+        foreach($payment_terms as $payment_term){
+            if($vendor->payment_term == $payment_term->id){
+                $pt_name = $payment_term->name;
+            }
+        }
+
+        $delivery_terms = Configuration::get('delivery_terms');
+        $dt_name = "-";
+        foreach($delivery_terms as $delivery_term){
+            if($vendor->delivery_term == $delivery_term->id){
+                $dt_name = $delivery_term->name;
+            }
+        }
+
+        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails','pt_name','dt_name'));
     }
 
     public function edit($id)
     {
         $vendor = Vendor::findOrFail($id);
         $vendor_categories = Configuration::get('vendor_category');
+        $payment_terms = Configuration::get('payment_terms');
+        $delivery_terms = Configuration::get('delivery_terms');
 
-        return view('vendor.create',compact('vendor','vendor_categories'));
+        return view('vendor.create',compact('vendor','vendor_categories','payment_terms','delivery_terms'));
     }
 
     public function update(Request $request, $id)
@@ -122,6 +152,16 @@ class VendorController extends Controller
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
         $vendor->description = $request->input('description');
+        if($request->input('payment_term') != ""){
+            $vendor->payment_term = $request->input('payment_term');
+        }else{
+            $vendor->payment_term = null;
+        }
+        if($request->input('delivery_term') != ""){
+            $vendor->delivery_term = $request->input('delivery_term');
+        }else{
+            $vendor->delivery_term = null;
+        }
         $vendor->update();
 
         DB::commit();

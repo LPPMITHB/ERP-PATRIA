@@ -33,15 +33,15 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tablePaging">
+                <table class="table table-bordered tableFixed" id="rap-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th width="15%">Doc. Number</th>
                             <th width="25%">WBS</th>
                             <th width="25%">BOM</th>
-                            <th width="25%">Total Price</th>
-                            <th width="5%"></th>
+                            <th width="20%">Total Price</th>
+                            <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,7 +77,16 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#rap-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
     });
 </script>
 @endpush

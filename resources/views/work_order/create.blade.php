@@ -160,7 +160,7 @@
                         <div class="box-body p-t-0">
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-15 p-t-0">
-                                    <table class="table table-bordered tableFixed p-t-10 tableNonPagingVue" style="border-collapse:collapse;">
+                                    <table class="table table-bordered tableFixed" id="wo-table">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
@@ -218,35 +218,45 @@
     const form = document.querySelector('form#create-po');
 
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == "Quantity" || title == "Order" || title == "Price / pcs (Rp.)" || title == "Discount (%)"){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        // $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
+        // $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
+        //     var title = $(this).text();
+        //     if(title == 'No' || title == "Quantity" || title == "Order" || title == "Price / pcs (Rp.)" || title == "Discount (%)"){
+        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        //     }else{
+        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        //     }
+
+        //     $( 'input', this ).on( 'keyup change', function () {
+        //         if ( tableNonPagingVue.column(i).search() !== this.value ) {
+        //             tableNonPagingVue
+        //                 .column(i)
+        //                 .search( this.value )
+        //                 .draw();
+        //         }
+        //     });
+        // });
+
+        // var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
+        //     orderCellsTop   : true,
+        //     paging          : false,
+        //     autoWidth       : false,
+        //     lengthChange    : false,
+        //     info            : false,
+        //     ordering        : false,
+        // });
+
+        // $('div.overlay').hide();
+        $('#wo-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tableNonPagingVue.column(i).search() !== this.value ) {
-                    tableNonPagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
         });
-
-        var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : false,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-            ordering        : false,
-        });
-
-        $('div.overlay').hide();
     });
 
     var data = {
