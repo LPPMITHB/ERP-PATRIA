@@ -1555,6 +1555,18 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'material_family.index',
         ]);
 
+        $paymentTerms = Menu::where('route_name','payment_terms.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $paymentTerms,
+            'route_name' => 'payment_terms.index',
+        ]);
+
+        $deliveryTerms = Menu::where('route_name','delivery_terms.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $deliveryTerms,
+            'route_name' => 'delivery_terms.index',
+        ]);
+
         $user = Menu::where('route_name','user.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $user,

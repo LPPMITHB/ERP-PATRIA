@@ -161,4 +161,30 @@ class ConfigurationController extends Controller
             return redirect()->route('payment_terms.index')->with('error', $e->getMessage());
         }
     }
+
+    public function deliveryTermsIndex()
+    {
+        $delivery_terms = Configuration::get('delivery_terms');
+
+        return view('delivery_terms.index', compact('delivery_terms'));
+    }
+
+    public function deliveryTermsAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $delivery_terms = Configuration::where('slug','delivery_terms')->first();
+            $delivery_terms->value = $data;
+            $delivery_terms->update();
+
+            DB::commit();
+            return response(json_encode($delivery_terms),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('delivery_terms.index')->with('error', $e->getMessage());
+        }
+    }
 }

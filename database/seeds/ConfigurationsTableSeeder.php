@@ -360,7 +360,7 @@ class ConfigurationsTableSeeder extends Seeder
         DB::table('mst_configuration')->insert([
             'slug' => 'payment_terms',
             'title' => 'Payment Terms',
-            'value' => json_encode($delivery_terms),
+            'value' => json_encode($payment_terms),
             'is_active' => true,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

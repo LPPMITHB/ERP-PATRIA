@@ -53,6 +53,11 @@ class Material extends Model
         return $this->hasMany('App\Models\SnapshotDetail');
     }
 
+    public function PurchaseRequisitionDetails()
+    {
+        return $this->hasMany('App\Models\PurchaseRequisitionDetail');
+    }
+
     public function PurchaseOrderDetails()
     {
         return $this->hasMany('App\Models\PurchaseOrderDetail');
@@ -71,6 +76,21 @@ class Material extends Model
     public function materialRequisitionDetails()
     {
         return $this->hasMany('App\Models\MaterialRequisitionDetail');
+    }
+
+    public function goodsReturnDetails()
+    {
+        return $this->hasMany('App\Models\GoodsReturnDetail');
+    }
+
+    public function materialWriteOffDetails()
+    {
+        return $this->hasMany('App\Models\MaterialWriteOffDetail');
+    }
+
+    public function goodsMovementDetails()
+    {
+        return $this->hasMany('App\Models\GoodsMovementDetail');
     }
 
     public function productionOrderDetails()

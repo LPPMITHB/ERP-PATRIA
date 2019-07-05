@@ -531,6 +531,8 @@ class ProjectController extends Controller
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
+            $temp = str_replace(",", "", $request->budget_value);
+            $project->budget_value = $temp;
             $project->ship_id = $request->ship;
             $project->project_type = $request->project_type;
             $project->flag = $request->flag;
@@ -580,7 +582,6 @@ class ProjectController extends Controller
             }
             $project->drawing = $fileNameToStore;
             $project->save();
-
             
             DB::commit();
             if($menu == "building"){
@@ -718,6 +719,7 @@ class ProjectController extends Controller
             $project->name = $request->name;
             $project->description = $request->description;
             $project->customer_id = $request->customer;
+            $project->budget_value = $request->budget_value;
             $project->ship_id = $request->ship;
             $project->project_type = $request->project_type;
             $project->flag = $request->flag;
@@ -1150,6 +1152,7 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
+            $project->budget_value = $request->budget_value;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->person_in_charge = $request->person_in_charge;

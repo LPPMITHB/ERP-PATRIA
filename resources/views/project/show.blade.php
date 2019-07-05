@@ -773,9 +773,9 @@
     });
     jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
-    var costCanvas = $('#cost').get(0).getContext('2d');
+    var costCanvas = document.getElementById("cost").getContext("2d");
     var progressCanvas = $('#progress').get(0).getContext('2d');
-
+    
     var configCost = {
         type: 'line',
         data: {
@@ -795,7 +795,7 @@
                     label: "Actual Cost",
                     borderColor: "green",
                     data: @json($dataActualCost),
-                }
+                },
             ]
         },
         options: {
@@ -818,6 +818,20 @@
                     }
                 } // end callbacks:
             }, //end tooltips
+            annotation: {
+                annotations: [{
+                    type: 'line',
+                    mode: 'horizontal',
+                    scaleID: 'y-axis-0',
+                    value: 1,
+                    borderColor: 'rgb(75, 192, 192)',
+                    borderWidth: 4,
+                    label: {
+                    enabled: false,
+                    content: 'Test label'
+                    }
+                }]
+            },
             responsive: true,  
             scales: {
                 xAxes: [{
@@ -846,7 +860,7 @@
                         labelString: 'in million'
                     }
                 }]
-            } 
+            },
         }
     };
 

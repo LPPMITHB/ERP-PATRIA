@@ -56,6 +56,13 @@ Route::name('payment_terms.')->prefix('payment_terms')->group(function() {
     Route::put('/add', 'ConfigurationController@paymentTermsAdd')->name('add');
 });
 
+// Delivery Terms Routes
+Route::name('delivery_terms.')->prefix('delivery_terms')->group(function() {
+    Route::get('/', 'ConfigurationController@deliveryTermsIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@deliveryTermsAdd')->name('add');
+});
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');

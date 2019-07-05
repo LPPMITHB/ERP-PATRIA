@@ -101,7 +101,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" v-if="(menu=='building')">
                                 <label for="hull_number" class="col-sm-2 control-label">Hull Number</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="hull_number" name="hull_number" v-model="project.hull_number">
@@ -132,6 +132,14 @@
                                 <label for="name" class="col-sm-2 control-label">Owner Representative</label>
                                 <div class="col-sm-10">
                                     <input type="text" disabled class="form-control" id="owner_rep" name="owner_rep"  v-model="ownerRep">
+                                </div>
+                            </div>
+
+                            <div v-if="(menu=='building')" class="form-group">
+                                <label for="budget_value" class="col-sm-2 control-label">Budget value</label>
+                
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="budget_value" name="budget_value" v-model="project.budget_value">
                                 </div>
                             </div>
 
@@ -197,10 +205,6 @@
                                     <input type="email" class="form-control" id="class_contact_person_email" name="class_contact_person_email" v-model="project.class_cp_email">
                                 </div>
                             </div>
-
-                            
-
-                            
 
                             <div v-if="(menu=='building')" class="form-group">
                                 <label for="class_contact_person_email_2" class="col-sm-2 control-label">Classification Contact Person E-Mail 2</label>
@@ -328,6 +332,7 @@ $(document).ready(function(){
             class_cp_email_2 :@json(Request::old('class_contact_person_email_2')),
             description : @json(Request::old('description')),
             person_in_charge : @json(Request::old('person_in_charge')),
+            budget_value : @json(Request::old('budget_value')),
         },
         projectUpdate:  @json($project->id== null ? "": $project->id),
         customers : @json($customers),
@@ -349,6 +354,7 @@ $(document).ready(function(){
             class_cp_email_2 : @json($project->class_contact_person_email_2 == null ? "": $project->class_contact_person_email_2),
             description : @json($project->description == null ? "": $project->description),
             person_in_charge : @json($project->person_in_charge == null ? "": $project->person_in_charge),
+            budget_value : @json($project->person_in_charge == null ? "": $project->person_in_charge),
         },
         customer: "",
         menu : @json($menu),
@@ -411,17 +417,26 @@ $(document).ready(function(){
 
             'project.class_cp_phone': function(newValue){
                 if(newValue != ""){
-                    this.project.class_cp_phone = (this.project.class_cp_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
-                    
+                    this.project.class_cp_phone = (this.project.class_cp_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");   
                 }
-
             },
             'project.class_cp_phone_2': function(newValue){
                 if(newValue != ""){
-                    this.project.class_cp_phone_2 = (this.project.class_cp_phone_2+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
-                    
+                    this.project.class_cp_phone_2 = (this.project.class_cp_phone_2+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");   
                 }
-
+            },
+            'project.budget_value': function (newValue){
+                var decimal = (newValue+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.project.budget_value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.project.budget_value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.project.budget_value = (this.project.budget_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
             },
         },
         created: function() {
@@ -460,7 +475,6 @@ $(document).ready(function(){
             }
             if(this.oldData.description !=null) {
                 this.project.description=this.oldData.description;
-            console.log(this.oldData);
         }
     },
 

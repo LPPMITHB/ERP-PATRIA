@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Material;
 use App\Models\Uom;
 use App\Models\Configuration;
+use Illuminate\Support\Collection;
 use Auth;
 use DB;
 
@@ -133,8 +134,9 @@ class MaterialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $route = $request->route()->getPrefix();
         $material = Material::findOrFail($id);
 
         $dataFamily = Configuration::get('material_family');
@@ -168,7 +170,90 @@ class MaterialController extends Controller
         }
         $uoms = Uom::all();
 
-        return view('material.show', compact('material','uoms','arrayFamily','nameDensity'));
+        $documents = Collection::make();
+        $prds = $material->PurchaseRequisitionDetails;
+        $pods = $material->PurchaseOrderDetails;
+        $grds = $material->goodsReceiptDetails;
+        $mrds = $material->materialRequisitionDetails;
+        $gids = $material->goodsIssueDetails;
+        $grtds = $material->goodsReturnDetails;
+        $snds = $material->snapshotDetails;
+        $mwods = $material->materialWriteOffDetails;
+        $gmds = $material->goodsMovementDetails;
+
+        foreach($prds as $prd){
+            $pr = $prd->purchaseRequisition;
+            $pr->type_doc = "Purchase Requisition";
+            if($pr != null){
+                $documents->push($pr);
+            }
+        }
+
+        foreach($pods as $pod){
+            $po = $pod->purchaseOrder;
+            $po->type_doc = "Purchase Order";
+            if($po != null){
+                $documents->push($po);
+            }
+        }
+
+        foreach($grds as $grd){
+            $gr = $grd->goodsReceipt;
+            $gr->type_doc = "Goods Receipt";
+            if($gr != null){
+                $documents->push($gr);
+            }
+        }
+
+        foreach($mrds as $mrd){
+            $mr = $mrd->material_requisition;
+            $mr->type_doc = "Material Requisition";
+            if($mr != null){
+                $documents->push($mr);
+            }
+        }
+
+        foreach($gids as $gid){
+            $gi = $gid->goodsIssue;
+            $gi->type_doc = "Goods Issue";
+            if($gi != null){
+                $documents->push($gi);
+            }
+        }
+
+        foreach($grtds as $grtd){
+            $grt = $grtd->goodsReturn;
+            $grt->type_doc = "Goods Return";
+            if($grt != null){
+                $documents->push($grt);
+            }
+        }
+        
+        foreach($snds as $snd){
+            $sn = $snd->snapshot;
+            $sn->type_doc = "Physical Inventory";
+            if($sn != null){
+                $documents->push($sn);
+            }
+        }
+        
+        foreach($mwods as $mwod){
+            $mwo = $mwod->materialWriteOff;
+            $mwo->type_doc = "Material Write Off";
+            if($mwo != null){
+                $documents->push($mwo);
+            }
+        }
+
+        foreach($gmds as $gmd){
+            $gm = $gmd->goodsMovement;
+            $gm->type_doc = "Goods Movement";
+            if($gm != null){
+                $documents->push($gm);
+            }
+        }
+
+        return view('material.show', compact('material','uoms','arrayFamily','nameDensity','documents','route'));
     }
 
     /**

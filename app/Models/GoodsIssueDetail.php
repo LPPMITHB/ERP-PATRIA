@@ -10,7 +10,7 @@ class GoodsIssueDetail extends Model
     
     public function goodsIssue()
     {
-        return $this->belongsTo('App\Models\GoodIssue');
+        return $this->belongsTo('App\Models\GoodsIssue');
     }
 
     public function material()
