@@ -179,13 +179,25 @@ class RAPController extends Controller
                     if(count($bomDetail->material->materialRequisitionDetails)>0){
                         foreach ($bomDetail->material->materialRequisitionDetails as $mrd) {
                             if ($mrd->wbs_id == $id) {
-                                $materialEvaluation->push([
-                                    "material_code" => $bomDetail->material->code,
-                                    "material_description" => $bomDetail->material->description,
-                                    "unit" => $bomDetail->material->uom->unit,
-                                    "quantity" => $bomDetail->quantity,
-                                    "used" => $mrd->issued,
-                                ]);
+                                if($mrd->material_requisition->status == 2 || $mrd->material_requisition->status == 7 || $mrd->material_requisition->status == 0){
+                                    $materialEvaluation->push([
+                                        "material_code" => $bomDetail->material->code,
+                                        "material_description" => $bomDetail->material->description,
+                                        "unit" => $bomDetail->material->uom->unit,
+                                        "budget" => $bomDetail->quantity,
+                                        "requested" => $mrd->quantity,
+                                        "issued" => $mrd->issued,
+                                    ]);
+                                }else{
+                                    $materialEvaluation->push([
+                                        "material_code" => $bomDetail->material->code,
+                                        "material_description" => $bomDetail->material->description,
+                                        "unit" => $bomDetail->material->uom->unit,
+                                        "budget" => $bomDetail->quantity,
+                                        "requested" => 0,
+                                        "issued" => 0,
+                                    ]);
+                                }
                             }
                         }
                     }else{
@@ -193,8 +205,9 @@ class RAPController extends Controller
                             "material_code" => $bomDetail->material->code,
                             "material_description" => $bomDetail->material->description,
                             "unit" => $bomDetail->material->uom->unit,
-                            "quantity" => $bomDetail->quantity,
-                            "used" => 0,
+                            "budget" => $bomDetail->quantity,
+                            "requested" => 0,
+                            "issued" => 0,
                         ]);
                     }
                 }
