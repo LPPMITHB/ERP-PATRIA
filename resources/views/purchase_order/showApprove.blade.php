@@ -84,8 +84,8 @@
                         <div class="col-md-4 col-xs-4" >
                             Project Number
                         </div>
-                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPO->project->number }}">
-                            : <b> {{ ($modelPO->project->number != "") ? $modelPO->project->number : '-' }} </b>
+                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($modelPO->project != null) ? $modelPO->project->number : '-' }}"> 
+                            : <b> {{ ($modelPO->project != null) ? $modelPO->project->number : '-' }} </b>
                         </div>
                     </div>
                 </div>
