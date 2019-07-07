@@ -75,14 +75,6 @@
                             : <b> {{ $modelWO->workRequest->number }} </b>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 col-xs-4 ">
-                            Total Price
-                        </div>
-                        <div class="col-md-8 col-xs-6">
-                            : <b> {{ number_format($modelWO->total_price) }} </b>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-sm-4 col-md-4 col-xs-12 m-t-10 m-l-25">
                     <div class="row">
@@ -124,7 +116,7 @@
                             Created At
                         </div>
                         <div class="col-md-7 col-xs-6">
-                            : <b> {{ $modelWO->created_at }} </b>
+                            : <b> {{ $modelWO->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
                         @if($modelWO->status != 6 && $modelWO->status != 1)
                             @if($modelWO->status == 2 || $modelWO->status == 0 || $modelWO->status == 7)
@@ -174,14 +166,14 @@
                     <thead>
                         <tr>
                             <th width="3%">No</th>
-                            <th width="15%">Material Number</th>
+                            <th width="12%">Material Number</th>
                             <th width="20%">Material Description</th>
-                            <th width="4%">Unit</th>
+                            <th width="5%">Unit</th>
                             <th width="20%">Description</th>
-                            <th width="8%">Qty</th>
-                            <th width="13%">Price / pcs</th>
-                            <th width="6%">Disc (%)</th>
-                            <th width="11%">Amount</th>
+                            <th width="6%">Qty</th>
+                            <th width="12%">Price / pcs ({{$unit}})</th>
+                            <th width="8%">Disc (%)</th>
+                            <th width="14%">Amount ({{$unit}})</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -205,27 +197,27 @@
                         <tr>
                             <td colspan="6" style="visibility:hidden"></td>
                             <td colspan="2" class="text-right p-r-5"><b>Subtotal :</b></td>
-                            <td class="text-right p-r-5"><b>Rp {{number_format($modelWO->total_price,2)}}</b></td>
+                            <td class="text-right p-r-5"><b>{{number_format($modelWO->total_price,2)}} {{$unit}}</b></td>
                         </tr>
                         <tr>
                             <td colspan="6" style="visibility:hidden"></td>
                             <td colspan="2" class="text-right p-r-5"><b>Discount :</b></td>
-                            <td class="text-right p-r-5"><b>Rp {{number_format($total_discount ,2)}}</b></td>
+                            <td class="text-right p-r-5"><b>{{number_format($total_discount ,2)}} {{$unit}}</b></td>
                         </tr>
                         <tr>
                             <td colspan="6" style="visibility:hidden"></td>
                             <td colspan="2" class="text-right p-r-5"><b>Tax ({{$modelWO->tax}}%) :</b></td>
-                            <td class="text-right p-r-5"><b>Rp {{number_format($tax,2)}}</b></td>
+                            <td class="text-right p-r-5"><b>{{number_format($tax,2)}} {{$unit}}</b></td>
                         </tr>
                         <tr>
                             <td colspan="6" style="visibility:hidden"></td>
                             <td colspan="2" class="text-right p-r-5"><b>Estimated Freight :</b></td>
-                            <td class="text-right p-r-5"><b>Rp {{number_format($modelWO->estimated_freight),2}}</b></td>
+                            <td class="text-right p-r-5"><b>{{number_format($modelWO->estimated_freight),2}} {{$unit}}</b></td>
                         </tr>
                         <tr>
                             <td colspan="6" style="visibility:hidden"></td>
                             <td colspan="2" class="text-right p-r-5"><b>Total Order :</b></td>
-                            <td class="text-right p-r-5"><b>Rp {{number_format( (($modelWO->total_price - $total_discount) + $tax + $modelWO->estimated_freight),2)}}</b></td>
+                            <td class="text-right p-r-5"><b>{{number_format( (($modelWO->total_price - $total_discount) + $tax + $modelWO->estimated_freight),2)}} {{$unit}}</b></td>
                         </tr>
                     </tfoot>
                 </table>

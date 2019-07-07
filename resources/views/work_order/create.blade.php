@@ -56,19 +56,20 @@
                                     <div class="col-xs-5 no-padding">Customer</div>
                                     <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="modelProject.customer.name"><b>: {{modelProject.customer.name}}</b></div>
 
-                                    <div class="col-xs-5 no-padding">Start Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_start_date}}</b></div>
-
-                                    <div class="col-xs-5 no-padding">End Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject.planned_end_date}}</b></div>
-
                                     <div class="col-sm-3 no-padding p-t-15">
-                                        <label for="">Currency</label>
+                                        <label for="">Currency *</label>
                                     </div>
                                     <div class="col-sm-9 p-t-13 p-l-0">
                                         <selectize :disable="currencyOk" v-model="currency" :settings="currencySettings">
-                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                            <option v-for="(data, index) in currencies" :value="data.id">{{ data.name }} - {{ data.unit }}</option>
                                         </selectize>
+                                    </div>
+
+                                    <div class="col-sm-3 no-padding p-t-10">
+                                        <label for="">Tax (%)</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-5 p-l-0">
+                                        <input class="form-control" v-model="tax" placeholder="Tax">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-4" v-else>
@@ -91,18 +92,25 @@
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: -</b></div>
 
                                     <div class="col-sm-3 no-padding p-t-15">
-                                        <label for="">Currency</label>
+                                        <label for="">Currency *</label>
                                     </div>
                                     <div class="col-sm-9 p-t-13 p-l-0">
                                         <selectize v-model="currency" :settings="currencySettings">
-                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                            <option v-for="(data, index) in currencies" :value="data.id">{{ data.name }} - {{ data.unit }}</option>
                                         </selectize>
+                                    </div>
+
+                                    <div class="col-sm-3 no-padding p-t-10">
+                                        <label for="">Tax (%)</label>
+                                    </div>
+                                    <div class="col-sm-9 p-t-5 p-l-0">
+                                        <input class="form-control" v-model="tax" placeholder="Tax">
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-md-4">
                                     <div class="row">
                                         <div class="col-sm-5 p-t-7">
-                                            <label for="">Vendor Name</label>
+                                            <label for="">Vendor Name *</label>
                                         </div>
                                         <div class="col-sm-7 p-l-0">
                                             <selectize v-model="vendor_id" :settings="vendorSettings">
@@ -110,28 +118,34 @@
                                             </selectize>
                                         </div>
                                     </div>
+
                                     <div class="row">
                                         <div class="col-sm-5 p-t-10">
-                                            <label for="delivery_date">Delivery Date</label>
+                                            <label for="delivery_terms">Delivery Term</label>
                                         </div>
                                         <div class="col-sm-7 p-t-5 p-l-0">
-                                            <input v-model="delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5 p-t-15">
-                                            <label for="payment_terms">Payment Terms</label>
-                                        </div>
-                                        <div class="col-sm-7 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="payment_terms" placeholder="Payment Terms">
+                                            <selectize v-model="delivery_term" :settings="dtSettings">
+                                                <option v-for="(delivery_term, index) in delivery_terms" :value="delivery_term.id">{{ delivery_term.name }}</option>
+                                            </selectize>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-sm-5 p-t-15">
+                                        <div class="col-sm-5 p-t-10">
+                                            <label for="payment_terms">Payment Term</label>
+                                        </div>
+                                        <div class="col-sm-7 p-t-5 p-l-0">
+                                            <selectize v-model="payment_term" :settings="ptSettings">
+                                                <option v-for="(payment_term, index) in payment_terms" :value="payment_term.id">{{ payment_term.name }}</option>
+                                            </selectize>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-5 p-t-10">
                                             <label for="estimated_freight">Estimated Freight ({{selectedCurrency}})</label>
                                         </div>
-                                        <div class="col-sm-7 p-t-13 p-l-0">
+                                        <div class="col-sm-7 p-t-5 p-l-0">
                                             <input class="form-control" v-model="estimated_freight" placeholder="Estimated Freight">
                                         </div>
                                     </div>
@@ -148,10 +162,10 @@
 
                                     <div class="row">
                                         <div class="col-sm-3 p-t-15">
-                                            <label for="">Tax (%)</label>
+                                            <label for="delivery_date">Delivery Date *</label>
                                         </div>
                                         <div class="col-sm-9 p-t-13 p-l-0">
-                                            <input class="form-control" v-model="tax" placeholder="Tax">
+                                            <input v-model="delivery_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
                                         </div>
                                     </div>
                                 </div>
@@ -169,7 +183,7 @@
                                                 <th style="width: 5%">Unit</th>
                                                 <th style="width: 10%">Quantity</th>
                                                 <th style="width: 10%">Order</th>
-                                                <th style="width: 15%">Price / pcs (Rp.)</th>
+                                                <th style="width: 15%">Price / pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 10%">Discount (%)</th>
                                                 <th style="width: 25%">WBS Name</th>
                                             </tr>
@@ -260,6 +274,10 @@
     });
 
     var data = {
+        payment_terms : @json($payment_terms),
+        delivery_terms : @json($delivery_terms),
+        payment_term : null,
+        delivery_term : null,
         modelWR : @json($modelWR),
         WRDetail : @json($modelWRD),
         currencies : @json($currencies),
@@ -271,12 +289,17 @@
         currencySettings: {
             placeholder: 'Please Select Currency'
         },
+        dtSettings: {
+            placeholder: 'Please Select Delivery Term'
+        },
+        ptSettings: {
+            placeholder: 'Please Select Payment Term'
+        },
         vendor_id : "",
         selectedCurrency : "",
         currency : "",
         tax : "",
         estimated_freight : "",
-        payment_terms : "",
         vendor_id : "",
         delivery_date : "",
         description : "",
@@ -311,7 +334,6 @@
                 return isOk;
             },
             currencyOk : function(){
-                
             },
         },
         methods : {
@@ -349,7 +371,9 @@
                 this.submittedForm.description = this.description;
                 this.submittedForm.wr_id = this.modelWR.id;
                 this.submittedForm.project_id = this.modelWR.project_id;
-                this.submittedForm.payment_terms = this.payment_terms;
+                this.submittedForm.payment_term = this.payment_term;
+                this.submittedForm.delivery_term = this.delivery_term;
+                this.submittedForm.currency = this.currency;
                 this.submittedForm.estimated_freight = this.estimated_freight.replace(/,/g , '');
                 this.submittedForm.tax = this.tax;
 
@@ -454,6 +478,24 @@
                     this.estimated_freight = (this.estimated_freight+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
+            'vendor_id':function(newValue){
+                this.modelVendor.forEach(vendor=>{
+                    if(vendor.id == newValue){
+                        this.delivery_term = vendor.delivery_term;
+                        this.payment_term = vendor.payment_term;
+                    }
+                })
+            },
+            'currency':function (newValue) {
+                if(newValue == ''){
+                    this.currency = this.currencies[0].id;
+                }
+                this.currencies.forEach(data => {
+                    if(newValue == data.id){
+                        this.selectedCurrency = data.unit;
+                    }
+                });
+            },
         },
         created: function() {
             this.getVendor();
@@ -485,6 +527,9 @@
                     trigger: 'hover'             
                 })
             })
+
+            this.currency = this.currencies[0].id;
+            this.selectedCurrency = this.currencies[0].unit;
         },
     });
 </script>

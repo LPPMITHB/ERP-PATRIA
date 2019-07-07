@@ -110,7 +110,7 @@
                             Created At
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelWR->created_at }} </b>
+                            : <b> {{ $modelWR->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
                         @if($modelWR->status != 6 && $modelWR->status != 1)
                             @if($modelWR->status == 2 || $modelWR->status == 0 || $modelWR->status == 7)

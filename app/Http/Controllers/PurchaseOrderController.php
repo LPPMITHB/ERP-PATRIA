@@ -70,6 +70,11 @@ class PurchaseOrderController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $currencies = Configuration::get('currencies');
+        foreach($currencies as $key => $currency){
+            if($currency->status == 0){
+                array_splice($currencies, $key, 1);
+            }
+        }
         $modelPR = PurchaseRequisition::where('id',$datas->id)->with('project')->first();
         $modelPRD = PurchaseRequisitionDetail::whereIn('id',$datas->checkedPRD)->with('material','project','resource','material.uom','wbs')->get();
         $materials = Material::all();
@@ -142,7 +147,7 @@ class PurchaseOrderController extends Controller
         $value = "";
         $valueCurrency = Configuration::get('currencies');
         foreach ($valueCurrency as $data) {
-            if($data->name == $datas->currency){
+            if($data->id == $datas->currency){
                 $value = $data->value;
             }
         }
@@ -274,7 +279,7 @@ class PurchaseOrderController extends Controller
         $unit = "";
         $unitCurrency = Configuration::get('currencies');
         foreach($unitCurrency as $data){
-            if($data->name == $modelPO->currency){
+            if($data->id == $modelPO->currency){
                 $unit = $data->unit;
             }
         }
@@ -467,7 +472,7 @@ class PurchaseOrderController extends Controller
         $unit = "";
         $unitCurrency = Configuration::get('currencies');
         foreach($unitCurrency as $data){
-            if($data->name == $modelPO->currency){
+            if($data->id == $modelPO->currency){
                 $unit = $data->unit;
             }
         }
