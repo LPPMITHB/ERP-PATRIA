@@ -1211,6 +1211,8 @@ Route::name('goods_return.')->prefix('goods_return')->group(function() {
 
     Route::get('/selectPO', 'GoodsReturnController@selectPO')->name('selectPO')->middleware('can:create-goods-return');
 
+    Route::get('/selectGI', 'GoodsReturnController@selectGI')->name('selectGI')->middleware('can:create-goods-return');
+
     Route::post('/GR', 'GoodsReturnController@storeGoodsReturnGR')->name('storeGR')->middleware('can:create-goods-return');
     
     Route::post('/PO', 'GoodsReturnController@storeGoodsReturnPO')->name('storePO')->middleware('can:create-goods-return');

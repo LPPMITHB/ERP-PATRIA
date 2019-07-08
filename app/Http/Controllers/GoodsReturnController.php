@@ -508,6 +508,16 @@ class GoodsReturnController extends Controller
         return view('goods_return.selectPO', compact('modelPOs','menu'));
     }
 
+    public function selectGI (Request $request){
+        $menu = $request->route()->getPrefix();    
+        if($menu == "/goods_return"){
+            
+            $modelGI = GoodsIssue::where()
+        }elseif($menu == "/goods_return_repair"){
+            
+        }
+    }
+
     public function selectGR(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
