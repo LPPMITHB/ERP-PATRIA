@@ -110,7 +110,7 @@
                             Created At
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b> {{ $modelWR->created_at }} </b>
+                            : <b> {{ $modelWR->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
                         @if($modelWR->status != 6 && $modelWR->status != 1)
                             @if($modelWR->status == 2 || $modelWR->status == 0 || $modelWR->status == 7)
@@ -130,19 +130,26 @@
                                 : <b> {{ $modelWR->approvedBy->name }} </b>
                             </div>
                         @endif
-                        @if($modelWR->status == 2)
+                        @php
+                            $approval_date = "";
+                            if($modelWR->approval_date != NULL){
+                                $approval_date = DateTime::createFromFormat('Y-m-d', $modelWR->approval_date);
+                                $approval_date = $approval_date->format('d-m-Y');
+                            }
+                        @endphp
+                        @if($modelWR->status == 2 || $modelWR->status == 0 || $modelWR->status == 7)
                             <div class="col-xs-5 col-md-5">
                                 Approved Date
                             </div>
                             <div class="col-xs-7 col-md-7">
-                                : <b>{{ $modelWR->approval_date }}</b>
+                                : <b>{{ $approval_date }}</b>
                             </div>
                         @elseif($modelWR->status == 5)
                             <div class="col-xs-5 col-md-5">
                                 Rejected Date
                             </div>
                             <div class="col-xs-7 col-md-7">
-                                : <b>{{ $modelWR->approval_date }}</b>
+                                : <b>{{ $approval_date }}</b>
                             </div>
                         @endif
                     </div>

@@ -74,16 +74,17 @@
                 </div>
             </div>
             <div class="box-body p-t-0">
-                <table class="table table-bordered showTable tablePagingVue tableFixed">
+                <table class="table table-bordered showTable tableFixed" id="me-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Material Number</th>
+                            <th width="15%">Material Number</th>
                             <th width="25%">Material Description</th>
-                            <th width="5%">Unit</th>
-                            <th width="15%">Quantity</th>
-                            <th width="15%">Used</th>
-                            <th width="15%">Remaining</th>
+                            <th width="7%">Unit</th>
+                            <th width="12%">Bugdet</th>
+                            <th width="12%">Requested</th>
+                            <th width="12%">Used</th>
+                            <th width="12%">Remaining</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,9 +95,10 @@
                                 <td>{{$data['material_code']}}</td>
                                 <td>{{$data['material_description']}}</td>
                                 <td>{{$data['unit']}}</td>
-                                <td>{{number_format($data['quantity'])}}</td>
-                                <td>{{number_format($data['used'])}}</td>
-                                <td>{{number_format($data['quantity'] - $data['used'])}}</td>
+                                <td>{{number_format($data['budget'])}}</td>
+                                <td>{{number_format($data['requested'])}}</td>
+                                <td>{{number_format($data['issued'])}}</td>
+                                <td>{{number_format($data['budget'] - $data['issued'])}}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -112,33 +114,16 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
-        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'Material Name'){
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-            }else{
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
+        $('#me-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tablePagingVue.column(i).search() !== this.value ) {
-                    tablePagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
         });
-
-        var tablePagingVue = $('.tablePagingVue').DataTable( {
-            orderCellsTop   : true,
-            paging          : true,
-            autoWidth       : false,
-            lengthChange    : false,
-            info            : false,
-        });
-        $('div.overlay').hide();
     });
     
 </script>
