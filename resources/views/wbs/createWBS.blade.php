@@ -268,7 +268,6 @@
 @push('script')
 <script>
 $(document).ready(function(){
-    $('div.overlay').hide();
 });
 
 function loading(){
@@ -480,8 +479,8 @@ var vm = new Vue({
                         'info'        : true,
                         'autoWidth'   : false,
                     });
+                    $('div.overlay').hide();
                 })
-                $('div.overlay').hide();
             });
         },
         adoptWbs(){
@@ -511,7 +510,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
                 }
                 
                 this.getWBS();
