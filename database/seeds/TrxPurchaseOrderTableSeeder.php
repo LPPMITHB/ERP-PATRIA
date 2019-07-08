@@ -23,7 +23,7 @@ class TrxPurchaseOrderTableSeeder extends Seeder
                 'number' => 'PO-1900001',
                 'purchase_requisition_id' => 18,
                 'vendor_id' => 13,
-                'currency' => 'Rupiah',
+                'currency' => 1,
                 'value' => 1,
                 'description' => 'PO DUMMY PIR 1',
                 'revision_description' => '',
@@ -45,7 +45,7 @@ class TrxPurchaseOrderTableSeeder extends Seeder
                 'number' => 'PO-1900002',
                 'purchase_requisition_id' => 19,
                 'vendor_id' => 24,
-                'currency' => 'Rupiah',
+                'currency' => 1,
                 'value' => 1,
                 'description' => 'PO DUMMY PIR 2',
                 'revision_description' => '',
@@ -67,7 +67,7 @@ class TrxPurchaseOrderTableSeeder extends Seeder
                 'number' => 'PO-1900003',
                 'purchase_requisition_id' => 20,
                 'vendor_id' => 19,
-                'currency' => 'Rupiah',
+                'currency' => 1,
                 'value' => 1,
                 'description' => 'PO DUMMY PIR PAMI 1',
                 'revision_description' => '',
@@ -89,7 +89,7 @@ class TrxPurchaseOrderTableSeeder extends Seeder
                 'number' => 'PO-1900004',
                 'purchase_requisition_id' => 21,
                 'vendor_id' => 42,
-                'currency' => 'Rupiah',
+                'currency' => 1,
                 'value' => 1,
                 'description' => 'PO DUMMY PIR PAMI 2',
                 'revision_description' => '',
@@ -106,7 +106,5 @@ class TrxPurchaseOrderTableSeeder extends Seeder
                 'updated_at' => '2019-03-08 17:58:49',
             ),
         ));
-        
-        
     }
 }

@@ -423,6 +423,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Based On Goods Issue',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'goods_return.selectGI',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$goodsReturn,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'goods_return.index',

@@ -741,6 +741,17 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'goods_return.createGoodsReturnPO',
         ]);
 
+        $selectGI = Menu::where('route_name','goods_return.selectGI')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGI,
+            'route_name' => 'goods_return.selectGI',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGI,
+            'route_name' => 'goods_return.createGoodsReturnGI',
+        ]);
+
         $viewReturn = Menu::where('route_name','goods_return.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewReturn,
@@ -783,6 +794,17 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $selectPORepair,
             'route_name' => 'goods_return_repair.createGoodsReturnPO',
+        ]);
+
+        $selectGIRepair = Menu::where('route_name','goods_return_repair.selectGI')->select('id')->first();
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGIRepair,
+            'route_name' => 'goods_return_repair.selectGI',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $selectGIRepair,
+            'route_name' => 'goods_return_repair.createGoodsReturnGI',
         ]);
 
         $viewReturnRepair = Menu::where('route_name','goods_return_repair.index')->select('id')->first()->id;

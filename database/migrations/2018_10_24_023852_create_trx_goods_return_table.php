@@ -19,6 +19,7 @@ class CreateTrxGoodsReturnTable extends Migration
             $table->unsignedInteger('business_unit_id');
             $table->unsignedInteger('purchase_order_id')->nullable();
             $table->unsignedInteger('goods_receipt_id')->nullable();
+            // $table->unsignedInteger('goods_issue_id')->nullable();
             $table->text('description');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
@@ -30,6 +31,7 @@ class CreateTrxGoodsReturnTable extends Migration
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
             $table->foreign('purchase_order_id')->references('id')->on('trx_purchase_order');
             $table->foreign('goods_receipt_id')->references('id')->on('trx_goods_receipt');
+            // $table->foreign('goods_issue_id')->references('id')->on('trx_goods_issue');
             $table->foreign('approved_by')->references('id')->on('users');
 
         });

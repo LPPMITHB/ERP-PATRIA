@@ -73,8 +73,8 @@
                         <div class="col-md-4 col-xs-4" >
                             Project Number
                         </div>
-                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelPO->project->number }}">
-                            : <b> {{ ($modelPO->project->number != "") ? $modelPO->project->number : '-' }} </b>
+                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($modelPO->project != null) ? $modelPO->project->number : '-' }}"> 
+                            : <b> {{ ($modelPO->project != null) ? $modelPO->project->number : '-' }} </b>
                         </div>
                         @if($modelPO->purchaseRequisition->type == 3)
                             <div class="col-md-4 col-xs-4" >
@@ -124,19 +124,26 @@
                                 : <b> {{ $modelPO->approvedBy->name }} </b>
                             </div>
                         @endif
+                        @php
+                            $approval_date = "";
+                            if($modelPO->approval_date != NULL){
+                                $approval_date = DateTime::createFromFormat('Y-m-d', $modelPO->approval_date);
+                                $approval_date = $approval_date->format('d-m-Y');
+                            }
+                        @endphp
                         @if($modelPO->status == 2)
                             <div class="col-xs-4 col-md-4">
                                 Approved Date
                             </div>
                             <div class="col-xs-8 col-md-8">
-                                : <b>{{ $modelPO->approval_date }}</b>
+                                : <b>{{ $approval_date }}</b>
                             </div>
                         @elseif($modelPO->status == 5)
                             <div class="col-xs-4 col-md-4">
                                 Rejected Date
                             </div>
                             <div class="col-xs-8 col-md-8">
-                                : <b>{{ $modelPO->approval_date }}</b>
+                                : <b>{{ $approval_date }}</b>
                             </div>
                         @endif
                     </div>
