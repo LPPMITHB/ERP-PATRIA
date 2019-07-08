@@ -1115,6 +1115,8 @@ Route::name('physical_inventory.')->prefix('physical_inventory')->group(function
 
     Route::get('/print/{id}', 'PhysicalInventoryController@printPdf')->name('print')->middleware('can:show-snapshot');    
 
+    Route::get('/exportToExcel/{id}', 'PhysicalInventoryController@exportToExcel')->name('exportToExcel')->middleware('can:show-snapshot');    
+
 });
 
 //Physical Inventory Routes

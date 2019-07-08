@@ -14,6 +14,8 @@ use App\Models\GoodsIssue;
 use App\Models\GoodsIssueDetail;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
+use App\Exports\PhysicalInventoryExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Collection;
 use Auth;
 use DB;
@@ -148,6 +150,15 @@ class PhysicalInventoryController extends Controller
         return $pdf->stream('Snapshot_'.$now.'.pdf');
     }
 
+    public function exportToExcel($id, Request $request)
+    {
+        $modelSnapshot = Snapshot::find($id);
+        $now = date("Y_m_d_H_i_s");
+        return Excel::download(new PhysicalInventoryExport($id), 'Stock_Taking_'.$now.'.xlsx');
+    }
+
+
+
     public function countStock($id, Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";    
@@ -182,11 +193,12 @@ class PhysicalInventoryController extends Controller
         return view('physical_inventory.showCountStock', compact('snapshot','confirm','menu'));
     }
 
-    public function showPI($id)
+    public function showPI($id, Request $request)
     {
+        $route = $request->route()->getPrefix();
         $snapshot = Snapshot::where('id', $id)->first();
 
-        return view('physical_inventory.showPI', compact('snapshot'));
+        return view('physical_inventory.showPI', compact('snapshot','route'));
     }
 
     public function storeCountStock(Request $request, $id)

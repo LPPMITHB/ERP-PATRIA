@@ -114,7 +114,7 @@
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
-                                <td>{{ (data.weight/parentWbsWeight)*100 }} %</td>
+                                <td>{{ ((data.weight/parentWbsWeight)*100).toFixed(2) }} %</td>
                                 <td>{{ data.weight }} %</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
@@ -935,7 +935,7 @@ var vm = new Vue({
                 });
                 this.newSubWBS.totalWeight = 100;
             }else{
-                this.newSubWBS.weight = (this.newSubWBS.totalWeight/100)*this.parentWbsWeight;  
+                this.newSubWBS.weight = ((this.newSubWBS.totalWeight/100)*this.parentWbsWeight).toFixed(2);  
             }
         },
         'newSubWBS.weight': function(newValue){
@@ -947,7 +947,7 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 this.newSubWBS.weight = this.maxWeight;
-                this.newSubWBS.totalWeight = (this.maxWeight/this.parentWbsWeight)*100;
+                this.newSubWBS.totalWeight = ((this.maxWeight/this.parentWbsWeight)*100);
             }
         },
         'editWbs.totalWeight': function(newValue){
@@ -960,7 +960,7 @@ var vm = new Vue({
                 });
                 this.editWbs.totalWeight = 100;
             }else{
-                this.editWbs.weight = (this.editWbs.totalWeight/100)*this.parentWbsWeight;  
+                this.editWbs.weight = ((this.editWbs.totalWeight/100)*this.parentWbsWeight).toFixed(2);  
             }
         },
         'editWbs.weight': function(newValue){
@@ -979,7 +979,7 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 this.editWbs.weight = maxWeightEdit;
-                this.editWbs.totalWeight = (maxWeightEdit/this.parentWbsWeight)*100;
+                this.editWbs.totalWeight = ((maxWeightEdit/this.parentWbsWeight)*100);
             }
         },
         selected_wbs_profile : function(newValue){
