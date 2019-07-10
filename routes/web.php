@@ -1209,6 +1209,8 @@ Route::name('goods_return.')->prefix('goods_return')->group(function() {
 
     Route::get('/approval', 'GoodsReturnController@approval')->name('approval')->middleware('can:approve-goods-return');
 
+    Route::get('/approvalGI', 'GoodsReturnController@approvalGI')->name('approvalGI')->middleware('can:approve-goods-return');
+
     Route::get('/selectGR', 'GoodsReturnController@selectGR')->name('selectGR')->middleware('can:create-goods-return');
 
     Route::get('/selectPO', 'GoodsReturnController@selectPO')->name('selectPO')->middleware('can:create-goods-return');
@@ -1246,6 +1248,8 @@ Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(functi
     Route::get('/showApprove/{id}', 'GoodsReturnController@showApprove')->name('showApprove')->middleware('can:show-goods-return-repair');
 
     Route::get('/approval', 'GoodsReturnController@approval')->name('approval')->middleware('can:approve-goods-return-repair');
+
+    Route::get('/approvalGI', 'GoodsReturnController@approvalGI')->name('approvalGI')->middleware('can:approve-goods-return-repair');
 
     Route::get('/selectGR', 'GoodsReturnController@selectGR')->name('selectGR')->middleware('can:create-goods-return-repair');
 

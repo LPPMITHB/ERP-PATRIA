@@ -19,7 +19,7 @@ class CreateTrxGoodsReturnTable extends Migration
             $table->unsignedInteger('business_unit_id');
             $table->unsignedInteger('purchase_order_id')->nullable();
             $table->unsignedInteger('goods_receipt_id')->nullable();
-            // $table->unsignedInteger('goods_issue_id')->nullable();
+            $table->unsignedInteger('goods_issue_id')->nullable();
             $table->text('description');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');

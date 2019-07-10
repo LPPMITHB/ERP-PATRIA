@@ -27,7 +27,7 @@
                     @verbatim
                     <div id="mr">
                         <div class="box-header no-padding">
-                            <div class="col-xs-12 col-md-4">
+                            <div class="col-xs-12 col-md-4" v-show="project_id != ''">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
                                 <div class="col-xs-5 no-padding">Project Number</div>
@@ -51,7 +51,7 @@
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
-                            <div class="col-xs-12 col-md-4 p-r-0">
+                            <div class="col-xs-12 col-md-4 p-r-0" v-show="project_id != ''">
                                 <div class="col-sm-12 p-l-0">
                                     <label for="">MR Description</label>
                                 </div>
@@ -60,7 +60,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-show="project_id != ''">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                     <thead>
