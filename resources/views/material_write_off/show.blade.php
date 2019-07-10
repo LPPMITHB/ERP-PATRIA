@@ -112,19 +112,26 @@
                                 : <b> {{ $modelMWO->approvedBy->name }} </b>
                             </div>
                         @endif
-                        @if($modelMWO->status == 2)
+                        @php
+                            $approval_date = "";
+                            if($modelMWO->approval_date != NULL){
+                                $approval_date = DateTime::createFromFormat('Y-m-d', $modelMWO->approval_date);
+                                $approval_date = $approval_date->format('d-m-Y');
+                            }
+                        @endphp
+                        @if($modelMWO->status == 2 || $modelMWO->status == 0 || $modelMWO->status == 7)
                             <div class="col-xs-5 col-md-5">
                                 Approved Date
                             </div>
                             <div class="col-xs-7 col-md-7">
-                                : <b>{{ $modelMWO->approval_date }}</b>
+                                : <b>{{ $approval_date }}</b>
                             </div>
                         @elseif($modelMWO->status == 5)
                             <div class="col-xs-5 col-md-5">
                                 Rejected Date
                             </div>
                             <div class="col-xs-7 col-md-7">
-                                : <b>{{ $modelMWO->approval_date }}</b>
+                                : <b>{{ $approval_date }}</b>
                             </div>
                         @endif
                     </div>

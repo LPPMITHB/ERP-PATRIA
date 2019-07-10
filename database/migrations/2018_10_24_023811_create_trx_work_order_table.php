@@ -19,13 +19,16 @@ class CreateTrxWorkOrderTable extends Migration
             $table->unsignedInteger('work_request_id')->nullable();
             $table->unsignedInteger('vendor_id');
             $table->date('delivery_date');
+            $table->unsignedInteger('currency');
+            $table->unsignedInteger('value');
             $table->unsignedInteger('project_id')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->default(1);
             $table->double('total_price')->nullable();
             $table->float('tax')->default(0);
             $table->float('estimated_freight')->default(0);
-            $table->string('payment_terms')->nullable();
+            $table->unsignedInteger('delivery_term')->nullable();
+            $table->unsignedInteger('payment_term')->nullable();
             $table->unsignedInteger('approved_by')->nullable();
             $table->date('approval_date')->nullable();
             $table->unsignedInteger('branch_id');

@@ -27,7 +27,7 @@
                     @verbatim
                         <div id="material">
                             <div class="form-group">
-                                <label for="code" class="col-sm-2 control-label">Item Number</label>
+                                <label for="code" class="col-sm-2 control-label">Item Number *</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" data-inputmask="'mask': '99-aaa-*****-aa'" id="code" name="code" required autofocus v-model="submittedForm.code" @keyup="submittedForm.code  = this.event.target.value;">
@@ -35,7 +35,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="description" class="col-sm-2 control-label">Description</label>
+                                <label for="description" class="col-sm-2 control-label">Description *</label>
                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="description" required autofocus v-model="submittedForm.description">
@@ -43,7 +43,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
+                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp) *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
+                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp) *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text"  class="form-control" id="cost_standard_service" required v-model="submittedForm.cost_standard_service">
@@ -87,7 +87,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="min" class="col-sm-2 control-label">Min</label>
+                                <label for="min" class="col-sm-2 control-label">Min *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text"  class="form-control" id="min" required v-model="submittedForm.min" :settings="min_settings">
@@ -95,7 +95,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="max" class="col-sm-2 control-label">Max</label>
+                                <label for="max" class="col-sm-2 control-label">Max *</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text"  class="form-control" id="max" required v-model="submittedForm.max" :settings="max_settings">
@@ -159,7 +159,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="type" class="col-sm-2 control-label">Type</label>
+                                    <label for="type" class="col-sm-2 control-label">Type *</label>
                                     <div class="col-sm-10">
                                         <select v-model="submittedForm.type" class="form-control" name="type" id="type" required>
                                             <option value="3">Bulk part</option>
@@ -185,7 +185,7 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="status" class="col-sm-2 control-label">Status</label>
+                                    <label for="status" class="col-sm-2 control-label">Status *</label>
                     
                                     <div class="col-sm-10">
                                         <select v-model="submittedForm.status" class="form-control" name="status" id="status" required>

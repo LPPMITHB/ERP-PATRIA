@@ -43,19 +43,25 @@ class ConfigurationsTableSeeder extends Seeder
         
         $currencies = array(
             0 => array(
+                'id' => 1,
                 'name' => 'Rupiah',
                 'unit' => 'IDR',
-                'value' => 1
+                'value' => 1,
+                'status' => 1,
             ),
             1 => array(
+                'id' => 2,
                 'name' => 'Singapore Dollar',
                 'unit' => 'SGD',
-                'value' => 10552.3
+                'value' => 10552.3,
+                'status' => 1,
             ),
             2 => array(
+                'id' => 3,
                 'name' => 'US Dollar',
                 'unit' => 'USD',
-                'value' => 14015.5
+                'value' => 14015.5,
+                'status' => 0,
             ),
         );
 

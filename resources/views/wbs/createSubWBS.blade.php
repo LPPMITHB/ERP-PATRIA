@@ -100,6 +100,7 @@
                                 <th style="width: 7%">Start Date</th>
                                 <th style="width: 7%">End Date</th>
                                 <th style="width: 7%">Duration</th>
+                                <th style="width: 30px">Total Weight</th>
                                 <th style="width: 30px">Weight</th>
                                 <th style="width: 75px"></th>
                             </tr>
@@ -113,6 +114,7 @@
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
+                                <td>{{ ((data.weight/parentWbsWeight)*100).toFixed(2) }} %</td>
                                 <td>{{ data.weight }} %</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
@@ -159,7 +161,10 @@
                                     <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newSubWBS.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newSubWBS.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
+                                    <input v-model="newSubWBS.totalWeight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
+                                </td>
+                                <td class="p-l-0">
+                                    <input disabled v-model="newSubWBS.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
                                 </td>
                                 <td align="center" class="p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -215,8 +220,12 @@
                                             <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editWbs.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
                                         </div>
                                         <div class="form-group col-sm-12">
+                                            <label for="totalWeight" class="control-label">Total Weight (Max = 100%)</label>
+                                            <input id="totalWeight" type="text" class="form-control" v-model="editWbs.totalWeight" placeholder="Insert Total Weight here..." >
+                                        </div>
+                                        <div class="form-group col-sm-12">
                                             <label for="weight" class="control-label">Weight (%)</label>
-                                            <input id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
+                                            <input disabled id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
                                         </div>
                                     </div>
                                 </div>
@@ -278,7 +287,6 @@
 @push('script')
 <script>
 $(document).ready(function(){
-    $('div.overlay').hide();
 });
 
 var data = {
@@ -300,6 +308,7 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
+        totalWeight : "",
     },
     editWbs : {
         wbs_id: "",
@@ -311,6 +320,7 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
+        totalWeight : "",
     },
     maxWeight : 0,
     totalWeight : 0,
@@ -439,6 +449,7 @@ var vm = new Vue({
             this.editWbs.number = "";
             this.editWbs.description = "";
             this.editWbs.deliverables = "";
+            this.editWbs.totalWeight = ""; 
             this.editWbs.weight = ""; 
             document.getElementById("wbs_code").innerHTML= data.code;
             this.editWbs.wbs_id = data.id;
@@ -446,6 +457,7 @@ var vm = new Vue({
             this.editWbs.number = data.number;
             this.editWbs.description = data.description;
             this.editWbs.deliverables = data.deliverables;
+            this.editWbs.totalWeight = (data.weight/this.parentWbsWeight)*100; 
             this.editWbs.weight = data.weight;
             if(data.planned_start_date != null){
                 this.editWbs.planned_start_date = data.planned_start_date;
@@ -496,6 +508,7 @@ var vm = new Vue({
                                 { targets: 0, sortable: false},
                             ]
                         });
+                        $('div.overlay').hide();
                     })
                 });
             });
@@ -528,7 +541,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
                 }
                 
                 this.getSubWBS();
@@ -564,7 +576,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
                 }
                 this.getSubWBS();
                 this.newSubWBS.number = "";
@@ -573,6 +584,7 @@ var vm = new Vue({
                 this.newSubWBS.planned_start_date = "";                
                 this.newSubWBS.planned_end_date = "";                
                 this.newSubWBS.planned_duration = "";         
+                this.newSubWBS.totalWeight = "";
                 this.newSubWBS.weight = "";
             })
             .catch((error) => {
@@ -606,7 +618,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
                 }
                 
                 this.getSubWBS(); 
@@ -616,6 +627,7 @@ var vm = new Vue({
                 this.editWbs.planned_start_date = "";                
                 this.editWbs.planned_end_date = "";                
                 this.editWbs.planned_duration = "";                
+                this.editWbs.totalWeight = "";
                 this.editWbs.weight = "";   
             })
             .catch((error) => {
@@ -913,6 +925,19 @@ var vm = new Vue({
                 $('#edit_planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
         },
+        'newSubWBS.totalWeight': function(newValue){
+            this.newSubWBS.totalWeight = (this.newSubWBS.totalWeight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2) > 100){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total Total Weight cannot exceed 100%',
+                    position: 'topRight',
+                });
+                this.newSubWBS.totalWeight = 100;
+            }else{
+                this.newSubWBS.weight = ((this.newSubWBS.totalWeight/100)*this.parentWbsWeight).toFixed(2);  
+            }
+        },
         'newSubWBS.weight': function(newValue){
             this.newSubWBS.weight = (this.newSubWBS.weight+"").replace(/[^0-9.]/g, "");  
             if(roundNumber(newValue,2)>this.maxWeight){
@@ -922,6 +947,20 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 this.newSubWBS.weight = this.maxWeight;
+                this.newSubWBS.totalWeight = ((this.maxWeight/this.parentWbsWeight)*100);
+            }
+        },
+        'editWbs.totalWeight': function(newValue){
+            this.editWbs.totalWeight = (this.editWbs.totalWeight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2) > 100){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total Total Weight cannot exceed 100%',
+                    position: 'topRight',
+                });
+                this.editWbs.totalWeight = 100;
+            }else{
+                this.editWbs.weight = ((this.editWbs.totalWeight/100)*this.parentWbsWeight).toFixed(2);  
             }
         },
         'editWbs.weight': function(newValue){
@@ -940,6 +979,7 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 this.editWbs.weight = maxWeightEdit;
+                this.editWbs.totalWeight = ((maxWeightEdit/this.parentWbsWeight)*100);
             }
         },
         selected_wbs_profile : function(newValue){

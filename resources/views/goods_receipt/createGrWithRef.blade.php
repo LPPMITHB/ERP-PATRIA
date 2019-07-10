@@ -155,34 +155,6 @@
                 $('div.overlay').hide();
             }
         });
-        // $('div.overlay').hide();
-
-        // $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
-        // $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'Material Name' || title == 'Storage Location'){
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }else{
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( tablePagingVue.column(i).search() !== this.value ) {
-        //             tablePagingVue
-        //                 .column(i)
-        //                 .search( this.value )
-        //                 .draw();
-        //         }
-        //     });
-        // });
-
-        // var tablePagingVue = $('.tablePagingVue').DataTable( {
-        //     orderCellsTop   : true,
-        //     paging          : false,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : false,
-        // });
     });
 
     var data = {
@@ -190,7 +162,6 @@
         modelPO :   @json($modelPO),
         modelSloc : @json($modelSloc),
         checkedPOD :[],
-
         slocSettings: {
             placeholder: 'Please Select Storage Location'
         },

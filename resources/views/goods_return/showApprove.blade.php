@@ -17,9 +17,17 @@
 <div class="row">
     <div class="col-xs-12">
         @if($menu == "building")
-            <form id="approve-gr"class="form-horizontal" action="{{ route('goods_return.approval') }}">
+            @if($modelGRT->goods_issue_id != null && $modelGRT->goods_issue_id != "")
+                <form id="approve-gr"class="form-horizontal" action="{{ route('goods_return.approvalGI') }}">
+            @else
+                <form id="approve-gr"class="form-horizontal" action="{{ route('goods_return.approval') }}">
+            @endif
         @elseif($menu == "repair")
-            <form id="approve-gr"class="form-horizontal" action="{{ route('goods_return_repair.approval') }}">
+            @if($modelGRT->goods_issue_id != null && $modelGRT->goods_issue_id != "")
+                <form id="approve-gr"class="form-horizontal" action="{{ route('goods_return_repair.approvalGI') }}">
+            @else
+                <form id="approve-gr"class="form-horizontal" action="{{ route('goods_return_repair.approval') }}">
+            @endif
         @endif
         <div class="box box-blue">
             <div class="row">

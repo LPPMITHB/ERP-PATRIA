@@ -84,19 +84,26 @@
                                     : <b> {{ $modelGR->approvedBy->name }} </b>
                                 </div>
                             @endif
-                            @if($modelGR->status == 2)
+                            @php
+                                $approval_date = "";
+                                if($modelGR->approval_date != NULL){
+                                    $approval_date = DateTime::createFromFormat('Y-m-d', $modelGR->approval_date);
+                                    $approval_date = $approval_date->format('d-m-Y');
+                                }
+                            @endphp
+                            @if($modelGR->status == 2 || $modelGR->status == 0 || $modelGR->status == 7)
                                 <div class="col-md-4 col-xs-4 no-padding">
                                     Approved Date
                                 </div>
                                 <div class="col-md-8 col-xs-8 no-padding tdEllipsis">
-                                    : <b>{{ $modelGR->approval_date }}</b>
+                                    : <b>{{ $approval_date }}</b>
                                 </div>
                             @elseif($modelGR->status == 5)
                                 <div class="col-md-4 col-xs-4 no-padding">
                                     Rejected Date
                                 </div>
                                 <div class="col-md-8 col-xs-8 no-padding tdEllipsis">
-                                    : <b>{{ $modelGR->approval_date }}</b>
+                                    : <b>{{ $approval_date }}</b>
                                 </div>
                             @endif
                         </div>

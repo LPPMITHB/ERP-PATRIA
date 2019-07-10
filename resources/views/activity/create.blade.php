@@ -154,6 +154,7 @@
                                 <th style="width: 10%">Start Date</th>
                                 <th style="width: 10%">End Date</th>
                                 <th style="width: 7%" >Duration</th>
+                                <th style="width: 7%">Total Weight</th>
                                 <th style="width: 7%">Weight</th>
                                 <th style="width: 19%">Predecessor</th> 
                                 <th style="width: 13%"></th>
@@ -162,11 +163,12 @@
                         <tbody>
                             <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
+                                <td>{{ ((data.weight/wbsWeight)*100).toFixed(2) }} %</td>
                                 <td>{{ data.weight }} %</td>
                                 <template v-if="data.predecessor != null">
                                     <td class="p-l-0 p-r-0 p-b-0 textCenter">
@@ -204,16 +206,19 @@
                                     <textarea v-model="newActivity.description" class="form-control width100" rows="3" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newActivity.planned_start_date" type="text" class="form-control datepicker width100" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
+                                    <input autocomplete="off" v-model="newActivity.planned_start_date" type="text" class="form-control datepicker width100 create_date" id="planned_start_date" name="planned_start_date" placeholder="Start Date">
                                 </td>
                                 <td class="p-l-0">
-                                    <input autocomplete="off" v-model="newActivity.planned_end_date" type="text" class="form-control datepicker width100" id="planned_end_date" name="planned_end_date" placeholder="End Date">
+                                    <input autocomplete="off" v-model="newActivity.planned_end_date" type="text" class="form-control datepicker width100 create_date" id="planned_end_date" name="planned_end_date" placeholder="End Date">
                                 </td>
                                 <td class="p-l-0">
                                     <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
+                                    <input v-model="newActivity.totalWeight"  type="text" class="form-control width100" id="totalWeight" name="totalWeight" placeholder="Weight" >                                        
+                                </td>
+                                <td class="p-l-0">
+                                    <input disabled v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
                                 </td>
                                 <td class="p-l-0 textCenter p-r-5 p-l-5">
                                     <button class="btn btn-primary btn-xs col-xs-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
@@ -359,7 +364,7 @@
                                         <textarea id="description" v-model="editActivity.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
                                     </div>
 
-                                    <div class="p-l-0 form-group col-sm-3">
+                                    <div class="p-l-0 form-group col-sm-4">
                                         <label for="edit_planned_start_date" class=" control-label">Start Date</label>
                                         <div class="input-group date">
                                             <div class="input-group-addon">
@@ -369,7 +374,7 @@
                                         </div>
                                     </div>
                                             
-                                    <div class="p-l-0 form-group col-sm-3">
+                                    <div class="p-l-0 form-group col-sm-4">
                                         <label for="edit_planned_end_date" class=" control-label">End Date</label>
                                         <div class="input-group date">
                                             <div class="input-group-addon">
@@ -379,14 +384,19 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="p-l-0 form-group col-sm-3">
+                                    <div class="p-l-0 form-group col-sm-4">
                                         <label for="duration" class=" control-label">Duration</label>
                                         <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
                                     </div>
                                         
-                                    <div class="p-l-0 form-group col-sm-3">
+                                    <div class="p-l-0 form-group col-sm-6">
+                                        <label for="totalWeight" class=" control-label">Total Weight (Max = 100%)</label>
+                                        <input v-model="editActivity.totalWeight"  type="text" class="form-control" id="edit_totalWeight" placeholder="Weight" >                                        
+                                    </div>
+                                    
+                                    <div class="p-l-0 form-group col-sm-6">
                                         <label for="weight" class=" control-label">Weight</label>
-                                        <input v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
+                                        <input disabled v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
@@ -465,7 +475,6 @@
 @push('script')
 <script>
 $(document).ready(function(){
-    $('div.overlay').hide();
 });
 
 var data = {
@@ -491,6 +500,7 @@ var data = {
         predecessor : "",
         predecessorType : "",
         weight : "",
+        totalWeight : "",
         latest_predecessor : "",
         allPredecessor : [],
     },
@@ -504,6 +514,7 @@ var data = {
         predecessor : "",
         predecessorType : "",
         weight : "",
+        totalWeight :"",
         latest_predecessor : "",
         allPredecessor : [],
     },
@@ -739,6 +750,7 @@ var vm = new Vue({
             this.editActivity.name = data.name;
             this.editActivity.description = data.description;
             this.editActivity.weight = data.weight;
+            this.editActivity.totalWeight = ((data.weight/this.wbsWeight)*100).toFixed(2);
             if(JSON.parse(data.predecessor) != null){
                 this.editActivity.allPredecessor = JSON.parse(data.predecessor);
             }else{
@@ -831,6 +843,7 @@ var vm = new Vue({
                                 { targets: 0, sortable: false},
                             ]
                         });
+                        $('div.overlay').hide();
                     })
                 });
             })
@@ -861,7 +874,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();
                     this.getActivities();
                     this.getAllActivities();   
                     this.newActivity.name = "";
@@ -909,7 +921,6 @@ var vm = new Vue({
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
                 }
                 this.getActivities();
                 this.getAllActivities(); 
@@ -962,7 +973,6 @@ var vm = new Vue({
                                     title: response.data.response,
                                     position: 'topRight',
                                 });
-                                $('div.overlay').hide();
                                 vm.getActivities();
                                 vm.getAllActivities();   
                             }
@@ -1051,6 +1061,19 @@ var vm = new Vue({
         //         })
         //     }
         // },
+        'editActivity.totalWeight': function(newValue){
+            this.editActivity.totalWeight = (this.editActivity.totalWeight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2) > 100){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total Total Weight cannot exceed 100%',
+                    position: 'topRight',
+                });
+                this.editActivity.totalWeight = 100;
+            }else{
+                this.editActivity.weight = ((this.editActivity.totalWeight/100)*this.wbsWeight).toFixed(2);  
+            }
+        },
         'editActivity.weight': function(newValue){
             this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");  
             if(newValue != ""){
@@ -1087,6 +1110,19 @@ var vm = new Vue({
                 }
             }
         },
+        'newActivity.totalWeight': function(newValue){
+            this.newActivity.totalWeight = (this.newActivity.totalWeight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2) > 100){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total Total Weight cannot exceed 100%',
+                    position: 'topRight',
+                });
+                this.newActivity.totalWeight = 100;
+            }else{
+                this.newActivity.weight = ((this.newActivity.totalWeight/100)*this.wbsWeight).toFixed(2);  
+            }
+        },
         'newActivity.weight': function(newValue){
             this.newActivity.weight = (this.newActivity.weight+"").replace(/[^0-9.]/g, "");  
             if(roundNumber(newValue,2)>this.maxWeight){
@@ -1096,6 +1132,7 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 this.newActivity.weight = this.maxWeight;
+                this.newActivity.totalWeight = (this.maxWeight/this.wbsWeight)*100;
             }
         },
         // 'editActivity.predecessor': function(newValue){
@@ -1297,6 +1334,11 @@ var vm = new Vue({
         },
     },
     created: function() {
+        if(this.project_start_date == null || this.project_end_date == null){
+            for (let i = 0; i < $(".create_date").length; i++) {
+                $(".create_date")[i].disabled = true;
+            }
+        }
         this.getActivities();
         this.getAllActivities();
     }

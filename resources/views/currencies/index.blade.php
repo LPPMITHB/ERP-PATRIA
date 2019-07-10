@@ -35,17 +35,24 @@
                                         </div>
                                         <div id="new_currency" class="panel-collapse collapse">
                                             <div class="box-body">
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <label for="name">Currency Name</label>
                                                     <input v-model="input.name" type="text" class="form-control" placeholder="Please insert currency name">
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <label for="unit">Currency Unit</label>
                                                     <input v-model="input.unit" type="text" class="form-control" placeholder="Please insert currency unit">
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-3">
                                                     <label for="value">Currency Value</label>
                                                     <input v-model="input.value" type="text" class="form-control" placeholder="Please insert currency value">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label for="value">Status</label>
+                                                    <select v-model="input.status" class="form-control">
+                                                        <option value="0">Non Active</option>
+                                                        <option value="1">Active</option>
+                                                    </select>
                                                 </div>
                                                 <div class="col-xs-12 p-t-10">
                                                     <button type="submit" class="btn btn-primary pull-right" @click.prevent="add()">CREATE</button>
@@ -70,6 +77,7 @@
                                                             <th width="30%">Currency Name</th>
                                                             <th width="30%">Currency Unit</th>
                                                             <th width="25%">Currency Value</th>
+                                                            <th width="25%">Status</th>
                                                             <th width="10%" ></th>
                                                         </tr>
                                                     </thead>
@@ -79,6 +87,12 @@
                                                             <td class="no-padding"><input v-model="currency.name" type="text" class="form-control"></td>
                                                             <td class="no-padding"><input v-model="currency.unit" type="text" class="form-control"></td>
                                                             <td class="no-padding"><input v-model="currency.value" type="text" class="form-control"></td>
+                                                            <td class="no-padding">
+                                                                <select v-model="currency.status" class="form-control">
+                                                                    <option value="0">Non Active</option>
+                                                                    <option value="1">Active</option>
+                                                                </select>
+                                                            </td>
                                                             <td class="p-l-0" align="center">
                                                                 <a @click.prevent="save()" class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
@@ -120,8 +134,11 @@
         input:{
             name : "",
             unit : "",
-            value : ""
-        }
+            value : "",
+            status : 1,
+            id : "",
+        },
+        max_id : 1,
     }
 
     var vm = new Vue({
@@ -132,9 +149,18 @@
                 this.input.name = "";
                 this.input.unit = "";
                 this.input.value = "";
+                this.input.status = 1;
+            },
+            getNewId(){
+                this.currencies.forEach(currency => {
+                    if(currency.id > this.max_id){
+                        this.max_id = currency.id;
+                    }
+                });
             },
             add(){
                 $('div.overlay').show();
+                this.input.id = this.max_id + 1;
                 var input = JSON.stringify(this.input);
                 input = JSON.parse(input);
 
@@ -154,8 +180,9 @@
                         displayMode: 'replace'
                     });
                     this.clearData();
-                    $('#current_currency').collapse();
+                    this.getNewId();
                     $('#new_currency').collapse("hide");
+                    $('#current_currency').collapse();
                 })
                 .catch((error) => {
                     iziToast.warning({
@@ -210,6 +237,9 @@
         },
         created : function(){
             this.currencies.forEach(currency => {
+                if(currency.id > this.max_id){
+                    this.max_id = currency.id;
+                }
                 currency.value = (currency.value+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             });
         }

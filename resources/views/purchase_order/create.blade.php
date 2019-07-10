@@ -66,7 +66,7 @@
                                     </div>
                                     <div class="col-sm-7 p-t-13 p-l-0">
                                         <selectize :disabled="currencyOk" v-model="currency" :settings="currencySettings">
-                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                            <option v-for="(data, index) in currencies" :value="data.id">{{ data.name }} - {{ data.unit }}</option>
                                         </selectize>
                                     </div>
                                 </div>
@@ -390,7 +390,7 @@
             placeholder: 'Please Select Material'
         },
         dtSettings: {
-            placeholder: 'Please Select Delvery Term'
+            placeholder: 'Please Select Delivery Term'
         },
         ptSettings: {
             placeholder: 'Please Select Payment Term'
@@ -462,7 +462,7 @@
                 let isOk = false;
                 var currency_value = 1;
                 this.currencies.forEach(data => {
-                    if(this.currency == data.name && this.currency != "Rupiah"){
+                    if(this.currency == data.id && this.currency != 1){
                         currency_value = data.value;
                     }
                 });
@@ -549,7 +549,6 @@
                 this.submittedForm.currency = this.currency;
                 this.submittedForm.description = this.description;
                 this.submittedForm.pr_id = this.modelPR.id;
-                this.submittedForm.currency = this.currency;
                 this.submittedForm.tax = this.tax;
                 this.submittedForm.estimated_freight = this.estimated_freight;
                 this.submittedForm.delivery_term = this.delivery_term;
@@ -754,10 +753,10 @@
             },
             'currency':function (newValue) {
                 if(newValue == ''){
-                    this.currency = this.currencies[0].name;
+                    this.currency = this.currencies[0].id;
                 }
                 this.currencies.forEach(data => {
-                    if(newValue == data.name){
+                    if(newValue == data.id){
                         this.selectedCurrency = data.unit;
                         if(this.modelPR.type == 1){
                             this.PRDetail.forEach(prd => {
@@ -881,7 +880,7 @@
                 })
             });
 
-            this.currency = this.currencies[0].name;
+            this.currency = this.currencies[0].id;
             this.selectedCurrency = this.currencies[0].unit;
 
             if(this.modelPR.type == 1){

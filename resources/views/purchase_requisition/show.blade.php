@@ -97,19 +97,28 @@
                             : <b> {{ $modelPR->approvedBy->name }} </b>
                         </div>
                     @endif
-                    @if($modelPR->status == 2)
+                    
+                    <?php
+                        $approval_date = "";
+                        if($modelPR->approval_date != NULL){
+                            $approval_date = DateTime::createFromFormat('Y-m-d', $modelPR->approval_date);
+                            $approval_date = $approval_date->format('d-m-Y');
+                        }
+                    ?>
+
+                    @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7)
                         <div class="col-xs-5 col-md-5">
                             Approved Date
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b>{{ $modelPR->approval_date }}</b>
+                            : <b>{{ $approval_date }}</b>
                         </div>
                     @elseif($modelPR->status == 5)
                         <div class="col-xs-5 col-md-5">
                             Rejected Date
                         </div>
                         <div class="col-xs-7 col-md-7">
-                            : <b>{{ $modelPR->approval_date }}</b>
+                            : <b>{{ $approval_date }}</b>
                         </div>
                     @endif
                 </div>
