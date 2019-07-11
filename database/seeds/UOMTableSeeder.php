@@ -15,7 +15,7 @@ class UOMTableSeeder extends Seeder
         DB::table('mst_uom')->insert([
             'code' => 'UOM0001',
             'name' => 'Meter',
-            'unit' => 'M',
+            'unit' => 'Mtr',
             'is_decimal' => 1,
             'status' => 1,
             'branch_id' => 1,
