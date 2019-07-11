@@ -32,10 +32,10 @@
                                 <th style="width: 5%">No</th>
                                 <th style="width: 10%">Item Number</th>
                                 <th style="width: 35%">Description</th>
-                                <th style="width: 10%">Type</th>
+                                <th style="width: 10%">Material Type</th>
                                 <th style="width: 10%">Status</th>
                                 <th style="width: 10%"></th>
-    
+
                             </tr>
                         </thead>
                         <tbody>
@@ -85,7 +85,7 @@
             }
         }
     });
-    
+
     $(document).ready(function(){
         $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
         $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
