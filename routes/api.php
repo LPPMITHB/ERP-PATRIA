@@ -183,3 +183,6 @@ Route::get('/getRdProfiles/{id}', 'WBSController@getRdProfilesAPI')->name('api.w
 
 // service
 Route::get('/getNewServiceDetail/{id}', 'ServiceController@getNewServiceDetailAPI')->name('api.service.getNewServiceDetailAPI');
+
+// Daily Man Hour
+Route::get('/getDailyManHour/{id}', 'DailyManHourController@getDailyManHourAPI')->name('api.dmh.getDailyManHourAPI');

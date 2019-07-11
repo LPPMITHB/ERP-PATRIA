@@ -219,10 +219,12 @@ class ConfigurationsTableSeeder extends Seeder
             0 => array(
                 'id' => 1,
                 'name' => 'Plate',
+                'status' => 1,
             ),
             1 => array(
                 'id' => 2,
                 'name' => 'Bar',
+                'status' => 1,
             ),
         );
 
@@ -240,6 +242,7 @@ class ConfigurationsTableSeeder extends Seeder
                 'id' => 1,
                 'name' => 'Iron',
                 'value' => 7.85,
+                'status' => 1,
             ),
         );
 
@@ -361,6 +364,7 @@ class ConfigurationsTableSeeder extends Seeder
             'id' => "1",
             'name' => "Term 1",
             'description' => 'Term 1',
+            'status' => 1,
             ),
         );
 
@@ -378,6 +382,7 @@ class ConfigurationsTableSeeder extends Seeder
             'id' => "1",
             'name' => "Term 1",
             'description' => 'Term 1',
+            'status' => 1,
             ),
         );
 
@@ -390,6 +395,40 @@ class ConfigurationsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        
+        $weather = array(
+            0 => array(
+            'id' => "1",
+            'name' => "Weather 1",
+            'description' => 'Weather 1',
+            'status' => 1,
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'weather',
+            'title' => 'Weather',
+            'value' => json_encode($weather),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $tidal = array(
+            0 => array(
+            'id' => "1",
+            'name' => "Tidal 1",
+            'description' => 'Tidal 1',
+            'status' => 1,
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'tidal',
+            'title' => 'Tidal',
+            'value' => json_encode($tidal),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

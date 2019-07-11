@@ -182,7 +182,7 @@
                     this.clearData();
                     this.getNewId();
                     $('#new_currency').collapse("hide");
-                    $('#current_currency').collapse();
+                    $('#current_currency').collapse("show");
                 })
                 .catch((error) => {
                     iziToast.warning({

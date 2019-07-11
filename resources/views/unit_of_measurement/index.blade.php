@@ -17,14 +17,13 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header m-b-10">
-                <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('unit_of_measurement.create') }}" class="btn btn-primary btn-sm">CREATE</a>
-                </div>
-            </div> <!-- /.box-header -->
             <div class="box-body">
-            {{-- <div style ="overflow:scroll"> --}}
-                <table class="table table-bordered tablePaging">
+                <div class="col-sm-6 p-l-0">
+                    <div class="box-tools pull-left">
+                        <a href="{{ route('unit_of_measurement.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    </div>
+                </div>
+                <table id="uom-table" class="table table-bordered tableFixed">
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
@@ -65,7 +64,17 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#uom-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'bFilter'     : true,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
     });
 </script>
 @endpush

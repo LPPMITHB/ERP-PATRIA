@@ -2194,6 +2194,30 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Weather Configuration',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'weather.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$configuration,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Tidal Configuration',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'tidal.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$configuration,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 1,
             'name' => 'User Management',
             'icon' => 'fa-users',
@@ -2224,6 +2248,53 @@ class MenusTableSeeder extends Seeder
             'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 1,
+            'name' => 'Input Daily Information',
+            'icon' => 'fa-calendar',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $daily_info =  Menu::where('name','Input Daily Information')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Daily Man Hour',
+            'icon' => 'fa-calendar',
+            'route_name'=> 'daily_man_hour.selectProject',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$daily_info,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Weather',
+            'icon' => 'fa-calendar',
+            'route_name'=> 'daily_weather.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$daily_info,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Tidal',
+            'icon' => 'fa-calendar',
+            'route_name'=> 'daily_tidal.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$daily_info,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ]);
     }
 }

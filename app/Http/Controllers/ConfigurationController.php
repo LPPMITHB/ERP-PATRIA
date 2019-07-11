@@ -187,4 +187,56 @@ class ConfigurationController extends Controller
             return redirect()->route('delivery_terms.index')->with('error', $e->getMessage());
         }
     }
+
+    public function weatherIndex()
+    {
+        $weather = Configuration::get('weather');
+
+        return view('weather.index', compact('weather'));
+    }
+
+    public function weatherAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $weather = Configuration::where('slug','weather')->first();
+            $weather->value = $data;
+            $weather->update();
+
+            DB::commit();
+            return response(json_encode($weather),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('weather.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function tidalIndex()
+    {
+        $tidal = Configuration::get('tidal');
+
+        return view('tidal.index', compact('tidal'));
+    }
+
+    public function tidalAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $tidal = Configuration::where('slug','tidal')->first();
+            $tidal->value = $data;
+            $tidal->update();
+
+            DB::commit();
+            return response(json_encode($tidal),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('tidal.index')->with('error', $e->getMessage());
+        }
+    }
 }

@@ -63,6 +63,34 @@ Route::name('delivery_terms.')->prefix('delivery_terms')->group(function() {
     Route::put('/add', 'ConfigurationController@deliveryTermsAdd')->name('add');
 });
 
+// Weather Routes
+Route::name('weather.')->prefix('weather')->group(function() {
+    Route::get('/', 'ConfigurationController@weatherIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@weatherAdd')->name('add');
+});
+
+// Tidal Routes
+Route::name('tidal.')->prefix('tidal')->group(function() {
+    Route::get('/', 'ConfigurationController@tidalIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@tidalAdd')->name('add');
+});
+
+// Daily Man Hour Routes
+Route::name('daily_man_hour.')->prefix('daily_man_hour')->group(function() {
+    Route::get('/selectProject', 'DailyManHourController@selectProject')->name('selectProject');
+
+    Route::get('/create/{id}', 'DailyManHourController@create')->name('create');
+
+    Route::put('/store', 'DailyManHourController@store')->name('store');
+
+    Route::put('/update', 'DailyManHourController@update')->name('update');
+
+    Route::delete('/delete/{id}', 'DailyManHourController@destroy')->name('delete');
+});
+
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');

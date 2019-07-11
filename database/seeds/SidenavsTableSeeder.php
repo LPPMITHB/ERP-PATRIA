@@ -1589,6 +1589,18 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'delivery_terms.index',
         ]);
 
+        $weather = Menu::where('route_name','weather.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $weather,
+            'route_name' => 'weather.index',
+        ]);
+
+        $tidal = Menu::where('route_name','tidal.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $tidal,
+            'route_name' => 'tidal.index',
+        ]);
+
         $user = Menu::where('route_name','user.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $user,

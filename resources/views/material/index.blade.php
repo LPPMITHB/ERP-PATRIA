@@ -18,47 +18,47 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header">
-                <div class="box-tools pull-right">
-                    <a href="{{ route('material.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+            <div class="box-body">
+                <div class="col-sm-6 p-l-0">
+                    <div class="box-tools pull-left">
+                        <a href="{{ route('material.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    </div>
                 </div>
-            </div>
-            @verbatim
-                <div id="index_material">
-                    <div class="box-body p-b-0 p-t-15">
-                    <table class="table table-bordered tablePagingVue" id="material-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 10%">Item Number</th>
-                                <th style="width: 35%">Description</th>
-                                <th style="width: 10%">Type</th>
-                                <th style="width: 10%">Status</th>
-                                <th style="width: 10%"></th>
-    
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data,index) in materials">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.code }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" :title="data.description">{{ data.description }}</td>
-                                <td v-if="data.type == 3">Bulk part</td>
-                                <td v-else-if="data.type == 2">Component</td>
-                                <td v-else-if="data.type == 1">Consumable</td>
-                                <td v-else-if="data.type == 0">Raw</td>
-                                <td v-if="data.status == 1">Active</td>
-                                <td v-else-if="data.status == 0">Non Active</td>
-                                <td class="p-l-0 p-r-0 textCenter">
-                                    <a :href="createRouteShow(data.id)" class="btn btn-primary btn-xs">VIEW</a>
-                                    <a :href="createRouteEdit(data.id)" class="btn btn-primary btn-xs">EDIT</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> <!-- /.box-body -->
-            </div>
-            @endverbatim
+                @verbatim
+                    <div id="index_material">
+                        <table id="material-table" class="table table-bordered tableFixed" id="material-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">No</th>
+                                    <th style="width: 10%">Item Number</th>
+                                    <th style="width: 35%">Description</th>
+                                    <th style="width: 10%">Type</th>
+                                    <th style="width: 10%">Status</th>
+                                    <th style="width: 10%"></th>
+        
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(data,index) in materials">
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="tdEllipsis">{{ data.code }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" :title="data.description">{{ data.description }}</td>
+                                    <td v-if="data.type == 3">Bulk part</td>
+                                    <td v-else-if="data.type == 2">Component</td>
+                                    <td v-else-if="data.type == 1">Consumable</td>
+                                    <td v-else-if="data.type == 0">Raw</td>
+                                    <td v-if="data.status == 1">Active</td>
+                                    <td v-else-if="data.status == 0">Non Active</td>
+                                    <td class="p-l-0 p-r-0 textCenter">
+                                        <a :href="createRouteShow(data.id)" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a :href="createRouteEdit(data.id)" class="btn btn-primary btn-xs">EDIT</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                @endverbatim
+            </div> <!-- /.box-body -->
         </div>
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->
@@ -87,33 +87,17 @@
     });
     
     $(document).ready(function(){
-        $('.tablePagingVue thead tr').clone(true).appendTo( '.tablePagingVue thead' );
-        $('.tablePagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title == 'No' || title == ""){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
+        $('#material-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'bFilter'     : true,
+            'initComplete': function(){
+                $('div.overlay').hide();
             }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tablePagingVue.column(i).search() !== this.value ) {
-                    tablePagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
         });
-
-        var tablePagingVue = $('.tablePagingVue').DataTable( {
-            orderCellsTop   : true,
-            fixedHeader     : true,
-            paging          : true,
-            autoWidth       : true,
-            lengthChange    : false,
-        });
-        $('div.overlay').hide();
     });
 </script>
 @endpush
