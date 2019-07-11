@@ -12,6 +12,48 @@ class PermissionsTableSeeder extends Seeder
      */
     public function run()
     {
+        //PICA
+        $managePica = Menu::where('name','PICA')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Pica',
+            'menu_id' => $managePica,
+            'middleware' => 'list-pica',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Pica',
+            'menu_id' => $managePica,
+            'middleware' => 'create-pica',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Pica',
+            'menu_id' => $managePica,
+            'middleware' => 'show-pica',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Pica',
+            'menu_id' => $managePica,
+            'middleware' => 'edit-pica',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Pica',
+            'menu_id' => $managePica,
+            'middleware' => 'delete-pica',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Dashboard
         $dashboard = Menu::where('name','Dashboard')->select('id')->first()->id;
         DB::table('permissions')->insert([

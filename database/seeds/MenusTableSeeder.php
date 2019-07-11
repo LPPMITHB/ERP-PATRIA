@@ -2296,5 +2296,41 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        DB::table('menus')->insert([
+            'level' => 1,
+            'name' => 'PICA',
+            'icon' => 'fa-calendar',
+            'is_active' => true,
+            'route_name'=> 'pica.index',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $pica =  Menu::where('name','PICA')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create PICA',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'pica.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$pica,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit PICA',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'pica.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$pica,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

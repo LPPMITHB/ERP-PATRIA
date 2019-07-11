@@ -64,17 +64,42 @@ Route::name('delivery_terms.')->prefix('delivery_terms')->group(function() {
 });
 
 // Weather Routes
-Route::name('weather.')->prefix('weather')->group(function() {
-    Route::get('/', 'ConfigurationController@weatherIndex')->name('index');
+Route::name('daily_weather.')->prefix('daily_weather')->group(function() {
+    Route::get('/', 'WeatherController@index')->name('index');
 
-    Route::put('/add', 'ConfigurationController@weatherAdd')->name('add');
+    Route::put('/store', 'WeatherController@store')->name('store');
+
+    Route::put('/update', 'WeatherController@update')->name('update');
+
+    Route::delete('/delete/{id}', 'WeatherController@destroy')->name('delete');
 });
 
 // Tidal Routes
-Route::name('tidal.')->prefix('tidal')->group(function() {
-    Route::get('/', 'ConfigurationController@tidalIndex')->name('index');
+Route::name('daily_tidal.')->prefix('daily_tidal')->group(function() {
+    Route::get('/', 'TidalController@index')->name('index');
 
-    Route::put('/add', 'ConfigurationController@tidalAdd')->name('add');
+    Route::put('/store', 'TidalController@store')->name('store');
+
+    Route::put('/update', 'TidalController@update')->name('update');
+
+    Route::delete('/delete/{id}', 'TidalController@destroy')->name('delete');
+});
+
+// General PICA Routes
+Route::name('pica.')->prefix('pica')->group(function() {
+    Route::get('/create', 'PicaController@create')->name('create')->middleware('can:create-pica');
+
+    Route::get('/', 'PicaController@index')->name('index')->middleware('can:list-pica');
+
+    Route::get('/{id}', 'PicaController@show')->name('show')->middleware('can:show-pica');
+
+    Route::get('/{id}/edit', 'PicaController@edit')->name('edit')->middleware('can:edit-pica');
+
+    Route::put('/store', 'PicaController@store')->name('store')->middleware('can:create-pica');
+
+    Route::put('/update', 'PicaController@update')->name('update')->middleware('can:edit-pica');
+
+    Route::delete('/delete/{id}', 'PicaController@destroy')->name('delete')->middleware('can:delete-pica');
 });
 
 // Daily Man Hour Routes

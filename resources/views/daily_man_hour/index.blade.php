@@ -126,7 +126,12 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <label for="edit_input_date" class="control-label">Input Date</label>
-                                                <input v-model="edit_data.input_date" class="form-control datepicker" type="text" id="edit_input_date" placeholder="Please insert Input Date"/>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input v-model="edit_data.input_date" class="form-control datepicker" type="text" id="edit_input_date" placeholder="Please insert Input Date"/>
+                                                </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="edit_man_hour" class="control-label">Man Hour</label>
