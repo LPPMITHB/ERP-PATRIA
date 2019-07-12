@@ -96,7 +96,7 @@
 
                                     <tr>
                                         <td>10</td>
-                                        <td>Average Price</td>
+                                        <td>Average Price per {{ $material->uom->name }}</td>
                                         <td>Rp {{ number_format($material->average_price,2) }}</td>
                                     </tr>
 
