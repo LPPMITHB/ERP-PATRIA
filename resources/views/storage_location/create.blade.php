@@ -65,7 +65,7 @@
 
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Name *</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
                                 @if($storage_location->name != null) value="{{ $storage_location->name }}"
@@ -75,10 +75,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="type" class="col-sm-2 control-label">Area (m<sup>2</sup>) *</label>
-            
+                            <label for="type" class="col-sm-2 control-label">Area (m<sup>2</sup>)</label>
+
                             <div class="col-sm-10">
-                                <input type='text' onkeypress='validate(event)' class="form-control" id="area" name="area" required
+                                <input type='text' class="form-control" id="area" name="area"
                                 @if($storage_location->area != null) value="{{ $storage_location->area }}"
                                 @else value="{{ old('area') }}"
                                 @endif>
@@ -87,7 +87,7 @@
 
                         <div class="form-group">
                             <label for="description" class="col-sm-2 control-label">Description</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="description" name="description"
                                 @if($storage_location->description != null) value="{{ $storage_location->description }}"
@@ -95,10 +95,10 @@
                                 @endif>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                                 <label for="company" class="col-sm-2 control-label">Warehouse *</label>
-                
+
                                 <div class="col-sm-10">
                                     <select class="form-control" name="warehouse" id="warehouse" required >
                                         @foreach($warehouses as $warehouse)
@@ -114,7 +114,7 @@
 
                         <div class="form-group">
                             <label for="status" class="col-sm-2 control-label">Status *</label>
-            
+
                             <div class="col-sm-10">
                                 <select class="form-control" name="status" id="status" required>
                                     <option value="1">Active</option>
@@ -149,7 +149,7 @@
         if($('#status').val()==null){
             $('#status').val(1);
         }
-        
+
         $('#status').select({
             minimumResultsForSearch: -1
         });
