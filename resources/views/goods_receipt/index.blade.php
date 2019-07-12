@@ -37,13 +37,16 @@
                         <span id="date-label-to" class="date-label">To: </span><input class="date_range_filter datepicker" type="text" id="datepicker_to" />
                         <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
                     </div>
-                </div> 
+                </div>
                 <table id="gr-table" class="table table-bordered tableFixed">
                     <thead>
                         <tr>
-                            <th width="5%">No</th>
-                            <th width="20%">GR Code</th>
-                            <th width="45%">Description</th>
+                            <th width="3%">No</th>
+                            <th width="12%">GR Code</th>
+                            <th width="25%">Description</th>
+                            <th width="20%">Vendor Name</th>
+                            <th width="10%">PO Number</th>
+                            <th width="15%">PO Description</th>
                             <th width="10%">Document Date</th>
                             <th width="5%"></th>
                         </tr>
@@ -54,6 +57,9 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $GR->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->description}}">{{ $GR->description }}</td>
+                                <td class="tdEllipsis">{{ $GR->purchaseOrder->vendor->name }}</td>
+                                <td class="tdEllipsis">{{ $GR->purchaseOrder->number }}</td>
+                                <td class="tdEllipsis">{{ $GR->purchaseOrder->description }}</td>
                                 <td class="tdEllipsis">{{ $GR->created_at->format('d-m-Y') }}</td>
                                 <td class="textCenter p-l-0 p-r-0">
                                     @if($route == "/goods_receipt")
@@ -125,7 +131,7 @@
             minDateFilter = "";
             gr_table.draw();
         }
-        
+
         // Date range filter
         minDateFilter = "";
         maxDateFilter = "";
@@ -133,7 +139,7 @@
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
-                    var temp = aData[3].split("-");                    
+                    var temp = aData[3].split("-");
                     aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
                 }
 
