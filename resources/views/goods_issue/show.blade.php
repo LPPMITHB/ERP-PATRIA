@@ -77,7 +77,7 @@
                         <div class="col-md-4 col-xs-4">Issue Date</div>
                         <div class="col-md-6">: <b> {{ isset($modelGI->issue_date) ? date('d-m-Y', strtotime($modelGI->issue_date)) : '-'}} </b></div>
                     </div>
-                    
+
                 </div>
                 <div class="col-sm-4 col-md-4 m-t-10">
                     <div class="row">
@@ -99,7 +99,7 @@
                             <th width="15%">Material Number</th>
                             <th width="20%">Material Description</th>
                             <th width="5%">Unit</th>
-                            <th width="25%">Quantity</th>
+                            <th width="25%">Picked Quantity</th>
                             <th width="30%">Storage Location</th>
                         </tr>
                     </thead>
