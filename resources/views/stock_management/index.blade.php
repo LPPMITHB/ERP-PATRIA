@@ -45,16 +45,20 @@
                                     <label for="">Stock Information</label>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-5">Total Inventory Value</div>
-                                    <div class="col-sm-7">: {{stockValue}}</div>
+                                    <div class="col-sm-6">Total Inventory Value</div>
+                                    <div class="col-sm-6">: {{stockValue}}</div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-5">Total Inventory Quantity</div>
-                                    <div class="col-sm-7">: {{stockQuantity}}</div>
+                                    <div class="col-sm-6">Total Inventory Quantity</div>
+                                    <div class="col-sm-6">: {{stockQuantity}}</div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-5">Total Reserved Quantity</div>
-                                    <div class="col-sm-7">: {{reservedStockQuantity}}</div>
+                                    <div class="col-sm-6">Total Reserved Quantity</div>
+                                    <div class="col-sm-6">: {{reservedStockQuantity}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">Total Available Quantity</div>
+                                    <div class="col-sm-6">: {{availableQuantity}}</div>
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -63,12 +67,12 @@
                                         <label for="">Warehouse Information</label>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-5">Total Inventory Value</div>
-                                        <div class="col-sm-7">: {{warehouseValue}}</div>
+                                        <div class="col-sm-6">Total Inventory Value</div>
+                                        <div class="col-sm-6">: {{warehouseValue}}</div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-5">Total Inventory Quantity</div>
-                                        <div class="col-sm-7">: {{warehouseQuantity}}</div>
+                                        <div class="col-sm-6">Total Inventory Quantity</div>
+                                        <div class="col-sm-6">: {{warehouseQuantity}}</div>
                                     </div>
                                 </template>
 
@@ -77,12 +81,12 @@
                                         <label for="">Storage Location Information</label>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-5">Total Inventory Value</div>
-                                        <div class="col-sm-7">: {{slocValue}}</div>
+                                        <div class="col-sm-6">Total Inventory Value</div>
+                                        <div class="col-sm-6">: {{slocValue}}</div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-5">Total Inventory Quantity</div>
-                                        <div class="col-sm-7">: {{slocQuantity}}</div>
+                                        <div class="col-sm-6">Total Inventory Quantity</div>
+                                        <div class="col-sm-6">: {{slocQuantity}}</div>
                                     </div>
                                 </template>
                             </div>
@@ -192,6 +196,7 @@
         stockValue : "",
         stockQuantity : "",
         reservedStockQuantity : "",
+        availableQuantity : "",
         warehouseValue : "",
         warehouseQuantity : "",
         slocValue : "",
@@ -418,6 +423,7 @@
                     this.stockValue = "Rp "+data.stockValue;
                     this.stockQuantity = data.stockQuantity;
                     this.reservedStockQuantity = data.reservedStockQuantity;
+                    this.availableQuantity = data.availableQuantity;
 
                     $('div.overlay').hide();
             })
