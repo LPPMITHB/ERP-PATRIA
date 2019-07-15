@@ -28,7 +28,7 @@
                                         <label for="">Warehouse</label>
                                         <selectize v-model="warehouse_id" :settings="warehouseSettings">
                                             <option v-for="(warehouse, index) in warehouses" :value="warehouse.id">{{warehouse.name}}</option>
-                                        </selectize>  
+                                        </selectize>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -36,7 +36,7 @@
                                         <label for="">Storage Location</label>
                                         <selectize v-model="sloc_id" :settings="slocSettings">
                                             <option v-for="(storageLocation, index) in storageLocations" :value="storageLocation.id">{{storageLocation.name}}</option>
-                                        </selectize>  
+                                        </selectize>
                                     </div>
                                 </div>
                             </div>
@@ -95,9 +95,10 @@
                                             <th style="width: 5%">No</th>
                                             <th style="width: 15%">Material Number</th>
                                             <th style="width: 25%">Material Description</th>
+                                            <th style="width: 6.66%">Quantity</th>
+                                            <th style="width: 6.66%">Reserved</th>
+                                            <th style="width: 6.66%">Available</th>
                                             <th style="width: 5%">Unit</th>
-                                            <th style="width: 10%">Quantity</th>
-                                            <th style="width: 10%">Reserved</th>
                                             <th style="width: 15%">Total Value</th>
                                         </thead>
                                         <tbody>
@@ -105,9 +106,10 @@
                                                 <td>{{ index + 1 }}</td>
                                                 <td class="tdEllipsis">{{ stock.material.code }}</td>
                                                 <td class="tdEllipsis">{{ stock.material.description }}</td>
-                                                <td class="tdEllipsis">{{ stock.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ stock.quantity }}</td>
                                                 <td class="tdEllipsis">{{ stock.reserved }}</td>
+                                                <td class="tdEllipsis">{{ stock.quantity-stock.reserved }}</td>
+                                                <td class="tdEllipsis">{{ stock.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">Rp {{ (stock.material.cost_standard_price * stock.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
                                             </tr>
                                         </tbody>
@@ -156,7 +158,7 @@
 <script>
     const form = document.querySelector('form#view-stock');
 
-    $(document).ready(function(){        
+    $(document).ready(function(){
 
         var tablePagingVue = $('.tablePagingVue').DataTable( {
             'paging'      : true,
@@ -171,7 +173,7 @@
         });
 
     });
-    
+
     var data = {
         materials : @json($materials),
         warehouses : @json($warehouses),
@@ -222,8 +224,8 @@
                                 }
                             }else{
                                 slocDetail.quantity = (slocDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                            }  
-                            
+                            }
+
                             slocDetail.totalValue = (slocDetail.material.cost_standard_price * slocDetail.quantity+"");
                             var decimalQty = (slocDetail.totalValue+"").replace(/,/g, '').split('.');
                             if(decimalQty[1] != undefined){
@@ -266,7 +268,7 @@
                     this.selectedSloc = [];
                     $('div.overlay').show();
                     if(this.warehouse_id != ""){
-                        window.axios.get('/api/getWarehouseStockSM/'+this.warehouse_id).then(({ data }) => {   
+                        window.axios.get('/api/getWarehouseStockSM/'+this.warehouse_id).then(({ data }) => {
                             this.selectedSlocDetail = data;
 
                             var data = this.selectedSlocDetail;
@@ -281,8 +283,8 @@
                                 }
                             }else{
                                 slocDetail.quantity = (slocDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                            }  
-                            
+                            }
+
                             slocDetail.totalValue = (slocDetail.material.cost_standard_price * slocDetail.quantity+"");
                             var decimalQty = (slocDetail.totalValue+"").replace(/,/g, '').split('.');
                             if(decimalQty[1] != undefined){
@@ -294,7 +296,7 @@
                                 }
                             }else{
                                 slocDetail.totalValue = (slocDetail.totalValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                            }            
+                            }
                             });
 
                             $('#tablePagingVue2').DataTable().destroy();
@@ -320,14 +322,14 @@
                             });
                             $('div.overlay').hide();
                         })
-                    }   
+                    }
                     $('div.overlay').hide();
                 }
             },
             warehouse_id : function (newValue){
                 this.sloc_id = "";
                 $('div.overlay').show();
-                    
+
                 var searchField = document.getElementsByClassName("search");
                 var i;
                 for (i = 0; i < searchField.length; i++) {
@@ -335,7 +337,7 @@
                     searchField[i].dispatchEvent(new Event('change'));
                 }
                 if(this.sloc_id == "" && this.warehouse_id != ""){
-                    window.axios.get('/api/getWarehouseStockSM/'+newValue).then(({ data }) => {   
+                    window.axios.get('/api/getWarehouseStockSM/'+newValue).then(({ data }) => {
                         this.selectedSlocDetail = data;
 
                         var data = this.selectedSlocDetail;
@@ -350,8 +352,8 @@
                                 }
                             }else{
                                 slocDetail.quantity = (slocDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                            }  
-                            
+                            }
+
                             slocDetail.totalValue = (slocDetail.material.cost_standard_price * slocDetail.quantity+"");
                             var decimalQty = (slocDetail.totalValue+"").replace(/,/g, '').split('.');
                             if(decimalQty[1] != undefined){
@@ -363,7 +365,7 @@
                                 }
                             }else{
                                 slocDetail.totalValue = (slocDetail.totalValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                            }            
+                            }
                         });
 
                         $('#tablePagingVue2').DataTable().destroy();
@@ -402,21 +404,21 @@
                         });
                         $('div.overlay').hide();
                     })
-                    
+
                 }else{
                     this.storageLocations = "";
                     $('div.overlay').hide();
                 }
-                
+
             }
-            
+
         },
         created: function(){
             window.axios.get('/api/getStockInfoSM/').then(({ data }) => {
                     this.stockValue = "Rp "+data.stockValue;
                     this.stockQuantity = data.stockQuantity;
                     this.reservedStockQuantity = data.reservedStockQuantity;
-                    
+
                     $('div.overlay').hide();
             })
             .catch((error) => {
@@ -426,7 +428,7 @@
                     displayMode: 'replace'
                 });
                 $('div.overlay').hide();
-            }) 
+            })
         }
     });
 </script>
