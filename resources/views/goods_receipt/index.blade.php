@@ -57,9 +57,15 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $GR->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->description}}">{{ $GR->description }}</td>
-                                <td class="tdEllipsis">{{ $GR->purchaseOrder->vendor->name }}</td>
-                                <td class="tdEllipsis">{{ $GR->purchaseOrder->number }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->purchaseOrder->description}}">{{ $GR->purchaseOrder->description }}</td>
+                                @if($GR->purchaseOrder != null)
+                                    <td class="tdEllipsis">{{ $GR->purchaseOrder->vendor->name }}</td>
+                                    <td class="tdEllipsis">{{ $GR->purchaseOrder->number }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->purchaseOrder->description}}">{{ $GR->purchaseOrder->description }}</td>
+                                @else
+                                    <td class="tdEllipsis">-</td>
+                                    <td class="tdEllipsis">-</td>
+                                    <td class="tdEllipsis">-</td>
+                                @endif
                                 <td class="tdEllipsis">{{ $GR->created_at->format('d-m-Y') }}</td>
                                 <td class="textCenter p-l-0 p-r-0">
                                     @if($route == "/goods_receipt")
