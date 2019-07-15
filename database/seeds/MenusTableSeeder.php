@@ -546,7 +546,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Physical Inventory',
+            'name' => 'Stock Taking',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
@@ -556,7 +556,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
 
-        $physicalInventory =  Menu::where('name','Physical Inventory')->select('id')->first()->id;
+        $physicalInventory =  Menu::where('name','Stock Taking')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create Stock Take',
@@ -1522,7 +1522,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Physical Inventory',
+            'name' => 'Stock Taking',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
@@ -1532,7 +1532,7 @@ class MenusTableSeeder extends Seeder
         ]);
 
 
-        $physicalInventory =  Menu::where('name','Physical Inventory')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        $physicalInventory =  Menu::where('name','Stock Taking')->where('menu_id',$materialManagement)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create Stock Take',

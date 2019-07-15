@@ -999,7 +999,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Physical Inventory Repair
-        $piRepair = Menu::where('name','Physical Inventory')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $piRepair = Menu::where('name','Stock Taking')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
         $createSnapshot = Menu::where('name','Create Stock Take')->where('menu_id',$piRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Stock Take',
