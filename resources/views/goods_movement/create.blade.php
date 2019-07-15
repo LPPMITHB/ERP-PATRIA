@@ -81,8 +81,8 @@
                                                     <th style="width: 5%">No</th>
                                                     <th style="width: 20%">Material Number</th>
                                                     <th style="width: 40%">Material Description</th>
-                                                    <th style="width: 5%">Unit</th>
                                                     <th style="width: 15%">Avaiable Qty</th>
+                                                    <th style="width: 5%">Unit</th>
                                                     <th style="width: 15%">Transfer Qty</th>
                                                 </tr>
                                             </thead>
@@ -91,8 +91,8 @@
                                                     <td>{{ index + 1 }}</td>
                                                     <td class="tdEllipsis">{{ sld.material.code }}</td>
                                                     <td class="tdEllipsis">{{ sld.material.description }}</td>
-                                                    <td class="tdEllipsis">{{ sld.material.uom.unit }}</td>
                                                     <td class="tdEllipsis">{{ sld.quantity_rn }}</td>
+                                                    <td class="tdEllipsis">{{ sld.material.uom.unit }}</td>
                                                     <td class="no-padding">
                                                         <input class="form-control width100" v-model="sld.quantity" placeholder="Please Input Quantity">
                                                     </td>
@@ -106,12 +106,12 @@
                                 </div>
                             </template>
                         </div>
-                    @endverbatim   
+                    @endverbatim
                 </form>
             </div>
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
-            </div>         
+            </div>
         </div> <!-- /.box -->
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->
@@ -157,7 +157,7 @@
         computed : {
             allOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataSLD.length < 1){
                     isOk = true;
                 }
@@ -213,7 +213,7 @@
                     }
                 }
                 this.submittedForm.dataHeader = this.dataHeader;
-                this.submittedForm.dataSLD = data;    
+                this.submittedForm.dataSLD = data;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
