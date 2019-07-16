@@ -51,7 +51,6 @@ class StorageLocationController extends Controller
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_storage_location|string|max:255',
             'name' => 'required|string|max:255',
-            'area' => 'required|string',
             'description' => 'nullable|string|max:255',
         ]);
 
@@ -60,7 +59,13 @@ class StorageLocationController extends Controller
         $storage_location = new StorageLocation;
         $storage_location->code = strtoupper($request->input('code'));
         $storage_location->name = ucwords($request->input('name'));
-        $storage_location->area = $request->input('area');
+        if($request->input('area') == null)
+        {
+            $storage_location->area = 0;
+        }
+        else {
+            $storage_location->area = $request->input('area');
+        }
         $storage_location->description = $request->input('description');
         $storage_location->status = $request->input('status');
         $storage_location->warehouse_id = $request->input('warehouse');
@@ -86,8 +91,8 @@ class StorageLocationController extends Controller
     {
         $storage_location = StorageLocation::findOrFail($id);
 
-        
-        
+
+
         return view('storage_location.show', compact('storage_location'));
     }
 
@@ -100,7 +105,7 @@ class StorageLocationController extends Controller
     public function edit($id)
     {
         $storage_location = StorageLocation::findOrFail($id);
-        
+
         $warehouses = Warehouse::all();
         return view('storage_location.create', compact('storage_location','warehouses'));
     }
@@ -114,21 +119,26 @@ class StorageLocationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_storage_location,code,'.$id.',id|string|max:255',
             'name' => 'required|string|max:255',
-            'area' => 'required|string',
             'description' => 'nullable|string|max:255',
-            
+
         ]);
-        
+
         DB::beginTransaction();
         try{
         $storage_location = StorageLocation::find($id);
         $storage_location->code = strtoupper($request->input('code'));
         $storage_location->name = ucwords($request->input('name'));
-        $storage_location->area = $request->input('area');
+        if($request->input('area') == null)
+        {
+            $storage_location->area = 0;
+        }
+        else {
+            $storage_location->area = $request->input('area');
+        }
         $storage_location->description = $request->input('description');
         $storage_location->warehouse_id = $request->input('warehouse');
         $storage_location->status = $request->input('status');
@@ -157,13 +167,13 @@ class StorageLocationController extends Controller
             return redirect()->route('storage_location.index')->with('status', 'Storage Location Deleted Succesfully!');
         } catch(\Illuminate\Database\QueryException $e){
             return redirect()->route('storage_location.index')->with('status', 'Can\'t Delete The Storage Location Because It Is Still Exist');
-        }  
+        }
     }
-    
+
     public function generateStorageLocationCode(){
         $code = 'SL';
         $modelStorageLocation = StorageLocation::orderBy('code', 'desc')->first();
-        
+
         $number = 1;
 		if(isset($modelStorageLocation)){
             $number += intval(substr($modelStorageLocation->code, -4));

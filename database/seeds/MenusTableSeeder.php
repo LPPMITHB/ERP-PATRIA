@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Menu; 
+use App\Models\Menu;
 
 class MenusTableSeeder extends Seeder
 {
@@ -11,7 +11,7 @@ class MenusTableSeeder extends Seeder
      * @return void
      */
     public function run()
-    {   
+    {
         DB::table('menus')->insert([
             'level' => 1,
             'name' => 'Dashboard',
@@ -81,7 +81,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Bill Of Material',
@@ -151,7 +151,7 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]);  
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -395,7 +395,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $goodsReturn =  Menu::where('name','Goods Return')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
@@ -546,7 +546,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Physical Inventory',
+            'name' => 'Stock Taking',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
@@ -556,10 +556,10 @@ class MenusTableSeeder extends Seeder
         ]);
 
 
-        $physicalInventory =  Menu::where('name','Physical Inventory')->select('id')->first()->id;
+        $physicalInventory =  Menu::where('name','Stock Taking')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Snapshot',
+            'name' => 'Create Stock Take',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory.indexSnapshot',
             'is_active' => true,
@@ -594,7 +594,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'View Adjustment History',
@@ -628,9 +628,9 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]); 
+        ]);
 
-        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;        
+        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create Material Write Off',
@@ -641,7 +641,7 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$materialWriteOff,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]); 
+        ]);
 
         DB::table('menus')->insert([
             'level' => 4,
@@ -703,7 +703,7 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        
+
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'WIP',
@@ -714,7 +714,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $wip = Menu::where('name','WIP')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
@@ -822,7 +822,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $resourcemanagement = Menu::where('name','Resource Management')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
@@ -1074,7 +1074,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         // DB::table('menus')->insert([
         //     'level' => 3,
         //     'name' => 'Manage BOM',
@@ -1121,7 +1121,7 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$costPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]);  
+        ]);
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -1170,7 +1170,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Material Management',
@@ -1181,7 +1181,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         $materialManagement =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
@@ -1522,7 +1522,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Physical Inventory',
+            'name' => 'Stock Taking',
             'icon' => 'fa-file-text-o',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
@@ -1532,10 +1532,10 @@ class MenusTableSeeder extends Seeder
         ]);
 
 
-        $physicalInventory =  Menu::where('name','Physical Inventory')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        $physicalInventory =  Menu::where('name','Stock Taking')->where('menu_id',$materialManagement)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Snapshot',
+            'name' => 'Create Stock Take',
             'icon' => 'fa-file-text-o',
             'route_name'=> 'physical_inventory_repair.indexSnapshot',
             'is_active' => true,
@@ -1604,9 +1604,9 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$materialManagement,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]); 
+        ]);
 
-        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;        
+        $materialWriteOff =  Menu::where('name','Material Write Off')->where('menu_id',$materialManagement)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create Material Write Off',
@@ -1617,7 +1617,7 @@ class MenusTableSeeder extends Seeder
             'menu_id'=>$materialWriteOff,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
-        ]); 
+        ]);
 
         DB::table('menus')->insert([
             'level' => 4,
@@ -1653,7 +1653,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $wipRepair = Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
@@ -1761,7 +1761,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $resourcemanagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,

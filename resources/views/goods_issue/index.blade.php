@@ -25,18 +25,19 @@
                         <span id="date-label-to" class="date-label">To: </span><input class="date_range_filter datepicker" type="text" id="datepicker_to" />
                         <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
                     </div>
-                </div> 
+                </div>
                 <table class="table table-bordered tableFixed" id="gi-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Number</th>
-                            <th width="25%">Description</th>
-                            <th width="20%">Project Name</th>
-                            <th width="12%">Type</th>
+                            <th width="10%">Number</th>
+                            <th width="20%">Description</th>
+                            <th width="15%">Project Name</th>
+                            <th width="15%">Project Number</th>
+                            <th width="10%">Type</th>
                             <th width="12%">Document Date</th>
                             <th width="8%">Status MR</th>
-                            <th width="10%"></th>
+                            <th width="5%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,6 +47,7 @@
                                 <td>{{ $modelGI->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">{{ $modelGI->description }}</td>
                                 <td>{{ isset ($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}}</td>
+                                <td>{{ isset ($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->number : '-'}}</td>
                                 <td class="tdEllipsis">{{ $modelGI->created_at->format('d-m-Y') }}</td>
                                 <td>
                                     @if( $modelGI->type == 1 )
@@ -152,7 +154,7 @@
             minDateFilter = "";
             gi_table.draw();
         }
-        
+
         // Date range filter
         minDateFilter = "";
         maxDateFilter = "";
@@ -160,7 +162,7 @@
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
-                    var temp = aData[5].split("-");                    
+                    var temp = aData[5].split("-");
                     aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
                 }
 

@@ -57,61 +57,61 @@
                                         <td>Cost Standard Price Material</td>
                                         <td>Rp {{ number_format($material->cost_standard_price,2) }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>4</td>
                                         <td>Cost Standard Price / Kg</td>
                                         <td>Rp {{ number_format($material->cost_standard_price_kg,2) }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>5</td>
                                         <td>Cost Standard Price Service</td>
                                         <td>Rp {{ number_format($material->cost_standard_price_service,2) }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>6</td>
                                         <td>Unit Of Measurement</td>
                                         <td>{{ $material->uom->name }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>7</td>
                                         <td>Material Family</td>
                                         <td>{{ $arrayFamily != null ? $arrayFamily : "-"  }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>8</td>
-                                        <td>Density</td>
+                                        <td>Density Type</td>
                                         <td>{{ $nameDensity != null ? $nameDensity : "-" }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>9</td>
                                         <td>Latest Price</td>
                                         <td>Rp {{ number_format($material->latest_price,2) }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>10</td>
-                                        <td>Average Price</td>
+                                        <td>Average Price per {{ $material->uom->name }}</td>
                                         <td>Rp {{ number_format($material->average_price,2) }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>11</td>
                                         <td>Min</td>
                                         <td>{{ number_format($material->min) }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>12</td>
                                         <td>Max</td>
                                         <td>{{ number_format($material->max) }}</td>
                                     </tr>
-            
+
                                     <tr>
                                         <td>13</td>
                                         <td>Weight</td>
@@ -134,7 +134,7 @@
                                     </tr>
                                     <tr>
                                         <td>17</td>
-                                        <td>Type</td>
+                                        <td>Material Type</td>
                                         @if ($material->type == 3)
                                             <td>Bulk part</td>
                                         @elseif ($material->type == 2)
@@ -157,7 +157,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="vertical-align:top">17</td>
+                                        <td style="vertical-align:top">19</td>
                                         <td style="vertical-align:top">Image</td>
                                         <td class="iconTd">
                                             @if($material->image != null)

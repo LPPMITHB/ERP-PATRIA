@@ -33,13 +33,13 @@
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-xs-5 no-padding">MR Number</div>
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelMR.number}}</b></div>
-        
+
                                 <div class="col-xs-5 no-padding">Project Number</div>
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject != null ? modelProject.number : "-"}}</b></div>
-                                
+
                                 <div class="col-xs-5 no-padding">Ship Type</div>
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelProject != null ? modelProject.ship.type : "-"}}</b></div>
-        
+
                                 <div class="col-xs-5 no-padding">Customer</div>
                                 <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="modelProject != null ? modelProject.customer.name : '-'"><b>: {{modelProject != null ? modelProject.customer.name : "-"}}</b></div>
 
@@ -76,7 +76,7 @@
                                         <th width="13%">Material Number</th>
                                         <th width="25%">Material Description</th>
                                         <th width="10%">Type</th>
-                                        <th width="13%">Quantity</th>
+                                        <th width="13%">Req. Quantity</th>
                                         <th width="13%">Issued</th>
                                         <th width="14%">Manage Picking</th>
                                     </tr>
@@ -152,7 +152,7 @@
                                                 </div>
                                             </template>
                                         </td>
-                                        
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -224,7 +224,7 @@
         $(el).tooltip({
             title: binding.value,
             placement: binding.arg,
-            trigger: 'hover'             
+            trigger: 'hover'
         })
     })
 
@@ -286,7 +286,7 @@
                 data.forEach(MRD => {
                     MRD.modelGI.forEach(modelGI => {
                         modelGI.issued = parseFloat((modelGI.issued+"").replace(/,/g , ''));
-                    });  
+                    });
                 });
 
                 this.submittedForm.MRD = data;
@@ -361,7 +361,7 @@
                                 }
                             });
                             arrTot.push(total);
-                            
+
                         }
                     });
                     this.total = arrTot;
@@ -399,7 +399,7 @@
                 $(el).tooltip({
                     title: binding.value,
                     placement: binding.arg,
-                    trigger: 'hover'             
+                    trigger: 'hover'
                 })
             })
         }
