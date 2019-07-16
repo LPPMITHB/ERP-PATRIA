@@ -1599,15 +1599,33 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'daily_man_hour.create',
         ]);
 
-        $weather = Menu::where('route_name','daily_weather.index')->select('id')->first()->id;
+        $weather = Menu::where('route_name','weather.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $weather,
+            'route_name' => 'weather.index',
+        ]);
+        
+        $tidal = Menu::where('route_name','tidal.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $tidal,
+            'route_name' => 'tidal.index',
+        ]);
+
+        $dimension_type = Menu::where('route_name','dimension_type.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $dimension_type,
+            'route_name' => 'dimension_type.index',
+        ]);
+
+        $daily_weather = Menu::where('route_name','daily_weather.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $daily_weather,
             'route_name' => 'daily_weather.index',
         ]);
 
-        $tidal = Menu::where('route_name','daily_tidal.index')->select('id')->first()->id;
+        $daily_tidal = Menu::where('route_name','daily_tidal.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $tidal,
+            'menu_id' => $daily_tidal,
             'route_name' => 'daily_tidal.index',
         ]);
 

@@ -148,6 +148,7 @@ class RolesTableSeeder extends Seeder
                 'create-issue-resource' => true, 'list-issue-resource' => true,'show-issue-resource' => true,'edit-issue-resource' => true,
                 'manage-wbs-profile' => true,'manage-bom-profile' => true,'manage-activity-profile' => true,'manage-resource-profile' => true,'resource-schedule' => true,
                 'create-goods-return' => true,'list-goods-return' => true,'show-goods-return' => true,'edit-goods-return' => true, 'approve-goods-return' => true,
+                'create-pica' => true,'list-pica' => true,'show-pica' => true,'edit-pica' => true,'delete-pica' => true,
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -216,6 +217,7 @@ class RolesTableSeeder extends Seeder
                 'create-issue-resource' => true, 'list-issue-resource' => true,'show-issue-resource' => true,'edit-issue-resource' => true,
                 'manage-wbs-profile' => true,'manage-bom-profile' => true,'manage-activity-profile' => true,'manage-resource-profile' => true,'resource-schedule' => true,
                 'create-goods-return' => true,'list-goods-return' => true,'show-goods-return' => true,'edit-goods-return' => true, 'approve-goods-return' => true,
+                'create-pica' => true,'list-pica' => true,'show-pica' => true,'edit-pica' => true,'delete-pica' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

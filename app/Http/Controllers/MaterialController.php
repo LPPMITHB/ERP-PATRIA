@@ -35,8 +35,14 @@ class MaterialController extends Controller
         $uoms = Uom::all();
         $material_families = Configuration::get('material_family');
         $densities = Configuration::get('density');
+        $dimension_types = Configuration::get('dimension_type');
+        foreach ($dimension_types as $dimension_type) {
+            foreach ($dimension_type->dimensions as $dimension) {
+                $dimension->value = "";
+            }
+        }
 
-        return view('material.create', compact('material','uoms','material_families','densities'));
+        return view('material.create', compact('dimension_types','material','uoms','material_families','densities'));
     }
 
     /**
@@ -70,6 +76,9 @@ class MaterialController extends Controller
             $material->description = $data->description;
             $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
 
+            $dimensions = json_encode($data->selectedDimensionType);
+            $material->dimension_type_id = $data->dimension_type_id;
+            $material->dimensions_value = $dimensions;
             if($data->dimension_uom_id != ""){
                 $uom = Uom::where('id',$data->dimension_uom_id)->first();
                 if($uom->unit == "M"){
@@ -168,6 +177,20 @@ class MaterialController extends Controller
                 $nameDensity = null;
             }
         }
+
+        $dataDimensionType = Configuration::get('dimension_type');
+        foreach($dataDimensionType as $data){
+            if($data->id == $material->dimension_type_id){
+                $nameDimensionType = $data->name;
+                break;
+            }else{
+                $nameDimensionType = null;
+            }
+        }
+        $dimensions = json_decode($material->dimensions_value);
+        foreach ($dimensions as $dimension) {
+            $dimension->uom = UOM::find($dimension->uom_id);
+        }
         $uoms = Uom::all();
 
         $documents = Collection::make();
@@ -253,7 +276,7 @@ class MaterialController extends Controller
             }
         }
 
-        return view('material.show', compact('material','uoms','arrayFamily','nameDensity','documents','route'));
+        return view('material.show', compact('material','uoms','arrayFamily','nameDensity','documents','route','nameDimensionType','dimensions'));
     }
 
     /**
@@ -273,8 +296,14 @@ class MaterialController extends Controller
         $material_families = Configuration::get('material_family');
         $densities = Configuration::get('density');
         $uoms = Uom::all();
+        $dimension_types = Configuration::get('dimension_type');
+        foreach ($dimension_types as $dimension_type) {
+            foreach ($dimension_type->dimensions as $dimension) {
+                $dimension->value = "";
+            }
+        }
         
-        return view('material.edit', compact('material','uoms','material_families','densities','dataFamily'));
+        return view('material.edit', compact('material','uoms','material_families','densities','dataFamily','dimension_types'));
     }
 
     /**
@@ -322,6 +351,10 @@ class MaterialController extends Controller
         // $material->name = $data->name;
         $material->description = $data->description;
         $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
+
+        $dimensions = json_encode($data->selectedDimensionType);
+        $material->dimension_type_id = $data->dimension_type_id;
+        $material->dimensions_value = $dimensions;
         if($data->dimension_uom_id != ""){
             $uom = Uom::where('id',$data->dimension_uom_id)->first();
             if($uom->unit == "M"){

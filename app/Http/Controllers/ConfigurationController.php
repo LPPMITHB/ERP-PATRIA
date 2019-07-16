@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Configuration;
+use App\Models\Uom;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use DB;
@@ -192,7 +193,7 @@ class ConfigurationController extends Controller
     {
         $weather = Configuration::get('weather');
 
-        return view('weather.index', compact('weather'));
+        return view('weather_config.index', compact('weather'));
     }
 
     public function weatherAdd(Request $request)
@@ -218,7 +219,7 @@ class ConfigurationController extends Controller
     {
         $tidal = Configuration::get('tidal');
 
-        return view('tidal.index', compact('tidal'));
+        return view('tidal_config.index', compact('tidal'));
     }
 
     public function tidalAdd(Request $request)
@@ -237,6 +238,33 @@ class ConfigurationController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('tidal.index')->with('error', $e->getMessage());
+        }
+    }
+
+    public function dimensionTypeIndex()
+    {
+        $dimension_type = Configuration::get('dimension_type');
+        $uom = Uom::all();
+
+        return view('dimension_type_config.index', compact('dimension_type','uom'));
+    }
+
+    public function dimensionTypeAdd(Request $request)
+    {
+        $data = $request->json()->all();
+        $data = json_encode($data);
+
+        DB::beginTransaction();
+        try {
+            $dimension_type = Configuration::where('slug','dimension_type')->first();
+            $dimension_type->value = $data;
+            $dimension_type->update();
+
+            DB::commit();
+            return response(json_encode($dimension_type),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('dimension_type.index')->with('error', $e->getMessage());
         }
     }
 }

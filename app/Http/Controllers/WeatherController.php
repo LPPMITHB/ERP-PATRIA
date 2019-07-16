@@ -24,7 +24,7 @@ class WeatherController extends Controller
             }
         }
 
-        return view('weather.index', compact('daily_weather','weather_config'));
+        return view('daily_weather.index', compact('daily_weather','weather_config'));
     }
 
     public function store(Request $request)

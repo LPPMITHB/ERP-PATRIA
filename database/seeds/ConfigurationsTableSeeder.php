@@ -438,5 +438,36 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $dimension_type = array(
+            0 => array(
+            'id' => "1",
+            'name' => "Block",
+            'dimensions' => array(
+                0 => array(
+                    'name' => "Panjang",
+                    'uom_id' => 1
+                ),
+                1 => array(
+                    'name' => "Lebar",
+                    'uom_id' => 1
+                ),
+                2 => array(
+                    'name' => "Tinggi",
+                    'uom_id' => 1
+                ),
+            ),
+            'status' => 1,
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'dimension_type',
+            'title' => 'Dimension Type',
+            'value' => json_encode($dimension_type),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

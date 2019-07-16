@@ -24,7 +24,7 @@ class TidalController extends Controller
             }
         }
 
-        return view('tidal.index', compact('daily_tidal','tidal_config'));
+        return view('daily_tidal.index', compact('daily_tidal','tidal_config'));
     }
 
     public function store(Request $request)
