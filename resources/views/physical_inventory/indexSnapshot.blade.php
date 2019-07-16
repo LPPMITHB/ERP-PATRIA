@@ -34,6 +34,18 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
+                                        <label for="warehouse" class="col-sm-2 control-label">Warehouse</label>
+
+                                        <div class="col-sm-10">
+                                            <select id="warehouse" name="warehouse[]" multiple="multiple">
+                                                @foreach ($warehouses as $warehouse)
+                                                    <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="sloc" class="col-sm-2 control-label">Storage Location</label>
 
                                         <div class="col-sm-10">
@@ -149,7 +161,7 @@
 <script>
     $(document).ready(function(){
         $('div.overlay').hide();
-        $('#sloc, #material').multiselect({
+        $('#sloc, #material, #warehouse').multiselect({
             includeSelectAllOption: true,
             buttonWidth: '100%',
             enableFiltering: true,
@@ -159,7 +171,8 @@
             onChange: function(element, checked) {
                 var sloc = $('#sloc').val();
                 var material = $('#material').val();
-                if(sloc.length > 0 && material.length > 0){
+                var warehouse = $('#warehouse').val();
+                if(sloc.length > 0 && material.length > 0 && warehouse.length > 0){
                     document.getElementById("display").disabled = false;
                 }else{
                     document.getElementById("display").disabled = true;
