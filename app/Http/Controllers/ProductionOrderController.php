@@ -419,8 +419,9 @@ class ProductionOrderController extends Controller
         $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $uoms = Uom::all()->jsonSerialize();
+        $POU = ProductionOrderUpload::where('production_order_id',$modelPrO->id)->with('user')->get();
 
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms'));
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms','POU'));
     }
 
     public function confirmRepair(Request $request,$id){

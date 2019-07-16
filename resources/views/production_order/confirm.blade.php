@@ -459,6 +459,38 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4 class="m-t-0">Images</h4>
+                            <table id="image_table" class="table table-bordered tableFixed">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th width="20%">Image</th>
+                                        <th width="40%">Description</th>
+                                        <th width="13%">Created At</th>
+                                        <th width="12%">Created By</th>
+                                        <th width="10%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(upload,index) in pou">
+                                        <td>{{ index + 1 }}</td>
+                                        <td class="tdEllipsis">{{ upload.picture }}</td>
+                                        <td class="tdEllipsis">{{ upload.description }}</td>
+                                        <td class="tdEllipsis">{{ upload.created_at }}</td>
+                                        <td class="tdEllipsis">{{ upload.user.name }}</td>
+                                        <td align="center">
+                                            <div class="parent-container no-padding">
+                                                <a class="btn btn-primary btn-xs" :href="view(upload)">VIEW</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <div class="modal fade" id="actual_resource">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -591,7 +623,6 @@
             </div>
             @endverbatim
             </form>
-
             
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
@@ -605,7 +636,6 @@
 <script>
     const form = document.querySelector('form#confirm-wo');
     const formUpload = document.querySelector('form#upload');
-    console.log(formUpload);
 
     $(document).ready(function(){
         $('.datepicker').datepicker({
@@ -685,13 +715,20 @@
         upload:{
             description : "",
             prod_id :@json($modelPrO->id)
-        }
+        },
+        pou : @json($POU)
     };
 
     var vm = new Vue({
         el: '#production_order',
         data: data,
         mounted() {
+            $('.parent-container').magnificPopup({
+                delegate: 'a', // child items selector, by clicking on it popup will open
+                type: 'image'
+                // other options
+            });
+
             $('.datepicker').datepicker({
                 autoclose : true,
                 format: 'dd-mm-yyyy',
@@ -739,22 +776,10 @@
             }
         },
         methods: {
-            saveUpload(){
-                let struturesElemForm = document.createElement('form');
-                struturesElemForm.setAttribute('id', 'upload');
-                struturesElemForm.setAttribute('class', 'form-horizontal');
-                struturesElemForm.setAttribute('action', '{{ route('production_order.upload') }}');
-                struturesElemForm.setAttribute('method', 'POST');
-                form.appendChild(struturesElemForm);
-
-                let formUpload = document.getElementById('upload');
-                // console.log(formUpload);
-                // let struturesElem = document.createElement('input');
-                // struturesElem.setAttribute('type', 'hidden');
-                // struturesElem.setAttribute('name', 'datas');
-                // struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
-                // form.appendChild(struturesElem);
-                formUpload.submit();
+            view(data){
+                let path = '../../app/documents/production_order/'+data.picture;
+                
+                return path;
             },
             clearEditInput(){
                 this.editInput.performance = "";
@@ -1148,6 +1173,10 @@
                     this.resources.push(POD);
                 }
             });
+            this.pou.forEach(image=>{
+                image.created_at = new Date(image.created_at);
+                image.created_at = image.created_at.toLocaleString();
+            })
         },
     });
     function parseDate(str) {
