@@ -109,15 +109,6 @@ class PhysicalInventoryExport implements FromCollection, WithHeadings, WithEvent
                 $event->sheet->setCellValue('E'.($next_footer_start),'=1-E'.($next_footer_start+1));
                 $event->sheet->getStyle('E'.($next_footer_start).':E'.($next_footer_start+1))->getAlignment()->setHorizontal('center');
                 $event->sheet->getStyle('A'.($next_footer_start).':E'.($next_footer_start+1))->applyFromArray($footerStyle);
-
-
-
-
-
-                
-
-                
-
             },
         ];
     }
@@ -141,8 +132,8 @@ class PhysicalInventoryExport implements FromCollection, WithHeadings, WithEvent
                 "unit" => $sd->material->uom->unit,
                 "quantity" => $sd->quantity,
                 "count" => $sd->count,
-                "adjusted_stock" => abs($sd->adjusted_stock),
-                "remark" => $sd->adjusted_stock > 0 ? "+" : "-",
+                "adjusted_stock" => $sd->adjusted_stock != 0 ? abs($sd->adjusted_stock) : 0,
+                "remark" => $sd->adjusted_stock > 0 ? "+" : $sd->adjusted_stock < 0 ? "-" : "",
             ]);
         }
         return $coll;

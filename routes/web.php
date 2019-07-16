@@ -63,6 +63,59 @@ Route::name('delivery_terms.')->prefix('delivery_terms')->group(function() {
     Route::put('/add', 'ConfigurationController@deliveryTermsAdd')->name('add');
 });
 
+// Weather Routes
+Route::name('daily_weather.')->prefix('daily_weather')->group(function() {
+    Route::get('/', 'WeatherController@index')->name('index');
+
+    Route::put('/store', 'WeatherController@store')->name('store');
+
+    Route::put('/update', 'WeatherController@update')->name('update');
+
+    Route::delete('/delete/{id}', 'WeatherController@destroy')->name('delete');
+});
+
+// Tidal Routes
+Route::name('daily_tidal.')->prefix('daily_tidal')->group(function() {
+    Route::get('/', 'TidalController@index')->name('index');
+
+    Route::put('/store', 'TidalController@store')->name('store');
+
+    Route::put('/update', 'TidalController@update')->name('update');
+
+    Route::delete('/delete/{id}', 'TidalController@destroy')->name('delete');
+});
+
+// General PICA Routes
+Route::name('pica.')->prefix('pica')->group(function() {
+    Route::get('/create', 'PicaController@create')->name('create')->middleware('can:create-pica');
+
+    Route::get('/', 'PicaController@index')->name('index')->middleware('can:list-pica');
+
+    Route::get('/{id}', 'PicaController@show')->name('show')->middleware('can:show-pica');
+
+    Route::get('/{id}/edit', 'PicaController@edit')->name('edit')->middleware('can:edit-pica');
+
+    Route::put('/store', 'PicaController@store')->name('store')->middleware('can:create-pica');
+
+    Route::put('/update', 'PicaController@update')->name('update')->middleware('can:edit-pica');
+
+    Route::delete('/delete/{id}', 'PicaController@destroy')->name('delete')->middleware('can:delete-pica');
+});
+
+// Daily Man Hour Routes
+Route::name('daily_man_hour.')->prefix('daily_man_hour')->group(function() {
+    Route::get('/selectProject', 'DailyManHourController@selectProject')->name('selectProject');
+
+    Route::get('/create/{id}', 'DailyManHourController@create')->name('create');
+
+    Route::put('/store', 'DailyManHourController@store')->name('store');
+
+    Route::put('/update', 'DailyManHourController@update')->name('update');
+
+    Route::delete('/delete/{id}', 'DailyManHourController@destroy')->name('delete');
+});
+
+
 // Menu Routes
 Route::name('menus.')->prefix('menus')->group(function() {
     Route::get('/create', 'MenuController@create')->name('create')->middleware('can:create-menu');
