@@ -48,8 +48,8 @@
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPR.number}}</b></div>
                                     <div class="col-xs-5 no-padding">PR Status</div>
                                     @endverbatim <!--verbatim berhenti sementara untuk tampilan status-->
-                                    @if($modelPR->status == 0 || $modelPR->status == 7)
-                                        <div class="col-xs-7 no-padding tdEllipsis"><b>: ORDERED PARTIALLY</b></div>
+                                    @if($modelPR->status == 0)
+                                        <div class="col-xs-7 no-padding tdEllipsis"><b>: ORDERED</b></div>
                                     @elseif($modelPR->status == 1)
                                         <div class="col-xs-7 no-padding tdEllipsis"><b>: OPEN</b></div>
                                     @elseif($modelPR->status == 2)
@@ -60,8 +60,10 @@
                                         <div class="col-xs-7 no-padding tdEllipsis"><b>: REVISED</b></div>
                                     @elseif($modelPR->status == 5)
                                         <div class="col-xs-7 no-padding tdEllipsis"><b>: REJECTED</b></div>
-                                    @elseif($modelPR->status == 5)
+                                    @elseif($modelPR->status == 6)
                                         <div class="col-xs-7 no-padding tdEllipsis"><b>: CONSOLIDATED</b></div>
+                                    @elseif($modelPR->status == 7)
+                                        <div class="col-xs-7 no-padding tdEllipsis"><b>: ORDERED PARTIALLY</b></div>
                                     @endif
                                     @verbatim <!--lanjut verbatim-->
                                     <div class="col-sm-5 no-padding p-t-15">
