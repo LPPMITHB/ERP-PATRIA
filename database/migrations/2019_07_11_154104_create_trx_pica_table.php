@@ -15,6 +15,9 @@ class CreateTrxPicaTable extends Migration
     {
         Schema::create('trx_pica', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('type');
+            $table->integer('reference_document');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

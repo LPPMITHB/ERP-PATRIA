@@ -59,7 +59,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="uom" class="col-sm-2 control-label">Unit Of Measurement</label>
+                                <label for="uom" class="col-sm-2 control-label">Unit Of Measurement *</label>
                                 
                                 <div class="col-sm-10">
                                     <selectize id="uom" v-model="submittedForm.uom_id" :settings="uom_settings">
@@ -87,7 +87,15 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="min" class="col-sm-2 control-label">Min *</label>
+                                <label for="max" class="col-sm-2 control-label">Max</label>
+                                
+                                <div class="col-sm-10">
+                                    <input type="text"  class="form-control" id="max" required v-model="submittedForm.max" :settings="max_settings">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min" class="col-sm-2 control-label">Min</label>
                                 
                                 <div class="col-sm-10">
                                     <input type="text"  class="form-control" id="min" required v-model="submittedForm.min" :settings="min_settings">
@@ -95,12 +103,29 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="max" class="col-sm-2 control-label">Max *</label>
-                                
+                                <label for="dimension_type" class="col-sm-2 control-label">Dimension Type</label>
                                 <div class="col-sm-10">
-                                    <input type="text"  class="form-control" id="max" required v-model="submittedForm.max" :settings="max_settings">
+                                    <selectize id="dimension_type" name="dimension_type" v-model="submittedForm.dimension_type_id" :settings="dimension_type_settings">
+                                        <option v-for="(data, index) in dimension_types" :value="data.id">{{ data.name }}</option>
+                                    </selectize>   
                                 </div>
                             </div>
+
+                            <template v-for="dimension in selectedDimensionType">
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-2 control-label">{{dimension.name}}</label>
+                    
+                                    <div class="col-sm-8">
+                                        <input type="text" name="name" class="form-control" id="weight" v-model="dimension.value">
+                                    </div>
+    
+                                    <div class="col-sm-2">
+                                        <selectize disabled id="uom" v-model="dimension.uom_id" :settings="weight_uom_settings">
+                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                        </selectize>    
+                                    </div>
+                                </div>
+                            </template>
 
                             <div class="form-group">
                                 <label for="weight" class="col-sm-2 control-label">Weight</label>
@@ -245,7 +270,10 @@
             type : @json($material->type),
             family_id : @json($dataFamily),
             density_id : @json($material->density_id),
+            dimension_type_id : @json($material->dimension_type_id),
         },
+        dimension_types : @json($dimension_types),
+        selectedDimensionType : JSON.parse(@json($material->dimensions_value)),
         uom_settings: {
             placeholder: 'Select UOM!'
         },
@@ -274,7 +302,10 @@
         },
         density_id_settings: {
             placeholder: 'Select Density!'
-        }
+        },
+        dimension_type_settings: {
+            placeholder: 'Select Dimension Type!',
+        },
     }
 
     var vm = new Vue({
@@ -361,7 +392,11 @@
                 this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.min = (this.submittedForm.min+"").replace(/,/g , '');
                 this.submittedForm.max = (this.submittedForm.max+"").replace(/,/g , '');
-
+                this.selectedDimensionType.forEach(dimension => {
+                    dimension.value = (dimension.value+"").replace(/,/g , '');
+                });
+                this.submittedForm.selectedDimensionType = this.selectedDimensionType;
+                
                 this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
                 this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
                 this.submittedForm.lengths = this.submittedForm.lengths.replace(/,/g , '');
@@ -383,8 +418,6 @@
                     form.appendChild(struturesElem);
                     form.submit();
                 }
-
-
             },
             calculateVolume(){
                 this.submittedForm.volume = parseInt(this.submittedForm.height.replace(/,/g , '')) * parseInt(this.submittedForm.lengths.replace(/,/g , '')) * parseInt(this.submittedForm.width.replace(/,/g , ''));
@@ -558,9 +591,49 @@
 
                 }
             },
+            'submittedForm.dimension_type_id' : function(newValue) {
+                if(newValue != ""){
+                    this.dimension_types.forEach(data => {
+                        if(data.id == newValue){
+                            this.selectedDimensionType = data.dimensions;
+                        }
+                    });
+                }else{
+                    this.selectedDimensionType = [];
+                }
+            },
+            selectedDimensionType:{
+                handler: function(newValue) {
+                    newValue.forEach(dimension => {
+                        var uom_data = null;
+                        this.uoms.forEach(uom => {
+                            if(uom.id == dimension.uom_id){
+                                uom_data = uom;
+                            }
+                        });
+                        var is_decimal = uom_data.is_decimal;
+                        if(is_decimal == 0){
+                            dimension.value = (dimension.value+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                        }else{
+                            var decimal = dimension.value.replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    dimension.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    dimension.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                dimension.value = (dimension.value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                        }
+                    });
+                },
+                deep: true
+            },
         },
         created: function() {
-            var maxDecimalDimension = 4;
+            var maxDecimalDimension = 2;
             var maxDecimalCost = 2;
 
             this.submittedForm.min = (this.submittedForm.min+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")

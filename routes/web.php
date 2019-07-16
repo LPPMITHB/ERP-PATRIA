@@ -64,6 +64,27 @@ Route::name('delivery_terms.')->prefix('delivery_terms')->group(function() {
 });
 
 // Weather Routes
+Route::name('weather.')->prefix('weather')->group(function() {
+    Route::get('/', 'ConfigurationController@weatherIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@weatherAdd')->name('add');
+});
+
+// Tidal Routes
+Route::name('tidal.')->prefix('tidal')->group(function() {
+    Route::get('/', 'ConfigurationController@tidalIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@tidalAdd')->name('add');
+});
+
+// Dimension Type Routes
+Route::name('dimension_type.')->prefix('dimension_type')->group(function() {
+    Route::get('/', 'ConfigurationController@dimensionTypeIndex')->name('index');
+
+    Route::put('/add', 'ConfigurationController@dimensionTypeAdd')->name('add');
+});
+
+// Daily Weather Routes
 Route::name('daily_weather.')->prefix('daily_weather')->group(function() {
     Route::get('/', 'WeatherController@index')->name('index');
 
@@ -93,6 +114,8 @@ Route::name('pica.')->prefix('pica')->group(function() {
 
     Route::get('/{id}', 'PicaController@show')->name('show')->middleware('can:show-pica');
 
+    Route::get('/selectDocument/{type}', 'PicaController@selectDocument')->name('selectDocument')->middleware('can:create-pica');
+    
     Route::get('/{id}/edit', 'PicaController@edit')->name('edit')->middleware('can:edit-pica');
 
     Route::put('/store', 'PicaController@store')->name('store')->middleware('can:create-pica');
