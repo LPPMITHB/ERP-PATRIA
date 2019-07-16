@@ -1485,6 +1485,8 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
 
     Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-production-order');
 
+    Route::post('/upload', 'ProductionOrderController@upload')->name('upload')->middleware('can:confirm-production-order');
+
     Route::get('/selectProjectIndex', 'ProductionOrderController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-production-order');
 
     Route::get('/indexPrO/{id}', 'ProductionOrderController@indexPrO')->name('indexPrO')->middleware('can:list-production-order');

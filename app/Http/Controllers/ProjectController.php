@@ -564,7 +564,7 @@ class ProjectController extends Controller
             $project->business_unit_id = $request->business_unit_id;
             $project->user_id = Auth::user()->id;
             $project->branch_id = Auth::user()->branch->id;
-
+            
             if($request->hasFile('drawing')){
                 // Get filename with the extension
                 $fileNameWithExt = $request->file('drawing')->getClientOriginalName();

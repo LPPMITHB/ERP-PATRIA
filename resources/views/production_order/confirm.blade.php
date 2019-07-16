@@ -118,9 +118,49 @@
                         </tbody>
                     </table>
                 </div>
-                
+                <div class="col-sm-4 p-r-0">
+                    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#upload_modal">UPLOAD IMAGE</button>
+                </div>
             </div>
-            
+            <form id="upload" class="form-horizontal" method="POST" action="{{ route('production_order.upload') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="modal fade" id="upload_modal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Upload Image</h4>
+                            </div>
+                            <div class="modal-body p-t-0">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <input type="hidden" name="prod_id" id="prod_id" value="{{$modelPrO->id}}">
+                                        <div class="col-sm-12 p-t-10 p-l-0">
+                                            <div class="input-group">
+                                                <label class="input-group-btn">
+                                                    <span class="btn btn-primary">
+                                                        Browse&hellip; <input type="file" style="display: none;" multiple id="image" name="image">
+                                                    </span>
+                                                </label>
+                                                <input type="text" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 p-l-0">
+                                            <label for="type" class="control-label p-b-10">Description</label>
+                                            <textarea rows="3" class="form-control" placeholder="Please Input Description" id="description" name="description"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">SAVE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
             @if($route == "/production_order")
                 <form id="confirm-wo" class="form-horizontal" method="POST" action="{{ route('production_order.storeConfirm') }}">
             @elseif($route == "/production_order_repair")
@@ -131,12 +171,8 @@
             @verbatim
             <div id="production_order">
                 <div class="box-body p-t-0 p-b-5">
-                    <div class="col-sm-8 p-r-0 p-l-0">
-                        <h4>Activity</h4>
-                    </div>
-                    <div class="col-sm-4 p-r-0">
-                        <button type="button" class="btn btn-primary pull-right" @click.prevent="modalUpload" data-toggle="modal" data-target="#upload_modal">UPLOAD IMAGE</button>
-                    </div>
+                    <h4>Activity</h4>
+                    
                     <table id="activity-table" class="table table-bordered tableFixed" >
                         <thead>
                             <tr>
@@ -423,39 +459,6 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="upload_modal">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                    <h4 class="modal-title">Upload Image</h4>
-                                </div>
-                                <div class="modal-body p-t-0">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="col-sm-12 p-t-10 p-l-0">
-                                                <div class="input-group">
-                                                    <label class="input-group-btn">
-                                                        <span class="btn btn-primary">
-                                                            Browse&hellip; <input type="file" style="display: none;" multiple id="drawing" name="drawing">
-                                                        </span>
-                                                    </label>
-                                                    <input type="text" class="form-control" readonly>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 p-l-0">
-                                                <label for="type" class="control-label p-b-10">Description</label>
-                                                <textarea rows="3" class="form-control" v-model="upload.description" placeholder="Please Input Description"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="modal fade" id="actual_resource">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -588,6 +591,8 @@
             </div>
             @endverbatim
             </form>
+
+            
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
@@ -599,12 +604,34 @@
 @push('script')
 <script>
     const form = document.querySelector('form#confirm-wo');
+    const formUpload = document.querySelector('form#upload');
+    console.log(formUpload);
 
     $(document).ready(function(){
         $('.datepicker').datepicker({
             autoclose : true,
         });
         $('div.overlay').hide();
+
+        $(document).on('change', ':file', function() {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        // We can watch for our custom `fileselect` event like this
+        $(document).ready( function() {
+            $(':file').on('fileselect', function(event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles + ' files selected' : label;
+                if( input.length ) {
+                    input.val(log);
+                } else {
+                    if( log ) alert(log);
+                }
+            });
+        });
     });
 
     Vue.directive('tooltip', function(el, binding){
@@ -656,7 +683,8 @@
             placeholder: 'Please Select Unit'
         },
         upload:{
-            description: "",
+            description : "",
+            prod_id :@json($modelPrO->id)
         }
     };
 
@@ -711,6 +739,23 @@
             }
         },
         methods: {
+            saveUpload(){
+                let struturesElemForm = document.createElement('form');
+                struturesElemForm.setAttribute('id', 'upload');
+                struturesElemForm.setAttribute('class', 'form-horizontal');
+                struturesElemForm.setAttribute('action', '{{ route('production_order.upload') }}');
+                struturesElemForm.setAttribute('method', 'POST');
+                form.appendChild(struturesElemForm);
+
+                let formUpload = document.getElementById('upload');
+                // console.log(formUpload);
+                // let struturesElem = document.createElement('input');
+                // struturesElem.setAttribute('type', 'hidden');
+                // struturesElem.setAttribute('name', 'datas');
+                // struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
+                // form.appendChild(struturesElem);
+                formUpload.submit();
+            },
             clearEditInput(){
                 this.editInput.performance = "";
                 this.editInput.performance_uom_id = "";
