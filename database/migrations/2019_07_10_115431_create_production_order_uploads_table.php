@@ -13,11 +13,13 @@ class CreateProductionOrderUploadsTable extends Migration
      */
     public function up()
     {
-        Schema::create('trx_production_order_uploads', function (Blueprint $table) {
+        Schema::create('trx_production_order_upload', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('production_order_id');
             $table->string('picture');
-            $table->text('description');
+            $table->text('description')->nullable();
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('branch_id');
             $table->timestamps();
             
             $table->foreign('production_order_id')->references('id')->on('trx_production_order');
@@ -31,6 +33,6 @@ class CreateProductionOrderUploadsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('trx_production_order_uploads');
+        Schema::dropIfExists('trx_production_order_upload');
     }
 }

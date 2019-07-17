@@ -28,17 +28,58 @@ use App\Models\GoodsReceiptDetail;
 use App\Models\StorageLocation;
 use App\Models\StorageLocationDetail;
 use App\Models\BomPrep;
+use App\Models\ProductionOrderUpload;
 use Auth;
 use DateTime;
 use DB;
 
 class ProductionOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    public function upload(Request $request){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try{
+            if($request->hasFile('image')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('image')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('image')->storeAs('documents/production_order',$fileNameToStore);
+            }else{
+                $fileNameToStore =  null;
+            }
+    
+            $POU = new ProductionOrderUpload;
+            $POU->picture = $fileNameToStore;
+            $POU->production_order_id = $request->prod_id;
+            $POU->description = $request->description;
+            $POU->user_id = Auth::user()->id;
+            $POU->branch_id = Auth::user()->branch->id;
+            $POU->save();
+
+            DB::commit();
+            if($route == "/production_order"){
+                return redirect()->route('production_order.confirm', ['id' => $request->prod_id])->with('success', 'Upload Success!');
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.confirm', ['id' => $request->prod_id])->with('success', 'Upload Success!');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/production_order"){
+                return redirect()->route('production_order.confirm', ['id' => $request->prod_id])->with( 'error',$e->getMessage());
+            }elseif($route == "/production_order_repair"){
+                return redirect()->route('production_order_repair.confirm', ['id' => $request->prod_id])->with( 'error',$e->getMessage());
+            }
+        }
+    }
+
     public function selectProject(Request $request){
         $route = $request->route()->getPrefix();
         if($route == "/production_order"){
@@ -378,8 +419,9 @@ class ProductionOrderController extends Controller
         $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get()->jsonSerialize();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $uoms = Uom::all()->jsonSerialize();
+        $POU = ProductionOrderUpload::where('production_order_id',$modelPrO->id)->with('user')->get();
 
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms'));
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms','POU'));
     }
 
     public function confirmRepair(Request $request,$id){
