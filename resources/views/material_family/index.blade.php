@@ -35,10 +35,17 @@
                                         </div>
                                         <div id="new_currency" class="panel-collapse collapse">
                                             <div class="box-body">
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-6">
                                                     <input v-model="input.id" type="hidden" class="form-control">
                                                     <label for="name">Material Family Name</label>
                                                     <input v-model="input.name" type="text" class="form-control" placeholder="Please insert material family name">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label for="value">Status</label>
+                                                    <select v-model="input.status" class="form-control">
+                                                        <option value="0">Non Active</option>
+                                                        <option value="1">Active</option>
+                                                    </select>
                                                 </div>
                                                 <div class="col-xs-12 p-t-10">
                                                     <button type="submit" class="btn btn-primary pull-right" @click.prevent="add()">CREATE</button>
@@ -61,6 +68,7 @@
                                                         <tr>
                                                             <th width="5%">No</th>
                                                             <th width="85%">Material Family Name</th>
+                                                            <th width="10%">Status</th>
                                                             <th width="10%"></th>
                                                         </tr>
                                                     </thead>
@@ -68,6 +76,12 @@
                                                         <tr v-for="(data,index) in material_family"> 
                                                             <td>{{ index+1 }}</td>
                                                             <td class="no-padding"><input v-model="data.name" type="text" class="form-control"></td>
+                                                            <td class="no-padding">
+                                                                <select v-model="data.status" class="form-control">
+                                                                    <option value="0">Non Active</option>
+                                                                    <option value="1">Active</option>
+                                                                </select>
+                                                            </td>
                                                             <td class="p-l-0" align="center">
                                                                 <a @click.prevent="save()" class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
@@ -108,8 +122,10 @@
         material_family : @json($material_family),
         input:{
             id : @json($id),
-            name : ""
-        }
+            name : "",
+            status : 1,
+        },
+        max_id : 1,
     }
 
     var vm = new Vue({
@@ -119,9 +135,11 @@
             clearData(){
                 this.input.id = "";
                 this.input.name = "";
+                this.input.status = 1;
             },
             add(){
                 $('div.overlay').show();
+                this.input.id = this.max_id + 1;
                 var input = JSON.stringify(this.input);
                 input = JSON.parse(input);
 
@@ -138,7 +156,7 @@
                         displayMode: 'replace'
                     });
                     this.clearData();
-                    $('#current_currency').collapse();
+                    $('#current_currency').collapse("show");
                     $('#new_currency').collapse("hide");
                 })
                 .catch((error) => {
@@ -176,6 +194,12 @@
             }
         },
         created:function(){
+            var modelMaterialFamily = this.material_family;
+            modelMaterialFamily.forEach(data => {
+                if(data.id > this.max_id){
+                    this.max_id = data.id;
+                }
+            });
         }
     });
 </script>

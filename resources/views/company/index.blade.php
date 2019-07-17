@@ -17,13 +17,13 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header">
-                <div class="box-tools pull-right">
-                    <a href="{{ route('company.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+            <div class="box-body">
+                <div class="col-sm-6 p-l-0">
+                    <div class="box-tools pull-left">
+                        <a href="{{ route('company.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    </div>
                 </div>
-            </div> <!-- /.box-header -->
-            <div class="box-body p-b-0 p-t-15">
-                <table class="table table-bordered tablePaging">
+                <table id="company-table" class="table table-bordered tableFixed">
                     <thead>
                         <tr>
                             <th style ="width: 5%">No</th>
@@ -66,7 +66,17 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#company-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'bFilter'     : true,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
     });
 </script>
 @endpush

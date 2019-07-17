@@ -311,7 +311,7 @@ class WBSController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollback();
-                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 
@@ -875,7 +875,7 @@ public function updateWbsConfiguration(Request $request, $id)
             }
         } catch (\Exception $e) {
             DB::rollback();
-                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 

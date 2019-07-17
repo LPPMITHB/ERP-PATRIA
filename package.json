@@ -31,6 +31,7 @@
         "imagemin": "^6.0.0",
         "izitoast": "^1.4.0",
         "jstree": "^3.3.7",
+        "magnific-popup": "^1.1.0",
         "moment": "^2.24.0",
         "selectize": "^0.12.6"
     }

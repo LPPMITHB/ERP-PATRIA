@@ -94,3 +94,6 @@ require("fullcalendar/dist/fullcalendar.min.js");
 //date range picker
 require("daterangepicker");
 
+// magnific-popup
+require("magnific-popup");
+

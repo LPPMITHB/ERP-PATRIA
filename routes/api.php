@@ -183,3 +183,12 @@ Route::get('/getRdProfiles/{id}', 'WBSController@getRdProfilesAPI')->name('api.w
 
 // service
 Route::get('/getNewServiceDetail/{id}', 'ServiceController@getNewServiceDetailAPI')->name('api.service.getNewServiceDetailAPI');
+
+// Daily Man Hour
+Route::get('/getDailyManHour/{id}', 'DailyManHourController@getDailyManHourAPI')->name('api.dmh.getDailyManHourAPI');
+
+// Weather Report
+Route::get('/getDailyWeather', 'WeatherController@getWeatherAPI')->name('api.dmh.getWeatherAPI');
+
+// Tidal Report
+Route::get('/getDailyTidal', 'TidalController@getTidalAPI')->name('api.dmh.getTidalAPI');

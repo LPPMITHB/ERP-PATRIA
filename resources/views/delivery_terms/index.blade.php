@@ -35,13 +35,20 @@
                                         </div>
                                         <div id="new_delivery_term" class="panel-collapse collapse">
                                             <div class="box-body">
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-4">
                                                     <label for="name">Delivery Term Name</label>
                                                     <input v-model="input.name" type="text" class="form-control" placeholder="Please insert Delivery Term name">
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-4">
                                                     <label for="description">Delivery Term Description</label>
                                                     <input v-model="input.description" type="text" class="form-control" placeholder="Please insert Delivery Term description">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <label for="value">Status</label>
+                                                    <select v-model="input.status" class="form-control">
+                                                        <option value="0">Non Active</option>
+                                                        <option value="1">Active</option>
+                                                    </select>
                                                 </div>
                                                 <div class="col-xs-12 p-t-10">
                                                     <button type="submit" class="btn btn-primary pull-right" @click.prevent="add()">CREATE</button>
@@ -65,6 +72,7 @@
                                                             <th width="5%">No</th>
                                                             <th width="30%">Delivery Term Name</th>
                                                             <th width="30%">Delivery Term Description</th>
+                                                            <th width="10%">Status</th>
                                                             <th width="10%" ></th>
                                                         </tr>
                                                     </thead>
@@ -73,6 +81,12 @@
                                                             <td>{{ index+1 }}</td>
                                                             <td class="no-padding"><input v-model="delivery_term.name" type="text" class="form-control"></td>
                                                             <td class="no-padding"><input v-model="delivery_term.description" type="text" class="form-control"></td>
+                                                            <td class="no-padding">
+                                                                <select v-model="delivery_term.status" class="form-control">
+                                                                    <option value="0">Non Active</option>
+                                                                    <option value="1">Active</option>
+                                                                </select>
+                                                            </td>
                                                             <td class="p-l-0" align="center">
                                                                 <a @click.prevent="save()" class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
@@ -114,8 +128,10 @@
         input:{
             name : "",
             unit : "",
-            value : ""
-        }
+            value : "",
+            status : 1,
+        },
+        max_id : 1,
     }
 
     var vm = new Vue({
@@ -125,9 +141,11 @@
             clearData(){
                 this.input.name = "";
                 this.input.description = "";
+                this.input.status = 1;
             },
             add(){
                 $('div.overlay').show();
+                this.input.id = this.max_id + 1;
                 var input = JSON.stringify(this.input);
                 input = JSON.parse(input);
 
@@ -143,7 +161,7 @@
                         displayMode: 'replace'
                     });
                     this.clearData();
-                    $('#current_delivery_term').collapse();
+                    $('#current_delivery_term').collapse("show");
                     $('#new_delivery_term').collapse("hide");
                 })
                 .catch((error) => {
@@ -184,7 +202,12 @@
             
         },
         created : function(){
-
+            var modelDeliveryTerms = this.delivery_terms;
+            modelDeliveryTerms.forEach(data => {
+                if(data.id > this.max_id){
+                    this.max_id = data.id;
+                }
+            });
         }
     });
 </script>

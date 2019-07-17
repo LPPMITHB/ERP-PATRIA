@@ -111,13 +111,21 @@
                                         <td>Max</td>
                                         <td>{{ number_format($material->max) }}</td>
                                     </tr>
-
-                                    <tr>
-                                        <td>13</td>
-                                        <td>Weight</td>
-                                        <td>{{ number_format($material->weight) }} {{$uoms->where('id',$material->weight_uom_id)->first() != null ? $uoms->where('id',$material->weight_uom_id)->first()->unit : ""}}</td>
-                                    </tr>
-                                    <tr>
+                                    @php
+                                        $index = 12;
+                                    @endphp
+                                    @foreach ($dimensions as $dimension)
+                                        <tr>
+                                            <td>{{++$index}}</td>
+                                            <td>{{$dimension->name}}</td>
+                                            @if ($dimension->uom->is_decimal == 1)
+                                                <td>{{ number_format($dimension->value,2) }} {{$dimension->uom->unit}}</td>
+                                            @else
+                                                <td>{{ number_format($dimension->value) }} {{$dimension->uom->unit}}</td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                    {{-- <tr>
                                         <td>14</td>
                                         <td>Height</td>
                                         <td>{{ number_format($material->height) }} {{$uoms->where('id',$material->dimension_uom_id)->first() != null ? $uoms->where('id',$material->dimension_uom_id)->first()->unit : ""}}</td>
@@ -131,10 +139,10 @@
                                         <td>16</td>
                                         <td>Width</td>
                                         <td>{{ number_format($material->width) }} {{$uoms->where('id',$material->dimension_uom_id)->first() != null ? $uoms->where('id',$material->dimension_uom_id)->first()->unit : ""}}</td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr>
-                                        <td>17</td>
-                                        <td>Material Type</td>
+                                        <td>{{++$index}}</td>
+                                        <td>Type</td>
                                         @if ($material->type == 3)
                                             <td>Bulk part</td>
                                         @elseif ($material->type == 2)
@@ -146,7 +154,7 @@
                                         @endif
                                     </tr>
                                     <tr>
-                                        <td>18</td>
+                                        <td>{{++$index}}</td>
                                         <td>Status</td>
                                         <td class="iconTd">
                                             @if ($material->status == 1)
@@ -157,7 +165,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="vertical-align:top">19</td>
+                                        <td style="vertical-align:top">{{++$index}}</td>
                                         <td style="vertical-align:top">Image</td>
                                         <td class="iconTd">
                                             @if($material->image != null)
