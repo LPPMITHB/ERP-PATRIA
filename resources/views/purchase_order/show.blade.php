@@ -71,9 +71,15 @@
                             : <b> {{ ($modelPO->description != "") ? $modelPO->description : '-' }} </b>
                         </div>
                         <div class="col-md-4 col-xs-4" >
+                            Delivery Term
+                        </div>
+                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $dterm_name }}">
+                            : <b> {{ $dterm_name }} </b>
+                        </div>
+                        <div class="col-md-4 col-xs-4" >
                             Project Number
                         </div>
-                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($modelPO->project != null) ? $modelPO->project->number : '-' }}"> 
+                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($modelPO->project != null) ? $modelPO->project->number : '-' }}">
                             : <b> {{ ($modelPO->project != null) ? $modelPO->project->number : '-' }} </b>
                         </div>
                         @if($modelPO->purchaseRequisition->type == 3)
@@ -160,14 +166,14 @@
                             @elseif($modelPO->purchaseRequisition->type == 2)
                                 <th width="14%">Resource Number</th>
                                 <th width="20%">Resource Description</th>
-                            @else 
+                            @else
                                 <th colspan="2" width="14%">Job Order</th>
                             @endif
                             <th width="6%">Qty</th>
                             <th width="5%">Disc.</th>
                             @if($modelPO->purchaseRequisition->type != 3)
                                 <th width="13%">Price / pcs ({{$unit}})</th>
-                            @else 
+                            @else
                                 <th width="13%">Price / service ({{$unit}})</th>
                             @endif
                             <th width="15%">Sub Total Price ({{$unit}})</th>
@@ -186,7 +192,7 @@
                                     @elseif($modelPO->purchaseRequisition->type == 2)
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_code'] }}">{{ $POD['resource_code'] }}</td>
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_name'] }}">{{ $POD['resource_name'] }}</td>
-                                    @else 
+                                    @else
                                         <td colspan ="2" class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['job_order'] }}">{{ $POD['job_order'] }}</td>
                                     @endif
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['quantity'],2) }}">{{ number_format($POD['quantity'],2) }}</td>
@@ -231,7 +237,7 @@
                         </tr>
                     </tfoot>
                 </table>
-                
+
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($route == "/purchase_order_repair" && $modelPO->purchaseRequisition->type == 3)
                     <a class="col-xs-12 col-md-2 btn btn-primary p-l-5 pull-right m-l-20" target="_blank" href="{{ route('purchase_order_repair.printJobOrder', ['id'=>$modelPO->id]) }}">DOWNLOAD JOB ORDER</a>
@@ -266,7 +272,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
