@@ -118,9 +118,9 @@ class ActivityController extends Controller
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
-            $users = User::whereIn('role_id',[1])->get();
-            // Notification::send($users, new ProjectActivity($activity));
             $activity->save();
+            $users = Auth::user();
+            Notification::send($users,new ProjectActivity($activity));
             if($activity->wbs->project->business_unit_id == 2){
                 $project_id = $activity->wbs->project_id;
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){

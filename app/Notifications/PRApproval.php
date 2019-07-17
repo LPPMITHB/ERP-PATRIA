@@ -7,19 +7,19 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ProjectActivity extends Notification
+class PRApproval extends Notification
 {
     use Queueable;
-    public $activity;
+    public $purchaseRequisition;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($activity)
+    public function __construct($purchaseRequisition)
     {
-        $this->activity = $activity;
+        $this->purchaseRequisition = $purchaseRequisition;
     }
 
     /**
