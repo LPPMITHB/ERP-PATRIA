@@ -19,7 +19,7 @@
             'title' => 'PHYSICAL INVENTORY » STOCK DETAILS',
             'items' => [
                 'Dashboard' => route('index'),
-                'Begin Snapshot' => route('physical_inventory_repair.indexSnapshot'),
+                'Create Stock Take' => route('physical_inventory_repair.indexSnapshot'),
                 'Stock Details' => ''
             ]
         ]
@@ -33,7 +33,7 @@
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-body">
-                <h4 class="box-title">Stock Snapshot <b>{{$piCode}}</b> </h4>
+                <h4 class="box-title">Stock Take Document <b>{{$piCode}}</b> </h4>
                 <table id="stock-table" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                     <thead>
                         <tr>
@@ -76,7 +76,7 @@
                 @endif
                     @csrf
                 </form>
-                <button id="btnSubmit" {{count($stocks)>0 ? '' : 'disabled'}} class="btn btn-primary col-sm-12">CREATE SNAPSHOT</button>
+                <button id="btnSubmit" {{count($stocks)>0 ? '' : 'disabled'}} class="btn btn-primary col-sm-12">CREATE STOCK TAKE</button>
             </div>
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
@@ -115,7 +115,7 @@
         struturesElemSloc.setAttribute('name', 'sloc');
         struturesElemSloc.setAttribute('value', sloc);
         form.appendChild(struturesElemSloc);
-        
+
         let struturesElemMaterial = document.createElement('input');
         struturesElemMaterial.setAttribute('type', 'hidden');
         struturesElemMaterial.setAttribute('name', 'material');
@@ -124,7 +124,7 @@
         form.submit();
     });
 
-    
-    
+
+
 </script>
 @endpush

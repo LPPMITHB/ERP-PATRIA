@@ -105,8 +105,14 @@
                                 @endif
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-4 col-md-4 m-t-10">
+                        <div class="row">
+                            <div class="col-md-4 col-xs-4">
+                                Created At
+                            </div>
+                            <div class="col-md-8">
+                                : <b> {{$modelGI->created_at->format('d-m-Y H:i:s')}} </b>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-4 col-xs-4">
                                     Description

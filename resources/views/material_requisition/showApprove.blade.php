@@ -57,6 +57,12 @@
                             : <b> {{ $modelMR->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
                         <div class="col-xs-4 col-md-4">
+                            Last Update At
+                        </div>
+                        <div class="col-xs-8 col-md-8">
+                            : <b> {{ $modelMR->updated_at->format('d-m-Y H:i:s') }} </b>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
                             Description
                         </div>
                         <div class="col-xs-8 col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelMR->description}}">
@@ -67,7 +73,7 @@
                 <div class="col-xs-12 col-md-4 m-t-10">
                     <div class="col-xs-12 no-padding"><b>Revision Description</b></div>
                     <div class="col-xs-12 no-padding">
-                        <textarea class="form-control" rows="3" id="rev_desc"></textarea>  
+                        <textarea class="form-control" rows="3" id="rev_desc"></textarea>
                     </div>
                 </div>
             </div>
@@ -178,7 +184,7 @@
                 $('div.overlay').show();
                 this.dataSubmit.desc = document.getElementById('rev_desc').value;
                 this.dataSubmit.status = status;
-                
+
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');

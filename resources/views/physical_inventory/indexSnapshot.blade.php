@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Physical Inventory » Begin Snapshot',
+        'title' => 'Physical Inventory » Create Stock Take',
         'items' => [
             'Dashboard' => route('index'),
-            'Begin Snapshot' =>"",
+            'Create Stock Take' =>"",
         ]
     ]
 )
@@ -20,8 +20,8 @@
             <div class="box-body">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#create_snapshot" data-toggle="tab" aria-expanded="true">Create Snapshot</a></li>
-                        <li class=""><a href="#view_snapshot" data-toggle="tab" aria-expanded="false">View Snapshot Document</a></li>
+                        <li class="active"><a href="#create_snapshot" data-toggle="tab" aria-expanded="true">Create Stock Take</a></li>
+                        <li class=""><a href="#view_snapshot" data-toggle="tab" aria-expanded="false">View Stock Take Document</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="create_snapshot">
@@ -32,10 +32,22 @@
                             @endif
                                 @csrf
                                 <div class="box-body">
-                
+
+                                    <div class="form-group">
+                                        <label for="warehouse" class="col-sm-2 control-label">Warehouse</label>
+
+                                        <div class="col-sm-10">
+                                            <select id="warehouse" name="warehouse[]" multiple="multiple">
+                                                @foreach ($warehouses as $warehouse)
+                                                    <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="sloc" class="col-sm-2 control-label">Storage Location</label>
-                    
+
                                         <div class="col-sm-10">
                                             <select id="sloc" name="sloc[]" multiple="multiple">
                                                 @foreach ($storage_locations as $storage_location)
@@ -44,10 +56,10 @@
                                             </select>
                                         </div>
                                     </div>
-                    
+
                                     <div class="form-group">
                                         <label for="material" class="col-sm-2 control-label">Material</label>
-                        
+
                                         <div class="col-sm-10">
                                             <select id="material" name="material[]" multiple="multiple">
                                                 @foreach ($materials as $material)
@@ -56,7 +68,7 @@
                                             </select>
                                         </div>
                                     </div>
-                    
+
                                 </div>
                                 <!-- /.box-body -->
                                 <div class="box-footer">
@@ -73,7 +85,7 @@
                                     <span id="date-label-to" class="date-label">To: </span><input class="date_range_filter datepicker" type="text" id="datepicker_to" />
                                     <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
                                 </div>
-                            </div> 
+                            </div>
                             <table id="snapshot-table" class="table table-bordered tableFixed" style="border-collapse:collapse; table-layout:fixed;">
                                 <thead>
                                     <tr>
@@ -149,7 +161,7 @@
 <script>
     $(document).ready(function(){
         $('div.overlay').hide();
-        $('#sloc, #material').multiselect({
+        $('#sloc, #material, #warehouse').multiselect({
             includeSelectAllOption: true,
             buttonWidth: '100%',
             enableFiltering: true,
@@ -159,7 +171,8 @@
             onChange: function(element, checked) {
                 var sloc = $('#sloc').val();
                 var material = $('#material').val();
-                if(sloc.length > 0 && material.length > 0){
+                var warehouse = $('#warehouse').val();
+                if(sloc.length > 0 && material.length > 0 && warehouse.length > 0){
                     document.getElementById("display").disabled = false;
                 }else{
                     document.getElementById("display").disabled = true;
@@ -214,7 +227,7 @@
             minDateFilter = "";
             snapshot_table.draw();
         }
-        
+
         // Date range filter
         minDateFilter = "";
         maxDateFilter = "";
@@ -222,7 +235,7 @@
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
-                    var temp = aData[4].split("-");                    
+                    var temp = aData[4].split("-");
                     aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
                 }
 

@@ -40,7 +40,7 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $currencies = array(
             0 => array(
                 'id' => 1,
@@ -75,7 +75,7 @@ class ConfigurationsTableSeeder extends Seeder
         ]);
 
         $resource_category = array(
-            
+
             0 => array(
                 'id' => 1,
                 'name' => 'Subcon',
@@ -179,14 +179,22 @@ class ConfigurationsTableSeeder extends Seeder
             0 => array(
                 'id' => 1,
                 'name' => 'New Building',
+                'business_unit_id' => 1,
             ),
             1 => array(
                 'id' => 2,
                 'name' => 'Marine Services',
+                'business_unit_id' => 1,
             ),
             2 => array(
                 'id' => 3,
                 'name' => 'Fabrication',
+                'business_unit_id' => 1,
+            ),
+            3 => array(
+                'id' => 4,
+                'name' => 'Emergency Repair',
+                'business_unit_id' => 2,
             ),
         );
 

@@ -86,6 +86,14 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-xs-4">
+                                Created At
+                            </div>
+                            <div class="col-md-8">
+                                : <b> {{$modelMWO->created_at->format('d-m-Y H:i:s')}} </b>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-xs-4">
                                 Description
                             </div>
                             <div class="col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelMWO->description}}">
