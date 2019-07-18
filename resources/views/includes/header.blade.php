@@ -35,13 +35,13 @@
         <li class="dropdown notifications-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-bell-o"></i>
-            @if(auth()->user()->unreadNotifications->count())
-            <span class="label label-warning">{{ auth()->user()->unreadNotifications->count() }}</span>
+            @if(auth()->user()->role->notifications->where('status',1)->count())
+            <span class="label label-warning">{{ auth()->user()->role->notifications->where('status',1)->count() }}</span>
             @endif
           </a>
           <ul class="dropdown-menu" style="width: 550px">
-              @if(auth()->user()->role->notifications->where('read_at',null)->count())
-                <li class="header">You have {{ auth()->user()->role->notifications->where('read_at',null)->count() }} new notifications</li>
+              @if(auth()->user()->role->notifications->where('status',1)->count())
+                <li class="header">You have {{ auth()->user()->role->notifications->where('status',1)->count() }} new notifications</li>
                   @foreach(auth()->user()->role->notifications as $notification)
                   @php
                     $data = json_decode($notification->data);
