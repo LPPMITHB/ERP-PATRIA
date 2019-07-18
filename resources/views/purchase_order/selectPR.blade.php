@@ -44,12 +44,12 @@
                                 @endif
                                 <td>{{ $modelPR->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPR->description}}">{{ isset($modelPR->description) ? $modelPR->description : '-'}}</td>
-                                @if($modelPR->status == 1)
+                                @if($modelPR->status == 0)
+                                    <td>ORDERED</td>
+                                @elseif($modelPR->status == 1)
                                     <td>OPEN</td>
                                 @elseif($modelPR->status == 2)
                                     <td>APPROVED</td>
-                                @elseif($modelPR->status == 0 || $modelPR->status == 7)
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="ORDERED PARTIALLY">ORDERED PARTIALLY</td>
                                 @elseif($modelPR->status == 3)
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="NEEDS REVISION">NEEDS REVISION</td>
                                 @elseif($modelPR->status == 4)
@@ -58,6 +58,8 @@
                                     <td>REJECTED</td>
                                 @elseif($modelPR->status == 6)
                                     <td>CONSOLIDATED</td>
+                                @elseif($modelPR->status == 7)
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="ORDERED PARTIALLY">ORDERED PARTIALLY</td>
                                 @endif
                                 <td>{{ $modelPR->user->name }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
