@@ -98,8 +98,8 @@
                             <th width="5%">No</th>
                             <th width="15%">Material Number</th>
                             <th width="20%">Material Description</th>
-                            <th width="5%">Unit</th>
                             <th width="25%">Picked Quantity</th>
+                            <th width="5%">Unit</th>
                             <th width="30%">Storage Location</th>
                         </tr>
                     </thead>
@@ -109,8 +109,8 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $GID->material->code }}</td>
                             <td>{{ $GID->material->description }}</td>
-                            <td>{{ $GID->material->uom->unit }}</td>
                             <td>{{ number_format($GID->quantity,2) }}</td>
+                            <td>{{ $GID->material->uom->unit }}</td>
                             <td>{{ $GID->storageLocation != null ? $GID->storageLocation->name : "-" }} </td>
                         </tr>
                         @endforeach
