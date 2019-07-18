@@ -22,7 +22,7 @@
                         <thead>
                             <tr>
                                 <th width=5%>No</th>
-                                <th width=20%>Number</th>
+                                <th width=20%>WBS</th>
                                 <th width=25%>Description</th>
                                 <th width=23%>Deliverables</th>
                                 <th style="width: 11%">Duration</th>
@@ -68,7 +68,7 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWbsConfiguration.number" class="form-control width100" rows="2" name="number" placeholder="Number"></textarea>
+                                    <textarea v-model="newWbsConfiguration.number" class="form-control width100" rows="2" name="number" placeholder="WBS"></textarea>
                                 </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newWbsConfiguration.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
@@ -77,7 +77,7 @@
                                     <textarea v-model="newWbsConfiguration.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWbsConfiguration.duration" rows="2" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>                                        
+                                    <textarea v-model="newWbsConfiguration.duration" rows="2" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>
                                 </td>
                                 <td align="center" class="p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -97,8 +97,8 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="form-group col-sm-12">
-                                            <label for="number" class="control-label">Number</label>
-                                            <input id="number" type="text" class="form-control" v-model="editWbsConfiguration.number" placeholder="Insert Number here..." >
+                                            <label for="number" class="control-label">WBS</label>
+                                            <input id="number" type="text" class="form-control" v-model="editWbsConfiguration.number" placeholder="Insert WBS Title here..." >
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
@@ -110,8 +110,8 @@
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="duration" class=" control-label">Duration</label>
-                                            <input v-model="editWbsConfiguration.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
-                                        </div> 
+                                            <input v-model="editWbsConfiguration.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -129,7 +129,7 @@
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
             <div id="myPopoverContent" style="display : none;">
-                
+
             </div>
         </div>
     </div>
@@ -168,7 +168,7 @@ Vue.directive('tooltip', function(el, binding){
     $(el).tooltip({
         title: binding.value,
         placement: binding.arg,
-        trigger: 'hover'             
+        trigger: 'hover'
     })
 })
 
@@ -197,7 +197,7 @@ var vm = new Vue({
             return isOk;
         },
 
-    }, 
+    },
     methods:{
         tooltipText: function(text) {
             return text
@@ -216,7 +216,7 @@ var vm = new Vue({
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
                         var url = "/wbs_repair/deleteWbsConfiguration/"+data.id;
-                        $('div.overlay').show();            
+                        $('div.overlay').show();
                         window.axios.delete(url)
                         .then((response) => {
                             if(response.data.error != undefined){
@@ -234,7 +234,7 @@ var vm = new Vue({
                                     title: response.data.response,
                                     position: 'topRight',
                                 });
-                                $('div.overlay').hide();   
+                                $('div.overlay').hide();
                                 vm.getWBSConfiguration();
                             }
                         })
@@ -245,16 +245,16 @@ var vm = new Vue({
                                 position: 'topRight',
                             });
                             console.log(error);
-                            $('div.overlay').hide();            
+                            $('div.overlay').hide();
                         })
 
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-            
+
                     }, true],
                     ['<button>NO</button>', function (instance, toast) {
-            
+
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-            
+
                     }],
                 ],
             });
@@ -269,13 +269,13 @@ var vm = new Vue({
             this.editWbsConfiguration.duration = data.duration;
         },
         createSubWBS(data){
-            var url = "/wbs_repair/createSubWbsConfiguration/"+data.id;                
+            var url = "/wbs_repair/createSubWbsConfiguration/"+data.id;
             return url;
         },
         createActivity(data){
-            var url = "/activity_repair/createActivityConfiguration/"+data.id;                
+            var url = "/activity_repair/createActivityConfiguration/"+data.id;
             return url;
-        },             
+        },
         getWBSConfiguration(){
             window.axios.get('/api/getWbsConfiguration/').then(({ data }) => {
                 this.wbs = data;
@@ -293,11 +293,11 @@ var vm = new Vue({
                 })
             });
         },
-        add(){            
+        add(){
             var newWbsConfiguration = this.newWbsConfiguration;
             newWbsConfiguration = JSON.stringify(newWbsConfiguration);
-            var url = "{{ route('wbs_repair.storeWbsConfiguration') }}";              
-            $('div.overlay').show();            
+            var url = "{{ route('wbs_repair.storeWbsConfiguration') }}";
+            $('div.overlay').show();
             window.axios.post(url,newWbsConfiguration)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -306,16 +306,16 @@ var vm = new Vue({
                         title: response.data.error,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }else{
                     iziToast.success({
                         displayMode: 'replace',
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }
-                
+
                 this.getWBSConfiguration();
                 this.newWbsConfiguration.number = "";
                 this.newWbsConfiguration.description = "";
@@ -324,20 +324,20 @@ var vm = new Vue({
             })
             .catch((error) => {
                 console.log(error);
-                $('div.overlay').hide();            
+                $('div.overlay').hide();
             })
 
         },
-        update(){            
-            var editWbsConfiguration = this.editWbsConfiguration;    
+        update(){
+            var editWbsConfiguration = this.editWbsConfiguration;
             var url = "";
             if(this.menu == "building"){
-                var url = "/wbs/updateWbsConfiguration/"+editWbsConfiguration.wbs_id;                
+                var url = "/wbs/updateWbsConfiguration/"+editWbsConfiguration.wbs_id;
             }else{
-                var url = "/wbs_repair/updateWbsConfiguration/"+editWbsConfiguration.wbs_id;                
-            }        
+                var url = "/wbs_repair/updateWbsConfiguration/"+editWbsConfiguration.wbs_id;
+            }
             editWbsConfiguration = JSON.stringify(editWbsConfiguration);
-            $('div.overlay').show();            
+            $('div.overlay').show();
             window.axios.put(url,editWbsConfiguration)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -346,17 +346,17 @@ var vm = new Vue({
                         title: response.data.error,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }else{
                     iziToast.success({
                         displayMode: 'replace',
                         title: response.data.response,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }
-                
-                this.getWBSConfiguration();   
+
+                this.getWBSConfiguration();
             })
             .catch((error) => {
                 iziToast.warning({
@@ -365,7 +365,7 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 console.log(error);
-                $('div.overlay').hide();            
+                $('div.overlay').hide();
             })
 
         }
@@ -387,7 +387,7 @@ var vm = new Vue({
     created: function() {
         this.getWBSConfiguration();
     },
-    
+
 });
 </script>
 @endpush
