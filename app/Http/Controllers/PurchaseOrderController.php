@@ -34,10 +34,10 @@ class PurchaseOrderController extends Controller
         }
 
         $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',$business_unit_id)->get();
-        
+
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
-    
+
     public function index(Request $request)
     {
         $route = $request->route()->getPrefix();
@@ -62,7 +62,7 @@ class PurchaseOrderController extends Controller
         $modelPOs = PurchaseOrder::whereIn('status',[1,4])->whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.indexApprove', compact('modelPOs','route'));
-    
+
     }
 
     public function create(Request $request)
@@ -151,7 +151,7 @@ class PurchaseOrderController extends Controller
                 $value = $data->value;
             }
         }
-        
+
         DB::beginTransaction();
         try {
             $PO = new PurchaseOrder;
@@ -238,7 +238,7 @@ class PurchaseOrderController extends Controller
                 }
             }
             $PO->total_price = $total_price;
-            $PO->save(); 
+            $PO->save();
             $this->checkStatusPr($datas->pr_id,$status);
             DB::commit();
             if($route == "/purchase_order"){
@@ -283,6 +283,13 @@ class PurchaseOrderController extends Controller
                 $unit = $data->unit;
             }
         }
+        $dterm_name = "";
+        $deliveryTerms = Configuration::get('delivery_terms');
+        foreach($deliveryTerms as $data){
+            if($data->id == $modelPO->delivery_term){
+                $dterm_name = $data->name;
+            }
+        }
 
         if($modelPO->purchaseRequisition->type == 1){
             foreach($modelPO->purchaseOrderDetails as $POD){
@@ -294,8 +301,8 @@ class PurchaseOrderController extends Controller
                             $sub_total = $data['sub_total'] + $POD->total_price;
 
                             $datas->push([
-                                "id" => $POD->id, 
-                                "material_code" => $POD->material->code, 
+                                "id" => $POD->id,
+                                "material_code" => $POD->material->code,
                                 "material_name" => $POD->material->description,
                                 "quantity" => $quantity,
                                 "discount" => $POD->discount,
@@ -312,8 +319,8 @@ class PurchaseOrderController extends Controller
                     if($status == 0){
                         $total_discount += $POD->total_price * ($POD->discount/100);
                         $datas->push([
-                            "id" => $POD->id, 
-                            "material_code" => $POD->material->code , 
+                            "id" => $POD->id,
+                            "material_code" => $POD->material->code ,
                             "material_name" => $POD->material->description,
                             "quantity" => $POD->quantity,
                             "discount" => $POD->discount,
@@ -327,8 +334,8 @@ class PurchaseOrderController extends Controller
                 }else{
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
-                        "id" => $POD->id, 
-                        "material_code" => $POD->material->code , 
+                        "id" => $POD->id,
+                        "material_code" => $POD->material->code ,
                         "material_name" => $POD->material->description,
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
@@ -351,8 +358,8 @@ class PurchaseOrderController extends Controller
                             $sub_total = $data['sub_total'] + $POD->total_price;
 
                             $datas->push([
-                                "id" => $POD->id, 
-                                "resource_code" => $POD->resource->code , 
+                                "id" => $POD->id,
+                                "resource_code" => $POD->resource->code ,
                                 "resource_name" => $POD->resource->name,
                                 "quantity" => $quantity,
                                 "discount" => $POD->discount,
@@ -369,8 +376,8 @@ class PurchaseOrderController extends Controller
                     if($status == 0){
                         $total_discount += $POD->total_price * ($POD->discount/100);
                         $datas->push([
-                            "id" => $POD->id, 
-                            "resource_code" => $POD->resource->code , 
+                            "id" => $POD->id,
+                            "resource_code" => $POD->resource->code ,
                             "resource_name" => $POD->resource->name,
                             "quantity" => $POD->quantity,
                             "discount" => $POD->discount,
@@ -384,8 +391,8 @@ class PurchaseOrderController extends Controller
                 }else{
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
-                        "id" => $POD->id, 
-                        "resource_code" => $POD->resource->code , 
+                        "id" => $POD->id,
+                        "resource_code" => $POD->resource->code ,
                         "resource_name" => $POD->resource->name,
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
@@ -407,7 +414,7 @@ class PurchaseOrderController extends Controller
                             $sub_total = $data['sub_total'] + $POD->total_price;
 
                             $datas->push([
-                                "id" => $POD->id, 
+                                "id" => $POD->id,
                                 "job_order" => $POD->job_order,
                                 "quantity" => $quantity,
                                 "discount" => $POD->discount,
@@ -422,8 +429,8 @@ class PurchaseOrderController extends Controller
                     if($status == 0){
                         $total_discount += $POD->total_price * ($POD->discount/100);
                         $datas->push([
-                            "id" => $POD->id, 
-                            "job_order" => $POD->job_order,                            
+                            "id" => $POD->id,
+                            "job_order" => $POD->job_order,
                             "quantity" => $POD->quantity,
                             "discount" => $POD->discount,
                             "price" => $POD->total_price / $POD->quantity,
@@ -434,8 +441,8 @@ class PurchaseOrderController extends Controller
                 }else{
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
-                        "id" => $POD->id, 
-                        "job_order" => $POD->job_order,                        
+                        "id" => $POD->id,
+                        "job_order" => $POD->job_order,
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
                         "price" => $POD->total_price / $POD->quantity,
@@ -446,7 +453,7 @@ class PurchaseOrderController extends Controller
             }
         }
         $tax = ($datas->sum('sub_total') - $total_discount) * ($modelPO->tax/100);
-        return view('purchase_order.show', compact('modelPO','unit','route','datas','total_discount','tax','statusPO'));
+        return view('purchase_order.show', compact('modelPO','unit','route','datas','total_discount','tax','statusPO','dterm_name'));
     }
 
     public function showApprove(Request $request, $id)
@@ -487,8 +494,8 @@ class PurchaseOrderController extends Controller
                             $sub_total = $data['sub_total'] + $POD->total_price;
 
                             $datas->push([
-                                "id" => $POD->id, 
-                                "material_code" => $POD->material->code, 
+                                "id" => $POD->id,
+                                "material_code" => $POD->material->code,
                                 "material_name" => $POD->material->description,
                                 "quantity" => $quantity,
                                 "discount" => $POD->discount,
@@ -505,8 +512,8 @@ class PurchaseOrderController extends Controller
                     if($status == 0){
                         $total_discount += $POD->total_price * ($POD->discount/100);
                         $datas->push([
-                            "id" => $POD->id, 
-                            "material_code" => $POD->material->code , 
+                            "id" => $POD->id,
+                            "material_code" => $POD->material->code ,
                             "material_name" => $POD->material->description,
                             "quantity" => $POD->quantity,
                             "discount" => $POD->discount,
@@ -520,8 +527,8 @@ class PurchaseOrderController extends Controller
                 }else{
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
-                        "id" => $POD->id, 
-                        "material_code" => $POD->material->code , 
+                        "id" => $POD->id,
+                        "material_code" => $POD->material->code ,
                         "material_name" => $POD->material->description,
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
@@ -543,8 +550,8 @@ class PurchaseOrderController extends Controller
                             $sub_total = $data['sub_total'] + $POD->total_price;
 
                             $datas->push([
-                                "id" => $POD->id, 
-                                "resource_code" => $POD->resource->code , 
+                                "id" => $POD->id,
+                                "resource_code" => $POD->resource->code ,
                                 "resource_name" => $POD->resource->name,
                                 "quantity" => $quantity,
                                 "discount" => $POD->discount,
@@ -561,8 +568,8 @@ class PurchaseOrderController extends Controller
                     if($status == 0){
                         $total_discount += $POD->total_price * ($POD->discount/100);
                         $datas->push([
-                            "id" => $POD->id, 
-                            "resource_code" => $POD->resource->code , 
+                            "id" => $POD->id,
+                            "resource_code" => $POD->resource->code ,
                             "resource_name" => $POD->resource->name,
                             "quantity" => $POD->quantity,
                             "discount" => $POD->discount,
@@ -576,8 +583,8 @@ class PurchaseOrderController extends Controller
                 }else{
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
-                        "id" => $POD->id, 
-                        "resource_code" => $POD->resource->code , 
+                        "id" => $POD->id,
+                        "resource_code" => $POD->resource->code ,
                         "resource_name" => $POD->resource->name,
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
@@ -599,8 +606,8 @@ class PurchaseOrderController extends Controller
                             $sub_total = $data['sub_total'] + $POD->total_price;
 
                             $datas->push([
-                                "id" => $POD->id, 
-                                "service_code" => $POD->activityDetail->serviceDetail->service->name, 
+                                "id" => $POD->id,
+                                "service_code" => $POD->activityDetail->serviceDetail->service->name,
                                 "service_name" => $POD->activityDetail->serviceDetail->name,
                                 "quantity" => $quantity,
                                 "discount" => $POD->discount,
@@ -616,8 +623,8 @@ class PurchaseOrderController extends Controller
                     if($status == 0){
                         $total_discount += $POD->total_price * ($POD->discount/100);
                         $datas->push([
-                            "id" => $POD->id, 
-                            "service_code" => $POD->activityDetail->serviceDetail->service->name , 
+                            "id" => $POD->id,
+                            "service_code" => $POD->activityDetail->serviceDetail->service->name ,
                             "service_name" => $POD->activityDetail->serviceDetail->name,
                             "quantity" => $POD->quantity,
                             "discount" => $POD->discount,
@@ -631,8 +638,8 @@ class PurchaseOrderController extends Controller
 
                     $total_discount += $POD->total_price * ($POD->discount/100);
                     $datas->push([
-                        "id" => $POD->id, 
-                        "job_order" => $POD->job_order , 
+                        "id" => $POD->id,
+                        "job_order" => $POD->job_order ,
                         "quantity" => $POD->quantity,
                         "discount" => $POD->discount,
                         "price" => $POD->total_price / $POD->quantity,
@@ -727,7 +734,7 @@ class PurchaseOrderController extends Controller
                 }
                 $PO->delivery_date = $delivery_date_subcon;
             }
-            
+
             if($datas->modelPO->currency != $PO->currency){
                 $PO->value = $value;
             }
@@ -831,7 +838,7 @@ class PurchaseOrderController extends Controller
     }
 
     public function printPdf($id, Request $request)
-    { 
+    {
         $branch = Auth::user()->branch;
         $modelPO = PurchaseOrder::find($id);
         $projectName = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPO->purchase_requisition_id)->first();
@@ -853,20 +860,20 @@ class PurchaseOrderController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         if($modelPO->purchaseRequisition->type != 3){
             $pdf->loadView('purchase_order.pdf',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route]);
-            
+
             $now = date("Y_m_d_H_i_s");
             return $pdf->stream('Purchase_Order_'.$now.'.pdf');
         }
         else{
             $pdf->loadView('purchase_order.pdf_PO_subcon',['modelPO' => $modelPO,'words'=>$words,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
-            
+
             $now = date("Y_m_d_H_i_s");
             return $pdf->stream('Purchase_Order_Subcon'.$now.'.pdf');
         }
     }
 
     public function printPdfJobOrder($id, Request $request)
-    { 
+    {
         $branch = Auth::user()->branch;
         $modelPO = PurchaseOrder::find($id);
         $projectName = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPO->purchase_requisition_id)->first();
@@ -888,7 +895,7 @@ class PurchaseOrderController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         if($modelPO->purchaseRequisition->type == 3){
             $pdf->loadView('purchase_order.pdf_JO_subcon',['modelPO' => $modelPO,'branch'=>$branch, 'route'=> $route, 'projectName'=>$projectName]);
-            
+
             $now = date("Y_m_d_H_i_s");
             return $pdf->stream('Job_Order_'.$now.'.pdf');
         }
@@ -912,10 +919,10 @@ class PurchaseOrderController extends Controller
 
         $po_number = $year+$number;
         $po_number = 'PO-'.$po_number;
-        
+
         return $po_number;
     }
-    
+
     public function updatePR($prd_id,$quantity){
         $modelPRD = PurchaseRequisitionDetail::findOrFail($prd_id);
 
@@ -961,8 +968,8 @@ class PurchaseOrderController extends Controller
                     if($data['vendor_id'] == $PIR->vendor_id){
                         if($data['created_at'] > $PIR->created_at){
                             $datas->push([
-                                "vendor_id" => $PIR->vendor->id, 
-                                "vendor_code" => $PIR->vendor->code, 
+                                "vendor_id" => $PIR->vendor->id,
+                                "vendor_code" => $PIR->vendor->code,
                                 "vendor_name" => $PIR->vendor->name,
                                 "count" => $data['count']+1,
                                 "created_at" => $PIR->created_at,
@@ -970,8 +977,8 @@ class PurchaseOrderController extends Controller
                         ]);
                         }else{
                             $datas->push([
-                                "vendor_id" => $PIR->vendor->id, 
-                                "vendor_code" => $PIR->vendor->code, 
+                                "vendor_id" => $PIR->vendor->id,
+                                "vendor_code" => $PIR->vendor->code,
                                 "vendor_name" => $PIR->vendor->name,
                                 "count" => $data['count']+1,
                                 "created_at" => $data['created_at'],
@@ -984,8 +991,8 @@ class PurchaseOrderController extends Controller
                 }
                 if($status){
                     $datas->push([
-                        "vendor_id" => $PIR->vendor->id, 
-                        "vendor_code" => $PIR->vendor->code, 
+                        "vendor_id" => $PIR->vendor->id,
+                        "vendor_code" => $PIR->vendor->code,
                         "vendor_name" => $PIR->vendor->name,
                         "count" => 1,
                         "created_at" => $PIR->created_at,
@@ -994,8 +1001,8 @@ class PurchaseOrderController extends Controller
                 }
             }else{
                 $datas->push([
-                    "vendor_id" => $PIR->vendor->id, 
-                    "vendor_code" => $PIR->vendor->code, 
+                    "vendor_id" => $PIR->vendor->id,
+                    "vendor_code" => $PIR->vendor->code,
                     "vendor_name" => $PIR->vendor->name,
                     "count" => 1,
                     "created_at" => $PIR->created_at,
