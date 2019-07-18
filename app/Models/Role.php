@@ -15,6 +15,11 @@ class Role extends Model
         return $this->hasMany('App\Models\User');
     }
 
+    public function notifications()
+    {
+        return $this->hasMany('App\Models\Notification');
+    }
+
     public function branch()
     {
         return $this->belongsTo('App\Models\Branch');
