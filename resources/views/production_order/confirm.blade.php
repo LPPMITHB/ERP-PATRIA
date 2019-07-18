@@ -147,6 +147,10 @@
                                                 <input type="text" class="form-control" readonly>
                                             </div>
                                         </div>
+                                        <div class="progress">
+                                            <div class="bar"></div >
+                                            <div class="percent">0%</div >
+                                        </div>
                                         <div class="col-sm-12 p-l-0">
                                             <label for="type" class="control-label p-b-10">Description</label>
                                             <textarea rows="3" class="form-control" placeholder="Please Input Description" id="description" name="description"></textarea>
@@ -155,7 +159,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">SAVE</button>
+                                <button type="submit" class="btn btn-primary" onclick="overlay()">SAVE</button>
                             </div>
                         </div>
                     </div>
@@ -599,6 +603,7 @@
                                                 <label for="type" class="control-label p-b-10">Subject</label>
                                                 <input class="form-control" v-model="moraleNotes.subject" placeholder="Please Input Subject">
                                             </div>
+                                            
                                             <div class="col-sm-12 p-l-0">
                                                 <label for="type" class="control-label p-b-10">Notes</label>
                                                 <textarea rows="4" class="form-control" v-model="moraleNotes.notes" placeholder="Please Input Notes">
@@ -623,10 +628,6 @@
             </div>
             @endverbatim
             </form>
-            
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
         </div>
     </div>
 </div>
@@ -636,6 +637,11 @@
 <script>
     const form = document.querySelector('form#confirm-wo');
     const formUpload = document.querySelector('form#upload');
+    
+    function overlay(){
+        $('div.overlayUpload').show();
+        $('#upload_modal').modal('hide');
+    }
 
     $(document).ready(function(){
         $('.datepicker').datepicker({

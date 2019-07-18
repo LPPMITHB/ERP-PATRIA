@@ -38,6 +38,9 @@ class ProductionOrderController extends Controller
     
     public function upload(Request $request){
         $route = $request->route()->getPrefix();
+        $this->validate($request, [
+            'image' => 'mimes:jpeg,jpg,png,gif|required|max:10000'
+        ]);
 
         DB::beginTransaction();
         try{
