@@ -4,14 +4,14 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="initial-scale=1.0">
-    
+
         <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css" media="all">
         <style>
-             /** 
+             /**
                     Set the margins of the page to 0, so the footer and the header
                     can be of the full height and width !
                  **/
-                 
+
                 /** Define now the real margins of every page in the PDF **/
                 @page{
                     margin-top:230px;
@@ -43,10 +43,10 @@
                     <div class="box-header no-padding" style="margin-bottom : 47px">
                         <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">
                             @if($route == '/physical_inventory')
-                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">    
-                            @elseif($route == '/physical_inventory_repair') 
-                            <img src="{{ asset('images/logo-PAMI.jpg') }}" alt="" srcset="">    
-                            @endif                   
+                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">
+                            @elseif($route == '/physical_inventory_repair')
+                            <img src="{{ asset('images/logo-PAMI.jpg') }}" alt="" srcset="">
+                            @endif
                         </div>
                         <div class="row" style="margin-left: -5px;">
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
@@ -59,20 +59,20 @@
                                 T.{{$branch->phone_number}} F.{{$branch->fax}}
                             </div>
                         </div>
-                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Snapshot</b></h2>
+                        <h2 class="pull-right" style="margin-top: -70px; margin-right:40px;"><b>Stock Take</b></h2>
                     </div>
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                     <div style="margin-top:-100px; padding-top: 5px">
                         <div style="margin-left: 450px;">
                             <div style="font-size: 11px;">PI Number  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                {{$modelSnapshot->code}}                    
+                                {{$modelSnapshot->code}}
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">Date  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{date("d-m-Y", strtotime($modelSnapshot->created_at))}}                    
+                                {{date("d-m-Y", strtotime($modelSnapshot->created_at))}}
                             </div>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                                 <div style="margin-left: 55px;margin-top: -20px;font-size: 11px">Date</div>
                             </div> --}}
                         </div>
-                    </div> 
+                    </div>
                 </div> <!-- /.col-xs-12 -->
             </div> <!-- /.row -->
         </main>

@@ -47,9 +47,9 @@
                     <div class="col-sm-4 col-md-4">
                             <div class="box-header no-padding">
                                 <div class="box-body">
-                                    <div class="col-md-4 col-xs-4 no-padding">PO Code</div>
+                                    <div class="col-md-4 col-xs-4 no-padding">PO Number</div>
                                     <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
-                                
+
                                     <div class="col-md-4 col-xs-4 no-padding">Project Number</div>
                                     <div class="col-md-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->project->number : '-'}}">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->project->number : '-'}} </b></div>
 

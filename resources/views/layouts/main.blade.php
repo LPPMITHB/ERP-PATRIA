@@ -32,6 +32,12 @@
                     {{-- <div class="bounceball"></div>
                     <div class="text">LOADING...</div> --}}
                 </div>
+                <div class="overlayUpload">
+                    <div class="loaderUpload">
+                        <i class="fa fa-spinner fa-spin fa-2x"></i>
+                        Uploading...
+                    </div>
+                </div>
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     @yield('content-header')

@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Physical Inventory » Adjustment History',
+        'title' => 'Stock Taking » Adjustment History',
         'items' => [
             'Dashboard' => route('index'),
             'View Adjustment History' =>"",
@@ -24,7 +24,7 @@
                         <span id="date-label-to" class="date-label">To: </span><input class="date_range_filter datepicker" type="text" id="datepicker_to" />
                         <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
                     </div>
-                </div> 
+                </div>
                 <table id="pi-table" class="table table-bordered tableFixed" style="border-collapse:collapse; table-layout:fixed;">
                     <thead>
                         <tr>
@@ -138,7 +138,7 @@
             minDateFilter = "";
             pi_table.draw();
         }
-        
+
         // Date range filter
         minDateFilter = "";
         maxDateFilter = "";
@@ -146,7 +146,7 @@
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
-                    var temp = aData[4].split("-");                    
+                    var temp = aData[4].split("-");
                     aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
                 }
 

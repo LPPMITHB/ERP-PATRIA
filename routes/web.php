@@ -1551,6 +1551,8 @@ Route::name('goods_movement_repair.')->prefix('goods_movement_repair')->group(fu
 
 //Production Order Routes
 Route::name('production_order.')->prefix('production_order')->group(function() {
+    Route::delete('/deleteImage/{id}', 'ProductionOrderController@deleteImage')->name('deleteImage')->middleware('can:confirm-production-order');
+
     Route::patch('/checkProdOrder/{wbs_id}', 'ProductionOrderController@checkProdOrder')->name('checkProdOrder')->middleware('can:create-production-order');
 
     Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order');
@@ -1602,6 +1604,8 @@ Route::name('production_order.')->prefix('production_order')->group(function() {
 
 //Production Order Repair Routes
 Route::name('production_order_repair.')->prefix('production_order_repair')->group(function() {
+    Route::delete('/deleteImage/{id}', 'ProductionOrderController@deleteImage')->name('deleteImage')->middleware('can:confirm-production-order-repair');
+
     Route::patch('/checkProdOrder/{wbs_id}', 'ProductionOrderController@checkProdOrder')->name('checkProdOrder')->middleware('can:create-production-order-repair');
 
     Route::get('/selectProject', 'ProductionOrderController@selectProject')->name('selectProject')->middleware('can:create-production-order-repair');

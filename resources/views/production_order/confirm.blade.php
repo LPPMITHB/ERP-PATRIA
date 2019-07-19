@@ -147,6 +147,10 @@
                                                 <input type="text" class="form-control" readonly>
                                             </div>
                                         </div>
+                                        <div class="progress">
+                                            <div class="bar"></div >
+                                            <div class="percent">0%</div >
+                                        </div>
                                         <div class="col-sm-12 p-l-0">
                                             <label for="type" class="control-label p-b-10">Description</label>
                                             <textarea rows="3" class="form-control" placeholder="Please Input Description" id="description" name="description"></textarea>
@@ -155,7 +159,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">SAVE</button>
+                                <button type="submit" class="btn btn-primary" onclick="overlay()">SAVE</button>
                             </div>
                         </div>
                     </div>
@@ -483,6 +487,7 @@
                                         <td align="center">
                                             <div class="parent-container no-padding">
                                                 <a class="btn btn-primary btn-xs" :href="view(upload)">VIEW</a>
+                                                <button type="button" class="btn btn-danger btn-xs" @click.prevent="deleteImage(upload.id)">DELETE</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -599,6 +604,7 @@
                                                 <label for="type" class="control-label p-b-10">Subject</label>
                                                 <input class="form-control" v-model="moraleNotes.subject" placeholder="Please Input Subject">
                                             </div>
+                                            
                                             <div class="col-sm-12 p-l-0">
                                                 <label for="type" class="control-label p-b-10">Notes</label>
                                                 <textarea rows="4" class="form-control" v-model="moraleNotes.notes" placeholder="Please Input Notes">
@@ -623,10 +629,6 @@
             </div>
             @endverbatim
             </form>
-            
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
         </div>
     </div>
 </div>
@@ -636,6 +638,11 @@
 <script>
     const form = document.querySelector('form#confirm-wo');
     const formUpload = document.querySelector('form#upload');
+    
+    function overlay(){
+        $('div.overlayUpload').show();
+        $('#upload_modal').modal('hide');
+    }
 
     $(document).ready(function(){
         $('.datepicker').datepicker({
@@ -776,6 +783,74 @@
             }
         },
         methods: {
+            getImages(){
+                $('div.overlay').show();
+                window.axios.get('/api/getPou/'+this.upload.prod_id).then(({ data }) => {
+                    this.pou = [];
+                    this.pou = data;
+                    $('div.overlay').hide();
+                });
+            },
+            deleteImage(id){
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this image?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            var url = "";
+                            if(vm.menu == "/production_order"){
+                                url = "/production_order/deleteImage/"+id;
+                            }else if(vm.route == "/production_order_repair"){
+                                url = "/production_order_repair/deleteImage/"+id;
+                            }
+                            $('div.overlay').show();            
+                            window.axios.delete(url).then((response) => {
+                                console.log(response);
+                                if(response.data.error != undefined){
+                                    console.log(response.data.error);
+                                    response.data.error.forEach(error => {
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: error,
+                                            position: 'topRight',
+                                        });
+                                    });
+                                    $('div.overlay').hide();
+                                }else{
+                                    iziToast.success({
+                                        displayMode: 'replace',
+                                        title: response.data.response,
+                                        position: 'topRight',
+                                    });
+                                    vm.getImages();
+                                    $('div.overlay').hide();
+                                }
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: "Please try again.. ",
+                                    position: 'topRight',
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();            
+                            })
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }],
+                    ],
+                });
+            },
             view(data){
                 let path = '../../app/documents/production_order/'+data.picture;
                 
