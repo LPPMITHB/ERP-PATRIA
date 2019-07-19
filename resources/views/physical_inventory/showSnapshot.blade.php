@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Show Snapshot » '.$snapshot->code,
+        'title' => 'Show Stock Take Document » '.$snapshot->code,
         'items' => [
             'Dashboard' => route('index'),
             'Show Snapshot' => "",
@@ -35,8 +35,8 @@
                             Status
                         </div>
                         <div class="col-md-3 col-xs-8">
-                            : 
-                            <b> 
+                            :
+                            <b>
                                 @if($snapshot->status == 1)
                                     Open
                                 @elseif($snapshot->status == 0)
@@ -52,7 +52,7 @@
                             Created At
                         </div>
                         <div class="col-md-3 col-xs-8">
-                            : 
+                            :
                             <b>{{$snapshot->created_at->format('d-m-Y H:i:s')}}</b>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
-        </div> <!-- /.box -->   
+        </div> <!-- /.box -->
     </div> <!-- /.col-xs-12 -->
 </div> <!-- /.row -->
 @endsection

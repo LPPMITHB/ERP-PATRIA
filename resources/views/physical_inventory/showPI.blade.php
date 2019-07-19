@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Physical Inventory » '.$snapshot->code,
+        'title' => 'Stock Taking » '.$snapshot->code,
         'items' => [
             'Dashboard' => route('index'),
             'Show Snapshot' => "",
@@ -35,8 +35,8 @@
                             Status
                         </div>
                         <div class="col-md-3">
-                            : 
-                            <b> 
+                            :
+                            <b>
                                 @if($snapshot->status == 1)
                                     Open
                                 @elseif($snapshot->status == 0)
@@ -52,7 +52,7 @@
                             Created At
                         </div>
                         <div class="col-md-3">
-                            : 
+                            :
                             <b>{{$snapshot->created_at->format('d-m-Y H:i:s')}}</b>
                         </div>
                     </div>
