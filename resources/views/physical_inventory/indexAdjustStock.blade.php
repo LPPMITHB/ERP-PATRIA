@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Physical Inventory » Confirm Adjusted Stock',
+        'title' => 'Stock Taking » Confirm Adjusted Stock',
         'items' => [
             'Dashboard' => route('index'),
             'Confirm Adjusted Stock' =>"",

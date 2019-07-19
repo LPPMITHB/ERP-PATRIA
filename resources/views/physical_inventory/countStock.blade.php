@@ -4,7 +4,7 @@
 @if($menu == "building")
     @breadcrumb(
         [
-            'title' => 'Physical Inventory » Count Stock for '.$snapshot->code,
+            'title' => 'Stock Taking » Count Stock for '.$snapshot->code,
             'items' => [
                 'Dashboard' => route('index'),
                 'Begin Count Stock' => route('physical_inventory.indexCountStock'),
@@ -16,7 +16,7 @@
 @else
     @breadcrumb(
         [
-            'title' => 'Physical Inventory » Count Stock for '.$snapshot->code,
+            'title' => 'Stock Taking » Count Stock for '.$snapshot->code,
             'items' => [
                 'Dashboard' => route('index'),
                 'Begin Count Stock' => route('physical_inventory_repair.indexCountStock'),
@@ -117,7 +117,7 @@
 @push('script')
 <script>
     const form = document.querySelector('form#countStock');
-    
+
     $(document).ready(function(){
         $('#stock-table').DataTable({
             'paging'      : true,
@@ -146,7 +146,7 @@
                 this.snapshotDetails.forEach(details => {
                     if(details.count == ""){
                         isOk = true;
-                    }        
+                    }
                 });
 
                 return isOk;
@@ -181,7 +181,7 @@
                         }else{
                             this.snapshotDetails[index].difference = (this.snapshotDetails[index].difference+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
-                        
+
                         var decimal = (this.snapshotDetails[index].count+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
                             var maxDecimal = 2;
@@ -217,7 +217,7 @@
                 if(details.count != null){
                     details.difference = ((details.quantity - (details.quantity * 2) + details.count)+"");
                     details.count = (details.count+"").replace(/,/g , '');
-                }else{    
+                }else{
                     details.count = details.quantity;
                     var count = parseFloat((details.count+"").replace(/,/g , ''));
                     details.difference = ((details.quantity - (details.quantity * 2) + count)+"");
@@ -235,7 +235,7 @@
                     }else{
                         details.difference = (details.difference+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                    
+
                     var decimal = (details.count+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
