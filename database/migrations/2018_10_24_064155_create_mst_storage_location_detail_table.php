@@ -17,6 +17,8 @@ class CreateMstStorageLocationDetailTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('material_id');
             $table->float('quantity',15,2);
+            $table->float('value')->nullable();
+            $table->unsignedInteger('goods_receipt_detail_id')->nullable();
             $table->unsignedInteger('storage_location_id')->nullable();
             $table->timestamps();
             
