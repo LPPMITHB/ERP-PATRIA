@@ -1356,6 +1356,20 @@ Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(functi
     Route::get('/print/{id}', 'GoodsReturnController@printPdf')->name('print')->middleware('can:show-goods-return-repair');
 });
 
+//Purchase Order Routes
+Route::name('reverse_transaction.')->prefix('reverse_transaction')->group(function() {
+    Route::get('/indexApprove', 'ReverseTransactionController@indexApprove')->name('indexApprove')->middleware('can:approve-goods-return-repair');
+    
+    Route::get('/create', 'ReverseTransactionController@create')->name('create')->middleware('can:create-work-order');
+    
+    Route::get('/selectDocument', 'ReverseTransactionController@selectDocument')->name('selectDocument')->middleware('can:create-work-order');
+
+    Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:index-work-order');
+
+    Route::post('/', 'ReverseTransactionController@store')->name('store')->middleware('can:create-material-requisition');
+
+});
+
 //Stock Management Routes
 Route::name('stock_management.')->prefix('stock_management')->group(function() {
     Route::get('/', 'StockManagementController@index')->name('index');

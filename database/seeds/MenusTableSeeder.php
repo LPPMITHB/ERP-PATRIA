@@ -814,6 +814,54 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 2,
+            'name' => 'Reverse Transaction',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$materialManagement,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $reverseTransaction =  Menu::where('name','Reverse Transaction')->where('menu_id',$materialManagement)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create Reverse Transaction',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'reverse_transaction.selectDocument',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$reverseTransaction,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Approve Reverse Transaction',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'reverse_transaction.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$reverseTransaction,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit Reverse Transaction',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'reverse_transaction.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$reverseTransaction,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
             'name' => 'Resource Management',
             'icon' => 'fa-database',
             'is_active' => true,
