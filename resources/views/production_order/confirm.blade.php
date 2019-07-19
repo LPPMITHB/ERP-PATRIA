@@ -487,6 +487,7 @@
                                         <td align="center">
                                             <div class="parent-container no-padding">
                                                 <a class="btn btn-primary btn-xs" :href="view(upload)">VIEW</a>
+                                                <button type="button" class="btn btn-danger btn-xs" @click.prevent="deleteImage(upload.id)">DELETE</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -782,6 +783,74 @@
             }
         },
         methods: {
+            getImages(){
+                $('div.overlay').show();
+                window.axios.get('/api/getPou/'+this.upload.prod_id).then(({ data }) => {
+                    this.pou = [];
+                    this.pou = data;
+                    $('div.overlay').hide();
+                });
+            },
+            deleteImage(id){
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this image?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            var url = "";
+                            if(vm.menu == "/production_order"){
+                                url = "/production_order/deleteImage/"+id;
+                            }else if(vm.route == "/production_order_repair"){
+                                url = "/production_order_repair/deleteImage/"+id;
+                            }
+                            $('div.overlay').show();            
+                            window.axios.delete(url).then((response) => {
+                                console.log(response);
+                                if(response.data.error != undefined){
+                                    console.log(response.data.error);
+                                    response.data.error.forEach(error => {
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: error,
+                                            position: 'topRight',
+                                        });
+                                    });
+                                    $('div.overlay').hide();
+                                }else{
+                                    iziToast.success({
+                                        displayMode: 'replace',
+                                        title: response.data.response,
+                                        position: 'topRight',
+                                    });
+                                    vm.getImages();
+                                    $('div.overlay').hide();
+                                }
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: "Please try again.. ",
+                                    position: 'topRight',
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();            
+                            })
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        }],
+                    ],
+                });
+            },
             view(data){
                 let path = '../../app/documents/production_order/'+data.picture;
                 

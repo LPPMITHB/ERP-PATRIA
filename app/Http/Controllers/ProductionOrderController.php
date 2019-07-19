@@ -32,10 +32,30 @@ use App\Models\ProductionOrderUpload;
 use Auth;
 use DateTime;
 use DB;
+use File;
 
 class ProductionOrderController extends Controller
 {
-    
+    public function deleteImage(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $pou = ProductionOrderUpload::findOrFail($id);
+
+            $image_path = public_path("app/documents/production_order/".$pou->picture); 
+            if(File::exists($image_path)) {
+                File::delete($image_path);
+            }
+
+            $pou->delete();
+            DB::commit();
+            return response(["response"=>"Success to delete image"],Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     public function upload(Request $request){
         $route = $request->route()->getPrefix();
         $this->validate($request, [
@@ -1646,5 +1666,10 @@ class ProductionOrderController extends Controller
 		$mr_number = $year+$number;
         $mr_number = 'MR-'.$mr_number;
 		return $mr_number;
+    }
+
+    public function getPouAPI($id){
+
+        return response(ProductionOrderUpload::where('production_order_id',$id)->with('user')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 }
