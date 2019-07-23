@@ -4,14 +4,14 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="initial-scale=1.0">
-    
+
         <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css" media="all">
         <style>
-             /** 
+             /**
                     Set the margins of the page to 0, so the footer and the header
                     can be of the full height and width !
                  **/
-                 
+
                 /** Define now the real margins of every page in the PDF **/
                 @page{
                     margin-top:310px;
@@ -44,10 +44,10 @@
                     <div class="box-header no-padding" style="margin-bottom : 47px">
                         <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">
                             @if($route == '/goods_receipt')
-                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">    
-                            @else 
-                            <img src="{{ asset('images/logo-PAMI.jpg') }}" alt="" srcset="">    
-                            @endif                    
+                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">
+                            @else
+                            <img src="{{ asset('images/logo-PAMI.jpg') }}" alt="" srcset="">
+                            @endif
                         </div>
                         <div class="row" style="margin-left: -5px;">
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
@@ -107,36 +107,36 @@
                         <div style="margin-left: 450px;">
                             <div style="font-size: 11px;">GR Number  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
-                                {{$modelGR->number}}                    
+                                {{$modelGR->number}}
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">GR Date  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{date("d-m-Y", strtotime($modelGR->created_at))}}                    
+                                {{date("d-m-Y", strtotime($modelGR->created_at))}}
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">FOB </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                -                    
+                                -
                             </div>
                         </div>
                         <div  style="margin-left: 450px;">
                             @if($modelGR->purchase_order_id != "")
                             <div style="font-size: 11px;">PO Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelGR->purchaseOrder->number}}                    
+                                {{$modelGR->purchaseOrder->number}}
                             </div>
                             @elseif($modelGR->work_order_id != "")
                             <div style="font-size: 11px;">WO Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                {{$modelGR->workOrder->number}}                    
+                                {{$modelGR->workOrder->number}}
                             </div>
                             @else
                             <div style="font-size: 11px;">PO Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
-                                -                   
+                                -
                             </div>
                             @endif
                         </div>
@@ -145,7 +145,7 @@
                             <div class="p-l-5" style="font-size: 11px;margin-left: 120px; margin-top:-20px">
                                 @if($modelGR->ship_date != "")
                                 {{date("d-m-Y", strtotime($modelGR->ship_date))}}
-                                @else 
+                                @else
                                 -
                                 @endif
                             </div>
@@ -190,7 +190,7 @@
                                 <div style="font-size: 11px">{{$modelGR->description}}</div>
                             </div>
                             <div>
-                                <div style="margin-left: 290px; margin-top: 3px; font-size: 11px">Prepared By</div>
+                                <div style="margin-left: 290px; margin-top: 3px; font-size: 11px">Received By</div>
                                 <hr style="margin-left: 290px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
                                 <div style="margin-left: 290px;margin-top: -20px;font-size: 11px">Date</div>
                             </div>
@@ -198,19 +198,19 @@
                                 <div style="margin-top: 3px; font-size: 11px">Aproved By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
                                 <div style="margin-top: -20px;font-size: 11px">Date</div>
-                            </div>  
+                            </div>
                             <div style="margin-top:-60px; width:200px;padding-left:5px; border: black 1px solid; border-radius: 5px; height:40px; margin-left:510px;">
                                 <div style="font-size: 11px"><b>Total Item</b></div>
                                 <div class="p-l-5" style="font-size: 11px;margin-left: 170px; margin-top:-20px">
-                                    {{$modelGR->goodsReceiptDetails->count('material')}}                    
+                                    {{$modelGR->goodsReceiptDetails->count('material')}}
                                 </div>
                                 <div style="font-size: 11px"><b>Total Quantity</b></div>
                                 <div class="p-l-5" style="font-size: 11px;margin-left: 170px; margin-top:-20px">
-                                    {{$modelGR->goodsReceiptDetails->sum('quantity')}}                    
+                                    {{$modelGR->goodsReceiptDetails->sum('quantity')}}
                                 </div>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div> <!-- /.col-xs-12 -->
             </div> <!-- /.row -->
         </main>
