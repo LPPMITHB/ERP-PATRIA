@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Physical Inventory » Begin Count Stock',
+        'title' => 'Stock Taking » Begin Count Stock',
         'items' => [
             'Dashboard' => route('index'),
             'Begin Count Stock' =>"",

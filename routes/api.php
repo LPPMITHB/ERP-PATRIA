@@ -193,3 +193,6 @@ Route::get('/getDailyWeather', 'WeatherController@getWeatherAPI')->name('api.dmh
 
 // Tidal Report
 Route::get('/getDailyTidal', 'TidalController@getTidalAPI')->name('api.dmh.getTidalAPI');
+
+// Reverse Transaction
+Route::get('/getDocuments/{id}/{menu}', 'ReverseTransactionController@getDocuments')->name('api.rt.getDocuments');
