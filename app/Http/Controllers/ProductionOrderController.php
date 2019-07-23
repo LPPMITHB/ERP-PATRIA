@@ -25,6 +25,10 @@ use App\Models\MaterialRequisitionDetail;
 use App\Models\Configuration;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsReceiptDetail;
+use App\Models\GoodsIssue;
+use App\Models\GoodsIssueDetail;
+use App\Models\GoodsReturn;
+use App\Models\GoodsReturnDetail;
 use App\Models\StorageLocation;
 use App\Models\StorageLocationDetail;
 use App\Models\BomPrep;
@@ -439,12 +443,45 @@ class ProductionOrderController extends Controller
     public function confirm(Request $request,$id){
         $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get()->jsonSerialize();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $uoms = Uom::all()->jsonSerialize();
         $POU = ProductionOrderUpload::where('production_order_id',$modelPrO->id)->with('user')->get();
-
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms','POU'));
+        $materials = Collection::make();
+        foreach($modelPrOD as $prod){
+            $modelMRD = MaterialRequisitionDetail::where('wbs_id',$prod->productionOrder->wbs_id)->select('material_requisition_id')->get();
+            $modelGI = GoodsIssue::whereIn('material_requisition_id',$modelMRD)->get();
+            $actual = 0;
+            $return = 0;
+            foreach($modelGI as $gi){
+                foreach($gi->goodsIssueDetails as $gid){
+                    if($gid->material_id == $prod->material_id){
+                        $actual += $gid->quantity;
+                    }
+                }
+                $modelGRT = GoodsReturn::where('goods_issue_id',$gi->id)->get();
+                if($modelGRT){
+                    foreach($modelGRT as $grt){
+                        if($grt->status == 2){
+                            foreach($grt->goodsReturnDetails as $grd){
+                                if($grd->material_id == $prod->material_id){
+                                    $return += $grd->quantity;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $materials->push([
+               "material_code" => $prod->material->code,
+               "material_description" => $prod->material->description,
+               "quantity" => $prod->quantity,
+               "actual" => $actual - $return,
+               "remaining" => $prod->quantity - $actual + $return,
+               "unit" => $prod->material->uom->unit
+            ]);
+        }
+        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms','POU','materials'));
     }
 
     public function confirmRepair(Request $request,$id){
