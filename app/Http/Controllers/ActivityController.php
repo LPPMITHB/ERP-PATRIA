@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Notification;
 use App\Notifications\ProjectActivity;
 use App\Http\Controllers\Controller;
 use App\Models\Uom;
 use App\Models\WBS;
+use App\Models\Notification;
 use App\Models\Project;
 use App\Models\Activity;
 use App\Models\ActivityDetail;
@@ -118,9 +118,21 @@ class ActivityController extends Controller
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
-            $users = User::whereIn('role_id',[1])->get();
-            // Notification::send($users, new ProjectActivity($activity));
             $activity->save();
+            //MAKE NOTIFICATION
+            $data = json_encode([
+                'text' => ' until '.$activity->name.' for project '.$activity->wbs->project->name.' planned start date',
+                'title' => 'Activity',
+                'url' => '/activity/show/'.$activity->id,
+            ]);
+            $new_notification = new Notification;
+            $new_notification->type = "Activity";
+            $new_notification->role_id = Auth::user()->role_id;
+            $new_notification->notification_date = $activity->planned_start_date;
+            $new_notification->data = $data;
+            $new_notification->save();
+
+
             if($activity->wbs->project->business_unit_id == 2){
                 $project_id = $activity->wbs->project_id;
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){

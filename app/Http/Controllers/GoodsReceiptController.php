@@ -202,7 +202,7 @@ class GoodsReceiptController extends Controller
                     
                     $this->updatePOD($data->id,$data->received);
                     $this->updateStock($data->material_id, $data->quantity);
-                    $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
+                    $this->updateSlocDetail($data, $GRD, $GRD);
                 }
             }
             $this->checkStatusPO($datas->purchase_order_id);
@@ -319,7 +319,7 @@ class GoodsReceiptController extends Controller
                     $GRD->save();
                 
                     $this->updateStock($data->material_id, $data->quantity);
-                    $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
+                    $this->updateSlocDetail($data, $GRD);
                 }
             }
             DB::commit();
@@ -376,18 +376,14 @@ class GoodsReceiptController extends Controller
         }
     }
 
-    public function updateSlocDetail($material_id,$sloc_id,$received){
-        $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->first();
-        if($modelSlocDetail){
-            $modelSlocDetail->quantity += $received;
-            $modelSlocDetail->update();
-        }else{
-            $modelSlocDetail = new StorageLocationDetail;
-            $modelSlocDetail->quantity = $received;
-            $modelSlocDetail->material_id = $material_id;
-            $modelSlocDetail->storage_location_id = $sloc_id;
-            $modelSlocDetail->save();
-        }
+    public function updateSlocDetail($data, $GRD){
+        $modelSlocDetail = new StorageLocationDetail;
+        $modelSlocDetail->quantity = $data->quantity;
+        $modelSlocDetail->value = $data->total_price / $data->quantity;
+        $modelSlocDetail->goods_receipt_detail_id = $GRD->id;
+        $modelSlocDetail->material_id = $data->material_id;
+        $modelSlocDetail->storage_location_id = $data->sloc_id;
+        $modelSlocDetail->save();
     }
     public function checkStatusPO($purchase_order_id){
         $modelPO = PurchaseOrder::findOrFail($purchase_order_id);

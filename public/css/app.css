@@ -24259,6 +24259,15 @@ textarea {
   height: 100%;
 }
 
+.overlayUpload {
+  background-color: white;
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
 .loader {
   width: 250px;
   height: 50px;
@@ -24266,6 +24275,23 @@ textarea {
   text-align: center;
   position: absolute;
   top: 45%;
+  left: 40%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  font-family: helvetica, arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: #3c8dbc;
+  letter-spacing: 0.2em;
+}
+
+.loaderUpload {
+  width: 250px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  position: absolute;
+  top: 3%;
   left: 40%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
