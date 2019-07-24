@@ -102,14 +102,12 @@
                                         <td>{{ bomDetail.material.uom.unit }}</td>
                                         <td>{{ bomDetail.source }}</td>
                                         <td class="p-l-0" align="center">
-                                            <template v-if="bom.status == 1">
-                                                <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(bomDetail,index)">
-                                                    EDIT
-                                                </a>
-                                                <a href="#" @click="removeRow(bomDetail.id)" class="btn btn-danger btn-xs">
-                                                    <div class="btn-group">DELETE</div>
-                                                </a>
-                                            </template>
+                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(bomDetail,index)">
+                                                EDIT
+                                            </a>
+                                            <a href="#" @click="removeRow(bomDetail.id)" class="btn btn-danger btn-xs">
+                                                <div class="btn-group">DELETE</div>
+                                            </a>
                                         </td>
                                     </tr>
                                 </tbody>

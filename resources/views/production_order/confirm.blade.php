@@ -356,7 +356,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h4 class="box-title m-t-0">Material</h4>
-                            <table id="material-table" class="table table-bordered tableFixed">
+                            <table id="material-table" class="table table-bordered tableFixed showTable">
                                 <thead>
                                     <tr>
                                         <th width="4%">No</th>
@@ -365,20 +365,18 @@
                                         <th width="8%">Quantity</th>
                                         <th width="8%">Actual</th>
                                         <th width="8%">Remaining</th>
-                                        <th width="8%">Used</th>
+                                        <th width="8%">Unit</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in materials">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.material.code }}</td>
-                                        <td class="tdEllipsis">{{ data.material.description }}</td>
-                                        <td class="tdEllipsis">{{ data.used }}</td>
+                                        <td class="tdEllipsis">{{ data.material_code }}</td>
+                                        <td class="tdEllipsis">{{ data.material_description }}</td>
+                                        <td class="tdEllipsis">{{ data.quantity }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
-                                        <td class="tdEllipsis">{{ data.sugQuantity }}</td>
-                                        <td class="tdEllipsis no-padding ">
-                                            <input class="form-control width100" v-model="data.quantity" placeholder="Please Input Quantity">
-                                        </td>
+                                        <td class="tdEllipsis">{{ data.remaining }}</td>
+                                        <td class="tdEllipsis">{{ data.unit }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -623,7 +621,6 @@
                         </div>
                     </div>
                     <div class="col-md-12 p-t-10 p-r-0">
-                        <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CONFIRM</button>
                     </div>
                 </div>
             </div>
@@ -686,7 +683,7 @@
         uoms : @json($uoms),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
-        materials : [],
+        // materials : [],
         resources : [],
         services : [],
         wbs_id: @json($modelPrO->wbs->id),
@@ -723,7 +720,8 @@
             description : "",
             prod_id :@json($modelPrO->id)
         },
-        pou : @json($POU)
+        pou : @json($POU),
+        materials : @json($materials)
     };
 
     var vm = new Vue({
@@ -1156,14 +1154,14 @@
                 },
                 deep: true
             }, 
-            materials:{
-                handler: function(newValue) {
-                    this.materials.forEach(material => {
-                        material.quantity = (material.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    });
-                },
-                deep: true
-            }, 
+            // materials:{
+            //     handler: function(newValue) {
+            //         this.materials.forEach(material => {
+            //             material.quantity = (material.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+            //         });
+            //     },
+            //     deep: true
+            // }, 
             'confirmActivity.actual_start_date' :function(newValue){
                 if(newValue == ""){
                     $('#actual_end_date').datepicker('setDate', null);
@@ -1200,6 +1198,44 @@
 
             today = yyyy + '-' + mm + '-' + dd;
             this.today = today;
+            this.materials.forEach(material => {
+                // quantity
+                var decimal = (material.quantity+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        material.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        material.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    material.quantity = (material.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+                // actual
+                var decimal = (material.actual+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        material.actual = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        material.actual = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    material.actual = (material.actual+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+                // remaining
+                var decimal = (material.remaining+"").replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        material.remaining = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        material.remaining = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    material.remaining = (material.remaining+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            })
             this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null){
                     if(POD.actual == null){
@@ -1219,7 +1255,7 @@
                     POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    this.materials.push(POD);
+                    // this.materials.push(POD);
                 }else if(POD.service_id != null){
                     if(POD.actual == null){
                         POD.actual = 0;

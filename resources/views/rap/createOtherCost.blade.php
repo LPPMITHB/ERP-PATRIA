@@ -216,7 +216,8 @@ var vm = new Vue({
             let isOk = false;
                 if(this.newCost.name == ""
                 || this.newCost.description == ""
-                || this.newCost.cost == "")
+                || this.newCost.cost == ""
+                || this.newCost.cost_type == "")
                 {
                     isOk = true;
                 }
@@ -226,7 +227,8 @@ var vm = new Vue({
             let isOk = false;
                 if(this.editCost.name == ""
                 || this.editCost.description == ""
-                || this.editCost.cost == "")
+                || this.editCost.cost == ""
+                || this.editCost.cost_type == "")
                 {
                     isOk = true;
                 }
