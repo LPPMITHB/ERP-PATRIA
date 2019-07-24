@@ -54,6 +54,49 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Reverse Transaction
+        $reverseTransaction = Menu::where('name','Reverse Transaction')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'list-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'create-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'show-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'edit-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Approve Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'approve-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+
         //Dashboard
         $dashboard = Menu::where('name','Dashboard')->select('id')->first()->id;
         DB::table('permissions')->insert([

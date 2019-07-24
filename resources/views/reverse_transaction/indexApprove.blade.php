@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Approve Material Requisition » Select Material Requisition',
+        'title' => 'Approve Reverse Transaction » Select Reverse Transaction',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Material Requisition' => route('material_requisition.indexApprove'),
+            'Select Reverse Transaction' => route('reverse_transaction.indexApprove'),
         ]
     ]
 )
@@ -29,24 +29,26 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Number</th>
-                            <th width="45%">Description</th>
-                            <th width="20%">Project Name</th>
+                            <th width="10%">Type</th>
+                            <th width="15%">Number</th>
+                            <th width="35%">Description</th>
+                            <th width="25%">Old Reference Document</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelMRs as $modelMR)
+                        @foreach($modelDatas as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelMR->number }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelMR->description}}">{{ $modelMR->description }}</td>
-                                <td>{{ $modelMR->project != null ? $modelMR->project->name : "-" }}</td>
+                                <td>{{ $data->number }}</td>
+                                <td>{{$data->type_string}}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$data->description}}">{{ $data->description }}</td>
+                                <td>{{ $data->referenceDocument->number }}</td>
                                 <td class="textCenter">
                                     @if($menu == "building")
-                                        <a href="{{ route('material_requisition.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
-                                    @else
-                                        <a href="{{ route('material_requisition_repair.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('reverse_transaction.showApprove', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    {{-- @else --}}
+                                        {{-- <a href="{{ route('reverse_transaction.showApprove', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">SELECT</a> --}}
                                     @endif
                                 </td>
                             </tr>

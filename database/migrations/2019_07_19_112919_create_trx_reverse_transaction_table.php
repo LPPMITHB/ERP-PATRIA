@@ -15,9 +15,10 @@ class CreateTrxReverseTransactionTable extends Migration
     {
         Schema::create('trx_reverse_transaction', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('number')->unique();
             $table->integer('type');
             $table->integer('old_reference_document');
-            $table->integer('new_reference_document');
+            $table->integer('new_reference_document')->nullable();
             $table->unsignedInteger('business_unit_id');
             $table->text('description')->nullable();
             $table->text('revision_description')->nullable();

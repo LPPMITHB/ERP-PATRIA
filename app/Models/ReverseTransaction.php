@@ -12,4 +12,14 @@ class ReverseTransaction extends Model
     {
         return $this->hasMany('App\Models\ReverseTransactionDetail');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo('App\Models\User','approved_by');
+    }
 }

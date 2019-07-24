@@ -12,4 +12,9 @@ class ReverseTransactionDetail extends Model
     {
         return $this->belongsTo('App\Models\ReverseTransaction');
     }
+
+    public function material()
+    {
+        return $this->belongsTo('App\Models\Material');
+    }
 }

@@ -58,16 +58,22 @@
 
                                     <div class="col-md-4 col-xs-4 no-padding">Ship Date</div>
                                     <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->ship_date) ? date('d-m-Y', strtotime($modelGR->ship_date)) : '-'}} </b></div>
+                                    
                                 </div>
                             </div>
                     </div>
                     <div class="col-sm-4 col-md-4">
-                            <div class="box-header no-padding">
-                                    <div class="box-body">
-                                        <div class="col-md-4 col-xs-4 no-padding">Description</div>
-                                        <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelGR->description}}">: <b> {{ $modelGR->description }} </b></div>
-                                    </div>
+                        <div class="box-header no-padding">
+                            <div class="box-body">
+                                @if ($modelGR->status == 2)
+                                    <div class="col-md-4 col-xs-4 no-padding">Status</div>
+                                    <div class="col-md-6 no-padding">: <b> REVERSED </b></div>
+                                @endif
+                                
+                                <div class="col-md-4 col-xs-4 no-padding">Description</div>
+                                <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelGR->description}}">: <b> {{ $modelGR->description }} </b></div>
                             </div>
+                        </div>
                     </div>
                 </div>
             <div class="box-body p-t-0">
@@ -93,7 +99,7 @@
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GRD->material->description}}">{{ $GRD->material->description }}</td>
                                     <td>{{ $GRD->material->uom->unit }}</td>
                                     <td>{{ number_format($GRD->quantity,2) }}</td>
-                                    <td>{{ isset($GRD->storageLocation->name) ? $GRD->storageLocation->name : '-' }} </td>
+                                    <td>{{ isset($GRD->storageLocation) ? $GRD->storageLocation->name : '-' }} </td>
                                     <td>{{ isset($GRD->received_date) ? date('d-m-Y', strtotime($GRD->received_date)) : '-' }}</td>
                                 </tr>
                                 @endforeach
