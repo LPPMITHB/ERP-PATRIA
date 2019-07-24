@@ -93,8 +93,7 @@
 
                         <div class="col-md-2 col-xs-12 pull-right">
                             <template v-if="route == '/bom'">
-                                <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">EDIT</a>
-                                <a v-else-if="bom.status == 0" class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">ADD ADDITIONAL</a>
+                                <a class="btn btn-sm btn-primary pull-right btn-block" :href="editBom(bom.id)">EDIT</a>
                                 <a v-if="bom.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmBom(bom.id)">CONFIRM</a>
                             </template>
                             <template v-else-if="route == '/bom_repair'">

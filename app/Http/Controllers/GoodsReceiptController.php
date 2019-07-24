@@ -379,7 +379,11 @@ class GoodsReceiptController extends Controller
     public function updateSlocDetail($data, $GRD){
         $modelSlocDetail = new StorageLocationDetail;
         $modelSlocDetail->quantity = $data->quantity;
-        $modelSlocDetail->value = $data->total_price / $data->quantity;
+        if(isset($data->total_price)){
+            $modelSlocDetail->value = $data->total_price / $data->quantity;
+        }else{
+            $modelSlocDetail->value = 0;
+        }
         $modelSlocDetail->goods_receipt_detail_id = $GRD->id;
         $modelSlocDetail->material_id = $data->material_id;
         $modelSlocDetail->storage_location_id = $data->sloc_id;
