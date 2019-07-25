@@ -661,6 +661,22 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Purchase Requisition',
+            'menu_id' => $viewPR,
+            'middleware' => 'cancel-purchase-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Requisition',
+            'menu_id' => $viewPR,
+            'middleware' => 'cancel-approval-purchase-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         $approvePR = Menu::where('name','Approve PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Requisition',
@@ -713,6 +729,22 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Purchase Requisition Repair',
             'menu_id' => $viewPrRepair,
             'middleware' => 'edit-purchase-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Purchase Requisition Repair',
+            'menu_id' => $viewPrRepair,
+            'middleware' => 'cancel-purchase-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Requisition Repair',
+            'menu_id' => $viewPrRepair,
+            'middleware' => 'cancel-approval-purchase-requisition-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
