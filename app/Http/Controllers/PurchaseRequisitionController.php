@@ -66,9 +66,9 @@ class PurchaseRequisitionController extends Controller
             
             DB::commit();
             if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$id)->with('success', 'Purchase Requisition Canceled');
+                return redirect()->route('purchase_requisition.show',$id)->with('success', 'Approval Canceled');
             }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$id)->with('success', 'Purchase Requisition Canceled');
+                return redirect()->route('purchase_requisition_repair.show',$id)->with('success', 'Approval Canceled');
             }
         } catch (\Exception $e) {
             DB::rollback();
