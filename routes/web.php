@@ -1372,17 +1372,27 @@ Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(functi
     Route::get('/print/{id}', 'GoodsReturnController@printPdf')->name('print')->middleware('can:show-goods-return-repair');
 });
 
-//Purchase Order Routes
+//Reverse Transaction Routes
 Route::name('reverse_transaction.')->prefix('reverse_transaction')->group(function() {
-    Route::get('/indexApprove', 'ReverseTransactionController@indexApprove')->name('indexApprove')->middleware('can:approve-goods-return-repair');
-    
-    Route::get('/create', 'ReverseTransactionController@create')->name('create')->middleware('can:create-work-order');
-    
-    Route::get('/selectDocument', 'ReverseTransactionController@selectDocument')->name('selectDocument')->middleware('can:create-work-order');
+    Route::get('/indexApprove', 'ReverseTransactionController@indexApprove')->name('indexApprove')->middleware('can:approve-reverse-transaction');
 
-    Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:index-work-order');
+    Route::get('/approval', 'ReverseTransactionController@approval')->name('approval')->middleware('can:approve-material-requisition');
+    
+    Route::get('/create/{documentType}/{id}', 'ReverseTransactionController@create')->name('create')->middleware('can:create-reverse-transaction');
+    
+    Route::get('/selectDocument', 'ReverseTransactionController@selectDocument')->name('selectDocument')->middleware('can:create-reverse-transaction');
 
-    Route::post('/', 'ReverseTransactionController@store')->name('store')->middleware('can:create-material-requisition');
+    Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:list-reverse-transaction');
+
+    Route::get('/{id}', 'ReverseTransactionController@show')->name('show')->middleware('can:show-reverse-transaction');
+    
+    Route::get('/showApprove/{id}', 'ReverseTransactionController@showApprove')->name('showApprove')->middleware('can:approve-reverse-transaction');
+
+    Route::get('/{id}/edit', 'ReverseTransactionController@edit')->name('edit')->middleware('can:edit-reverse-transaction');
+
+    Route::patch('/{id}', 'ReverseTransactionController@update')->name('update')->middleware('can:edit-reverse-transaction');
+
+    Route::post('/', 'ReverseTransactionController@store')->name('store')->middleware('can:create-reverse-transaction');
 
 });
 

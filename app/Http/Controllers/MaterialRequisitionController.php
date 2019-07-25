@@ -464,6 +464,7 @@ class MaterialRequisitionController extends Controller
                 $modelMR->status = 3;
                 $modelMR->revision_description = $datas->desc;
                 $modelMR->approved_by = Auth::user()->id;
+                $modelMR->approval_date = Carbon::now();
                 $modelMR->update();
                 DB::commit();
                 if($route == "/material_requisition"){

@@ -3,10 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Material Requisition',
+        'title' => 'Approve Material Requisition',
         'items' => [
             'Dashboard' => route('index'),
-            'View Material Requisition' => route('purchase_requisition.show',$modelMR->id),
+            'Select Material Requisition' => route('material_requisition.indexApprove'),
+            'Approve Material Requisition' => route('material_requisition.show',$modelMR->id),
         ]
     ]
 )

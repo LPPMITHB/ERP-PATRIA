@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Approve Material Requisition » Select Material Requisition',
+        'title' => 'Approve Reverse Transaction » Select Reverse Transaction',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Material Requisition' => route('material_requisition.indexApprove'),
+            'Select Reverse Transaction' => route('reverse_transaction.indexApprove'),
         ]
     ]
 )
@@ -25,28 +25,39 @@
                         <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
                     </div>
                 </div> 
-                <table class="table table-bordered tableFixed" id="mr-table">
+                <table class="table table-bordered tableFixed" id="rt-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Number</th>
-                            <th width="45%">Description</th>
-                            <th width="20%">Project Name</th>
+                            <th width="10%">Type</th>
+                            <th width="15%">Number</th>
+                            <th width="35%">Description</th>
+                            <th width="25%">Old Reference Document</th>
+                            <th width="10%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelMRs as $modelMR)
+                        @foreach($modelDatas as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelMR->number }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelMR->description}}">{{ $modelMR->description }}</td>
-                                <td>{{ $modelMR->project != null ? $modelMR->project->name : "-" }}</td>
+                                <td>{{$data->type_string}}</td>
+                                <td>{{ $data->number }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$data->description}}">{{ $data->description }}</td>
+                                <td>{{ $data->referenceDocument->number }}</td>
+                                <td>{{ $data->status_string }}</td>
                                 <td class="textCenter">
                                     @if($menu == "building")
-                                        <a href="{{ route('material_requisition.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('reverse_transaction.show', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                     @else
-                                        <a href="{{ route('material_requisition_repair.showApprove', ['id'=>$modelMR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a href="{{ route('reverse_transaction_repair.show', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
+                                    @if($data->status == 1 || $data->status == 3 || $data->status == 4)
+                                        @if($menu == "building")
+                                            <a href="{{ route('reverse_transaction.edit', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        @else
+                                            <a href="{{ route('reverse_transaction_repair.edit', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
@@ -65,7 +76,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        var mr_table = $('#mr-table').DataTable({
+        var rt_table = $('#rt-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'ordering'    : true,
@@ -83,11 +94,11 @@
         }).keyup(function() {
             var temp = this.value.split("-");
             minDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
-            mr_table.draw();
+            rt_table.draw();
         }).change(function() {
             var temp = this.value.split("-");
             minDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
-            mr_table.draw();
+            rt_table.draw();
         });
 
         $("#datepicker_to").datepicker({
@@ -96,11 +107,11 @@
         }).keyup(function() {
             var temp = this.value.split("-");
             maxDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
-            mr_table.draw();
+            rt_table.draw();
         }).change(function() {
             var temp = this.value.split("-");
             maxDateFilter = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
-            mr_table.draw();
+            rt_table.draw();
         });
 
         document.getElementById("btn-reset").addEventListener("click", reset);
@@ -110,7 +121,7 @@
             $("#datepicker_to").val('');
             maxDateFilter = "";
             minDateFilter = "";
-            mr_table.draw();
+            rt_table.draw();
         }
         
         // Date range filter
