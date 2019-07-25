@@ -1366,7 +1366,7 @@ Route::name('reverse_transaction.')->prefix('reverse_transaction')->group(functi
     
     Route::get('/selectDocument', 'ReverseTransactionController@selectDocument')->name('selectDocument')->middleware('can:create-reverse-transaction');
 
-    Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:index-reverse-transaction');
+    Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:list-reverse-transaction');
 
     Route::get('/{id}', 'ReverseTransactionController@show')->name('show')->middleware('can:show-reverse-transaction');
     

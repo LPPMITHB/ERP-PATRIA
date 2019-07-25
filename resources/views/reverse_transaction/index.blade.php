@@ -33,6 +33,7 @@
                             <th width="15%">Number</th>
                             <th width="35%">Description</th>
                             <th width="25%">Old Reference Document</th>
+                            <th width="10%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
@@ -44,11 +45,19 @@
                                 <td>{{ $data->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$data->description}}">{{ $data->description }}</td>
                                 <td>{{ $data->referenceDocument->number }}</td>
+                                <td>{{ $data->status_string }}</td>
                                 <td class="textCenter">
                                     @if($menu == "building")
-                                        <a href="{{ route('reverse_transaction.showApprove', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
-                                    {{-- @else --}}
-                                        {{-- <a href="{{ route('reverse_transaction.showApprove', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">SELECT</a> --}}
+                                        <a href="{{ route('reverse_transaction.show', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @else
+                                        <a href="{{ route('reverse_transaction_repair.show', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    @endif
+                                    @if($data->status == 1 || $data->status == 3 || $data->status == 4)
+                                        @if($menu == "building")
+                                            <a href="{{ route('reverse_transaction.edit', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        @else
+                                            <a href="{{ route('reverse_transaction_repair.edit', ['id'=>$data->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>

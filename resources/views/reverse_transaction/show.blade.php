@@ -52,13 +52,13 @@
 
                                 <div class="col-md-7 col-xs-7 no-padding">Old Reference Document Number</div>
                                 <div class="col-md-5 col-xs-5 no-padding">: <b>
-                                    <a target="_blank" href="/{{$modelRT->url_type}}/{{$modelRT->referenceDocument->id}}">{{$modelRT->referenceDocument->number}}</a>
+                                    <a target="_blank" href="/{{$modelRT->url_type}}/{{$modelRT->oldReferenceDocument->id}}">{{$modelRT->oldReferenceDocument->number}}</a>
                                 </b></div>
                                 
                                 @if ($modelRT->new_reference_document != null)
                                     <div class="col-md-7 col-xs-7 no-padding">New Reference Document Number</div>
                                     <div class="col-md-5 col-xs-5 no-padding">: <b>
-                                        <a target="_blank" href="/{{$modelRT->url_type}}/{{$modelRT->referenceDocument->id}}">{{$modelRT->referenceDocument->number}}</a>
+                                        <a target="_blank" href="/{{$modelRT->url_type}}/{{$modelRT->newReferenceDocument->id}}">{{$modelRT->newReferenceDocument->number}}</a>
                                     </b></div>
                                 @endif
 

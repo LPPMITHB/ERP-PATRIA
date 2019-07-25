@@ -23,6 +23,43 @@ use Illuminate\Support\Carbon;
 
 class ReverseTransactionController extends Controller
 {
+    public function index(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/reverse_transaction" ? "building" : "repair";    
+        if($menu == "building"){
+            $modelDatas = ReverseTransaction::where('business_unit_id',1)->get();
+        }elseif($menu == "repair"){
+            $modelDatas = ReverseTransaction::where('business_unit_id',2)->get();
+        }
+        foreach ($modelDatas as $data) {
+            if($data->type == 1){
+                $data->type_string = "Goods Receipt";
+                $data->referenceDocument = GoodsReceipt::find($data->old_reference_document);
+            }
+
+            if($data->status == 0){
+                $data->status_string = 'CLOSED';
+            }
+            elseif($data->status == 1){
+                $data->status_string = 'OPEN';
+            }
+            elseif($data->status == 2){
+                $data->status_string = 'APPROVED';
+            }
+            elseif($data->status == 3){
+                $data->status_string = 'NEEDS REVISION';
+            }
+            elseif($data->status == 4){
+                $data->status_string = 'REVISED';
+            }
+            elseif($data->status == 5){
+                $data->status_string = 'REJECTED';
+            }
+        }
+
+        return view('reverse_transaction.index', compact('modelDatas','menu'));
+    }
+
     public function selectDocument(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/reverse_transaction" ? "building" : "repair";    
@@ -94,7 +131,7 @@ class ReverseTransactionController extends Controller
             if($menu == "building"){
                 return redirect()->route('reverse_transaction.create',[$datas->documentType,$datas->modelData->id])->with('error', $e->getMessage());
             }elseif($menu == "repair"){
-                return redirect()->route('reverse_transaction_repair.create')->with('error', $e->getMessage());
+                return redirect()->route('reverse_transaction_repair.create',[$datas->documentType,$datas->modelData->id])->with('error', $e->getMessage());
             }
         }
     }
@@ -107,7 +144,10 @@ class ReverseTransactionController extends Controller
         if($modelRT->type == 1){
             $type = "Goods Receipt";
             $modelRT->url_type = $menu == "building" ? "goods_receipt" : "goods_receipt_repair";
-            $modelRT->referenceDocument = GoodsReceipt::find($modelRT->old_reference_document);
+            $modelRT->oldReferenceDocument = GoodsReceipt::find($modelRT->old_reference_document);
+            if($modelRT->new_reference_document != null){
+                $modelRT->newReferenceDocument = GoodsReceipt::find($modelRT->new_reference_document);
+            }
         }
 
         if($modelRT->status == 1){
@@ -227,6 +267,79 @@ class ReverseTransactionController extends Controller
         } catch (\Exception $e){
             DB::rollback();
             return redirect()->route('reverse_transaction.show',$datas->rt_id)->with('error', $e->getMessage());
+        }
+    }
+
+    public function edit($id, Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/reverse_transaction" ? "building" : "repair";    
+        $modelRT = [];
+        $modelRTDetails = [];
+        $modelRT = ReverseTransaction::find($id);
+        if($modelRT->status == 1){
+            $status = 'OPEN';
+        }
+        elseif($modelRT->status == 2){
+            $status = 'APPROVED';
+        }
+        elseif($modelRT->status == 3){
+            $status = 'NEEDS REVISION';
+        }
+        elseif($modelRT->status == 4){
+            $status = 'REVISED';
+        }
+        elseif($modelRT->status == 5){
+            $status = 'REJECTED';
+        }
+        if($modelRT->type == 1){
+            $old_gr_ref = GoodsReceipt::where('id',$modelRT->old_reference_document)->with('purchaseOrder.project','purchaseOrder.vendor')->first();
+            $modelRTDetails = ReverseTransactionDetail::where('reverse_transaction_id',$modelRT->id)->with('material.uom')->get();
+            $po_id= $old_gr_ref->purchaseOrder->id;
+            
+            foreach ($modelRTDetails as $dataDetail) {
+                $dataDetail->po_detail = PurchaseOrderDetail::where('purchase_order_id',$po_id)->where('material_id', $dataDetail->material_id)->first();
+                $dataDetail->grd = GoodsReceiptDetail::where('id',$dataDetail->old_reference_document_detail)->with('material.uom', 'storageLocation')->first();
+            }
+            
+        }
+        
+        return view('reverse_transaction.edit', compact('menu', 'modelRT','modelRTDetails','old_gr_ref','status'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $menu = $request->route()->getPrefix() == "/reverse_transaction" ? "building" : "repair";    
+        $datas = json_decode($request->datas);
+        if($menu == 'building'){
+            $business_unit = 1;
+        }elseif($menu == 'repair'){
+            $business_unit = 2;
+        }
+        DB::beginTransaction();
+        try {
+            $RT = ReverseTransaction::find($id);
+            $RT->description = $datas->description;
+            $RT->update();
+            foreach($datas->modelRTDetails as $data){
+                //RTD
+                $RTD = ReverseTransactionDetail::find($data->id);
+                $RTD->new_quantity = $data->new_quantity;
+                $RTD->update();
+            }
+
+            DB::commit();
+            if($menu == "building"){
+                return redirect()->route('reverse_transaction.show',$RT->id)->with('success', 'Reverse Transaction Updated');
+            }elseif($menu == "repair"){
+                return redirect()->route('reverse_transaction_repair.show',$RT->id)->with('success', 'Reverse Transaction Updated');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($menu == "building"){
+                return redirect()->route('reverse_transaction.edit',[$RT->id])->with('error', $e->getMessage());
+            }elseif($menu == "repair"){
+                return redirect()->route('reverse_transaction_repair.edit',[$RT->id])->with('error', $e->getMessage());
+            }
         }
     }
 
