@@ -79,7 +79,7 @@
                     <div class="col-xs-7 col-md-7 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPR->description}}">
                         : <b> {{ ($modelPR->description != "") ? $modelPR->description : '-' }} </b>
                     </div>
-                    @if($modelPR->status != 6 && $modelPR->status != 1)
+                    @if($modelPR->status != 6 && $modelPR->status != 1 && $modelPR->status != 8)
                         @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7)
                             <div class="col-xs-5 col-md-5">
                                 Approved By
@@ -192,8 +192,22 @@
                 <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($route == "/purchase_requisition")
                         <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_requisition.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
+                        @can('cancel-approval-purchase-requisition')
+                            @if($po)
+                                <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-r-5" onclick="cancelApproval('{{$route}}')">CANCEL APPROVAL</a>
+                            @endif
+                        @endcan
                     @elseif($route == "/purchase_requisition_repair")
                         <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_requisition_repair.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
+                        @can('cancel-approval-purchase-requisition-repair')
+                            @if($po)
+                                <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-r-5" onclick="cancelApproval('{{$route}}')">CANCEL APPROVAL</a>
+                            @endif
+                        @endcan
+                    @endif
+
+                    @if($modelPR->status == 1 || $modelPR->status == 3 || $modelPR->status == 4)
+                        <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-r-5" onclick="cancel('{{$route}}')">CANCEL</a>
                     @endif
                 </div>
             </div> <!-- /.box-body -->
@@ -217,37 +231,72 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        });
-
-        // $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        // $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Qty" || title == "Unit"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( table.column(i).search() !== this.value ) {
-        //             table
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var table = $('.tableNonPagingVue').DataTable( {
-        //     orderCellsTop   : true,
-        //     paging          : false,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : false,
-        //     searching          : false,
-        // });
         
-        // $('div.overlay').hide();
+        });
     });
+
+    function cancel(route){
+        iziToast.question({
+            close: false,
+            overlay: true,
+            timeout : 0,
+            displayMode: 'once',
+            id: 'question',
+            zindex: 9999,
+            title: 'Confirm',
+            message: 'Are you sure you want to cancel this document?',
+            position: 'center',
+            buttons: [
+                ['<button><b>YES</b></button>', function (instance, toast) {
+                    var url = "";
+                    if(route == "/purchase_requisition"){
+                        window.location.href = "{{ route('purchase_requisition.cancel', ['id'=>$modelPR->id]) }}";
+                    }else{
+                        window.location.href = "{{ route('purchase_requisition_repair.cancel', ['id'=>$modelPR->id]) }}";
+                    }
+
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        
+                }, true],
+                ['<button>NO</button>', function (instance, toast) {
+        
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        
+                }],
+            ],
+        });
+    }
+
+    function cancelApproval(route){
+        iziToast.question({
+            close: false,
+            overlay: true,
+            timeout : 0,
+            displayMode: 'once',
+            id: 'question',
+            zindex: 9999,
+            title: 'Confirm',
+            message: 'Are you sure you want to cancel this approval?',
+            position: 'center',
+            buttons: [
+                ['<button><b>YES</b></button>', function (instance, toast) {
+                    var url = "";
+                    if(route == "/purchase_requisition"){
+                        window.location.href = "{{ route('purchase_requisition.cancelApproval', ['id'=>$modelPR->id]) }}";
+                    }else{
+                        window.location.href = "{{ route('purchase_requisition_repair.cancelApproval', ['id'=>$modelPR->id]) }}";
+                    }
+
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        
+                }, true],
+                ['<button>NO</button>', function (instance, toast) {
+        
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        
+                }],
+            ],
+        });
+    }
 </script>
 @endpush

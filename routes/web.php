@@ -986,6 +986,10 @@ Route::name('work_request_repair.')->prefix('work_request_repair')->group(functi
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseRequisitionController@cancel')->name('cancel')->middleware('can:cancel-purchase-requisition');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseRequisitionController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-requisition');
+
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition');
 
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
@@ -1017,6 +1021,10 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
 //Purchase Requisition Repair Routes
 Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseRequisitionController@cancel')->name('cancel')->middleware('can:cancel-purchase-requisition-repair');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseRequisitionController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-requisition-repair');
+
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition-repair');
