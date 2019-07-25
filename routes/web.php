@@ -1056,6 +1056,10 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 
 //Purchase Order Routes
 Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseOrderController@cancel')->name('cancel')->middleware('can:cancel-purchase-order');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseOrderController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-order');
+
     Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order');
 
     Route::get('/approval', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order');
@@ -1083,6 +1087,10 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
 //Purchase Order Repair Routes
 Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseOrderController@cancel')->name('cancel')->middleware('can:cancel-purchase-order-repair');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseOrderController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-order-repair');
+
     Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order-repair');
 
     Route::get('/approval', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order-repair');

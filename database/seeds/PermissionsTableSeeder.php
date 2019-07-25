@@ -937,8 +937,25 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Approve Purchase Order',
+            'name' => 'Cancel Purchase Order',
             'menu_id' => $viewPO,
+            'middleware' => 'cancel-purchase-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Order',
+            'menu_id' => $viewPO,
+            'middleware' => 'cancel-approval-purchase-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approvePO = Menu::where('name','Approve PO')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Purchase Order',
+            'menu_id' => $approvePO,
             'middleware' => 'approve-purchase-order',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -980,10 +997,26 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPO = Menu::where('name','Approve PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'cancel-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'cancel-approval-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approvePO = Menu::where('name','Approve PO')->where('menu_id',$poRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Order Repair',
-            'menu_id' => $viewPO,
+            'menu_id' => $approvePO,
             'middleware' => 'approve-purchase-order-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

@@ -193,14 +193,14 @@
                     @if($route == "/purchase_requisition")
                         <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_requisition.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
                         @can('cancel-approval-purchase-requisition')
-                            @if($po)
+                            @if($gr)
                                 <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-r-5" onclick="cancelApproval('{{$route}}')">CANCEL APPROVAL</a>
                             @endif
                         @endcan
                     @elseif($route == "/purchase_requisition_repair")
                         <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('purchase_requisition_repair.print', ['id'=>$modelPR->id]) }}">DOWNLOAD</a>
                         @can('cancel-approval-purchase-requisition-repair')
-                            @if($po)
+                            @if($gr)
                                 <a class="col-xs-12 col-md-2 btn btn-danger pull-right m-r-5" onclick="cancelApproval('{{$route}}')">CANCEL APPROVAL</a>
                             @endif
                         @endcan
