@@ -128,7 +128,7 @@ class MaterialController extends Controller
             $material->user_id = Auth::user()->id;
             $material->branch_id = Auth::user()->branch->id;
             $material->save();
-        
+
         DB::commit();
         return redirect()->route('material.show',$material->id)->with('success', 'Success Created New Material!');
         } catch (\Exception $e) {
@@ -153,7 +153,7 @@ class MaterialController extends Controller
         $arrayMaterialFamily = json_decode($material->family_id);
 
         $array = array();
-        
+
         if($material->family_id != null){
             foreach($arrayMaterialFamily as $dataArray){
                 foreach($dataFamily as $data){
@@ -187,8 +187,8 @@ class MaterialController extends Controller
                 $nameDimensionType = null;
             }
         }
-        $dimensions = json_decode($material->dimensions_value);
-        foreach ($dimensions as $dimension) {
+        $dimensions = (array)json_decode($material->dimensions_value);
+        foreach($dimensions as $dimension){
             $dimension->uom = UOM::find($dimension->uom_id);
         }
         $uoms = Uom::all();
@@ -251,7 +251,7 @@ class MaterialController extends Controller
                 $documents->push($grt);
             }
         }
-        
+
         foreach($snds as $snd){
             $sn = $snd->snapshot;
             $sn->type_doc = "Physical Inventory";
@@ -259,7 +259,7 @@ class MaterialController extends Controller
                 $documents->push($sn);
             }
         }
-        
+
         foreach($mwods as $mwod){
             $mwo = $mwod->materialWriteOff;
             $mwo->type_doc = "Material Write Off";
@@ -302,7 +302,7 @@ class MaterialController extends Controller
                 $dimension->value = "";
             }
         }
-        
+
         return view('material.edit', compact('material','uoms','material_families','densities','dataFamily','dimension_types'));
     }
 
@@ -329,11 +329,11 @@ class MaterialController extends Controller
             'volume' => $data->volume
 
         ]);
-        
+
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material,code,'.$id.',id|string|max:255',
-            // 'name' => 'required|string|max:255',   
-            'description' => 'nullable|string|max:255',    
+            // 'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
             'cost_standard_price' => 'nullable',
             'cost_standard_price_service' => 'nullable',
             'weight' => 'nullable',
@@ -364,7 +364,7 @@ class MaterialController extends Controller
                         $value = $density->value;
                     }
                 }
-                
+
                 $result = $data->lengths * $data->width * $data->height * $value;
                 $material->cost_standard_price_kg = 1/$result * $data->cost_standard_price;
             }else{
@@ -408,7 +408,7 @@ class MaterialController extends Controller
             DB::rollback();
             return redirect()->route('material.update',$material->id)->with('error', $e->getMessage())->withInput();
         }
-            
+
     }
 
     public function destroy($id)
@@ -420,13 +420,13 @@ class MaterialController extends Controller
             return redirect()->route('material.index')->with('status', 'Material Deleted Succesfully!');
         } catch(\Illuminate\Database\QueryException $e){
             return redirect()->route('material.index')->with('status', 'Can\'t Delete The Material Because It Is Still Being Used');
-        }   
+        }
     }
 
     public function generateMaterialCode(){
         $code = 'MT';
         $modelMaterial = Material::orderBy('code', 'desc')->first();
-        
+
         $number = 1;
 		if(isset($modelMaterial)){
             $number += intval(substr($modelMaterial->code, -4));
@@ -435,8 +435,6 @@ class MaterialController extends Controller
         $material_code = $code.''.sprintf('%04d', $number);
 		return $material_code;
     }
-    
+
 
 }
-
-
