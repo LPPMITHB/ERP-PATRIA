@@ -3869,7 +3869,6 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'ShipsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ShipsTableSeeder.php',
         'SidenavsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/SidenavsTableSeeder.php',
         'StocksTableSeeder' => __DIR__ . '/../..' . '/database/seeds/StocksTableSeeder.php',
-        'StorageLocationDetailsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/StorageLocationDetailsTableSeeder.php',
         'StorageLocationsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/StorageLocationsTableSeeder.php',
         'Svg\\DefaultStyle' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
         'Svg\\Document' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Document.php',

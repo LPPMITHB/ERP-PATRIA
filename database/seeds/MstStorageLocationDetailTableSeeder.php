@@ -105,6 +105,39 @@ class MstStorageLocationDetailTableSeeder extends Seeder
                 'created_at' => '2019-07-29 16:51:26',
                 'updated_at' => '2019-07-29 16:51:26',
             ),
+            8 => 
+            array (
+                'id' => 9,
+                'material_id' => 1709,
+                'quantity' => 100.0,
+                'value' => 200000.0,
+                'goods_receipt_detail_id' => 9,
+                'storage_location_id' => 1,
+                'created_at' => '2019-07-29 16:59:24',
+                'updated_at' => '2019-07-29 16:59:24',
+            ),
+            9 => 
+            array (
+                'id' => 10,
+                'material_id' => 1709,
+                'quantity' => 50.0,
+                'value' => 400000.0,
+                'goods_receipt_detail_id' => 10,
+                'storage_location_id' => 1,
+                'created_at' => '2019-07-29 16:59:37',
+                'updated_at' => '2019-07-29 16:59:37',
+            ),
+            10 => 
+            array (
+                'id' => 11,
+                'material_id' => 1709,
+                'quantity' => 25.0,
+                'value' => 800000.0,
+                'goods_receipt_detail_id' => 11,
+                'storage_location_id' => 1,
+                'created_at' => '2019-07-29 16:59:45',
+                'updated_at' => '2019-07-29 16:59:45',
+            ),
         ));
         
         

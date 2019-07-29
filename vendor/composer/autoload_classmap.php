@@ -3426,7 +3426,6 @@ return array(
     'ShipsTableSeeder' => $baseDir . '/database/seeds/ShipsTableSeeder.php',
     'SidenavsTableSeeder' => $baseDir . '/database/seeds/SidenavsTableSeeder.php',
     'StocksTableSeeder' => $baseDir . '/database/seeds/StocksTableSeeder.php',
-    'StorageLocationDetailsTableSeeder' => $baseDir . '/database/seeds/StorageLocationDetailsTableSeeder.php',
     'StorageLocationsTableSeeder' => $baseDir . '/database/seeds/StorageLocationsTableSeeder.php',
     'Svg\\DefaultStyle' => $vendorDir . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
     'Svg\\Document' => $vendorDir . '/phenx/php-svg-lib/src/Svg/Document.php',

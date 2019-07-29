@@ -1556,6 +1556,25 @@ class TrxPurchaseRequisitionDetailTableSeeder extends Seeder
                 'created_at' => '2019-07-29 16:48:38',
                 'updated_at' => '2019-07-29 16:49:13',
             ),
+            81 => 
+            array (
+                'id' => 83,
+                'purchase_requisition_id' => 23,
+                'required_date' => '2019-07-31',
+                'quantity' => 100.0,
+                'reserved' => 100.0,
+                'material_id' => 1709,
+                'resource_id' => NULL,
+                'wbs_id' => NULL,
+                'activity_detail_id' => NULL,
+                'job_order' => NULL,
+                'alocation' => 'Stock',
+                'status' => NULL,
+                'user_id' => 2,
+                'project_id' => 5,
+                'created_at' => '2019-07-29 16:58:40',
+                'updated_at' => '2019-07-29 16:59:00',
+            ),
         ));
         
         

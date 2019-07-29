@@ -142,6 +142,31 @@ class TrxPurchaseOrderTableSeeder extends Seeder
                 'created_at' => '2019-07-29 16:49:13',
                 'updated_at' => '2019-07-29 16:50:45',
             ),
+            5 => 
+            array (
+                'id' => 14,
+                'number' => 'PO-1900006',
+                'purchase_requisition_id' => 23,
+                'vendor_id' => 2,
+                'currency' => 1,
+                'value' => 1,
+                'description' => '',
+                'revision_description' => '',
+                'status' => 0,
+                'tax' => 0.0,
+                'estimated_freight' => 0.0,
+                'delivery_term' => NULL,
+                'payment_term' => NULL,
+                'total_price' => 20000000.0,
+                'delivery_date' => NULL,
+                'project_id' => NULL,
+                'branch_id' => 1,
+                'user_id' => 2,
+                'approved_by' => 2,
+                'approval_date' => '2019-07-29',
+                'created_at' => '2019-07-29 16:59:00',
+                'updated_at' => '2019-07-29 16:59:45',
+            ),
         ));
         
         

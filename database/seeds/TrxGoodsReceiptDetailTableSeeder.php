@@ -137,6 +137,51 @@ class TrxGoodsReceiptDetailTableSeeder extends Seeder
                 'created_at' => '2019-07-29 16:51:26',
                 'updated_at' => '2019-07-29 16:51:26',
             ),
+            8 => 
+            array (
+                'id' => 9,
+                'goods_receipt_id' => 5,
+                'quantity' => 50.0,
+                'returned' => 0.0,
+                'received_date' => '2019-08-30',
+                'material_id' => 1709,
+                'resource_detail_id' => NULL,
+                'storage_location_id' => 1,
+                'production_order_detail_id' => NULL,
+                'item_OK' => 1,
+                'created_at' => '2019-07-29 16:59:24',
+                'updated_at' => '2019-07-29 16:59:24',
+            ),
+            9 => 
+            array (
+                'id' => 10,
+                'goods_receipt_id' => 6,
+                'quantity' => 25.0,
+                'returned' => 0.0,
+                'received_date' => '2019-08-02',
+                'material_id' => 1709,
+                'resource_detail_id' => NULL,
+                'storage_location_id' => 1,
+                'production_order_detail_id' => NULL,
+                'item_OK' => 1,
+                'created_at' => '2019-07-29 16:59:37',
+                'updated_at' => '2019-07-29 16:59:37',
+            ),
+            10 => 
+            array (
+                'id' => 11,
+                'goods_receipt_id' => 7,
+                'quantity' => 25.0,
+                'returned' => 0.0,
+                'received_date' => '2019-08-07',
+                'material_id' => 1709,
+                'resource_detail_id' => NULL,
+                'storage_location_id' => 1,
+                'production_order_detail_id' => NULL,
+                'item_OK' => 1,
+                'created_at' => '2019-07-29 16:59:45',
+                'updated_at' => '2019-07-29 16:59:45',
+            ),
         ));
         
         
