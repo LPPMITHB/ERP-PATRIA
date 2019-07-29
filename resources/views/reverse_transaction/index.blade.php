@@ -3,10 +3,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Approve Reverse Transaction » Select Reverse Transaction',
+        'title' => 'View All Reverse Transaction » Select Reverse Transaction',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Reverse Transaction' => route('reverse_transaction.indexApprove'),
+            'View All Reverse Transaction' => route('reverse_transaction.index'),
         ]
     ]
 )
@@ -32,8 +32,8 @@
                             <th width="10%">Type</th>
                             <th width="15%">Number</th>
                             <th width="35%">Description</th>
-                            <th width="25%">Old Reference Document</th>
-                            <th width="10%">Status</th>
+                            <th width="20%">Old Reference Document</th>
+                            <th width="15%">Status</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>

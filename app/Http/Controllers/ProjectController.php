@@ -2023,7 +2023,6 @@ class ProjectController extends Controller
         $tempPlanned = $tempPlanned->groupBy('t');
         $tempPlanned = $tempPlanned->all();
         ksort($tempPlanned);
-
         $plannedCost = 0;
         foreach ($tempPlanned as $date => $datas) {
             foreach ($datas as $data) {

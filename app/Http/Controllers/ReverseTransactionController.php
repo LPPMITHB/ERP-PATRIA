@@ -13,6 +13,8 @@ use App\Models\ReverseTransaction;
 use App\Models\ReverseTransactionDetail;
 use App\Models\GoodsIssue;
 use App\Models\GoodsIssueDetail;
+use App\Models\MaterialRequisition;
+use App\Models\MaterialRequisitionDetail;
 use App\Models\Stock;
 use App\Models\StorageLocationDetail;
 use App\Models\Branch;
@@ -35,6 +37,9 @@ class ReverseTransactionController extends Controller
             if($data->type == 1){
                 $data->type_string = "Goods Receipt";
                 $data->referenceDocument = GoodsReceipt::find($data->old_reference_document);
+            }elseif($data->type == 2){
+                $data->type_string = "Goods Issue";
+                $data->referenceDocument = GoodsIssue::find($data->old_reference_document);
             }
 
             if($data->status == 0){
@@ -72,19 +77,34 @@ class ReverseTransactionController extends Controller
         $menu = $request->route()->getPrefix() == "/reverse_transaction" ? "building" : "repair";    
         $modelData = [];
         $modelDataDetails = [];
+        $route_string = $menu == "repair" ? "_repair":"";
 
         if($documentType == 1){
             $modelData = GoodsReceipt::where('id',$id)->with('purchaseOrder.project','purchaseOrder.vendor')->first();
+            $modelData->url_type = "goods_receipt".$route_string;
+            $modelData->purchaseOrder->url_type = "purchase_order".$route_string;
+
             $modelDataDetails = GoodsReceiptDetail::where('goods_receipt_id',$id)->with('material.uom', 'storageLocation')->get();
             $po_id= $modelData->purchaseOrder->id;
 
             foreach ($modelDataDetails as $dataDetail) {
                 $dataDetail->po_detail = PurchaseOrderDetail::where('purchase_order_id',$po_id)->where('material_id', $dataDetail->material_id)->first();
                 $dataDetail->new_qty = "";
-            }
-            
+            }  
+        }elseif($documentType == 2){
+            $modelData = GoodsIssue::where('id',$id)->with('materialRequisition.project')->first();
+            $modelData->url_type = "goods_issue".$route_string;
+            $modelData->materialRequisition->url_type = "material_requisition".$route_string;
+
+            $modelDataDetails = GoodsIssueDetail::where('goods_issue_id',$id)->with('material.uom', 'storageLocation')->get();
+            $mr_id= $modelData->materialRequisition->id;
+
+            foreach ($modelDataDetails as $dataDetail) {
+                $dataDetail->mr_detail = MaterialRequisitionDetail::where('material_requisition_id',$mr_id)->where('material_id', $dataDetail->material_id)->first();
+                $dataDetail->new_qty = "";
+            }  
         }
-        
+
         return view('reverse_transaction.create', compact('menu', 'modelData','modelDataDetails', 'documentType'));
     }
 
@@ -148,6 +168,13 @@ class ReverseTransactionController extends Controller
             if($modelRT->new_reference_document != null){
                 $modelRT->newReferenceDocument = GoodsReceipt::find($modelRT->new_reference_document);
             }
+        }elseif($modelRT->type == 2){
+            $type = "Goods Issue";
+            $modelRT->url_type = $menu == "building" ? "goods_issue" : "goods_issue_repair";
+            $modelRT->oldReferenceDocument = GoodsIssue::find($modelRT->old_reference_document);
+            if($modelRT->new_reference_document != null){
+                $modelRT->newReferenceDocument = GoodsIssue::find($modelRT->new_reference_document);
+            }
         }
 
         if($modelRT->status == 1){
@@ -181,6 +208,9 @@ class ReverseTransactionController extends Controller
             if($data->type == 1){
                 $data->type_string = "Goods Receipt";
                 $data->referenceDocument = GoodsReceipt::find($data->old_reference_document);
+            }elseif($data->type == 2){
+                $data->type_string = "Goods Issue";
+                $data->referenceDocument = GoodsIssue::find($data->old_reference_document);
             }
         }
 
@@ -195,6 +225,10 @@ class ReverseTransactionController extends Controller
             $type = "Goods Receipt";
             $modelRT->url_type = $menu == "building" ? "goods_receipt" : "goods_receipt_repair";
             $modelRT->referenceDocument = GoodsReceipt::find($modelRT->old_reference_document);
+        }elseif($modelRT->type == 2){
+            $type = "Goods Issue";
+            $modelRT->url_type = $menu == "building" ? "goods_issue" : "goods_issue_repair";
+            $modelRT->referenceDocument = GoodsIssue::find($modelRT->old_reference_document);
         }
 
         if($modelRT->status == 1){
@@ -226,6 +260,8 @@ class ReverseTransactionController extends Controller
             if($datas->status == "approve"){
                 if($modelRT->type==1){
                     $this->reverseGoodsReceipt($modelRT->old_reference_document,$modelRT->reverseTransactionDetails,$menu, $modelRT);
+                }elseif($modelRT->type==2){
+                    $this->reverseGoodsIssue($modelRT->old_reference_document,$modelRT->reverseTransactionDetails,$menu, $modelRT);
                 }
                 
                 $modelRT->status = 2;
@@ -266,7 +302,7 @@ class ReverseTransactionController extends Controller
             }
         } catch (\Exception $e){
             DB::rollback();
-            return redirect()->route('reverse_transaction.show',$datas->rt_id)->with('error', $e->getMessage());
+            return redirect()->route('reverse_transaction.showApprove',$datas->rt_id)->with('error', $e->getMessage());
         }
     }
 
@@ -276,6 +312,7 @@ class ReverseTransactionController extends Controller
         $modelRT = [];
         $modelRTDetails = [];
         $modelRT = ReverseTransaction::find($id);
+        $route_string = $menu == "repair" ? "_repair":"";
         if($modelRT->status == 1){
             $status = 'OPEN';
         }
@@ -292,18 +329,33 @@ class ReverseTransactionController extends Controller
             $status = 'REJECTED';
         }
         if($modelRT->type == 1){
-            $old_gr_ref = GoodsReceipt::where('id',$modelRT->old_reference_document)->with('purchaseOrder.project','purchaseOrder.vendor')->first();
+            $old_data = GoodsReceipt::where('id',$modelRT->old_reference_document)->with('purchaseOrder.project','purchaseOrder.vendor')->first();
+            $old_data->url_type = "goods_receipt".$route_string;
+            $old_data->purchaseOrder->url_type = "purchase_order".$route_string;
+
             $modelRTDetails = ReverseTransactionDetail::where('reverse_transaction_id',$modelRT->id)->with('material.uom')->get();
-            $po_id= $old_gr_ref->purchaseOrder->id;
+            $po_id= $old_data->purchaseOrder->id;
             
             foreach ($modelRTDetails as $dataDetail) {
                 $dataDetail->po_detail = PurchaseOrderDetail::where('purchase_order_id',$po_id)->where('material_id', $dataDetail->material_id)->first();
                 $dataDetail->grd = GoodsReceiptDetail::where('id',$dataDetail->old_reference_document_detail)->with('material.uom', 'storageLocation')->first();
             }
             
+        }elseif($modelRT->type == 2){
+            $old_data = GoodsIssue::where('id',$modelRT->old_reference_document)->with('materialRequisition.project')->first();
+            $old_data->url_type = "goods_issue".$route_string;
+            $old_data->materialRequisition->url_type = "material_requisition".$route_string;
+
+            $modelRTDetails = ReverseTransactionDetail::where('reverse_transaction_id',$modelRT->id)->with('material.uom')->get();
+            $mr_id= $old_data->materialRequisition->id;
+
+            foreach ($modelRTDetails as $dataDetail) {
+                $dataDetail->mr_detail = MaterialRequisitionDetail::where('material_requisition_id',$mr_id)->where('material_id', $dataDetail->material_id)->first();
+                $dataDetail->gid = GoodsIssueDetail::where('id',$dataDetail->old_reference_document_detail)->with('material.uom', 'storageLocation')->first();
+            }  
         }
         
-        return view('reverse_transaction.edit', compact('menu', 'modelRT','modelRTDetails','old_gr_ref','status'));
+        return view('reverse_transaction.edit', compact('menu', 'modelRT','modelRTDetails','old_data','status'));
     }
 
     public function update(Request $request, $id)
@@ -319,6 +371,9 @@ class ReverseTransactionController extends Controller
         try {
             $RT = ReverseTransaction::find($id);
             $RT->description = $datas->description;
+            if($RT->status == 3){
+                $RT->status = 4;
+            }
             $RT->update();
             foreach($datas->modelRTDetails as $data){
                 //RTD
@@ -443,8 +498,8 @@ class ReverseTransactionController extends Controller
         $modelRT->update();
 
         foreach($datas as $data){
-            //GID
             $old_grd_ref = GoodsReceiptDetail::find($data->old_reference_document_detail);
+            //GID
             $GID = new GoodsIssueDetail;
             $GID->goods_issue_id = $GI->id;
             $GID->quantity = $data->old_quantity;
@@ -481,6 +536,83 @@ class ReverseTransactionController extends Controller
         $this->checkStatusPO($old_gr_ref->purchase_order_id);
     }
 
+    public function reverseGoodsIssue($old_gr_id,$datas, $menu, $modelRT){
+        if($menu == 'building'){
+            $business_unit = 1;
+        }elseif($menu == 'repair'){
+            $business_unit = 2;
+        }
+        $old_gi_ref = GoodsIssue::find($old_gr_id);
+        $old_gi_ref->status = 2;
+        $old_gi_ref->update();
+
+        //GR
+        $GR = new GoodsReceipt;
+        $GR->number = $this->generateGRNumber();
+        $GR->business_unit_id = $business_unit;
+        $GR->description = "AUTO CREATE GR FROM REVERSE TRANSACTION";
+        $GR->type = 6;
+        $GR->branch_id = Auth::user()->branch->id;
+        $GR->user_id = Auth::user()->id;
+        $GR->save();
+        
+        //GI
+        $GI = new GoodsIssue;
+        $GI->number = $this->generateGINumber();
+        $GI->business_unit_id = $business_unit;
+        $GI->material_requisition_id = $old_gi_ref->material_requisition_id;
+        $GI->type = 6;
+        $GI->description = "AUTO CREATE GI FROM REVERSE TRANSACTION";
+        if($old_gi_ref->issue_date != null){
+            $GI->issue_date = $old_gi_ref->issue_date;
+        }
+        $GI->branch_id = Auth::user()->branch->id;
+        $GI->user_id = Auth::user()->id;
+        $GI->save();
+
+        $modelRT->new_reference_document = $GI->id;
+        $modelRT->update();
+
+        foreach($datas as $data){
+            $old_gid_ref = GoodsIssueDetail::find($data->old_reference_document_detail);
+            //GRD
+            $GRD = new GoodsReceiptDetail;
+            $GRD->goods_receipt_id = $GR->id;
+            $GRD->quantity = $data->old_quantity;
+            $GRD->material_id = $data->material_id;
+            $GRD->storage_location_id = $old_gid_ref->storage_location_id;
+            $GRD->save();
+            dd($GRD);
+
+            $this->updateStockForGI($data->material_id, $data->old_quantity);
+            $this->updateSlocDetailForGI($data->material_id, $old_gid_ref->storage_location_id,$data->old_quantity,$data->old_reference_document_detail);
+            if($data->new_quantity != 0){
+                //GRD
+                $GRD = new GoodsIssueDetail;
+                $GRD->goods_receipt_id = $GR->id;
+                $GRD->quantity = $data->new_quantity; 
+                $GRD->material_id = $data->material_id;
+                $GRD->storage_location_id = $old_gid_ref->storage_location_id;
+                if($old_gid_ref->received_date != null){
+                    $GRD->received_date = $old_gid_ref->received_date;
+                }
+                $GRD->item_OK = $old_gid_ref->item_OK;
+                $GRD->save();
+                
+                $this->updateStockForGR($data->material_id, $data->new_quantity);
+                $this->updateSlocDetailForGR($data,$GRD->id, $old_gid_ref);
+                
+                $data->new_reference_document_detail = $GRD->id;
+                $data->update();
+            }
+            $diff_qty = $data->new_quantity - $data->old_quantity;
+            $po_detail_id = MaterialRequisitionDetail::where('purchase_order_id',$old_gi_ref->purchase_order_id)->where('material_id', $data->material_id)->first()->id;
+            $this->updatePOD($po_detail_id, $diff_qty);
+           
+        }
+        $this->checkStatusMR($old_gi_ref->material_requisition_id);
+    }
+
     public function checkStatusPO($purchase_order_id){
         $modelPO = PurchaseOrder::findOrFail($purchase_order_id);
         $status = 0;
@@ -492,6 +624,23 @@ class ReverseTransactionController extends Controller
         if($status == 0){
             $modelPO->status = 0;
             $modelPO->update();
+        }else{
+            $modelPO->status = 2;
+            $modelPO->update();
+        }
+    }
+
+    public function checkStatusMR($mr_id){
+        $modelMR = MaterialRequisition::findOrFail($mr_id);
+        $status = 0;
+        foreach($modelMR->MaterialRequisitionDetails as $MRD){
+            if($MRD->issued < $MRD->quantity){
+                $status = 1;
+            }
+        }
+        if($status == 0){
+            $modelMR->status = 0;
+            $modelMR->save();
         }else{
             $modelPO->status = 2;
             $modelPO->update();

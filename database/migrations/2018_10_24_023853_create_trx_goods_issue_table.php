@@ -22,6 +22,7 @@ class CreateTrxGoodsIssueTable extends Migration
             $table->unsignedInteger('material_write_off_id')->nullable();
             $table->date('issue_date')->nullable();
             $table->text('description');
+            $table->integer('status')->default(1);
             $table->integer('type')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
