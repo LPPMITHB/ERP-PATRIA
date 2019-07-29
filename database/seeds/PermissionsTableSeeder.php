@@ -54,6 +54,49 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Reverse Transaction
+        $reverseTransaction = Menu::where('name','Reverse Transaction')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'list-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'create-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'show-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'edit-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Approve Reverse Transaction',
+            'menu_id' => $reverseTransaction,
+            'middleware' => 'approve-reverse-transaction',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+
         //Dashboard
         $dashboard = Menu::where('name','Dashboard')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -661,6 +704,22 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Purchase Requisition',
+            'menu_id' => $viewPR,
+            'middleware' => 'cancel-purchase-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Requisition',
+            'menu_id' => $viewPR,
+            'middleware' => 'cancel-approval-purchase-requisition',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         $approvePR = Menu::where('name','Approve PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Requisition',
@@ -713,6 +772,22 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Purchase Requisition Repair',
             'menu_id' => $viewPrRepair,
             'middleware' => 'edit-purchase-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Purchase Requisition Repair',
+            'menu_id' => $viewPrRepair,
+            'middleware' => 'cancel-purchase-requisition-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Requisition Repair',
+            'menu_id' => $viewPrRepair,
+            'middleware' => 'cancel-approval-purchase-requisition-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -862,8 +937,25 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         DB::table('permissions')->insert([
-            'name' => 'Approve Purchase Order',
+            'name' => 'Cancel Purchase Order',
             'menu_id' => $viewPO,
+            'middleware' => 'cancel-purchase-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Order',
+            'menu_id' => $viewPO,
+            'middleware' => 'cancel-approval-purchase-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approvePO = Menu::where('name','Approve PO')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Purchase Order',
+            'menu_id' => $approvePO,
             'middleware' => 'approve-purchase-order',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -905,10 +997,26 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPO = Menu::where('name','Approve PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'cancel-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Approval Purchase Order Repair',
+            'menu_id' => $viewPO,
+            'middleware' => 'cancel-approval-purchase-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $approvePO = Menu::where('name','Approve PO')->where('menu_id',$poRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Order Repair',
-            'menu_id' => $viewPO,
+            'menu_id' => $approvePO,
             'middleware' => 'approve-purchase-order-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

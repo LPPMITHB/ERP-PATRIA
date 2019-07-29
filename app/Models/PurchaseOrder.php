@@ -27,15 +27,15 @@ class PurchaseOrder extends Model
     {
         return $this->hasMany('App\Models\PurchaseOrderDetail');
     }
+    
+    public function vendor()
+    {
+        return $this->belongsTo('App\Models\Vendor');
+    }
 
     public function user()
     {
         return $this->belongsTo('App\Models\User');
-    }
-
-    public function vendor()
-    {
-        return $this->belongsTo('App\Models\Vendor');
     }
 
     public function approvedBy()

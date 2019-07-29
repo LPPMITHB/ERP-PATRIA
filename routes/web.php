@@ -986,6 +986,10 @@ Route::name('work_request_repair.')->prefix('work_request_repair')->group(functi
 
 //Purchase Requisition Routes
 Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseRequisitionController@cancel')->name('cancel')->middleware('can:cancel-purchase-requisition');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseRequisitionController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-requisition');
+
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition');
 
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
@@ -1017,6 +1021,10 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
 //Purchase Requisition Repair Routes
 Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseRequisitionController@cancel')->name('cancel')->middleware('can:cancel-purchase-requisition-repair');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseRequisitionController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-requisition-repair');
+
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition-repair');
@@ -1048,6 +1056,10 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 
 //Purchase Order Routes
 Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseOrderController@cancel')->name('cancel')->middleware('can:cancel-purchase-order');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseOrderController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-order');
+
     Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order');
 
     Route::get('/approval', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order');
@@ -1075,6 +1087,10 @@ Route::name('purchase_order.')->prefix('purchase_order')->group(function() {
 
 //Purchase Order Repair Routes
 Route::name('purchase_order_repair.')->prefix('purchase_order_repair')->group(function() {
+    Route::get('/cancel/{id}', 'PurchaseOrderController@cancel')->name('cancel')->middleware('can:cancel-purchase-order-repair');
+
+    Route::get('/cancelApproval/{id}', 'PurchaseOrderController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-order-repair');
+
     Route::get('/indexApprove', 'PurchaseOrderController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-order-repair');
 
     Route::get('/approval', 'PurchaseOrderController@approval')->name('approval')->middleware('can:approve-purchase-order-repair');
@@ -1354,6 +1370,30 @@ Route::name('goods_return_repair.')->prefix('goods_return_repair')->group(functi
     Route::get('/{id}', 'GoodsReturnController@show')->name('show')->middleware('can:show-goods-return-repair');
 
     Route::get('/print/{id}', 'GoodsReturnController@printPdf')->name('print')->middleware('can:show-goods-return-repair');
+});
+
+//Reverse Transaction Routes
+Route::name('reverse_transaction.')->prefix('reverse_transaction')->group(function() {
+    Route::get('/indexApprove', 'ReverseTransactionController@indexApprove')->name('indexApprove')->middleware('can:approve-reverse-transaction');
+
+    Route::get('/approval', 'ReverseTransactionController@approval')->name('approval')->middleware('can:approve-material-requisition');
+    
+    Route::get('/create/{documentType}/{id}', 'ReverseTransactionController@create')->name('create')->middleware('can:create-reverse-transaction');
+    
+    Route::get('/selectDocument', 'ReverseTransactionController@selectDocument')->name('selectDocument')->middleware('can:create-reverse-transaction');
+
+    Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:list-reverse-transaction');
+
+    Route::get('/{id}', 'ReverseTransactionController@show')->name('show')->middleware('can:show-reverse-transaction');
+    
+    Route::get('/showApprove/{id}', 'ReverseTransactionController@showApprove')->name('showApprove')->middleware('can:approve-reverse-transaction');
+
+    Route::get('/{id}/edit', 'ReverseTransactionController@edit')->name('edit')->middleware('can:edit-reverse-transaction');
+
+    Route::patch('/{id}', 'ReverseTransactionController@update')->name('update')->middleware('can:edit-reverse-transaction');
+
+    Route::post('/', 'ReverseTransactionController@store')->name('store')->middleware('can:create-reverse-transaction');
+
 });
 
 //Stock Management Routes

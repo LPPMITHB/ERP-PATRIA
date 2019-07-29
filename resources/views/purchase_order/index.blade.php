@@ -105,7 +105,18 @@
                                             <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
-                                @else
+                                @elseif($modelPO->status == 8)
+                                    <td>CANCELED</td>
+                                    <td>{{ $modelPO->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $modelPO->user->name }}</td>
+                                    <td class="textCenter">
+                                        @if($route == "/purchase_order")
+                                            <a onClick="loading()" href="{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_order_repair")
+                                            <a onClick="loading()" href="{{ route('purchase_order_repair.show', ['id'=>$modelPO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @elseif($modelPO->status == 0)
                                     <td>RECEIVED</td>
                                     <td>{{ $modelPO->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $modelPO->user->name }}</td>

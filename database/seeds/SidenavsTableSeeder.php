@@ -1866,5 +1866,35 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $currencies,
             'route_name' => 'currencies.edit',
         ]);
+
+        // Reverse Transaction
+        $createReverse = Menu::where('route_name','reverse_transaction.selectDocument')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createReverse,
+            'route_name' => 'reverse_transaction.selectDocument',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createReverse,
+            'route_name' => 'reverse_transaction.create',
+        ]);
+
+        $approveReverse = Menu::where('route_name','reverse_transaction.indexApprove')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveReverse,
+            'route_name' => 'reverse_transaction.indexApprove',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $approveReverse,
+            'route_name' => 'reverse_transaction.showApprove',
+        ]);
+
+        $indexReverse = Menu::where('route_name','reverse_transaction.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $indexReverse,
+            'route_name' => 'reverse_transaction.index',
+        ]);
+
     }
 }
