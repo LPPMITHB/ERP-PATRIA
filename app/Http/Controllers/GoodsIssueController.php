@@ -18,6 +18,7 @@ use App\Models\StorageLocationDetail;
 use App\Models\Branch;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
+use Illuminate\Support\Collection;
 use DateTime;
 use DB;
 use Auth;
@@ -73,7 +74,6 @@ class GoodsIssueController extends Controller
         $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         $gi_number = $this->generateGINumber();
-
         DB::beginTransaction();
         try {
             $GI = new GoodsIssue;
@@ -97,6 +97,8 @@ class GoodsIssueController extends Controller
             foreach($datas->MRD as $MRD){
                 foreach($MRD->modelGI as $data){
                     if($data->issued > 0){
+                        $sloc_detail = StorageLocationDetail::where('material_id', $data->material_id)->with('goodsReceiptDetail.goodsReceipt')->get();
+                        dd($sloc_detail);
                         $GID = new GoodsIssueDetail;
                         $GID->goods_issue_id = $GI->id;
                         $GID->quantity = $data->issued;
@@ -258,11 +260,26 @@ class GoodsIssueController extends Controller
     
     //API
     public function getSlocDetailAPI($id){
-        $modelGI = StorageLocationDetail::where('material_id',$id)->with('storageLocation','material.uom')->get();
-        foreach($modelGI as $GI){
-            $GI['issued'] = "";
+        $modelGI = StorageLocationDetail::where('material_id',$id)->with('storageLocation','material.uom')->get()->groupBy('storage_location_id');
+
+        $modelGI_new = Collection::make();
+        foreach($modelGI as $sloc_id => $GI){
+            $temp = null;
+            foreach ($GI as $single_data) {
+                if($temp == null){
+                    $temp = $single_data;
+                    $temp->value = null;
+                    
+                }else{
+                    $temp->quantity += $single_data->quantity;
+                    $temp->value = null;
+                }
+            }
+            $temp->issued = "";
+            $modelGI_new->push($temp);
+            $temp = null;
         }
         
-        return response($modelGI->jsonSerialize(), Response::HTTP_OK);
+        return response($modelGI_new->jsonSerialize(), Response::HTTP_OK);
     }
 }

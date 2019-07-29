@@ -22,6 +22,7 @@ class CreateMstStorageLocationDetailTable extends Migration
             $table->unsignedInteger('storage_location_id')->nullable();
             $table->timestamps();
             
+            $table->foreign('goods_receipt_detail_id')->references('id')->on('trx_goods_receipt_detail'); 
             $table->foreign('storage_location_id')->references('id')->on('mst_storage_location'); 
             $table->foreign('material_id')->references('id')->on('mst_material');
         });
