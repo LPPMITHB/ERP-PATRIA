@@ -628,12 +628,12 @@ class ReverseTransactionController extends Controller
                             $GID->goods_receipt_detail_id_sloc_detail = $sloc_detail->goods_receipt_detail_id;
                             $GID->save();
 
-                            $temp_issued -= $sloc_detail->quantity;
                             $this->updateSlocDetailGIForReverseGI($data->material_id, $sloc_detail,$temp_issued);
+                            $temp_issued -= $sloc_detail->quantity;
                         }
                     }
                 }
-
+                
                 $this->updateStockForGI($data->material_id, $data->new_quantity);
             }
             $diff_qty = $data->new_quantity - $data->old_quantity;
