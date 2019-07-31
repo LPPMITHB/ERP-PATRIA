@@ -18,6 +18,7 @@ use App\Models\StorageLocationDetail;
 use App\Models\Branch;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
+use Illuminate\Support\Collection;
 use DateTime;
 use DB;
 use Auth;
@@ -73,7 +74,6 @@ class GoodsIssueController extends Controller
         $menu = $request->route()->getPrefix() == "/goods_issue" ? "building" : "repair";    
         $datas = json_decode($request->datas);
         $gi_number = $this->generateGINumber();
-
         DB::beginTransaction();
         try {
             $GI = new GoodsIssue;
@@ -97,15 +97,41 @@ class GoodsIssueController extends Controller
             foreach($datas->MRD as $MRD){
                 foreach($MRD->modelGI as $data){
                     if($data->issued > 0){
-                        $GID = new GoodsIssueDetail;
-                        $GID->goods_issue_id = $GI->id;
-                        $GID->quantity = $data->issued;
-                        $GID->material_id = $data->material_id;
-                        $GID->storage_location_id = $data->storage_location_id;
-                        $GID->save();
+                        $temp_sloc_detail = StorageLocationDetail::join('trx_goods_receipt_detail', 'mst_storage_location_detail.goods_receipt_detail_id', '=', 'trx_goods_receipt_detail.id')
+                        ->orderBy('trx_goods_receipt_detail.received_date', 'asc')->where('mst_storage_location_detail.material_id', $data->material_id)->select('mst_storage_location_detail.*','trx_goods_receipt_detail.received_date')->get();
+                        
+                        $temp_issued = $data->issued;
+                        foreach ($temp_sloc_detail as $sloc_detail) {
+                            if($temp_issued > 0){
+                                if($sloc_detail->quantity < $temp_issued){
+                                    $GID = new GoodsIssueDetail;
+                                    $GID->goods_issue_id = $GI->id;
+                                    $GID->quantity = $sloc_detail->quantity;
+                                    $GID->material_id = $data->material_id;
+                                    $GID->storage_location_id = $sloc_detail->storage_location_id;
+                                    $GID->value_sloc_detail = $sloc_detail->value;
+                                    $GID->goods_receipt_detail_id_sloc_detail = $sloc_detail->goods_receipt_detail_id;
+                                    $GID->save();
+
+                                    $temp_issued -= $sloc_detail->quantity;
+                                    $this->updateSlocDetail($data->material_id, $sloc_detail, $sloc_detail->quantity);
+                                }else{
+                                    $GID = new GoodsIssueDetail;
+                                    $GID->goods_issue_id = $GI->id;
+                                    $GID->quantity = $temp_issued;
+                                    $GID->material_id = $data->material_id;
+                                    $GID->storage_location_id = $sloc_detail->storage_location_id;
+                                    $GID->value_sloc_detail = $sloc_detail->value;
+                                    $GID->goods_receipt_detail_id_sloc_detail = $sloc_detail->goods_receipt_detail_id;
+                                    $GID->save();
+
+                                    $temp_issued -= $sloc_detail->quantity;
+                                    $this->updateSlocDetail($data->material_id, $sloc_detail,$temp_issued);
+                                }
+                            }
+                        }
     
                         $this->updateStock($data->material_id, $data->issued);
-                        $this->updateSlocDetail($data->material_id, $data->storage_location_id,$data->issued);
                         $this->updateMR($MRD->id,$data->issued);
                     }
                 }
@@ -131,7 +157,20 @@ class GoodsIssueController extends Controller
     {
         $route = $request->route()->getPrefix();    
         $modelGI = GoodsIssue::findOrFail($id);
-        $modelGID = $modelGI->GoodsIssueDetails;
+        $temp_gid = $modelGI->GoodsIssueDetails->groupBy('material_id');
+
+        $modelGID = Collection::make();
+        foreach ($temp_gid as $material_id => $data) {
+            $temp_data = null;
+            foreach ($data as $gid) {
+                if($temp_data == null){
+                    $temp_data = $gid;
+                }else{
+                    $temp_data->quantity += $gid->quantity;
+                }
+            }
+            $modelGID[$material_id] = $temp_data;
+        }
         $approve = FALSE;
 
         return view('goods_issue.show', compact('modelGI','modelGID','approve','route'));
@@ -182,15 +221,17 @@ class GoodsIssueController extends Controller
         }
     }
 
-    public function updateSlocDetail($material_id,$sloc_id,$issued){
-        $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->first();
+    public function updateSlocDetail($material_id,$sloc_detail,$issued){
+        $modelSlocDetail = StorageLocationDetail::find($sloc_detail->id);
         
         if($modelSlocDetail){
             $modelSlocDetail->quantity = $modelSlocDetail->quantity - $issued;
-            $modelSlocDetail->save();
-        }else{
+            $modelSlocDetail->update();
 
-        }
+            if($modelSlocDetail->quantity == 0){
+                $modelSlocDetail->delete();
+            }
+        }        
     }
 
     public function checkStatusMR($mr_id){
@@ -258,11 +299,26 @@ class GoodsIssueController extends Controller
     
     //API
     public function getSlocDetailAPI($id){
-        $modelGI = StorageLocationDetail::where('material_id',$id)->with('storageLocation','material.uom')->get();
-        foreach($modelGI as $GI){
-            $GI['issued'] = "";
+        $modelGI = StorageLocationDetail::where('material_id',$id)->with('storageLocation','material.uom')->get()->groupBy('storage_location_id');
+
+        $modelGI_new = Collection::make();
+        foreach($modelGI as $sloc_id => $GI){
+            $temp = null;
+            foreach ($GI as $single_data) {
+                if($temp == null){
+                    $temp = $single_data;
+                    $temp->value = null;
+                    
+                }else{
+                    $temp->quantity += $single_data->quantity;
+                    $temp->value = null;
+                }
+            }
+            $temp->issued = "";
+            $modelGI_new->push($temp);
+            $temp = null;
         }
         
-        return response($modelGI->jsonSerialize(), Response::HTTP_OK);
+        return response($modelGI_new->jsonSerialize(), Response::HTTP_OK);
     }
 }
