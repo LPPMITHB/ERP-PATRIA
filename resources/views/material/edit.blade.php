@@ -219,6 +219,13 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="status" class="col-sm-2 control-label">Location Detail</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="location_detail" name="location_detail" required v-model="submittedForm.location_detail">
+                                    </div>
+                                </div>
                                 <!-- /.box-body -->
                                 <div class="box-footer">
                                     <button :disabled="createOk" @click.prevent="submitForm" type="submit" class="btn btn-primary pull-right">SAVE</button>
@@ -271,6 +278,7 @@
             family_id : @json($dataFamily),
             density_id : @json($material->density_id),
             dimension_type_id : @json($material->dimension_type_id),
+            location_detail : @json($material->location_detail),
         },
         dimension_types : @json($dimension_types),
         selectedDimensionType : JSON.parse(@json($material->dimensions_value)),
@@ -315,7 +323,7 @@
             createOk :function(){
                 let isOk = false;
 
-                if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.uom_id == ""){
+                if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.location_detail=="" || this.submittedForm.uom_id == ""){
                     isOk = true;
                 }
 
