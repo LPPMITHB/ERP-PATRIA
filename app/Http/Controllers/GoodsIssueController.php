@@ -215,6 +215,7 @@ class GoodsIssueController extends Controller
         if($modelStock){
             $modelStock->quantity = $modelStock->quantity - $issued;
             $modelStock->reserved = $modelStock->reserved - $issued;
+            $modelStock->reserved_gi = $modelStock->reserved_gi - $issued;
             $modelStock->save();
         }else{
 

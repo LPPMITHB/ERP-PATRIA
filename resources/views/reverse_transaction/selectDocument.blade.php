@@ -132,8 +132,8 @@
         watch : {
             documentType: function(newValue){
                 $('div.overlay').show();
-                this.documentData = [];
                 window.axios.get('/api/getDocuments/'+newValue+'/'+this.menu).then(({ data }) => {
+                    this.documentData = [];
                     this.documentData = data;
                     $('#document-table').DataTable().destroy();
                     this.$nextTick(function() {
