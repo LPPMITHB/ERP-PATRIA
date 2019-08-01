@@ -125,12 +125,10 @@ class GoodsIssueController extends Controller
                                     $GID->goods_receipt_detail_id_sloc_detail = $sloc_detail->goods_receipt_detail_id;
                                     $GID->save();
 
-                                    $temp_issued -= $sloc_detail->quantity;
                                     $this->updateSlocDetail($data->material_id, $sloc_detail,$temp_issued);
                                 }
                             }
                         }
-    
                         $this->updateStock($data->material_id, $data->issued);
                         $this->updateMR($MRD->id,$data->issued);
                     }
@@ -215,6 +213,7 @@ class GoodsIssueController extends Controller
         if($modelStock){
             $modelStock->quantity = $modelStock->quantity - $issued;
             $modelStock->reserved = $modelStock->reserved - $issued;
+            $modelStock->reserved_gi = $modelStock->reserved_gi - $issued;
             $modelStock->save();
         }else{
 
@@ -223,7 +222,6 @@ class GoodsIssueController extends Controller
 
     public function updateSlocDetail($material_id,$sloc_detail,$issued){
         $modelSlocDetail = StorageLocationDetail::find($sloc_detail->id);
-        
         if($modelSlocDetail){
             $modelSlocDetail->quantity = $modelSlocDetail->quantity - $issued;
             $modelSlocDetail->update();

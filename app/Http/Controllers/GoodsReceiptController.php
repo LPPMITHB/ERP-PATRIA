@@ -201,7 +201,7 @@ class GoodsReceiptController extends Controller
                     $GRD->save();
                     
                     $this->updatePOD($data->id,$data->received);
-                    $this->updateStock($data->material_id, $data->quantity);
+                    $this->updateStock($data->material_id, $data->received);
                     $this->updateSlocDetail($data, $GRD);
                 }
             }
@@ -378,9 +378,11 @@ class GoodsReceiptController extends Controller
 
     public function updateSlocDetail($data, $GRD){
         $modelSlocDetail = new StorageLocationDetail;
-        $modelSlocDetail->quantity = $data->quantity;
+        $modelSlocDetail->quantity = $data->received;
+
+        $pod = PurchaseOrderDetail::find($data->id);
         if(isset($data->total_price)){
-            $modelSlocDetail->value = $data->total_price / $data->quantity;
+            $modelSlocDetail->value = $pod->total_price / $pod->quantity;
         }else{
             $modelSlocDetail->value = 0;
         }
@@ -389,6 +391,7 @@ class GoodsReceiptController extends Controller
         $modelSlocDetail->storage_location_id = $data->sloc_id;
         $modelSlocDetail->save();
     }
+
     public function checkStatusPO($purchase_order_id){
         $modelPO = PurchaseOrder::findOrFail($purchase_order_id);
         $status = 0;
