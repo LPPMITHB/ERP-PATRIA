@@ -332,7 +332,9 @@
                                             position: 'topRight',
                                             displayMode: 'replace'
                                         });
-                                        modelGI.issued = "";
+                                        activeMRD.modelGI.forEach(function (modelGI, index) {
+                                            modelGI.issued = "";
+                                        });
                                     }
                                 }
 

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class PurchasingInfoRecordTableSeeder extends Seeder
+class TrxGoodsReceiptTableSeeder extends Seeder
 {
 
     /**
@@ -13,6 +13,8 @@ class PurchasingInfoRecordTableSeeder extends Seeder
     public function run()
     {
         
+
+       
         
         
     }

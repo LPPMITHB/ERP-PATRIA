@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class PurchasingInfoRecordTableSeeder extends Seeder
+class MstStorageLocationDetailTableSeeder extends Seeder
 {
 
     /**
@@ -12,8 +12,6 @@ class PurchasingInfoRecordTableSeeder extends Seeder
      */
     public function run()
     {
-        
-        
         
     }
 }

@@ -4,7 +4,7 @@
 @if($menu == "building")
     @breadcrumb(
         [
-            'title' => 'PHYSICAL INVENTORY » STOCK DETAILS',
+            'title' => 'STOCK TAKING » STOCK DETAILS',
             'items' => [
                 'Dashboard' => route('index'),
                 'Begin Snapshot' => route('physical_inventory.indexSnapshot'),
@@ -16,7 +16,7 @@
 @else
     @breadcrumb(
         [
-            'title' => 'PHYSICAL INVENTORY » STOCK DETAILS',
+            'title' => 'STOCK TAKING » STOCK DETAILS',
             'items' => [
                 'Dashboard' => route('index'),
                 'Create Stock Take' => route('physical_inventory_repair.indexSnapshot'),

@@ -34,8 +34,8 @@
                             <th width="20%">Description</th>
                             <th width="15%">Project Name</th>
                             <th width="15%">Project Number</th>
-                            <th width="10%">Type</th>
-                            <th width="12%">Document Date</th>
+                            <th width="10%">Document Date</th>
+                            <th width="12%">Type</th>
                             <th width="8%">Status MR</th>
                             <th width="5%"></th>
                         </tr>

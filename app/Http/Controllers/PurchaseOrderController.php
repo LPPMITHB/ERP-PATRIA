@@ -15,6 +15,8 @@ use App\Models\Resource;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\PurchasingInfoRecord;
+use App\Models\GoodsReceipt;
+use App\Models\GoodsReceiptDetail;
 use App\Models\Material;
 use DateTime;
 use Auth;
@@ -24,16 +26,66 @@ use Illuminate\Support\Carbon;
 
 class PurchaseOrderController extends Controller
 {
+    public function cancel(Request $request, $id){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try {
+            $modelPO = PurchaseOrder::find($id);
+            $modelPO->status = 8;
+            $modelPO->update();
+            
+            DB::commit();
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.show',$id)->with('success', 'Purchase Order Canceled');
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.show',$id)->with('success', 'Purchase Order Canceled');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.show',$id)->with('error', $e->getMessage());
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.show',$id)->with('error', $e->getMessage());
+            }
+        }
+    }
+
+    public function cancelApproval(Request $request, $id){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try {
+            $modelPO = PurchaseOrder::find($id);
+            $modelPO->status = 1;
+            $modelPO->approved_by = null;
+            $modelPO->approval_date = null;
+            $modelPO->update();
+            
+            DB::commit();
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.show',$id)->with('success', 'Approval Canceled');
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.show',$id)->with('success', 'Approval Canceled');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/purchase_order"){
+                return redirect()->route('purchase_order.show',$id)->with('error', $e->getMessage());
+            }elseif($route == "/purchase_order_repair"){
+                return redirect()->route('purchase_order_repair.show',$id)->with('error', $e->getMessage());
+            }
+        }
+    }
+
     public function selectPR(Request $request)
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_order"){
-            $business_unit_id = 1;
+            $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',1)->get();
         }elseif($route == "/purchase_order_repair"){
-            $business_unit_id = 2;
+            $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',2)->get();
         }
-
-        $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',$business_unit_id)->get();
 
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
@@ -62,7 +114,6 @@ class PurchaseOrderController extends Controller
         $modelPOs = PurchaseOrder::whereIn('status',[1,4])->whereIn('purchase_requisition_id',$modelPRs)->get();
 
         return view('purchase_order.indexApprove', compact('modelPOs','route'));
-
     }
 
     public function create(Request $request)
@@ -98,21 +149,6 @@ class PurchaseOrderController extends Controller
                 }
             }
         }
-        // foreach($modelSRD as $key=>$SRD){
-        //     if($SRD->reserved >= $SRD->quantity){
-        //         $modelSRD->forget($key);
-        //     }else{
-        //         $SRD['discount'] = 0;
-        //         $SRD['old_price'] = $SRD->activityDetail->serviceDetail->cost_standard_price;
-        //         $SRD['remark'] = $SRD->remark;
-        //     }
-        // }
-
-        // if($modelPR->project_id){
-        //     $modelProject = Project::where('id',$modelPR->project_id)->with('ship','customer')->first();
-        // }else{
-            // $modelProject = [];
-        // }
         $payment_terms = Configuration::get('payment_terms');
         $delivery_terms = Configuration::get('delivery_terms');
         $projects = Project::where('status',1)->get();
@@ -272,6 +308,8 @@ class PurchaseOrderController extends Controller
             $statusPO = 'REJECTED';
         }elseif($modelPO->status == 0 || $modelPO->status == 7){
             $statusPO = 'RECEIVED';
+        }elseif($modelPO->status == 8){
+            $statusPO = 'CANCELED';
         }
 
         $datas = Collection::make();
@@ -453,7 +491,13 @@ class PurchaseOrderController extends Controller
             }
         }
         $tax = ($datas->sum('sub_total') - $total_discount) * ($modelPO->tax/100);
-        return view('purchase_order.show', compact('modelPO','unit','route','datas','total_discount','tax','statusPO','dterm_name'));
+
+        $gr = true;
+        $modelGR = GoodsReceipt::where('purchase_order_id',$modelPO->id)->get();
+        if(count($modelGR) > 0 || $modelPO->status != 2){
+            $gr = false;
+        }
+        return view('purchase_order.show', compact('modelPO','unit','route','datas','total_discount','tax','statusPO','dterm_name','gr'));
     }
 
     public function showApprove(Request $request, $id)

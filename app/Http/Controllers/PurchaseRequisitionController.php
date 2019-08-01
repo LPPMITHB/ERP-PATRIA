@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderDetail;
 use App\Models\Branch;
 use App\Models\Material;
 use App\Models\Resource;
@@ -26,6 +28,58 @@ class PurchaseRequisitionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function cancel(Request $request, $id){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try {
+            $modelPR = PurchaseRequisition::find($id);
+            $modelPR->status = 8;
+            $modelPR->update();
+            
+            DB::commit();
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.show',$id)->with('success', 'Purchase Requisition Canceled');
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.show',$id)->with('success', 'Purchase Requisition Canceled');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.show',$id)->with('error', $e->getMessage());
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.show',$id)->with('error', $e->getMessage());
+            }
+        }
+    }
+
+    public function cancelApproval(Request $request, $id){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try {
+            $modelPR = PurchaseRequisition::find($id);
+            $modelPR->status = 1;
+            $modelPR->approved_by = null;
+            $modelPR->approval_date = null;
+            $modelPR->update();
+            
+            DB::commit();
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.show',$id)->with('success', 'Approval Canceled');
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.show',$id)->with('success', 'Approval Canceled');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/purchase_requisition"){
+                return redirect()->route('purchase_requisition.show',$id)->with('error', $e->getMessage());
+            }elseif($route == "/purchase_requisition_repair"){
+                return redirect()->route('purchase_requisition_repair.show',$id)->with('error', $e->getMessage());
+            }
+        }
+    }
+
     public function index(Request $request)
     {
         $route = $request->route()->getPrefix(); 
@@ -42,11 +96,10 @@ class PurchaseRequisitionController extends Controller
     {
         $route = $request->route()->getPrefix();
         if($route == "/purchase_requisition"){
-            $businessUnit = 1;
+            $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->where('business_unit_id',1)->get();
         }elseif($route == "/purchase_requisition_repair"){
-            $businessUnit = 2;
+            $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->where('business_unit_id',2)->get();
         }
-        $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->where('business_unit_id',$businessUnit)->get();
 
         return view('purchase_requisition.indexApprove', compact('modelPRs','route'));
     }
@@ -398,8 +451,16 @@ class PurchaseRequisitionController extends Controller
         elseif($modelPR->status == 6){
             $status = 'CONSOLIDATED';
         }
+        elseif($modelPR->status == 8){
+            $status = 'CANCELED';
+        }
 
-        return view('purchase_requisition.show', compact('modelPR','route','status'));
+        $po = true;
+        $modelPO = PurchaseOrder::where('purchase_requisition_id',$modelPR->id)->where('status','!=',8)->get();
+        if(count($modelPO) > 0 || $modelPR->status != 2){
+            $po = false;
+        }
+        return view('purchase_requisition.show', compact('modelPR','route','status','po'));
     }
 
     public function showApprove(Request $request, $id)
@@ -546,7 +607,6 @@ class PurchaseRequisitionController extends Controller
                                 $status = 1;
                             }
                         }
-                        // print_r($PR->purchaseRequisitionDetails);exit();
                         if($status == 0){
                             $PRD = PurchaseRequisitionDetail::find($data->id);
                             $PRD->material_id = $data->material_id;
@@ -819,6 +879,7 @@ class PurchaseRequisitionController extends Controller
         return $pdf->stream('Purchase_Requisition_'.$now.'.pdf');
     }
 
+    // API
     public function getProjectApi($id){
 
         return response(Project::where('id',$id)->with('ship', 'customer')->first()->jsonSerialize(), Response::HTTP_OK);

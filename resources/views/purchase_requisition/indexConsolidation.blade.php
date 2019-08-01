@@ -53,6 +53,9 @@
                                     <td v-else-if="PRs.status == 3">NEED REVISION</td>
                                     <td v-else-if="PRs.status == 4">REVISED</td>
                                     <td v-else-if="PRs.status == 5">REJECTED</td>
+                                    <td v-else-if="PRs.status == 6">CONSOLIDATED</td>
+                                    <td v-else-if="PRs.status == 7">ORDER PARTIALLY</td>
+                                    <td v-else-if="PRs.status == 8">CANCELED</td>
                                     <td v-if="PRs.type == 2" class="no-padding p-t-2 p-b-2" align="center">
                                         <input type="checkbox" v-icheck="" v-model="checkedPR" :value="PRs.id" :disabled="materialOk">
                                     </td>
