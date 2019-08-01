@@ -162,11 +162,11 @@ class MaterialController extends Controller
 
         $array = array();
 
-        if ($material->family_id != null) {
-            foreach ($arrayMaterialFamily as $dataArray) {
-                foreach ($dataFamily as $data) {
-                    if ($data->id == $dataArray) {
-                        array_push($array, $data->name);
+        if($material->family_id != null){
+            foreach($arrayMaterialFamily as $dataArray){
+                foreach($dataFamily as $data){
+                    if($data->id == $dataArray){
+                        array_push($array,$data->name);
                     }
                 }
             }
@@ -194,8 +194,8 @@ class MaterialController extends Controller
                 $nameDimensionType = null;
             }
         }
-        $dimensions = (array) json_decode($material->dimensions_value);
-        foreach ($dimensions as $dimension) {
+        $dimensions = (array)json_decode($material->dimensions_value);
+        foreach($dimensions as $dimension){
             $dimension->uom = UOM::find($dimension->uom_id);
         }
         $uoms = Uom::all();
@@ -259,7 +259,7 @@ class MaterialController extends Controller
             }
         }
 
-        foreach ($snds as $snd) {
+        foreach($snds as $snd){
             $sn = $snd->snapshot;
             $sn->type_doc = "Physical Inventory";
             if ($sn != null) {
@@ -267,7 +267,7 @@ class MaterialController extends Controller
             }
         }
 
-        foreach ($mwods as $mwod) {
+        foreach($mwods as $mwod){
             $mwo = $mwod->materialWriteOff;
             $mwo->type_doc = "Material Write Off";
             if ($mwo != null) {
@@ -310,7 +310,7 @@ class MaterialController extends Controller
             }
         }
 
-        return view('material.edit', compact('material', 'uoms', 'material_families', 'densities', 'dataFamily', 'dimension_types'));
+        return view('material.edit', compact('material','uoms','material_families','densities','dataFamily','dimension_types'));
     }
 
     /**
@@ -339,8 +339,8 @@ class MaterialController extends Controller
         ]);
 
         $this->validate($request, [
-            'code' => 'required|alpha_dash|unique:mst_material,code,' . $id . ',id|string|max:255',
-            // 'name' => 'required|string|max:255',   
+            'code' => 'required|alpha_dash|unique:mst_material,code,'.$id.',id|string|max:255',
+            // 'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'cost_standard_price' => 'nullable',
             'cost_standard_price_service' => 'nullable',
@@ -379,6 +379,11 @@ class MaterialController extends Controller
                 } else {
                     $material->cost_standard_price_per_kg = 0;
                 }
+
+                $result = $data->lengths * $data->width * $data->height * $value;
+                $material->cost_standard_price_kg = 1/$result * $data->cost_standard_price;
+            }else{
+                $material->cost_standard_price_kg = 0;
             }
             $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
             $material->uom_id = $data->uom_id;
@@ -445,4 +450,4 @@ class MaterialController extends Controller
         $material_code = $code . '' . sprintf('%04d', $number);
         return $material_code;
     }
-}
+};
