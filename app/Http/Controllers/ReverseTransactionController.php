@@ -18,6 +18,7 @@ use App\Models\MaterialRequisitionDetail;
 use App\Models\Stock;
 use App\Models\StorageLocationDetail;
 use App\Models\Branch;
+use Illuminate\Support\Collection;
 use DB;
 use Auth;
 use DateTime;
@@ -78,7 +79,6 @@ class ReverseTransactionController extends Controller
         $modelData = [];
         $modelDataDetails = [];
         $route_string = $menu == "repair" ? "_repair":"";
-
         if($documentType == 1){
             $modelData = GoodsReceipt::where('id',$id)->with('purchaseOrder.project','purchaseOrder.vendor')->first();
             $modelData->url_type = "goods_receipt".$route_string;
@@ -96,8 +96,21 @@ class ReverseTransactionController extends Controller
             $modelData->url_type = "goods_issue".$route_string;
             $modelData->materialRequisition->url_type = "material_requisition".$route_string;
 
-            $modelDataDetails = GoodsIssueDetail::where('goods_issue_id',$id)->with('material.uom', 'storageLocation')->get();
+            $temp_gid = GoodsIssueDetail::where('goods_issue_id',$id)->with('material.uom', 'storageLocation')->get()->groupBy('material_id');
             $mr_id= $modelData->materialRequisition->id;
+
+            $modelDataDetails = Collection::make();
+            foreach ($temp_gid as $material_id => $data) {
+                $temp_data = null;
+                foreach ($data as $gid) {
+                    if($temp_data == null){
+                        $temp_data = $gid;
+                    }else{
+                        $temp_data->quantity += $gid->quantity;
+                    }
+                }
+                $modelDataDetails->push($temp_data);
+            }
 
             foreach ($modelDataDetails as $dataDetail) {
                 $dataDetail->mr_detail = MaterialRequisitionDetail::where('material_requisition_id',$mr_id)->where('material_id', $dataDetail->material_id)->first();
@@ -505,10 +518,11 @@ class ReverseTransactionController extends Controller
             $GID->quantity = $data->old_quantity;
             $GID->material_id = $data->material_id;
             $GID->storage_location_id = $old_grd_ref->storage_location_id;
-            $GID->save();
-
+            $GID->goods_receipt_detail_id_sloc_detail = $data->old_reference_document_detail;
+            
             $this->updateStockForGI($data->material_id, $data->old_quantity);
-            $this->updateSlocDetailForGI($data->material_id, $old_grd_ref->storage_location_id,$data->old_quantity,$data->old_reference_document_detail);
+            $this->updateSlocDetailGIForReverseGR($data->material_id, $old_grd_ref->storage_location_id,$data->old_quantity,$data->old_reference_document_detail,$GID);
+            $GID->save();
             if($data->new_quantity != 0){
                 //GRD
                 $GRD = new GoodsReceiptDetail;
@@ -523,7 +537,7 @@ class ReverseTransactionController extends Controller
                 $GRD->save();
                 
                 $this->updateStockForGR($data->material_id, $data->new_quantity);
-                $this->updateSlocDetailForGR($data,$GRD->id, $old_grd_ref);
+                $this->updateSlocDetailGRForReverseGR($data,$GRD->id, $old_grd_ref);
                 
                 $data->new_reference_document_detail = $GRD->id;
                 $data->update();
@@ -545,7 +559,7 @@ class ReverseTransactionController extends Controller
         $old_gi_ref = GoodsIssue::find($old_gr_id);
         $old_gi_ref->status = 2;
         $old_gi_ref->update();
-
+        
         //GR
         $GR = new GoodsReceipt;
         $GR->number = $this->generateGRNumber();
@@ -555,7 +569,17 @@ class ReverseTransactionController extends Controller
         $GR->branch_id = Auth::user()->branch->id;
         $GR->user_id = Auth::user()->id;
         $GR->save();
-        
+        foreach ($old_gi_ref->goodsIssueDetails as $gid) {
+            $GRD = new GoodsReceiptDetail;
+            $GRD->goods_receipt_id = $GR->id;
+            $GRD->quantity = $gid->quantity;
+            $GRD->material_id = $gid->material_id;
+            $GRD->storage_location_id = $gid->storage_location_id;
+            $GRD->save();
+            $this->updateStockForGR($gid->material_id, $gid->new_quantity);
+            $this->updateSlocDetailGRForReverseGI($gid,$GRD->id);
+        }
+
         //GI
         $GI = new GoodsIssue;
         $GI->number = $this->generateGINumber();
@@ -571,43 +595,50 @@ class ReverseTransactionController extends Controller
         $GI->save();
 
         $modelRT->new_reference_document = $GI->id;
-        $modelRT->update();
+        $modelRT->update();     
 
         foreach($datas as $data){
             $old_gid_ref = GoodsIssueDetail::find($data->old_reference_document_detail);
-            //GRD
-            $GRD = new GoodsReceiptDetail;
-            $GRD->goods_receipt_id = $GR->id;
-            $GRD->quantity = $data->old_quantity;
-            $GRD->material_id = $data->material_id;
-            $GRD->storage_location_id = $old_gid_ref->storage_location_id;
-            $GRD->save();
-            dd($GRD);
-
-            $this->updateStockForGI($data->material_id, $data->old_quantity);
-            $this->updateSlocDetailForGI($data->material_id, $old_gid_ref->storage_location_id,$data->old_quantity,$data->old_reference_document_detail);
             if($data->new_quantity != 0){
-                //GRD
-                $GRD = new GoodsIssueDetail;
-                $GRD->goods_receipt_id = $GR->id;
-                $GRD->quantity = $data->new_quantity; 
-                $GRD->material_id = $data->material_id;
-                $GRD->storage_location_id = $old_gid_ref->storage_location_id;
-                if($old_gid_ref->received_date != null){
-                    $GRD->received_date = $old_gid_ref->received_date;
+                $temp_sloc_detail = StorageLocationDetail::join('trx_goods_receipt_detail', 'mst_storage_location_detail.goods_receipt_detail_id', '=', 'trx_goods_receipt_detail.id')
+                ->orderBy('trx_goods_receipt_detail.received_date', 'asc')->where('mst_storage_location_detail.material_id', $data->material_id)->select('mst_storage_location_detail.*','trx_goods_receipt_detail.received_date')->get();
+
+                $temp_issued = $data->new_quantity;
+                foreach ($temp_sloc_detail as $sloc_detail) {
+                    if($temp_issued > 0){
+                        if($sloc_detail->quantity < $temp_issued){
+                            $GID = new GoodsIssueDetail;
+                            $GID->goods_issue_id = $GI->id;
+                            $GID->quantity = $sloc_detail->quantity;
+                            $GID->material_id = $data->material_id;
+                            $GID->storage_location_id = $sloc_detail->storage_location_id;
+                            $GID->value_sloc_detail = $sloc_detail->value;
+                            $GID->goods_receipt_detail_id_sloc_detail = $sloc_detail->goods_receipt_detail_id;
+                            $GID->save();
+
+                            $temp_issued -= $sloc_detail->quantity;
+                            $this->updateSlocDetailGIForReverseGI($data->material_id, $sloc_detail, $sloc_detail->quantity);
+                        }else{
+                            $GID = new GoodsIssueDetail;
+                            $GID->goods_issue_id = $GI->id;
+                            $GID->quantity = $temp_issued;
+                            $GID->material_id = $data->material_id;
+                            $GID->storage_location_id = $sloc_detail->storage_location_id;
+                            $GID->value_sloc_detail = $sloc_detail->value;
+                            $GID->goods_receipt_detail_id_sloc_detail = $sloc_detail->goods_receipt_detail_id;
+                            $GID->save();
+
+                            $this->updateSlocDetailGIForReverseGI($data->material_id, $sloc_detail,$temp_issued);
+                            $temp_issued -= $sloc_detail->quantity;
+                        }
+                    }
                 }
-                $GRD->item_OK = $old_gid_ref->item_OK;
-                $GRD->save();
                 
-                $this->updateStockForGR($data->material_id, $data->new_quantity);
-                $this->updateSlocDetailForGR($data,$GRD->id, $old_gid_ref);
-                
-                $data->new_reference_document_detail = $GRD->id;
-                $data->update();
+                $this->updateStockForGI($data->material_id, $data->new_quantity);
             }
             $diff_qty = $data->new_quantity - $data->old_quantity;
-            $po_detail_id = MaterialRequisitionDetail::where('purchase_order_id',$old_gi_ref->purchase_order_id)->where('material_id', $data->material_id)->first()->id;
-            $this->updatePOD($po_detail_id, $diff_qty);
+            $mr_detail_id = MaterialRequisitionDetail::where('material_requisition_id',$old_gi_ref->material_requisition_id)->where('material_id', $data->material_id)->first()->id;
+            $this->updateMRD($mr_detail_id, $diff_qty);
            
         }
         $this->checkStatusMR($old_gi_ref->material_requisition_id);
@@ -642,8 +673,8 @@ class ReverseTransactionController extends Controller
             $modelMR->status = 0;
             $modelMR->save();
         }else{
-            $modelPO->status = 2;
-            $modelPO->update();
+            $modelMR->status = 2;
+            $modelMR->update();
         }
     }
 
@@ -657,6 +688,19 @@ class ReverseTransactionController extends Controller
             }else{
                 $modelPOD->received = $modelPOD->received + $diff_qty;
                 $modelPOD->update();
+            }
+        }
+    }
+
+    public function updateMRD($mrd_id, $diff_qty){
+        $modelMRD = MaterialRequisitionDetail::findOrFail($mrd_id);
+        if($modelMRD){
+            if($diff_qty == 0){
+                $modelMRD->issued = 0;
+                $modelMRD->update();
+            }else{
+                $modelMRD->issued = $modelMRD->issued + $diff_qty;
+                $modelMRD->update();
             }
         }
     }
@@ -677,13 +721,28 @@ class ReverseTransactionController extends Controller
         }
     }
 
-    public function updateSlocDetailForGR($data,$new_grd_id, $old_grd){
+    public function updateSlocDetailGRForReverseGR($data,$new_grd_id, $old_grd){
         $modelSlocDetail = new StorageLocationDetail;
         $modelSlocDetail->quantity = $data->new_quantity;
         $modelSlocDetail->value = $old_grd->storageLocationDetail->value;
         $modelSlocDetail->goods_receipt_detail_id = $new_grd_id;
         $modelSlocDetail->material_id = $data->material_id;
         $modelSlocDetail->storage_location_id = $old_grd->storage_location_id;
+        $modelSlocDetail->save();
+
+        $sloc_detail = $old_grd->storageLocationDetail;
+        if($sloc_detail->quantity == 0){
+            $sloc_detail->delete();
+        }
+    }
+
+    public function updateSlocDetailGRForReverseGI($data,$new_grd_id){
+        $modelSlocDetail = new StorageLocationDetail;
+        $modelSlocDetail->quantity = $data->quantity;
+        $modelSlocDetail->value = $data->value_sloc_detail;
+        $modelSlocDetail->goods_receipt_detail_id = $new_grd_id;
+        $modelSlocDetail->material_id = $data->material_id;
+        $modelSlocDetail->storage_location_id = $data->storage_location_id;
         $modelSlocDetail->save();
     }
 
@@ -692,17 +751,30 @@ class ReverseTransactionController extends Controller
         
         if($modelStock){
             $modelStock->quantity = $modelStock->quantity - $issued;
-            $modelStock->reserved = $modelStock->reserved - $issued;
             $modelStock->save();
         }
     }
 
-    public function updateSlocDetailForGI($material_id,$sloc_id,$issued, $GRD_id){
+    public function updateSlocDetailGIForReverseGR($material_id,$sloc_id,$issued, $GRD_id, $GID){
         $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->where('goods_receipt_detail_id', $GRD_id)->first();
+        $GID->value_sloc_detail = $modelSlocDetail->value;
         if($modelSlocDetail){
             $modelSlocDetail->quantity = $modelSlocDetail->quantity - $issued;
             $modelSlocDetail->update();
         }
+    }
+
+    public function updateSlocDetailGIForReverseGI($material_id,$sloc_detail,$issued){
+        $modelSlocDetail = StorageLocationDetail::find($sloc_detail->id);
+        
+        if($modelSlocDetail){
+            $modelSlocDetail->quantity = $modelSlocDetail->quantity - $issued;
+            $modelSlocDetail->update();
+
+            if($modelSlocDetail->quantity == 0){
+                $modelSlocDetail->delete();
+            }
+        }        
     }
 
     //API
@@ -713,7 +785,7 @@ class ReverseTransactionController extends Controller
         if($type == 1){
             $modelData = GoodsReceipt::where('business_unit_id', $business_unit_id)->where('status','!=',2)->get();
         }else if($type == 2){
-            $modelData = GoodsIssue::where('business_unit_id', $business_unit_id)->where('status','!=',2)->get();
+            $modelData = GoodsIssue::where('business_unit_id', $business_unit_id)->where('status','!=',2)->where('type','!=',6)->get();
         }
 
         foreach ($modelData as $data) {

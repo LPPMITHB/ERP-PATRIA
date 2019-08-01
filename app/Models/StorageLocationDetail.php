@@ -20,6 +20,6 @@ class StorageLocationDetail extends Model
 
     public function goodsReceiptDetail()
     {
-        return $this->belongsTo('App\Models\GoodsReceiptDetail');
+        return $this->belongsTo('App\Models\GoodsReceiptDetail','goods_receipt_detail_id');
     }
 }

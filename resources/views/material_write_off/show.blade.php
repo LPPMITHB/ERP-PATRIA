@@ -152,7 +152,9 @@
                             <th width="5%">No</th>
                             <th width="20%">Material Number</th>
                             <th width="30%">Material Description</th>
-                            <th width="6.66%">Available</th>
+                            @if($modelMWO->status == 1)
+                                <th width="6.66%">Available</th>
+                            @endif
                             <th width="6.66%">Quantity</th>
                             <th width="6.66%">Unit</th>
                             <th width="20%">Storage Location</th>
@@ -164,9 +166,11 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $MWO->material->code }}</td>
                             <td>{{ $MWO->material->description }}</td>
-                            <td>
-                                {{ $MWO->storageLocation->storageLocationDetails->where('material_id',$MWO->material_id)->first()->quantity }}
-                            </td>
+                            @if($modelMWO->status == 1)
+                                <td>
+                                    {{ $MWO->storageLocation->storageLocationDetails->where('material_id',$MWO->material_id)->sum('quantity') }}
+                                </td>
+                            @endif
                             <td>{{ number_format($MWO->quantity,2) }}</td>
                             <td>{{ $MWO->material->uom->unit }}</td>
                             <td>{{ $MWO->storageLocation != null ? $MWO->storageLocation->name : "-" }} </td>
@@ -205,8 +209,5 @@
         });
     });
 
-    var data = {
-        dataMaterial : @json($materials)
-    };
 </script>
 @endpush

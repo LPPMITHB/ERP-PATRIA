@@ -41,8 +41,9 @@
                                         <th style="width: 15%">Storage Location</th>
                                         <th style="width: 20%">Material Number</th>
                                         <th style="width: 20%">Material Description</th>
-                                        <th style="width: 10%">Unit</th>
+                                        <th style="width: 5%">Unit</th>
                                         <th style="width: 10%">Available</th>
+                                        <th style="width: 10%">Amount / Unit</th>
                                         <th style="width: 10%">Quantity</th>
                                         <th style="width: 10%"></th>
                                     </tr>
@@ -55,6 +56,7 @@
                                         <td class="tdEllipsis">{{ material.material_name }}</td>
                                         <td class="tdEllipsis">{{ material.unit }}</td>
                                         <td class="tdEllipsis">{{ material.available }}</td>
+                                        <td class="tdEllipsis">Rp.{{ material.amount }}</td>
                                         <td class="tdEllipsis">{{ material.quantity }}</td>
                                         <td class="p-l-3 textCenter">
                                             <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(material,index)">
@@ -83,6 +85,9 @@
                                     </td>
                                     <td>
                                         {{ dataInput.available }}
+                                    </td>
+                                    <td>
+                                        Rp.{{ dataInput.amount }}
                                     </td>
                                     <td class="no-padding">
                                         <input type="text" class="form-control" v-model="dataInput.quantity">
@@ -175,6 +180,7 @@ var data = {
         available : "",
         unit : "",
         is_decimal : "",
+        amount : "",
     },
     editInput :{
         old_sloc_id : "",
@@ -251,6 +257,7 @@ var vm = new Vue({
                         this.dataMaterial.push(temp_data);
 
                         this.dataInput.material_id = "";
+                        this.dataInput.amount = "";
                         this.dataInput.material_name = "",
                         this.dataInput.material_code = "",
                         this.dataInput.quantity = "";
@@ -323,6 +330,7 @@ var vm = new Vue({
             $('div.overlay').show();
             this.dataMaterial.forEach(data => {
                 data.quantity = parseFloat(data.quantity.replace(/,/g , ''));
+                data.amount = parseFloat(data.amount.replace(/,/g , ''));
             });
             this.submittedForm.description = this.description;
             this.submittedForm.materials = this.dataMaterial;    
@@ -418,15 +426,36 @@ var vm = new Vue({
         'dataInput.material_id' : function(newValue){
             if(newValue != ""){
                 window.axios.get('/api/getMaterialsMWO/'+newValue).then(({ data }) => {
+                    var is_decimal = data.uom.is_decimal;
                     this.dataInput.unit = data.uom.unit;
                     this.dataInput.is_decimal = data.uom.is_decimal;
 
+                    this.dataInput.amount = 0;
+                    var count = 0;
+                    this.dataInput.available = 0;
                     this.slocDetails.forEach(element => {
                         if(element.storage_location_id == this.dataInput.sloc_id && this.dataInput.material_id == element.material_id){
-                            this.dataInput.available = element.quantity;
-                            this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            this.dataInput.available += element.quantity;
+                            this.dataInput.amount += element.value * element.quantity;
+                            count += element.quantity;
                         }
                     });
+                    if(is_decimal == 1){
+                        var decimalReceived = (this.dataInput.available+"").replace(/,/g, '').split('.');
+                        if(decimalReceived[1] != undefined){
+                            var maxDecimal = 2;
+                            if((decimalReceived[1]+"").length > maxDecimal){
+                                this.dataInput.quantity = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                            }else{
+                                this.dataInput.quantity = (decimalReceived[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimalReceived[1]+"").replace(/\D/g, "");
+                            }
+                        }else{
+                            this.dataInput.available = (this.dataInput.available+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    }else{
+                        this.dataInput.available = (this.dataInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                    this.dataInput.amount = ((this.dataInput.amount / count).toFixed(0)+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     this.dataInput.quantity = "";
                     $('div.overlay').hide();
                 })
@@ -477,7 +506,7 @@ var vm = new Vue({
                 if(is_decimal == 0){
                     this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 }else{
-                    var decimal = newValue.replace(/,/g, '').split('.');
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
@@ -490,7 +519,7 @@ var vm = new Vue({
                     }
                 }   
 
-                if(parseFloat(this.dataInput.quantity.replace(/,/g , '')) >  parseFloat(this.dataInput.available.replace(/,/g , ''))){
+                if(parseFloat((this.dataInput.quantity+"").replace(/,/g , '')) >  parseFloat((this.dataInput.available+"").replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
                         position: 'topRight',
