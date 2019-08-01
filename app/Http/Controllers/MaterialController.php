@@ -162,19 +162,11 @@ class MaterialController extends Controller
 
         $array = array();
 
-<<<<<<< HEAD
-        if ($material->family_id != null) {
-            foreach ($arrayMaterialFamily as $dataArray) {
-                foreach ($dataFamily as $data) {
-                    if ($data->id == $dataArray) {
-                        array_push($array, $data->name);
-=======
         if($material->family_id != null){
             foreach($arrayMaterialFamily as $dataArray){
                 foreach($dataFamily as $data){
                     if($data->id == $dataArray){
                         array_push($array,$data->name);
->>>>>>> origin/BJ-BenedictJeremiah
                     }
                 }
             }
@@ -202,13 +194,8 @@ class MaterialController extends Controller
                 $nameDimensionType = null;
             }
         }
-<<<<<<< HEAD
-        $dimensions = (array) json_decode($material->dimensions_value);
-        foreach ($dimensions as $dimension) {
-=======
         $dimensions = (array)json_decode($material->dimensions_value);
         foreach($dimensions as $dimension){
->>>>>>> origin/BJ-BenedictJeremiah
             $dimension->uom = UOM::find($dimension->uom_id);
         }
         $uoms = Uom::all();
@@ -272,11 +259,7 @@ class MaterialController extends Controller
             }
         }
 
-<<<<<<< HEAD
-        foreach ($snds as $snd) {
-=======
         foreach($snds as $snd){
->>>>>>> origin/BJ-BenedictJeremiah
             $sn = $snd->snapshot;
             $sn->type_doc = "Physical Inventory";
             if ($sn != null) {
@@ -284,11 +267,7 @@ class MaterialController extends Controller
             }
         }
 
-<<<<<<< HEAD
-        foreach ($mwods as $mwod) {
-=======
         foreach($mwods as $mwod){
->>>>>>> origin/BJ-BenedictJeremiah
             $mwo = $mwod->materialWriteOff;
             $mwo->type_doc = "Material Write Off";
             if ($mwo != null) {
@@ -331,11 +310,7 @@ class MaterialController extends Controller
             }
         }
 
-<<<<<<< HEAD
-        return view('material.edit', compact('material', 'uoms', 'material_families', 'densities', 'dataFamily', 'dimension_types'));
-=======
         return view('material.edit', compact('material','uoms','material_families','densities','dataFamily','dimension_types'));
->>>>>>> origin/BJ-BenedictJeremiah
     }
 
     /**
@@ -364,13 +339,8 @@ class MaterialController extends Controller
         ]);
 
         $this->validate($request, [
-<<<<<<< HEAD
-            'code' => 'required|alpha_dash|unique:mst_material,code,' . $id . ',id|string|max:255',
-            // 'name' => 'required|string|max:255',   
-=======
             'code' => 'required|alpha_dash|unique:mst_material,code,'.$id.',id|string|max:255',
             // 'name' => 'required|string|max:255',
->>>>>>> origin/BJ-BenedictJeremiah
             'description' => 'nullable|string|max:255',
             'cost_standard_price' => 'nullable',
             'cost_standard_price_service' => 'nullable',
@@ -409,14 +379,11 @@ class MaterialController extends Controller
                 } else {
                     $material->cost_standard_price_per_kg = 0;
                 }
-<<<<<<< HEAD
-=======
 
                 $result = $data->lengths * $data->width * $data->height * $value;
                 $material->cost_standard_price_kg = 1/$result * $data->cost_standard_price;
             }else{
                 $material->cost_standard_price_kg = 0;
->>>>>>> origin/BJ-BenedictJeremiah
             }
             $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
             $material->uom_id = $data->uom_id;
@@ -456,10 +423,6 @@ class MaterialController extends Controller
             DB::rollback();
             return redirect()->route('material.update', $material->id)->with('error', $e->getMessage())->withInput();
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/BJ-BenedictJeremiah
     }
 
     public function destroy($id)
@@ -487,9 +450,6 @@ class MaterialController extends Controller
         $material_code = $code . '' . sprintf('%04d', $number);
         return $material_code;
     }
-<<<<<<< HEAD
-=======
 
 
->>>>>>> origin/BJ-BenedictJeremiah
 }
