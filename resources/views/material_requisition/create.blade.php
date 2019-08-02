@@ -51,6 +51,17 @@
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
+                            <div class="col-xs-12 col-md-4" v-show="project_id != ''">
+                                <label for="" >Delivery Date</label>
+                                <div class="form-group">
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input autocomplete="off" v-model="delivery_date" type="text" class="form-control datepicker" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
+                                        </div>
+                                    </div>
+                            </div>
                             <div class="col-xs-12 col-md-4 p-r-0" v-show="project_id != ''">
                                 <div class="col-sm-12 p-l-0">
                                     <label for="">MR Description</label>
@@ -97,6 +108,7 @@
                                     <tfoot>
                                         <tr>
                                             <td class="p-l-10">{{newIndex}}</td>
+                                            
                                             <td class="p-l-0 textLeft" v-show="wbss.length > 0 && selectedProject.length > 0 ">
                                                 <selectize class="selectizeFull" v-model="dataInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in wbss" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
@@ -136,6 +148,7 @@
                                             <td class="p-l-0">
                                                 <input disabled class="form-control" v-model="dataInput.unit" placeholder="">
                                             </td>
+                                           
                                             <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
@@ -236,10 +249,12 @@
         $('div.overlay').hide();
     });
 
+   
 
     var data = {
         stocks : @json($stocks),
         description : "",
+        delivery_date: "",
         newIndex : "",
         all_materials : @json($all_materials),
         materials : [],
@@ -309,6 +324,17 @@
     var vm = new Vue({
         el : '#mr',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format : "dd-mm-yyyy"
+            });
+            $("#delivery_date").datepicker().on(
+                "changeDate", () => {
+                    this.delivery_date = $('#delivery_date').val();
+                }
+            );
+        },
         computed : {
             materialOk: function(){
                 let isOk = false;
@@ -386,6 +412,7 @@
             submitForm(){
                 $('div.overlay').show();
                 this.submittedForm.description = this.description;
+                this.submittedForm.delivery_date = this.delivery_date;
                 this.submittedForm.project_id = this.project_id;     
                 this.submittedForm.materials = this.dataMaterial;    
 
