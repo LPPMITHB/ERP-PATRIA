@@ -58,6 +58,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ProActivityDetailTableSeeder::class);
         $this->call(TrxGoodsReceiptTableSeeder::class);
         $this->call(TrxGoodsReceiptDetailTableSeeder::class);
-        $this->call(MstStorageLocationDetailTableSeeder::class);
+        // $this->call(MstStorageLocationDetailTableSeeder::class);
     }
 }

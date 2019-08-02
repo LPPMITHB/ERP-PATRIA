@@ -14,6 +14,13 @@
 Route::get('/', 'PagesController@index')->name('index')->middleware('can:show-dashboard');
 Auth::routes();
 
+// Approval Routes
+Route::name('approval.')->prefix('approval')->group(function() {
+    Route::get('/', 'ConfigurationController@approvalIndex')->name('index');
+
+    Route::post('/', 'ConfigurationController@approvalSave')->name('save');
+});
+
 // Cost Type Routes
 Route::name('cost_type.')->prefix('cost_type')->group(function() {
     Route::get('/', 'ConfigurationController@costTypeIndex')->name('index');

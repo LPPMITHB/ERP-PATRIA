@@ -12,6 +12,14 @@ use Auth;
 
 class ConfigurationController extends Controller
 {
+    public function approvalIndex(){
+
+    }
+
+    public function approvalSave(){
+
+    }
+
     public function costTypeIndex(){
 
     }
