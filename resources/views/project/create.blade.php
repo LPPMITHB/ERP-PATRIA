@@ -236,7 +236,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="planned_start_date" class="col-sm-2 control-label">Start Date</label>
+                                <label v-if="(menu=='building')" for="planned_start_date" class="col-sm-2 control-label">Start Date</label>
+                                <label v-if="(menu=='repair')" for="planned_start_date" class="col-sm-2 control-label">Start Date *</label>
                                 <div class="col-sm-5">
                                     <div class="input-group date">
                                         <div class="input-group-addon">
@@ -248,7 +249,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="planned_end_date" class="col-sm-2 control-label">End Date</label>
+                                <label v-if="(menu=='building')" for="planned_end_date" class="col-sm-2 control-label">End Date</label>
+                                <label v-if="(menu=='repair')" for="planned_end_date" class="col-sm-2 control-label">End Date *</label>
                                 <div class="col-sm-5">
                                     <div class="input-group date">
                                         <div class="input-group-addon">

@@ -317,8 +317,9 @@ class GoodsReceiptController extends Controller
                         $GRD->received_date = $received_date->format('Y-m-d');
                     }
                     $GRD->save();
-                
+                    
                     $this->updateStock($data->material_id, $data->quantity);
+                    // print_r('a');exit();
                     $this->updateSlocDetail($data, $GRD);
                 }
             }
@@ -378,9 +379,10 @@ class GoodsReceiptController extends Controller
 
     public function updateSlocDetail($data, $GRD){
         $modelSlocDetail = new StorageLocationDetail;
-        $modelSlocDetail->quantity = $data->received;
-
-        $pod = PurchaseOrderDetail::find($data->id);
+        $modelSlocDetail->quantity = isset($data->received) ? $data->received : $data->quantity;
+        if(isset($data->id)){
+            $pod = PurchaseOrderDetail::find($data->id);
+        }
         if(isset($data->total_price)){
             $modelSlocDetail->value = $pod->total_price / $pod->quantity;
         }else{

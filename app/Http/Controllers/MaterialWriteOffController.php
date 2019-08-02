@@ -88,11 +88,12 @@ class MaterialWriteOffController extends Controller
             $MWO->user_id = Auth::user()->id;
             $MWO->branch_id = Auth::user()->branch->id;
             $MWO->save();
-
+            
             foreach($datas->materials as $data){
                 $MWOD = new MaterialWriteOffDetail;
                 $MWOD->material_write_off_id = $MWO->id;
                 $MWOD->quantity = $data->quantity;
+                $MWOD->amount = $data->amount;
                 $MWOD->material_id = $data->material_id;
                 $MWOD->storage_location_id = $data->sloc_id;
                 $MWOD->save();
@@ -112,7 +113,6 @@ class MaterialWriteOffController extends Controller
                 return redirect()->route('material_write_off_repair.create')->with('error', $e->getMessage());
             }
         }
-
     }
 
     /**
@@ -133,10 +133,10 @@ class MaterialWriteOffController extends Controller
     public function showApprove($id, Request $request)
     {
         $route = $request->route()->getPrefix();    
-        $modelGI = MaterialWriteOff::findOrFail($id);
-        $modelGID = $modelGI->materialWriteOffDetails;
+        $modelMWO = MaterialWriteOff::findOrFail($id);
+        $modelMWOD = $modelMWO->materialWriteOffDetails;
 
-        return view('material_write_off.showApprove', compact('modelGI','modelGID','route'));
+        return view('material_write_off.showApprove', compact('modelMWO','modelMWOD','route'));
     }
 
     /**
@@ -240,45 +240,62 @@ class MaterialWriteOffController extends Controller
         $datas = json_decode($request->datas);
         $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";   
         $gi_number = $this->generateGINumber();
-        
+
         DB::beginTransaction();
         try {
             $modelMWO = MaterialWriteOff::findOrFail($datas->mwo_id);
             $modelMWOD = MaterialWriteOffDetail::where('material_write_off_id',$modelMWO->id)->get();
 
+
             if($datas->status == "approve"){
-                $modelMWO->status = 2;
-                $modelMWO->approved_by = Auth::user()->id;
-                $modelMWO->approval_date = Carbon::now();
-                $modelMWO->update();
-
-                $GI = new GoodsIssue;
-                $GI->number = $gi_number;
-                $GI->material_write_off_id = $modelMWO->id;
-                $GI->description = $modelMWO->description;
-                if($menu ==  "building"){
-                    $GI->business_unit_id = 1;
-                }elseif($menu == "repair"){
-                    $GI->business_unit_id = 2;
-                }
-                $GI->type = 5;
-                $GI->branch_id = Auth::user()->branch->id;
-                $GI->user_id = Auth::user()->id;
-                $GI->save();
-
-                foreach($modelMWO->materialWriteOffDetails as $data){
-
-                    $GID = new GoodsIssueDetail;
-                    $GID->goods_issue_id = $GI->id;
-                    $GID->quantity = $data->quantity;
-                    $GID->material_id = $data->material_id;
-                    $GID->storage_location_id = $data->storage_location_id;
-                    $GID->save();
-
-                    $this->updateSlocDetailApproved($data);
-                    $this->updateStockApproved($data);
+                // Validasi quantity lebih dari yang ada di storage location tersebut
+                $status = true;
+                foreach($modelMWOD as $MWOD){
+                    $qtyRemaining = StorageLocationDetail::where('material_id',$MWOD->material_id)->where('storage_location_id',$MWOD->storage_location_id)->sum('quantity');
+                    if($qtyRemaining < $MWOD->quantity){
+                        $status = false;
+                    }
                 }
 
+                if($status){
+                    $modelMWO->status = 2;
+                    $modelMWO->approved_by = Auth::user()->id;
+                    $modelMWO->approval_date = Carbon::now();
+                    $modelMWO->update();
+    
+                    $GI = new GoodsIssue;
+                    $GI->number = $gi_number;
+                    $GI->material_write_off_id = $modelMWO->id;
+                    $GI->description = $modelMWO->description;
+                    if($menu ==  "building"){
+                        $GI->business_unit_id = 1;
+                    }elseif($menu == "repair"){
+                        $GI->business_unit_id = 2;
+                    }
+                    $GI->type = 5;
+                    $GI->branch_id = Auth::user()->branch->id;
+                    $GI->user_id = Auth::user()->id;
+                    $GI->save();
+    
+                    foreach($modelMWO->materialWriteOffDetails as $data){
+    
+                        $GID = new GoodsIssueDetail;
+                        $GID->goods_issue_id = $GI->id;
+                        $GID->quantity = $data->quantity;
+                        $GID->material_id = $data->material_id;
+                        $GID->storage_location_id = $data->storage_location_id;
+                        $GID->save();
+    
+                        $this->updateSlocDetailApproved($data);
+                        $this->updateStockApproved($data);
+                    }
+                }else{
+                    if($menu == "building"){
+                        return redirect()->route('material_write_off.showApprove',$datas->mwo_id)->with('error', 'Quantity cannot more than available');
+                    }elseif($menu == "repair"){
+                        return redirect()->route('material_write_off_repair.showApprove',$datas->mwo_id)->with('error', 'Quantity cannot more than available');
+                    }
+                }
             }elseif($datas->status == "need-revision"){
                 $modelMWO->status = 3;
                 $modelMWO->update();
@@ -298,12 +315,12 @@ class MaterialWriteOffController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($menu == "building"){
-                return redirect()->route('material_write_off.show',$datas->mwo_id)->with('error', $e->getMessage());
+                return redirect()->route('material_write_off.showApprove',$datas->mwo_id)->with('error', $e->getMessage());
             }elseif($menu == "repair"){
-                return redirect()->route('material_write_off_repair.show',$datas->mwo_id)->with('error', $e->getMessage());
+                return redirect()->route('material_write_off_repair.showApprove',$datas->mwo_id)->with('error', $e->getMessage());
             }
         }
-
+        
     }
 
     public function destroy($id)
@@ -362,9 +379,23 @@ class MaterialWriteOffController extends Controller
     }
 
     public function updateSlocDetailApproved($data){
-        $modelSlocDetail = StorageLocationDetail::where('material_id',$data->material_id)->where('storage_location_id',$data->storage_location_id)->first();
-        $modelSlocDetail->quantity -= $data->quantity;
-        $modelSlocDetail->save();
+        $modelSlocDetail = StorageLocationDetail::orderBy('created_at')->where('material_id',$data->material_id)->where('storage_location_id',$data->storage_location_id)->get();
+        $quantity = $data->quantity;
+        foreach($modelSlocDetail as $SD){
+            if($quantity > 0){
+                if($quantity > $SD->quantity){
+                    $quantity -= $SD->quantity;
+                    $SD->delete();
+                }else{
+                    $SD->quantity -= $quantity;
+                    if($SD->quantity > 0){
+                        $SD->save();
+                    }else{
+                        $SD->delete();
+                    }
+                }
+            }
+        }
     }
 
     public function getMaterialApi($id){

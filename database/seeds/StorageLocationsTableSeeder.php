@@ -87,7 +87,5 @@ class StorageLocationsTableSeeder extends Seeder
             'branch_id' => 1,
             'user_id' => 5,
             ]);
-
-
-}
+    }
 }
