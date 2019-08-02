@@ -25,10 +25,10 @@
                 @endcan
             </div>
             <div class="row p-t-15 m-l-15">
-                <div class="col-xs-12 col-lg-5 col-md-12">    
+                <div class="col-xs-12 col-lg-5 col-md-12">
                     <div class="col-md-4 col-xs-6 no-padding">Code</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->code}}</b></div>
-                    
+
                     <div class="col-md-4 col-xs-6 no-padding">Name</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->name}}</b></div>
 
@@ -44,17 +44,17 @@
                     <div class="col-md-4 col-xs-6 no-padding">Phone Number 2</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_2}}</b></div>
                 </div>
-                <div class="col-xs-12 col-lg-6 col-md-12">    
-                    
+                <div class="col-xs-12 col-lg-6 col-md-12">
+
                     <div class="col-md-4 col-xs-6 no-padding">Contact Name</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->contact_name}}</b></div>
-                    
+
                     <div class="col-md-4 col-xs-6 no-padding">Email</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->email}}</b></div>
-                    
+
                     <div class="col-md-4 col-xs-6 no-padding">Description</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->description}}</b></div>
-                    
+
                     <div class="col-md-4 col-xs-6 no-padding">Status</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: @if ($vendor->status == 1)
                             <i class="fa fa-check"></i>
@@ -77,7 +77,7 @@
                             <li class="active"><a href="#quality" data-toggle="tab">Quality</a></li>
                             <li><a href="#cost" data-toggle="tab">Cost</a></li>
                             <li><a href="#delivery" data-toggle="tab">Delivery</a></li>
-                            @if($vendor->type == "Subcon")                            
+                            @if($vendor->type == "Subcon")
                                 <li><a href="#safety" data-toggle="tab">Safety</a></li>
                                 <li><a href="#morale" data-toggle="tab">Morale</a></li>
                                 <li><a href="#productivity" data-toggle="tab">Productivity</a></li>
@@ -206,9 +206,8 @@
                                         <th width="5%">No</th>
                                         <th width="15%">GR Number</th>
                                         <th width="15%">PO Number</th>
-                                        <th width="40%">GR Description</th>
-                                        <th width="10%">Status</th>
-                                        <th width="10%">Day(s)</th>
+                                        <th width="20%">GR Description</th>
+                                        <th width="10%">Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -222,29 +221,61 @@
                                                 <a href="{{ route('purchase_order.show',$modelGR->purchaseOrder->id) }}" class="text-primary">{{$modelGR->purchaseOrder->number}}</a>
                                             </td>
                                             <td>{{ $modelGR->description }}</td>
-                                            <td>
-                                                @if($modelGR->purchaseOrder->required_date > $modelGR->created_at->format('Y-m-d'))
-                                                <b class="text-danger">LATE</b>
-                                                @elseif($modelGR->purchaseOrder->required_date < $modelGR->created_at->format('Y-m-d'))
-                                                <b class="text-success">EARLY</b>
-                                                @elseif($modelGR->purchaseOrder->required_date == $modelGR->created_at->format('Y-m-d'))
-                                                <b class="text-success">ONTIME</b>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @php
-                                                    $earlier = new DateTime($modelGR->purchaseOrder->required_date);
-                                                    $later = new DateTime($modelGR->created_at->format('Y-m-d'));
-
-                                                    $diff = $later->diff($earlier)->format("%a");
-                                                    $diff = abs($diff);
-                                                @endphp
-                                                {{$diff}}
-                                            </td>
+                                            <td class="textCenter"><a class="btn btn-primary btn-xs buttonDetail" id="detail_{{$modelGR->id}}" @click.prevent="openDeliveryDetails({{$modelGR->id}})">DETAILS</a></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+                            @verbatim
+                            <div id="modal_details">
+                                <div class="modal fade" id="show_details">
+                                    <div class="modal-dialog modalFull">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                                <h4 class="modal-title">Status Details</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <table class="table table-bordered showTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Material Number</th>
+                                                                    <th>Material Description</th>
+                                                                    <th>PO Required Date</th>
+                                                                    <th>GR Received Date</th>
+                                                                    <th>Status</th>
+                                                                    <th>Day(s)</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="(grd,index) in selectedGRD">
+                                                                    <td class="tdEllipsis">{{grd.material_code}}</td>
+                                                                    <td class="tdEllipsis">{{grd.material_desription}}</td>
+                                                                    <td>{{grd.required_date.split('-').reverse().join('-')}}</td>
+                                                                    <td>{{grd.received_date.split('-').reverse().join('-')}}</td>
+                                                                    <td v-if="grd.required_date > grd.received_date"><b class="text-danger">LATE</b></td>
+                                                                    <td v-else-if="grd.required_date < grd.received_date"><b class="text-success">EARLY</b></td>
+                                                                    <td v-else-if="grd.required_date == grd.received_date"><b class="text-success">ON TIME</b></td>
+                                                                    <td v-else></b class="text-danger">ERROR</b></td>
+                                                                    <td>{{grd.date_diff}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endverbatim
                         </div>
                     </div>
                     @if($vendor->type == "Subcon")
@@ -377,6 +408,7 @@
 @endsection
 @push('script')
 <script>
+
     $(document).ready(function(){
         $('.qualityTable').DataTable({
             'paging'      : true,
@@ -415,7 +447,7 @@
         //     lengthChange    : false,
         //     info            : true,
         // });
-        
+
         $('.poCostTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -454,7 +486,7 @@
         //     lengthChange    : false,
         //     info            : true,
         // });
-        
+
         $('.woCostTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -493,7 +525,7 @@
         //     lengthChange    : false,
         //     info            : true,
         // });
-        
+
         $('.deliveryTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -532,7 +564,7 @@
         //     lengthChange    : false,
         //     info            : true,
         // });
-        
+
         $('.productivityTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -571,7 +603,7 @@
         //     lengthChange    : false,
         //     info            : true,
         // });
-        
+
         $('.safetyTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -610,7 +642,7 @@
         //     lengthChange    : false,
         //     info            : true,
         // });
-        
+
         $('.moraleTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -651,6 +683,58 @@
         // });
 
         // $('div.overlay').hide();
+    });
+
+    var data = {
+        modelGRDs: @json($modelGR->goodsReceiptDetails),
+        modelPODs: @json($modelGR->purchaseOrder->purchaseOrderDetails),
+        selectedGRD: [],
+        selectedPOD: [],
+    };
+
+    function details(id){
+        var details = ""
+        document.getElementById("details").value = details;
+    };
+
+    var vm = new Vue({
+        el:"#delivery",
+        data: data,
+        methods: {
+            openDeliveryDetails(id) {
+                //ambil material yang ada di goods receipt
+                this.selectedGRD = [];
+                this.modelGRDs.forEach(modelGRD => {
+                    if(modelGRD.goods_receipt_id == id){
+                        window.axios.get('/api/getMaterialVendor/'+modelGRD.material_id).then(({ data }) => {
+                            this.modelPODs.forEach(modelPOD => {
+                                if(modelPOD.material_id == modelGRD.material_id)
+                                {
+                                    modelGRD.required_date = modelPOD.delivery_date;
+                                }
+                            });
+                            modelGRD.material_code = data.code;
+                            modelGRD.material_desription = data.description;
+                            var date1 = new Date(modelGRD.received_date);
+                            var date2 = new Date(modelGRD.required_date);
+                            modelGRD.date_diff = Math.ceil(Math.abs(date1-date2) / (1000*60*60*24));
+                            this.selectedGRD.push(modelGRD);
+                            $('div.overlay').hide();
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                title: 'Please Try Again..',
+                                position: 'topRight',
+                                displayMode: 'replace'
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();
+                        })
+                    }
+                });
+                $('#show_details').modal();
+            }
+        }
     });
 
 </script>

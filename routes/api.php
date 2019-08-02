@@ -196,3 +196,6 @@ Route::get('/getDailyTidal', 'TidalController@getTidalAPI')->name('api.dmh.getTi
 
 // Reverse Transaction
 Route::get('/getDocuments/{id}/{menu}', 'ReverseTransactionController@getDocuments')->name('api.rt.getDocuments');
+
+// Vendor
+Route::get('/getMaterialVendor/{id}', 'VendorController@getMaterialAPI')->name('api.vendor.getMaterialAPI');
