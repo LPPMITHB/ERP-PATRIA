@@ -125,6 +125,12 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
+                                                <label for="type" class="control-label">Warehouse</label>
+                                                <selectize v-model="dataInput.werehouse_id" :settings="werehouseSettings">
+                                                    <option v-for="(werehouse,index) in werehouses" :value="werehouse.id">{{ werehouse.name }}</option>
+                                                </selectize>
+                                            </div>
+                                            <div class="col-sm-12">
                                                 <label for="type" class="control-label">Storage Location</label>
                                                 <selectize v-model="editInput.sloc_id" :settings="slocSettings">
                                                     <option v-for="(sloc,index) in slocs" :value="sloc.id">{{ sloc.name }}</option>
@@ -214,6 +220,7 @@ var data = {
         old_material_id : "",
         is_decimal : "",
     },
+
     werehouseSettings: {
         placeholder: 'Please Select Werehouse'
     },
@@ -262,21 +269,20 @@ var vm = new Vue({
     methods : {
         add(){
             var material_id = this.dataInput.material_id;
-            var sloc_id = this.dataInput.sloc_id;
+            var sloc_id = this.dataInput.sloc_id; 
             var werehouse_id = this.dataInput.werehouse_id;
             $('div.overlay').show();
                 window.axios.get('/api/getMaterialsMWO/'+material_id).then(({ data }) => {
                     
                     this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
-
                     window.axios.get('/api/getSloc/'+sloc_id).then(({ data }) => {
                         
                         this.dataInput.sloc_name = data.name;
-                        this.dataInput.werehouse_name = data.name;
+                        this.dataInput.werehouse_name = data.warehouse.name;
                         var temp_data = JSON.stringify(this.dataInput);
                         temp_data = JSON.parse(temp_data);
-
+                        
                         this.dataMaterial.push(temp_data);
 
                         this.dataInput.material_id = "";
@@ -286,11 +292,12 @@ var vm = new Vue({
                         this.dataInput.quantity = "";
                         this.dataInput.sloc_id = "";
                         this.dataInput.sloc_name = "";
+                        this.dataInput.werehouse_id = "";
+                        this.dataInput.werehouse_name = "";
                         this.dataInput.available = "";
                         this.dataInput.unit = "";
                         this.dataInput.is_decimal = "";
                         this.newIndex = Object.keys(this.dataMaterial).length+1;
-
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -327,6 +334,7 @@ var vm = new Vue({
 
                     window.axios.get('/api/getSloc/'+this.editInput.sloc_id).then(({ data }) => {
                     material.sloc_name = data.name;
+                    material.werehouse_name = data.warehouse.name;
                     $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -377,6 +385,8 @@ var vm = new Vue({
             this.editInput.sloc_id = data.sloc_id;
             this.editInput.old_sloc_id = data.sloc_id;
             this.editInput.sloc_name = data.sloc_name;
+            this.editInput.old_warehouse_id = data.werehouse_id;
+            this.editInput.werehouse_name = data.werehouse_name;
             this.editInput.is_decimal = data.is_decimal;
             this.editInput.unit = data.unit;
             this.editInput.index = index;
@@ -398,7 +408,8 @@ var vm = new Vue({
                 this.dataInput.unit = "";
                 window.axios.get('/api/getStorloc/'+newValue).then(({ data }) => {
                     this.slocs = data;
-                    this.slocDetails ="";
+                    
+                    this.slocDetails = "";
                     this.slocs.forEach(existing => {
                         if(existing.werehouse_id == newValue){
                             this.sloc.forEach(allSloc => {
@@ -411,6 +422,7 @@ var vm = new Vue({
                     var $material = $(document.getElementById('material')).selectize();
                     var $slocs = $(document.getElementById('sloc')).selectize();
                     $slocs[0].selectize.focus();
+                    $material[0].selectize.clear();
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
