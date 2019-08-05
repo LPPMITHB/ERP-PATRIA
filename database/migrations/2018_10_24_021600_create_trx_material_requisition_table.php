@@ -24,6 +24,7 @@ class CreateTrxMaterialRequisitionTable extends Migration
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('approved_by')->nullable();
+            $table->date('delivery_date')->nullable();
             $table->date('approval_date')->nullable();
             $table->timestamps();
 

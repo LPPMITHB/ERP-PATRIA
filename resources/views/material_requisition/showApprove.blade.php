@@ -69,6 +69,42 @@
                         <div class="col-xs-8 col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelMR->description}}">
                             : <b> {{ $modelMR->description }} </b>
                         </div>
+                        @if($modelMR->delivery_date != null)
+                        <div class="col-xs-5 col-md-4">
+                            Delivery Date
+                        </div>
+                        <div class="col-xs-5 col-md-8">
+                            : <b> {{ date('d-m-Y', strtotime($modelMR->delivery_date)) }} </b>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 m-t-10 m-l-10">
+                    <div class="row">
+                        <div class="col-xs-4 col-md-4">
+                            Project Number
+                        </div>
+                        <div class="col-xs-8 col-md-8">
+                            : <b>{{ $modelMR->project->number }}</b>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            Project Name
+                        </div>
+                        <div class="col-xs-8 col-md-8">
+                            : <b>{{ $modelMR->project->name }}</b>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            Customer Name
+                        </div>
+                        <div class="col-xs-8 col-md-8">
+                            : <b>{{ $modelMR->project->customer->name }}</b>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
+                            Ship Type
+                        </div>
+                        <div class="col-xs-8 col-md-8">
+                            : <b>{{ $modelMR->project->ship->type }}</b>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-4 m-t-10">

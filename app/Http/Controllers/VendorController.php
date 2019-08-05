@@ -8,6 +8,8 @@ use App\Models\WorkOrder;
 use App\Models\GoodsReceipt;
 use App\Models\GoodsIssue;
 use App\Models\Configuration;
+use App\Models\Material;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -97,9 +99,15 @@ class VendorController extends Controller
         $modelPOs = PurchaseOrder::where('vendor_id',$id)->get();
         $modelWOs = WorkOrder::where('vendor_id',$id)->get();
         $po_ids = $modelPOs->pluck('id')->toArray();
-        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->get();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->with('goodsReceiptDetails','purchaseOrder.purchaseOrderDetails')->get();
         $gr_ids = $modelGRs->pluck('id')->toArray();
+        // broken code
+        /*
         $return = GoodsIssue::whereIn('purchase_order_id', $po_ids)->orWhereIn('goods_receipt_id',$gr_ids)->where('type',4)->get();
+        */
+        // code fix. kolom purchase_order_id diganti ke goods_return_id, goods_receipt_id tidak ada di database trx_goods_issue
+        $return = GoodsIssue::whereIn('goods_return_id', $gr_ids)->where('type',4)->get();
+
         $resourceDetails = $vendor->resourceDetails;
 
         $payment_terms = Configuration::get('payment_terms');
@@ -180,7 +188,7 @@ class VendorController extends Controller
     public function generateVendorCode(){
         $code = 'VR';
         $modelVendor = Vendor::orderBy('code', 'desc')->first();
-        
+
         $number = 1;
 		if(isset($modelVendor)){
             $number += intval(substr($modelVendor->code, -4));
@@ -189,4 +197,8 @@ class VendorController extends Controller
         $vendor_code = $code.''.sprintf('%04d', $number);
 		return $vendor_code;
 	}
+
+    public function getMaterialAPI($id){
+        return response(Material::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
+    }
 }
