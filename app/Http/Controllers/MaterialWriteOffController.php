@@ -152,12 +152,14 @@ class MaterialWriteOffController extends Controller
         $modelGID = $modelGI->MaterialWriteOffDetails;   
 
         $materials = Material::with('uom')->get();
+        $warehouseLocations = Warehouse::where('branch_id',1/*Auth::user()->branch->id*/)->with('storageLocations')->get();
         $storageLocations = StorageLocation::where('status',1)->with('storageLocationDetails.material.uom')->get();
 
         $materials = Collection::make();
         foreach($modelGID as $gid){
             $materials->push([
                 "gid_id" =>$gid->id,
+                "werehouse_name"=>$gid->storageLocation->Warehouse->name,
                 "sloc_id" =>$gid->storage_location_id,
                 "sloc_name" => $gid->storageLocation->name,
                 "material_id" => $gid->material_id,
@@ -170,7 +172,7 @@ class MaterialWriteOffController extends Controller
             ]);
         }
 
-        return view('material_write_off.edit', compact('modelGI','materials','materials','storageLocations','route'));
+        return view('material_write_off.edit', compact('modelGI','materials','materials','storageLocations','route','warehouseLocations'));
     }
 
     /**
@@ -414,7 +416,7 @@ class MaterialWriteOffController extends Controller
 
     public function getSlocApi($id){
         
-        return response(StorageLocation::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(StorageLocation::where('id',$id)->with('Warehouse')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     /**
