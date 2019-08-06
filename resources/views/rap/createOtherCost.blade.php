@@ -31,12 +31,12 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-header no-padding p-t-10">
-                <div class="col-xs-12 col-lg-4 col-md-12">    
+                <div class="col-xs-12 col-lg-4 col-md-12">
                     <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-                    
+
                     <div class="col-md-4 col-xs-4 no-padding">Project Code</div>
                     <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
-                    
+
                     <div class="col-md-4 col-xs-4 no-padding">Ship Type</div>
                     <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
@@ -69,11 +69,11 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 25%">Cost Type</th>
+                                <th style="width: 20%">Cost Type</th>
                                 <th style="width: 25%">Description</th>
                                 <th style="width: 15%">Cost (Rp.)</th>
                                 <th style="width: 25%">Work Breakdown Structure</th>
-                                <th style="width: 10%"></th>
+                                <th style="width: 15%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,6 +88,7 @@
                                     <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_cost">
                                         EDIT
                                     </a>
+                                    <a class="btn btn-danger btn-xs" @click="removeOtherCost(data.id)">DELETE</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -164,7 +165,7 @@
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
             <div id="myPopoverContent" style="display : none;">
-                
+
             </div>
         </div>
     </div>
@@ -179,7 +180,7 @@ $(document).ready(function(){
 var data = {
     costs : "",
     wbss : [],
-    newIndex : "", 
+    newIndex : "",
     cost_types : @json($cost_types),
     newCost : {
         cost_type : "",
@@ -235,7 +236,7 @@ var vm = new Vue({
             return isOk;
         },
 
-    }, 
+    },
     methods:{
         openEditModal(data){
             this.editCost.cost_id = data.id;
@@ -252,8 +253,8 @@ var vm = new Vue({
         getCosts(){
             window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
                 this.costs = data;
-                this.costs.forEach(cost => {   
-                    cost.plan_cost = (cost.plan_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");      
+                this.costs.forEach(cost => {
+                    cost.plan_cost = (cost.plan_cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     this.cost_types.forEach(ct =>{
                         if(ct.id == cost.cost_type){
                             cost.cost_type_name = ct.name;
@@ -281,7 +282,7 @@ var vm = new Vue({
                 })
             });
         },
-        add(){            
+        add(){
             var newCost = this.newCost;
             newCost.cost = newCost.cost.replace(/,/g , '');
             newCost = JSON.stringify(newCost);
@@ -301,21 +302,21 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                 }
-                
+
                 this.getCosts();
                 this.newCost.description = "";
                 this.newCost.cost = "";
-                this.newCost.wbs_id = "";                
-                this.newCost.cost_type = "";                
+                this.newCost.wbs_id = "";
+                this.newCost.cost_type = "";
             })
             .catch((error) => {
                 console.log(error);
             })
 
         },
-        update(){            
-            var editCost = this.editCost;   
-            editCost.cost = editCost.cost.replace(/,/g , '');        
+        update(){
+            var editCost = this.editCost;
+            editCost.cost = editCost.cost.replace(/,/g , '');
             var url = "/rap/updateCost/"+editCost.cost_id;
             editCost = JSON.stringify(editCost);
             window.axios.put(url,editCost)
@@ -333,7 +334,7 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                 }
-                
+
                 this.getCosts();
                 this.newCost.description = "";
                 this.newCost.cost = "";
@@ -342,9 +343,64 @@ var vm = new Vue({
             .catch((error) => {
                 console.log(error);
             })
+        },
+        removeOtherCost: function(id) {
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 9999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this cost?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        alert(id);
+                        if(vm.menu == "building"){
+                            url = "/rap/deleteOtherCost/" + id;
+                        } else if (vm.route == "repair"){
+                            url = "/rap_repair/deleteOtherCost/" + id;
+                        }
+                        $('div.overlay').show();
+                        window.axios.delete(url).then((response) => {
+                            if(response.data.error != undefined){
+                                console.log(response.data.error);
+                                iziToast.warning({
+                                    displayMode: 'replace',
+                                    title: response.data.error,
+                                    position: 'topRight',
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                vm.getCosts();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again..",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();
+                        })
 
-
-        }
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ],
+            });
+        },
     },
     watch : {
         'newCost.cost': function(newValue) {
@@ -355,7 +411,7 @@ var vm = new Vue({
 
         costs: function(newValue) {
             newValue.forEach(cost => {
-                cost.cost = (cost.cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                cost.cost = (cost.cost+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             });
         },
         'editCost.cost': function(newValue) {
@@ -368,7 +424,7 @@ var vm = new Vue({
         this.getCosts();
         this.getWbss();
     },
-    
+
 });
 
 
