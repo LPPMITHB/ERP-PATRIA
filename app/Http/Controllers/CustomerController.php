@@ -35,10 +35,11 @@ class CustomerController extends Controller
     {
         $customer = new Customer;
         $user = new User;
+        $business_ids = Auth::user()->business_unit_id;
         $customer_code = self::generateCustomerCode();
         $businessUnits = BusinessUnit::all();
 
-        return view('customer.create', compact('customer', 'customer_code','user','businessUnits'));
+        return view('customer.create', compact('customer', 'customer_code','user','business_ids','businessUnits'));
     }
 
     /**
@@ -51,8 +52,6 @@ class CustomerController extends Controller
     {
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_customer|string|max:255',
-            'name' => 'required|string|unique:mst_customer|max:255',
-            'email' => 'nullable|email|unique:mst_customer|max:255',
         ]);
 
         $configuration = Configuration::get('default-password')->password;

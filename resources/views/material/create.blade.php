@@ -233,6 +233,13 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="status" class="col-sm-2 control-label">Location Detail</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="location_detail" name="location_detail" required v-model="submittedForm.location_detail">
+                                </div>
+                            </div>
                             <!-- /.box-body -->
                             <div class="box-footer">
                                 <button :disabled="createOk" @click.prevent="submitForm" type="button" class="btn btn-primary pull-right">CREATE</button>
@@ -295,6 +302,7 @@
                 length_uom_id : @json(Request::old('length_uom_id')),
                 width : @json(Request::old('width')),
                 width_uom_id : @json(Request::old('width_uom_id')),
+                location_detail : @json(Request::old('location_detail')),
             },
             uoms : @json($uoms),
             material_families : @json($material_families),
@@ -324,6 +332,7 @@
                 status : 1,
                 type : 1,
                 dimension_type_id : "",
+                location_detail : "",
             },
             uom_settings: {
                 placeholder: 'Select UOM!'
@@ -360,7 +369,7 @@
                 createOk :function(){
                     let isOk = false;
 
-                    if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.uom_id == ""){
+                    if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.location_detail == "" || this.submittedForm.uom_id == ""){
                         isOk = true;
                     }
 
@@ -498,6 +507,9 @@
                 }
                 if(this.oldData.width_uom_id !=null) {
                     this.project.width_uom_id=this.oldData.width_uom_id;
+                }
+                if(this.oldData.location_detail !=null) {
+                    this.project.location_detail=this.oldData.location_detail;
                 }
             },
             watch:{

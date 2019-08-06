@@ -97,10 +97,10 @@
                         </div>
 
                         <div class="form-group">
-                                <label for="company" class="col-sm-2 control-label">Warehouse *</label>
+                                <label for="warehouse" class="col-sm-2 control-label">Warehouse *</label>
 
                                 <div class="col-sm-10">
-                                    <select class="form-control" name="warehouse" id="warehouse" required >
+                                    <select class="form-control" name="warehouse" id="warehouse" required>
                                         @foreach($warehouses as $warehouse)
                                             @if($storage_location->warehouse_id == $warehouse->id)
                                                 <option value="{{ $warehouse->id }}" selected>{{$warehouse->name}}</option>
@@ -148,6 +148,11 @@
         $('#status').val("{{$storage_location->status}}");
         if($('#status').val()==null){
             $('#status').val(1);
+        }
+
+        $('#warehouse').val("{{$storage_location->warehouse}}");
+        if($('#warehouse').val()==null){
+            $('#warehouse').val(0);
         }
 
         $('#status').select({

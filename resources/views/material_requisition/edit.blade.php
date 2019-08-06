@@ -46,6 +46,17 @@
                                 <div class="col-xs-5 no-padding">End Date</div>
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject != null ? selectedProject.planned_end_date : "-"}}</b></div>
                             </div>
+                            <div class="col-xs-12 col-md-4" v-show="project_id != ''">
+                                <label for="" >Delivery Date</label>
+                                <div class="form-group">
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input autocomplete="off" v-model="delivery_date" type="text" class="form-control datepicker" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-xs-12 col-md-4 p-r-0">
                                     <div class="col-sm-12 p-l-0">
                                         <label for="">MR Description</label>
@@ -215,11 +226,25 @@
         $('div.overlay').hide();
     });
 
-
+    delivery_date_meta = new Date(@JSON($modelMR->delivery_date));
+    delivery_date_meta_complited = null;
+    if(@json($modelMR->delivery_date) != null){
+        date = delivery_date_meta.getDate();
+        month = delivery_date_meta.getMonth()+1;
+        
+        if(date<10){
+            date = '0'+date;
+        } 
+        if(month<10){
+            month = '0'+ month;
+        }
+        delivery_date_meta_complited = date + '-'+ month + '-' + delivery_date_meta.getFullYear();
+    }
     var data = {
         stocks : @json($stocks),
         modelMR : @json($modelMR),
         description : @json($modelMR->description),
+        delivery_date: delivery_date_meta_complited,
         revision_description : @json($modelMR->revision_description),
         mr_id : @json($modelMR->id),
         newIndex : "",
@@ -288,6 +313,17 @@
     var vm = new Vue({
         el : '#mr',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format : "dd-mm-yyyy"
+            });
+            $("#delivery_date").datepicker().on(
+                "changeDate", () => {
+                    this.delivery_date = $('#delivery_date').val();
+                }
+            );
+        },
         computed : {
             materialOk: function(){
                 let isOk = false;
@@ -364,6 +400,7 @@
             },
             submitForm(){
                 this.submittedForm.description = this.description;
+                this.submittedForm.delivery_date = this.delivery_date;
                 this.submittedForm.project_id = this.project_id;     
                 this.submittedForm.materials = this.dataMaterial;    
                 this.submittedForm.deleted_mrd = this.deleted_mrd;    

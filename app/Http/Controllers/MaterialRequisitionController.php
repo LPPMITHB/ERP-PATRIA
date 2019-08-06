@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Models\MaterialRequisition;
 use App\Models\MaterialRequisitionDetail;
 use App\Models\Branch;
+use DateTime;
 use App\Models\Material;
 use App\Models\WBS;
 use App\Models\Bom;
@@ -94,11 +95,16 @@ class MaterialRequisitionController extends Controller
             if($datas->project_id != ""){
                 $MR->project_id = $datas->project_id;
             }
+            
             $MR->description = $datas->description;
             $MR->status = 1;
             $MR->type = 0;
             $MR->user_id = Auth::user()->id;
             $MR->branch_id = Auth::user()->branch->id;
+            if($datas->delivery_date != ""){
+                $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->delivery_date);
+                $MR->delivery_date = $delivery_date->format('Y-m-d');
+            }
             $MR->save();
 
             foreach($datas->materials as $data){
@@ -369,6 +375,10 @@ class MaterialRequisitionController extends Controller
                 $modelPRD->delete();
             }
             $MR->description = $datas->description;
+            if($datas->delivery_date != ""){
+                $delivery_date = DateTime::createFromFormat('d-m-Y', $datas->delivery_date);
+                $MR->delivery_date = $delivery_date->format('Y-m-d');
+            }
             if($MR->status == 3){
                 $MR->status = 4;
             }
