@@ -28,8 +28,6 @@
                             <selectize v-model="documentType" :settings="documentTypeSettings">
                                 <option value="1">Goods Receipt</option>
                                 <option value="2">Goods Issue</option>
-                                <option value="3">Physical Inventory</option>
-                                <option value="4">Material Write Off</option>
                             </selectize>  
                         </div>
                     </div>
