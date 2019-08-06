@@ -207,6 +207,7 @@ var data = {
         plugins: ['dropdown_direction'],
         dropdownDirection : 'down',
     },
+    route : @json($route),
 };
 
 var vm = new Vue({
@@ -358,10 +359,9 @@ var vm = new Vue({
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
                         var url = "";
-                        alert(id);
-                        if(vm.menu == "building"){
+                        if(vm.route == "/rap"){
                             url = "/rap/deleteOtherCost/" + id;
-                        } else if (vm.route == "repair"){
+                        } else if (vm.route == "/rap_repair"){
                             url = "/rap_repair/deleteOtherCost/" + id;
                         }
                         $('div.overlay').show();

@@ -929,6 +929,8 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap-repair');
 
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap-repair');
+
+    Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap-repair');
 });
 
 //Work Request Routes
