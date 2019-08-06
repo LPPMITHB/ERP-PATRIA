@@ -53,6 +53,17 @@
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>  
                             </div>
+                            <div class="col-xs-12 col-md-4" v-show="project_id != ''">
+                                <label for="" >Delivery Date</label>
+                                <div class="form-group">
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input autocomplete="off" v-model="delivery_date" type="text" class="form-control datepicker" name="delivery_date" id="delivery_date" placeholder="Delivery Date">
+                                    </div>
+                                </div>
+                            </div>
                             <template v-if="selectedProject.length > 0">
                                 <div class="col-xs-12 col-md-4 p-r-0">
                                         <div class="col-sm-12 p-l-0">
@@ -235,6 +246,7 @@
     var data = {
         stocks : @json($stocks),
         description : "",
+        delivery_date: "",
         newIndex : "",
         materials : [],
         materialsEdit : [],
@@ -303,6 +315,17 @@
     var vm = new Vue({
         el : '#mr',
         data : data,
+        mounted(){
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format : "dd-mm-yyyy"
+            });
+            $("#delivery_date").datepicker().on(
+                "changeDate", () => {
+                    this.delivery_date = $('#delivery_date').val();
+                }
+            );
+        },
         computed : {
             materialOk: function(){
                 let isOk = false;
@@ -380,6 +403,7 @@
             submitForm(){
                 $('div.overlay').show();
                 this.submittedForm.description = this.description;
+                this.submittedForm.delivery_date = this.delivery_date;
                 this.submittedForm.project_id = this.project_id;     
                 this.submittedForm.materials = this.dataMaterial;    
 

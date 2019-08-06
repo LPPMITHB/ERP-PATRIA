@@ -469,5 +469,27 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        $approval_pr = array(
+            0 => array(
+                'type' => "1 Stage",
+                'dimensions' => array(
+                    0 => array(
+                        'minimum' => 0,
+                        'maximum' => 1000000,
+                        'role_id' => 1,
+                    ),
+                ),
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'approval_pr',
+            'title' => 'Approval PR',
+            'value' => json_encode($approval_pr),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

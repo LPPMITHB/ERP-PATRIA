@@ -105,6 +105,8 @@ Route::get('/getDataActivityWR/{id}', 'WorkRequestController@getDataActivityWRAP
 Route::get('/getMaterialMWO/{id}', 'MaterialWriteOffController@getMaterialApi')->name('api.material_write_off.getMaterialApi');
 Route::get('/getMaterialsMWO/{id}', 'MaterialWriteOffController@getMaterialsMWOApi')->name('api.material_write_off.getMaterialsMWOApi');
 Route::get('/getSloc/{id}', 'MaterialWriteOffController@getSlocApi')->name('api.material_write_off.getSlocApi');
+Route::get('/getWloc/{id}', 'MaterialWriteOffController@getWlocApi')->name('api.material_write_off.getWlocApi');
+Route::get('/getStorloc/{id}', 'MaterialWriteOffController@getStorlocApi')->name('api.material_write_off.getStorlocApi');
 
 // goods movement
 Route::get('/getSlocGM/{id}', 'GoodsMovementController@getSlocAPI')->name('api.goods_movement.getSlocAPI');

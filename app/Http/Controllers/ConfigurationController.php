@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Configuration;
 use App\Models\Uom;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use DB;
@@ -12,6 +13,17 @@ use Auth;
 
 class ConfigurationController extends Controller
 {
+    public function approvalIndex(){
+        $roles = Role::all();
+        $approvalPR = Configuration::get('approval_pr');
+
+        return view('approval.index', compact('roles','approvalPR'));
+    }
+
+    public function approvalSave(){
+
+    }
+
     public function costTypeIndex(){
 
     }

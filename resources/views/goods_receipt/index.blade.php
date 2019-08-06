@@ -58,8 +58,8 @@
                                 <td>{{ $GR->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->description}}">{{ $GR->description }}</td>
                                 @if($GR->purchaseOrder != null)
-                                    <td class="tdEllipsis">{{ $GR->purchaseOrder->vendor->name }}</td>
-                                    <td class="tdEllipsis">{{ $GR->purchaseOrder->number }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $GR->purchaseOrder->vendor->name }}">{{ $GR->purchaseOrder->vendor->name }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $GR->purchaseOrder->number }}">{{ $GR->purchaseOrder->number }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->purchaseOrder->description}}">{{ $GR->purchaseOrder->description }}</td>
                                 @else
                                     <td class="tdEllipsis">-</td>

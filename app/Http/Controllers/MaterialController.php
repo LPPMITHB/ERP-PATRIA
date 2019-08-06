@@ -450,6 +450,4 @@ class MaterialController extends Controller
         $material_code = $code . '' . sprintf('%04d', $number);
         return $material_code;
     }
-
-
-}
+};

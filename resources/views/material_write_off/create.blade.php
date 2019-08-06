@@ -38,6 +38,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 5%">No</th>
+                                        <th style="width: 15%">Werehouse</th>
                                         <th style="width: 15%">Storage Location</th>
                                         <th style="width: 20%">Material Number</th>
                                         <th style="width: 20%">Material Description</th>
@@ -51,6 +52,7 @@
                                 <tbody>
                                     <tr v-for="(material,index) in dataMaterial">
                                         <td>{{ index + 1 }}</td>
+                                        <td class="tdEllipsis">{{ material.werehouse_name }}</td>
                                         <td class="tdEllipsis">{{ material.sloc_name }}</td>
                                         <td class="tdEllipsis">{{ material.material_code }}</td>
                                         <td class="tdEllipsis">{{ material.material_name }}</td>
@@ -71,8 +73,18 @@
                                 <tfoot>
                                     <td>{{ newIndex }}</td>
                                     <td class="p-l-0 textLeft no-padding">
+                                        <selectize v-model="dataInput.werehouse_id" :settings="werehouseSettings">
+                                            <option v-for="(werehouse,index) in werehouses" :value="werehouse.id">{{ werehouse.name }}</option>
+                                        </selectize>
+                                    </td>
+                                    <!-- <td class="p-l-0 textLeft no-padding">
                                         <selectize v-model="dataInput.sloc_id" :settings="slocSettings">
                                             <option v-for="(sloc,index) in slocs" :value="sloc.id">{{ sloc.name }}</option>
+                                        </selectize>
+                                    </td> -->
+                                    <td class="p-l-0 textLeft no-padding">
+                                        <selectize id="sloc" v-model="dataInput.sloc_id" :settings="slocSettings">
+                                            <option v-for="(sloc,index) in slocs" v-if="sloc.selected != true" :value="sloc.id">{{ sloc.name }}</option>
                                         </selectize>
                                     </td>
                                     <td colspan="2" class="p-l-0 textLeft no-padding">
@@ -112,6 +124,12 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Warehouse</label>
+                                                <selectize v-model="dataInput.werehouse_id" :settings="werehouseSettings">
+                                                    <option v-for="(werehouse,index) in werehouses" :value="werehouse.id">{{ werehouse.name }}</option>
+                                                </selectize>
+                                            </div>
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Storage Location</label>
                                                 <selectize v-model="editInput.sloc_id" :settings="slocSettings">
@@ -169,10 +187,14 @@ var data = {
     description : "",
     slocDetails : [],
     newIndex : "",
-    slocs : @json($storageLocations),
+    // slocs : @json($storageLocations),
+    slocs : [],
+    werehouses : @json($werehouseLocations),
     dataInput : {
         sloc_id :"",
         sloc_name : "",
+        werehouse_name : "",
+        werehouse_id : "",
         material_id : "",
         material_code : "",
         material_name : "",
@@ -184,8 +206,11 @@ var data = {
     },
     editInput :{
         old_sloc_id : "",
+        old_werehouse_id : "",
         sloc_id : "",
         sloc_name : "",
+        werehouse_name : "",
+        werehouse_id : "",
         material_id : "",
         material_code : "",
         material_name : "",
@@ -194,6 +219,10 @@ var data = {
         unit : "",
         old_material_id : "",
         is_decimal : "",
+    },
+
+    werehouseSettings: {
+        placeholder: 'Please Select Werehouse'
     },
     slocSettings: {
         placeholder: 'Please Select Storage Location'
@@ -240,20 +269,20 @@ var vm = new Vue({
     methods : {
         add(){
             var material_id = this.dataInput.material_id;
-            var sloc_id = this.dataInput.sloc_id;
+            var sloc_id = this.dataInput.sloc_id; 
+            var werehouse_id = this.dataInput.werehouse_id;
             $('div.overlay').show();
                 window.axios.get('/api/getMaterialsMWO/'+material_id).then(({ data }) => {
                     
                     this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
-
                     window.axios.get('/api/getSloc/'+sloc_id).then(({ data }) => {
                         
                         this.dataInput.sloc_name = data.name;
-
+                        this.dataInput.werehouse_name = data.warehouse.name;
                         var temp_data = JSON.stringify(this.dataInput);
                         temp_data = JSON.parse(temp_data);
-
+                        
                         this.dataMaterial.push(temp_data);
 
                         this.dataInput.material_id = "";
@@ -263,11 +292,12 @@ var vm = new Vue({
                         this.dataInput.quantity = "";
                         this.dataInput.sloc_id = "";
                         this.dataInput.sloc_name = "";
+                        this.dataInput.werehouse_id = "";
+                        this.dataInput.werehouse_name = "";
                         this.dataInput.available = "";
                         this.dataInput.unit = "";
                         this.dataInput.is_decimal = "";
                         this.newIndex = Object.keys(this.dataMaterial).length+1;
-
                         $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -291,6 +321,7 @@ var vm = new Vue({
 
         update(){
             var material = this.dataMaterial[this.editInput.index];
+            material.werehouse_id = this.editInput.werehouse_id;
             material.sloc_id = this.editInput.sloc_id;
             material.quantity = this.editInput.quantity;
             material.material_id = this.editInput.material_id;
@@ -303,6 +334,7 @@ var vm = new Vue({
 
                     window.axios.get('/api/getSloc/'+this.editInput.sloc_id).then(({ data }) => {
                     material.sloc_name = data.name;
+                    material.werehouse_name = data.warehouse.name;
                     $('div.overlay').hide();
                     })
                     .catch((error) => {
@@ -353,6 +385,8 @@ var vm = new Vue({
             this.editInput.sloc_id = data.sloc_id;
             this.editInput.old_sloc_id = data.sloc_id;
             this.editInput.sloc_name = data.sloc_name;
+            this.editInput.old_warehouse_id = data.werehouse_id;
+            this.editInput.werehouse_name = data.werehouse_name;
             this.editInput.is_decimal = data.is_decimal;
             this.editInput.unit = data.unit;
             this.editInput.index = index;
@@ -366,6 +400,41 @@ var vm = new Vue({
     },
 
     watch :{
+        'dataInput.werehouse_id' : function(newValue){
+            if(newValue != ""){
+                $('div.overlay').show();
+                this.dataInput.quantity = "";
+                this.dataInput.available = "";
+                this.dataInput.unit = "";
+                window.axios.get('/api/getStorloc/'+newValue).then(({ data }) => {
+                    this.slocs = data;
+                    
+                    this.slocDetails = "";
+                    this.slocs.forEach(existing => {
+                        if(existing.werehouse_id == newValue){
+                            this.sloc.forEach(allSloc => {
+                                if(existing.sloc_id == allSloc.sloc_id){
+                                    allSloc.selected = true;
+                                }
+                            });
+                        }
+                    });
+                    var $material = $(document.getElementById('material')).selectize();
+                    var $slocs = $(document.getElementById('sloc')).selectize();
+                    $slocs[0].selectize.focus();
+                    $material[0].selectize.clear();
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            }
+        },
         'dataInput.sloc_id' : function(newValue){
             if(newValue != ""){
                 $('div.overlay').show();
@@ -374,7 +443,6 @@ var vm = new Vue({
                 this.dataInput.unit = "";
                 window.axios.get('/api/getMaterialMWO/'+newValue).then(({ data }) => {
                     this.slocDetails = data;
-
                     this.dataMaterial.forEach(existing => {
                         if(existing.sloc_id == newValue){
                             this.slocDetails.forEach(allMaterial => {
@@ -386,6 +454,11 @@ var vm = new Vue({
                     });
                     
                     var $material = $(document.getElementById('material')).selectize();
+                    if(this.editInput.old_sloc_id != newValue){
+                        this.editInput.quantity = "";
+                        this.editInput.available = "";
+                        this.editInput.material_id = "";
+                    }
                     $material[0].selectize.focus();
                     $('div.overlay').hide();
                 })

@@ -1034,7 +1034,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'yard_plan.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN, PMP, PAMI',
             'menu_id'=>$PPE,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -2270,6 +2270,18 @@ class MenusTableSeeder extends Seeder
             'name' => 'Dimension Type Configuration',
             'icon' => 'fa-wrench',
             'route_name'=> 'dimension_type.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=>$configuration,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Approval Configuration',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'approval.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$configuration,

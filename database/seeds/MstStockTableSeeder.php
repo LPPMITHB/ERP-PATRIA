@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class MstStorageLocationDetailTableSeeder extends Seeder
+class MstStockTableSeeder extends Seeder
 {
 
     /**
@@ -14,17 +14,17 @@ class MstStorageLocationDetailTableSeeder extends Seeder
     {
         
 
-        \DB::table('mst_storage_location_detail')->delete();
+        \DB::table('mst_stock')->delete();
         
-        \DB::table('mst_storage_location_detail')->insert(array (
+        \DB::table('mst_stock')->insert(array (
             0 => 
             array (
                 'id' => 1,
                 'material_id' => 332,
                 'quantity' => 200.0,
-                'value' => 5000000.0,
-                'goods_receipt_detail_id' => 1,
-                'storage_location_id' => 1,
+                'reserved' => 0.0,
+                'reserved_gi' => 0.0,
+                'branch_id' => 1,
                 'created_at' => '2019-08-06 13:32:18',
                 'updated_at' => '2019-08-06 13:32:18',
             ),
@@ -33,9 +33,9 @@ class MstStorageLocationDetailTableSeeder extends Seeder
                 'id' => 2,
                 'material_id' => 2189,
                 'quantity' => 200.0,
-                'value' => 5000000.0,
-                'goods_receipt_detail_id' => 2,
-                'storage_location_id' => 1,
+                'reserved' => 0.0,
+                'reserved_gi' => 0.0,
+                'branch_id' => 1,
                 'created_at' => '2019-08-06 13:32:18',
                 'updated_at' => '2019-08-06 13:32:18',
             ),
@@ -44,9 +44,9 @@ class MstStorageLocationDetailTableSeeder extends Seeder
                 'id' => 3,
                 'material_id' => 399,
                 'quantity' => 200.0,
-                'value' => 5000000.0,
-                'goods_receipt_detail_id' => 3,
-                'storage_location_id' => 1,
+                'reserved' => 0.0,
+                'reserved_gi' => 0.0,
+                'branch_id' => 1,
                 'created_at' => '2019-08-06 13:32:18',
                 'updated_at' => '2019-08-06 13:32:18',
             ),
@@ -55,9 +55,9 @@ class MstStorageLocationDetailTableSeeder extends Seeder
                 'id' => 4,
                 'material_id' => 306,
                 'quantity' => 200.0,
-                'value' => 5000000.0,
-                'goods_receipt_detail_id' => 4,
-                'storage_location_id' => 1,
+                'reserved' => 0.0,
+                'reserved_gi' => 0.0,
+                'branch_id' => 1,
                 'created_at' => '2019-08-06 13:32:18',
                 'updated_at' => '2019-08-06 13:32:18',
             ),

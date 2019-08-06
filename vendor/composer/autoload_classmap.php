@@ -2092,6 +2092,7 @@ return array(
     'MstResourceTableSeeder' => $baseDir . '/database/seeds/MstResourceTableSeeder.php',
     'MstServiceDetailTableSeeder' => $baseDir . '/database/seeds/MstServiceDetailTableSeeder.php',
     'MstServiceTableSeeder' => $baseDir . '/database/seeds/MstServiceTableSeeder.php',
+    'MstStockTableSeeder' => $baseDir . '/database/seeds/MstStockTableSeeder.php',
     'MstStorageLocationDetailTableSeeder' => $baseDir . '/database/seeds/MstStorageLocationDetailTableSeeder.php',
     'MstVendorTableSeeder' => $baseDir . '/database/seeds/MstVendorTableSeeder.php',
     'MstWbsConfigurationTableSeeder' => $baseDir . '/database/seeds/MstWbsConfigurationTableSeeder.php',

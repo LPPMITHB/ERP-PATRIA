@@ -230,7 +230,7 @@
                     $('#sld').DataTable({
                         'paging'      : true,
                         'lengthChange': false,
-                        'searching'   : false,
+                        'bFilter'     : true,
                         'ordering'    : false,
                         'info'        : true,
                         'autoWidth'   : false,
