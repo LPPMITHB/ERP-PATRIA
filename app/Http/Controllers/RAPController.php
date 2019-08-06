@@ -815,22 +815,19 @@ class RAPController extends Controller
         //
     }
 
-    public function deleteOtherCost($id)
+    public function deleteOtherCost(Request $request, $id)
     {
-        // $route = $request->route()->getPrefix();
+        $route = $request->route()->getPrefix();
         DB::beginTransaction();
         try {
             $otherCost = Cost::find($id);
             $otherCost->delete();
             DB::commit();
-            /*
             if($route == "/rap"){
                 return response(["response"=>"Successfully deleted other cost."],Response::HTTP_OK);
             } elseif($route == "/rap_repair"){
                 return response(["response"=>"Successfully deleted other cost."],Response::HTTP_OK);
             }
-            */
-            return response(["response"=>"Success"],Response::HTTP_OK);
         }catch(\Exception $e) {
             DB::rollback();
             return response(["error"=>$e->getMessage()],Response::HTTP_OK);
