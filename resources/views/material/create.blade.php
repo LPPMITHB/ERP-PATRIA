@@ -233,6 +233,7 @@
                                     </select>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="status" class="col-sm-2 control-label">Location Detail</label>
 
@@ -240,6 +241,7 @@
                                     <input type="text" class="form-control" id="location_detail" name="location_detail" required v-model="submittedForm.location_detail">
                                 </div>
                             </div>
+                            
                             <!-- /.box-body -->
                             <div class="box-footer">
                                 <button :disabled="createOk" @click.prevent="submitForm" type="button" class="btn btn-primary pull-right">CREATE</button>
