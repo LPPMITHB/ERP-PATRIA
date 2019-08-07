@@ -353,7 +353,6 @@
                 data = JSON.stringify(data);
                 var bom_id = this.bom.id;
                 var url = "{{ route('bom.update') }}";
-                console.log(data);
                 window.axios.put(url,data).then((response) => {
                     iziToast.success({
                         title: 'Success Edit Material !',

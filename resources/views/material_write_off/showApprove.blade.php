@@ -125,30 +125,38 @@
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable m-t-20" id="gi-table">
+                <table class="table table-bordered showTable tableFixed m-t-20" id="gi-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="20%">Material Number</th>
-                            <th width="30%">Material Description</th>
-                            <th width="6.66%">Available</th>
-                            <th width="6.66%">Quantity</th>
-                            <th width="6.66%">Unit</th>
-                            <th width="20%">Storage Location</th>
+                            <th width="12%">Warehouse</th>
+                            <th width="12%">S.Loc</th>
+                            <th width="15%">Material Number</th>
+                            <th width="15%">Material Description</th>
+                            @if($modelMWO->status == 1)
+                                <th width="8%">Available</th>
+                            @endif
+                            <th width="8%">Quantity</th>
+                            <th width="5%">Unit</th>
+                            <th width=10%>Amount / Unit</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($modelMWOD as $MWO)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $MWO->material->code }}</td>
-                            <td>{{ $MWO->material->description }}</td>
-                            <td>
-                                {{ number_format($MWO->storageLocation->storageLocationDetails->where('material_id',$MWO->material_id)->sum('quantity'),2) }}
-                            </td>
-                            <td>{{ number_format($MWO->quantity,2) }}</td>
-                            <td>{{ $MWO->material->uom->unit }}</td>
-                            <td>{{ $MWO->storageLocation != null ? $MWO->storageLocation->name : "-" }} </td>
+                            <td class="tdEllipsis">{{ $loop->iteration }}</td>
+                            <td class="tdEllipsis">{{ $MWO->storageLocation->name }} </td>
+                            <td class="tdEllipsis">{{ $MWO->storageLocation->warehouse->name }} </td>
+                            <td class="tdEllipsis">{{ $MWO->material->code }}</td>
+                            <td class="tdEllipsis">{{ $MWO->material->description }}</td>
+                            @if($modelMWO->status == 1)
+                                <td class="tdEllipsis">
+                                    {{ number_format($MWO->storageLocation->storageLocationDetails->where('material_id',$MWO->material_id)->sum('quantity'),2) }}
+                                </td>
+                            @endif
+                            <td class="tdEllipsis">{{ number_format($MWO->quantity,2) }}</td>
+                            <td class="tdEllipsis">{{ $MWO->material->uom->unit }}</td>
+                            <td class="tdEllipsis">Rp.{{ number_format($MWO->amount) }}</td>
                         </tr>
                         @endforeach
                     </tbody>
