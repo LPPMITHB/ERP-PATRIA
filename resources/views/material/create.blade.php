@@ -233,15 +233,13 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="form-group">
+                            <div class="form-group" v-if="is_pami">
                                 <label for="status" class="col-sm-2 control-label">Location Detail</label>
 
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="location_detail" name="location_detail" required v-model="submittedForm.location_detail">
                                 </div>
                             </div>
-                            
                             <!-- /.box-body -->
                             <div class="box-footer">
                                 <button :disabled="createOk" @click.prevent="submitForm" type="button" class="btn btn-primary pull-right">CREATE</button>
@@ -307,6 +305,7 @@
                 location_detail : @json(Request::old('location_detail')),
             },
             uoms : @json($uoms),
+            is_pami: @json($is_pami),
             material_families : @json($material_families),
             densities : @json($densities),
             dimension_types : @json($dimension_types),
@@ -371,7 +370,10 @@
                 createOk :function(){
                     let isOk = false;
 
-                    if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.location_detail == "" || this.submittedForm.uom_id == ""){
+                    if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.uom_id == ""){
+                        isOk = true;
+                    }
+                    if(this.is_pami && this.submittedForm.location_detail == ""){
                         isOk = true;
                     }
 
