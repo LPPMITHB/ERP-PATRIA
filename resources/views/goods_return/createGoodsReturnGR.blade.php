@@ -201,6 +201,7 @@
                     GRD.returned_temp = GRD.returned_temp.replace(/,/g , '');   
                 });
                 this.submittedForm.GRD = data;
+                this.submittedForm.purchase_order_id = this.modelGR.purchase_order_id;
                 this.submittedForm.goods_receipt_id = this.modelGR.id;
                 this.submittedForm.description = this.description;
 
