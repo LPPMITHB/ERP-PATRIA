@@ -24347,7 +24347,7 @@ textarea {
 }
 
 .selectizeFull > .selectize-dropdown {
-  width: 1000px !important;
+  width: 200% !important;
 }
 
 /*!
