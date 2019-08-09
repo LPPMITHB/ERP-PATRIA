@@ -282,7 +282,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1285,7 +1285,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition_repair.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
+            'roles' => 'ADMIN',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
