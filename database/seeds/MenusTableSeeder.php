@@ -282,7 +282,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -435,9 +435,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View & Edit Goods Return',
+            'name' => 'Approve Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return.index',
+            'route_name'=> 'goods_return.indexApprove',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$goodsReturn,
@@ -447,9 +447,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Approve Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return.indexApprove',
+            'route_name'=> 'goods_return.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$goodsReturn,
@@ -1285,7 +1285,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition_repair.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
+            'roles' => 'ADMIN',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1426,9 +1426,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View & Edit Goods Return',
+            'name' => 'Approve Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return_repair.index',
+            'route_name'=> 'goods_return_repair.indexApprove',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsReturn,
@@ -1438,9 +1438,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Approve Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return_repair.indexApprove',
+            'route_name'=> 'goods_return_repair.index',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsReturn,

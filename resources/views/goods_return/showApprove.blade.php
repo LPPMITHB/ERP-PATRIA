@@ -51,6 +51,12 @@
                             : <b>{{ $status }}</b>
                         </div>
                         <div class="col-xs-4 col-md-4">
+                            Po Number
+                        </div>
+                        <div class="col-xs-8 col-md-8">
+                            : <b>{{ isset($modelGRT->purchase_order_id) ? $modelGRT->purchaseOrder->number :  '-'}}</b>
+                        </div>
+                        <div class="col-xs-4 col-md-4">
                             Created By
                         </div>
                         <div class="col-xs-8 col-md-8">
