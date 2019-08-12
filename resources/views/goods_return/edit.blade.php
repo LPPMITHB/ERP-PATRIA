@@ -44,7 +44,7 @@
                     <div id="edit-grt">
                         <div class="col-sm-12 no-padding">
                             <div class="box-header p-t-0">
-                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-xs-4 no-padding">GRT Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGR.number }}</b></div>
@@ -53,7 +53,7 @@
                                         <div class="col-md-4 col-xs-4 no-padding" v-if="modelGR.goods_receipt_id != null">GR Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.number }}</b></div>
                                         <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.number }}</b></div>
-                                        
+
                                         <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
                                         <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.name }}</b></div>
                                         <div class="col-md-8 col-xs-8 no-padding" v-if="modelGR.goods_receipt_id != null">
@@ -64,7 +64,7 @@
                                                 <b>: {{ modelGR.goods_receipt.work_order.vendor.name }}</b>
                                             </div>
                                         </div>
-                
+
                                         <div class="col-md-4 col-xs-4 no-padding">Address</div>
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" v-if="modelGR.purchase_order_id != null"><b>: {{ modelGR.purchase_order.vendor.address }}</b></div>
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" v-if="modelGR.goods_receipt_id != null">
@@ -93,9 +93,14 @@
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelGR.goods_receipt.description)" v-if="modelGR.goods_receipt_id != null"><b>: {{ modelGR.goods_receipt.description }}</b></div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
                                     <div class="box-body no-padding">
-                                        <div class="col-md-12 col-lg-7 col-xs-12 no-padding">Goods Return Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
+                                        <div class="col-md-12 col-lg-12 col-xs-12 no-padding">Goods Return Description : <textarea class="form-control" rows="2" v-model="description" style="width:360px"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="box-body no-padding">
+                                        <div class="col-md-12 col-lg-12 col-xs-12 no-padding" v-if="modelGR.status == 3">
+                                            Goods Return Revision Description : <textarea class="form-control" rows="2" v-model="revision_description" style="width:360px"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -187,13 +192,14 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        });  
+        });
     });
 
     var data = {
         modelGRD : @json($modelGRD),
-        modelGR :   @json($modelGR),
-        description:"",
+        modelGR : @json($modelGR),
+        description: "",
+        revision_description: "",
         submittedForm :{},
     }
 
@@ -215,7 +221,7 @@
             tooltipText($text){
                 return $text;
             },
-            
+
             submitForm(){
                 $('div.overlay').show();
                 var data = this.modelGRD;
@@ -223,13 +229,14 @@
                 data = JSON.parse(data)
 
                 data.forEach(GRD => {
-                    GRD.quantity = GRD.quantity.replace(/,/g , ''); 
-                    GRD.quantity = parseFloat(GRD.quantity);     
+                    GRD.quantity = GRD.quantity.replace(/,/g , '');
+                    GRD.quantity = parseFloat(GRD.quantity);
                 });
 
                 this.submittedForm.GRD = data;
                 this.submittedForm.goods_return_id = this.modelGR.id;
                 this.submittedForm.description = this.description;
+                this.submittedForm.revision_description = this.revision_description;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -253,7 +260,7 @@
                             });
                         }
                         if(GRD.is_decimal == 0){
-                            GRD.quantity = (GRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");    
+                            GRD.quantity = (GRD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
                         }else if(GRD.is_decimal == 1){
                             var decimal = (GRD.quantity+"").replace(/,/g, '').split('.');
@@ -277,7 +284,7 @@
             this.modelGRD.forEach(GRD => {
                 var is_decimal = GRD.is_decimal;
                 if(is_decimal == 0){
-                    GRD.available = (GRD.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    GRD.available = (GRD.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = (GRD.available+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -290,7 +297,7 @@
                     }else{
                         GRD.available = (GRD.available+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }   
+                }
             });
         },
     });
