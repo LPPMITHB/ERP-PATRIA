@@ -102,7 +102,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table class="table table-bordered tableFixed" id="pr-table" v-else-if="modelPR.type == 3">
+                        <table class="table table-bordered tableFixed" id="pr-table" v-if="modelPR.type == 3">
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>

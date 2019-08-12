@@ -18,7 +18,7 @@ class StorageLocation extends Model
         return $this->belongsTo('App\Models\Branch');
     }
 
-    public function Warehouse()
+    public function warehouse()
     {
         return $this->belongsTo('App\Models\Warehouse');
     }

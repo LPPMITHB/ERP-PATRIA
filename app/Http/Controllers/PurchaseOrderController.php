@@ -721,7 +721,7 @@ class PurchaseOrderController extends Controller
         $value = "";
         $valueCurrency = Configuration::get('currencies');
         foreach ($valueCurrency as $data) {
-            if($data->name == $datas->modelPO->currency){
+            if($data->id == $datas->modelPO->currency){
                 $value = $data->value;
             }
         }
@@ -800,7 +800,7 @@ class PurchaseOrderController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             if($route == "/purchase_order"){
-                return redirect()->route('purchase_order.index')->with('error', $e->getMessage());
+                return redirect()->route('purchase_order.index')->with('error', $e->getMessage().json_encode($datas));
             }elseif($route == "/purchase_order_repair"){
                 return redirect()->route('purchase_order_repair.index')->with('error', $e->getMessage());
             }

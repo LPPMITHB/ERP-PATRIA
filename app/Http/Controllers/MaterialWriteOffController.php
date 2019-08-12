@@ -56,10 +56,10 @@ class MaterialWriteOffController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
         $materials = Material::all();
-        $werehouseLocations = Warehouse::where('branch_id',1/*Auth::user()->branch->id*/)->get();
+        $warehouseLocations = Warehouse::all();
         $storageLocations = StorageLocation::where('status',1)->get();
 
-        return view('material_write_off.create', compact('materials','werehouseLocations', 'storageLocations','menu'));
+        return view('material_write_off.create', compact('materials','warehouseLocations', 'storageLocations','menu'));
     }
 
     /**
@@ -159,7 +159,8 @@ class MaterialWriteOffController extends Controller
         foreach($modelGID as $gid){
             $materials->push([
                 "gid_id" =>$gid->id,
-                "werehouse_name"=>$gid->storageLocation->Warehouse->name,
+                "warehouse_name"=>$gid->storageLocation->warehouse->name,
+                "warehouse_id"=>$gid->storageLocation->warehouse->id,
                 "sloc_id" =>$gid->storage_location_id,
                 "sloc_name" => $gid->storageLocation->name,
                 "material_id" => $gid->material_id,
@@ -168,6 +169,7 @@ class MaterialWriteOffController extends Controller
                 "unit" => $gid->material->uom->unit,
                 "is_decimal" => $gid->material->uom->is_decimal,
                 "quantity" => $gid->quantity."",
+                "amount" => $gid->amount."",
                 "available" => $gid->storageLocation->storageLocationDetails->where('material_id',$gid->material_id)->first()->quantity,
             ]);
         }
@@ -420,7 +422,7 @@ class MaterialWriteOffController extends Controller
     }
 
     /**
-     * Untuk Mengambil data dari Werehouse Location
+     * Untuk Mengambil data dari Warehouse Location
      * @param integer $id I dons
      * @return \Illuminate\Http\Response
      */
@@ -430,7 +432,7 @@ class MaterialWriteOffController extends Controller
     }
 
     /**
-     * Untuk Mengambil data storage location yang berada di werehouse
+     * Untuk Mengambil data storage location yang berada di warehouse
      * @param integer $id warehouse Id
      * @return \Illuminate\Http\Response
      */

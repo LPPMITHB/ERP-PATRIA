@@ -78,7 +78,7 @@
                                                             <th width="30%">Currency Unit</th>
                                                             <th width="25%">Currency Value</th>
                                                             <th width="25%">Status</th>
-                                                            <th width="10%" ></th>
+                                                            <th width="10%"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

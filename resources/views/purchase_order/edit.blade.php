@@ -65,7 +65,7 @@
                                     </div>
                                     <div class="col-sm-7 p-t-13 p-l-0">
                                         <selectize :disabled="currencyOk" v-model="modelPO.currency" :settings="currencySettings">
-                                            <option v-for="(data, index) in currencies" :value="data.name">{{ data.name }} - {{ data.unit }}</option>
+                                            <option v-for="(data, index) in currencies" :value="data.id">{{ data.name }} - {{ data.unit }}</option>
                                         </selectize>
                                     </div>
                                 </div>

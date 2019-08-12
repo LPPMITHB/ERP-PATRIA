@@ -9,6 +9,7 @@ use App\Models\Configuration;
 use Illuminate\Support\Collection;
 use Auth;
 use DB;
+use Illuminate\Http\Response;
 
 class MaterialController extends Controller
 {
@@ -33,6 +34,12 @@ class MaterialController extends Controller
     {
         $material = new Material;
         $uoms = Uom::all();
+        // Mengecek apakah ini memiliki bisnis id Pami
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if(in_array("2", json_decode($business_ids))){
+            $is_pami=true;
+        }
         $material_families = Configuration::get('material_family');
         $densities = Configuration::get('density');
         $dimension_types = Configuration::get('dimension_type');
@@ -42,7 +49,7 @@ class MaterialController extends Controller
             }
         }
 
-        return view('material.create', compact('dimension_types', 'material', 'uoms', 'material_families', 'densities'));
+        return view('material.create', compact('dimension_types', 'material', 'uoms', 'material_families', 'densities','is_pami'));
     }
 
     /**
@@ -135,7 +142,7 @@ class MaterialController extends Controller
             }
 
             DB::commit();
-            if ($commited == true) {
+            if ($commited == true && $request->hasFile('image')) {
                 $request->file('image')->storeAs('documents/material', $fileNameToStore);
             }
             return redirect()->route('material.show', $material->id)->with('success', 'Success Created New Material!');
@@ -153,9 +160,14 @@ class MaterialController extends Controller
      */
     public function show($id, Request $request)
     {
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if(in_array("2", json_decode($business_ids))){
+            $is_pami=true;
+        }
         $route = $request->route()->getPrefix();
         $material = Material::findOrFail($id);
-
+        
         $dataFamily = Configuration::get('material_family');
 
         $arrayMaterialFamily = json_decode($material->family_id);
@@ -283,7 +295,7 @@ class MaterialController extends Controller
             }
         }
 
-        return view('material.show', compact('material', 'uoms', 'arrayFamily', 'nameDensity', 'documents', 'route', 'nameDimensionType', 'dimensions'));
+        return view('material.show', compact('material', 'uoms', 'arrayFamily', 'nameDensity', 'documents', 'route', 'nameDimensionType', 'dimensions','is_pami'));
     }
 
     /**
@@ -300,6 +312,11 @@ class MaterialController extends Controller
         } else {
             $dataFamily = "";
         }
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if(in_array("2", json_decode($business_ids))){
+            $is_pami=true;
+        }
         $material_families = Configuration::get('material_family');
         $densities = Configuration::get('density');
         $uoms = Uom::all();
@@ -310,7 +327,7 @@ class MaterialController extends Controller
             }
         }
 
-        return view('material.edit', compact('material','uoms','material_families','densities','dataFamily','dimension_types'));
+        return view('material.edit', compact('material','uoms','material_families','densities','dataFamily','dimension_types','is_pami'));
     }
 
     /**

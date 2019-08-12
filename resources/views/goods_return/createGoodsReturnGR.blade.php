@@ -47,7 +47,13 @@
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-xs-4 no-padding">GR Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGR.number }}</b></div>
-                                        
+
+                                        <div class="col-md-4 col-xs-4 no-padding" v-if="is_pami">PO Number</div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="is_pami"><b>: {{ Po_number }}</b></div>
+
+                                        <div class="col-md-4 col-xs-4 no-padding" v-if="is_pami">PR Number</div>
+                                        <div class="col-md-8 col-xs-8 no-padding" v-if="is_pami"><b>: {{ Pr_number }}</b></div>
+
                                         <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ vendor.name }}</b></div>
                 
@@ -151,6 +157,9 @@
     var data = {
         modelGRD : @json($modelGRD),
         modelGR :   @json($modelGR),
+        Po_number : @json($Po_number),
+        Pr_number : @json($Pr_number),
+        is_pami : @json($is_pami),
         vendor : @json($vendor),
         description:"",
         submittedForm :{},
@@ -192,6 +201,7 @@
                     GRD.returned_temp = GRD.returned_temp.replace(/,/g , '');   
                 });
                 this.submittedForm.GRD = data;
+                this.submittedForm.purchase_order_id = this.modelGR.purchase_order_id;
                 this.submittedForm.goods_receipt_id = this.modelGR.id;
                 this.submittedForm.description = this.description;
 

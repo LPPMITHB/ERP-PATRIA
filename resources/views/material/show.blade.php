@@ -164,11 +164,13 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    @if($is_pami)
                                     <tr>
                                         <td>{{++$index}}</td>
                                         <td>Location Detail</td>
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $material->location_detail }}">{{ $material->location_detail }}</td>
                                     </tr>
+                                    @endif
                                     <tr>
                                         <td style="vertical-align:top">{{++$index}}</td>
                                         <td style="vertical-align:top">Image</td>

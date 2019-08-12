@@ -122,7 +122,7 @@ Route::name('pica.')->prefix('pica')->group(function() {
     Route::get('/{id}', 'PicaController@show')->name('show')->middleware('can:show-pica');
 
     Route::get('/selectDocument/{type}', 'PicaController@selectDocument')->name('selectDocument')->middleware('can:create-pica');
-    
+
     Route::get('/{id}/edit', 'PicaController@edit')->name('edit')->middleware('can:edit-pica');
 
     Route::put('/store', 'PicaController@store')->name('store')->middleware('can:create-pica');
@@ -890,6 +890,8 @@ Route::name('rap.')->prefix('rap')->group(function() {
     Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
 
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
+
+    Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap');
 });
 
 //rap Routes
@@ -927,6 +929,8 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap-repair');
 
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap-repair');
+
+    Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap-repair');
 });
 
 //Work Request Routes
@@ -1384,15 +1388,15 @@ Route::name('reverse_transaction.')->prefix('reverse_transaction')->group(functi
     Route::get('/indexApprove', 'ReverseTransactionController@indexApprove')->name('indexApprove')->middleware('can:approve-reverse-transaction');
 
     Route::get('/approval', 'ReverseTransactionController@approval')->name('approval')->middleware('can:approve-material-requisition');
-    
+
     Route::get('/create/{documentType}/{id}', 'ReverseTransactionController@create')->name('create')->middleware('can:create-reverse-transaction');
-    
+
     Route::get('/selectDocument', 'ReverseTransactionController@selectDocument')->name('selectDocument')->middleware('can:create-reverse-transaction');
 
     Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:list-reverse-transaction');
 
     Route::get('/{id}', 'ReverseTransactionController@show')->name('show')->middleware('can:show-reverse-transaction');
-    
+
     Route::get('/showApprove/{id}', 'ReverseTransactionController@showApprove')->name('showApprove')->middleware('can:approve-reverse-transaction');
 
     Route::get('/{id}/edit', 'ReverseTransactionController@edit')->name('edit')->middleware('can:edit-reverse-transaction');
