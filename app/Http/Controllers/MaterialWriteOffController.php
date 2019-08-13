@@ -56,10 +56,10 @@ class MaterialWriteOffController extends Controller
     {
         $menu = $request->route()->getPrefix() == "/material_write_off" ? "building" : "repair";    
         $materials = Material::all();
-        $werehouseLocations = Warehouse::where('branch_id',1/*Auth::user()->branch->id*/)->get();
+        $warehouseLocations = Warehouse::all();
         $storageLocations = StorageLocation::where('status',1)->get();
 
-        return view('material_write_off.create', compact('materials','werehouseLocations', 'storageLocations','menu'));
+        return view('material_write_off.create', compact('materials','warehouseLocations', 'storageLocations','menu'));
     }
 
     /**
@@ -152,12 +152,15 @@ class MaterialWriteOffController extends Controller
         $modelGID = $modelGI->MaterialWriteOffDetails;   
 
         $materials = Material::with('uom')->get();
+        $warehouseLocations = Warehouse::where('branch_id',1/*Auth::user()->branch->id*/)->with('storageLocations')->get();
         $storageLocations = StorageLocation::where('status',1)->with('storageLocationDetails.material.uom')->get();
 
         $materials = Collection::make();
         foreach($modelGID as $gid){
             $materials->push([
                 "gid_id" =>$gid->id,
+                "warehouse_name"=>$gid->storageLocation->warehouse->name,
+                "warehouse_id"=>$gid->storageLocation->warehouse->id,
                 "sloc_id" =>$gid->storage_location_id,
                 "sloc_name" => $gid->storageLocation->name,
                 "material_id" => $gid->material_id,
@@ -166,11 +169,12 @@ class MaterialWriteOffController extends Controller
                 "unit" => $gid->material->uom->unit,
                 "is_decimal" => $gid->material->uom->is_decimal,
                 "quantity" => $gid->quantity."",
+                "amount" => $gid->amount."",
                 "available" => $gid->storageLocation->storageLocationDetails->where('material_id',$gid->material_id)->first()->quantity,
             ]);
         }
 
-        return view('material_write_off.edit', compact('modelGI','materials','materials','storageLocations','route'));
+        return view('material_write_off.edit', compact('modelGI','materials','materials','storageLocations','route','warehouseLocations'));
     }
 
     /**
@@ -414,11 +418,11 @@ class MaterialWriteOffController extends Controller
 
     public function getSlocApi($id){
         
-        return response(StorageLocation::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
+        return response(StorageLocation::where('id',$id)->with('Warehouse')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
     /**
-     * Untuk Mengambil data dari Werehouse Location
+     * Untuk Mengambil data dari Warehouse Location
      * @param integer $id I dons
      * @return \Illuminate\Http\Response
      */
@@ -428,7 +432,7 @@ class MaterialWriteOffController extends Controller
     }
 
     /**
-     * Untuk Mengambil data storage location yang berada di werehouse
+     * Untuk Mengambil data storage location yang berada di warehouse
      * @param integer $id warehouse Id
      * @return \Illuminate\Http\Response
      */

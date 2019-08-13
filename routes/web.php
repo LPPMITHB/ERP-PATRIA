@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', 'PagesController@index')->name('index')->middleware('can:show-dashboard');
 Auth::routes();
 
@@ -122,7 +121,7 @@ Route::name('pica.')->prefix('pica')->group(function() {
     Route::get('/{id}', 'PicaController@show')->name('show')->middleware('can:show-pica');
 
     Route::get('/selectDocument/{type}', 'PicaController@selectDocument')->name('selectDocument')->middleware('can:create-pica');
-    
+
     Route::get('/{id}/edit', 'PicaController@edit')->name('edit')->middleware('can:edit-pica');
 
     Route::put('/store', 'PicaController@store')->name('store')->middleware('can:create-pica');
@@ -890,6 +889,8 @@ Route::name('rap.')->prefix('rap')->group(function() {
     Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap');
 
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
+
+    Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap');
 });
 
 //rap Routes
@@ -927,6 +928,8 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::get('/{id}/edit', 'RAPController@edit')->name('edit')->middleware('can:edit-rap-repair');
 
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap-repair');
+
+    Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap-repair');
 });
 
 //Work Request Routes
@@ -1384,15 +1387,15 @@ Route::name('reverse_transaction.')->prefix('reverse_transaction')->group(functi
     Route::get('/indexApprove', 'ReverseTransactionController@indexApprove')->name('indexApprove')->middleware('can:approve-reverse-transaction');
 
     Route::get('/approval', 'ReverseTransactionController@approval')->name('approval')->middleware('can:approve-material-requisition');
-    
+
     Route::get('/create/{documentType}/{id}', 'ReverseTransactionController@create')->name('create')->middleware('can:create-reverse-transaction');
-    
+
     Route::get('/selectDocument', 'ReverseTransactionController@selectDocument')->name('selectDocument')->middleware('can:create-reverse-transaction');
 
     Route::get('/', 'ReverseTransactionController@index')->name('index')->middleware('can:list-reverse-transaction');
 
     Route::get('/{id}', 'ReverseTransactionController@show')->name('show')->middleware('can:show-reverse-transaction');
-    
+
     Route::get('/showApprove/{id}', 'ReverseTransactionController@showApprove')->name('showApprove')->middleware('can:approve-reverse-transaction');
 
     Route::get('/{id}/edit', 'ReverseTransactionController@edit')->name('edit')->middleware('can:edit-reverse-transaction');
@@ -1703,4 +1706,94 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
     Route::post('/', 'YardPlanController@store')->name('store');
 
     Route::delete('/{id}', 'YardPlanController@destroy')->name('destroy');
+});
+
+// Estimator Routes
+Route::name('estimator.')->prefix('estimator')->group(function() {
+    Route::get('/create', 'EstimatorController@create')->name('create');
+
+    Route::get('/', 'EstimatorController@index')->name('index');
+
+    Route::get('/{id}', 'EstimatorController@show')->name('show');
+
+    Route::get('/{id}/edit', 'EstimatorController@edit')->name('edit');
+
+    Route::patch('/{id}', 'EstimatorController@update')->name('update');
+
+    Route::post('/', 'EstimatorController@store')->name('store');
+});
+
+// Estimator Repair Routes
+Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
+    Route::get('/create', 'EstimatorController@create')->name('create');
+
+    Route::get('/', 'EstimatorController@index')->name('index');
+
+    Route::get('/{id}', 'EstimatorController@show')->name('show');
+
+    Route::get('/{id}/edit', 'EstimatorController@edit')->name('edit');
+
+    Route::patch('/{id}', 'EstimatorController@update')->name('update');
+
+    Route::post('/', 'EstimatorController@store')->name('store');
+});
+
+// Quotation Routes
+Route::name('quotation.')->prefix('quotation')->group(function() {
+    Route::get('/create', 'QuotationController@create')->name('create');
+
+    Route::get('/', 'QuotationController@index')->name('index');
+
+    Route::get('/{id}', 'QuotationController@show')->name('show');
+
+    Route::get('/{id}/edit', 'QuotationController@edit')->name('edit');
+
+    Route::patch('/{id}', 'QuotationController@update')->name('update');
+
+    Route::post('/', 'QuotationController@store')->name('store');
+});
+
+// Quotation Repair Routes
+Route::name('quotation_repair.')->prefix('quotation_repair')->group(function() {
+    Route::get('/create', 'QuotationController@create')->name('create');
+
+    Route::get('/', 'QuotationController@index')->name('index');
+
+    Route::get('/{id}', 'QuotationController@show')->name('show');
+
+    Route::get('/{id}/edit', 'QuotationController@edit')->name('edit');
+
+    Route::patch('/{id}', 'QuotationController@update')->name('update');
+
+    Route::post('/', 'QuotationController@store')->name('store');
+});
+
+// Sales Order Routes
+Route::name('sales_order.')->prefix('sales_order')->group(function() {
+    Route::get('/create', 'SalesOrderController@create')->name('create');
+
+    Route::get('/', 'SalesOrderController@index')->name('index');
+
+    Route::get('/{id}', 'SalesOrderController@show')->name('show');
+
+    Route::get('/{id}/edit', 'SalesOrderController@edit')->name('edit');
+
+    Route::patch('/{id}', 'SalesOrderController@update')->name('update');
+
+    Route::post('/', 'SalesOrderController@store')->name('store');
+});
+
+// Sales Order Repair Routes
+Route::name('sales_order_repair.')->prefix('sales_order_repair')->group(function() {
+    Route::get('/create', 'SalesOrderController@create')->name('create');
+
+    Route::get('/', 'SalesOrderController@index')->name('index');
+
+    Route::get('/{id}', 'SalesOrderController@show')->name('show');
+
+    Route::get('/{id}/edit', 'SalesOrderController@edit')->name('edit');
+
+    Route::patch('/{id}', 'SalesOrderController@update')->name('update');
+
+    Route::post('/', 'SalesOrderController@store')->name('store');
 });

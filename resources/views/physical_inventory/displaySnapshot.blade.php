@@ -38,10 +38,11 @@
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
-                            <th style="width: 20%">Material Number</th>
-                            <th style="width: 30%">Material Description</th>
+                            <th style="width: 15%">Material Number</th>
+                            <th style="width: 25%">Material Description</th>
                             <th style="width: 7%">Unit</th>
-                            <th style="width: 29%">Storage Location</th>
+                            <th style="width: 19%">Storage Location</th>
+                            <th style="width: 29%">Location Detail</th>
                             <th style="width: 10%">Quantity</th>
                         </tr>
                     </thead>
@@ -54,6 +55,7 @@
                                 <td class="p-l-10 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $stock->material->description }}">{{ $stock->material->description }}</td>
                                 <td class="p-l-10">{{ $stock->material->uom->unit }}</td>
                                 <td class="p-l-10">{{ $stock->storageLocation->name }}</td>
+                                <td class="p-l-10">{{ $stock->material->location_detail }}</td>
                                 <td class="p-l-10">{{ number_format($stock->quantity,2) }}</td>
                             </tr>
                         @endforeach

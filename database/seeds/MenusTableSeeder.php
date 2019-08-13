@@ -36,6 +36,138 @@ class MenusTableSeeder extends Seeder
         $building =  Menu::where('name','Ship Building')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
+            'name' => 'Marketing & Sales',
+            'icon' => 'fa-money',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $building,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $marketingSales =  Menu::where('name','Marketing & Sales')->where('menu_id', $building)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Configuration',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        $configuration = Menu::where('name','Configuration')->where('menu_id', $marketingSales)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Master Estimate WBS',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'estimator.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $configuration,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Cost Standard',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'estimator.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $configuration,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Estimate Profile',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'estimator.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $configuration,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Quotation',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $quotation = Menu::where('name','Quotation')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create Quotation',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'quotation.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $quotation,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit Quotation',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'quotation.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $quotation,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Sales Order',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $sales_order = Menu::where('name','Sales Order')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create Sales Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'sales_order.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $sales_order,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit Sales Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'sales_order.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $sales_order,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
             'is_active' => true,
@@ -282,7 +414,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -435,9 +567,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View & Edit Goods Return',
+            'name' => 'Approve Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return.index',
+            'route_name'=> 'goods_return.indexApprove',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$goodsReturn,
@@ -447,9 +579,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Approve Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return.indexApprove',
+            'route_name'=> 'goods_return.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=>$goodsReturn,
@@ -1034,7 +1166,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name'=> 'yard_plan.index',
             'is_active' => true,
-            'roles' => 'ADMIN',
+            'roles' => 'ADMIN, PMP, PAMI',
             'menu_id'=>$PPE,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1285,7 +1417,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition_repair.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
+            'roles' => 'ADMIN',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1426,9 +1558,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'View & Edit Goods Return',
+            'name' => 'Approve Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return_repair.index',
+            'route_name'=> 'goods_return_repair.indexApprove',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsReturn,
@@ -1438,9 +1570,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Approve Goods Return',
+            'name' => 'View & Edit Goods Return',
             'icon' => 'fa-file-text-o',
-            'route_name'=> 'goods_return_repair.indexApprove',
+            'route_name'=> 'goods_return_repair.index',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=>$goodsReturn,
@@ -2132,7 +2264,7 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $configuration =  Menu::where('name','Configuration')->select('id')->first()->id;
+        $configuration =  Menu::where('name','Configuration')->where('level',1)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Menus',

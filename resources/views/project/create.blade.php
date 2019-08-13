@@ -135,7 +135,7 @@
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Owner Representative</label>
                                 <div class="col-sm-10">
-                                    <input type="text" disabled class="form-control" id="owner_rep" name="owner_rep"  v-model="ownerRep">
+                                    <input type="text" class="form-control" minlength="10" maxlength="12" id="owner_rep" name="owner_rep"  v-model="ownerRep">
                                 </div>
                             </div>
 
@@ -424,9 +424,14 @@ $(document).ready(function(){
                         });
                     }
                 else
-                    this.ownerRep = "-";
+                    this.ownerRep = " - ";
                 },
-
+            'ownerRep': function(newValue){
+                console.log('owner_rep touched');
+                if(newValue != ""){
+                    this.ownerRep = (this.ownerRep+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");
+                }
+            },
             'project.class_cp_phone': function(newValue){
                 if(newValue != ""){
                     this.project.class_cp_phone = (this.project.class_cp_phone+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g,"");

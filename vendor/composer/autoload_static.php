@@ -2535,6 +2535,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'MstResourceTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstResourceTableSeeder.php',
         'MstServiceDetailTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstServiceDetailTableSeeder.php',
         'MstServiceTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstServiceTableSeeder.php',
+        'MstStockTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstStockTableSeeder.php',
         'MstStorageLocationDetailTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstStorageLocationDetailTableSeeder.php',
         'MstVendorTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstVendorTableSeeder.php',
         'MstWbsConfigurationTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstWbsConfigurationTableSeeder.php',

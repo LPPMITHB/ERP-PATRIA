@@ -549,12 +549,14 @@ class BOMController extends Controller
         DB::beginTransaction();
         try {
             $modelBOMDetail = BomDetail::findOrFail($data['bom_detail_id']);
+            $old_qty = $modelBOMDetail->quantity;
             $diff = $data['quantity'] - $modelBOMDetail->quantity;
             $modelBOMDetail->quantity = $data['quantity'];
             $modelBOMDetail->material_id = ($data['material_id'] != '') ? $data['material_id'] : null;
             if(isset($data['service_id'])){
                 $modelBOMDetail->service_id = ($data['service_id'] != '') ? $data['service_id'] : null;
             }
+            $old_resource = $modelBOMDetail->source;
             $modelBOMDetail->source = isset($data['source']) ? $data['source'] : null ;
 
             if(!$modelBOMDetail->update()){
@@ -571,8 +573,36 @@ class BOMController extends Controller
                     }
                     // update reserve mst_stock
                     $modelStock = Stock::where('material_id',$modelBOMDetail->material_id)->first();
-                    $modelStock->reserved += $diff;
-                    $modelStock->update();
+                    if($old_resource == "WIP" && $modelBOMDetail->source == "Stock"){
+                        if($modelStock){
+                            $modelStock->reserved += $data['quantity'];
+                            $modelStock->update();
+                        }else{
+                            $modelStock = new Stock;
+                            $modelStock->material_id = $modelBOMDetail->material_id;
+                            $modelStock->quantity = 0;
+                            $modelStock->reserved += $data['quantity'];
+                            $modelStock->reserved_gi = 0;
+                            $modelStock->branch_id = Auth::user()->branch->id;
+                            $modelStock->save();
+                        }
+                    }elseif($old_resource == "Stock" && $modelBOMDetail->source == "WIP"){
+                        $modelStock->reserved -= $old_qty;
+                        $modelStock->update();
+                    }elseif($old_resource == "Stock" && $modelBOMDetail->source == "Stock"){
+                        if($modelStock){
+                            $modelStock->reserved += $diff;
+                            $modelStock->update();
+                        }else{
+                            $modelStock = new Stock;
+                            $modelStock->material_id = $modelBOMDetail->material_id;
+                            $modelStock->quantity = 0;
+                            $modelStock->reserved += $diff;
+                            $modelStock->reserved_gi = 0;
+                            $modelStock->branch_id = Auth::user()->branch->id;
+                            $modelStock->save();
+                        }
+                    }
                 }
                 DB::commit();
                 return response(json_encode($data),Response::HTTP_OK);
