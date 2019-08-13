@@ -20,6 +20,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Collection;
 use Auth;
 use DB;
+use Illuminate\Support\Carbon;
 
 class PhysicalInventoryController extends Controller
 {
@@ -41,36 +42,54 @@ class PhysicalInventoryController extends Controller
     public function indexSnapshot(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        $snapshots = Snapshot::whereIn('status',[1,2])->get();
+        /**
+         * Snapshot
+         * Hanya membuka jika statusnya 
+         * {open,need revision,counted,revised}{1,2,4,5}
+         * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
+         */
+        $snapshots = Snapshot::whereIn('status', [1, 2, 4, 5])->get();
         $materials = Material::all();
         $storage_locations = StorageLocation::all();
         $warehouses = Warehouse::all();
 
-        return view('physical_inventory.indexSnapshot', compact('snapshots','materials','storage_locations', 'warehouses', 'menu'));
+        return view('physical_inventory.indexSnapshot', compact('snapshots', 'materials', 'storage_locations', 'warehouses', 'menu'));
     }
 
     public function indexCountStock(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        $snapshots = Snapshot::whereIn('status',[1,2])->get();
+        /**
+         * Count Stock
+         * Hanya membuka jika statusnya 
+         * {open,need revision,counted,revised}{1,2,4,5}
+         * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
+         */
+        $snapshots = Snapshot::whereIn('status', [1, 2, 4, 5])->get();
 
-        return view('physical_inventory.indexCountStock', compact('snapshots','menu'));
+        return view('physical_inventory.indexCountStock', compact('snapshots', 'menu'));
     }
 
     public function indexAdjustStock(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        $snapshots = Snapshot::where('status',2)->get();
+        /**
+         * Adjust Stock
+         * Hanya membuka jika statusnya 
+         * {counted,revised }{2,5}
+         * family {showConfirmCountStock,indexAdjustStock}
+         */
+        $snapshots = Snapshot::whereIn('status', [2, 5])->get();
 
-        return view('physical_inventory.indexAdjustStock', compact('snapshots','menu'));
+        return view('physical_inventory.indexAdjustStock', compact('snapshots', 'menu'));
     }
 
     public function viewAdjustmentHistory(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        $snapshots = Snapshot::where('status',0)->get();
+        $snapshots = Snapshot::whereIn('status', [0, 6])->get();
 
-        return view('physical_inventory.index', compact('snapshots','menu'));
+        return view('physical_inventory.index', compact('snapshots', 'menu'));
     }
 
 
@@ -79,25 +98,23 @@ class PhysicalInventoryController extends Controller
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
         $sloc = $request->sloc;
         $material = $request->material;
-        $stocks = StorageLocationDetail::whereIn('storage_location_id',$sloc)->
-        whereIn('material_id', $material)->get();
+        $stocks = StorageLocationDetail::whereIn('storage_location_id', $sloc)->whereIn('material_id', $material)->get();
         $piCode = self::generatePICode();
 
 
-        return view('physical_inventory.displaySnapshot', compact('piCode','stocks','sloc','material','menu'));
+        return view('physical_inventory.displaySnapshot', compact('piCode', 'stocks', 'sloc', 'material', 'menu'));
     }
 
     public function storeSnapshot(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        $stringSloc = "[".$request->sloc."]";
+        $stringSloc = "[" . $request->sloc . "]";
         $sloc = json_decode($stringSloc);
 
-        $stringMaterial = "[".$request->material."]";
+        $stringMaterial = "[" . $request->material . "]";
         $material = json_decode($stringMaterial);
 
-        $stocks = StorageLocationDetail::whereIn('storage_location_id',$sloc)->
-        whereIn('material_id', $material)->get();
+        $stocks = StorageLocationDetail::whereIn('storage_location_id', $sloc)->whereIn('material_id', $material)->get();
 
         DB::beginTransaction();
         try {
@@ -117,26 +134,33 @@ class PhysicalInventoryController extends Controller
             }
 
             DB::commit();
-            if($menu == "building"){
+            if ($menu == "building") {
                 return redirect()->route('physical_inventory.showSnapshot', ['id' => $snapshot->id])->with('success', 'Snapshot Created');
-            }else{
+            } else {
                 return redirect()->route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])->with('success', 'Snapshot Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($menu == "building"){
+            if ($menu == "building") {
                 return redirect()->route('physical_inventory.indexSnapshot')->with('error', $e->getMessage());
-            }else{
+            } else {
                 return redirect()->route('physical_inventory_repair.indexSnapshot')->with('error', $e->getMessage());
             }
         }
     }
 
-    public function showSnapshot($id,Request $request)
+    public function showSnapshot($id, Request $request)
     {
         $route = $request->route()->getPrefix();
-        $snapshot = Snapshot::where('id', $id)->whereIn('status',[1,2])->first();
-        return view('physical_inventory.showSnapshot', compact('snapshot','route'));
+        /**
+         * Snapshot
+         * Hanya membuka jika statusnya 
+         * {open,need revision,counted,revised}{1,2,4,5}
+         * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
+         * First or fail mencegah pencarian diluar Wherein
+         */
+        $snapshot = Snapshot::where('id', $id)->whereIn('status', [1, 2, 4, 5])->firstorfail();
+        return view('physical_inventory.showSnapshot', compact('snapshot', 'route'));
     }
 
     public function printPdf($id, Request $request)
@@ -146,17 +170,17 @@ class PhysicalInventoryController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         $branch = Branch::find(Auth::user()->branch_id);
         $route = $request->route()->getPrefix();
-        $pdf->loadView('physical_inventory.pdf',['modelSnapshot' => $modelSnapshot, 'branch' => $branch, 'route' => $route]);
+        $pdf->loadView('physical_inventory.pdf', ['modelSnapshot' => $modelSnapshot, 'branch' => $branch, 'route' => $route]);
         $now = date("Y_m_d_H_i_s");
 
-        return $pdf->stream('Snapshot_'.$now.'.pdf');
+        return $pdf->stream('Snapshot_' . $now . '.pdf');
     }
 
     public function exportToExcel($id, Request $request)
     {
         $modelSnapshot = Snapshot::find($id);
         $now = date("Y_m_d_H_i_s");
-        return Excel::download(new PhysicalInventoryExport($id), 'Stock_Taking_'.$now.'.xlsx');
+        return Excel::download(new PhysicalInventoryExport($id), 'Stock_Taking_' . $now . '.xlsx');
     }
 
 
@@ -164,35 +188,53 @@ class PhysicalInventoryController extends Controller
     public function countStock($id, Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        $snapshot = Snapshot::whereIn('status',[1,2])->where('id', $id)->first();
-        $snapshotDetails = SnapshotDetail::where('snapshot_id',$id)
-        ->with(array('material'=>function($query){
-                $query->select('id','code','description');
+        /**
+         * Count Stock
+         * Hanya membuka jika statusnya 
+         * {open,need revision,counted,revised}{1,2,4,5}
+         * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
+         */
+        $snapshot = Snapshot::whereIn('status', [1, 2, 4, 5])->where('id', $id)->firstorfail();
+        $snapshotDetails = SnapshotDetail::where('snapshot_id', $id)
+            ->with(array('material' => function ($query) {
+                $query->select('id', 'code', 'description');
             }))
-        ->with(array('material.uom'=>function($query){
-            $query->select('id','unit','is_decimal');
-        }))
-        ->with(array('storageLocation'=>function($query){
-            $query->select('id','name');
-        }))->get();
-        return view('physical_inventory.countStock', compact('snapshot','snapshotDetails','menu'));
+            ->with(array('material.uom' => function ($query) {
+                $query->select('id', 'unit', 'is_decimal');
+            }))
+            ->with(array('storageLocation' => function ($query) {
+                $query->select('id', 'name');
+            }))->get();
+        return view('physical_inventory.countStock', compact('snapshot', 'snapshotDetails', 'menu'));
     }
 
     public function showCountStock($id)
     {
-        $snapshot = Snapshot::whereIn('status',[1,2,0])->where('id', $id)->first();
+        /**
+         * Hanya membuka jika statusnya 
+         * {open,need revision,counted,revised}{1,2,4,5}
+         * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
+         */
+        $snapshot = Snapshot::whereIn('status', [1, 2, 4, 5])->where('id', $id)->firstorfail();
         $confirm = false;
 
-        return view('physical_inventory.showCountStock', compact('snapshot','confirm'));
+        return view('physical_inventory.showCountStock', compact('snapshot', 'confirm'));
     }
 
     public function showConfirmCountStock($id, Request $request)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        $snapshot = Snapshot::where('status',2)->where('id', $id)->first();
+        /**
+         * Adjust Stock
+         * Hanya membuka jika statusnya 
+         * {counted,revised }{2,5}
+         * family {showConfirmCountStock,indexAdjustStock}
+         * first or fail mencega pencarian diluar WhereIn
+         */
+        $snapshot = Snapshot::whereIn('status', [2, 5])->where('id', $id)->firstOrFail();
         $confirm = true;
 
-        return view('physical_inventory.showCountStock', compact('snapshot','confirm','menu'));
+        return view('physical_inventory.showCountStock', compact('snapshot', 'confirm', 'menu'));
     }
 
     public function showPI($id, Request $request)
@@ -200,7 +242,7 @@ class PhysicalInventoryController extends Controller
         $route = $request->route()->getPrefix();
         $snapshot = Snapshot::where('id', $id)->first();
 
-        return view('physical_inventory.showPI', compact('snapshot','route'));
+        return view('physical_inventory.showPI', compact('snapshot', 'route'));
     }
 
     public function storeCountStock(Request $request, $id)
@@ -211,7 +253,14 @@ class PhysicalInventoryController extends Controller
         DB::beginTransaction();
         try {
             $snapshot = Snapshot::findOrFail($id);
-            $snapshot->status = 2;
+
+            if ($snapshot->status == 4 || $snapshot->status == 5) {
+                $snapshot->updated_by = Auth::user()->id;
+                $snapshot->status = 5;
+            } else {
+                $snapshot->status = 2;
+            }
+            $snapshot->audited_by = Auth::user()->id;
             $snapshot->save();
 
             foreach ($data as $countStock) {
@@ -222,16 +271,16 @@ class PhysicalInventoryController extends Controller
             }
 
             DB::commit();
-            if($menu == "building"){
+            if ($menu == "building") {
                 return redirect()->route('physical_inventory.showCountStock', ['id' => $id])->with('success', 'Stock Adjusted');
-            }else{
+            } else {
                 return redirect()->route('physical_inventory_repair.showCountStock', ['id' => $id])->with('success', 'Stock Adjusted');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($menu == "building"){
+            if ($menu == "building") {
                 return redirect()->route('physical_inventory.indexCountStock')->with('error', $e->getMessage());
-            }else{
+            } else {
                 return redirect()->route('physical_inventory_repair.indexCountStock')->with('error', $e->getMessage());
             }
         }
@@ -240,111 +289,134 @@ class PhysicalInventoryController extends Controller
     public function storeAdjustStock(Request $request, $id)
     {
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
-        if($menu == "building"){
+        if ($menu == "building") {
             $business_unit = 1;
-        }elseif($menu =="repair"){
+        } elseif ($menu == "repair") {
             $business_unit = 2;
         }
         $data = json_decode($request->datas);
 
+
         DB::beginTransaction();
         try {
             $snapshot = Snapshot::findOrFail($id);
-            $snapshot->status = 0;
+            if ($data->status == "approve") {
+                $snapshot->approved_by = Auth::user()->id;
+                $snapshot->approval_date = Carbon::now();
+                $snapshot->status = 0;
+            } else if ($data->status == "need-revision") {
+                $snapshot->revision_description = $data->desc;
+                $snapshot->status = 4;
+            } else if ($data->status == "reject") {
+                $snapshot->status = 6;
+            }
             $snapshot->save();
+            if ($data->status == "approve") {
+                $goodsReceipt = array();
+                $goodsIssue = array();
 
-            $goodsReceipt = array();
-            $goodsIssue = array();
+                foreach ($snapshot->snapshotDetails as $details) {
+                    if ($details->adjusted_stock > 0) {
+                        array_push($goodsReceipt, $details);
+                    } elseif ($details->adjusted_stock < 0) {
+                        array_push($goodsIssue, $details);
+                    }
+                }
+                if (count($goodsReceipt) > 0) {
+                    $gr = new GoodsReceipt;
+                    $gr->number = $this->gr->generateGRNumber();
+                    $gr->type = 5;
+                    $gr->business_unit_id = $business_unit;
+                    $gr->description = "Stock Adjustment " . $snapshot->code;
+                    $gr->user_id = Auth::user()->id;
+                    $gr->branch_id = Auth::user()->branch->id;
+                    $gr->save();
+                    foreach ($goodsReceipt as $detail) {
+                        $grDetail = new GoodsReceiptDetail;
+                        $grDetail->goods_receipt_id = $gr->id;
+                        $grDetail->quantity = abs($detail->adjusted_stock);
+                        $grDetail->material_id = $detail->material_id;
+                        $grDetail->storage_location_id = $detail->storage_location_id;
+                        $grDetail->save();
 
-            foreach($snapshot->snapshotDetails as $details){
-                if($details->adjusted_stock > 0){
-                    array_push($goodsReceipt, $details);
-                }elseif($details->adjusted_stock < 0){
-                    array_push($goodsIssue, $details);
+
+                        $slocDetail = StorageLocationDetail::where('material_id', $detail->material_id)->where('storage_location_id', $detail->storage_location_id)->first();
+                        $slocDetail->quantity = $detail->count;
+                        $slocDetail->save();
+
+                        $stock = Stock::where('material_id', $detail->material_id)->first();
+                        $stock->quantity = $stock->quantity + abs($detail->adjusted_stock);
+                        $stock->save();
+                    }
                 }
 
-            }
-            if(count($goodsReceipt)>0){
-                $gr = new GoodsReceipt;
-                $gr->number = $this->gr->generateGRNumber();
-                $gr->type = 5;
-                $gr->business_unit_id = $business_unit;
-                $gr->description = "Stock Adjustment ".$snapshot->code;
-                $gr->user_id = Auth::user()->id;
-                $gr->branch_id = Auth::user()->branch->id;
-                $gr->save();
-                foreach($goodsReceipt as $detail){
-                    $grDetail = new GoodsReceiptDetail;
-                    $grDetail->goods_receipt_id = $gr->id;
-                    $grDetail->quantity = abs($detail->adjusted_stock);
-                    $grDetail->material_id = $detail->material_id;
-                    $grDetail->storage_location_id = $detail->storage_location_id;
-                    $grDetail->save();
+                if (count($goodsIssue) > 0) {
+                    $gi = new GoodsIssue;
+                    $gi->type = 3;
+                    $gi->business_unit_id = $business_unit;
+                    $gi->number = $this->gi->generateGINumber();
+                    $gi->description = "Stock Adjustment " . $snapshot->code;
+                    $gi->user_id = Auth::user()->id;
+                    $gi->branch_id = Auth::user()->branch->id;
+                    $gi->save();
+                    foreach ($goodsIssue as $detail) {
+                        $giDetail = new GoodsIssueDetail;
+                        $giDetail->goods_issue_id = $gi->id;
+                        $giDetail->quantity = abs($detail->adjusted_stock);
+                        $giDetail->material_id = $detail->material_id;
+                        $giDetail->storage_location_id = $detail->storage_location_id;
+                        $giDetail->save();
 
+                        $slocDetail = StorageLocationDetail::where('material_id', $detail->material_id)->where('storage_location_id', $detail->storage_location_id)->first();
+                        $slocDetail->quantity = $detail->count;
+                        $slocDetail->save();
 
-                    $slocDetail = StorageLocationDetail::where('material_id', $detail->material_id)->where('storage_location_id',$detail->storage_location_id)->first();
-                    $slocDetail->quantity = $detail->count;
-                    $slocDetail->save();
-
-                    $stock = Stock::where('material_id', $detail->material_id)->first();
-                    $stock->quantity = $stock->quantity + abs($detail->adjusted_stock);
-                    $stock->save();
-                }
-            }
-
-            if(count($goodsIssue)>0){
-                $gi = new GoodsIssue;
-                $gi->type = 3;
-                $gi->business_unit_id = $business_unit;
-                $gi->number = $this->gi->generateGINumber();
-                $gi->description = "Stock Adjustment ".$snapshot->code;
-                $gi->user_id = Auth::user()->id;
-                $gi->branch_id = Auth::user()->branch->id;
-                $gi->save();
-                foreach($goodsIssue as $detail){
-                    $giDetail = new GoodsIssueDetail;
-                    $giDetail->goods_issue_id = $gi->id;
-                    $giDetail->quantity = abs($detail->adjusted_stock);
-                    $giDetail->material_id = $detail->material_id;
-                    $giDetail->storage_location_id = $detail->storage_location_id;
-                    $giDetail->save();
-
-                    $slocDetail = StorageLocationDetail::where('material_id', $detail->material_id)->where('storage_location_id',$detail->storage_location_id)->first();
-                    $slocDetail->quantity = $detail->count;
-                    $slocDetail->save();
-
-                    $stock = Stock::where('material_id', $detail->material_id)->first();
-                    $stock->quantity = $stock->quantity - abs($detail->adjusted_stock);
-                    $stock->save();
+                        $stock = Stock::where('material_id', $detail->material_id)->first();
+                        $stock->quantity = $stock->quantity - abs($detail->adjusted_stock);
+                        $stock->save();
+                    }
                 }
             }
 
             DB::commit();
-            if($menu == "building"){
-                return redirect()->route('physical_inventory.indexSnapshot')->with('success', 'Stock Adjustment Approved');
-            }else{
-                return redirect()->route('physical_inventory_repair.indexSnapshot')->with('success', 'Stock Adjustment Approved');
+            if ($menu == "building") {
+                if ($data->status == "approve") {
+                    return redirect()->route('physical_inventory.indexSnapshot')->with('success', 'Stock Adjustment Approved');
+                } else if ($data->status == "need-revision") {
+                    return redirect()->route('physical_inventory.indexCountStock')->with('warning', 'Stock Adjustment Need Revision');
+                } else if ($data->status == "reject") {
+                    return redirect()->route('physical_inventory.indexSnapshot')->with('danger', 'Stock Adjustment Rejected');
+                }
+            } else {
+                if ($data->status == "approve") {
+                    return redirect()->route('physical_inventory_repair.indexSnapshot')->with('success', 'Stock Adjustment Approved');
+                } else if ($data->status == "need-revision") {
+                    return redirect()->route('physical_inventory_repair.indexCountStock')->with('warning', 'Stock Adjustment Need-Revision');
+                } else if ($data->status == "reject") {
+                    return redirect()->route('physical_inventory_repair.indexSnapshot')->with('danger', 'Stock Adjustment Rejected');
+                }
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($menu == "building"){
+            if ($menu == "building") {
                 return redirect()->route('physical_inventory.indexAdjustStock')->with('error', $e->getMessage());
-            }else{
+            } else {
                 return redirect()->route('physical_inventory_repair.indexAdjustStock')->with('error', $e->getMessage());
             }
         }
     }
 
-    public function generatePICode(){
+    public function generatePICode()
+    {
         $code = 'PI';
         $modelPI = Snapshot::orderBy('code', 'desc')->first();
 
         $number = 1;
-		if(isset($modelPI)){
+        if (isset($modelPI)) {
             $number += intval(substr($modelPI->code, -4));
-		}
+        }
 
-        $pi_code = $code.''.sprintf('%04d', $number);
-		return $pi_code;
-	}
+        $pi_code = $code . '' . sprintf('%04d', $number);
+        return $pi_code;
+    }
 }

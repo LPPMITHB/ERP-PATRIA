@@ -74,7 +74,7 @@
                             Delivery Term
                         </div>
                         <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $dterm_name }}">
-                            : <b> {{ $dterm_name }} </b>
+                            : <b> {{ ($dterm_name != null) ? $dterm_name : '-' }} </b>
                         </div>
                         <div class="col-md-4 col-xs-4" >
                             Project Number

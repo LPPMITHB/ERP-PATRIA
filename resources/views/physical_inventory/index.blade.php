@@ -50,6 +50,8 @@
                                         CLOSED
                                     @elseif($snapshot->status == 2)
                                         COUNTED
+                                    @elseif($snapshot->status == 6)
+                                        REJECTED
                                     @endif
                                 </td>
                                 <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>

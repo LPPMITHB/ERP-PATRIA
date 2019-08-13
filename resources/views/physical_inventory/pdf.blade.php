@@ -87,12 +87,13 @@
                             <thead>
                                 <tr>
                                     <th style="font-size: 11px" width="5%" class="text-center">No</th>
-                                    <th style="font-size: 11px" width="20%" class="text-center" >Material Number</th>
+                                    <th style="font-size: 11px" width="15%" class="text-center" >Material Number</th>
                                     <th style="font-size: 11px" width="25%" class="text-center" >Material Description</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center" >Unit</th>
+                                    <th style="font-size: 11px" width="5%" class="text-center" >Unit</th>
                                     <th style="font-size: 11px" width="20%" class="text-center" >Storage Location</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center">Quantity</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center">Count</th>
+                                    <th style="font-size: 11px" width="20%"  class="text-center">Location Detail</th>
+                                    <th style="font-size: 11px" width="5%" class="text-center">Quantity</th>
+                                    <th style="font-size: 11px" width="5%" class="text-center">Count</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -104,6 +105,7 @@
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="25%" class="tdBreakWord">{{ $SNPD->material->description }}</td>
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px;" width="10%" class="tdBreakWord text-center">{{ $SNPD->material->uom->unit }}</td>
                                             <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="20%" class="tdBreakWord text-center">{{ $SNPD->storageLocation->name }}</td>
+                                            <td style="font-size: 11px; padding-top:2px; padding-bottom:2px; padding-left:4px;" width="20%" class="tdBreakWord text-center">{{ $SNPD->material->location_detail }}</td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{ number_format($SNPD->quantity) }}</td>
                                             <td style="font-size: 11px" width="10%" class="tdBreakWord text-center"></td>
                                         </tr>
