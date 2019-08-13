@@ -12,5 +12,9 @@ class Uom extends Model
     {
         return $this->hasMany('App\Models\Resource');
     }
-    
+
+    public function costStandards()
+    {
+        return $this->hasMany('App\Models\EstimateCostStandard');
+    }
 }
