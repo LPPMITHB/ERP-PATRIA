@@ -25,7 +25,7 @@
                                 <th width=20%>WBS</th>
                                 <th width=25%>Description</th>
                                 <th width=23%>Deliverables</th>
-                                <th style="width: 11%">Duration</th>
+                                <th style="width: 11%" v-if="!is_pami">Duration</th>
                                 <th width=27%></th>
                             </tr>
                         </thead>
@@ -35,7 +35,7 @@
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
-                                <td>{{ data.duration }} Day(s)</td>
+                                <td v-if="!is_pami">{{ data.duration }} Day(s)</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
@@ -143,6 +143,7 @@ $(document).ready(function(){
 
 var data = {
     wbs : "",
+    is_pami : @json($is_pami),
     newIndex : "",
     newWbsConfiguration : {
         number : "",

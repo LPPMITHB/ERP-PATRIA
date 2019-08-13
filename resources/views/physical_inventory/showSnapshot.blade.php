@@ -63,10 +63,11 @@
                     <thead>
                         <tr>
                             <th style="width: 5%">No</th>
-                            <th style="width: 20%">Material Number</th>
+                            <th style="width: 15%">Material Number</th>
                             <th style="width: 25%">Material Description</th>
-                            <th style="width: 5%">Unit</th>
-                            <th style="width: 35%">Storage Location</th>
+                            <th style="width: 7%">Unit</th>
+                            <th style="width: 19%">Storage Location</th>
+                            <th style="width: 29%">Location Detail</th>
                             <th style="width: 10%">Quantity</th>
                         </tr>
                     </thead>
@@ -79,6 +80,7 @@
                                 <td class="p-l-10">{{ $details->material->description }}</td>
                                 <td class="p-l-10">{{ $details->material->uom->unit }}</td>
                                 <td class="p-l-10">{{ $details->storageLocation->name }}</td>
+                                <td class="p-l-10">{{ $details->material->location_detail }}</td>
                                 <td class="p-l-10">{{ number_format($details->quantity,2) }}</td>
                             </tr>
                         @endforeach
