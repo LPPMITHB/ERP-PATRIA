@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // currencies
 Route::get('/getCurrenciesConfig', 'ConfigurationController@getCurrenciesAPI')->name('api.configuration.getCurrenciesAPI');
 
+// approval configuration
+Route::get('/getApprovalConfig/{type}', 'ConfigurationController@getApprovalAPI')->name('api.configuration.getApprovalAPI');
 
 // role
 Route::get('/getPermission/{id}', 'RoleController@getPermissionAPI')->name('api.role.getPermissionAPI');

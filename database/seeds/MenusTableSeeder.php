@@ -36,6 +36,30 @@ class MenusTableSeeder extends Seeder
         $building =  Menu::where('name','Ship Building')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
+            'name' => 'Marketing & Sales',
+            'icon' => 'fa-money',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $building,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $marketingSales =  Menu::where('name','Marketing & Sales')->where('menu_id', $building)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Configuration',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'project.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
             'is_active' => true,
@@ -282,7 +306,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
+            'roles' => 'ADMIN,PMP',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1285,7 +1309,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name'=> 'purchase_requisition_repair.indexConsolidation',
             'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
+            'roles' => 'ADMIN',
             'menu_id'=>$purchaseRequisition,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

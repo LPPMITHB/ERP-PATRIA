@@ -115,12 +115,12 @@
                                 {{($modelPO->delivery_terms != null) ? $modelPO->delivery_terms : '-'}}                    
                             </div>
                         </div>
-                        <div  style="margin-left: 450px;">
+                        <!-- <div  style="margin-left: 450px;">
                             <div style="font-size: 11px;">Job  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 120px; margin-top:-20px">
                                 {{($modelPO->project) ? $modelPO->project->number : '-'}}                 
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="col-xs-12">

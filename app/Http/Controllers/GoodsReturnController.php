@@ -339,18 +339,28 @@ class GoodsReturnController extends Controller
 
         $route = $request->route()->getPrefix();
         $modelGR = GoodsReceipt::find($id);
+        $Po_number = "-";
+        $Pr_number = "-";
         if($modelGR->purchase_order_id != null){
             $vendor = $modelGR->purchaseOrder->vendor;
+            $Po_number = $modelGR->purchaseOrder->number;
+            $Pr_number = $modelGR->purchaseOrder->purchaseRequisition->number;
         }elseif($modelGR->work_order_id != null){
             $vendor = $modelGR->workOrder->vendor;
         }
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if(in_array("2", json_decode($business_ids))){
+            $is_pami = true;
+        }
+
         $modelGRD = GoodsReceiptDetail::whereRaw('quantity - returned != 0')->where('goods_receipt_id',$modelGR->id)->with('material','material.uom')->get();
         foreach($modelGRD as $GRD){
             $GRD['returned_temp'] = 0;
             $GRD['available'] = $GRD->quantity - $GRD->returned;
             $GRD['is_decimal'] = $GRD->material->uom->is_decimal;
         }
-        return view('goods_return.createGoodsReturnGR', compact('modelGR','modelGRD','route','vendor'));
+        return view('goods_return.createGoodsReturnGR', compact('modelGR','modelGRD','route','vendor','Po_number','Pr_number','is_pami'));
     }
 
     public function createGoodsReturnPO($id,Request $request){
@@ -491,6 +501,9 @@ class GoodsReturnController extends Controller
                 $GR->business_unit_id = 2;
             }
             $GR->goods_receipt_id = $datas->goods_receipt_id;
+            if($datas->purchase_order_id !=null){
+                $GR->purchase_order_id = $datas->purchase_order_id;
+            }
             $GR->description = $datas->description;
             $GR->revision_description = $datas->revision_description;
             $GR->branch_id = Auth::user()->branch->id;
