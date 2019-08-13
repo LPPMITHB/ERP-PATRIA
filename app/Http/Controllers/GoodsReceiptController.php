@@ -219,10 +219,11 @@ class GoodsReceiptController extends Controller
             }elseif($route == "/goods_receipt_repair"){
                 return redirect()->route('goods_receipt_repair.selectPO')->with('error', $e->getMessage());
             }
+            print_r($GR);exit();
         }
     }
 
-    public function storeWo(Request $request)
+    public function ♦Wo(Request $request)
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
@@ -280,7 +281,7 @@ class GoodsReceiptController extends Controller
         }
     }
 
-    public function storeWOR(Request $request)
+    public function ♦WOR(Request $request)
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);

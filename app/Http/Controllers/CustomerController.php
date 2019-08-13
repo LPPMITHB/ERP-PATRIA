@@ -145,11 +145,11 @@ class CustomerController extends Controller
     public function edit($id)
     {
         $customer = Customer::findOrFail($id);
-        
+        $business_ids = Auth::user()->business_unit_id;
         $businessUnits = BusinessUnit::all();
 
 
-        return view('customer.create', compact('customer','businessUnits'));
+        return view('customer.create', compact('customer','businessUnits','business_ids'));
     }
 
     /**
