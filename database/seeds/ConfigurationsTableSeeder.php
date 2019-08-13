@@ -369,10 +369,10 @@ class ConfigurationsTableSeeder extends Seeder
 
         $payment_terms = array(
             0 => array(
-            'id' => "1",
-            'name' => "Term 1",
-            'description' => 'Term 1',
-            'status' => 1,
+                'id' => "1",
+                'name' => "Term 1",
+                'description' => 'Term 1',
+                'status' => 1,
             ),
         );
 
@@ -387,10 +387,10 @@ class ConfigurationsTableSeeder extends Seeder
 
         $delivery_terms = array(
             0 => array(
-            'id' => "1",
-            'name' => "Term 1",
-            'description' => 'Term 1',
-            'status' => 1,
+                'id' => "1",
+                'name' => "Term 1",
+                'description' => 'Term 1',
+                'status' => 1,
             ),
         );
 
@@ -405,10 +405,10 @@ class ConfigurationsTableSeeder extends Seeder
 
         $weather = array(
             0 => array(
-            'id' => "1",
-            'name' => "Weather 1",
-            'description' => 'Weather 1',
-            'status' => 1,
+                'id' => "1",
+                'name' => "Weather 1",
+                'description' => 'Weather 1',
+                'status' => 1,
             ),
         );
 
@@ -423,10 +423,10 @@ class ConfigurationsTableSeeder extends Seeder
 
         $tidal = array(
             0 => array(
-            'id' => "1",
-            'name' => "Tidal 1",
-            'description' => 'Tidal 1',
-            'status' => 1,
+                'id' => "1",
+                'name' => "Tidal 1",
+                'description' => 'Tidal 1',
+                'status' => 1,
             ),
         );
 
@@ -441,23 +441,23 @@ class ConfigurationsTableSeeder extends Seeder
 
         $dimension_type = array(
             0 => array(
-            'id' => "1",
-            'name' => "Block",
-            'dimensions' => array(
-                0 => array(
-                    'name' => "Panjang",
-                    'uom_id' => 1
+                'id' => "1",
+                'name' => "Block",
+                'dimensions' => array(
+                    0 => array(
+                        'name' => "Panjang",
+                        'uom_id' => 1
+                    ),
+                    1 => array(
+                        'name' => "Lebar",
+                        'uom_id' => 1
+                    ),
+                    2 => array(
+                        'name' => "Tinggi",
+                        'uom_id' => 1
+                    ),
                 ),
-                1 => array(
-                    'name' => "Lebar",
-                    'uom_id' => 1
-                ),
-                2 => array(
-                    'name' => "Tinggi",
-                    'uom_id' => 1
-                ),
-            ),
-            'status' => 1,
+                'status' => 1,
             ),
         );
 
@@ -487,6 +487,32 @@ class ConfigurationsTableSeeder extends Seeder
             'slug' => 'approval_pr',
             'title' => 'Approval PR',
             'value' => json_encode($approval_pr),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+
+
+        $standar_price = array(
+            0 => array(
+                'id' => 1,
+                'value' => 'last_price',
+            ),
+            1 => array(
+                'id' => 2,
+                'value' => 'fifo',
+            ),
+            2 => array(
+                'id' => 3,
+                'value' => 'average',
+                'moving_range' => 'null',
+            ),
+        );
+        DB::table('mst_configuration')->insert([
+            'slug' => 'standar-price',
+            'title' => 'Standar Price',
+            'value' =>  json_encode($standar_price),
             'is_active' => true,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
