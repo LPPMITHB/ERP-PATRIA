@@ -27,4 +27,9 @@ class Ship extends Model
     {
         return $this->belongsTo('App\Models\Branch');
     }
+
+    public function estimateProfiles() 
+    {
+        return $this->hasMany('App\Models\EstimateProfile');
+    }
 }

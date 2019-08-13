@@ -473,8 +473,13 @@ class ConfigurationsTableSeeder extends Seeder
         $approval_pr = array(
             0 => array(
                 'type' => "1 Stage",
-                'dimensions' => array(
+                'level_1' => array(
                     0 => array(
+                        'minimum' => 0,
+                        'maximum' => 1000000,
+                        'role_id' => 1,
+                    ),
+                    1 => array(
                         'minimum' => 0,
                         'maximum' => 1000000,
                         'role_id' => 1,
@@ -484,7 +489,7 @@ class ConfigurationsTableSeeder extends Seeder
         );
 
         DB::table('mst_configuration')->insert([
-            'slug' => 'approval_pr',
+            'slug' => 'approval-pr',
             'title' => 'Approval PR',
             'value' => json_encode($approval_pr),
             'is_active' => true,

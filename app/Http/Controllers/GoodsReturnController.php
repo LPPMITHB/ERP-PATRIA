@@ -29,7 +29,7 @@ use Illuminate\Support\Carbon;
 class GoodsReturnController extends Controller
 {
     public function indexGoodsReturn(Request $request){
-        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";
         if($menu == "repair"){
             $business_unit = 2;
         }else{
@@ -43,7 +43,7 @@ class GoodsReturnController extends Controller
 
     public function indexApprove(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";
         if($menu == "repair"){
             $business_unit_id = 2;
         }elseif($menu == "building"){
@@ -53,10 +53,10 @@ class GoodsReturnController extends Controller
 
         return view('goods_return.indexApprove', compact('modelGoodsReturns','menu'));
     }
-    
+
     public function showApprove($id, Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";
 
         $modelGRT = GoodsReturn::findOrFail($id);
         if($modelGRT->status == 1){
@@ -184,6 +184,7 @@ class GoodsReturnController extends Controller
             }elseif($datas->status == "need-revision"){
                 $modelGRT->status = 3;
                 $modelGRT->approved_by = Auth::user()->id;
+                $modelGRT->revision_description = null;
                 $modelGRT->update();
                 DB::commit();
                 if($route == "/goods_return"){
@@ -308,6 +309,7 @@ class GoodsReturnController extends Controller
             }elseif($datas->status == "need-revision"){
                 $modelGRT->status = 3;
                 $modelGRT->approved_by = Auth::user()->id;
+                $modelGRT->revision_description = "";
                 $modelGRT->update();
                 DB::commit();
                 if($route == "/goods_return"){
@@ -335,7 +337,7 @@ class GoodsReturnController extends Controller
 
     public function createGoodsReturnGR($id,Request $request){
 
-        $route = $request->route()->getPrefix();    
+        $route = $request->route()->getPrefix();
         $modelGR = GoodsReceipt::find($id);
         $Po_number = "-";
         $Pr_number = "-";
@@ -363,7 +365,7 @@ class GoodsReturnController extends Controller
 
     public function createGoodsReturnPO($id,Request $request){
 
-        $route = $request->route()->getPrefix();    
+        $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::find($id);
         $vendor = $modelPO->vendor;
         $modelPOD = PurchaseOrderDetail::whereRaw('quantity - received - returned != 0')->where('purchase_order_id',$modelPO->id)->with('material','material.uom')->get();
@@ -375,7 +377,7 @@ class GoodsReturnController extends Controller
     }
 
     public function createGoodsReturnGI($id, Request $request){
-        $route = $request->route()->getPrefix();    
+        $route = $request->route()->getPrefix();
         $modelGI = GoodsIssue::where('id',$id)->with('materialRequisition','materialRequisition.project')->first();
         $modelGID = GoodsIssueDetail::whereRaw('quantity - returned != 0')->where('goods_issue_id',$modelGI->id)->with('material','material.uom')->get();
         $modelSloc = StorageLocation::all();
@@ -403,7 +405,7 @@ class GoodsReturnController extends Controller
                     if($data->material_id == $dataPOD->material_id){
                         $modelGRD->push([
                             "id" => $data->id,
-                            "material_id" => $data->material_id, 
+                            "material_id" => $data->material_id,
                             "material_name" => $data->material->description,
                             "material_code" => $data->material->code,
                             "quantity" => $data->quantity,
@@ -422,7 +424,7 @@ class GoodsReturnController extends Controller
                     if($data->material_id == $dataGRD->material_id){
                         $modelGRD->push([
                             "id" => $data->id,
-                            "material_id" => $data->material_id, 
+                            "material_id" => $data->material_id,
                             "material_name" => $data->material->description,
                             "material_code" => $data->material->code,
                             "quantity" => $data->quantity,
@@ -441,24 +443,30 @@ class GoodsReturnController extends Controller
 
     public function update($id,Request $request)
     {
-        $route = $request->route()->getPrefix();    
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        
         DB::beginTransaction();
         try {
-            
+
             $GR = GoodsReturn::where('id',$datas->goods_return_id)->first();
+            if($datas->revision_description != null) {
+                $GR->revision_description = $datas->revision_description;
+            }
+
+            if($datas->description != "") {
+                $GR->description = $datas->description;
+            }
+
             if($GR->status == 3){
                 $GR->status = 4;
                 $GR->update();
             }
-            
+
             foreach($datas->GRD as $data){
                 $GRD = GoodsReturnDetail::find($data->id);
                 $GRD->quantity = $data->quantity;
                 $GRD->update();
             }
-
 
             DB::commit();
             if($route == "/goods_return"){
@@ -478,7 +486,7 @@ class GoodsReturnController extends Controller
 
     public function storeGoodsReturnGR(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";
         $datas = json_decode($request->datas);
         $gr_number = $this->generateGRNumber();
 
@@ -497,6 +505,7 @@ class GoodsReturnController extends Controller
                 $GR->purchase_order_id = $datas->purchase_order_id;
             }
             $GR->description = $datas->description;
+            $GR->revision_description = $datas->revision_description;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();
@@ -530,7 +539,7 @@ class GoodsReturnController extends Controller
 
     public function storeGoodsReturnPO(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";
         $datas = json_decode($request->datas);
         $gr_number = $this->generateGRNumber();
 
@@ -632,7 +641,7 @@ class GoodsReturnController extends Controller
 
     public function selectPO(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";
 
         if($menu == "building"){
             $modelPR = PurchaseRequisition::where('business_unit_id',1)->where('type', 1)->pluck('id')->toArray();
@@ -645,7 +654,7 @@ class GoodsReturnController extends Controller
     }
 
     public function selectGI (Request $request){
-        $menu = $request->route()->getPrefix();    
+        $menu = $request->route()->getPrefix();
         if($menu == "/goods_return"){
             $project_ids = Project::where('business_unit_id',1)->pluck('id')->toArray();
         }else if($menu == "/goods_return_repair"){
@@ -659,7 +668,7 @@ class GoodsReturnController extends Controller
 
     public function selectGR(Request $request)
     {
-        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";    
+        $menu = $request->route()->getPrefix() == "/goods_return" ? "building" : "repair";
         if($menu == "building"){
             $business_unit = 1;
         }elseif($menu == "repair"){
@@ -674,7 +683,7 @@ class GoodsReturnController extends Controller
 
     public function show(Request $request,$id)
     {
-        $route = $request->route()->getPrefix();    
+        $route = $request->route()->getPrefix();
         $modelGR = GoodsReturn::findOrFail($id);
         $modelGRD = $modelGR->GoodsReturnDetails;
         $approve = FALSE;
@@ -691,14 +700,14 @@ class GoodsReturnController extends Controller
         $route = $request->route()->getPrefix();
         $pdf->loadView('goods_return.pdf',['modelGRT' => $modelGRT, 'branch' => $branch, 'route' => $route]);
         $now = date("Y_m_d_H_i_s");
-        
+
         return $pdf->stream('Goods_Return_'.$now.'.pdf');
     }
 
     public function generateGINumber(){
         $modelGI = GoodsIssue::orderBy('created_at','desc')->first();
         $yearNow = date('y');
-        
+
 		$number = 1;
         if(isset($modelGI)){
             $yearDoc = substr($modelGI->number, 3,2);
@@ -719,7 +728,7 @@ class GoodsReturnController extends Controller
     public function generateGRNumber(){
         $modelGR = GoodsReturn::orderBy('created_at','desc')->first();
         $yearNow = date('y');
-        
+
 		$number = 1;
         if(isset($modelGR)){
             $yearDoc = substr($modelGR->number, 4,2);
@@ -740,7 +749,7 @@ class GoodsReturnController extends Controller
     public function generateGRecNumber(){
         $modelGR = GoodsReceipt::orderBy('created_at','desc')->first();
         $yearNow = date('y');
-        
+
 		$number = 1;
         if(isset($modelGR)){
             $yearDoc = substr($modelGR->number, 4,2);
@@ -788,7 +797,7 @@ class GoodsReturnController extends Controller
 
     public function updateStock($material_id,$issued){
         $modelStock = Stock::where('material_id',$material_id)->first();
-        
+
         if($modelStock){
             $modelStock->quantity = $modelStock->quantity - $issued;
             $modelStock->reserved = $modelStock->reserved - $issued;
@@ -800,7 +809,7 @@ class GoodsReturnController extends Controller
 
     public function updateSlocDetail($material_id,$sloc_id,$issued){
         $modelSlocDetail = StorageLocationDetail::where('material_id',$material_id)->where('storage_location_id',$sloc_id)->first();
-        
+
         if($modelSlocDetail){
             $modelSlocDetail->quantity = $modelSlocDetail->quantity - $issued;
             $modelSlocDetail->save();

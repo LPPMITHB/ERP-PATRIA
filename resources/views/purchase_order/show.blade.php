@@ -339,12 +339,12 @@
                     }
 
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }, true],
                 ['<button>NO</button>', function (instance, toast) {
-        
+
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }],
             ],
         });
@@ -371,12 +371,12 @@
                     }
 
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }, true],
                 ['<button>NO</button>', function (instance, toast) {
-        
+
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }],
             ],
         });
