@@ -320,7 +320,6 @@
         materials_modal :[],
         submittedForm : {}
     }
-
     var vm = new Vue({
         el : '#mr',
         data : data,

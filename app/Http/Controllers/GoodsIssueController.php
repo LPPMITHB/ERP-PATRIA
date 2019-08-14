@@ -156,7 +156,6 @@ class GoodsIssueController extends Controller
         $route = $request->route()->getPrefix();    
         $modelGI = GoodsIssue::findOrFail($id);
         $temp_gid = $modelGI->GoodsIssueDetails->groupBy('material_id');
-
         $modelGID = Collection::make();
         foreach ($temp_gid as $material_id => $data) {
             $temp_data = null;
@@ -189,11 +188,13 @@ class GoodsIssueController extends Controller
     { 
         $branch = Auth::user()->branch; 
         $modelGI = GoodsIssue::find($id);
+
         $route = $request->route()->getPrefix();
         $pdf = app('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadView('goods_issue.pdf',['modelGI' => $modelGI,'branch'=>$branch,'route'=>$route]);
         $now = date("Y_m_d_H_i_s");
+
         return $pdf->stream('Goods_Issue_'.$now.'.pdf');
     }
 

@@ -86,7 +86,6 @@ class PurchaseOrderController extends Controller
         }elseif($route == "/purchase_order_repair"){
             $modelPRs = PurchaseRequisition::whereIn('status',[2,7])->where('business_unit_id',2)->get();
         }
-
         return view('purchase_order.selectPR', compact('modelPRs','route'));
     }
 
@@ -99,7 +98,6 @@ class PurchaseOrderController extends Controller
             $modelPRs = PurchaseRequisition::where('business_unit_id',2)->pluck('id')->toArray();
         }
         $modelPOs = PurchaseOrder::whereIn('purchase_requisition_id',$modelPRs)->get();
-
         return view('purchase_order.index', compact('modelPOs','route'));
     }
 
